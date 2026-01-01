@@ -1,0 +1,185 @@
+/* Login Page 2025 - Enhanced to Match Home Page Design System */
+
+.loginContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+  /* Proper padding: 32px vertical mobile, 48px tablet, 64px desktop */
+  padding: var(--space-8) 0;
+}
+
+@media (min-width: 640px) {
+  .loginContainer {
+    padding: var(--space-12) 0; /* 48px */
+  }
+}
+
+@media (min-width: 1024px) {
+  .loginContainer {
+    padding: var(--space-16) 0; /* 64px */
+  }
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 440px;
+  /* Proper padding: 32px mobile, 40px tablet, 48px desktop */
+  padding: var(--space-8);
+}
+
+@media (min-width: 640px) {
+  .loginCard {
+    padding: var(--space-10); /* 40px */
+  }
+}
+
+@media (min-width: 1024px) {
+  .loginCard {
+    padding: var(--space-12); /* 48px */
+  }
+}
+
+.header {
+  text-align: center;
+  /* Proper spacing: 32px bottom mobile, 40px tablet, 48px desktop */
+  margin-bottom: var(--space-8);
+}
+
+@media (min-width: 640px) {
+  .header {
+    margin-bottom: var(--space-10); /* 40px */
+  }
+}
+
+@media (min-width: 1024px) {
+  .header {
+    margin-bottom: var(--space-12); /* 48px */
+  }
+}
+
+.subtitle {
+  /* Different font for body text - System fonts for optimal readability */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  /* Proper spacing: 8px top */
+  margin-top: var(--space-2);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.errorMessage {
+  /* Different font for body text - System fonts for optimal readability */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  /* Proper padding: 16px - 8px grid alignment */
+  padding: var(--space-4);
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--color-error);
+  border-radius: var(--radius-md);
+  color: var(--color-error);
+  font-size: 14px;
+  /* Proper spacing: 24px bottom */
+  margin-bottom: var(--space-6);
+  line-height: 1.6;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  /* Proper gap: 24px between form groups */
+  gap: var(--space-6);
+  /* Proper spacing: 24px bottom */
+  margin-bottom: var(--space-6);
+}
+
+@media (min-width: 640px) {
+  .form {
+    gap: var(--space-8); /* 32px - proper gap on tablet/desktop */
+    margin-bottom: var(--space-8); /* 32px */
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  /* Proper gap: 8px between label and input */
+  gap: var(--space-2);
+}
+
+.passwordInput {
+  position: relative;
+}
+
+.passwordToggle {
+  position: absolute;
+  /* Proper spacing: 12px from right edge */
+  right: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  /* Proper padding: 8px - 8px grid alignment */
+  padding: var(--space-2);
+  font-size: 18px;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.passwordToggle:hover {
+  color: var(--text-primary);
+}
+
+.ssoSection {
+  /* Proper spacing: 24px top and padding */
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border);
+}
+
+@media (min-width: 640px) {
+  .ssoSection {
+    margin-top: var(--space-8); /* 32px */
+    padding-top: var(--space-8); /* 32px */
+  }
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Proper gap: 12px */
+  gap: var(--space-3);
+  /* Proper spacing: 24px top and padding */
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .footer {
+    gap: var(--space-4); /* 16px - proper gap */
+    margin-top: var(--space-8); /* 32px */
+    padding-top: var(--space-8); /* 32px */
+  }
+}
+
+.footer a,
+.footer button {
+  /* Different font for body text - System fonts for optimal readability */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  line-height: 1.6;
+}
+
+/* Mobile: Compact adjustments */
+@media (max-width: 639px) {
+  .loginContainer {
+    min-height: calc(100vh - 150px);
+    padding: var(--space-6) 0; /* 24px */
+  }
+  
+  .loginCard {
+    padding: var(--space-6); /* 24px */
+  }
+}
+

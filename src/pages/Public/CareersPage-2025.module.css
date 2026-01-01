@@ -1,0 +1,156 @@
+/* Careers Page 2025 - Enhanced to Match Home Page Design System */
+
+.header {
+  text-align: center;
+  /* Proper spacing: 48px bottom mobile, 64px tablet, 80px desktop */
+  margin-bottom: var(--space-12);
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Tablet: Medium spacing */
+@media (min-width: 640px) {
+  .header {
+    margin-bottom: var(--space-16); /* 64px */
+    padding-bottom: var(--space-10); /* 40px */
+  }
+}
+
+/* Desktop: Full spacing */
+@media (min-width: 1024px) {
+  .header {
+    margin-bottom: var(--space-20); /* 80px */
+    padding-bottom: var(--space-12); /* 48px */
+  }
+}
+
+.subtitle {
+  /* Different font for body text - System fonts for optimal readability */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  /* Proper spacing: 16px top */
+  margin-top: var(--space-4);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  /* Proper gap: 48px mobile, 64px tablet, 80px desktop */
+  gap: var(--space-12);
+}
+
+@media (min-width: 640px) {
+  .content {
+    gap: var(--space-16); /* 64px */
+  }
+}
+
+@media (min-width: 1024px) {
+  .content {
+    gap: var(--space-20); /* 80px */
+  }
+}
+
+.section {
+  /* Section spacing handled by content gap */
+}
+
+.positionsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  /* Proper gap: 24px mobile, 24px tablet, 32px desktop */
+  gap: var(--space-6);
+  /* Proper spacing from section title: 24px mobile, 32px tablet, 40px desktop */
+  margin-top: var(--space-6);
+  align-items: stretch;
+}
+
+/* Tablet: 2 columns, Medium spacing */
+@media (min-width: 640px) {
+  .positionsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6); /* 24px - proper gap */
+    margin-top: var(--space-8); /* 32px - proper spacing from title */
+  }
+}
+
+/* Desktop: 3 columns, Full spacing */
+@media (min-width: 1024px) {
+  .positionsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8); /* 32px - proper gap for desktop */
+    margin-top: var(--space-10); /* 40px - proper spacing from title */
+  }
+}
+
+.positionHeader {
+  /* Proper spacing: 16px bottom */
+  margin-bottom: var(--space-4);
+}
+
+.positionMeta {
+  display: flex;
+  align-items: center;
+  /* Proper gap: 8px */
+  gap: var(--space-2);
+  /* Proper spacing: 8px top */
+  margin-top: var(--space-2);
+}
+
+.positionMeta span {
+  /* Different font for body text - System fonts for optimal readability */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+}
+
+.positionDescription {
+  /* Different font for body text - System fonts for optimal readability */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  color: var(--text-secondary);
+  /* Proper spacing: 16px bottom */
+  margin-bottom: var(--space-4);
+  line-height: 1.6;
+}
+
+.ctaSection {
+  /* Proper spacing: 48px top mobile, 64px tablet, 80px desktop */
+  margin-top: var(--space-12);
+}
+
+@media (min-width: 640px) {
+  .ctaSection {
+    margin-top: var(--space-16); /* 64px */
+  }
+}
+
+@media (min-width: 1024px) {
+  .ctaSection {
+    margin-top: var(--space-20); /* 80px */
+  }
+}
+
+.ctaText {
+  /* Different font for body text - System fonts for optimal readability */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  /* Proper spacing: 16px top */
+  margin-top: var(--space-4);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Mobile: Compact adjustments */
+@media (max-width: 639px) {
+  .header {
+    margin-bottom: var(--space-8); /* 32px */
+    padding-bottom: var(--space-6); /* 24px */
+  }
+  
+  .positionsGrid {
+    /* Proper gap: 16px mobile for tighter spacing */
+    gap: var(--space-4);
+  }
+}
+

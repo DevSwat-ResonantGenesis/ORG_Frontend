@@ -1,0 +1,100 @@
+/* ============================================================
+   CARD COMPONENT - Modern Minimal Design
+   Migrated to 2025 Style System
+   ============================================================ */
+
+.card {
+  background-color: transparent !important;
+  border-radius: 0;
+  transition: all var(--transition-base);
+  border: none;
+  box-shadow: none;
+}
+
+/* Variants - HomeNew Style */
+.card-default {
+  background-color: transparent !important;
+  border: none;
+  border-left: 2px solid transparent;
+  box-shadow: none;
+}
+
+.card-elevated {
+  background-color: transparent !important;
+  border: none;
+  border-left: 2px solid transparent;
+  box-shadow: none;
+}
+
+.card-outlined {
+  background-color: transparent !important;
+  border: none;
+  border-left: 2px solid transparent;
+  box-shadow: none;
+}
+
+/* Card hover effect - HomeNew Style */
+.card:hover {
+  border-left-color: var(--color-primary-500);
+  padding-left: calc(var(--space-4) - 2px);
+}
+
+/* Padding Variants */
+.card-padding-none {
+  padding: 0;
+}
+
+.card-padding-sm {
+  padding: var(--space-2);
+}
+
+.card-padding-md {
+  padding: var(--space-3);
+}
+
+.card-padding-lg {
+  padding: var(--space-4);
+}
+
+/* Card Sections */
+.card-header {
+  padding-bottom: var(--space-2);
+  border-bottom: none !important;
+  margin-bottom: var(--space-3);
+}
+
+.card-header:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.card-body {
+  /* Body content */
+}
+
+.card-footer {
+  padding-top: var(--space-2);
+  border-top: none !important;
+  margin-top: var(--space-3);
+}
+
+.card-footer:first-child {
+  margin-top: 0;
+  border-top: none;
+  padding-top: 0;
+}
+
+/* ============================================================
+   DARK MODE ADJUSTMENTS
+   ============================================================ */
+
+html[data-theme="dark"] .card {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+html[data-theme="dark"] .card-header,
+html[data-theme="dark"] .card-footer {
+  border: none !important;
+}

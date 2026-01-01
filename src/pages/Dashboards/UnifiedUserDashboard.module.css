@@ -1,0 +1,738 @@
+/* User Dashboard - Clean & Modern */
+
+.dashboard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0f 0%, #0f0a1a 50%, #0a0a0f 100%);
+  color: #f1f5f9;
+  padding: 32px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Loading State */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 16px;
+  color: #94a3b8;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255,255,255,0.1);
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Page Header */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.headerLeft h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px 0;
+}
+
+.headerLeft p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.headerRight {
+  display: flex;
+  gap: 12px;
+}
+
+/* Plan Section */
+.planSection {
+  margin-bottom: 32px;
+}
+
+.planCard {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.planHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.planBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(99,102,241,0.2);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #a5b4fc;
+}
+
+.upgradeBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.upgradeBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+}
+
+.upgradeBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.creditsDisplay {
+  text-align: center;
+}
+
+.creditsMain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.creditsValue {
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+.creditsLabel {
+  font-size: 14px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.creditsBar {
+  height: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.creditsBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+.creditsSubtext {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* Stats Section */
+.statsSection {
+  margin-bottom: 32px;
+}
+
+.statsSection h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 16px 0;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+}
+
+.statCard svg {
+  color: #6366f1;
+  flex-shrink: 0;
+}
+
+.statInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.statLabel {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* Features Section */
+.featuresSection {
+  margin-bottom: 32px;
+}
+
+.featuresSection h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 16px 0;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.featureCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.featureCard:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.featureIcon {
+  width: 56px;
+  height: 56px;
+  background: rgba(99,102,241,0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6366f1;
+  flex-shrink: 0;
+}
+
+.featureInfo {
+  flex: 1;
+}
+
+.featureInfo h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 4px 0;
+}
+
+.featureInfo p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.featureCard > svg:last-child {
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+/* Recent Section */
+.recentSection {
+  margin-bottom: 32px;
+}
+
+.recentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.recentHeader h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.viewAllBtn {
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #94a3b8;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.viewAllBtn:hover {
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  background: rgba(255,255,255,0.02);
+  border: 1px dashed rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: #64748b;
+  gap: 12px;
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.conversationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.conversationItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.conversationItem:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.conversationItem > svg:first-child {
+  color: #6366f1;
+  flex-shrink: 0;
+}
+
+.convInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.convTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.convDate {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.conversationItem > svg:last-child {
+  color: #64748b;
+}
+
+/* Upgrade CTA */
+.upgradeCta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1));
+  border: 1px solid rgba(99,102,241,0.3);
+  border-radius: 16px;
+  margin-top: 32px;
+}
+
+.upgradeContent {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.upgradeContent svg {
+  color: #fbbf24;
+}
+
+.upgradeContent h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 4px 0;
+}
+
+.upgradeContent p {
+  font-size: 14px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* Credit Purchase Section */
+.creditPurchaseSection {
+  margin-bottom: 32px;
+}
+
+.creditPurchaseCard {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.creditPurchaseHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.creditPurchaseHeader h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.creditPurchaseHeader svg {
+  color: #6366f1;
+}
+
+/* Upgrade Prompt for Developer Plan */
+.upgradePrompt {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1));
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 12px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.upgradePromptContent {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.crownIcon {
+  color: #fbbf24;
+}
+
+.upgradePromptTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 4px 0;
+}
+
+.upgradePromptDesc {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.upgradePromptBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.upgradePromptBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99,102,241,0.4);
+}
+
+.upgradePromptBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Credit Packs for Plus Plan */
+.creditPacks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.creditPack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.creditPack:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: #6366f1;
+  transform: translateY(-2px);
+}
+
+.creditPack:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.creditPackAmount {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+.creditPackLabel {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.creditPackPrice {
+  font-size: 20px;
+  font-weight: 600;
+  color: #10b981;
+  margin-top: 12px;
+}
+
+.creditPackBadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+/* Plus Subscription Bar */
+.subscriptionBar {
+  margin-bottom: 32px;
+}
+
+.subscriptionBarContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15));
+  border: 2px solid rgba(99,102,241,0.4);
+  border-radius: 16px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.subscriptionBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.subscriptionBarIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-radius: 12px;
+  color: #fff;
+}
+
+.subscriptionBarText h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 4px 0;
+}
+
+.subscriptionBarText p {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.subscriptionBarRight {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.subscriptionBarPrice {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.priceAmount {
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.pricePeriod {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.subscriptionBarBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.subscriptionBarBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99,102,241,0.5);
+}
+
+.subscriptionBarBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 16px;
+  }
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  .featuresGrid {
+    grid-template-columns: 1fr;
+  }
+  .upgradeCta {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  .upgradeContent {
+    flex-direction: column;
+  }
+  .creditPacks {
+    grid-template-columns: 1fr;
+  }
+  .upgradePrompt {
+    flex-direction: column;
+    text-align: center;
+  }
+  .upgradePromptContent {
+    flex-direction: column;
+  }
+  .subscriptionBarContent {
+    flex-direction: column;
+    text-align: center;
+  }
+  .subscriptionBarLeft {
+    flex-direction: column;
+  }
+  .subscriptionBarRight {
+    flex-direction: column;
+    width: 100%;
+  }
+  .subscriptionBarBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}

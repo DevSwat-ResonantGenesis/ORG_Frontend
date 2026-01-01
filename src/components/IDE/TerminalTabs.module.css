@@ -1,0 +1,281 @@
+/* ============================================================
+   TERMINAL - Two-Tone Design with Blue Accents
+   ============================================================ */
+.terminalContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #0a0a0a;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.tabsBar {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0a0a0a;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-shrink: 0;
+  height: 32px;
+  min-height: 32px;
+  padding: 0 8px;
+  gap: 2px;
+}
+
+.tabsBar::-webkit-scrollbar {
+  height: 2px;
+}
+
+.tabsBar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tabsBar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1px;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  cursor: pointer;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  font-weight: 500;
+  border: none;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  min-width: 90px;
+  height: 28px;
+  position: relative;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.tab.activeTab {
+  background: #0a0a0a;
+  color: rgba(255, 255, 255, 0.95);
+  border-bottom: none;
+}
+
+.tabName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.closeTabButton {
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+  flex-shrink: 0;
+  opacity: 0;
+}
+
+.tab:hover .closeTabButton {
+  opacity: 1;
+}
+
+.closeTabButton svg {
+  width: 8px;
+  height: 8px;
+}
+
+.closeTabButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.addTabButton {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+  flex-shrink: 0;
+  margin-left: 4px;
+  border-radius: 4px;
+}
+
+.addTabButton:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.terminalContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+  background: #0a0a0a;
+}
+
+.terminalOutput {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px 16px;
+  min-height: 0;
+  background: #0a0a0a;
+}
+
+.terminalOutput::-webkit-scrollbar {
+  width: 4px;
+}
+
+.terminalOutput::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.terminalOutput::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.3);
+  border-radius: 2px;
+}
+
+.terminalOutput::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.5);
+}
+
+.outputText {
+  margin: 0;
+  font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Terminal Input Area */
+.terminalInput {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.prompt {
+  color: #3b82f6;
+  font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* Command Input */
+.commandInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.95);
+  font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+  font-size: 12px;
+  outline: none;
+  line-height: 1.5;
+  cursor: text;
+  padding: 0;
+  margin: 0;
+  caret-color: #3b82f6;
+}
+
+.commandInput:focus {
+  outline: none;
+}
+
+.commandInput::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* Light theme uses global CSS variables automatically via data-theme attribute */
+[data-theme='light'] .terminalContainer {
+  background: var(--ide-bg-primary);
+  border-top-color: var(--ide-border);
+}
+
+[data-theme='light'] .tabsBar {
+  background: var(--ide-bg-tertiary);
+  border-bottom-color: var(--ide-border);
+}
+
+[data-theme='light'] .tab {
+  background: transparent;
+  color: var(--ide-text-secondary);
+}
+
+[data-theme='light'] .tab:hover {
+  background: var(--ide-bg-primary);
+  color: var(--ide-text-primary);
+}
+
+[data-theme='light'] .tab.activeTab {
+  background: transparent;
+  color: var(--ide-text-primary);
+  border-bottom-color: var(--ide-accent-500); /* Match Resonant Chat primary */
+}
+
+[data-theme='light'] .addTabButton {
+  background: transparent;
+  color: var(--ide-text-secondary);
+}
+
+[data-theme='light'] .addTabButton:hover {
+  background: var(--ide-bg-primary);
+  color: var(--ide-text-primary);
+}
+
+[data-theme='light'] .outputText {
+  color: var(--ide-text-primary);
+}
+
+[data-theme='light'] .terminalInput {
+  background: transparent;
+  border-top: none;
+}
+
+[data-theme='light'] .commandInput {
+  color: var(--ide-text-primary);
+  background: transparent;
+}
+
+[data-theme='light'] .commandInput:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+[data-theme='light'] .commandInput::placeholder {
+  color: var(--ide-text-tertiary);
+  opacity: 0.5;
+}
+

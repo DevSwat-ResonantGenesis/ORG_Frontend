@@ -1,0 +1,73 @@
+/* Predictions Page Rebuilt - Using Unified Design System */
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.loading {
+  text-align: center;
+  padding: var(--space-lg, 32px);
+  color: var(--color-text-secondary, #6B7280);
+}
+
+[data-theme='dark'] .loading {
+  color: var(--color-text-secondary, #9CA3AF);
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--space-sm, 12px);
+  flex-wrap: wrap;
+}
+
+.flowDescription {
+  color: var(--color-text-secondary, #6B7280);
+  margin-bottom: var(--space-md, 20px);
+  font-size: var(--font-sm);
+}
+
+[data-theme='dark'] .flowDescription {
+  color: var(--color-text-secondary, #9CA3AF);
+}
+
+.resultsInfo {
+  color: var(--color-text-secondary, #6B7280);
+  margin-bottom: var(--space-md, 20px);
+  font-size: var(--font-sm);
+}
+
+[data-theme='dark'] .resultsInfo {
+  color: var(--color-text-secondary, #9CA3AF);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md, 20px);
+  margin-top: var(--space-lg, 32px);
+  padding: var(--space-md, 20px);
+}
+
+.pageInfo {
+  color: var(--color-text-secondary, #6B7280);
+  font-size: var(--font-sm);
+  min-width: 120px;
+  text-align: center;
+}
+
+[data-theme='dark'] .pageInfo {
+  color: var(--color-text-secondary, #9CA3AF);
+}
+
+@media (max-width: 768px) {
+  .headerActions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .headerActions button {
+    width: 100%;
+  }
+}
+

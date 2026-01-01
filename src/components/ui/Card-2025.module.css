@@ -1,0 +1,66 @@
+/* ============================================================
+   CARD COMPONENT 2025
+   Modern, Minimal, Clean
+   ============================================================ */
+
+.card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  border-color: var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+/* ============================================================
+   VARIANTS
+   ============================================================ */
+
+.cardElevated {
+  box-shadow: var(--shadow-sm);
+}
+
+.cardElevated:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.cardInteractive {
+  cursor: pointer;
+}
+
+.cardInteractive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ============================================================
+   SIZES
+   ============================================================ */
+
+.cardCompact {
+  padding: var(--space-4);
+}
+
+.cardSpacious {
+  padding: var(--space-8);
+}
+
+/* ============================================================
+   MOBILE OPTIMIZATION
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .card {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+  }
+  
+  .cardSpacious {
+    padding: var(--space-6);
+  }
+}
+

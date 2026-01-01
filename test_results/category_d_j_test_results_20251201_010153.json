@@ -1,0 +1,1889 @@
+{
+  "timestamp": "2025-12-01T01:01:53.373180",
+  "base_url": "http://localhost:8001",
+  "summary": {
+    "total": 71,
+    "passed": 36,
+    "failed": 35,
+    "errors": 0,
+    "skipped": 29
+  },
+  "results": [
+    {
+      "test_name": "D.1 - GET /rag/conversations",
+      "method": "GET",
+      "endpoint": "/rag/conversations",
+      "request_data": null,
+      "status_code": 200,
+      "response_body": "[]",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "2",
+        "content-type": "application/json",
+        "x-request-duration-ms": "81.23",
+        "x-response-time": "0.094",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9955",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": []
+    },
+    {
+      "test_name": "D.2 - GET /rag/conversations?limit=10",
+      "method": "GET",
+      "endpoint": "/rag/conversations?limit=10",
+      "request_data": null,
+      "status_code": 200,
+      "response_body": "[]",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "2",
+        "content-type": "application/json",
+        "x-request-duration-ms": "8.81",
+        "x-response-time": "0.013",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9954",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": []
+    },
+    {
+      "test_name": "D.3 - GET /rag/conversations (empty DB)",
+      "method": "GET",
+      "endpoint": "/rag/conversations",
+      "request_data": null,
+      "status_code": 200,
+      "response_body": "[]",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "2",
+        "content-type": "application/json",
+        "x-request-duration-ms": "5.67",
+        "x-response-time": "0.007",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9953",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": []
+    },
+    {
+      "test_name": "D.4 - GET /rag/conversations/{id} (valid)",
+      "status": "SKIPPED"
+    },
+    {
+      "test_name": "D.5 - GET /rag/conversations/99999999-9999-9999-9999-999999999999 (404)",
+      "method": "GET",
+      "endpoint": "/rag/conversations/99999999-9999-9999-9999-999999999999",
+      "request_data": null,
+      "status_code": 500,
+      "response_body": "Internal Server Error",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "21",
+        "content-type": "text/plain; charset=utf-8"
+      },
+      "cookies": {},
+      "response_json": null
+    },
+    {
+      "test_name": "D.6 - GET /rag/conversations (multiple sessions)",
+      "method": "GET",
+      "endpoint": "/rag/conversations?limit=20",
+      "request_data": null,
+      "status_code": 200,
+      "response_body": "[]",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "2",
+        "content-type": "application/json",
+        "x-request-duration-ms": "6.64",
+        "x-response-time": "0.009",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9950",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": []
+    },
+    {
+      "test_name": "E.1.1 - POST /code/execute (Python)",
+      "method": "POST",
+      "endpoint": "/code/execute",
+      "request_data": {
+        "code": "print('Hello, World!')",
+        "language": "python"
+      },
+      "status_code": 503,
+      "response_body": "{\"detail\":\"Code execution is not available. Docker is required.\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "65",
+        "content-type": "application/json",
+        "x-request-duration-ms": "13.19",
+        "x-response-time": "0.017",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9949",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Code execution is not available. Docker is required."
+      }
+    },
+    {
+      "test_name": "E.1.2 - POST /code/execute (TypeScript)",
+      "method": "POST",
+      "endpoint": "/code/execute",
+      "request_data": {
+        "code": "console.log('Hello, World!');",
+        "language": "typescript"
+      },
+      "status_code": 503,
+      "response_body": "{\"detail\":\"Code execution is not available. Docker is required.\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "65",
+        "content-type": "application/json",
+        "x-request-duration-ms": "4.27",
+        "x-response-time": "0.005",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9948",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Code execution is not available. Docker is required."
+      }
+    },
+    {
+      "test_name": "E.1.3 - POST /code/execute (error)",
+      "method": "POST",
+      "endpoint": "/code/execute",
+      "request_data": {
+        "code": "raise ValueError('Test error')",
+        "language": "python"
+      },
+      "status_code": 503,
+      "response_body": "{\"detail\":\"Code execution is not available. Docker is required.\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "65",
+        "content-type": "application/json",
+        "x-request-duration-ms": "3.43",
+        "x-response-time": "0.004",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9947",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Code execution is not available. Docker is required."
+      }
+    },
+    {
+      "test_name": "E.1.4 - POST /code/execute (timeout)",
+      "method": "POST",
+      "endpoint": "/code/execute",
+      "request_data": {
+        "code": "import time; time.sleep(10)",
+        "language": "python"
+      },
+      "status_code": 503,
+      "response_body": "{\"detail\":\"Code execution is not available. Docker is required.\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "65",
+        "content-type": "application/json",
+        "x-request-duration-ms": "6.07",
+        "x-response-time": "0.008",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9946",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Code execution is not available. Docker is required."
+      }
+    },
+    {
+      "test_name": "E.1.5 - POST /code/execute (infinite loop)",
+      "status": "SKIPPED"
+    },
+    {
+      "test_name": "E.1.6 - POST /code/execute (large input)",
+      "method": "POST",
+      "endpoint": "/code/execute",
+      "request_data": {
+        "code": "print('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\nprint('test')\n",
+        "language": "python"
+      },
+      "status_code": 503,
+      "response_body": "{\"detail\":\"Code execution is not available. Docker is required.\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "65",
+        "content-type": "application/json",
+        "x-request-duration-ms": "7.63",
+        "x-response-time": "0.008",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9945",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Code execution is not available. Docker is required."
+      }
+    },
+    {
+      "test_name": "E.1.7 - POST /code/execute (unsafe code)",
+      "method": "POST",
+      "endpoint": "/code/execute",
+      "request_data": {
+        "code": "import os; os.system('rm -rf /')",
+        "language": "python"
+      },
+      "status_code": 503,
+      "response_body": "{\"detail\":\"Code execution is not available. Docker is required.\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "65",
+        "content-type": "application/json",
+        "x-request-duration-ms": "4.18",
+        "x-response-time": "0.006",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9944",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Code execution is not available. Docker is required."
+      }
+    },
+    {
+      "test_name": "E.2.1 - POST /code/generate-tests (valid)",
+      "method": "POST",
+      "endpoint": "/code/generate-tests",
+      "request_data": {
+        "code": "def add(a, b): return a + b",
+        "language": "python"
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "6.58",
+        "x-response-time": "0.008",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9943",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "E.2.2 - POST /code/generate-tests (invalid)",
+      "method": "POST",
+      "endpoint": "/code/generate-tests",
+      "request_data": {
+        "invalid": "data"
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "1.18",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9942",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "E.2.3 - POST /code/generate-tests (huge input)",
+      "method": "POST",
+      "endpoint": "/code/generate-tests",
+      "request_data": {
+        "code": "def test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\ndef test():\n    pass\n",
+        "language": "python"
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.67",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9941",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "E.2.4 - POST /code/generate-tests (missing fields)",
+      "method": "POST",
+      "endpoint": "/code/generate-tests",
+      "request_data": {},
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.74",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9940",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "E.3.1 - POST /code/lint (valid)",
+      "method": "POST",
+      "endpoint": "/code/lint",
+      "request_data": {
+        "code": "def test(): return 42",
+        "language": "python"
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.94",
+        "x-response-time": "0.003",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9939",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "E.3.2 - POST /code/lint (invalid syntax)",
+      "method": "POST",
+      "endpoint": "/code/lint",
+      "request_data": {
+        "code": "def test( return 42",
+        "language": "python"
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.7",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9938",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "E.3.3 - POST /code/lint (large file)",
+      "method": "POST",
+      "endpoint": "/code/lint",
+      "request_data": {
+        "code": "def func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\ndef func():\n    pass\n",
+        "language": "python"
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.71",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9937",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "E.3.4 - POST /code/lint (unicode)",
+      "method": "POST",
+      "endpoint": "/code/lint",
+      "request_data": {
+        "code": "def test(): return '\u6d4b\u8bd5 \u65e5\u672c\u8a9e'",
+        "language": "python"
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.72",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9936",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "F.1 - POST /resonant-chat/send",
+      "method": "POST",
+      "endpoint": "/resonant-chat/message",
+      "request_data": {
+        "message": "Hello, this is a test message",
+        "chatId": "test-chat-1"
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "1.63",
+        "x-response-time": "0.006",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9935",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "F.2 - POST /resonant-chat/message (missing message)",
+      "method": "POST",
+      "endpoint": "/resonant-chat/message",
+      "request_data": {
+        "chatId": "test-chat-1"
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.8",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9934",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "F.3 - POST /resonant-chat/message (missing provider)",
+      "method": "POST",
+      "endpoint": "/resonant-chat/message",
+      "request_data": {
+        "message": "Test",
+        "chatId": "test-chat-1"
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.71",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9933",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "F.4 - GET /resonant-chat/history",
+      "method": "GET",
+      "endpoint": "/resonant-chat/history",
+      "request_data": null,
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "1.69",
+        "x-response-time": "0.003",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9932",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "F.5 - GET /resonant-chat/history (empty)",
+      "method": "GET",
+      "endpoint": "/resonant-chat/history?chatId=new-chat-999",
+      "request_data": null,
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.7",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9931",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "F.6 - GET /resonant-chat/anchors",
+      "method": "GET",
+      "endpoint": "/resonant-chat/anchors",
+      "request_data": null,
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.67",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9930",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "F.7 - GET /resonant-chat/chats",
+      "method": "GET",
+      "endpoint": "/resonant-chat/chats",
+      "request_data": null,
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.99",
+        "x-response-time": "0.003",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9929",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "F.8 - POST /resonant-chat/create",
+      "method": "POST",
+      "endpoint": "/resonant-chat/create",
+      "request_data": {},
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.73",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9928",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "F.9 - GET /resonant-chat/history (wrong chat ID)",
+      "method": "GET",
+      "endpoint": "/resonant-chat/history?chatId=invalid-chat-id-999",
+      "request_data": null,
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.71",
+        "x-response-time": "0.004",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9927",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "F.10 - POST /resonant-chat/message (huge context)",
+      "method": "POST",
+      "endpoint": "/resonant-chat/message",
+      "request_data": {
+        "message": "Test",
+        "chatId": "test-chat-1",
+        "context": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.85",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9926",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "F.11 - POST /resonant-chat/message (unicode)",
+      "method": "POST",
+      "endpoint": "/resonant-chat/message",
+      "request_data": {
+        "message": "\u6d4b\u8bd5 \u65e5\u672c\u8a9e \ud55c\uad6d\uc5b4",
+        "chatId": "test-chat-1"
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.72",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9925",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "F.12 - POST /resonant-chat/message (provider switch)",
+      "method": "POST",
+      "endpoint": "/resonant-chat/message",
+      "request_data": {
+        "message": "Test with different provider",
+        "chatId": "test-chat-1",
+        "preferred_provider": "openai"
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "2.55",
+        "x-response-time": "0.006",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9924",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "G.1.1 - Create memory",
+      "method": "POST",
+      "endpoint": "/rag/memories",
+      "request_data": {
+        "content": "Test memory for anchor integration",
+        "metadata": {}
+      },
+      "status_code": 201,
+      "response_body": "{\"id\":\"76a62ca6-66c7-435b-8623-254e7493aedf\",\"content\":\"Test memory for anchor integration\",\"hash\":\"ff9ae3c52583b40ee6b533562b8bed2783a7ab2a\",\"xyz\":[0.8463161060035305,0.012353673284187624,-0.5325377315039833],\"cluster\":\"gamma\",\"metadata\":{},\"created_at\":\"2025-12-01T09:01:39.838590+00:00\",\"is_shared\":false,\"shared_with\":null,\"is_public\":false}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "345",
+        "content-type": "application/json",
+        "x-request-duration-ms": "41.59",
+        "x-response-time": "0.043",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9923",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "id": "76a62ca6-66c7-435b-8623-254e7493aedf",
+        "content": "Test memory for anchor integration",
+        "hash": "ff9ae3c52583b40ee6b533562b8bed2783a7ab2a",
+        "xyz": [
+          0.8463161060035305,
+          0.012353673284187624,
+          -0.5325377315039833
+        ],
+        "cluster": "gamma",
+        "metadata": {},
+        "created_at": "2025-12-01T09:01:39.838590+00:00",
+        "is_shared": false,
+        "shared_with": null,
+        "is_public": false
+      }
+    },
+    {
+      "test_name": "G.1.2-4 - Anchor operations",
+      "status": "SKIPPED",
+      "reason": "Requires anchor creation endpoint"
+    },
+    {
+      "test_name": "G.2.1 - Create memory from hash",
+      "method": "POST",
+      "endpoint": "/rag/memories",
+      "request_data": {
+        "content": "Text to be hashed and stored",
+        "metadata": {}
+      },
+      "status_code": 201,
+      "response_body": "{\"id\":\"3f1d87dd-5513-46f8-a2b8-233fec7627ba\",\"content\":\"Text to be hashed and stored\",\"hash\":\"8082c9604943eab4a8b7a1eed04e438a804c365a\",\"xyz\":[0.00399129106020224,-0.3235751445211431,-0.5542552465615713],\"cluster\":\"gamma\",\"metadata\":{},\"created_at\":\"2025-12-01T09:01:39.871779+00:00\",\"is_shared\":false,\"shared_with\":null,\"is_public\":false}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "339",
+        "content-type": "application/json",
+        "x-request-duration-ms": "13.35",
+        "x-response-time": "0.015",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9922",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "id": "3f1d87dd-5513-46f8-a2b8-233fec7627ba",
+        "content": "Text to be hashed and stored",
+        "hash": "8082c9604943eab4a8b7a1eed04e438a804c365a",
+        "xyz": [
+          0.00399129106020224,
+          -0.3235751445211431,
+          -0.5542552465615713
+        ],
+        "cluster": "gamma",
+        "metadata": {},
+        "created_at": "2025-12-01T09:01:39.871779+00:00",
+        "is_shared": false,
+        "shared_with": null,
+        "is_public": false
+      }
+    },
+    {
+      "test_name": "G.2.2 - Hash Sphere operation",
+      "status": "SKIPPED",
+      "reason": "Complex integration test"
+    },
+    {
+      "test_name": "G.2.3 - Hash Sphere operation",
+      "status": "SKIPPED",
+      "reason": "Complex integration test"
+    },
+    {
+      "test_name": "G.2.4 - Hash Sphere operation",
+      "status": "SKIPPED",
+      "reason": "Complex integration test"
+    },
+    {
+      "test_name": "G.2.5 - Hash Sphere operation",
+      "status": "SKIPPED",
+      "reason": "Complex integration test"
+    },
+    {
+      "test_name": "G.3.1 - Send chat message",
+      "method": "POST",
+      "endpoint": "/resonant-chat/message",
+      "request_data": {
+        "message": "This should be stored as memory",
+        "chatId": "integration-test"
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.78",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9921",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "G.3.2 - Chat-Memory integration",
+      "status": "SKIPPED",
+      "reason": "Complex integration test"
+    },
+    {
+      "test_name": "G.3.3 - Chat-Memory integration",
+      "status": "SKIPPED",
+      "reason": "Complex integration test"
+    },
+    {
+      "test_name": "G.3.4 - Chat-Memory integration",
+      "status": "SKIPPED",
+      "reason": "Complex integration test"
+    },
+    {
+      "test_name": "G.3.5 - Chat-Memory integration",
+      "status": "SKIPPED",
+      "reason": "Complex integration test"
+    },
+    {
+      "test_name": "G.4.1 - Code-Chat integration",
+      "status": "SKIPPED",
+      "reason": "Complex integration test"
+    },
+    {
+      "test_name": "G.4.2 - Code-Chat integration",
+      "status": "SKIPPED",
+      "reason": "Complex integration test"
+    },
+    {
+      "test_name": "G.4.3 - Code-Chat integration",
+      "status": "SKIPPED",
+      "reason": "Complex integration test"
+    },
+    {
+      "test_name": "G.4.4 - Code-Chat integration",
+      "status": "SKIPPED",
+      "reason": "Complex integration test"
+    },
+    {
+      "test_name": "G.4.5 - Code-Chat integration",
+      "status": "SKIPPED",
+      "reason": "Complex integration test"
+    },
+    {
+      "test_name": "H.1 - GET /rag/export/memories",
+      "method": "GET",
+      "endpoint": "/rag/export/memories?format=json",
+      "request_data": null,
+      "status_code": 500,
+      "response_body": "Internal Server Error",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "21",
+        "content-type": "text/plain; charset=utf-8"
+      },
+      "cookies": {},
+      "response_json": null
+    },
+    {
+      "test_name": "H.2 - GET /hash-sphere/export/anchors",
+      "method": "GET",
+      "endpoint": "/hash-sphere/export/anchors",
+      "request_data": null,
+      "status_code": 500,
+      "response_body": "Internal Server Error",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "21",
+        "content-type": "text/plain; charset=utf-8"
+      },
+      "cookies": {},
+      "response_json": null
+    },
+    {
+      "test_name": "H.3 - GET /hash-sphere/export",
+      "method": "GET",
+      "endpoint": "/hash-sphere/export",
+      "request_data": null,
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "1.06",
+        "x-response-time": "0.004",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9918",
+        "x-ratelimit-reset": "1764579759"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "H.4 - POST /rag/import/memories",
+      "method": "POST",
+      "endpoint": "/rag/import/memories",
+      "request_data": {
+        "memories": [
+          {
+            "content": "Imported memory 1",
+            "metadata": {}
+          },
+          {
+            "content": "Imported memory 2",
+            "metadata": {}
+          }
+        ],
+        "overwrite": false
+      },
+      "status_code": 500,
+      "response_body": "Internal Server Error",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "21",
+        "content-type": "text/plain; charset=utf-8"
+      },
+      "cookies": {},
+      "response_json": null
+    },
+    {
+      "test_name": "H.5 - POST /hash-sphere/import/anchors",
+      "method": "POST",
+      "endpoint": "/hash-sphere/import/anchors",
+      "request_data": {
+        "anchors": []
+      },
+      "status_code": 404,
+      "response_body": "{\"detail\":\"Not Found\"}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "22",
+        "content-type": "application/json",
+        "x-request-duration-ms": "0.73",
+        "x-response-time": "0.002",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9916",
+        "x-ratelimit-reset": "1764579760"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": "Not Found"
+      }
+    },
+    {
+      "test_name": "H.6 - POST /rag/import/memories (invalid)",
+      "method": "POST",
+      "endpoint": "/rag/import/memories",
+      "request_data": {
+        "invalid": "data"
+      },
+      "status_code": 422,
+      "response_body": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\",\"memories\"],\"msg\":\"Field required\",\"input\":{\"invalid\":\"data\"},\"url\":\"https://errors.pydantic.dev/2.5/v/missing\"}]}",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "157",
+        "content-type": "application/json",
+        "x-request-duration-ms": "9.1",
+        "x-response-time": "0.010",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9915",
+        "x-ratelimit-reset": "1764579760"
+      },
+      "cookies": {},
+      "response_json": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "memories"
+            ],
+            "msg": "Field required",
+            "input": {
+              "invalid": "data"
+            },
+            "url": "https://errors.pydantic.dev/2.5/v/missing"
+          }
+        ]
+      }
+    },
+    {
+      "test_name": "H.7 - POST /rag/import/memories (large)",
+      "method": "POST",
+      "endpoint": "/rag/import/memories",
+      "request_data": {
+        "memories": [
+          {
+            "content": "Memory 0",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 1",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 2",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 3",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 4",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 5",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 6",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 7",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 8",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 9",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 10",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 11",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 12",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 13",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 14",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 15",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 16",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 17",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 18",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 19",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 20",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 21",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 22",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 23",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 24",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 25",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 26",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 27",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 28",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 29",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 30",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 31",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 32",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 33",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 34",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 35",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 36",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 37",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 38",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 39",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 40",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 41",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 42",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 43",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 44",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 45",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 46",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 47",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 48",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 49",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 50",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 51",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 52",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 53",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 54",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 55",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 56",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 57",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 58",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 59",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 60",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 61",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 62",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 63",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 64",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 65",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 66",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 67",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 68",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 69",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 70",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 71",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 72",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 73",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 74",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 75",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 76",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 77",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 78",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 79",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 80",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 81",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 82",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 83",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 84",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 85",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 86",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 87",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 88",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 89",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 90",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 91",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 92",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 93",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 94",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 95",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 96",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 97",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 98",
+            "metadata": {}
+          },
+          {
+            "content": "Memory 99",
+            "metadata": {}
+          }
+        ],
+        "overwrite": false
+      },
+      "status_code": 500,
+      "response_body": "Internal Server Error",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "21",
+        "content-type": "text/plain; charset=utf-8"
+      },
+      "cookies": {},
+      "response_json": null
+    },
+    {
+      "test_name": "H.8 - POST /rag/import/memories (conflict)",
+      "method": "POST",
+      "endpoint": "/rag/import/memories",
+      "request_data": {
+        "memories": [
+          {
+            "id": "test-id-123",
+            "content": "Duplicate",
+            "metadata": {}
+          }
+        ],
+        "overwrite": false
+      },
+      "status_code": 200,
+      "response_body": "{\"total\":1,\"imported_count\":0,\"skipped_count\":0,\"error_count\":1,\"results\":{\"imported\":[],\"skipped\":[],\"errors\":[{\"memory\":{\"id\":\"test-id-123\",\"content\":\"Duplicate\",\"metadata\":{}},\"error\":\"(builtins.ValueError) badly formed hexadecimal UUID string\\n[SQL: SELECT user_memories.created_at AS user_memories_created_at, user_memories.updated_at AS user_memories_updated_at, user_memories.org_id AS user_memories_org_id, user_memories.is_global AS user_memories_is_global, user_memories.id AS user_memories",
+      "headers": {
+        "date": "Mon, 01 Dec 2025 09:01:39 GMT",
+        "server": "uvicorn",
+        "content-length": "941",
+        "content-type": "application/json",
+        "x-request-duration-ms": "3.73",
+        "x-response-time": "0.004",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "1; mode=block",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "permissions-policy": "geolocation=(), microphone=(), camera=()",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'self';",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9912",
+        "x-ratelimit-reset": "1764579760"
+      },
+      "cookies": {},
+      "response_json": {
+        "total": 1,
+        "imported_count": 0,
+        "skipped_count": 0,
+        "error_count": 1,
+        "results": {
+          "imported": [],
+          "skipped": [],
+          "errors": [
+            {
+              "memory": {
+                "id": "test-id-123",
+                "content": "Duplicate",
+                "metadata": {}
+              },
+              "error": "(builtins.ValueError) badly formed hexadecimal UUID string\n[SQL: SELECT user_memories.created_at AS user_memories_created_at, user_memories.updated_at AS user_memories_updated_at, user_memories.org_id AS user_memories_org_id, user_memories.is_global AS user_memories_is_global, user_memories.id AS user_memories_id, user_memories.user_id AS user_memories_user_id, user_memories.content AS user_memories_content, user_memories.embedding AS user_memories_embedding, user_memories.hash AS user_memories_hash, user_memories.xyz AS user_memories_xyz, user_memories.cluster AS user_memories_cluster, user_memories.metadata AS user_memories_metadata \nFROM user_memories \nWHERE user_memories.id = %(pk_1)s::UUID]\n[parameters: [{'pk_1': 'test-id-123'}]]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "test_name": "I.1 - Real-time test 1",
+      "status": "SKIPPED",
+      "reason": "Requires WebSocket/SSE client implementation"
+    },
+    {
+      "test_name": "I.2 - Real-time test 2",
+      "status": "SKIPPED",
+      "reason": "Requires WebSocket/SSE client implementation"
+    },
+    {
+      "test_name": "I.3 - Real-time test 3",
+      "status": "SKIPPED",
+      "reason": "Requires WebSocket/SSE client implementation"
+    },
+    {
+      "test_name": "I.4 - Real-time test 4",
+      "status": "SKIPPED",
+      "reason": "Requires WebSocket/SSE client implementation"
+    },
+    {
+      "test_name": "I.5 - Real-time test 5",
+      "status": "SKIPPED",
+      "reason": "Requires WebSocket/SSE client implementation"
+    },
+    {
+      "test_name": "I.6 - Real-time test 6",
+      "status": "SKIPPED",
+      "reason": "Requires WebSocket/SSE client implementation"
+    },
+    {
+      "test_name": "I.7 - Real-time test 7",
+      "status": "SKIPPED",
+      "reason": "Requires WebSocket/SSE client implementation"
+    },
+    {
+      "test_name": "I.8 - Real-time test 8",
+      "status": "SKIPPED",
+      "reason": "Requires WebSocket/SSE client implementation"
+    },
+    {
+      "test_name": "J.1 - Exceed rate limit",
+      "status": "SKIPPED",
+      "reason": "Rate limit not hit"
+    },
+    {
+      "test_name": "J.2 - Rate limiting test",
+      "status": "SKIPPED",
+      "reason": "Requires time-based testing"
+    },
+    {
+      "test_name": "J.3 - Rate limiting test",
+      "status": "SKIPPED",
+      "reason": "Requires time-based testing"
+    },
+    {
+      "test_name": "J.4 - Rate limiting test",
+      "status": "SKIPPED",
+      "reason": "Requires time-based testing"
+    },
+    {
+      "test_name": "J.5 - Rate limiting test",
+      "status": "SKIPPED",
+      "reason": "Requires time-based testing"
+    }
+  ]
+}

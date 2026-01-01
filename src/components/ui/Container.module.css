@@ -1,0 +1,49 @@
+/* Container Component - Modern Minimal 2025 UI/UX */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  box-sizing: border-box;
+}
+
+.containerNarrow {
+  max-width: 800px;
+  padding: 0 24px;
+}
+
+.containerWide {
+  max-width: 1400px;
+  padding: 0 40px;
+}
+
+.containerFull {
+  max-width: 100%;
+  padding: 0 40px;
+}
+
+@media (max-width: 1024px) {
+  .container,
+  .containerWide,
+  .containerFull {
+    padding: 0 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container,
+  .containerNarrow,
+  .containerWide,
+  .containerFull {
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container,
+  .containerNarrow,
+  .containerWide,
+  .containerFull {
+    padding: 0 16px;
+  }
+}

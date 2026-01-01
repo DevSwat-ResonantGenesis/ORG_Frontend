@@ -1,0 +1,94 @@
+/* Provider Icons - Animated, visible in dark and light mode */
+
+.provider-icon {
+  display: inline-block;
+  vertical-align: middle;
+  color: currentColor;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.provider-icon .icon-path {
+  stroke: currentColor;
+  transition: all 0.3s ease;
+}
+
+.provider-icon .icon-dot {
+  fill: currentColor;
+  transition: all 0.3s ease;
+}
+
+/* Auto Icon - Special animation */
+.auto-icon .icon-path {
+  animation: autoIconPulse 2s ease-in-out infinite;
+}
+
+@keyframes autoIconPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Provider-specific colors */
+.chatgpt-icon {
+  color: #10a37f;
+}
+
+.gemini-icon {
+  color: #4285f4;
+}
+
+.claude-icon {
+  color: #d97757;
+}
+
+.mistral-icon {
+  color: #ff6b35;
+}
+
+.auto-icon {
+  color: var(--accent-500, #3b82f6);
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .provider-icon {
+  opacity: 0.9;
+}
+
+[data-theme='dark'] .chatgpt-icon {
+  color: #10d9a3;
+}
+
+[data-theme='dark'] .gemini-icon {
+  color: #60a5fa;
+}
+
+[data-theme='dark'] .claude-icon {
+  color: #f59e0b;
+}
+
+[data-theme='dark'] .mistral-icon {
+  color: #fb923c;
+}
+
+/* Light mode adjustments */
+[data-theme='light'] .provider-icon {
+  opacity: 1;
+}
+
+/* Hover effects */
+.provider-icon:hover {
+  transform: scale(1.1);
+}
+
+.provider-icon:hover .icon-path {
+  stroke-width: 2;
+}
+
+.provider-icon:hover .icon-dot {
+  transform: scale(1.2);
+}
+

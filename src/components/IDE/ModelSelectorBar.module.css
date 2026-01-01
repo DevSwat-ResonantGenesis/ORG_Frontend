@@ -1,0 +1,191 @@
+.modelSelectorBar {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  background: var(--ide-surface); /* Match Resonant Chat */
+  border-bottom: 1px solid var(--ide-border);
+  flex-shrink: 0;
+  z-index: 10;
+  width: 100%;
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navIcons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+  padding-left: 8px;
+  border-left: 1px solid var(--ide-border);
+}
+
+.navIcon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--ide-text-secondary); /* Match Resonant Chat */
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.navIcon:hover {
+  background: var(--ide-surface-hover); /* Match Resonant Chat */
+  color: var(--ide-text-primary);
+}
+
+.navIcon svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+
+.navIcon:hover svg {
+  transform: scale(1.1);
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.providerSelector {
+  font-size: 12px;
+}
+
+.settingsContainer {
+  position: relative;
+}
+
+.settingsButton {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--ide-text-secondary); /* Match Resonant Chat */
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.settingsButton svg {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.settingsButton:hover {
+  background: var(--ide-surface-hover); /* Match Resonant Chat */
+  color: var(--ide-text-primary);
+}
+
+.settingsButton:hover svg {
+  transform: scale(1.1) rotate(90deg);
+  color: var(--ide-text-primary);
+}
+
+.settingsButton:active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.settingsMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--ide-surface); /* Match Resonant Chat */
+  border: 1px solid var(--ide-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  min-width: 180px;
+  padding: 4px;
+  z-index: 1000;
+}
+
+.settingsMenuItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--ide-text-primary); /* Match Resonant Chat */
+  font-size: 13px;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.settingsMenuItem:hover {
+  background: var(--ide-surface-hover); /* Match Resonant Chat */
+  color: var(--ide-text-primary);
+}
+
+.settingsMenuItem svg {
+  flex-shrink: 0;
+  color: var(--ide-text-secondary); /* Match Resonant Chat */
+}
+
+.settingsMenuItem:hover svg {
+  color: var(--ide-text-primary);
+}
+
+.settingsMenuDivider {
+  height: 1px;
+  background: var(--ide-border); /* Match Resonant Chat */
+  margin: 4px 0;
+}
+
+[data-theme='light'] .modelSelectorBar {
+  background: var(--ide-bg-primary);
+  border-bottom-color: var(--ide-border);
+}
+
+[data-theme='light'] .settingsButton {
+  color: var(--ide-text-secondary);
+}
+
+[data-theme='light'] .settingsButton:hover {
+  background: var(--ide-surface-hover);
+  color: var(--ide-text-primary);
+}
+
+[data-theme='light'] .settingsMenu {
+  background: var(--ide-bg-primary);
+  border-color: var(--ide-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .settingsMenuItem {
+  color: var(--ide-text-primary);
+}
+
+[data-theme='light'] .settingsMenuItem:hover {
+  background: var(--ide-bg-tertiary);
+  color: var(--ide-text-primary);
+}
+
+[data-theme='light'] .settingsMenuItem svg {
+  color: var(--ide-text-secondary);
+}
+
+[data-theme='light'] .settingsMenuDivider {
+  background: var(--ide-border);
+}
+

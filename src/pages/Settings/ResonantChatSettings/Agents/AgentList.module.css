@@ -1,0 +1,270 @@
+.container {
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.createButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-primary-600, #0284c7);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.createButton:hover {
+  background: var(--color-primary-700, #0369a1);
+}
+
+.createButton svg {
+  flex-shrink: 0;
+}
+
+.emptyState {
+  text-align: center;
+  padding: var(--space-12) var(--space-4);
+  color: var(--text-secondary);
+}
+
+.agentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-3);
+}
+
+.agentCard {
+  background: var(--bg-secondary, #f9fafb);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 10px;
+  padding: var(--space-3);
+  transition: all 0.2s ease;
+}
+
+.agentCard:hover {
+  border-color: var(--color-primary-300, #7dd3fc);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.agentHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.agentTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: var(--space-2);
+}
+
+.toggleContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.statusLabel {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 32px;
+  text-align: center;
+}
+
+.statusOn {
+  background: var(--color-green-100, #dcfce7);
+  color: var(--color-green-700, #15803d);
+}
+
+.statusOff {
+  background: var(--color-gray-100, #f3f4f6);
+  color: var(--color-gray-600, #4b5563);
+}
+
+.agentName {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+}
+
+.status {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status.active {
+  background: var(--color-green-100, #dcfce7);
+  color: var(--color-green-700, #15803d);
+}
+
+.status.inactive {
+  background: var(--color-gray-100, #f3f4f6);
+  color: var(--color-gray-600, #4b5563);
+}
+
+.status.archived {
+  background: var(--color-orange-100, #ffedd5);
+  color: var(--color-orange-700, #c2410c);
+}
+
+.agentDescription {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-3) 0;
+  line-height: 1.5;
+}
+
+.agentMeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-color, #e5e7eb);
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 12px;
+}
+
+.metaItem code {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metaLabel {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.metaValue {
+  color: var(--text-primary);
+}
+
+.metaValue code {
+  background: var(--bg, #ffffff);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 11px;
+}
+
+.agentActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.importedBadge {
+  padding: var(--space-1) var(--space-2);
+  background: var(--color-blue-50, #eff6ff);
+  border: 1px solid var(--color-blue-200, #bfdbfe);
+  border-radius: var(--radius-sm, 6px);
+  margin-right: auto;
+}
+
+.badgeText {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-blue-700, #1d4ed8);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.viewButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  background: var(--color-gray-100, #f3f4f6);
+  color: var(--color-gray-600, #4b5563);
+  border: 1px solid var(--color-gray-300, #d1d5db);
+  border-radius: var(--radius-sm, 6px);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.editButton,
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.editButton svg,
+.deleteButton svg {
+  flex-shrink: 0;
+}
+
+.editButton {
+  background: var(--color-primary-50, #eff6ff);
+  color: var(--color-primary-600, #0284c7);
+}
+
+.editButton:hover {
+  background: var(--color-primary-100, #dbeafe);
+}
+
+.deleteButton {
+  background: var(--color-red-50, #fef2f2);
+  color: var(--color-red-600, #dc2626);
+}
+
+.deleteButton:hover {
+  background: var(--color-red-100, #fee2e2);
+}
+

@@ -1,0 +1,114 @@
+/* ============================================================
+   HeroTitle Component - Beautiful Modern 2025
+   ============================================================ */
+
+/* Hero Title - Mobile First, Enhanced 2025 */
+.heroTitle,
+h1.heroTitle {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: clamp(32px, 7vw, 72px);
+  font-weight: 600;
+  margin: 0 0 24px 0;
+  margin-top: 0;
+  padding-top: 0;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #1D1D1F !important;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+  position: relative;
+  z-index: 2;
+  padding: 0;
+  background: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tablet: Medium size */
+@media (min-width: 640px) {
+  .heroTitle {
+    font-size: clamp(48px, 7vw, 68px);
+    margin-bottom: 28px;
+  }
+}
+
+/* Desktop: Full size */
+@media (min-width: 1024px) {
+  .heroTitle {
+    font-size: 64px;
+    margin-bottom: 32px;
+    max-width: 700px;
+  }
+}
+
+/* Dark mode color */
+[data-theme='dark'] .heroTitle,
+[data-theme='dark'] h1.heroTitle {
+  color: #f1f5f9 !important;
+}
+
+.heroTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #0ea5e9, #8b5cf6);
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+/* Hide underline on mobile for cleaner look */
+@media (max-width: 639px) {
+  .heroTitle::after {
+    display: none;
+  }
+}
+
+[data-theme='dark'] .heroTitle::after {
+  background: linear-gradient(90deg, #38bdf8, #a78bfa);
+}
+
+/* Hero Subtitle - Mobile First */
+.heroSubtitle {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: clamp(15px, 3.5vw, 20px);
+  font-weight: 400;
+  color: #64748b;
+  margin: 0 0 28px 0;
+  line-height: 1.6;
+  background: none;
+  padding: 0;
+  text-align: left;
+  max-width: 100%;
+  letter-spacing: 0;
+  width: 100%;
+  display: block;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tablet: Medium size */
+@media (min-width: 640px) {
+  .heroSubtitle {
+    font-size: 18px;
+    margin-bottom: 36px;
+    max-width: 580px;
+    line-height: 1.7;
+  }
+}
+
+/* Desktop: Full size */
+@media (min-width: 1024px) {
+  .heroSubtitle {
+    font-size: 19px;
+    margin-bottom: 40px;
+    max-width: 620px;
+    line-height: 1.7;
+  }
+}
+
+[data-theme='dark'] .heroSubtitle {
+  color: rgba(148, 163, 184, 0.9);
+}

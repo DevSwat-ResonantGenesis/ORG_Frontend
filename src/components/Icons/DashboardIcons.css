@@ -1,0 +1,54 @@
+/* Dashboard Icons - Animated, Minimalistic, Responsive */
+
+.dashboard-icon {
+  transition: all 0.2s ease;
+  color: var(--text-600);
+}
+
+[data-theme="dark"] .dashboard-icon {
+  color: var(--text-400);
+}
+
+.dashboard-icon:hover {
+  color: var(--rg-primary, #3B82F6);
+  transform: scale(1.1);
+}
+
+/* Stat box icons */
+.stat-icon .dashboard-icon {
+  color: var(--rg-primary, #3B82F6);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+[data-theme="dark"] .stat-icon .dashboard-icon {
+  color: var(--rg-primary, #3B82F6);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Activity icons */
+.activity-icon .dashboard-icon {
+  color: var(--text-500);
+}
+
+/* Button icons */
+button .dashboard-icon {
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* Responsive sizing */
+@media (max-width: 768px) {
+  .dashboard-icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+

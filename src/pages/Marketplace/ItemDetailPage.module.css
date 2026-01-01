@@ -1,0 +1,151 @@
+.itemDetailContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.itemMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.loadingState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-8);
+}
+
+.itemHeader {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+  margin-bottom: var(--space-4);
+}
+
+.itemIconLarge {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.itemInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemMeta {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.itemActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: flex-end;
+  min-width: 200px;
+}
+
+.itemPrice {
+  text-align: right;
+}
+
+.itemDescription {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.itemScreenshots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.screenshot {
+  width: 100%;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+}
+
+.itemDocumentation {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.reviewsSection {
+  margin-top: var(--space-4);
+}
+
+.reviewsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-4);
+}
+
+.reviewForm {
+  margin-bottom: var(--space-4);
+}
+
+.reviewFormFields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.ratingSelect {
+  width: 100%;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+}
+
+.reviewFormActions {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: flex-end;
+  margin-top: var(--space-2);
+}
+
+.reviewsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.reviewCard {
+  margin-top: var(--space-2);
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .itemHeader {
+    flex-direction: column;
+  }
+
+  .itemActions {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .reviewsHeader {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+}
+

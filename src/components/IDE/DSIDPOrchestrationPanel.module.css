@@ -1,0 +1,409 @@
+/* DSID-P Orchestration Panel Styles */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bg-secondary, #0a0a0a);
+  border-left: 1px solid var(--border-color, #0a0a0a);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  color: var(--text-primary, #cdd6f4);
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color, #0a0a0a);
+  background: var(--bg-tertiary, #0a0a0a);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #cdd6f4);
+}
+
+.dsidpLogo {
+  font-size: 18px;
+  color: #89b4fa;
+}
+
+.statusIndicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary, #a6adc8);
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Trust Badge */
+.trustBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  margin: 12px;
+  background: var(--bg-tertiary, #0a0a0a);
+  border: 2px solid;
+  border-radius: 12px;
+}
+
+.trustTier {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.trustName {
+  font-size: 12px;
+  color: var(--text-secondary, #a6adc8);
+  margin-bottom: 8px;
+}
+
+.trustBar {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-primary, #0a0a0a);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.trustFill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.trustScore {
+  font-size: 11px;
+  color: var(--text-secondary, #a6adc8);
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 2px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color, #0a0a0a);
+}
+
+.tab {
+  flex: 1;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--text-secondary, #a6adc8);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab:hover {
+  background: var(--bg-hover, #0a0a0a);
+  color: var(--text-primary, #cdd6f4);
+}
+
+.activeTab {
+  background: var(--accent-color, #89b4fa);
+  color: var(--bg-primary, #0a0a0a);
+  font-weight: 500;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+/* Overview Section */
+.overview {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section h4 {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary, #a6adc8);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Execution Item */
+.executionItem {
+  padding: 10px 12px;
+  background: var(--bg-tertiary, #0a0a0a);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.executionItem:hover {
+  background: var(--bg-hover, #0a0a0a);
+}
+
+.executionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.executionStatus {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: white;
+}
+
+.executionAction {
+  font-weight: 500;
+  color: var(--text-primary, #cdd6f4);
+}
+
+.executionAgent {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--text-secondary, #a6adc8);
+}
+
+.executionChecks {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.check {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.passed {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.failed {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.trustReq {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  background: rgba(137, 180, 250, 0.2);
+  color: #89b4fa;
+}
+
+.executionMetrics {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--text-secondary, #a6adc8);
+}
+
+/* Ethics Grid */
+.ethicsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.pillarItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-tertiary, #0a0a0a);
+  border-radius: 8px;
+}
+
+.pillarIcon {
+  font-size: 18px;
+}
+
+.pillarName {
+  flex: 1;
+  font-weight: 500;
+}
+
+.pillarStatus {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: white;
+}
+
+/* Security List */
+.securityList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.securityItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-tertiary, #0a0a0a);
+  border-radius: 8px;
+}
+
+.securityDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.securityName {
+  flex: 1;
+  font-weight: 500;
+}
+
+.threatCount {
+  padding: 2px 8px;
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Governance List */
+.governanceList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.decisionItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-tertiary, #0a0a0a);
+  border-radius: 8px;
+}
+
+.decisionIcon {
+  font-size: 16px;
+}
+
+.decisionContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.decisionAction {
+  font-weight: 500;
+}
+
+.decisionRule {
+  font-size: 11px;
+  color: var(--text-secondary, #a6adc8);
+}
+
+.decisionTime {
+  font-size: 11px;
+  color: var(--text-secondary, #a6adc8);
+}
+
+.empty {
+  text-align: center;
+  padding: 24px;
+  color: var(--text-secondary, #a6adc8);
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border-color, #0a0a0a);
+  background: var(--bg-tertiary, #0a0a0a);
+}
+
+.footerText {
+  font-size: 11px;
+  color: var(--text-secondary, #a6adc8);
+}
+
+.refreshBtn {
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--border-color, #0a0a0a);
+  border-radius: 4px;
+  color: var(--text-secondary, #a6adc8);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.refreshBtn:hover:not(:disabled) {
+  background: var(--bg-hover, #0a0a0a);
+  color: var(--text-primary, #cdd6f4);
+}
+
+.refreshBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Scrollbar */
+.content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: var(--border-color, #0a0a0a);
+  border-radius: 3px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary, #a6adc8);
+}

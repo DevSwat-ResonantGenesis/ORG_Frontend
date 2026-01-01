@@ -1,0 +1,302 @@
+/* AI Audit Log Detail Page Styles - CSS Module - Preserving Unique Layout */
+
+.aiAuditLogDetailPage {
+  min-height: 100vh;
+  padding: var(--space-4);
+  padding-top: calc(56px + var(--space-4));
+  background: var(--bg);
+  color: var(--text-primary);
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.header {
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.header h1 {
+  font-size: var(--font-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: var(--font-lg);
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-3) 0;
+  line-height: 1.5;
+}
+
+.headerActions {
+  margin-top: var(--space-3);
+}
+
+.contentBody {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.contentMain {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.contentSection {
+  margin-bottom: var(--space-6);
+  padding: 0;
+}
+
+.contentSection:last-child {
+  margin-bottom: 0;
+}
+
+.loadingState,
+.errorState {
+  padding: var(--space-8);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: var(--font-base);
+}
+
+.errorState {
+  color: var(--color-error);
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-5);
+}
+
+.summaryItem {
+  text-align: center;
+}
+
+.summaryLabel {
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-2);
+}
+
+.summaryValue {
+  font-size: var(--font-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.codeBlock {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  overflow-x: auto;
+}
+
+[data-theme="dark"] .codeBlock {
+  background: var(--surface);
+}
+
+.codeBlock pre {
+  margin: 0;
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: var(--font-sm);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: var(--text-primary);
+}
+
+.flagsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-6);
+}
+
+.flagSection {
+  padding: var(--space-4);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border-left: 3px solid var(--color-warning, #F59E0B);
+}
+
+[data-theme="dark"] .flagSection {
+  background: var(--surface);
+}
+
+.flagTitle {
+  font-size: var(--font-base);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-3);
+  color: var(--text-primary);
+}
+
+.flagList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.flagList li {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border);
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+}
+
+.flagList li:last-child {
+  border-bottom: none;
+}
+
+.complianceFlags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.complianceBadge {
+  display: inline-block;
+  padding: 6px var(--space-3);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--color-error, #EF4444);
+  border-radius: var(--radius-md);
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-error, #EF4444);
+}
+
+.noFlags {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.piiSection {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border);
+}
+
+.piiTitle {
+  font-size: var(--font-base);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-3);
+  color: var(--text-primary);
+}
+
+.piiTypes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.piiBadge {
+  display: inline-block;
+  padding: 6px var(--space-3);
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid var(--color-error, #EF4444);
+  border-radius: var(--radius-md);
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-error, #EF4444);
+}
+
+.evidenceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-6);
+}
+
+.evidenceItem {
+  padding: var(--space-4);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+}
+
+[data-theme="dark"] .evidenceItem {
+  background: var(--surface);
+}
+
+.evidenceLabel {
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-2);
+}
+
+.evidenceValue {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+  word-break: break-all;
+}
+
+.evidenceValue.code {
+  font-family: var(--font-mono, 'Courier New', monospace);
+  font-size: var(--font-xs);
+}
+
+.evidenceDescription {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+.metadataGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-5);
+}
+
+.metadataItem {
+  padding: var(--space-3);
+  background: var(--surface);
+  border-radius: var(--radius-md);
+}
+
+[data-theme="dark"] .metadataItem {
+  background: var(--surface);
+}
+
+.metadataLabel {
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-1);
+}
+
+.metadataValue {
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  font-family: var(--font-mono, 'Courier New', monospace);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .summaryGrid,
+  .flagsGrid,
+  .evidenceGrid,
+  .metadataGrid {
+    grid-template-columns: 1fr;
+  }
+}

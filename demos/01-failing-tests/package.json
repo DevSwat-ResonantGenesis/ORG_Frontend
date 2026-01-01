@@ -1,0 +1,9 @@
+{
+  "name": "demo-failing-tests",
+  "version": "1.0.0",
+  "description": "Demo: AI breaks tests → Auto-rollback",
+  "scripts": {
+    "test": "node test.js",
+    "demo": "node run.js"
+  }
+}

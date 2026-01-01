@@ -1,0 +1,139 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 32px;
+  background: var(--bg, #F8F6F0);
+}
+
+.content {
+  text-align: center;
+  max-width: 600px;
+  padding: 48px;
+  background: var(--surface, #ffffff);
+  border-radius: 12px;
+  border: 1px solid var(--surface-border, #e5e7eb);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.errorCode {
+  font-size: 120px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent-500, #3b82f6);
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, var(--accent-500, #3b82f6), var(--accent-600, #2563eb));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary, #1f2937);
+  margin-bottom: 16px;
+}
+
+.message {
+  font-size: 18px;
+  color: var(--text-secondary, #6b7280);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.path {
+  margin-bottom: 32px;
+  padding: 12px;
+  background: var(--bg-subtle, #f9fafb);
+  border-radius: 8px;
+  border: 1px solid var(--surface-border, #e5e7eb);
+}
+
+.path code {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  color: var(--text-primary, #1f2937);
+  word-break: break-all;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.buttonPrimary,
+.buttonSecondary {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.buttonPrimary {
+  background: var(--accent-500, #3b82f6);
+  color: white;
+}
+
+.buttonPrimary:hover {
+  background: var(--accent-600, #2563eb);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.buttonSecondary {
+  background: var(--surface-hover, #f3f4f6);
+  color: var(--text-primary, #1f2937);
+  border: 1px solid var(--surface-border, #e5e7eb);
+}
+
+.buttonSecondary:hover {
+  background: var(--surface-border, #e5e7eb);
+  transform: translateY(-1px);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background: var(--bg-dark, #0a0a0a);
+  }
+
+  .content {
+    background: var(--surface-dark, #0a0a0a);
+    border-color: var(--surface-border-dark, #111111);
+  }
+
+  .title {
+    color: var(--text-primary-dark, #ffffff);
+  }
+
+  .message {
+    color: var(--text-secondary-dark, #9ca3af);
+  }
+
+  .path {
+    background: var(--bg-subtle-dark, #0a0a0a);
+    border-color: var(--surface-border-dark, #111111);
+  }
+
+  .path code {
+    color: var(--text-primary-dark, #ffffff);
+  }
+
+  .buttonSecondary {
+    background: var(--surface-hover-dark, #111111);
+    color: var(--text-primary-dark, #ffffff);
+    border-color: var(--surface-border-dark, #111111);
+  }
+
+  .buttonSecondary:hover {
+    background: var(--surface-border-dark, #111111);
+  }
+}
+

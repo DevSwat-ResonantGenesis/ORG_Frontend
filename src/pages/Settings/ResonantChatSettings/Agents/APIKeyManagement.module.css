@@ -1,0 +1,334 @@
+.container {
+  width: 100%;
+  padding: var(--space-4);
+}
+
+.errorBanner {
+  margin-bottom: var(--space-4);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.createButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-primary-600, #0284c7);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.createButton:hover:not(:disabled) {
+  background: var(--color-primary-700, #0369a1);
+}
+
+.createButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.newKeyAlert {
+  background: var(--color-yellow-50, #fefce8);
+  border: 2px solid var(--color-yellow-400, #facc15);
+  border-radius: 12px;
+  padding: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.alertHeader {
+  margin-bottom: var(--space-3);
+}
+
+.alertHeader strong {
+  display: block;
+  font-size: 16px;
+  color: var(--color-yellow-900, #713f12);
+  margin-bottom: var(--space-2);
+}
+
+.alertHeader p {
+  font-size: 14px;
+  color: var(--color-yellow-800, #854d0e);
+  margin: 0;
+}
+
+.keyDisplay {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  margin-bottom: var(--space-3);
+  padding: var(--space-3);
+  background: var(--bg, #ffffff);
+  border-radius: 8px;
+  border: 1px solid var(--color-yellow-300, #fde047);
+}
+
+.apiKeyValue {
+  flex: 1;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--text-primary);
+  word-break: break-all;
+  padding: var(--space-2);
+  background: var(--bg-secondary, #f9fafb);
+  border-radius: 4px;
+}
+
+.copyButton {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-primary-600, #0284c7);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.copyButton:hover {
+  background: var(--color-primary-700, #0369a1);
+}
+
+.dismissButton {
+  padding: var(--space-2) var(--space-4);
+  background: var(--bg-secondary, #f9fafb);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.dismissButton:hover {
+  background: var(--bg-hover, #f3f4f6);
+}
+
+.createForm {
+  background: var(--bg-secondary, #f9fafb);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.formTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.required {
+  color: var(--color-red-600, #dc2626);
+}
+
+.input {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--bg, #ffffff);
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary-500, #0ea5e9);
+  box-shadow: 0 0 0 3px var(--color-primary-100, #dbeafe);
+}
+
+.formActions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-color, #e5e7eb);
+}
+
+.cancelButton,
+.submitButton {
+  padding: var(--space-3) var(--space-6);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelButton {
+  background: var(--bg-secondary, #f9fafb);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color, #e5e7eb);
+}
+
+.cancelButton:hover {
+  background: var(--bg-hover, #f3f4f6);
+}
+
+.submitButton {
+  background: var(--color-primary-600, #0284c7);
+  color: white;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--color-primary-700, #0369a1);
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.emptyState {
+  text-align: center;
+  padding: var(--space-12) var(--space-4);
+  color: var(--text-secondary);
+}
+
+.keysList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.keyCard {
+  background: var(--bg-secondary, #f9fafb);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: var(--space-4);
+  transition: all 0.2s ease;
+}
+
+.keyCard:hover {
+  border-color: var(--color-primary-300, #7dd3fc);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.keyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-3);
+}
+
+.keyName {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.keyHash {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-family: 'Monaco', 'Courier New', monospace;
+  background: var(--bg, #ffffff);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.status {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.status.enabled {
+  background: var(--color-green-100, #dcfce7);
+  color: var(--color-green-700, #15803d);
+}
+
+.status.disabled {
+  background: var(--color-gray-100, #f3f4f6);
+  color: var(--color-gray-600, #4b5563);
+}
+
+.keyMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-color, #e5e7eb);
+}
+
+.metaItem {
+  display: flex;
+  gap: var(--space-2);
+  font-size: 12px;
+}
+
+.metaLabel {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.metaValue {
+  color: var(--text-primary);
+}
+
+.keyActions {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}
+
+.deleteButton {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-red-50, #fef2f2);
+  color: var(--color-red-600, #dc2626);
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deleteButton:hover {
+  background: var(--color-red-100, #fee2e2);
+}
+

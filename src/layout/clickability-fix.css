@@ -1,0 +1,164 @@
+/* Global Clickability Fixes - Ensure all interactive elements work */
+
+/* CRITICAL: Force all buttons to be clickable - highest priority */
+button:not(:disabled):not(.theme-toggle-icon-only),
+button:not([disabled]):not(.theme-toggle-icon-only),
+.btn:not(.btn-disabled),
+.btn:not([disabled]),
+[role="button"]:not([disabled]),
+a[href],
+a[class*="nav"],
+a[class*="link"],
+[onclick] {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  position: relative !important;
+  z-index: 9999 !important;
+  user-select: none !important;
+}
+
+/* Theme toggle button - special handling - HIGHEST PRIORITY */
+button.theme-toggle-icon-only,
+.theme-toggle-icon-only,
+button[data-testid="theme-toggle-button"] {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  position: relative !important;
+  z-index: 10004 !important; /* Above everything - highest priority */
+  user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+/* Override any blocking styles - but NOT for dropdown items */
+button > svg,
+button > span:not([class*="Option"]):not([class*="option"]),
+.btn > svg,
+.btn > span:not([class*="Option"]):not([class*="option"]) {
+  pointer-events: none !important;
+}
+
+/* Ensure button text/content doesn't block clicks */
+button::before,
+button::after,
+.btn::before,
+.btn::after {
+  pointer-events: none !important;
+  z-index: -1 !important;
+}
+
+/* Ensure NavLinks work */
+a[class*="NavLink"],
+a[class*="nav-link"],
+nav a {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  z-index: 10;
+  position: relative;
+}
+
+/* Ensure sidebar links work - CRITICAL for ML engineer menu */
+aside a,
+.sidebar-container a,
+.desktop-sidebar a,
+.sidebar-container a[href],
+.desktop-sidebar a[href],
+aside a[href],
+.sidebar-container .nav-link,
+.desktop-sidebar .nav-link,
+.sidebar-container [class*="NavLink"],
+.desktop-sidebar [class*="NavLink"] {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  z-index: 10 !important;
+  position: relative !important;
+  text-transform: none !important; /* Normal case, not uppercase */
+  user-select: none !important;
+  -webkit-tap-highlight-color: rgba(0,0,0,0.1) !important;
+}
+
+/* Ensure ML engineer menu items are clickable */
+.sidebar-container a[href*="/ml/"],
+.desktop-sidebar a[href*="/ml/"],
+.sidebar-container a[href*="/training"],
+.desktop-sidebar a[href*="/training"],
+.sidebar-container a[href*="/model"],
+.desktop-sidebar a[href*="/model"] {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  z-index: 100 !important;
+  position: relative !important;
+}
+
+/* Mobile bottom nav items */
+.mobile-bottom-nav a,
+.mobile-bottom-nav button {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  z-index: 1000 !important;
+  position: relative;
+}
+
+/* Main content interactive elements */
+.main-content button,
+.main-content .btn,
+.main-content a,
+.main-content [role="button"] {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  z-index: 10;
+  position: relative;
+}
+
+/* CRITICAL: Remove any invisible overlays that might block clicks */
+body {
+  pointer-events: auto !important;
+}
+
+/* Ensure no element blocks buttons except actual modals */
+*:not(.mobile-menu-overlay):not(.modal-overlay):not([class*="modal-overlay"]) {
+  pointer-events: auto;
+}
+
+/* Only block when mobile menu is actually open and visible */
+.mobile-menu-overlay[style*="display: none"],
+.mobile-menu-overlay:not(:has(.mobile-menu-content)) {
+  pointer-events: none !important;
+  display: none !important;
+}
+
+/* Ensure main content area is always interactive */
+.main-content-area,
+.main-content,
+.page-container,
+.page-content {
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Ensure all interactive elements in main content work */
+.main-content-area *,
+.main-content *,
+.page-container * {
+  pointer-events: auto;
+}
+
+/* But buttons should be on top */
+.main-content-area button,
+.main-content button,
+.page-container button {
+  pointer-events: auto !important;
+  z-index: 9999 !important;
+  position: relative !important;
+}
+

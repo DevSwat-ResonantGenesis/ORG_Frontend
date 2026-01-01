@@ -1,0 +1,204 @@
+/* ============================================================
+   SETTINGS SIDEBAR - Modern Professional Design
+   Clean navigation with refined interactions
+   ============================================================ */
+
+/* ============================================
+   CONTAINER
+   ============================================ */
+.sidebar {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  height: fit-content;
+  position: sticky;
+  top: 80px;
+  width: 260px;
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme='dark'] .sidebar {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.header {
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+/* ============================================
+   MENU
+   ============================================ */
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ============================================
+   MENU ITEM
+   ============================================ */
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  text-align: left;
+  color: var(--text-secondary);
+  position: relative;
+}
+
+/* Active indicator */
+.menuItem::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 3px;
+  height: 20px;
+  background: var(--accent-primary);
+  border-radius: 0 3px 3px 0;
+  transition: transform 0.2s ease;
+}
+
+.menuItem:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.menuItem:hover::before {
+  transform: translateY(-50%) scaleY(0.5);
+}
+
+.menuItem:active {
+  transform: scale(0.98);
+}
+
+.menuItem.active {
+  background: var(--bg-tertiary);
+  color: var(--accent-primary);
+}
+
+.menuItem.active::before {
+  transform: translateY(-50%) scaleY(1);
+}
+
+[data-theme='dark'] .menuItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='dark'] .menuItem.active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================
+   ICON
+   ============================================ */
+.icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+/* ============================================
+   MENU ITEM CONTENT
+   ============================================ */
+.menuItemContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.description {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 240px;
+    padding: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    position: relative;
+    top: 0;
+    border-radius: 12px;
+  }
+  
+  .menu {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .menuItem {
+    flex: 1 1 auto;
+    min-width: 120px;
+    justify-content: center;
+    padding: 8px 12px;
+  }
+  
+  .menuItemContent {
+    align-items: center;
+  }
+  
+  .description {
+    display: none;
+  }
+}
+

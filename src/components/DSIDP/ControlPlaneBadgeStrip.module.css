@@ -1,0 +1,91 @@
+/**
+ * Control Plane Badge Strip Styles
+ * Read-only badges with operator-grade styling
+ */
+
+.badgeStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='dark'] .badgeStrip {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .badge {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.badge:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .badge:hover {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.badge:active {
+  transform: translateY(0);
+}
+
+.badgeIcon {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.badgeLabel {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+[data-theme='dark'] .badgeLabel {
+  color: #9ca3af;
+}
+
+.badgeValue {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .badgeStrip {
+    gap: 6px;
+    padding: 6px 8px;
+  }
+
+  .badge {
+    padding: 3px 8px;
+    font-size: 10px;
+  }
+
+  .badgeLabel {
+    display: none;
+  }
+}

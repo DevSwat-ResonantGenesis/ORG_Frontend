@@ -1,0 +1,448 @@
+/* Account Page Styles */
+
+.container {
+  min-height: 100vh;
+  background: var(--color-bg-primary, #0a0a1a);
+  color: var(--color-text-primary, #ffffff);
+}
+
+/* Loading & Error States */
+.loading,
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-border, #2a2a4a);
+  border-top-color: var(--color-primary-500, #8b5cf6);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error {
+  color: var(--color-error-500, #ef4444);
+}
+
+.error h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.error p {
+  color: var(--color-text-secondary, #a0a0b0);
+}
+
+.retryButton {
+  padding: 0.75rem 1.5rem;
+  background: var(--color-primary-500, #8b5cf6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* Header */
+.header {
+  background: var(--color-surface-primary, #12122a);
+  border-bottom: 1px solid var(--color-border, #2a2a4a);
+  padding: 1.5rem 2rem;
+}
+
+.headerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-primary-500, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.userDetails h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.email {
+  margin: 0.25rem 0 0;
+  color: var(--color-text-secondary, #a0a0b0);
+  font-size: 0.875rem;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.settingsButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--color-surface-secondary, #1a1a2e);
+  border: 1px solid var(--color-border, #2a2a4a);
+  color: var(--color-text-secondary, #a0a0b0);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.settingsButton:hover {
+  background: var(--color-surface-tertiary, #2a2a4a);
+  color: var(--color-text-primary, #ffffff);
+}
+
+/* Main Content */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Sections */
+.section {
+  background: var(--color-surface-primary, #12122a);
+  border: 1px solid var(--color-border, #2a2a4a);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1.25rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #ffffff);
+}
+
+/* Credits Card */
+.creditsCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--color-surface-secondary, #1a1a2e);
+  border-radius: 8px;
+}
+
+.creditBalance {
+  flex: 1;
+}
+
+.creditActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Buttons */
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, var(--color-primary-500, #8b5cf6), var(--color-primary-600, #7c3aed));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.primaryButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: transparent;
+  color: var(--color-primary-400, #a78bfa);
+  border: 1px solid var(--color-primary-500, #8b5cf6);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1rem;
+}
+
+.secondaryButton:hover {
+  background: rgba(139, 92, 246, 0.1);
+}
+
+/* Usage Grid */
+.usageGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.usageCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: var(--color-surface-secondary, #1a1a2e);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.usageIcon {
+  color: var(--color-primary-400, #a78bfa);
+  margin-bottom: 0.5rem;
+}
+
+.usageContent {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.usageValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary, #ffffff);
+}
+
+.usageUnit {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #a0a0b0);
+}
+
+.usageLabel {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #a0a0b0);
+  margin-top: 0.25rem;
+}
+
+.usageLoading,
+.usageEmpty {
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-text-secondary, #a0a0b0);
+}
+
+/* Features Grid */
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.featureCard {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: var(--color-surface-secondary, #1a1a2e);
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+
+.featureCard.enabled {
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.featureCard.enabled .featureIcon {
+  color: var(--color-success-500, #22c55e);
+}
+
+.featureCard.disabled {
+  border-color: rgba(107, 114, 128, 0.3);
+  opacity: 0.7;
+}
+
+.featureCard.disabled .featureIcon {
+  color: var(--color-text-tertiary, #6b7280);
+}
+
+.featureLabel {
+  flex: 1;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.featureRequired {
+  font-size: 0.625rem;
+  color: var(--color-text-tertiary, #6b7280);
+  background: var(--color-surface-tertiary, #2a2a4a);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+}
+
+/* Limits Grid */
+.limitsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+
+.limitCard {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: var(--color-surface-secondary, #1a1a2e);
+  border-radius: 8px;
+}
+
+.limitLabel {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #a0a0b0);
+  margin-bottom: 0.25rem;
+}
+
+.limitValue {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #ffffff);
+}
+
+.limitUnit {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #a0a0b0);
+  margin-left: 0.25rem;
+}
+
+/* Actions Grid */
+.actionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.actionCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--color-surface-secondary, #1a1a2e);
+  border: 1px solid var(--color-border, #2a2a4a);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.actionCard:hover {
+  background: var(--color-surface-tertiary, #2a2a4a);
+  border-color: var(--color-primary-500, #8b5cf6);
+}
+
+.actionIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--color-primary-400, #a78bfa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.actionContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.actionLabel {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #ffffff);
+}
+
+.actionDescription {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary, #a0a0b0);
+}
+
+.actionArrow {
+  color: var(--color-text-tertiary, #6b7280);
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+  }
+
+  .headerContent {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .headerActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .main {
+    padding: 1rem;
+  }
+
+  .creditsCard {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .creditActions {
+    justify-content: center;
+  }
+
+  .usageGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .featuresGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .actionsGrid {
+    grid-template-columns: 1fr;
+  }
+}

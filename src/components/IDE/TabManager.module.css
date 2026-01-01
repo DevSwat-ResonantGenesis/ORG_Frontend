@@ -1,0 +1,190 @@
+/* ============== TAB MANAGER STYLES ============== */
+
+.container {
+  display: flex;
+  background: rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tabsWrapper {
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabsWrapper::-webkit-scrollbar { display: none; }
+
+.tabs {
+  display: flex;
+  min-width: max-content;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  padding-right: 8px;
+  background: transparent;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  color: #888;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  max-width: 180px;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #ccc;
+}
+
+.tab.active {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #0ea5e9;
+}
+
+.tab.pinned {
+  padding-left: 8px;
+  padding-right: 10px;
+  background: rgba(14, 165, 233, 0.05);
+}
+
+.tab.preview {
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.tab.dragging {
+  opacity: 0.5;
+}
+
+.tab.dragOver {
+  border-left: 2px solid #0ea5e9;
+}
+
+.pinIcon {
+  font-size: 10px;
+}
+
+.tabIcon {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.tabLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.previewBadge {
+  font-size: 9px;
+  color: #666;
+  padding: 1px 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.modifiedDot {
+  width: 8px;
+  height: 8px;
+  background: #f59e0b;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.closeBtn {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  opacity: 0;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.tab:hover .closeBtn {
+  opacity: 1;
+}
+
+.closeBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.tab:hover .modifiedDot {
+  display: none;
+}
+
+.tab:not(:hover) .closeBtn {
+  display: none;
+}
+
+.tab:not(:hover) .modifiedDot {
+  display: block;
+}
+
+/* Context Menu */
+.contextMenu {
+  position: fixed;
+  z-index: 1000;
+  min-width: 160px;
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  animation: menuFade 0.15s ease;
+}
+
+@keyframes menuFade {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.contextMenu button {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: #ccc;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.contextMenu button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 4px 0;
+}

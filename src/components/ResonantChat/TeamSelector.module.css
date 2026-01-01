@@ -1,0 +1,202 @@
+.teamSelector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: var(--surface-secondary, #f5f5f5);
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    cursor: pointer;
+}
+
+.labelText {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary, #666);
+    white-space: nowrap;
+}
+
+.select {
+    flex: 1;
+    padding: 6px 10px;
+    font-size: 13px;
+    border: 1px solid var(--border, #ddd);
+    border-radius: 6px;
+    background: var(--surface, #fff);
+    color: var(--text-primary, #333);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 200px;
+}
+
+.select:hover:not(:disabled) {
+    border-color: var(--primary, #0066cc);
+}
+
+.select:focus {
+    outline: none;
+    border-color: var(--primary, #0066cc);
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.selectedIndicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--success-light, #e6f7e6);
+    border-radius: 6px;
+    border: 1px solid var(--success, #28a745);
+}
+
+.teamIcon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.teamInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.teamName {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--success-dark, #1e7e34);
+    white-space: nowrap;
+}
+
+.teamDescription {
+    font-size: 11px;
+    color: var(--success, #28a745);
+    opacity: 0.8;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.refreshButton {
+    padding: 6px 10px;
+    font-size: 16px;
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #ddd);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    line-height: 1;
+    color: var(--text-secondary, #666);
+}
+
+.refreshButton:hover:not(:disabled) {
+    background: var(--surface-hover, #f8f8f8);
+    border-color: var(--primary, #0066cc);
+    color: var(--primary, #0066cc);
+    transform: rotate(180deg);
+}
+
+.refreshButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    .teamSelector {
+        background: var(--surface-secondary, #2a2a2a);
+    }
+
+    .labelText {
+        color: var(--text-secondary, #aaa);
+    }
+
+    .select {
+        background: var(--surface, #0a0a0a);
+        color: var(--text-primary, #e0e0e0);
+        border-color: var(--border, #444);
+    }
+
+    .select:hover:not(:disabled) {
+        border-color: var(--primary, #4d94ff);
+    }
+
+    .selectedIndicator {
+        background: var(--success-dark, #1a5928);
+        border-color: var(--success, #3dbd5d);
+    }
+
+    .teamName {
+        color: var(--success-light, #6dd687);
+    }
+
+    .teamDescription {
+        color: var(--success-light, #6dd687);
+    }
+
+    .refreshButton {
+        background: var(--surface, #0a0a0a);
+        border-color: var(--border, #444);
+        color: var(--text-secondary, #aaa);
+    }
+
+    .refreshButton:hover:not(:disabled) {
+        background: var(--surface-hover, #2a2a2a);
+        border-color: var(--primary, #4d94ff);
+        color: var(--primary, #4d94ff);
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .teamSelector {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .label {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .select {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .selectedIndicator {
+        justify-content: center;
+    }
+
+    .teamDescription {
+        max-width: unset;
+    }
+
+    .refreshButton {
+        align-self: center;
+    }
+}

@@ -1,0 +1,202 @@
+.container {
+  width: 100%;
+  padding: var(--space-4);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.refreshButton {
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-primary-600, #0284c7);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refreshButton:hover:not(:disabled) {
+  background: var(--color-primary-700, #0369a1);
+}
+
+.refreshButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.errorBanner {
+  background: var(--color-red-50, #fef2f2);
+  border: 1px solid var(--color-red-200, #fecaca);
+  border-radius: 8px;
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-6);
+  color: var(--color-red-700, #b91c1c);
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.metricCard {
+  background: var(--bg-secondary, #f9fafb);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  padding: var(--space-5);
+  transition: all 0.2s ease;
+}
+
+.metricCard:hover {
+  border-color: var(--color-primary-300, #7dd3fc);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.metricHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.metricTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.metricIcon {
+  font-size: 20px;
+}
+
+.metricValue {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+  line-height: 1.2;
+}
+
+.metricSubtext {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.section {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-color, #e5e7eb);
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.patchStatsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.patchCard {
+  background: var(--bg-secondary, #f9fafb);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  padding: var(--space-4);
+}
+
+.patchHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.patchNumber {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.patchStatus {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.patchStatus.enabled {
+  background: var(--color-green-100, #dcfce7);
+  color: var(--color-green-700, #15803d);
+}
+
+.patchStatus.disabled {
+  background: var(--color-gray-100, #f3f4f6);
+  color: var(--color-gray-600, #4b5563);
+}
+
+.patchDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.patchDetail {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.patchLabel {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.patchValue {
+  color: var(--text-primary);
+}
+
+.footer {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  text-align: center;
+}
+
+.lastUpdated {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.emptyState {
+  text-align: center;
+  padding: var(--space-12) var(--space-4);
+  color: var(--text-secondary);
+}
+

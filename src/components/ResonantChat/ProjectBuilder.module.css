@@ -1,0 +1,609 @@
+/* Modern Project Builder - Complete UI/UX Rebuild */
+
+.projectBuilder {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-primary, #0a0a0a);
+  color: var(--text-primary, #E8E8E8);
+  overflow: hidden;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: var(--bg-secondary, #0a0a0a);
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  flex-shrink: 0;
+  gap: 16px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: var(--bg-tertiary, rgba(255, 255, 255, 0.05));
+  color: var(--text-secondary, rgba(232, 232, 232, 0.7));
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.backButton:hover {
+  background: var(--bg-tertiary, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary, #E8E8E8);
+  transform: translateX(-2px);
+}
+
+.headerTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.headerTitle h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary, #E8E8E8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.projectMeta {
+  font-size: 13px;
+  color: var(--text-secondary, rgba(232, 232, 232, 0.7));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.primaryButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--color-primary-500, #3B82F6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.primaryButton:hover:not(:disabled) {
+  background: var(--color-primary-600, #2563EB);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.primaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.secondaryButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--bg-tertiary, rgba(255, 255, 255, 0.05));
+  color: var(--text-primary, #E8E8E8);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.secondaryButton:hover {
+  background: var(--bg-tertiary, rgba(255, 255, 255, 0.1));
+  border-color: var(--color-primary-500, #3B82F6);
+  color: var(--color-primary-500, #3B82F6);
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: transparent;
+  color: var(--text-secondary, rgba(232, 232, 232, 0.7));
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.iconButton:hover {
+  background: var(--bg-tertiary, rgba(255, 255, 255, 0.05));
+  color: var(--text-primary, #E8E8E8);
+}
+
+/* ============================================
+   CONTENT LAYOUT
+   ============================================ */
+.content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ============================================
+   SIDEBAR - FILE TREE
+   ============================================ */
+.sidebar {
+  width: 320px;
+  min-width: 280px;
+  background: var(--bg-secondary, #0a0a0a);
+  border-right: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+}
+
+.sidebarHeader h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary, #E8E8E8);
+}
+
+.fileCount {
+  font-size: 12px;
+  color: var(--text-secondary, rgba(232, 232, 232, 0.7));
+  background: var(--bg-tertiary, rgba(255, 255, 255, 0.05));
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.fileTree {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.treeNode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 13px;
+  color: var(--text-primary, #E8E8E8);
+  user-select: none;
+}
+
+.treeNode:hover {
+  background: var(--bg-tertiary, rgba(255, 255, 255, 0.05));
+}
+
+.treeNode.selected {
+  background: var(--color-primary-500, #3B82F6);
+  color: white;
+}
+
+.treeNode.selected .fileLanguage {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.treeNodeName {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.folderIcon {
+  flex-shrink: 0;
+  color: var(--color-warning, #F59E0B);
+}
+
+.fileNode {
+  font-weight: 400;
+}
+
+.fileLanguage {
+  font-size: 11px;
+  color: var(--text-secondary, rgba(232, 232, 232, 0.7));
+  background: var(--bg-tertiary, rgba(255, 255, 255, 0.05));
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.treeChildren {
+  margin-left: 0;
+}
+
+/* ============================================
+   EDITOR SECTION
+   ============================================ */
+.editorSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-primary, #0a0a0a);
+}
+
+.editorHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: var(--bg-secondary, #0a0a0a);
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  flex-shrink: 0;
+}
+
+.editorHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.editorPath {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary, #E8E8E8);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.editorHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.editorStats {
+  font-size: 12px;
+  color: var(--text-secondary, rgba(232, 232, 232, 0.7));
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.fileExplanation {
+  padding: 12px 20px;
+  background: var(--bg-secondary, #0a0a0a);
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  flex-shrink: 0;
+}
+
+.fileExplanation p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary, rgba(232, 232, 232, 0.7));
+  line-height: 1.5;
+}
+
+.editorContainer {
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.noSelection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 12px;
+  padding: 40px;
+  color: var(--text-secondary, rgba(232, 232, 232, 0.7));
+}
+
+.noSelectionIcon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.noSelection h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary, #E8E8E8);
+}
+
+.noSelection p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary, rgba(232, 232, 232, 0.7));
+  text-align: center;
+}
+
+/* ============================================
+   SETUP INSTRUCTIONS
+   ============================================ */
+.setupSection {
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  background: var(--bg-secondary, #0a0a0a);
+  flex-shrink: 0;
+}
+
+.setupToggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.setupToggle:hover {
+  background: var(--bg-tertiary, rgba(255, 255, 255, 0.05));
+}
+
+.setupToggle h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary, #E8E8E8);
+}
+
+.chevron {
+  transition: transform 0.2s ease;
+  color: var(--text-secondary, rgba(232, 232, 232, 0.7));
+}
+
+.chevron.expanded {
+  transform: rotate(180deg);
+}
+
+.setupContent {
+  padding: 0 20px 20px 20px;
+}
+
+.instructionsText {
+  margin: 0;
+  padding: 16px;
+  background: var(--bg-primary, #0a0a0a);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-primary, #E8E8E8);
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+/* ============================================
+   LOADING STATE
+   ============================================ */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 16px;
+  padding: 60px;
+}
+
+.loadingSpinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--border, rgba(255, 255, 255, 0.1));
+  border-top-color: var(--color-primary-500, #3B82F6);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loadingState h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary, #E8E8E8);
+}
+
+.loadingText {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-primary, #E8E8E8);
+}
+
+.loadingSubtext {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary, rgba(232, 232, 232, 0.7));
+}
+
+/* ============================================
+   ERROR STATE
+   ============================================ */
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 16px;
+  padding: 60px;
+}
+
+.errorIcon {
+  font-size: 64px;
+  margin-bottom: 8px;
+}
+
+.errorState h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary, #E8E8E8);
+}
+
+.errorText {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-secondary, rgba(232, 232, 232, 0.7));
+  text-align: center;
+  max-width: 500px;
+}
+
+.errorActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 16px;
+  padding: 60px;
+}
+
+.emptyIcon {
+  font-size: 64px;
+  margin-bottom: 8px;
+}
+
+.emptyState h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary, #E8E8E8);
+}
+
+.emptyText {
+  margin: 0;
+  font-size: 15px;
+  color: var(--text-secondary, rgba(232, 232, 232, 0.7));
+}
+
+/* ============================================
+   SCROLLBARS
+   ============================================ */
+.fileTree::-webkit-scrollbar,
+.instructionsText::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.fileTree::-webkit-scrollbar-track,
+.instructionsText::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.fileTree::-webkit-scrollbar-thumb,
+.instructionsText::-webkit-scrollbar-thumb {
+  background: var(--border, rgba(255, 255, 255, 0.1));
+  border-radius: 4px;
+}
+
+.fileTree::-webkit-scrollbar-thumb:hover,
+.instructionsText::-webkit-scrollbar-thumb:hover {
+  background: var(--border, rgba(255, 255, 255, 0.2));
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1024px) {
+  .content {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    max-height: 300px;
+    border-right: none;
+    border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  }
+
+  .header {
+    flex-wrap: wrap;
+    padding: 16px;
+  }
+
+  .headerActions {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .headerTitle h2 {
+    font-size: 18px;
+  }
+
+  .projectMeta {
+    font-size: 12px;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}

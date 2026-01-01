@@ -1,0 +1,63 @@
+/* ============================================================
+   IDE ISOLATION MODULE
+   Isolates IDE from global CSS overrides WITHOUT breaking CSS modules
+   This module MUST be loaded AFTER all other global CSS
+   ============================================================ */
+
+/* 
+ * IDE Container Isolation
+ * The .ide-container class is added to CursorIDELayout root element
+ * We only reset specific global overrides that conflict with IDE
+ * CSS Modules are left completely untouched
+ */
+
+/* Only reset global typography enforcement on raw elements (no CSS modules) */
+/* CSS modules handle their own typography via design system tokens */
+.ide-container > h1:not([class*="_"]),
+.ide-container > h2:not([class*="_"]),
+.ide-container > h3:not([class*="_"]),
+.ide-container > h4:not([class*="_"]),
+.ide-container > h5:not([class*="_"]),
+.ide-container > h6:not([class*="_"]),
+.ide-container > p:not([class*="_"]),
+.ide-container > span:not([class*="_"]),
+.ide-container > div:not([class*="_"]) {
+  /* Use design system tokens, fallback to browser defaults */
+  font-family: var(--ide-font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  color: var(--ide-text-primary, #E8E8E8);
+}
+
+/* Only reset global component styles on raw elements (no CSS modules) */
+.ide-container > button:not([class*="_"]),
+.ide-container > input:not([class*="_"]),
+.ide-container > textarea:not([class*="_"]),
+.ide-container > select:not([class*="_"]),
+.ide-container > label:not([class*="_"]) {
+  /* Use design system tokens, fallback to browser defaults */
+  font-family: var(--ide-font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  color: var(--ide-text-primary, #E8E8E8);
+}
+
+/* Preserve code/pre formatting - these need special handling */
+.ide-container code:not([class*="_"]),
+.ide-container pre:not([class*="_"]) {
+  font-family: var(--ide-font-mono, 'SF Mono', 'Monaco', monospace);
+}
+
+/* Preserve syntax highlighting tokens */
+/* Syntax highlighting colors are defined by syntax highlighter */
+/* Don't override - let the highlighter handle it */
+
+/* Monaco Editor - has its own styles, don't interfere */
+/* Monaco manages its own styles - don't override */
+
+/* React Syntax Highlighter - has its own styles, don't interfere */
+/* Syntax highlighter manages its own styles - don't override */
+
+/* 
+ * IMPORTANT: CSS Modules are NOT touched by this file
+ * CSS Modules (classes with underscores like .cursorIDE, .statusBar) 
+ * work normally and apply their styles without interference
+ * 
+ * This file only resets global styles on elements WITHOUT CSS module classes
+ */

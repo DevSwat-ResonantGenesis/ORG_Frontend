@@ -1,0 +1,482 @@
+/* ============================================================
+   ENTERPRISE GRAPHICS - Professional Animations & Parallax
+   ============================================================ */
+
+.enterprise-graphics {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.enterprise-graphics.visible {
+  opacity: 1;
+}
+
+/* ============================================================
+   GRID LAYER
+   ============================================================ */
+
+.eg-grid-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;
+  animation: gridPulse 8s ease-in-out infinite;
+}
+
+.eg-grid-svg {
+  width: 100%;
+  height: 100%;
+  color: var(--accent-500);
+}
+
+@keyframes gridPulse {
+  0%, 100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* ============================================================
+   NODES LAYER - Floating Interactive Nodes
+   ============================================================ */
+
+.eg-nodes-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.eg-node {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  transform-origin: center;
+  animation: nodeFloat 6s ease-in-out infinite;
+}
+
+.eg-node-core {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--accent-500);
+  opacity: 0.6;
+  box-shadow: 0 0 8px var(--accent-500);
+}
+
+.eg-node-ring {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  border: 1px solid var(--accent-500);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: nodeRingExpand 3s ease-in-out infinite;
+}
+
+.eg-node-pulse {
+  position: absolute;
+  width: 300%;
+  height: 300%;
+  top: -100%;
+  left: -100%;
+  border: 1px solid var(--accent-500);
+  border-radius: 50%;
+  opacity: 0;
+  animation: nodePulse 2s ease-out infinite;
+}
+
+@keyframes nodeFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-20px) scale(1.1);
+  }
+}
+
+@keyframes nodeRingExpand {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes nodePulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   CONNECTIONS LAYER - Animated Connection Lines
+   ============================================================ */
+
+.eg-connections-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+}
+
+.eg-connections-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.eg-connection-line {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: lineDraw 4s ease-in-out infinite;
+}
+
+@keyframes lineDraw {
+  0% {
+    stroke-dashoffset: 1000;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  50% {
+    stroke-dashoffset: 0;
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    stroke-dashoffset: -1000;
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   PARTICLES LAYER - Data Flow Particles
+   ============================================================ */
+
+.eg-particles-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.eg-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  animation: particleMove 3s linear infinite;
+}
+
+.eg-particle-dot {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--accent-500);
+  opacity: 0.8;
+  box-shadow: 0 0 6px var(--accent-500);
+}
+
+.eg-particle-trail {
+  position: absolute;
+  width: 2px;
+  height: 30px;
+  background: linear-gradient(to bottom, var(--accent-500), transparent);
+  opacity: 0.4;
+  transform-origin: top center;
+  animation: trailFade 3s linear infinite;
+}
+
+@keyframes particleMove {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(50px);
+    opacity: 0;
+  }
+}
+
+@keyframes trailFade {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  10% {
+    opacity: 0.4;
+    transform: scaleY(1);
+  }
+  90% {
+    opacity: 0.4;
+    transform: scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+}
+
+/* ============================================================
+   SHAPES LAYER - Geometric Shapes
+   ============================================================ */
+
+.eg-shapes-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.eg-shape {
+  position: absolute;
+  opacity: 0.2;
+  transition: transform 0.1s ease-out;
+}
+
+.eg-shape-1 {
+  top: 10%;
+  left: 10%;
+  width: 200px;
+  height: 200px;
+}
+
+.eg-shape-2 {
+  top: 60%;
+  right: 15%;
+  width: 150px;
+  height: 150px;
+}
+
+.eg-shape-3 {
+  bottom: 20%;
+  left: 20%;
+  width: 180px;
+  height: 180px;
+}
+
+.eg-shape svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ============================================================
+   ORBS LAYER - Gradient Orbs
+   ============================================================ */
+
+.eg-orbs-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.eg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.3;
+  animation: orbPulse 8s ease-in-out infinite;
+}
+
+.eg-orb-1 {
+  width: 300px;
+  height: 300px;
+  top: 20%;
+  left: 20%;
+  background: radial-gradient(circle, var(--accent-500), transparent);
+  animation-delay: 0s;
+}
+
+.eg-orb-2 {
+  width: 250px;
+  height: 250px;
+  top: 50%;
+  right: 20%;
+  background: radial-gradient(circle, var(--accent-400), transparent);
+  animation-delay: 2s;
+}
+
+.eg-orb-3 {
+  width: 200px;
+  height: 200px;
+  bottom: 30%;
+  left: 50%;
+  background: radial-gradient(circle, var(--accent-600), transparent);
+  animation-delay: 4s;
+}
+
+@keyframes orbPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.4;
+  }
+}
+
+/* ============================================================
+   VARIANT STYLES
+   ============================================================ */
+
+.enterprise-graphics-hero {
+  opacity: 0.6;
+}
+
+.enterprise-graphics-section {
+  opacity: 0.4;
+}
+
+.enterprise-graphics-background {
+  opacity: 0.2;
+}
+
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+
+[data-theme="dark"] .enterprise-graphics {
+  opacity: 0.8;
+}
+
+[data-theme="dark"] .eg-grid-layer {
+  opacity: 0.2;
+}
+
+[data-theme="dark"] .eg-node-core {
+  opacity: 0.8;
+  box-shadow: 0 0 12px var(--accent-500);
+}
+
+[data-theme="dark"] .eg-connection-line {
+  opacity: 0.3;
+}
+
+[data-theme="dark"] .eg-particle-dot {
+  opacity: 1;
+  box-shadow: 0 0 8px var(--accent-500);
+}
+
+[data-theme="dark"] .eg-orb {
+  opacity: 0.4;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  .eg-node {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .eg-shape-1,
+  .eg-shape-2,
+  .eg-shape-3 {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .eg-orb {
+    filter: blur(30px);
+  }
+  
+  .eg-orb-1 {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .eg-orb-2 {
+    width: 180px;
+    height: 180px;
+  }
+  
+  .eg-orb-3 {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .enterprise-graphics {
+    opacity: 0.4;
+  }
+  
+  .eg-nodes-layer {
+    display: none; /* Hide nodes on mobile for performance */
+  }
+  
+  .eg-particles-layer {
+    display: none; /* Hide particles on mobile for performance */
+  }
+  
+  .eg-shapes-layer {
+    opacity: 0.1;
+  }
+  
+  .eg-orbs-layer {
+    opacity: 0.2;
+  }
+  
+  .eg-grid-layer {
+    opacity: 0.15;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enterprise-graphics * {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .eg-node,
+  .eg-particle,
+  .eg-connection-line {
+    animation: none !important;
+  }
+}
+

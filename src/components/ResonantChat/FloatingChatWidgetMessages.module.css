@@ -1,0 +1,288 @@
+/* ============================================================
+   Floating Chat Widget Messages - Dedicated Styles
+   ============================================================ */
+
+/* Messages Container */
+.messagesContainer {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  min-height: 0;
+  max-height: 100%;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  background-color: transparent;
+  position: relative;
+  will-change: scroll-position;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.6) transparent;
+}
+
+.messagesContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.messagesContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb {
+  background-color: rgba(59, 130, 246, 0.6);
+  border-radius: 4px;
+  min-height: 40px;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(59, 130, 246, 0.8);
+}
+
+/* Message Bubbles */
+.message {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  max-width: 85%;
+  word-wrap: break-word;
+  animation: messageSlideIn 0.3s ease-out;
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* User Message */
+.message.user {
+  align-self: flex-end;
+  background-color: #0ea5e9;
+  color: #ffffff;
+  border: 1px solid #0ea5e9;
+}
+
+/* Assistant Message */
+.message.assistant {
+  align-self: flex-start;
+  background-color: transparent !important;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  color: #111827;
+}
+
+[data-theme='dark'] .message.assistant {
+  background-color: transparent !important;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+/* Message Header */
+.messageHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.6);
+  flex-wrap: wrap;
+}
+
+.message.user .messageHeader {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme='dark'] .messageHeader {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Provider Badge & Validity Score */
+.providerBadge,
+.validityScore {
+  padding: 2px 8px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: capitalize;
+  color: inherit;
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .providerBadge,
+[data-theme='dark'] .validityScore {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.message.user .providerBadge,
+.message.user .validityScore {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Message Content - CRITICAL: Allow ReactMarkdown to render */
+.messageContent {
+  font-size: 15px;
+  line-height: 1.6;
+  color: inherit;
+  white-space: normal !important; /* CRITICAL: Must be normal for ReactMarkdown */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.message.user .messageContent {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .message.assistant .messageContent {
+  color: #ffffff;
+}
+
+/* Markdown Paragraph */
+.markdownParagraph {
+  margin: 8px 0;
+  line-height: 1.6;
+  color: inherit;
+}
+
+.markdownParagraph:first-child {
+  margin-top: 0;
+}
+
+.markdownParagraph:last-child {
+  margin-bottom: 0;
+}
+
+/* Markdown Lists */
+.markdownList {
+  margin: 8px 0;
+  padding-left: 24px;
+  color: inherit;
+}
+
+.markdownListItem {
+  margin: 4px 0;
+  line-height: 1.6;
+  color: inherit;
+}
+
+/* Markdown Headings */
+.markdownHeading {
+  margin: 16px 0 8px 0;
+  font-weight: 600;
+  color: inherit;
+  line-height: 1.4;
+}
+
+.markdownHeading:first-child {
+  margin-top: 0;
+}
+
+/* Direct heading elements */
+.messageContent h1 {
+  font-size: 20px;
+  margin: 16px 0 8px 0;
+  font-weight: 600;
+  color: inherit;
+  line-height: 1.4;
+}
+
+.messageContent h2 {
+  font-size: 18px;
+  margin: 16px 0 8px 0;
+  font-weight: 600;
+  color: inherit;
+  line-height: 1.4;
+}
+
+.messageContent h3 {
+  font-size: 16px;
+  margin: 16px 0 8px 0;
+  font-weight: 600;
+  color: inherit;
+  line-height: 1.4;
+}
+
+/* Markdown Blockquote */
+.markdownBlockquote {
+  margin: 12px 0;
+  padding: 12px 16px;
+  border-left: 3px solid #0ea5e9;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+  color: inherit;
+  font-style: italic;
+}
+
+[data-theme='dark'] .markdownBlockquote {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Markdown Links */
+.markdownLink {
+  color: #0ea5e9;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.message.user .markdownLink {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.markdownLink:hover {
+  color: #0284c7;
+  opacity: 0.8;
+}
+
+/* Inline Code */
+.inlineCode {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+  font-size: 0.9em;
+  color: inherit;
+}
+
+[data-theme='dark'] .inlineCode {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.message.user .inlineCode {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Code Block */
+.codeBlock {
+  border-radius: 8px;
+  margin: 12px 0;
+  overflow-x: auto;
+  font-size: 0.9em;
+  line-height: 1.6;
+  position: relative;
+}
+
+.codeBlock pre {
+  margin: 0;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  white-space: pre;
+  word-wrap: normal;
+  overflow-wrap: normal;
+}
+
+[data-theme='dark'] .codeBlock pre {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1);
+}

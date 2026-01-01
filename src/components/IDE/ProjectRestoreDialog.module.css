@@ -1,0 +1,209 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(4px);
+}
+
+.dialog {
+  background: var(--ide-bg-primary, #0a0a0a);
+  border: 1px solid var(--ide-border, rgba(255, 255, 255, 0.15));
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--ide-border, rgba(255, 255, 255, 0.15));
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ide-text-primary, #E8E8E8);
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: var(--ide-text-secondary, rgba(232, 232, 232, 0.7));
+  font-size: 24px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.closeButton:hover {
+  background: var(--ide-surface-hover, #111111);
+  color: var(--ide-text-primary, #E8E8E8);
+}
+
+.content {
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.description {
+  margin: 0 0 20px 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ide-text-secondary, rgba(232, 232, 232, 0.7));
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.inputGroup label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ide-text-primary, #E8E8E8);
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--ide-border, rgba(255, 255, 255, 0.15));
+  border-radius: 6px;
+  color: var(--ide-text-primary, #E8E8E8);
+  font-size: 13px;
+  font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: var(--ide-accent-500, #3b82f6);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  padding: 12px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  color: #F48771;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--ide-border, rgba(255, 255, 255, 0.15));
+}
+
+.cancelButton,
+.restoreButton {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.cancelButton {
+  background: var(--ide-bg-tertiary, rgba(255, 255, 255, 0.05));
+  color: var(--ide-text-secondary, rgba(232, 232, 232, 0.7));
+  border: 1px solid var(--ide-border, rgba(255, 255, 255, 0.15));
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: var(--ide-surface-hover, #111111);
+  color: var(--ide-text-primary, #E8E8E8);
+}
+
+.restoreButton {
+  background: var(--ide-accent-500, #3b82f6);
+  color: white;
+}
+
+.restoreButton:hover:not(:disabled) {
+  background: var(--ide-accent-600, #2563eb);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.restoreButton:disabled,
+.cancelButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+[data-theme='light'] .dialog {
+  background: #FFFFFF;
+  border-color: #E5E7EB;
+}
+
+[data-theme='light'] .header h3 {
+  color: #0a0a0a;
+}
+
+[data-theme='light'] .description {
+  color: #525252;
+}
+
+[data-theme='light'] .inputGroup label {
+  color: #0a0a0a;
+}
+
+[data-theme='light'] .input {
+  background: #F9FAFB;
+  border-color: #E5E7EB;
+  color: #0a0a0a;
+}
+
+[data-theme='light'] .input:focus {
+  background: #FFFFFF;
+  border-color: #3b82f6;
+}
+
+[data-theme='light'] .error {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #DC2626;
+}
+

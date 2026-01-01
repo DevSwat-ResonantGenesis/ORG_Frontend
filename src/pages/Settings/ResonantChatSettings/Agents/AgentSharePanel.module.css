@@ -1,0 +1,188 @@
+.container {
+  padding: var(--space-4);
+  background: var(--color-white, #ffffff);
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--color-gray-200, #e5e7eb);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+  margin: 0;
+}
+
+.infoIcon {
+  color: var(--color-gray-500, #6b7280);
+  cursor: help;
+}
+
+.generateSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.description {
+  font-size: 14px;
+  color: var(--color-gray-600, #4b5563);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.generateButton,
+.shareButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  border-radius: var(--radius-sm, 6px);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.generateButton {
+  background: var(--color-gray-100, #f3f4f6);
+  color: var(--text-primary, #111827);
+}
+
+.generateButton:hover:not(:disabled) {
+  background: var(--color-gray-200, #e5e7eb);
+}
+
+.shareButton {
+  background: var(--color-primary-600, #0284c7);
+  color: white;
+}
+
+.shareButton:hover:not(:disabled) {
+  background: var(--color-primary-700, #0369a1);
+}
+
+.generateButton:disabled,
+.shareButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hashSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.hashGroup,
+.secretGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary, #111827);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.inlineInfoIcon {
+  color: var(--color-gray-400, #9ca3af);
+  cursor: help;
+}
+
+.hashDisplay,
+.secretDisplay {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-gray-50, #f9fafb);
+  border: 1px solid var(--color-gray-300, #d1d5db);
+  border-radius: var(--radius-sm, 6px);
+}
+
+.hashValue,
+.secretValue {
+  flex: 1;
+  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--text-primary, #111827);
+  word-break: break-all;
+  margin: 0;
+}
+
+.copyButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-1);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  color: var(--color-gray-600, #4b5563);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.copyButton:hover {
+  background: var(--color-gray-100, #f3f4f6);
+  color: var(--color-primary-600, #0284c7);
+}
+
+.helpText {
+  font-size: 12px;
+  color: var(--color-gray-600, #4b5563);
+  margin: 0;
+}
+
+.warningText {
+  font-size: 12px;
+  color: var(--color-orange-700, #c2410c);
+  margin: 0;
+  padding: var(--space-2);
+  background: var(--color-orange-50, #fff7ed);
+  border: 1px solid var(--color-orange-200, #fed7aa);
+  border-radius: var(--radius-sm, 6px);
+}
+
+.publicBadge {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-green-50, #f0fdf4);
+  border: 1px solid var(--color-green-200, #bbf7d0);
+  border-radius: var(--radius-sm, 6px);
+}
+
+.badgeText {
+  font-size: 13px;
+  color: var(--color-green-700, #15803d);
+  font-weight: 500;
+}
+
+.errorMessage {
+  padding: var(--space-3);
+  background: var(--color-red-50, #fef2f2);
+  border: 1px solid var(--color-red-200, #fecaca);
+  border-radius: var(--radius-sm, 6px);
+  color: var(--color-red-700, #b91c1c);
+  font-size: 14px;
+  margin-bottom: var(--space-4);
+}
+

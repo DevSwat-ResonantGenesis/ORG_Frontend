@@ -1,0 +1,709 @@
+{
+  "plans": [
+    {
+      "id": "free",
+      "name": "Free",
+      "price": {
+        "monthly": 0,
+        "yearly": 0,
+        "currency": "USD"
+      },
+      "backendEndpoints": [
+        "/public/*",
+        "/public/llm-scan",
+        "/validate",
+        "/public/hash-words"
+      ],
+      "backendServices": [
+        "ML Worker (limited - public scanner only)",
+        "Resonance Hashing (limited - hash-words only)"
+      ],
+      "features": {
+        "llmScanner": {
+          "enabled": true,
+          "rateLimit": "5-10 requests/minute per IP",
+          "features": [
+            "6 risk category detection",
+            "Basic risk scores",
+            "Recommendations"
+          ],
+          "limitations": [
+            "No evidence graphs",
+            "No resonance scoring",
+            "No historical tracking"
+          ]
+        },
+        "authentication": false,
+        "predictions": false,
+        "resonantChat": false,
+        "organizations": false,
+        "policies": false,
+        "compliance": false,
+        "audit": false,
+        "apiKeys": false,
+        "mlops": false,
+        "integrations": false,
+        "sso": false
+      },
+      "limits": {
+        "users": 0,
+        "predictions": 0,
+        "memoryAnchors": 0,
+        "conversations": 0,
+        "policies": 0,
+        "apiKeys": 0
+      },
+      "roles": [],
+      "bestFor": [
+        "Individual users testing",
+        "Small projects",
+        "Evaluation"
+      ]
+    },
+        {
+          "id": "starter",
+          "name": "Starter",
+          "price": {
+            "monthly": 79,
+            "yearly": 790,
+            "currency": "USD",
+            "yearlyDiscount": 17
+          },
+      "backendEndpoints": [
+        "/auth/*",
+        "/users/me",
+        "/predictions (own only)",
+        "/resonant-chat/*",
+        "/anchors (limited)",
+        "/audit (own only)",
+        "/settings"
+      ],
+      "backendServices": [
+        "ML Worker (basic)",
+        "Resonance Hashing (basic)",
+        "Multi-AI Routing",
+        "Email Service"
+      ],
+      "features": {
+        "llmScanner": {
+          "enabled": true,
+          "rateLimit": "Higher limits",
+          "features": [
+            "Full 6 risk categories",
+            "Evidence graphs",
+            "Resonance scoring"
+          ]
+        },
+        "authentication": {
+          "enabled": true,
+          "features": ["JWT", "MFA (optional)"]
+        },
+        "predictions": {
+          "enabled": true,
+          "limit": 100,
+          "period": "month",
+          "features": [
+            "Create predictions",
+            "List own predictions",
+            "Get prediction details",
+            "Basic embedding generation"
+          ]
+        },
+        "resonantChat": {
+          "enabled": true,
+          "features": [
+            "Multi-AI routing",
+            "Memory anchors (500)",
+            "Conversation history (30 days)",
+            "Basic resonance scoring",
+            "Evidence-based responses"
+          ]
+        },
+        "organizations": false,
+        "policies": false,
+        "compliance": false,
+        "audit": {
+          "enabled": true,
+          "scope": "own logs only",
+          "features": ["Basic search", "Limited export"]
+        },
+        "apiKeys": false,
+        "mlops": false,
+        "integrations": false,
+        "sso": false
+      },
+      "limits": {
+        "users": 1,
+        "predictions": 100,
+        "memoryAnchors": 500,
+        "semanticAnchors": 10,
+        "conversations": "30 days",
+        "policies": 0,
+        "apiKeys": 0
+      },
+      "roles": ["user"],
+      "bestFor": [
+        "Individual professionals",
+        "Small projects",
+        "Personal AI assistant"
+      ]
+    },
+        {
+          "id": "professional",
+          "name": "Professional",
+          "price": {
+            "monthly": 499,
+            "yearly": 4990,
+            "currency": "USD",
+            "yearlyDiscount": 17
+          },
+      "backendEndpoints": [
+        "/auth/*",
+        "/users/*",
+        "/orgs/*",
+        "/predictions/*",
+        "/resonant-chat/*",
+        "/anchors/*",
+        "/policies/*",
+        "/compliance/*",
+        "/audit/*",
+        "/ai-audit/*",
+        "/billing/*",
+        "/orgs/api-keys",
+        "/settings/*"
+      ],
+      "backendServices": [
+        "ML Worker (standard)",
+        "Resonance Hashing (standard)",
+        "Multi-AI Routing (full)",
+        "AI Audit Service",
+        "Email Service (full)",
+        "Stripe Service (billing)"
+      ],
+      "features": {
+        "llmScanner": {
+          "enabled": true,
+          "rateLimit": "Higher limits",
+          "features": ["Full features with evidence graphs"]
+        },
+        "authentication": {
+          "enabled": true,
+          "features": ["JWT", "MFA", "API Keys"]
+        },
+        "predictions": {
+          "enabled": true,
+          "limit": "unlimited",
+          "features": [
+            "Unlimited predictions",
+            "Embed predictions",
+            "Model versioning access",
+            "Advanced prediction features"
+          ]
+        },
+        "resonantChat": {
+          "enabled": true,
+          "features": [
+            "Unlimited memory anchors (5,000)",
+            "Unlimited conversation history",
+            "Advanced resonance scoring",
+            "Resonance clusters",
+            "Evidence graphs",
+            "Full memory library"
+          ]
+        },
+        "organizations": {
+          "enabled": true,
+          "maxUsers": 5,
+          "features": [
+            "Create organization",
+            "Invite users",
+            "Manage user roles",
+            "Organization settings"
+          ]
+        },
+        "policies": {
+          "enabled": true,
+          "limit": 10,
+          "features": [
+            "Create policies",
+            "Policy testing",
+            "Policy enforcement",
+            "Basic policy templates"
+          ]
+        },
+        "compliance": {
+          "enabled": true,
+          "features": [
+            "Compliance summary",
+            "Compliance dashboard",
+            "Violation tracking",
+            "Risky predictions",
+            "Basic compliance reports"
+          ]
+        },
+        "audit": {
+          "enabled": true,
+          "scope": "organization",
+          "features": [
+            "Full audit log access",
+            "Advanced search",
+            "Export capabilities",
+            "AI audit logging",
+            "Hash chain verification"
+          ]
+        },
+        "apiKeys": {
+          "enabled": true,
+          "limit": 5,
+          "features": [
+            "Generate API keys",
+            "Organization-scoped keys",
+            "API key management"
+          ]
+        },
+        "mlops": false,
+        "integrations": false,
+        "sso": false
+      },
+      "limits": {
+        "users": 5,
+        "predictions": "unlimited",
+        "memoryAnchors": 5000,
+        "semanticAnchors": "unlimited",
+        "conversations": "unlimited",
+        "policies": 10,
+        "apiKeys": 5
+      },
+      "roles": ["user", "org_admin"],
+      "bestFor": [
+        "Small teams",
+        "Growing businesses",
+        "Professional use"
+      ]
+    },
+        {
+          "id": "business",
+          "name": "Business",
+          "price": {
+            "monthly": 2499,
+            "yearly": 24990,
+            "currency": "USD",
+            "yearlyDiscount": 17
+          },
+      "backendEndpoints": [
+        "All Professional endpoints",
+        "/ml-ops/*",
+        "/ml/advanced/*",
+        "/marketplace/*",
+        "/metrics/*"
+      ],
+      "backendServices": [
+        "ML Worker (advanced)",
+        "Resonance Hashing (advanced)",
+        "Multi-AI Routing (full)",
+        "AI Audit Service (full)",
+        "Email Service (full)",
+        "Stripe Service (full)",
+        "Webhook Service (basic)",
+        "Queue Service (training jobs)"
+      ],
+      "features": {
+        "llmScanner": {
+          "enabled": true,
+          "features": ["Full features"]
+        },
+        "authentication": {
+          "enabled": true,
+          "features": ["JWT", "MFA", "API Keys"]
+        },
+        "predictions": {
+          "enabled": true,
+          "limit": "unlimited",
+          "features": ["Full prediction features"]
+        },
+        "resonantChat": {
+          "enabled": true,
+          "features": [
+            "Unlimited memory anchors",
+            "Full chat features",
+            "Advanced analytics"
+          ]
+        },
+        "organizations": {
+          "enabled": true,
+          "maxUsers": 20,
+          "features": [
+            "Advanced team management",
+            "Department organization",
+            "Advanced role management"
+          ]
+        },
+        "policies": {
+          "enabled": true,
+          "limit": "unlimited",
+          "features": [
+            "Unlimited policies",
+            "Advanced policy rules",
+            "Policy templates",
+            "Custom policies"
+          ]
+        },
+        "compliance": {
+          "enabled": true,
+          "features": [
+            "Full compliance dashboard",
+            "Advanced violation tracking",
+            "Compliance reporting",
+            "Regulatory compliance (GDPR, HIPAA)",
+            "Compliance bundles"
+          ]
+        },
+        "audit": {
+          "enabled": true,
+          "scope": "full",
+          "features": [
+            "Complete audit trail",
+            "Advanced search and filtering",
+            "Compliance bundle generation",
+            "Full export capabilities",
+            "Statistics and analytics"
+          ]
+        },
+        "apiKeys": {
+          "enabled": true,
+          "limit": 20,
+          "features": ["Full API key management"]
+        },
+        "mlops": {
+          "enabled": true,
+          "features": [
+            "Training job management",
+            "Model versioning",
+            "Model evaluation",
+            "Drift detection",
+            "Worker monitoring"
+          ],
+          "limits": {
+            "concurrentTrainingJobs": 10
+          }
+        },
+        "advancedML": {
+          "enabled": true,
+          "features": [
+            "Enhanced explainability",
+            "Auto-retraining",
+            "Model interpretability",
+            "Feature importance"
+          ]
+        },
+        "integrations": {
+          "enabled": true,
+          "limit": 5,
+          "features": [
+            "Webhook integration",
+            "Basic third-party integrations",
+            "Custom webhooks",
+            "Integration management"
+          ]
+        },
+        "analytics": {
+          "enabled": true,
+          "features": [
+            "Performance metrics",
+            "Advanced analytics",
+            "Custom dashboards",
+            "Export capabilities"
+          ]
+        },
+        "sso": false
+      },
+      "limits": {
+        "users": 20,
+        "predictions": "unlimited",
+        "memoryAnchors": "unlimited",
+        "semanticAnchors": "unlimited",
+        "conversations": "unlimited",
+        "policies": "unlimited",
+        "apiKeys": 20,
+        "trainingJobs": 10,
+        "integrations": 5
+      },
+      "roles": ["user", "org_admin", "compliance", "ml_engineer"],
+      "bestFor": [
+        "Medium-sized businesses",
+        "Established companies",
+        "Compliance-focused organizations",
+        "ML teams"
+      ]
+    },
+        {
+          "id": "enterprise",
+          "name": "Enterprise",
+          "price": {
+            "type": "custom",
+            "minimum": 5000,
+            "currency": "USD",
+            "note": "Starting at $5,000/month, pricing based on usage and requirements"
+          },
+      "backendEndpoints": [
+        "All Business endpoints",
+        "/auth/sso/*",
+        "/admin/*",
+        "/platform/*",
+        "/finance/*"
+      ],
+      "backendServices": [
+        "All services (full access)",
+        "ML Worker (full MLOps)",
+        "Resonance Hashing (full)",
+        "Multi-AI Routing (full + custom)",
+        "AI Audit Service (full)",
+        "Email Service (full)",
+        "Stripe Service (full)",
+        "SSO Service (SAML/OIDC)",
+        "Webhook Service (full)",
+        "Queue Service (full)",
+        "Custom Services (available)"
+      ],
+      "features": {
+        "llmScanner": {
+          "enabled": true,
+          "features": ["Full features"]
+        },
+        "authentication": {
+          "enabled": true,
+          "features": ["JWT", "MFA", "API Keys", "SSO (SAML/OIDC)"]
+        },
+        "predictions": {
+          "enabled": true,
+          "limit": "unlimited",
+          "features": ["Full prediction features"]
+        },
+        "resonantChat": {
+          "enabled": true,
+          "features": ["Full chat features"]
+        },
+        "organizations": {
+          "enabled": true,
+          "maxUsers": "unlimited",
+          "features": [
+            "Unlimited users",
+            "Unlimited organizations (multi-org)",
+            "Advanced organization hierarchy",
+            "Cross-organization access (for admins)"
+          ]
+        },
+        "policies": {
+          "enabled": true,
+          "limit": "unlimited",
+          "features": ["Full policy management"]
+        },
+        "compliance": {
+          "enabled": true,
+          "features": [
+            "Full compliance features",
+            "SOC 2 compliance",
+            "HIPAA compliance (if needed)"
+          ]
+        },
+        "audit": {
+          "enabled": true,
+          "scope": "full",
+          "features": ["Complete audit system"]
+        },
+        "apiKeys": {
+          "enabled": true,
+          "limit": "unlimited",
+          "features": ["Full API key management"]
+        },
+        "mlops": {
+          "enabled": true,
+          "features": [
+            "Unlimited training jobs",
+            "Complete model registry",
+            "Advanced model management",
+            "Custom model integration",
+            "Full ML lifecycle"
+          ],
+          "limits": {
+            "concurrentTrainingJobs": "unlimited"
+          }
+        },
+        "advancedML": {
+          "enabled": true,
+          "features": ["Full advanced ML features"]
+        },
+        "integrations": {
+          "enabled": true,
+          "limit": "unlimited",
+          "features": [
+            "Full API access",
+            "Custom integrations",
+            "CRM integrations",
+            "Ticketing system integrations",
+            "White-label options"
+          ]
+        },
+        "analytics": {
+          "enabled": true,
+          "features": [
+            "Real-time dashboards",
+            "Custom reports",
+            "Advanced analytics",
+            "Predictive insights",
+            "Business intelligence"
+          ]
+        },
+        "sso": {
+          "enabled": true,
+          "providers": ["SAML", "OIDC"],
+          "features": [
+            "SAML integration",
+            "OIDC integration",
+            "SSO configuration",
+            "User provisioning"
+          ]
+        },
+        "platformAdmin": {
+          "enabled": true,
+          "features": [
+            "System health monitoring",
+            "System metrics",
+            "All organizations view",
+            "All users view",
+            "System logs",
+            "Feature flags",
+            "Database stats"
+          ]
+        },
+        "finance": {
+          "enabled": true,
+          "features": [
+            "All invoices access",
+            "Credit application",
+            "Invoice adjustments",
+            "Refund processing",
+            "MRR calculation",
+            "Usage reports"
+          ]
+        }
+      },
+      "limits": {
+        "users": "unlimited",
+        "predictions": "unlimited",
+        "memoryAnchors": "unlimited",
+        "semanticAnchors": "unlimited",
+        "conversations": "unlimited",
+        "policies": "unlimited",
+        "apiKeys": "unlimited",
+        "trainingJobs": "unlimited",
+        "integrations": "unlimited"
+      },
+      "roles": [
+        "user",
+        "org_admin",
+        "platform_dev",
+        "finance",
+        "compliance",
+        "ml_engineer",
+        "viewer"
+      ],
+      "bestFor": [
+        "Large enterprises",
+        "Multi-organization deployments",
+        "High-compliance requirements",
+        "Enterprise customers"
+      ],
+      "support": {
+        "type": "24/7 dedicated",
+        "channels": ["email", "phone", "chat"],
+        "accountManager": true,
+        "dedicatedTeam": true,
+        "onboarding": "custom",
+        "training": true,
+        "workshops": true,
+        "sla": true,
+        "customDevelopment": true
+      }
+    }
+  ],
+  "addOns": [
+    {
+      "id": "extra-memory-anchors",
+      "name": "Extra Memory Anchors",
+      "prices": [
+        { "amount": 1000, "price": 2.99, "period": "month" },
+        { "amount": 5000, "price": 9.99, "period": "month" },
+        { "amount": 10000, "price": 19.99, "period": "month" }
+      ],
+      "availableFor": ["starter", "professional"]
+    },
+    {
+      "id": "additional-api-keys",
+      "name": "Additional API Keys",
+      "prices": [
+        { "amount": 5, "price": 9.99, "period": "month" },
+        { "amount": 10, "price": 19.99, "period": "month" }
+      ],
+      "availableFor": ["professional", "business"]
+    },
+    {
+      "id": "extended-history",
+      "name": "Extended Conversation History",
+      "prices": [
+        { "amount": 30, "unit": "days", "price": 1.99, "period": "month" },
+        { "amount": 90, "unit": "days", "price": 4.99, "period": "month" },
+        { "amount": "unlimited", "price": 9.99, "period": "month" }
+      ],
+      "availableFor": ["starter"]
+    },
+    {
+      "id": "additional-users",
+      "name": "Additional Users",
+      "prices": [
+        { "amount": 5, "price": 49, "period": "month" },
+        { "amount": 10, "price": 99, "period": "month" }
+      ],
+      "availableFor": ["professional", "business"]
+    },
+    {
+      "id": "additional-training-jobs",
+      "name": "Additional Training Jobs",
+      "prices": [
+        { "amount": 5, "price": 29.99, "period": "month" },
+        { "amount": 10, "price": 49.99, "period": "month" }
+      ],
+      "availableFor": ["business"]
+    },
+    {
+      "id": "custom-integration",
+      "name": "Custom Integration Setup",
+      "price": 199,
+      "period": "one-time",
+      "availableFor": ["business", "enterprise"]
+    },
+    {
+      "id": "priority-support",
+      "name": "Priority Support",
+      "prices": [
+        { "type": "email", "price": 4.99, "period": "month" },
+        { "type": "phone", "price": 19.99, "period": "month" }
+      ],
+      "availableFor": ["starter", "professional"]
+    }
+  ],
+  "trial": {
+    "duration": 14,
+    "unit": "days",
+    "features": "full",
+    "creditCardRequired": false,
+    "cancelAnytime": true
+  },
+  "guarantee": {
+    "duration": 30,
+    "unit": "days",
+    "type": "money-back",
+    "description": "Full refund if not satisfied, no questions asked"
+  }
+}
+

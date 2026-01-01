@@ -1,0 +1,475 @@
+/* ============== EXECUTION PANEL STYLES ============== */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.panelHeader h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.viewTabs {
+  display: flex;
+  gap: 4px;
+}
+
+.viewTab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #888;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.viewTab:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.viewTab.active {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #0ea5e9;
+}
+
+.badge {
+  padding: 2px 6px;
+  background: rgba(34, 197, 94, 0.3);
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #22c55e;
+}
+
+.panelContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* Error Banner */
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 14px;
+  font-weight: 500;
+  animation: slideDown 0.3s ease;
+}
+
+.errorBanner svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Loading Banner */
+.loadingBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+  color: #3b82f6;
+  font-size: 14px;
+  font-weight: 500;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Agent Selector */
+.agentSelector {
+  margin-right: auto;
+  margin-left: 20px;
+}
+
+.agentSelector select {
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  min-width: 180px;
+  cursor: pointer;
+}
+
+.agentSelector select:focus {
+  outline: none;
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+/* Stats Bar */
+.statsBar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.statLabel {
+  display: block;
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.statValue.running {
+  color: #0ea5e9;
+}
+
+.statValue.completed {
+  color: #22c55e;
+}
+
+.statValue.failed {
+  color: #ef4444;
+}
+
+/* Executions List */
+.executionsList h3 {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+.executionCard {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.executionCard:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.executionCard.selected {
+  background: rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.execHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #666;
+}
+
+.statusDot.running {
+  background: #0ea5e9;
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.5);
+  animation: pulse 1.5s infinite;
+}
+
+.statusDot.completed {
+  background: #22c55e;
+}
+
+.statusDot.failed {
+  background: #ef4444;
+}
+
+.statusDot.paused {
+  background: #f59e0b;
+}
+
+.statusDot.pending {
+  background: #888;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.execAgent {
+  font-size: 14px;
+  font-weight: 500;
+  flex: 1;
+}
+
+.execId {
+  font-size: 11px;
+  color: #666;
+  font-family: monospace;
+}
+
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.statusBadge.running {
+  background: rgba(14, 165, 233, 0.15);
+  color: #0ea5e9;
+}
+
+.statusBadge.completed {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.statusBadge.failed {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.statusBadge.paused {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+/* Progress Section */
+.progressSection {
+  margin-bottom: 12px;
+}
+
+.progressBar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #0ea5e9, #22c55e);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  font-size: 11px;
+  color: #888;
+}
+
+/* Exec Meta */
+.execMeta {
+  display: flex;
+  gap: 16px;
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.execMeta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Error Message */
+.errorMessage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: #ef4444;
+}
+
+/* Exec Actions */
+.execActions {
+  display: flex;
+  gap: 8px;
+}
+
+.execActions button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.execActions button:hover {
+  background: rgba(14, 165, 233, 0.2);
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+/* Queue Section */
+.queueSection h3 {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+/* Metrics Section */
+.metricsSection h3 {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.metricCard {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+}
+
+.metricCard h4 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #888;
+  font-weight: 400;
+}
+
+.metricValue {
+  display: block;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.metricChange {
+  font-size: 11px;
+  color: #22c55e;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #666;
+  text-align: center;
+}
+
+.emptyState svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.emptyState p {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+.primaryBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .statsBar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .viewTabs {
+    flex-wrap: wrap;
+  }
+  
+  .statsBar {
+    grid-template-columns: 1fr;
+  }
+  
+  .execMeta {
+    flex-wrap: wrap;
+  }
+}

@@ -1,0 +1,187 @@
+.container {
+  width: 100%;
+  max-width: 1000px;
+  padding: 0;
+}
+
+.header {
+  margin-bottom: var(--space-6);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.errorBanner {
+  margin-bottom: var(--space-4);
+}
+
+.error {
+  background: var(--color-red-50, #fef2f2);
+  border: 1px solid var(--color-red-300, #fca5a5);
+  border-radius: 8px;
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-red-700, #b91c1c);
+  font-size: 14px;
+}
+
+.error p {
+  margin: 0;
+}
+
+.section {
+  padding: var(--space-4);
+  background: var(--bg-secondary, #f9fafb);
+  border-radius: 12px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  margin-bottom: var(--space-4);
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.sectionDescription {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.exportButton,
+.importButton {
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-primary-600, #0284c7);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exportButton:hover:not(:disabled),
+.importButton:hover:not(:disabled) {
+  background: var(--color-primary-700, #0369a1);
+}
+
+.exportButton:disabled,
+.importButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.importOptions {
+  margin-bottom: var(--space-4);
+}
+
+.fileUpload {
+  margin-bottom: var(--space-4);
+}
+
+.fileLabel {
+  display: inline-block;
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg, #ffffff);
+  border: 2px dashed var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fileLabel:hover {
+  border-color: var(--color-primary-300, #7dd3fc);
+  background: var(--bg-hover, #f3f4f6);
+}
+
+.fileInput {
+  display: none;
+}
+
+.orDivider {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: var(--space-4) 0;
+  position: relative;
+}
+
+.orDivider::before,
+.orDivider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background: var(--border-color, #e5e7eb);
+}
+
+.orDivider::before {
+  left: 0;
+}
+
+.orDivider::after {
+  right: 0;
+}
+
+.textAreaContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.textarea {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  color: var(--text-primary);
+  background: var(--bg, #ffffff);
+  resize: vertical;
+  min-height: 200px;
+  line-height: 1.6;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-500, #0ea5e9);
+  box-shadow: 0 0 0 3px var(--color-primary-100, #dbeafe);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.checkboxLabel input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+

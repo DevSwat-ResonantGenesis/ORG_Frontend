@@ -1,0 +1,87 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: var(--surface, #0a0a0a);
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  transition: all 0.2s;
+}
+
+[data-theme='light'] .card {
+  background: #ffffff;
+  border-color: #e5e5e5;
+}
+
+.card:hover {
+  border-color: var(--color-primary, #6366f1);
+  transform: translateY(-2px);
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.valueRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary, #ffffff);
+  line-height: 1.2;
+}
+
+.limit {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-tertiary, #707080);
+}
+
+.trend {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.trend.up {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--color-success, #22c55e);
+}
+
+.trend.down {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-error, #ef4444);
+}
+
+.label {
+  font-size: 13px;
+  color: var(--color-text-secondary, #a0a0b0);
+  margin-top: 2px;
+  display: block;
+}

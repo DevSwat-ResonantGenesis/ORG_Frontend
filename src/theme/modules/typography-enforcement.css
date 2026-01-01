@@ -1,0 +1,207 @@
+/* ============================================================
+   TYPOGRAPHY ENFORCEMENT - GLOBAL
+   Ensures ALL pages use consistent typography
+   NOTE: Excludes CSS Modules (classes with underscores) to allow component-specific styling
+   ============================================================ */
+
+/* Force consistent font family across ALL elements (except CSS modules and IDE) */
+:not(.ide-container) *:not([class*="_"]) {
+  font-family: var(--font-family) !important;
+}
+
+/* Headings - Enforce consistent sizes ONLY for elements without CSS module classes */
+/* CSS Modules use hashed class names like _heroTitle_1p09m_6, so we exclude them */
+h1:not([class*="_"]), 
+.h1:not([class*="_"]), 
+.page-title:not([class*="_"]), 
+.heroTitle:not([class*="_"]), 
+.validation-title:not([class*="_"]), 
+.scanner-title:not([class*="_"]), 
+.title:not([class*="_"]) {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-4xl) !important;
+  font-weight: var(--font-weight-bold) !important;
+  letter-spacing: var(--tracking-tight) !important;
+  line-height: var(--leading-tight) !important;
+  color: var(--text-primary) !important;
+  margin: 0 !important;
+}
+
+[data-theme='dark'] h1:not([class*="_"]),
+[data-theme='dark'] .h1:not([class*="_"]),
+[data-theme='dark'] .page-title:not([class*="_"]),
+[data-theme='dark'] .heroTitle:not([class*="_"]),
+[data-theme='dark'] .validation-title:not([class*="_"]),
+[data-theme='dark'] .scanner-title:not([class*="_"]),
+[data-theme='dark'] .title:not([class*="_"]) {
+  color: #f9fafb !important;
+}
+
+h2:not([class*="_"]), 
+.h2:not([class*="_"]), 
+.section-title:not([class*="_"]) {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-3xl) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  letter-spacing: var(--tracking-tight) !important;
+  line-height: var(--leading-tight) !important;
+  color: var(--text-primary) !important;
+  margin: 0 !important;
+}
+
+[data-theme='dark'] h2:not([class*="_"]),
+[data-theme='dark'] .h2:not([class*="_"]),
+[data-theme='dark'] .section-title:not([class*="_"]) {
+  color: #f9fafb !important;
+}
+
+h3:not([class*="_"]), 
+.h3:not([class*="_"]), 
+.feature-title:not([class*="_"]) {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-2xl) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  letter-spacing: var(--tracking-tight) !important;
+  line-height: var(--leading-snug) !important;
+  color: var(--text-primary) !important;
+  margin: 0 !important;
+}
+
+[data-theme='dark'] h3:not([class*="_"]),
+[data-theme='dark'] .h3:not([class*="_"]),
+[data-theme='dark'] .feature-title:not([class*="_"]) {
+  color: #f9fafb !important;
+}
+
+h4:not([class*="_"]), 
+.h4:not([class*="_"]) {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-xl) !important;
+  font-weight: var(--font-weight-medium) !important;
+  letter-spacing: var(--tracking-normal) !important;
+  line-height: var(--leading-normal) !important;
+  color: var(--text-primary) !important;
+  margin: 0 !important;
+}
+
+[data-theme='dark'] h4:not([class*="_"]),
+[data-theme='dark'] .h4:not([class*="_"]) {
+  color: #f9fafb !important;
+}
+
+/* Body text - Enforce consistent sizes (exclude CSS modules) */
+p:not([class*="_"]), 
+.body:not([class*="_"]), 
+.body-text:not([class*="_"]), 
+.description:not([class*="_"]), 
+.subtitle:not([class*="_"]) {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-base) !important;
+  font-weight: var(--font-normal) !important;
+  letter-spacing: var(--tracking-normal) !important;
+  line-height: var(--leading-relaxed) !important;
+  color: var(--text-secondary) !important;
+  margin: 0 !important;
+}
+
+[data-theme='dark'] p:not([class*="_"]),
+[data-theme='dark'] .body:not([class*="_"]),
+[data-theme='dark'] .body-text:not([class*="_"]),
+[data-theme='dark'] .description:not([class*="_"]),
+[data-theme='dark'] .subtitle:not([class*="_"]) {
+  color: #d1d5db !important;
+}
+
+/* Small text (exclude CSS modules) */
+small:not([class*="_"]), 
+.text-sm:not([class*="_"]), 
+.caption:not([class*="_"]), 
+.label:not([class*="_"]) {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-sm) !important;
+  font-weight: var(--font-normal) !important;
+  color: var(--text-tertiary) !important;
+}
+
+[data-theme='dark'] small:not([class*="_"]),
+[data-theme='dark'] .text-sm:not([class*="_"]),
+[data-theme='dark'] .caption:not([class*="_"]),
+[data-theme='dark'] .label:not([class*="_"]) {
+  color: #9ca3af !important;
+}
+
+/* Extra small text (exclude CSS modules) */
+.text-xs:not([class*="_"]) {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-xs) !important;
+  font-weight: var(--font-normal) !important;
+  color: var(--text-tertiary) !important;
+}
+
+[data-theme='dark'] .text-xs:not([class*="_"]) {
+  color: #9ca3af !important;
+}
+
+/* Buttons - Enforce consistent typography (exclude CSS modules) */
+button:not([class*="_"]), 
+.button:not([class*="_"]), 
+.btn:not([class*="_"]) {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-base) !important;
+  font-weight: var(--font-weight-medium) !important;
+  letter-spacing: var(--tracking-normal) !important;
+}
+
+/* Links */
+a {
+  color: var(--color-primary-500) !important;
+}
+
+[data-theme='dark'] a {
+  color: #60a5fa !important;
+}
+
+/* Ensure text is never invisible - EXCLUDE IDE */
+[data-theme='dark'] *:not(.ide-container):not(.ide-container *) {
+  color: inherit !important;
+}
+
+[data-theme='dark'] .text-900,
+[data-theme='dark'] [class*="text-900"] {
+  color: #f9fafb !important;
+}
+
+[data-theme='dark'] .text-700,
+[data-theme='dark'] [class*="text-700"] {
+  color: #d1d5db !important;
+}
+
+[data-theme='dark'] .text-600,
+[data-theme='dark'] [class*="text-600"] {
+  color: #9ca3af !important;
+}
+
+[data-theme='dark'] .text-500,
+[data-theme='dark'] [class*="text-500"] {
+  color: #9ca3af !important;
+}
+
+/* Prevent text cropping - EXCLUDE IDE and all its descendants to allow code formatting */
+:not(.ide-container):not(.ide-container *) h1, 
+:not(.ide-container):not(.ide-container *) h2, 
+:not(.ide-container):not(.ide-container *) h3, 
+:not(.ide-container):not(.ide-container *) h4, 
+:not(.ide-container):not(.ide-container *) h5, 
+:not(.ide-container):not(.ide-container *) h6, 
+:not(.ide-container):not(.ide-container *) p, 
+:not(.ide-container):not(.ide-container *) span, 
+:not(.ide-container):not(.ide-container *) div, 
+:not(.ide-container):not(.ide-container *) label, 
+:not(.ide-container):not(.ide-container *) button, 
+:not(.ide-container):not(.ide-container *) a {
+
+  text-overflow: clip !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+}
+

@@ -1,0 +1,133 @@
+.filePreviewCard {
+  width: 100%;
+  margin: 12px 0;
+  background: var(--ide-bg-secondary, #0a0a0a);
+  border: 1px solid var(--ide-border, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.filePreviewCard:hover {
+  border-color: var(--ide-accent-500, #3b82f6);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  transform: translateY(-1px);
+}
+
+.fileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--ide-surface, #0a0a0a);
+  border-bottom: 1px solid var(--ide-border, rgba(255, 255, 255, 0.1));
+}
+
+.fileInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.fileIcon {
+  flex-shrink: 0;
+  color: var(--ide-accent-500, #3b82f6);
+}
+
+.filePath {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ide-text-primary, #e8e8e8);
+  font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modifiedBadge {
+  padding: 2px 6px;
+  background: var(--ide-accent-500, #3b82f6);
+  color: white;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.openButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--ide-accent-500, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.openButton:hover {
+  background: var(--ide-accent-600, #2563eb);
+  transform: scale(1.05);
+}
+
+.openButton svg {
+  width: 14px;
+  height: 14px;
+}
+
+.codePreview {
+  width: 100%;
+  background: var(--ide-bg-primary, #0a0a0a);
+  overflow: hidden;
+}
+
+.codePreview :global(.monaco-editor) {
+  border-radius: 0;
+}
+
+.codePreview :global(.monaco-editor .margin) {
+  background: var(--ide-bg-primary, #0a0a0a);
+}
+
+[data-theme='light'] .filePreviewCard {
+  background: #ffffff;
+  border-color: #e0e0e0;
+}
+
+[data-theme='light'] .filePreviewCard:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+[data-theme='light'] .fileHeader {
+  background: #f5f5f5;
+  border-bottom-color: #e0e0e0;
+}
+
+[data-theme='light'] .filePath {
+  color: #333333;
+}
+
+[data-theme='light'] .codePreview {
+  background: #ffffff;
+}
+
+[data-theme='light'] .codePreview :global(.monaco-editor) {
+  background: #ffffff;
+}
+
+[data-theme='light'] .codePreview :global(.monaco-editor .margin) {
+  background: #ffffff;
+}
+

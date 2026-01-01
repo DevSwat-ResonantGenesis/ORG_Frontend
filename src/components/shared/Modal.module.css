@@ -1,0 +1,122 @@
+/* ============================================================
+   MODAL COMPONENT - Modern Minimal Design
+   Migrated to 2025 Style System
+   SCROLLABLE MODAL - Updated to fix scrolling issue
+   ============================================================ */
+
+.overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease;
+  padding: var(--space-6);
+  padding-top: var(--space-8) !important;
+  padding-bottom: var(--space-8) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  width: 100vw !important;
+}
+
+[data-theme="dark"] .overlay {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+[data-theme="light"] .overlay {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.content {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+  margin: var(--space-8) auto !important;
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+  flex-shrink: 0 !important;
+}
+
+[data-theme="dark"] .content {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] .content {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.small {
+  max-width: 400px;
+}
+
+.medium {
+  max-width: 600px;
+}
+
+.large {
+  max-width: 900px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Mobile Optimization */
+@media (max-width: 640px) {
+  .overlay {
+    padding: var(--space-4) !important;
+    padding-top: var(--space-8) !important;
+    padding-bottom: var(--space-8) !important;
+  }
+  
+  .content {
+    padding: var(--space-6);
+    margin: var(--space-4) auto !important;
+  }
+  
+  .small,
+  .medium,
+  .large {
+    max-width: 100%;
+  }
+}

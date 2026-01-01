@@ -1,0 +1,140 @@
+.hertzVisualization {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.hertzContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Energy Meter */
+.energyMeter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.meterLabel {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.meterBar {
+  width: 100%;
+  height: 24px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+}
+
+.meterFill {
+  height: 100%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  border-radius: var(--radius-md);
+}
+
+.meterValue {
+  font-size: var(--font-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+/* Frequency Wave */
+.frequencyWave {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background: var(--bg);
+  border-radius: var(--radius-md);
+}
+
+.waveLabel {
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.waveSvg {
+  width: 100%;
+  height: 60px;
+  margin: var(--space-2) 0;
+}
+
+.frequencyValue {
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+/* Energy Badge */
+.energyBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  color: white;
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  align-self: center;
+}
+
+/* Timestamp */
+.timestamp {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+/* Size Variants */
+.small {
+  padding: var(--space-2);
+}
+
+.small .meterBar {
+  height: 16px;
+}
+
+.small .waveSvg {
+  height: 40px;
+}
+
+.large {
+  padding: var(--space-4);
+}
+
+.large .meterBar {
+  height: 32px;
+}
+
+.large .waveSvg {
+  height: 80px;
+}
+
+.large .meterValue {
+  font-size: var(--font-xl);
+}
+
+.large .frequencyValue {
+  font-size: var(--font-lg);
+}
+

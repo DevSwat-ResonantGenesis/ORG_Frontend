@@ -1,0 +1,87 @@
+/* ============== SPLIT PANE STYLES ============== */
+
+.container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.horizontal {
+  flex-direction: row;
+}
+
+.vertical {
+  flex-direction: column;
+}
+
+.pane {
+  overflow: hidden;
+  position: relative;
+}
+
+.resizer {
+  flex-shrink: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  z-index: 10;
+}
+
+.horizontal .resizer {
+  cursor: col-resize;
+  width: 6px;
+}
+
+.vertical .resizer {
+  cursor: row-resize;
+  height: 6px;
+}
+
+.resizer:hover,
+.resizer.active {
+  background: rgba(14, 165, 233, 0.15);
+}
+
+.resizerLine {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1px;
+  transition: background 0.15s;
+}
+
+.horizontal .resizerLine {
+  width: 2px;
+  height: 40px;
+}
+
+.vertical .resizerLine {
+  height: 2px;
+  width: 40px;
+}
+
+.resizer:hover .resizerLine,
+.resizer.active .resizerLine {
+  background: #0ea5e9;
+}
+
+/* Collapsed state */
+.pane.collapsed {
+  display: none;
+}
+
+/* Overlay during drag */
+.container.dragging .pane {
+  pointer-events: none;
+}
+
+.container.dragging .pane::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+}

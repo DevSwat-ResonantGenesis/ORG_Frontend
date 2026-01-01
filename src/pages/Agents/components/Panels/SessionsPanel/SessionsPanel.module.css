@@ -1,0 +1,525 @@
+/* ============== SESSIONS PANEL STYLES ============== */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.panelHeader h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.newSessionBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.newSessionBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba(239, 68, 68, 0.1);
+  border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  font-size: 13px;
+}
+
+.errorBanner button {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* New Session Form */
+.newSessionForm {
+  padding: 20px;
+  background: rgba(14, 165, 233, 0.05);
+  border-bottom: 1px solid rgba(14, 165, 233, 0.1);
+}
+
+.newSessionForm h3 {
+  margin: 0 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #888;
+}
+
+.formGroup textarea {
+  width: 100%;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  resize: vertical;
+  outline: none;
+}
+
+.formGroup textarea:focus {
+  border-color: rgba(14, 165, 233, 0.5);
+}
+
+.formActions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.cancelBtn {
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #888;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.cancelBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.startBtn {
+  padding: 8px 20px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.startBtn:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.startBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Panel Content */
+.panelContent {
+  flex: 1;
+  overflow: hidden;
+}
+
+.splitView {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  height: 100%;
+}
+
+/* Sessions List */
+.sessionsList {
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.sessionsList h3 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.loading {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+}
+
+.noSessions {
+  padding: 40px 20px;
+  text-align: center;
+  color: #666;
+}
+
+.noSessions p {
+  margin: 0;
+}
+
+.hint {
+  font-size: 12px;
+  margin-top: 8px !important;
+  color: #555;
+}
+
+.sessionCard {
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sessionCard:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.sessionCard.selected {
+  background: rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.sessionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.statusIndicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.sessionStatus {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #888;
+}
+
+.cancelSessionBtn {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: rgba(239, 68, 68, 0.2);
+  border: none;
+  border-radius: 4px;
+  color: #ef4444;
+  cursor: pointer;
+}
+
+.cancelSessionBtn:hover {
+  background: rgba(239, 68, 68, 0.3);
+}
+
+.sessionGoal {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: #fff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sessionMeta {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  color: #666;
+}
+
+.sessionMeta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Session Detail */
+.sessionDetail {
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.detailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.detailHeader h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.statusBadge {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.goalDisplay {
+  padding: 12px;
+  background: rgba(14, 165, 233, 0.1);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+.goalDisplay strong {
+  color: #0ea5e9;
+}
+
+/* Steps List */
+.stepsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.noSteps {
+  padding: 40px 20px;
+  text-align: center;
+  color: #666;
+}
+
+.stepCard {
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+}
+
+.stepCard.needsApproval {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.stepHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.stepIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(14, 165, 233, 0.15);
+  border-radius: 6px;
+  color: #0ea5e9;
+}
+
+.stepNumber {
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+}
+
+.stepType {
+  padding: 2px 8px;
+  background: rgba(168, 85, 247, 0.15);
+  border-radius: 4px;
+  font-size: 10px;
+  color: #a855f7;
+  text-transform: uppercase;
+}
+
+.stepDuration {
+  margin-left: auto;
+  font-size: 11px;
+  color: #666;
+}
+
+.stepReasoning,
+.stepTool {
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.stepReasoning strong,
+.stepTool strong {
+  color: #0ea5e9;
+}
+
+.stepTool pre {
+  margin: 8px 0 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  font-size: 11px;
+  overflow-x: auto;
+}
+
+.safetyWarning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 6px;
+  color: #ef4444;
+  font-size: 12px;
+}
+
+.approvalActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 12px;
+  color: #f59e0b;
+}
+
+.approveBtn,
+.rejectBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.approveBtn {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.approveBtn:hover {
+  background: rgba(34, 197, 94, 0.3);
+}
+
+.rejectBtn {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.rejectBtn:hover {
+  background: rgba(239, 68, 68, 0.3);
+}
+
+/* Final Output / Error */
+.finalOutput,
+.errorOutput {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 10px;
+}
+
+.finalOutput {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.finalOutput h4 {
+  margin: 0 0 10px;
+  color: #22c55e;
+  font-size: 13px;
+}
+
+.errorOutput {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.errorOutput h4 {
+  margin: 0 0 10px;
+  color: #ef4444;
+  font-size: 13px;
+}
+
+/* Empty States */
+.emptyState,
+.noSelection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  text-align: center;
+}
+
+.emptyState svg,
+.noSelection svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.emptyState p,
+.noSelection p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .splitView {
+    grid-template-columns: 1fr;
+  }
+  
+  .sessionsList {
+    max-height: 200px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+}

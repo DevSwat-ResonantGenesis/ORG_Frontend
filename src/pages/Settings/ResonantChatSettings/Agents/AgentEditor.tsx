@@ -1,0 +1,539 @@
+/**
+ * Agent Editor Component
+ * Create or edit an agent with tabs for different settings
+ */
+import React, { useState, useEffect } from 'react';
+import { settingsApi, type Agent } from '@/api/settings';
+import { LoadingState } from '@/components/shared/LoadingState';
+import { ErrorState } from '@/components/shared/ErrorState';
+import { MemorySettings } from './MemorySettings';
+import { AnchorManagement } from './AnchorManagement';
+import { RestrictionsPanel } from './RestrictionsPanel';
+import { APIKeyManagement } from './APIKeyManagement';
+import { AgentExportImport } from './AgentExportImport';
+import { AgentTemplates } from './AgentTemplates';
+import { SystemWeightsSettings } from './SystemWeightsSettings';
+import { AgentSharePanel } from './AgentSharePanel';
+import { SharedAgentImport } from './SharedAgentImport';
+import { AgentMetrics } from './AgentMetrics';
+import { 
+  MemoryIcon, 
+  AnchorIcon, 
+  RestrictionIcon, 
+  APIKeyIcon, 
+  ExportIcon, 
+  ImportIcon, 
+  TemplateIcon,
+  SaveIcon,
+  EditIcon,
+  MetricsIcon,
+  BackArrowIcon,
+  ShareIcon
+} from '@/components/Icons/SettingsIcons';
+import { Tooltip } from '@/components/ui/Tooltip';
+import { ToggleSwitch } from '@/components/ui/ToggleSwitch';
+import { logger } from '@/utils/logger';
+import styles from './AgentEditor.module.css';
+
+interface AgentEditorProps {
+  agentId?: string;
+  onBack: () => void;
+  onSave: () => void;
+}
+
+type TabType = 'basic' | 'memory' | 'anchors' | 'restrictions' | 'api-keys' | 'export-import' | 'templates' | 'weights' | 'metrics' | 'share' | 'import';
+type PromptInputMode = 'text' | 'json';
+
+export const AgentEditor: React.FC<AgentEditorProps> = ({ agentId, onBack, onSave }) => {
+  const [loading, setLoading] = useState(!!agentId);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<TabType>('basic');
+  const [promptInputMode, setPromptInputMode] = useState<PromptInputMode>('text');
+  const [jsonError, setJsonError] = useState<string | null>(null);
+  
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    system_prompt: '',
+    personality_config: {} as Record<string, any>,
+    isolate_anchors: true, // Default to isolated
+  });
+
+  const [agentData, setAgentData] = useState<Agent | null>(null);
+
+  useEffect(() => {
+    if (agentId) {
+      loadAgent();
+    }
+  }, [agentId]);
+
+  const loadAgent = async () => {
+    if (!agentId) return;
+    
+    try {
+      setLoading(true);
+      setError(null);
+      const agent = await settingsApi.getAgent(agentId);
+      setAgentData(agent);
+      setFormData({
+        name: agent.name || '',
+        description: agent.description || '',
+        system_prompt: agent.system_prompt || '',
+        personality_config: agent.personality_config || {},
+        isolate_anchors: agent.isolate_anchors !== undefined ? agent.isolate_anchors : true,
+      });
+    } catch (err: any) {
+      logger.error('Failed to load agent', err);
+      setError(err?.message || 'Failed to load agent');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Prevent editing if agent is imported (read-only)
+    if (agentId && agentData?.is_imported) {
+      setError('This is a shared agent. Only the creator can edit it.');
+      return;
+    }
+    
+    try {
+      setSaving(true);
+      setError(null);
+
+      if (agentId) {
+        await settingsApi.updateAgent(agentId, {
+          ...formData,
+          isolate_anchors: formData.isolate_anchors,
+        });
+      } else {
+        await settingsApi.createAgent(formData);
+      }
+
+      onSave();
+    } catch (err: any) {
+      logger.error('Failed to save agent', err);
+      setError(err?.message || 'Failed to save agent');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleChange = (field: string, value: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  // Convert text prompt to structured JSON format
+  const convertTextToPromptJson = (text: string): string => {
+    try {
+      // If it's already valid JSON, return as-is
+      JSON.parse(text);
+      return text;
+    } catch {
+      // Convert plain text to structured prompt JSON
+      const promptObject = {
+        role: "system",
+        content: text,
+        metadata: {
+          version: "1.0",
+          created_at: new Date().toISOString(),
+          type: "custom"
+        }
+      };
+      return JSON.stringify(promptObject, null, 2);
+    }
+  };
+
+  // Validate JSON prompt format
+  const validateJsonPrompt = (jsonStr: string): { valid: boolean; error?: string } => {
+    try {
+      const parsed = JSON.parse(jsonStr);
+      if (!parsed.content && !parsed.role) {
+        return { valid: false, error: "JSON must contain 'content' or 'role' field" };
+      }
+      return { valid: true };
+    } catch (e) {
+      return { valid: false, error: `Invalid JSON: ${(e as Error).message}` };
+    }
+  };
+
+  // Handle prompt input change with validation
+  const handlePromptChange = (value: string) => {
+    setJsonError(null);
+    
+    if (promptInputMode === 'json') {
+      const validation = validateJsonPrompt(value);
+      if (!validation.valid) {
+        setJsonError(validation.error || 'Invalid JSON format');
+      }
+    }
+    
+    handleChange('system_prompt', value);
+  };
+
+  // Toggle between text and JSON mode
+  const togglePromptMode = () => {
+    if (promptInputMode === 'text') {
+      // Converting to JSON mode - convert text to JSON
+      const jsonPrompt = convertTextToPromptJson(formData.system_prompt);
+      handleChange('system_prompt', jsonPrompt);
+      setPromptInputMode('json');
+    } else {
+      // Converting to text mode - extract content from JSON
+      try {
+        const parsed = JSON.parse(formData.system_prompt);
+        const textContent = parsed.content || formData.system_prompt;
+        handleChange('system_prompt', textContent);
+      } catch {
+        // Keep as-is if not valid JSON
+      }
+      setPromptInputMode('text');
+      setJsonError(null);
+    }
+  };
+
+  if (loading) {
+    return <LoadingState message="Loading agent..." />;
+  }
+
+  // Don't show tabs for new agents (no agentId)
+  const showTabs = !!agentId;
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <Tooltip content="Go back to agents list">
+          <button className={styles.backButton} onClick={onBack}>
+            <BackArrowIcon size={16} />
+            <span>Back</span>
+          </button>
+        </Tooltip>
+        <h1 className={styles.title}>
+          {agentId ? 'Edit Agent' : 'Create Agent'}
+        </h1>
+      </div>
+
+      {error && (
+        <div className={styles.error}>
+          <ErrorState message={error} />
+        </div>
+      )}
+
+      {showTabs && (
+        <div className={styles.tabs}>
+          <Tooltip content="Basic agent information: name, description, and system prompt">
+            <button
+              className={`${styles.tab} ${activeTab === 'basic' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('basic')}
+            >
+              <EditIcon size={16} />
+              <span>Info</span>
+            </button>
+          </Tooltip>
+          <Tooltip content="Configure memory retention, importance thresholds, and search settings">
+            <button
+              className={`${styles.tab} ${activeTab === 'memory' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('memory')}
+            >
+              <MemoryIcon size={16} />
+              <span>Memory</span>
+            </button>
+          </Tooltip>
+          <Tooltip content="View and manage memory anchors - stable semantic knowledge nodes">
+            <button
+              className={`${styles.tab} ${activeTab === 'anchors' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('anchors')}
+            >
+              <AnchorIcon size={16} />
+              <span>Anchors</span>
+            </button>
+          </Tooltip>
+          <Tooltip content="Set forbidden words, restricted topics, and content filters">
+            <button
+              className={`${styles.tab} ${activeTab === 'restrictions' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('restrictions')}
+            >
+              <RestrictionIcon size={16} />
+              <span>Restrictions</span>
+            </button>
+          </Tooltip>
+          <Tooltip content="Generate and manage API keys for external application integration">
+            <button
+              className={`${styles.tab} ${activeTab === 'api-keys' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('api-keys')}
+            >
+              <APIKeyIcon size={16} />
+              <span>API</span>
+            </button>
+          </Tooltip>
+          <Tooltip content="Export agent configuration as JSON or import from a file">
+            <button
+              className={`${styles.tab} ${activeTab === 'export-import' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('export-import')}
+            >
+              <ExportIcon size={16} />
+              <span>Export/Import</span>
+            </button>
+          </Tooltip>
+          <Tooltip content="Save agent as template or create new agents from existing templates">
+            <button
+              className={`${styles.tab} ${activeTab === 'templates' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('templates')}
+            >
+              <TemplateIcon size={16} />
+              <span>Templates</span>
+            </button>
+          </Tooltip>
+          <Tooltip content="Configure Hash Sphere, RAG, and Memory percentage weights">
+            <button
+              className={`${styles.tab} ${activeTab === 'weights' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('weights')}
+            >
+              <MemoryIcon size={16} />
+              <span>Weights</span>
+            </button>
+          </Tooltip>
+          <Tooltip content="View agent performance metrics and analytics">
+            <button
+              className={`${styles.tab} ${activeTab === 'metrics' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('metrics')}
+            >
+              <MetricsIcon size={16} />
+              <span>Metrics</span>
+            </button>
+          </Tooltip>
+          <Tooltip content="Share this agent with others using agent hash">
+            <button
+              className={`${styles.tab} ${activeTab === 'share' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('share')}
+            >
+              <ShareIcon size={16} />
+              <span>Share</span>
+            </button>
+          </Tooltip>
+          <Tooltip content="Import a shared agent from another user using agent hash">
+            <button
+              className={`${styles.tab} ${activeTab === 'import' ? styles.activeTab : ''}`}
+              onClick={() => setActiveTab('import')}
+            >
+              <ImportIcon size={16} />
+              <span>Import</span>
+            </button>
+          </Tooltip>
+        </div>
+      )}
+
+      {activeTab === 'basic' && (
+        <form onSubmit={handleSubmit} className={styles.form}>
+        {agentData?.is_imported && (
+          <div className={styles.readOnlyNotice}>
+            <p>⚠️ This is a shared agent. You can view all settings but cannot edit them. Only the creator can modify this agent.</p>
+          </div>
+        )}
+        <div className={styles.formGroup}>
+          <label className={styles.label}>
+            Name <span className={styles.required}>*</span>
+          </label>
+          <input
+            type="text"
+            className={styles.input}
+            value={formData.name}
+            onChange={(e) => handleChange('name', e.target.value)}
+            required
+            placeholder="My AI Agent"
+            disabled={agentData?.is_imported}
+          />
+        </div>
+
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Description</label>
+          <textarea
+            className={styles.textarea}
+            value={formData.description}
+            onChange={(e) => handleChange('description', e.target.value)}
+            rows={3}
+            placeholder="A helpful AI assistant for..."
+            disabled={agentData?.is_imported}
+          />
+        </div>
+
+        <div className={styles.formGroup}>
+          <div className={styles.labelRow}>
+            <label className={styles.label}>System Prompt</label>
+            <div className={styles.promptModeToggle}>
+              <button
+                type="button"
+                className={`${styles.modeButton} ${promptInputMode === 'text' ? styles.activeModeButton : ''}`}
+                onClick={() => promptInputMode !== 'text' && togglePromptMode()}
+                disabled={agentData?.is_imported}
+              >
+                Text
+              </button>
+              <button
+                type="button"
+                className={`${styles.modeButton} ${promptInputMode === 'json' ? styles.activeModeButton : ''}`}
+                onClick={() => promptInputMode !== 'json' && togglePromptMode()}
+                disabled={agentData?.is_imported}
+              >
+                JSON
+              </button>
+            </div>
+          </div>
+          <textarea
+            className={`${styles.textarea} ${promptInputMode === 'json' ? styles.jsonTextarea : ''} ${jsonError ? styles.textareaError : ''}`}
+            value={formData.system_prompt}
+            onChange={(e) => handlePromptChange(e.target.value)}
+            rows={promptInputMode === 'json' ? 12 : 8}
+            placeholder={promptInputMode === 'text' 
+              ? "You are a helpful AI assistant. Your personality is..."
+              : '{\n  "role": "system",\n  "content": "You are a helpful AI assistant...",\n  "metadata": {\n    "version": "1.0",\n    "type": "custom"\n  }\n}'
+            }
+            disabled={agentData?.is_imported}
+            style={promptInputMode === 'json' ? { fontFamily: 'monospace', fontSize: '13px' } : undefined}
+          />
+          {jsonError && (
+            <p className={styles.errorText}>{jsonError}</p>
+          )}
+          <p className={styles.helpText}>
+            {promptInputMode === 'text' 
+              ? <>Customize the system prompt that will be sent to the LLM for this agent. You can use variables like {'{user_name}'}, {'{context}'}, {'{memory}'}.</>
+              : <>Enter a structured JSON prompt. Must contain "content" or "role" field. The backend will automatically parse and validate the JSON format.</>
+            }
+          </p>
+        </div>
+
+        {agentId && (
+          <div className={styles.formGroup}>
+            <div className={styles.toggleGroup}>
+              <label className={styles.label}>
+                Isolate Anchors
+                <Tooltip content="When ON: Anchors are isolated to this agent only. When OFF: Anchors are shared across all your agents.">
+                  <span className={styles.infoIcon}>ℹ️</span>
+                </Tooltip>
+              </label>
+              <div className={styles.toggleContainer}>
+                <ToggleSwitch
+                  checked={formData.isolate_anchors}
+                  onChange={(checked) => handleChange('isolate_anchors', checked)}
+                  disabled={agentData?.is_imported}
+                  showLabel
+                />
+                <span className={styles.toggleDescription}>
+                  {formData.isolate_anchors 
+                    ? "Anchors are isolated to this agent"
+                    : "Anchors are shared across all agents"}
+                </span>
+              </div>
+              <p className={styles.helpText}>
+                {formData.isolate_anchors
+                  ? "Each agent will have its own isolated memory anchors. Better for specialized agents."
+                  : "All agents will share the same memory anchors. Better for general-purpose assistants."}
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className={styles.formActions}>
+          <button
+            type="button"
+            className={styles.cancelButton}
+            onClick={onBack}
+            disabled={saving}
+          >
+            Cancel
+          </button>
+          {!agentData?.is_imported && (
+            <Tooltip content={agentId ? "Save changes to this agent" : "Create a new agent with the specified configuration"}>
+              <button
+                type="submit"
+                className={styles.saveButton}
+                disabled={saving || !formData.name}
+              >
+                <SaveIcon size={16} />
+                <span>{saving ? 'Saving...' : agentId ? 'Update Agent' : 'Create Agent'}</span>
+              </button>
+            </Tooltip>
+          )}
+          {agentData?.is_imported && (
+            <Tooltip content="This is a shared agent. You cannot save changes. Only the creator can modify it.">
+              <button
+                type="button"
+                className={styles.saveButton}
+                disabled
+              >
+                <SaveIcon size={16} />
+                <span>Read-Only (Cannot Edit)</span>
+              </button>
+            </Tooltip>
+          )}
+        </div>
+      </form>
+      )}
+
+      {activeTab === 'memory' && agentId && (
+        <MemorySettings agentId={agentId} />
+      )}
+
+      {activeTab === 'anchors' && agentId && (
+        <AnchorManagement agentId={agentId} />
+      )}
+
+      {activeTab === 'restrictions' && agentId && (
+        <RestrictionsPanel agentId={agentId} />
+      )}
+
+      {activeTab === 'api-keys' && agentId && (
+        <APIKeyManagement agentId={agentId} />
+      )}
+
+      {activeTab === 'export-import' && agentId && (
+        <AgentExportImport
+          agentId={agentId}
+          agentName={formData.name}
+          onImportComplete={onSave}
+        />
+      )}
+
+      {activeTab === 'templates' && agentId && (
+        <AgentTemplates
+          agentId={agentId}
+          agentName={formData.name}
+          onTemplateCreated={onSave}
+          onAgentCreated={onSave}
+        />
+      )}
+
+      {activeTab === 'weights' && agentId && (
+        <SystemWeightsSettings agentId={agentId} />
+      )}
+
+      {activeTab === 'metrics' && agentId && (
+        <AgentMetrics agentId={agentId} />
+      )}
+
+      {activeTab === 'share' && agentId && (
+        <AgentSharePanel
+          agentId={agentId}
+          agentHash={agentData?.agent_hash}
+          isPublic={agentData?.is_public}
+        />
+      )}
+
+      {activeTab === 'import' && (
+        <SharedAgentImport
+          onImportSuccess={() => {
+            onSave();
+            onBack();
+          }}
+        />
+      )}
+    </div>
+  );
+};
+

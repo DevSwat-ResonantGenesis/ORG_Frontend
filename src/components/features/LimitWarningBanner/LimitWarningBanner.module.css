@@ -1,0 +1,94 @@
+/* Limit Warning Banner Styles */
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  gap: 16px;
+}
+
+.warning {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.1));
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.error {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.warning .content svg {
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.error .content svg {
+  color: #ef4444;
+  flex-shrink: 0;
+}
+
+.text {
+  font-size: 14px;
+  color: var(--text-primary, #fff);
+  line-height: 1.4;
+}
+
+.text strong {
+  font-weight: 600;
+}
+
+.warning .text strong {
+  color: #fbbf24;
+}
+
+.error .text strong {
+  color: #f87171;
+}
+
+.upgradeBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.upgradeBtn:hover {
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  transform: translateY(-1px);
+}
+
+.upgradeBtn svg {
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .upgradeBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,64 @@
+/* ============================================================
+   ANIMATED COUNTER - Smooth Number Animation
+   ============================================================ */
+
+.animated-counter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.counter-prefix,
+.counter-suffix {
+  font-size: 0.8em;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.counter-value {
+  font-size: 1em;
+  font-weight: 700;
+  color: var(--accent-500);
+  letter-spacing: -0.02em;
+}
+
+/* ============================================================
+   VARIANTS
+   ============================================================ */
+
+.animated-counter.large .counter-value {
+  font-size: 2.5em;
+}
+
+.animated-counter.medium .counter-value {
+  font-size: 1.8em;
+}
+
+.animated-counter.small .counter-value {
+  font-size: 1.2em;
+}
+
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+
+[data-theme="dark"] .counter-value {
+  color: var(--accent-400);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .animated-counter.large .counter-value {
+    font-size: 2em;
+  }
+  
+  .animated-counter.medium .counter-value {
+    font-size: 1.5em;
+  }
+}
+

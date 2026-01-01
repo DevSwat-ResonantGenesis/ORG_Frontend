@@ -1,0 +1,180 @@
+/* DSID-P Protocol Page Styles */
+
+.header {
+  margin-bottom: 48px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.subtitle {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  color: #666;
+  font-weight: 500;
+}
+
+[data-theme='dark'] .subtitle {
+  color: #999;
+}
+
+.content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.section {
+  margin-bottom: 64px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.textContent {
+  margin-top: 16px;
+}
+
+.textContent p {
+  margin-bottom: 16px;
+}
+
+.textContent p:last-child {
+  margin-bottom: 0;
+}
+
+/* Characteristic Cards */
+.characteristicCard {
+  background: #f9fafb;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  transition: all 0.2s ease;
+}
+
+[data-theme='dark'] .characteristicCard {
+  background: #1f2937;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.characteristicCard:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .characteristicCard:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.characteristicCard:last-child {
+  margin-bottom: 0;
+}
+
+.characteristicHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.characteristicNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: #3b82f6;
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.characteristicTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+[data-theme='dark'] .characteristicTitle {
+  color: #f9fafb;
+}
+
+.characteristicContent {
+  margin-top: 16px;
+}
+
+.characteristicContent p {
+  margin-bottom: 12px;
+  color: #666;
+  line-height: 1.6;
+}
+
+[data-theme='dark'] .characteristicContent p {
+  color: #d1d5db;
+}
+
+.characteristicContent p:last-child {
+  margin-bottom: 0;
+}
+
+/* Feature List */
+.featureList {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+
+.featureList li {
+  padding: 12px 0;
+  padding-left: 24px;
+  position: relative;
+  color: #666;
+  line-height: 1.6;
+}
+
+[data-theme='dark'] .featureList li {
+  color: #d1d5db;
+}
+
+.featureList li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+.featureList li strong {
+  color: #111827;
+  font-weight: 600;
+}
+
+[data-theme='dark'] .featureList li strong {
+  color: #f9fafb;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .characteristicHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .characteristicCard {
+    padding: 16px;
+  }
+
+  .characteristicTitle {
+    font-size: 18px;
+  }
+}
+

@@ -1,0 +1,483 @@
+/* ============== SETTINGS PANEL STYLES ============== */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.panelHeader h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.panelContent {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.settingsLayout {
+  display: flex;
+  height: 100%;
+}
+
+.settingsSidebar {
+  width: 200px;
+  padding: 16px;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tabBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: #888;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.tabBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.tabBtn.active {
+  background: rgba(14, 165, 233, 0.15);
+  color: #0ea5e9;
+}
+
+.settingsContent {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.settingsSection h3 {
+  margin: 0 0 24px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.settingItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.settingInfo {
+  flex: 1;
+}
+
+.settingInfo label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.settingInfo span {
+  font-size: 12px;
+  color: #888;
+}
+
+.settingItem select,
+.settingItem input[type="text"],
+.settingItem input[type="number"],
+.settingItem input[type="password"] {
+  min-width: 200px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+
+.settingItem select:focus,
+.settingItem input:focus {
+  border-color: rgba(14, 165, 233, 0.5);
+}
+
+/* Theme Selector */
+.themeSelector {
+  display: flex;
+  gap: 8px;
+}
+
+.themeBtn {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #888;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.themeBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.themeBtn.active {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #0ea5e9;
+}
+
+/* Toggle Switch */
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 24px;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #fff;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.toggle input:checked + .slider {
+  background-color: #0ea5e9;
+}
+
+.toggle input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+/* API Key Field */
+.apiKeyField {
+  display: flex;
+  gap: 8px;
+}
+
+.apiKeyField input {
+  flex: 1;
+}
+
+.regenerateBtn {
+  padding: 8px 16px;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 6px;
+  color: #f59e0b;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* User Info */
+.userInfo {
+  margin-top: 24px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+}
+
+.userInfo h4 {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #888;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 13px;
+}
+
+.infoRow span {
+  color: #888;
+}
+
+.infoRow code {
+  font-family: monospace;
+  color: #0ea5e9;
+}
+
+/* Danger Zone */
+.dangerZone {
+  margin-top: 32px;
+  padding: 20px;
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  border-radius: 10px;
+}
+
+.dangerZone h4 {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #ef4444;
+}
+
+.dangerBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
+  color: #ef4444;
+  font-size: 13px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.dangerBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+/* Save Section */
+.saveSection {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.saveBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .settingsLayout {
+    flex-direction: column;
+  }
+  
+  .settingsSidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  
+  .tabBtn {
+    flex: 1;
+    min-width: 100px;
+    justify-content: center;
+  }
+  
+  .tabBtn span {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .settingItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .settingItem select,
+  .settingItem input {
+    width: 100%;
+    min-width: unset;
+  }
+  
+  .themeSelector {
+    width: 100%;
+  }
+  
+  .themeBtn {
+    flex: 1;
+  }
+  
+  .apiKeyField {
+    width: 100%;
+    flex-direction: column;
+  }
+}
+
+/* ============== AUTONOMY MODE STYLES ============== */
+
+.sectionDesc {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.autonomyStatus {
+  margin-top: 32px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.autonomyStatus h4 {
+  margin: 0 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.statusItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statusLabel {
+  font-size: 12px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statusValue {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.statusValue.active {
+  color: #22c55e;
+}
+
+.statusValue.inactive {
+  color: #ef4444;
+}
+
+.loadingText {
+  color: #888;
+  font-size: 14px;
+}
+
+.quickActions {
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.quickActions h4 {
+  margin: 0 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 12px;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.actionBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.actionBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.actionBtn.stopBtn {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+}
+
+.actionBtn.stopBtn:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+@media (max-width: 768px) {
+  .statusGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .actionButtons {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,58 @@
+/* Admin/User Management Page Styles - CSS Module */
+
+.adminContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-6);
+}
+
+.userManagementCard {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.userTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--space-4);
+}
+
+.userTable th,
+.userTable td {
+  padding: var(--space-3);
+  text-align: left;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.userTable th {
+  font-weight: var(--font-semibold);
+  color: var(--text-900);
+  background: var(--surface-hover);
+}
+
+.userActions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.userStatusBadge {
+  display: inline-block;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-xs);
+  font-weight: var(--font-medium);
+}
+
+.userStatusActive {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.userStatusSuspended {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}

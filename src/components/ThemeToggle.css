@@ -1,0 +1,192 @@
+/* Theme Toggle Button - Responsive Styles */
+
+.theme-toggle-icon-only {
+  background: transparent !important;
+  border: none !important;
+  color: var(--text-primary) !important;
+  padding: 8px !important;
+  border-radius: 0 !important;
+  font-size: var(--font-xl) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  transition: opacity 0.15s ease, transform 0.15s ease !important;
+  flex-shrink: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  touch-action: manipulation !important; /* Better touch handling on mobile */
+  -webkit-tap-highlight-color: transparent !important; /* Remove tap highlight on mobile */
+  pointer-events: auto !important; /* Ensure button is clickable */
+  position: relative !important; /* Ensure proper stacking context */
+  z-index: 10004 !important; /* Above everything including clickability-fix */
+  user-select: none !important; /* Prevent text selection */
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  outline: none !important; /* Remove all outlines */
+  box-shadow: none !important; /* Remove any box shadows */
+  isolation: isolate !important; /* Create new stacking context */
+  will-change: transform !important; /* Optimize for interactions */
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.theme-toggle-icon-only:hover {
+  opacity: 0.7 !important;
+  transform: scale(1.05) !important;
+}
+
+.theme-toggle-icon-only:active {
+  transform: scale(0.95) !important;
+  opacity: 0.8 !important;
+  outline: none !important; /* Remove outline on click */
+  box-shadow: none !important;
+}
+
+.theme-toggle-icon-only:focus {
+  outline: none !important; /* Remove outline on focus */
+  box-shadow: none !important;
+}
+
+.theme-toggle-icon-only:focus-visible {
+  outline: none !important; /* Remove outline even for keyboard navigation */
+  box-shadow: none !important;
+}
+
+/* Tablet and smaller desktop (1024px and below) */
+@media (max-width: 1024px) {
+  .theme-toggle-icon-only {
+    width: 40px !important;
+    height: 40px !important;
+    padding: 6px !important;
+    font-size: var(--font-lg) !important;
+  }
+}
+
+/* Mobile (768px and below) - match burger/login size */
+@media (max-width: 768px) {
+  .theme-toggle-icon-only {
+    width: 44px !important;
+    height: 44px !important;
+    padding: 8px !important;
+    font-size: var(--font-base) !important;
+  }
+}
+
+/* Small mobile (480px and below) - keep same 44x44 for consistent tap target */
+@media (max-width: 480px) {
+  .theme-toggle-icon-only {
+    width: 44px !important;
+    height: 44px !important;
+    padding: 8px !important;
+    font-size: var(--font-base) !important;
+  }
+}
+
+/* Very small mobile (375px and below) - also keep 44x44 */
+@media (max-width: 375px) {
+  .theme-toggle-icon-only {
+    width: 44px !important;
+    height: 44px !important;
+    padding: 8px !important;
+    font-size: var(--font-base) !important;
+  }
+}
+
+/* Dark mode styles */
+[data-theme="dark"] .theme-toggle-icon-only {
+  color: var(--text-primary) !important;
+}
+
+/* Light mode styles */
+[data-theme="light"] .theme-toggle-icon-only,
+:not([data-theme]) .theme-toggle-icon-only {
+  color: var(--text-primary) !important;
+}
+
+/* Ensure proper sizing in landing header actions */
+.theme-toggle-icon-only {
+  /* Responsive styles are handled by media queries above */
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  pointer-events: auto !important;
+  z-index: 10004 !important; /* Above everything */
+  position: relative !important;
+}
+
+/* Ensure proper sizing in header actions */
+header .theme-toggle-icon-only {
+  /* Responsive styles are handled by media queries above */
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  pointer-events: auto !important;
+  z-index: 10004 !important; /* Above everything */
+  position: relative !important;
+}
+
+/* Override any global button styles */
+button.theme-toggle-icon-only,
+.theme-toggle-icon-only {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Ensure button content doesn't block clicks */
+.theme-toggle-icon-only *,
+.theme-toggle-icon-only svg {
+  pointer-events: none !important;
+  display: block !important;
+}
+
+/* Make SVG icons visible and properly sized */
+.theme-toggle-icon-only svg {
+  width: 20px !important;
+  height: 20px !important;
+  display: block !important;
+  flex-shrink: 0 !important;
+  color: inherit !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Ensure button is always on top in header */
+header .theme-toggle-icon-only {
+  position: relative !important;
+  z-index: 10004 !important; /* Above everything including clickability-fix */
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  isolation: isolate !important; /* Create new stacking context */
+}
+
+/* Force button to be above everything */
+button.theme-toggle-icon-only {
+  z-index: 10004 !important; /* Above everything including clickability-fix */
+  position: relative !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+  isolation: isolate !important; /* Create new stacking context */
+  will-change: transform !important; /* Optimize for interactions */
+}
+
+/* Ensure header actions container doesn't block */
+

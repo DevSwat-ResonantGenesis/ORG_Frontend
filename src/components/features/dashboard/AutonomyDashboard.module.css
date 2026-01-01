@@ -1,0 +1,459 @@
+/* AUTONOMY DASHBOARD STYLES */
+
+.dashboard {
+  padding: 24px;
+  background: var(--bg-primary, #0a0a0f);
+  min-height: 100vh;
+  color: var(--text-primary, #ffffff);
+}
+
+.header {
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header p {
+  color: var(--text-secondary, #9ca3af);
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+.mainColumn,
+.sideColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Panel */
+.panel {
+  background: var(--bg-secondary, #111118);
+  border: 1px solid var(--border-color, #1f1f2e);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.panelHeader h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Status Badge */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+  color: white;
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* Stat Card */
+.statCard {
+  background: var(--bg-tertiary, #1a1a24);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.statTitle {
+  font-size: 12px;
+  color: var(--text-secondary, #9ca3af);
+  margin-bottom: 4px;
+}
+
+.statValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary, #ffffff);
+}
+
+.statSubtitle {
+  font-size: 11px;
+  color: var(--text-muted, #6b7280);
+  margin-top: 4px;
+}
+
+.trend {
+  font-size: 14px;
+  margin-left: 4px;
+}
+
+.trend.up {
+  color: #22c55e;
+}
+
+.trend.down {
+  color: #ef4444;
+}
+
+.trend.neutral {
+  color: #6b7280;
+}
+
+/* Subsystems */
+.subsystems h4,
+.roleDistribution h4,
+.tasksList h4,
+.alertsList h4,
+.quickStart h4 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 16px 0 12px 0;
+  color: var(--text-secondary, #9ca3af);
+}
+
+.subsystemRow,
+.roleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color, #1f1f2e);
+}
+
+.subsystemRow:last-child,
+.roleRow:last-child {
+  border-bottom: none;
+}
+
+.subsystemName {
+  font-size: 13px;
+  text-transform: capitalize;
+}
+
+.roleCount {
+  font-weight: 600;
+  color: var(--accent-color, #6366f1);
+}
+
+/* Brains */
+.brainsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.brainCard {
+  background: var(--bg-tertiary, #1a1a24);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.brainHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.brainName {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.brainGoal {
+  font-size: 12px;
+  color: var(--text-secondary, #9ca3af);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.brainStats {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--text-muted, #6b7280);
+}
+
+.brainState {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-secondary, #9ca3af);
+}
+
+/* Tasks */
+.taskRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color, #1f1f2e);
+}
+
+.taskDesc {
+  font-size: 13px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.taskStatus {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: capitalize;
+}
+
+.taskStatus.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.taskStatus.running {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.taskStatus.completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.taskStatus.failed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Watchdog */
+.watchdogStatus {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--text-secondary, #9ca3af);
+  margin-bottom: 16px;
+}
+
+.alertBadge {
+  background: #ef4444;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.alertRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.alertRow.warning {
+  background: rgba(234, 179, 8, 0.1);
+  border-left: 3px solid #eab308;
+}
+
+.alertRow.critical {
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 3px solid #ef4444;
+}
+
+.alertRow.info {
+  background: rgba(59, 130, 246, 0.1);
+  border-left: 3px solid #3b82f6;
+}
+
+.alertContent {
+  flex: 1;
+}
+
+.alertSubsystem {
+  font-size: 12px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.alertMessage {
+  font-size: 12px;
+  color: var(--text-secondary, #9ca3af);
+}
+
+.ackButton {
+  background: transparent;
+  border: 1px solid var(--border-color, #1f1f2e);
+  color: var(--text-secondary, #9ca3af);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ackButton:hover {
+  background: var(--bg-tertiary, #1a1a24);
+  color: var(--text-primary, #ffffff);
+}
+
+/* Controls */
+.controls {
+  margin-bottom: 20px;
+}
+
+.controlButton {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.controlButton.start {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+}
+
+.controlButton.start:hover {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+.controlButton.stop {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.controlButton.stop:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.controlButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Quick Start */
+.quickStart {
+  border-top: 1px solid var(--border-color, #1f1f2e);
+  padding-top: 16px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-tertiary, #1a1a24);
+  border: 1px solid var(--border-color, #1f1f2e);
+  border-radius: 6px;
+  color: var(--text-primary, #ffffff);
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent-color, #6366f1);
+}
+
+.input::placeholder {
+  color: var(--text-muted, #6b7280);
+}
+
+.quickStartButton {
+  width: 100%;
+  padding: 10px;
+  background: var(--accent-color, #6366f1);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.quickStartButton:hover {
+  background: #4f46e5;
+}
+
+.quickStartButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Action Button */
+.actionButton {
+  background: var(--accent-color, #6366f1);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.actionButton:hover {
+  background: #4f46e5;
+}
+
+.actionButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* States */
+.loading,
+.error,
+.offline,
+.empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-secondary, #9ca3af);
+  font-size: 13px;
+}
+
+.error {
+  color: #ef4444;
+}
+
+.count {
+  font-size: 12px;
+  color: var(--text-muted, #6b7280);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

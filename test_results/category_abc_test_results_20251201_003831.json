@@ -1,0 +1,261 @@
+{
+  "timestamp": "2025-12-01T00:38:31.649270",
+  "base_url": "http://localhost:8001",
+  "summary": {
+    "total": 39,
+    "passed": 9,
+    "failed": 0,
+    "errors": 30,
+    "skipped": 9
+  },
+  "results": [
+    {
+      "test_name": "A.1 - GET /auth/me with expired access token",
+      "method": "GET",
+      "endpoint": "/auth/me",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "A.2 - POST /auth/refresh with expired refresh token",
+      "method": "POST",
+      "endpoint": "/auth/refresh",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "A.3 - Accessing protected endpoint with expired token",
+      "method": "GET",
+      "endpoint": "/rag/memories",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "A.4 - Initial login",
+      "method": "POST",
+      "endpoint": "/auth/login",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "B.1 - GET /hash-sphere/anchors (valid)",
+      "method": "GET",
+      "endpoint": "/hash-sphere/anchors",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "B.2 - GET /hash-sphere/anchors?limit=200",
+      "method": "GET",
+      "endpoint": "/hash-sphere/anchors?limit=200",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "B.3 - GET /hash-sphere/anchors with min_importance filters",
+      "method": "GET",
+      "endpoint": "/hash-sphere/anchors?min_importance=0.5",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.1.1 - POST /rag/memories (valid)",
+      "method": "POST",
+      "endpoint": "/rag/memories",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.1.2 - POST /rag/memories (missing fields)",
+      "method": "POST",
+      "endpoint": "/rag/memories",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.1.3 - POST /rag/memories (huge content)",
+      "method": "POST",
+      "endpoint": "/rag/memories",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.1.4 - POST /rag/memories (unicode)",
+      "method": "POST",
+      "endpoint": "/rag/memories",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.1.5 - GET /rag/memories (list)",
+      "method": "GET",
+      "endpoint": "/rag/memories",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.1.6 - GET /rag/memories?limit=50",
+      "method": "GET",
+      "endpoint": "/rag/memories?limit=50",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.1.7 - GET /rag/memories/{id} (valid)",
+      "status": "SKIPPED",
+      "reason": "No memory ID available"
+    },
+    {
+      "test_name": "C.1.8 - GET /rag/memories/99999999 (404)",
+      "method": "GET",
+      "endpoint": "/rag/memories/99999999",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.1.9 - PUT /rag/memories/{id} (update)",
+      "status": "SKIPPED",
+      "reason": "No memory ID available"
+    },
+    {
+      "test_name": "C.1.10 - PUT /rag/memories/{id} (update invalid)",
+      "status": "SKIPPED"
+    },
+    {
+      "test_name": "C.1.11 - DELETE /rag/memories/{id} (valid)",
+      "status": "SKIPPED"
+    },
+    {
+      "test_name": "C.1.12 - DELETE /rag/memories/99999999 (404)",
+      "method": "DELETE",
+      "endpoint": "/rag/memories/99999999",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.2.1 - POST /rag/memories/search (simple query)",
+      "method": "POST",
+      "endpoint": "/rag/memories/search",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.2.2 - POST /rag/memories/search (semantic)",
+      "method": "POST",
+      "endpoint": "/rag/memories/search",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.2.3 - POST /rag/memories/search (hybrid)",
+      "method": "POST",
+      "endpoint": "/rag/memories/search",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.2.4 - POST /rag/memories/search (no results)",
+      "method": "POST",
+      "endpoint": "/rag/memories/search",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.2.5 - POST /rag/memories/search (unicode)",
+      "method": "POST",
+      "endpoint": "/rag/memories/search",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.2.6 - POST /rag/memories/search (large query)",
+      "method": "POST",
+      "endpoint": "/rag/memories/search",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.2.7 - POST /rag/memories/search (with filters)",
+      "method": "POST",
+      "endpoint": "/rag/memories/search",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.2.8 - POST /rag/memories/search (multiple memories)",
+      "method": "POST",
+      "endpoint": "/rag/memories/search",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.3.1 - GET /rag/analytics (distribution)",
+      "method": "GET",
+      "endpoint": "/rag/analytics",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.3.2 - GET /rag/analytics (empty database)",
+      "method": "GET",
+      "endpoint": "/rag/analytics",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.3.3 - GET /rag/analytics (after multiple inserts)",
+      "method": "GET",
+      "endpoint": "/rag/analytics",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.4.1 - POST /rag/memories/share",
+      "status": "SKIPPED"
+    },
+    {
+      "test_name": "C.4.2 - GET /rag/memories/shared",
+      "method": "GET",
+      "endpoint": "/rag/memories/shared",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.4.3 - Remove share",
+      "status": "SKIPPED"
+    },
+    {
+      "test_name": "C.4.4 - Share with invalid target",
+      "status": "SKIPPED"
+    },
+    {
+      "test_name": "C.5.1 - POST /rag/memories/batch-create",
+      "method": "POST",
+      "endpoint": "/rag/memories/batch-create",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.5.2 - POST /rag/memories/batch-delete",
+      "status": "SKIPPED"
+    },
+    {
+      "test_name": "C.5.3 - POST /rag/memories/batch-update",
+      "status": "SKIPPED"
+    },
+    {
+      "test_name": "C.5.4 - POST /rag/memories/batch-create (invalid items)",
+      "method": "POST",
+      "endpoint": "/rag/memories/batch-create",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    },
+    {
+      "test_name": "C.5.5 - POST /rag/memories/batch-create (huge payload)",
+      "method": "POST",
+      "endpoint": "/rag/memories/batch-create",
+      "status_code": "ERROR",
+      "error": "('Connection aborted.', ConnectionResetError(54, 'Connection reset by peer'))"
+    }
+  ]
+}

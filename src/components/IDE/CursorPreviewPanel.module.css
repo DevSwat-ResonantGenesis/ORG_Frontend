@@ -1,0 +1,106 @@
+.previewPanel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #0a0a0a;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #0a0a0a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  min-height: 36px;
+}
+
+.title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #cccccc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.actions {
+  display: flex;
+  gap: 4px;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: #858585;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.actionButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #cccccc;
+}
+
+.actionButton:active {
+  background: #4c4c4c;
+}
+
+.spinning {
+  animation: spin 0.5s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.previewContent {
+  flex: 1;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #ffffff;
+}
+
+.noPreview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #858585;
+  padding: 24px;
+  text-align: center;
+}
+
+.noPreview svg {
+  opacity: 0.5;
+}
+
+.noPreview p {
+  margin: 0;
+  font-size: 14px;
+  color: #cccccc;
+}
+
+.noPreview span {
+  font-size: 12px;
+  color: #666666;
+}

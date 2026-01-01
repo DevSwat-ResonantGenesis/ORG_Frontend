@@ -1,0 +1,523 @@
+/* ============== FACTORY PANEL STYLES ============== */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0;
+  overflow: hidden;
+  margin: 0;
+}
+
+.tabsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.headerActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.templateBtn {
+  padding: 6px 12px;
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 6px;
+  color: #a855f7;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.stepIndicator {
+  font-size: 12px;
+  color: #888;
+}
+
+.panelContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* Templates Section */
+.templatesSection {
+  margin-bottom: 24px;
+}
+
+.templatesSection h3 {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+.templateFilters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filterBtn {
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #888;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filterBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.filterBtn.active {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #0ea5e9;
+}
+
+.templatesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.templateCard {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.templateCard:hover {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+.templateIcon {
+  font-size: 24px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.templateCard h4 {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.templateCard p {
+  margin: 0 0 8px;
+  font-size: 11px;
+  color: #888;
+}
+
+.templateMeta {
+  display: flex;
+  gap: 8px;
+  font-size: 10px;
+  color: #666;
+}
+
+.templateMeta span {
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.divider {
+  text-align: center;
+  color: #666;
+  font-size: 12px;
+  position: relative;
+  margin: 20px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.divider::before { left: 0; }
+.divider::after { right: 0; }
+
+/* Step Progress */
+.stepProgress {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.stepBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  color: #888;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.stepBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.stepBtn.active {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #0ea5e9;
+}
+
+.stepBtn.completed {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+}
+
+.stepNum {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.stepLabel {
+  font-weight: 500;
+}
+
+/* Form Section */
+.formSection {
+  margin-bottom: 24px;
+}
+
+.formSection h3 {
+  margin: 0 0 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #888;
+}
+
+.field input[type="text"],
+.field input:not([type]),
+.field textarea,
+.field select {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  border-color: rgba(14, 165, 233, 0.5);
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Type Grid */
+.typeGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.typeBtn {
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #888;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.typeBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.typeBtn.active {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #a855f7;
+}
+
+/* Mode Selector */
+.modeSelector {
+  display: flex;
+  gap: 12px;
+}
+
+.modeBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #888;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modeBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.modeBtn.active {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+}
+
+/* Provider Grid */
+.providerGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.providerBtn {
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #888;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.providerBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.providerBtn.active {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #0ea5e9;
+}
+
+/* Param Grid */
+.paramGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.paramGrid input[type="range"] {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* Tools Grid */
+.toolsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.toolItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.toolItem input {
+  accent-color: #0ea5e9;
+}
+
+/* Review Card */
+.reviewCard {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+}
+
+.reviewRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.reviewRow:last-child {
+  border-bottom: none;
+}
+
+.reviewRow span {
+  color: #888;
+  font-size: 13px;
+}
+
+.reviewRow strong {
+  font-size: 13px;
+}
+
+/* Form Navigation */
+.formNav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.backBtn {
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #888;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.nextBtn {
+  padding: 10px 24px;
+  background: rgba(14, 165, 233, 0.15);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  border-radius: 8px;
+  color: #0ea5e9;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.createBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.createBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .typeGrid,
+  .providerGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .toolsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .stepProgress {
+    flex-wrap: wrap;
+  }
+  
+  .stepBtn {
+    flex: 0 0 calc(50% - 4px);
+  }
+}
+
+@media (max-width: 768px) {
+  .templatesGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .modeSelector {
+    flex-direction: column;
+  }
+  
+  .paramGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .toolsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Error and Success Messages */
+.errorMessage {
+  padding: 10px 14px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  color: #ef4444;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.successMessage {
+  padding: 10px 14px;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 6px;
+  color: #22c55e;
+  font-size: 13px;
+  margin-top: 12px;
+}

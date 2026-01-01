@@ -1,0 +1,170 @@
+/* Tabs Bar - Uses IDE Design System */
+.tabsBar {
+  /* All variables come from ide-design-system.css */
+  height: 32px;
+  background: var(--ide-bg-primary);
+  border-bottom: 1px solid var(--ide-border);
+  border-left: 1px solid var(--ide-border);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--ide-space-3);
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex-shrink: 0;
+  flex-grow: 0;
+  min-height: 32px;
+  max-height: 32px;
+  box-shadow: var(--ide-shadow-sm);
+}
+
+.tabsBar::-webkit-scrollbar {
+  height: 4px;
+}
+
+.tabsBar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tabsBar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.tabsBar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.tabsContainer {
+  display: flex;
+  gap: var(--ide-space-1);
+  align-items: center;
+  min-width: 100%;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: var(--ide-space-2);
+  padding: 0 var(--ide-space-3);
+  background: transparent;
+  border-radius: 0;
+  cursor: pointer;
+  color: var(--ide-text-secondary);
+  font-size: var(--ide-font-xs);
+  font-weight: var(--ide-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  transition: all var(--ide-transition-slow);
+  border: none;
+  border-bottom: none;
+  min-width: auto;
+  max-width: none;
+  height: 32px;
+  position: relative;
+}
+
+.tab:hover {
+  background: var(--ide-surface-hover); /* Match Resonant Chat */
+  color: var(--ide-text-primary);
+}
+
+.tab.active {
+  background: var(--ide-bg-primary);
+  color: var(--ide-text-primary);
+  border-color: var(--ide-border);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tab.active::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--ide-accent-500);
+  border-radius: 2px 2px 0 0;
+}
+
+.tabName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.dirtyIndicator {
+  color: var(--ide-warning);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--ide-text-secondary); /* Match Resonant Chat */
+  opacity: 0;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.tab:hover .closeButton {
+  opacity: 1;
+}
+
+.closeButton:hover {
+  background: var(--ide-surface-hover); /* Match Resonant Chat */
+  color: var(--ide-text-primary);
+}
+
+.emptyTabs {
+  padding: 0 12px;
+  color: var(--ide-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+[data-theme='light'] .tabsBar {
+  background: var(--ide-bg-tertiary);
+  border-bottom-color: var(--ide-border);
+}
+
+[data-theme='light'] .tab {
+  background: var(--ide-bg-primary);
+  color: var(--ide-text-secondary);
+  border-color: transparent;
+}
+
+[data-theme='light'] .tab:hover {
+  background: var(--ide-surface-hover);
+  color: var(--ide-text-primary);
+}
+
+[data-theme='light'] .tab.active {
+  background: var(--ide-bg-primary);
+  color: var(--ide-text-primary);
+  border-color: var(--ide-border);
+}
+
+[data-theme='light'] .closeButton {
+  color: var(--ide-text-tertiary);
+}
+
+[data-theme='light'] .closeButton:hover {
+  background: var(--ide-surface-hover);
+  color: var(--ide-text-primary);
+}
+

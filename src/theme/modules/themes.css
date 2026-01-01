@@ -1,0 +1,259 @@
+/* ============================================================
+   THEME STYLES
+   Dark and light theme definitions
+   ============================================================ */
+
+/* Force Dark Mode as Default (only when no theme is set) - Use new token system */
+html:not([data-theme="light"]),
+html[data-theme=""] {
+  /* Use new token system - warm gray */
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  color-scheme: dark;
+}
+
+body:not([data-theme="light"]),
+body[data-theme=""] {
+  /* Use new token system - warm gray */
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Dark Mode Theme - Use new token system (warm gray) */
+html[data-theme="dark"] {
+  /* All colors now come from tokens-2025.css */
+  background: var(--bg-primary) !important;
+  /* Warm gray #0a0a0a */
+  color: var(--text-primary) !important;
+  color-scheme: dark;
+}
+
+/* Dark theme - EXCLUDE IDE */
+/* [data-theme="dark"] *:not(.ide-container):not(.ide-container *) {
+  background-color: inherit !important;
+} */
+
+[data-theme="dark"] .page-container {
+  background: var(--bg-primary) !important;
+  /* Use new token system */
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .page-card,
+[data-theme="dark"] .kpi-card,
+[data-theme="dark"] .chart-card {
+  background: var(--surface) !important;
+  /* Use new token system */
+  border-color: var(--border) !important;
+  /* Use new token system */
+  color: var(--text-primary) !important;
+  /* Use new token system */
+}
+
+/* Dark theme text colors - EXCLUDE IDE and all its descendants */
+[data-theme="dark"] :not(.ide-container):not(.ide-container *) h1,
+[data-theme="dark"] :not(.ide-container):not(.ide-container *) h2,
+[data-theme="dark"] :not(.ide-container):not(.ide-container *) h3,
+[data-theme="dark"] :not(.ide-container):not(.ide-container *) h4,
+[data-theme="dark"] :not(.ide-container):not(.ide-container *) h5,
+[data-theme="dark"] :not(.ide-container):not(.ide-container *) h6,
+[data-theme="dark"] :not(.ide-container):not(.ide-container *) p,
+[data-theme="dark"] :not(.ide-container):not(.ide-container *) span,
+[data-theme="dark"] :not(.ide-container):not(.ide-container *) div,
+[data-theme="dark"] :not(.ide-container):not(.ide-container *) label {
+  color: var(--text-primary) !important;
+  /* Use new token system */
+}
+
+[data-theme="dark"] .text-700,
+[data-theme="dark"] .text-secondary {
+  color: var(--text-secondary) !important;
+  /* Use new token system */
+}
+
+[data-theme="dark"] .text-500,
+[data-theme="dark"] .text-muted {
+  color: var(--text-tertiary) !important;
+  /* Use new token system */
+}
+
+[data-theme='dark'] body,
+[data-theme='dark'] #root,
+[data-theme='dark'] .page-container,
+[data-theme='dark'] .page-wrapper,
+[data-theme='dark'] .main-content {
+  background: var(--bg-primary) !important;
+  /* Use new token system */
+}
+
+[data-theme='dark'] h1,
+[data-theme='dark'] h2,
+[data-theme='dark'] h3,
+[data-theme='dark'] h4,
+[data-theme='dark'] h5,
+[data-theme='dark'] h6,
+[data-theme='dark'] .text-h1,
+[data-theme='dark'] .text-h2,
+[data-theme='dark'] .text-h3,
+[data-theme='dark'] .text-h4,
+[data-theme='dark'] .text-h5,
+[data-theme='dark'] .text-h6 {
+  color: #f9fafb !important;
+}
+
+[data-theme='dark'] header {
+  /* Very transparent glass effect for dark mode */
+  background: rgba(10, 10, 15, 0.15) !important;
+  backdrop-filter: blur(12px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(150%) !important;
+}
+
+[data-theme='dark'] body,
+[data-theme='dark'] html {
+  scrollbar-color: rgba(59, 130, 246, 0.4) transparent !important;
+  /* Blue scrollbar for dark mode */
+}
+
+[data-theme='dark'] body::-webkit-scrollbar-thumb,
+[data-theme='dark'] html::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.4) !important;
+  /* Blue scrollbar */
+}
+
+[data-theme='dark'] body::-webkit-scrollbar-thumb:hover,
+[data-theme='dark'] html::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.6) !important;
+  /* Brighter blue on hover */
+}
+
+/* Light Mode Theme - Pearl White */
+html[data-theme="light"] {
+  --bg: #FFFFFF !important;
+  /* Pure pearl white background for light mode */
+  --bg-subtle: #F9FAFB !important;
+  /* Light gray for subtle backgrounds */
+  --surface: #FFFFFF !important;
+  /* Pure pearl white surface */
+  --surface-hover: #F3F4F6 !important;
+  /* Light gray hover */
+  --surface-border: #E5E7EB !important;
+  /* Light gray border */
+  --surface-shadow: rgba(0, 0, 0, 0.05) !important;
+  /* Subtle shadow */
+  --text-900: #111827 !important;
+  /* Dark text for contrast */
+  --text-700: #374151 !important;
+  /* Medium dark text */
+  --text-500: #6B7280 !important;
+  /* Medium gray text */
+  --text-300: #9CA3AF !important;
+  /* Light gray text */
+  --chart-grid: #E5E7EB !important;
+  /* Light grid lines */
+  background: #FFFFFF !important;
+  /* Pure pearl white */
+  color: #111827 !important;
+  color-scheme: light;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  /* Root background variables */
+  --color-bg-root: #FFFFFF !important;
+}
+
+[data-theme="light"] * {
+  background-color: inherit !important;
+}
+
+[data-theme="light"] body {
+  background: #FFFFFF !important;
+  /* Pure pearl white */
+  color: #111827 !important;
+}
+
+[data-theme="light"] html {
+  background: #FFFFFF !important;
+  /* Pure pearl white */
+}
+
+[data-theme="light"] #root {
+  background: #FFFFFF !important;
+  /* Pure pearl white */
+}
+
+[data-theme="light"] .page-container {
+  background: #FFFFFF !important;
+  /* Pure pearl white */
+}
+
+[data-theme="light"] .page-wrapper,
+[data-theme="light"] .main-content {
+  background: #FFFFFF !important;
+  /* Pure pearl white */
+}
+
+[data-theme="light"] .card,
+[data-theme="light"] .page-card,
+[data-theme="light"] .kpi-card,
+[data-theme="light"] .chart-card {
+  background: #FFFFFF !important;
+  border-color: #E5E7EB !important;
+  color: #111827 !important;
+}
+
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6,
+[data-theme="light"] p,
+[data-theme="light"] span,
+[data-theme="light"] div,
+[data-theme="light"] label {
+  color: #111827 !important;
+}
+
+[data-theme="light"] .text-700,
+[data-theme="light"] .text-secondary {
+  color: #374151 !important;
+}
+
+[data-theme="light"] .text-500,
+[data-theme="light"] .text-muted {
+  color: #6B7280 !important;
+}
+
+[data-theme="light"] body,
+[data-theme="light"] #root,
+[data-theme="light"] .page-container,
+[data-theme="light"] .page-wrapper,
+[data-theme="light"] .main-content {
+  background: #FFFFFF !important;
+}
+
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6,
+[data-theme="light"] .text-h1,
+[data-theme="light"] .text-h2,
+[data-theme="light"] .text-h3,
+[data-theme="light"] .text-h4,
+[data-theme="light"] .text-h5,
+[data-theme="light"] .text-h6 {
+  color: #111827 !important;
+}
+
+[data-theme="light"] header {
+  /* Very transparent glass effect for light mode */
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(12px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(150%) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+  box-shadow: none !important;
+  padding: 12px 32px !important;
+}

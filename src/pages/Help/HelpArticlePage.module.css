@@ -1,0 +1,205 @@
+/* ============================================================
+   Help Article Page 2025 - Modern Minimal Design
+   Matching Dashboard Style
+   ============================================================ */
+
+.helpArticlePage {
+  min-height: 100vh;
+  padding: var(--space-4);
+  padding-top: calc(64px + var(--space-4));
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Header */
+.header {
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.headerContent {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.headerText h1 {
+  font-size: var(--font-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+  line-height: var(--line-height-tight);
+}
+
+.subtitle {
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: var(--line-height-relaxed);
+}
+
+/* Content Body */
+.contentBody {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.contentMain {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.contentSection {
+  padding: var(--space-6);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: var(--space-6);
+  line-height: var(--line-height-relaxed);
+  color: var(--text-primary);
+}
+
+.contentSection h1,
+.contentSection h2,
+.contentSection h3,
+.contentSection h4 {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-4);
+}
+
+.contentSection h1 {
+  font-size: var(--font-3xl);
+}
+
+.contentSection h2 {
+  font-size: var(--font-2xl);
+}
+
+.contentSection h3 {
+  font-size: var(--font-xl);
+}
+
+.contentSection h4 {
+  font-size: var(--font-lg);
+}
+
+.contentSection p {
+  margin-bottom: var(--space-4);
+  color: var(--text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.contentSection ul,
+.contentSection ol {
+  margin-bottom: var(--space-4);
+  padding-left: var(--space-6);
+  color: var(--text-secondary);
+}
+
+.contentSection li {
+  margin-bottom: var(--space-2);
+  line-height: var(--line-height-relaxed);
+}
+
+.contentSection code {
+  background: var(--bg-secondary);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: var(--font-sm);
+  color: var(--color-primary-600);
+  border: 1px solid var(--border);
+}
+
+.contentSection pre {
+  background: var(--bg-secondary);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--border);
+}
+
+.contentSection pre code {
+  background: transparent;
+  padding: 0;
+  border: none;
+  color: var(--text-primary);
+}
+
+.contentSection a {
+  color: var(--color-primary-500);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  transition: color var(--transition-fast);
+}
+
+.contentSection a:hover {
+  color: var(--color-primary-600);
+  text-decoration: underline;
+}
+
+.contentSection blockquote {
+  border-left: 4px solid var(--color-primary-500);
+  padding-left: var(--space-4);
+  margin: var(--space-4) 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .helpArticlePage {
+    padding: var(--space-3);
+    padding-top: calc(64px + var(--space-3));
+  }
+
+  .header {
+    margin-bottom: var(--space-6);
+  }
+
+  .headerContent {
+    flex-direction: column;
+  }
+
+  .headerText h1 {
+    font-size: var(--font-3xl);
+  }
+
+  .contentSection {
+    padding: var(--space-4);
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+}

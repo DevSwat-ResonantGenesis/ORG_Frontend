@@ -1,0 +1,338 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dialog {
+  background: var(--ide-bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-16) var(--space-20);
+  border-bottom: 1px solid var(--ide-border);
+  background: var(--ide-bg-secondary);
+}
+
+.header h3 {
+  margin: 0;
+  font-size: var(--font-18);
+  font-weight: 600;
+  color: var(--ide-text-primary);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: var(--ide-text-secondary);
+  cursor: pointer;
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  background: var(--ide-bg-tertiary);
+  color: var(--ide-text-primary);
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-20);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin-bottom: 24px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.headerActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.viewDiffButton {
+  padding: 6px 12px;
+  background: var(--ide-accent-500);
+  color: var(--ide-text-primary);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.viewDiffButton:hover {
+  background: var(--ide-accent-600);
+}
+
+.label {
+  font-size: var(--font-14);
+  font-weight: 500;
+  color: var(--ide-text-primary);
+}
+
+.requestInput {
+  padding: var(--space-12);
+  background: var(--ide-bg-secondary);
+  color: var(--ide-text-primary);
+  border: 1px solid var(--ide-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-14);
+  font-family: var(--font-mono);
+  resize: vertical;
+}
+
+.requestInput:focus {
+  outline: none;
+  border-color: var(--ide-accent-500);
+}
+
+.requestInput:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.results h4 {
+  margin: 0 0 var(--space-12) 0;
+  font-size: var(--font-16);
+  font-weight: 600;
+  color: var(--ide-text-primary);
+}
+
+.fileList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.fileItem {
+  padding: var(--space-12);
+  background: var(--ide-bg-secondary);
+  border: 1px solid var(--ide-border);
+  border-radius: var(--radius-sm);
+}
+
+.fileActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.fileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-8);
+}
+
+.filePath {
+  font-size: var(--font-13);
+  font-weight: 500;
+  color: var(--ide-text-primary);
+  font-family: var(--font-mono);
+}
+
+.applyButton {
+  padding: var(--space-4) var(--space-8);
+  background: var(--ide-accent-500);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-12);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.applyButton:hover {
+  background: var(--ide-accent-600);
+}
+
+.diffPreview {
+  padding: var(--space-8);
+  background: var(--ide-bg-primary);
+  border-radius: var(--radius-sm);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.diffPreview pre {
+  margin: 0;
+  font-size: var(--font-12);
+  font-family: var(--font-mono);
+  color: var(--ide-text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.issuesList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.issue {
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-13);
+}
+
+.issue.error {
+  background: var(--bg-danger-alpha-100);
+  color: var(--ide-error);
+  border: 1px solid var(--ide-error);
+}
+
+.issue.warning {
+  background: var(--bg-warning-alpha-100);
+  color: var(--ide-warning);
+  border: 1px solid var(--ide-warning);
+}
+
+.dependencyChange {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--font-12);
+  font-family: var(--font-mono);
+  color: var(--ide-text-secondary);
+  background: var(--ide-bg-tertiary);
+  border-radius: var(--radius-sm);
+  margin-top: var(--space-4);
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-32);
+  gap: var(--space-12);
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--ide-border);
+  border-top-color: var(--ide-accent-500);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading p {
+  margin: 0;
+  font-size: var(--font-14);
+  color: var(--ide-text-secondary);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-8);
+  padding: var(--space-16) var(--space-20);
+  border-top: 1px solid var(--ide-border);
+  background: var(--ide-bg-secondary);
+}
+
+.refactorButton {
+  padding: var(--space-8) var(--space-16);
+  background: var(--ide-accent-500);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-14);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refactorButton:hover:not(:disabled) {
+  background: var(--ide-accent-600);
+}
+
+.refactorButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  padding: var(--space-8) var(--space-16);
+  background: var(--ide-bg-tertiary);
+  color: var(--ide-text-primary);
+  border: 1px solid var(--ide-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-14);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelButton:hover {
+  background: var(--ide-bg-primary);
+  border-color: var(--ide-accent-500);
+}
+
+/* Scrollbars */
+.content::-webkit-scrollbar,
+.fileList::-webkit-scrollbar,
+.diffPreview::-webkit-scrollbar {
+  width: 1px;
+}
+
+.content::-webkit-scrollbar-track,
+.fileList::-webkit-scrollbar-track,
+.diffPreview::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb,
+.fileList::-webkit-scrollbar-thumb,
+.diffPreview::-webkit-scrollbar-thumb {
+  background: var(--ide-border);
+  border-radius: 1px;
+}
+

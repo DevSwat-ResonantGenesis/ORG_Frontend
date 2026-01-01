@@ -1,0 +1,352 @@
+/* ============== MEMORY PANEL STYLES ============== */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.panelHeader h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.agentSelector select {
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  min-width: 180px;
+}
+
+.panelContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* Error Banner */
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 14px;
+  font-weight: 500;
+  animation: slideDown 0.3s ease;
+}
+
+.errorBanner svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Loading Banner */
+.loadingBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+  color: #3b82f6;
+  font-size: 14px;
+  font-weight: 500;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.statCard {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.statCard h4 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  color: #888;
+  font-weight: 400;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 600;
+  color: #a855f7;
+}
+
+.statMeta {
+  font-size: 11px;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* Tabs Bar */
+.tabsBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.tab {
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #888;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.tab.active {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #a855f7;
+}
+
+.searchInput {
+  padding: 8px 14px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  min-width: 200px;
+  outline: none;
+}
+
+.searchInput:focus {
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+/* Memory List */
+.memoryList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.memoryCard {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+}
+
+.memoryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.memoryType {
+  padding: 4px 8px;
+  background: rgba(168, 85, 247, 0.15);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #a855f7;
+  text-transform: uppercase;
+}
+
+.memoryTime {
+  font-size: 11px;
+  color: #666;
+}
+
+.memoryContent {
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.memoryMeta {
+  display: flex;
+  gap: 16px;
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.memoryMeta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.relevance {
+  color: #22c55e;
+}
+
+.memoryActions {
+  display: flex;
+  gap: 8px;
+}
+
+.viewBtn, .deleteBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.viewBtn {
+  background: rgba(14, 165, 233, 0.15);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  color: #0ea5e9;
+}
+
+.deleteBtn {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+/* Actions Bar */
+.actionsBar {
+  display: flex;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.clearBtn, .exportBtn, .syncBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.clearBtn {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.exportBtn {
+  background: rgba(14, 165, 233, 0.15);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  color: #0ea5e9;
+}
+
+.syncBtn {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #666;
+  text-align: center;
+}
+
+.emptyState svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tabsBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .searchInput {
+    min-width: unset;
+  }
+}
+
+@media (max-width: 768px) {
+  .tabs {
+    flex-wrap: wrap;
+  }
+  
+  .actionsBar {
+    flex-direction: column;
+  }
+}

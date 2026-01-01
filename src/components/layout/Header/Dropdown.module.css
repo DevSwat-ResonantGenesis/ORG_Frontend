@@ -1,0 +1,114 @@
+/* Dropdown Component - Solid Non-Transparent Styles */
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 280px;
+  background: #1a1f2e;
+  border: 2px solid #3b82f6;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10002;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.15s ease;
+  padding: 8px;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Light Mode - Solid Non-Transparent */
+[data-theme='light'] .dropdown {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dropdownGrid {
+  display: grid;
+  gap: 4px;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  width: 100%;
+  min-width: 160px;
+}
+
+.dropdownItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(2px);
+}
+
+[data-theme='light'] .dropdownItem:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.dropdownIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: #3b82f6;
+}
+
+[data-theme='light'] .dropdownIcon {
+  color: #2563eb;
+}
+
+.dropdownContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.dropdownTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+[data-theme='light'] .dropdownTitle {
+  color: #1f2937;
+}
+
+.dropdownDescription {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.3;
+}
+
+[data-theme='light'] .dropdownDescription {
+  color: #6b7280;
+}
+
+/* Wide grid for Control Plane dropdown */
+.dropdownWide {
+  min-width: 480px;
+}
+
+.dropdownWide .dropdownGrid {
+  grid-template-columns: repeat(4, minmax(160px, auto)) !important;
+}

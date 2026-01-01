@@ -1,0 +1,300 @@
+/* ============================================================
+   Title Component - CSS Module
+   For section titles, feature titles, and general headings
+   ============================================================ */
+
+/* Section Title - Main section headings */
+.sectionTitle {
+  /* Different font from hero - Poppins for clear section distinction */
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  /* Mobile: Much smaller for mobile - compact and readable */
+  font-size: clamp(20px, 3.5vw, 36px);
+  font-weight: 700;
+  text-align: center;
+  /* Proper spacing: 16px top, 24px bottom mobile, 32px tablet, 40px desktop */
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-6);
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--color-text-primary, #111827);
+  letter-spacing: -0.02em;
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  line-height: 1.2;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Responsive spacing for section titles */
+@media (min-width: 640px) {
+  .sectionTitle {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-8);
+  }
+}
+
+@media (min-width: 1024px) {
+  .sectionTitle {
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-10);
+  }
+}
+
+[data-theme='dark'] .sectionTitle {
+  color: #f9fafb;
+}
+
+/* CTA Title - Call-to-action section titles */
+.ctaTitle {
+  /* Different font from hero - Poppins for clear section distinction */
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: var(--space-md);
+  margin-top: 0;
+  margin-left: auto;
+  margin-right: auto;
+  color: #111827;
+  letter-spacing: -0.02em;
+  width: 100%;
+}
+
+[data-theme='dark'] .ctaTitle {
+  color: #f9fafb;
+}
+
+/* Feature Title - Feature/service titles */
+.featureTitle {
+  /* Different font from sections - Figtree for friendly, readable distinction */
+  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  font-size: 24px; /* Desktop: 24px - larger than body text, clearly visible */
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+  /* Proper spacing: 0 top, 12px bottom mobile, 16px tablet/desktop */
+  margin-top: 0;
+  margin-bottom: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .featureTitle {
+    margin-bottom: var(--space-4);
+  }
+}
+
+/* Mobile: Much smaller for mobile */
+@media (max-width: 639px) {
+  .featureTitle {
+    font-size: 18px; /* Mobile: 18px - compact and readable */
+  }
+}
+
+[data-theme='dark'] .featureTitle {
+  color: #f9fafb;
+}
+
+/* Subsection Title - Smaller section headings */
+.subsectionTitle {
+  font-size: 18px; /* 18px - smaller than section titles, clearly visible */
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+  margin-bottom: var(--space-md);
+}
+
+[data-theme='dark'] .subsectionTitle {
+  color: #f9fafb;
+}
+
+/* Large Title - For pricing, special sections */
+.largeTitle {
+  font-size: 28px; /* 28px - larger than section titles, clearly visible */
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+  text-align: center;
+  margin-bottom: var(--space-md);
+}
+
+[data-theme='dark'] .largeTitle {
+  color: #f9fafb;
+}
+
+/* Medium Title - For cards, items */
+.mediumTitle {
+  /* Different font from sections - Figtree for friendly, readable distinction */
+  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  font-size: 24px; /* Desktop: 24px - larger than body text, clearly visible */
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+  /* Proper spacing: 0 top, 12px bottom mobile, 16px tablet/desktop */
+  margin-top: 0;
+  margin-bottom: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .mediumTitle {
+    margin-bottom: var(--space-4);
+  }
+}
+
+/* Mobile: Much smaller for mobile */
+@media (max-width: 639px) {
+  .mediumTitle {
+    font-size: 18px; /* Mobile: 18px - compact and readable */
+  }
+}
+
+[data-theme='dark'] .mediumTitle {
+  color: #f9fafb;
+}
+
+/* Differentiator Title - For differentiator sections */
+.differentiatorTitle {
+  /* Different font from sections - Figtree for friendly, readable distinction */
+  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  font-size: 24px; /* Desktop: 24px - larger than body text, clearly visible */
+  font-weight: 700;
+  /* Proper spacing: 12px mobile, 16px tablet/desktop */
+  margin-top: 0;
+  margin-bottom: var(--space-3);
+  color: var(--color-text-primary, #111827);
+}
+
+@media (min-width: 640px) {
+  .differentiatorTitle {
+    margin-bottom: var(--space-4);
+  }
+}
+
+/* Mobile: Much smaller for mobile */
+@media (max-width: 639px) {
+  .differentiatorTitle {
+    font-size: 18px; /* Mobile: 18px - compact and readable */
+  }
+}
+
+[data-theme='dark'] .differentiatorTitle {
+  color: #f9fafb;
+}
+
+/* Service Title - For service cards */
+.serviceTitle {
+  /* Different font from sections - Figtree for friendly, readable distinction */
+  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  font-size: 24px; /* Desktop: 24px - larger than body text, clearly visible */
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+  /* Proper spacing: 0 top, 12px bottom mobile, 16px tablet/desktop */
+  margin-top: 0;
+  margin-bottom: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .serviceTitle {
+    margin-bottom: var(--space-4);
+  }
+}
+
+/* Mobile: Much smaller for mobile */
+@media (max-width: 639px) {
+  .serviceTitle {
+    font-size: 18px; /* Mobile: 18px - compact and readable */
+  }
+}
+
+[data-theme='dark'] .serviceTitle {
+  color: #f9fafb;
+}
+
+/* Capability Title - For capability sections */
+.capabilityTitle {
+  font-size: 20px; /* 20px - larger than body text, clearly visible */
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+  margin-bottom: var(--space-md);
+}
+
+[data-theme='dark'] .capabilityTitle {
+  color: #f9fafb;
+}
+
+/* Use Case Title - For use case cards */
+.useCaseTitle {
+  /* Different font from sections - Figtree for friendly, readable distinction */
+  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  font-size: 24px; /* Desktop: 24px - larger than body text, clearly visible */
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+  /* Proper spacing: 0 top, 12px bottom mobile, 16px tablet/desktop */
+  margin-top: 0;
+  margin-bottom: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .useCaseTitle {
+    margin-bottom: var(--space-4);
+  }
+}
+
+/* Mobile: Much smaller for mobile */
+@media (max-width: 639px) {
+  .useCaseTitle {
+    font-size: 18px; /* Mobile: 18px - compact and readable */
+  }
+}
+
+[data-theme='dark'] .useCaseTitle {
+  color: #f9fafb;
+}
+
+/* Pricing Name - For pricing plan names */
+.pricingName {
+  font-size: 28px; /* 28px - larger than card titles, clearly visible */
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+  margin: 0 0 var(--space-sm) 0;
+}
+
+[data-theme='dark'] .pricingName {
+  color: #f9fafb;
+}
+
+/* Resonant Chat Title - For Resonant Chat pricing section */
+.resonantChatTitle {
+  font-size: 32px; /* 32px - larger than section titles, clearly visible */
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+  margin-bottom: var(--space-md);
+  text-align: center;
+}
+
+[data-theme='dark'] .resonantChatTitle {
+  color: #f9fafb;
+}
+
+/* API/SDK Section Title - For API and SDK sections */
+.apiSectionTitle,
+.sdkSectionTitle {
+  font-size: 28px; /* 28px - larger than card titles, clearly visible */
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+  margin-bottom: var(--space-lg);
+}
+
+[data-theme='dark'] .apiSectionTitle,
+[data-theme='dark'] .sdkSectionTitle {
+  color: #f9fafb;
+}
+
+/* Architecture Title - For architecture sections */
+.architectureTitle {
+  font-size: 20px; /* 20px - larger than body text, clearly visible */
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-primary, #111827);
+}
+
+[data-theme='dark'] .architectureTitle {
+  color: #f9fafb;
+}
+

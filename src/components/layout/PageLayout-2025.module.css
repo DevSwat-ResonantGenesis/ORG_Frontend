@@ -1,0 +1,170 @@
+/* ============================================================
+   PAGE LAYOUT 2025
+   Base page layout for all pages
+   ============================================================ */
+
+.page {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  padding-top: 64px; /* Header height */
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+/* ============================================================
+   PUBLIC PAGE LAYOUT
+   ============================================================ */
+
+.publicPage {
+  padding-top: 64px;
+  padding-bottom: var(--space-24);
+}
+
+.publicContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+}
+
+@media (max-width: 640px) {
+  .publicContainer {
+    padding: var(--space-6) var(--space-4);
+  }
+}
+
+/* ============================================================
+   DASHBOARD PAGE LAYOUT
+   ============================================================ */
+
+.dashboardPage {
+  display: flex;
+  min-height: calc(100vh - 64px);
+  padding-top: 64px;
+}
+
+.dashboardSidebar {
+  width: 280px;
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  padding: var(--space-6);
+  overflow-y: auto;
+  position: fixed;
+  left: 0;
+  top: 64px;
+  bottom: 0;
+  transition: transform var(--transition-base);
+}
+
+@media (max-width: 1024px) {
+  .dashboardSidebar {
+    transform: translateX(-100%);
+    z-index: var(--z-dropdown);
+  }
+  
+  .dashboardSidebarOpen {
+    transform: translateX(0);
+  }
+}
+
+.dashboardMain {
+  flex: 1;
+  margin-left: 280px;
+  padding: var(--space-8) var(--space-6);
+  overflow-x: hidden;
+}
+
+@media (max-width: 1024px) {
+  .dashboardMain {
+    margin-left: 0;
+    padding: var(--space-6) var(--space-4);
+  }
+}
+
+.dashboardContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   CHAT PAGE LAYOUT
+   ============================================================ */
+
+.chatPage {
+  display: flex;
+  min-height: calc(100vh - 64px);
+  padding-top: 64px;
+}
+
+.chatSidebar {
+  width: 320px;
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 64px;
+  bottom: 0;
+  transition: transform var(--transition-base);
+}
+
+@media (max-width: 768px) {
+  .chatSidebar {
+    transform: translateX(-100%);
+    z-index: var(--z-dropdown);
+  }
+  
+  .chatSidebarOpen {
+    transform: translateX(0);
+  }
+}
+
+.chatMain {
+  flex: 1;
+  margin-left: 320px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+}
+
+@media (max-width: 768px) {
+  .chatMain {
+    margin-left: 0;
+  }
+}
+
+/* ============================================================
+   CONTENT SECTIONS
+   ============================================================ */
+
+.section {
+  margin-bottom: var(--space-12);
+}
+
+.sectionTitle {
+  margin-bottom: var(--space-6);
+}
+
+.sectionContent {
+  /* Content styles */
+}
+
+/* ============================================================
+   MOBILE OPTIMIZATIONS
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .page {
+    padding-top: 64px;
+  }
+  
+  .publicPage {
+    padding-bottom: var(--space-16);
+  }
+  
+  .dashboardMain {
+    padding: var(--space-4) var(--space-3);
+  }
+}
+

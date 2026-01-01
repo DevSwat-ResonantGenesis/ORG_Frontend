@@ -1,0 +1,234 @@
+/**
+ * Floating Home - Super Minimal Design
+ * Warm grey semi-transparent glass effect
+ * No lines, no boxes - pure minimal aesthetic
+ */
+
+/* Main Container */
+.floatingHome {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: calc(100vh - 200px);
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+/* Minimal Container - No borders, no boxes */
+.minimalContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 40px;
+  
+  /* Super subtle glass effect */
+  background: rgba(120, 113, 108, 0.08);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-radius: 32px;
+  
+  animation: fadeIn 0.6s ease-out;
+}
+
+[data-theme='dark'] .minimalContainer {
+  background: rgba(168, 162, 158, 0.06);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Minimal Title */
+.minimalTitle {
+  font-size: 32px;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: rgba(87, 83, 78, 0.8);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+[data-theme='dark'] .minimalTitle {
+  color: rgba(214, 211, 209, 0.7);
+}
+
+/* Selector Icons Row */
+.selectorIcons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.iconButton {
+  all: unset;
+  box-sizing: border-box;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: rgba(120, 113, 108, 0.5);
+  transition: all 0.3s ease;
+  border-radius: 50%;
+}
+
+[data-theme='dark'] .iconButton {
+  color: rgba(168, 162, 158, 0.5);
+}
+
+.iconButton:hover {
+  color: rgba(87, 83, 78, 0.9);
+  background: rgba(120, 113, 108, 0.1);
+}
+
+[data-theme='dark'] .iconButton:hover {
+  color: rgba(214, 211, 209, 0.9);
+  background: rgba(168, 162, 158, 0.1);
+}
+
+.iconButton.active {
+  color: rgba(87, 83, 78, 1);
+  background: rgba(120, 113, 108, 0.15);
+}
+
+[data-theme='dark'] .iconButton.active {
+  color: rgba(245, 245, 244, 1);
+  background: rgba(168, 162, 158, 0.15);
+}
+
+.iconButton.hasSelection {
+  color: rgba(87, 83, 78, 0.9);
+}
+
+[data-theme='dark'] .iconButton.hasSelection {
+  color: rgba(214, 211, 209, 0.9);
+}
+
+.iconButton.hasSelection::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  width: 4px;
+  height: 4px;
+  background: rgba(87, 83, 78, 0.6);
+  border-radius: 50%;
+}
+
+[data-theme='dark'] .iconButton.hasSelection::after {
+  background: rgba(214, 211, 209, 0.6);
+}
+
+/* Selector Panel - Expandable */
+.selectorPanel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 300px;
+  animation: expandIn 0.2s ease-out;
+}
+
+@keyframes expandIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.selectorOption {
+  all: unset;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(120, 113, 108, 0.7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 100px;
+}
+
+[data-theme='dark'] .selectorOption {
+  color: rgba(168, 162, 158, 0.7);
+}
+
+.selectorOption:hover {
+  color: rgba(87, 83, 78, 1);
+  background: rgba(120, 113, 108, 0.1);
+}
+
+[data-theme='dark'] .selectorOption:hover {
+  color: rgba(214, 211, 209, 1);
+  background: rgba(168, 162, 158, 0.1);
+}
+
+.selectorOption.selected {
+  color: rgba(87, 83, 78, 1);
+  background: rgba(120, 113, 108, 0.15);
+  font-weight: 500;
+}
+
+[data-theme='dark'] .selectorOption.selected {
+  color: rgba(245, 245, 244, 1);
+  background: rgba(168, 162, 158, 0.15);
+}
+
+.loadingText,
+.emptyText {
+  font-size: 12px;
+  color: rgba(120, 113, 108, 0.4);
+  padding: 8px;
+}
+
+[data-theme='dark'] .loadingText,
+[data-theme='dark'] .emptyText {
+  color: rgba(168, 162, 158, 0.4);
+}
+
+/* Minimal Hint */
+.minimalHint {
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  color: rgba(120, 113, 108, 0.4);
+  margin: 0;
+}
+
+[data-theme='dark'] .minimalHint {
+  color: rgba(168, 162, 158, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .minimalContainer {
+    padding: 32px 24px;
+    gap: 20px;
+  }
+  
+  .minimalTitle {
+    font-size: 24px;
+  }
+  
+  .selectorIcons {
+    gap: 16px;
+  }
+  
+  .iconButton {
+    width: 40px;
+    height: 40px;
+  }
+}

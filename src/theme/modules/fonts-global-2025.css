@@ -1,0 +1,84 @@
+/* ============================================================
+   GLOBAL FONT APPLICATION 2025
+   Applies modern, readable system fonts to all elements
+   ============================================================ */
+
+/* Base font stack - Modern, readable system fonts */
+/* Base font stack - Modern, readable system fonts */
+/* Dynamic tokens are now in tokens-2025.css */
+
+/* Apply system fonts globally - EXCLUDE IDE */
+:not(.ide-container) * {
+  font-family: var(--font-sans) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Monospace for code, pre, and code elements - EXCLUDE IDE */
+:not(.ide-container) code,
+:not(.ide-container) pre,
+:not(.ide-container) kbd,
+:not(.ide-container) samp,
+:not(.ide-container) .mono,
+:not(.ide-container) code *,
+:not(.ide-container) pre * {
+  font-family: var(--font-mono) !important;
+}
+
+/* Headings - ensure system fonts - EXCLUDE IDE and all its descendants */
+:not(.ide-container):not(.ide-container *) h1,
+:not(.ide-container):not(.ide-container *) h2,
+:not(.ide-container):not(.ide-container *) h3,
+:not(.ide-container):not(.ide-container *) h4,
+:not(.ide-container):not(.ide-container *) h5,
+:not(.ide-container):not(.ide-container *) h6,
+:not(.ide-container):not(.ide-container *) .h1,
+:not(.ide-container):not(.ide-container *) .h2,
+:not(.ide-container):not(.ide-container *) .h3,
+:not(.ide-container):not(.ide-container *) .h4,
+:not(.ide-container):not(.ide-container *) .h5,
+:not(.ide-container):not(.ide-container *) .h6 {
+  font-family: var(--font-display) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Body text - EXCLUDE IDE and all its descendants */
+:not(.ide-container):not(.ide-container *) body,
+:not(.ide-container):not(.ide-container *) p,
+:not(.ide-container):not(.ide-container *) span,
+:not(.ide-container):not(.ide-container *) div,
+:not(.ide-container):not(.ide-container *) a,
+:not(.ide-container):not(.ide-container *) button,
+:not(.ide-container):not(.ide-container *) input,
+:not(.ide-container):not(.ide-container *) textarea,
+:not(.ide-container):not(.ide-container *) select,
+:not(.ide-container):not(.ide-container *) label {
+  font-family: var(--font-sans) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tables - EXCLUDE IDE */
+:not(.ide-container) table,
+:not(.ide-container) th,
+:not(.ide-container) td {
+  font-family: var(--font-sans) !important;
+}
+
+/* Lists - EXCLUDE IDE */
+:not(.ide-container) ul,
+:not(.ide-container) ol,
+:not(.ide-container) li {
+  font-family: var(--font-sans) !important;
+}
+
+/* Form elements - EXCLUDE IDE */
+:not(.ide-container) input,
+:not(.ide-container) textarea,
+:not(.ide-container) select,
+:not(.ide-container) button,
+:not(.ide-container) label {
+  font-family: var(--font-sans) !important;
+}

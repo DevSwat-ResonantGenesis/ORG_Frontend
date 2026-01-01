@@ -1,0 +1,61 @@
+/* ============================================================
+   PARALLAX SECTION - Smooth Scroll Parallax
+   ============================================================ */
+
+.parallax-section {
+  position: relative;
+  width: 100%;
+  max-width: 100%; /* Prevent overflow */
+  min-height: 100vh;
+  overflow-x: hidden; /* Only hide horizontal overflow */
+  overflow-y: visible; /* Allow vertical scrolling */
+  isolation: isolate;
+  box-sizing: border-box;
+}
+
+.parallax-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  transform: translateY(var(--parallax-offset, 0px));
+  transition: transform 0.1s ease-out;
+}
+
+.parallax-section.visible .parallax-content {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) translateY(var(--parallax-offset, 0px));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateY(var(--parallax-offset, 0px));
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .parallax-section {
+    min-height: auto;
+  }
+  
+  .parallax-content {
+    transform: none; /* Disable parallax on mobile for performance */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parallax-content {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
+

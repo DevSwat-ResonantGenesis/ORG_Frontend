@@ -1,0 +1,19 @@
+/* ============================================================
+   FONTS
+   Font face declarations and font loading
+   ============================================================ */
+
+/* Primary Fonts - Loaded via Google Fonts in index.html */
+/* Inter, Manrope, Poppins, Figtree - Weights: 300, 400, 500, 600, 700, 800, 900 */
+/* Technical/Data Fonts - Loaded via Google Fonts in index.html */
+/* Fira Code, IBM Plex Mono - Weights: 400, 500, 600, 700 */
+
+/* Legacy font fallbacks for smooth transition */
+@font-face {
+  font-family: 'ClashDisplay';
+  src: url('/assets/fonts/ClashDisplay-Regular.d60c2bc8.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+

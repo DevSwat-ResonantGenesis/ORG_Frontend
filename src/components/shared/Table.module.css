@@ -1,0 +1,71 @@
+/* ============================================================
+   TABLE COMPONENT - Modern Minimal Design
+   Migrated to 2025 Style System
+   ============================================================ */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.thead {
+  background: var(--bg-secondary);
+  text-transform: uppercase;
+  font-size: var(--font-xs);
+  letter-spacing: 0.02em;
+  font-weight: var(--font-weight-medium);
+}
+
+.th {
+  text-align: left;
+  padding: var(--space-4) var(--space-6);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-sm);
+  border-bottom: 1px solid var(--border);
+}
+
+.td {
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: var(--font-sm);
+}
+
+.tbody {
+  background: var(--surface);
+}
+
+.tr {
+  transition: background-color var(--transition-fast);
+}
+
+.tr:hover {
+  background: var(--surface-hover);
+}
+
+.tr:active {
+  background: var(--surface-hover);
+}
+
+/* Table Container */
+.container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Mobile Optimization */
+@media (max-width: 640px) {
+  .th,
+  .td {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--font-xs);
+  }
+}

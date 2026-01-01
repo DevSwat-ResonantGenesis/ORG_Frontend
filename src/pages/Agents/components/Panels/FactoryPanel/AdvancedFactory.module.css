@@ -1,0 +1,930 @@
+/* ============== ADVANCED FACTORY STYLES ============== */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0;
+  overflow: hidden;
+  margin: 0;
+}
+
+.tabsContainer {
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #888;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.tab.active {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #0ea5e9;
+}
+
+.tab svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Status Banners */
+.errorBanner, .successBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  font-size: 13px;
+}
+
+.errorBanner {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.successBanner {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  flex-wrap: wrap;
+}
+
+.successActions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.publishNetworkBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.publishNetworkBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+.publishNetworkBtn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.createAnotherBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.createAnotherBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.createAnotherBtn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.errorBanner button {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.panelContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* Step Progress */
+.stepProgress {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.stepBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.stepBtn:hover {
+  color: #888;
+}
+
+.stepBtn.active {
+  color: #0ea5e9;
+}
+
+.stepBtn.completed {
+  color: #22c55e;
+}
+
+.stepIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.stepBtn.active .stepIcon {
+  background: rgba(14, 165, 233, 0.15);
+}
+
+.stepBtn.completed .stepIcon {
+  background: rgba(34, 197, 94, 0.15);
+}
+
+.stepLabel {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Form Section */
+.formSection {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0;
+  padding: 16px 20px;
+  margin-bottom: 0;
+}
+
+.formSection h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0ea5e9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sectionDesc {
+  margin: -8px 0 12px;
+  font-size: 12px;
+  color: #666;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 11px;
+  color: #888;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.field input,
+.field select,
+.field textarea {
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: rgba(14, 165, 233, 0.5);
+}
+
+.field textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* Mode Selector */
+.modeSelector {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.modeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+
+.modeBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.modeBtn.active {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: rgba(14, 165, 233, 0.5);
+  color: #0ea5e9;
+}
+
+.modeBtn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.modeBtn span {
+  font-size: 11px;
+  color: #666;
+}
+
+/* Provider Grid */
+.providerGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.providerCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.providerCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.providerCard.active {
+  background: rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.5);
+  color: #0ea5e9;
+}
+
+.providerCard svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Param Grid */
+.paramGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.paramField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.paramField label {
+  font-size: 12px;
+  color: #888;
+}
+
+.paramField input[type="range"] {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.paramField input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #0ea5e9;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Tools Grid */
+.toolsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.toolCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toolCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.toolCard.active {
+  background: rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.5);
+}
+
+.toolCard.active > svg {
+  color: #22c55e;
+}
+
+.toolIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(14, 165, 233, 0.15);
+  border-radius: 8px;
+  color: #0ea5e9;
+}
+
+.toolInfo {
+  flex: 1;
+}
+
+.toolName {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.toolDesc {
+  font-size: 11px;
+  color: #888;
+}
+
+/* Toggle Grid */
+.toggleGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toggleItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.toggleItem input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #0ea5e9;
+}
+
+.toggleLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.toggleLabel strong {
+  font-size: 14px;
+  color: #fff;
+}
+
+.toggleLabel span {
+  font-size: 12px;
+  color: #888;
+}
+
+/* Review Card */
+.reviewCard {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.reviewSection {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.reviewSection:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.reviewSection h4 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.reviewRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.reviewRow span {
+  color: #888;
+}
+
+.reviewRow strong {
+  color: #fff;
+}
+
+.toolTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.toolTag {
+  padding: 4px 10px;
+  background: rgba(14, 165, 233, 0.15);
+  border-radius: 4px;
+  font-size: 12px;
+  color: #0ea5e9;
+}
+
+.noTools {
+  color: #666;
+  font-size: 13px;
+}
+
+.deployOptions {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Form Navigation */
+.formNav {
+  display: flex;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.backBtn, .nextBtn, .createBtn, .exportBtn, .importBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.backBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #888;
+}
+
+.backBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.exportBtn {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #a855f7;
+}
+
+.nextBtn {
+  margin-left: auto;
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  border: none;
+  color: #fff;
+}
+
+.nextBtn:hover {
+  transform: translateY(-1px);
+}
+
+.createBtn {
+  margin-left: auto;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  color: #fff;
+}
+
+.createBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Templates Section */
+.templatesSection h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.templatesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.templateCard {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.templateCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(14, 165, 233, 0.3);
+  transform: translateY(-2px);
+}
+
+.templateHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.templateHeader svg {
+  color: #0ea5e9;
+}
+
+.templateHeader h4 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.templateCard p {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #888;
+  line-height: 1.4;
+}
+
+.templateMeta {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.templateMeta span {
+  padding: 4px 8px;
+  background: rgba(14, 165, 233, 0.1);
+  border-radius: 4px;
+  font-size: 10px;
+  color: #0ea5e9;
+}
+
+.templateTools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.templateTools span {
+  padding: 2px 6px;
+  background: rgba(168, 85, 247, 0.1);
+  border-radius: 3px;
+  font-size: 10px;
+  color: #a855f7;
+}
+
+.useTemplateBtn {
+  width: 100%;
+  padding: 10px;
+  background: rgba(14, 165, 233, 0.15);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  border-radius: 6px;
+  color: #0ea5e9;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Import Section */
+.importSection h3 {
+  margin: 0 0 20px;
+  font-size: 18px;
+}
+
+.importArea {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0;
+  padding: 24px;
+}
+
+.importArea label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: #888;
+}
+
+.importArea textarea {
+  width: 100%;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-family: monospace;
+  font-size: 13px;
+  resize: vertical;
+}
+
+.importActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.importBtn {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  color: #fff;
+}
+
+/* Developer Section */
+.developerSection h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 20px;
+  font-size: 18px;
+}
+
+.devCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.devCard h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.devCard > p {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: #888;
+}
+
+.apiKeySection {
+  margin-top: 16px;
+}
+
+.apiKeyDisplay {
+  display: flex;
+  gap: 8px;
+}
+
+.apiKeyDisplay input {
+  flex: 1;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.apiKeyDisplay button.stepNum {
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.stepLabel {
+  font-size: 12px;
+  color: #888;
+  font-weight: 500;
+}
+
+.apiKeyDisplay button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #888;
+  cursor: pointer;
+}
+
+.apiKeyDisplay button:hover {
+  background: rgba(14, 165, 233, 0.2);
+  color: #0ea5e9;
+}
+
+.generateKeyBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.webhookEvents {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.webhookEvents label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #888;
+}
+
+.webhookEvents input {
+  accent-color: #0ea5e9;
+}
+
+.sdkLinks {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.sdkLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #0ea5e9;
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.sdkLink:hover {
+  background: rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .templatesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .toolsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .tabs {
+    display: none;
+  }
+  
+  .stepProgress {
+    overflow-x: auto;
+  }
+  
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .providerGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .templatesGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .paramGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,170 @@
+.moduleOutputs {
+  margin-top: 12px;
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 8px;
+  background: var(--module-bg, #f8f9fa);
+  overflow: hidden;
+}
+
+.toggleButton {
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary, #666);
+  transition: background-color 0.2s;
+}
+
+.toggleButton:hover {
+  background: var(--hover-bg, #f0f0f0);
+}
+
+.toggleIcon {
+  font-size: 10px;
+  color: var(--text-tertiary, #999);
+  transition: transform 0.2s;
+}
+
+.toggleLabel {
+  flex: 1;
+  text-align: left;
+}
+
+.content {
+  padding: 12px;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+}
+
+.moduleSection {
+  margin-bottom: 16px;
+}
+
+.moduleSection:last-child {
+  margin-bottom: 0;
+}
+
+.moduleTitle {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--text-primary, #333);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.moduleMethod {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-tertiary, #999);
+  font-style: italic;
+}
+
+.wordList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.word {
+  display: inline-block;
+  padding: 4px 8px;
+  background: var(--word-bg, #e3f2fd);
+  color: var(--word-color, #1976d2);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.oovWord {
+  display: inline-block;
+  padding: 4px 8px;
+  background: var(--oov-bg, #fff3e0);
+  color: var(--oov-color, #f57c00);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.bandDistribution {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 11px;
+}
+
+.bandItem {
+  padding: 4px 8px;
+  background: var(--band-bg, #f5f5f5);
+  border-radius: 4px;
+  color: var(--text-secondary, #666);
+}
+
+.confidence {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 8px;
+  background: var(--confidence-bg, #e8f5e9);
+  color: var(--confidence-color, #2e7d32);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.oovLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary, #666);
+  margin-bottom: 6px;
+}
+
+.empty {
+  font-size: 12px;
+  color: var(--text-tertiary, #999);
+  font-style: italic;
+}
+
+.error {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px;
+  background: var(--error-bg, #ffebee);
+  color: var(--error-color, #c62828);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.errorIcon {
+  flex-shrink: 0;
+}
+
+.warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px;
+  background: var(--warning-bg, #fff3e0);
+  color: var(--warning-color, #f57c00);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.warningIcon {
+  flex-shrink: 0;
+}
+
+.note {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-tertiary, #999);
+  font-style: italic;
+}
+

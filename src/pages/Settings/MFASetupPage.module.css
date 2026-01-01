@@ -1,0 +1,42 @@
+/* Settings/MFA Page Styles - CSS Module */
+
+.mfaSetupContainer {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--space-6);
+}
+
+.mfaStatusCard {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.mfaQrCode {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-5);
+  background: var(--bg);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  margin: var(--space-5) 0;
+}
+
+.mfaBackupCodes {
+  background: var(--surface-hover);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin: var(--space-4) 0;
+}
+
+.mfaBackupCodes code {
+  display: block;
+  font-family: 'Courier New', monospace;
+  font-size: var(--font-sm);
+  color: var(--text-900);
+  margin: var(--space-1) 0;
+}

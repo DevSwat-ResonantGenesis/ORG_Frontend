@@ -1,0 +1,38 @@
+.copyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  background: var(--bg-secondary, #f9fafb);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 6px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.copyButton:hover {
+  background: var(--bg-hover, #f3f4f6);
+  border-color: var(--color-primary-300, #7dd3fc);
+}
+
+.copyButton:active {
+  transform: scale(0.95);
+}
+
+.copyButton.small {
+  padding: 4px 8px;
+  font-size: 11px;
+}
+
+.copyButton.medium {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.copyButton svg {
+  flex-shrink: 0;
+}
+

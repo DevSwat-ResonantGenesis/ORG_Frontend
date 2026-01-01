@@ -1,0 +1,90 @@
+.evidence-graph-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+.graph-svg {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.graph-edge {
+  transition: opacity 0.3s ease;
+}
+
+.graph-node {
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.3s ease;
+}
+
+.graph-node:hover {
+  transform: scale(1.2);
+}
+
+.graph-node-claim {
+  filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3));
+}
+
+.graph-node-risk {
+  filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.3));
+}
+
+.graph-node-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+.graph-node-label {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-weight: 500;
+  pointer-events: none;
+  user-select: none;
+}
+
+.graph-legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: var(--font-xs);
+  color: var(--text-tertiary, #6b7280);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .evidence-graph-preview {
+    padding: 16px;
+  }
+
+  .graph-legend {
+    font-size: var(--font-xs);
+    gap: 12px;
+  }
+}
+

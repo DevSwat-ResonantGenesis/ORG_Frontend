@@ -1,0 +1,256 @@
+/* ============================================================
+   BASE ELEMENT STYLES
+   Base styles for html, body, and root elements
+   ============================================================ */
+
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto !important;
+  /* Allow scrolling */
+  overflow-x: hidden !important;
+  /* Prevent horizontal scroll */
+  touch-action: pan-y;
+  overscroll-behavior-y: contain;
+}
+
+body {
+  /* Light mode: Pearl white, Dark mode: Dark */
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  /* Modern, readable system font stack */
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  transition: background 0.3s ease, color 0.3s ease !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 100vh;
+  /* Allow content to grow beyond viewport */
+  overflow-y: auto !important;
+  /* Allow vertical scrolling */
+  overflow-x: hidden !important;
+  /* Prevent horizontal scroll */
+  position: relative;
+  /* Allow normal document flow */
+  width: 100% !important;
+  touch-action: pan-y;
+  overscroll-behavior-y: contain;
+  /* Minimal Scrollbar - Super Thin */
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(155, 155, 155, 0.3) transparent !important;
+  -ms-overflow-style: -ms-autohiding-scrollbar !important;
+}
+
+/* Minimal Scrollbar for Body/HTML - 1px Short Style */
+body::-webkit-scrollbar,
+html::-webkit-scrollbar {
+  width: 1px !important;
+  height: 1px !important;
+}
+
+body::-webkit-scrollbar-track,
+html::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+body::-webkit-scrollbar-thumb,
+html::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.4) !important;
+  /* Blue scrollbar */
+  border-radius: 1px !important;
+  transition: background 0.2s ease !important;
+  /* Short style - margin from edges */
+  margin: 2px 0;
+  min-height: 20px;
+  /* Minimum thumb height for visibility */
+}
+
+body::-webkit-scrollbar-thumb:hover,
+html::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.6) !important;
+  /* Brighter blue on hover */
+}
+
+/* ============================================================
+   GLOBAL SCROLLBAR - DEFAULT STYLE
+   Applied to all scrollable elements across platform
+   Individual components can override with their own styles
+   ============================================================ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.45) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.45);
+  border-radius: 4px;
+  min-height: 40px;
+  min-width: 40px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.7);
+}
+
+#root {
+  /* Light mode: Pearl white, Dark mode: Dark */
+  background: var(--bg-primary) !important;
+  min-height: auto;
+}
+
+/* ============================================================
+   CONSISTENCY ENFORCEMENT
+   Global consistency rules to ensure proper styling across the app
+   ============================================================ */
+
+/* Remove any conflicting styles */
+* {
+  background-image: none !important;
+}
+
+/* Ensure proper inheritance */
+.page-container,
+.page-section,
+.card,
+.page-card {
+  /* Light mode: Pearl white, Dark mode: Dark */
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Ensure text never disappears */
+/* Exclude IDE container and all its descendants - let Monaco Editor and IDE components handle their own colors */
+:not(.ide-container):not(.ide-container *) h1,
+:not(.ide-container):not(.ide-container *) h2,
+:not(.ide-container):not(.ide-container *) h3,
+:not(.ide-container):not(.ide-container *) h4,
+:not(.ide-container):not(.ide-container *) h5,
+:not(.ide-container):not(.ide-container *) h6,
+:not(.ide-container):not(.ide-container *) p,
+:not(.ide-container):not(.ide-container *) span,
+:not(.ide-container):not(.ide-container *) div,
+:not(.ide-container):not(.ide-container *) label,
+:not(.ide-container):not(.ide-container *) a {
+  color: inherit !important;
+}
+
+/* Lists Spacing - Standardized Vertical Rhythm */
+ul:not([class*="_"]),
+ol:not([class*="_"]) {
+  margin-bottom: var(--space-4) !important;
+  padding-left: var(--space-5) !important;
+}
+
+li:not([class*="_"]) {
+  margin-bottom: var(--space-2) !important;
+  line-height: 1.6 !important;
+}
+
+/* Force consistent spacing */
+.page-section+.page-section {
+  margin-top: var(--space-12) !important;
+}
+
+/* Force consistent typography - Modern, Readable System Fonts */
+/* Exclude CSS Modules (classes with underscores) to allow component-specific styling */
+h1:not([class*="_"]),
+.h1:not([class*="_"]) {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-32) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.2 !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  margin-bottom: var(--space-6) !important;
+}
+
+@media (min-width: 768px) {
+
+  h1:not([class*="_"]),
+  .h1:not([class*="_"]) {
+    font-size: var(--font-48) !important;
+  }
+}
+
+h2:not([class*="_"]),
+.h2:not([class*="_"]) {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-24) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.3 !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  margin-top: var(--space-8) !important;
+  margin-bottom: var(--space-4) !important;
+}
+
+@media (min-width: 768px) {
+
+  h2:not([class*="_"]),
+  .h2:not([class*="_"]) {
+    font-size: var(--font-32) !important;
+  }
+}
+
+h3:not([class*="_"]),
+.h3:not([class*="_"]) {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-20) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.4 !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  margin-top: var(--space-6) !important;
+  margin-bottom: var(--space-3) !important;
+}
+
+@media (min-width: 768px) {
+
+  h3:not([class*="_"]),
+  .h3:not([class*="_"]) {
+    font-size: var(--font-24) !important;
+  }
+}
+
+h4,
+.h4 {
+  font-family: var(--font-display) !important;
+  font-size: var(--font-18) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.5 !important;
+  margin-bottom: var(--space-2) !important;
+}
+
+p:not([class*="_"]) {
+  margin-bottom: var(--space-4) !important;
+}
+
+/* Force consistent shadows */
+.card,
+.page-card,
+.kpi-card {
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.card:hover,
+.page-card:hover,
+.kpi-card:hover {
+  box-shadow: var(--shadow-md) !important;
+}

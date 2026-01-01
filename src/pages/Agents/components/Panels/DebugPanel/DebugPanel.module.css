@@ -1,0 +1,345 @@
+/* ============== DEBUG PANEL STYLES ============== */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.panelHeader h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.tab {
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #888;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.tab.active {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.panelContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* Console Section */
+.consoleSection {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.consoleToolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.filterTabs {
+  display: flex;
+  gap: 4px;
+}
+
+.filterBtn {
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #888;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.filterBtn.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.filterBtn.debug { color: #888; }
+.filterBtn.info { color: #0ea5e9; }
+.filterBtn.warn { color: #f59e0b; }
+.filterBtn.error { color: #ef4444; }
+
+.searchInput {
+  flex: 1;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  font-family: monospace;
+}
+
+.clearBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 4px;
+  color: #ef4444;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* Logs Container */
+.logsContainer {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  font-family: monospace;
+  font-size: 12px;
+  overflow-y: auto;
+}
+
+.logEntry {
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.logTime {
+  color: #666;
+  min-width: 80px;
+}
+
+.logLevel {
+  min-width: 50px;
+  font-weight: 600;
+}
+
+.logLevel.debug { color: #888; }
+.logLevel.info { color: #0ea5e9; }
+.logLevel.warn { color: #f59e0b; }
+.logLevel.error { color: #ef4444; }
+
+.logSource {
+  color: #a855f7;
+  min-width: 120px;
+}
+
+.logMessage {
+  flex: 1;
+  color: #fff;
+}
+
+.logData {
+  width: 100%;
+  margin: 4px 0 0 88px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  color: #888;
+  font-size: 11px;
+  overflow-x: auto;
+}
+
+/* Network Section */
+.networkSection h3 {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+.requestsList {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.requestRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 12px;
+}
+
+.requestRow:last-child {
+  border-bottom: none;
+}
+
+.method {
+  min-width: 50px;
+  font-weight: 600;
+}
+
+.method.get { color: #22c55e; }
+.method.post { color: #0ea5e9; }
+.method.put { color: #f59e0b; }
+.method.delete { color: #ef4444; }
+
+.url {
+  flex: 1;
+  font-family: monospace;
+  color: #888;
+}
+
+.status {
+  min-width: 40px;
+  font-weight: 600;
+}
+
+.status.success { color: #22c55e; }
+.status.error { color: #ef4444; }
+
+.duration {
+  min-width: 60px;
+  color: #888;
+}
+
+.size {
+  min-width: 60px;
+  color: #666;
+}
+
+/* State Section */
+.stateSection h3 {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+.stateTree {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stateNode {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.nodeKey {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a855f7;
+  margin-bottom: 8px;
+}
+
+.nodeValue {
+  margin: 0;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: monospace;
+  color: #888;
+  overflow-x: auto;
+}
+
+/* Performance Section */
+.performanceSection h3 {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.metricCard {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.metricCard h4 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  color: #888;
+  font-weight: 400;
+}
+
+.metricValue {
+  font-size: 24px;
+  font-weight: 600;
+  color: #22c55e;
+}
+
+/* Empty State */
+.emptyState {
+  padding: 40px;
+  text-align: center;
+  color: #666;
+  font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .consoleToolbar {
+    flex-wrap: wrap;
+  }
+  
+  .filterTabs {
+    width: 100%;
+  }
+  
+  .searchInput {
+    width: 100%;
+  }
+  
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .requestRow {
+    flex-wrap: wrap;
+  }
+}

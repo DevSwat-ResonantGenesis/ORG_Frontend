@@ -1,0 +1,173 @@
+.dashboard {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.statusIndicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+
+.statusIndicator.online {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: rgb(34, 197, 94);
+}
+
+.statusIndicator.offline {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: rgb(239, 68, 68);
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background: var(--card-background, #ffffff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.statCard h3 {
+  margin: 0 0 1rem 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary, #111827);
+  margin-bottom: 0.25rem;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+  margin-bottom: 0.5rem;
+}
+
+.statSub {
+  font-size: 0.75rem;
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.quickActions {
+  background: var(--card-background, #ffffff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.quickActions h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.actionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.actionButton {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary-color, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.actionButton:hover {
+  background: var(--primary-hover, #2563eb);
+}
+
+.actionButton:active {
+  transform: scale(0.98);
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.notElectron {
+  text-align: center;
+  padding: 3rem;
+  background: var(--card-background, #ffffff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 0.75rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .statCard,
+  .quickActions {
+    background: var(--card-background-dark, #1f2937);
+    border-color: var(--border-color-dark, #374151);
+  }
+
+  .statValue {
+    color: var(--text-primary-dark, #f9fafb);
+  }
+
+  .statLabel,
+  .statCard h3 {
+    color: var(--text-secondary-dark, #d1d5db);
+  }
+
+  .statSub {
+    color: var(--text-tertiary-dark, #9ca3af);
+  }
+}
+

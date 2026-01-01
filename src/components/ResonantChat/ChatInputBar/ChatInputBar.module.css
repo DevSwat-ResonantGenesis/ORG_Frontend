@@ -1,0 +1,834 @@
+/* ============================================================
+   Chat Input Bar - COMPLETELY ISOLATED Component
+   Single background color - matches page background
+   NO external dependencies - ALL styles self-contained
+   ============================================================ */
+
+/* Root Container - Fixed at bottom */
+.chatInputRoot {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  z-index: 10000;
+  pointer-events: auto;
+}
+
+.chatInputRoot.withSidebar {
+  left: 304px;
+}
+
+/* Main Input Wrapper - Compact with shadow effect */
+.inputWrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--bg-primary, #0a0a0a);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: auto;
+  position: relative;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  z-index: 10001;
+}
+
+[data-theme='light'] .inputWrapper {
+  background: var(--bg-primary, #fafafa);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Agent Panel - Modern redesign matching provider dropdown */
+.agentPanel {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, #0a0a0a 0%, #121212 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  z-index: 10000;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+}
+
+[data-theme='light'] .agentPanel {
+  background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.agentPanelHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+[data-theme='light'] .agentPanelHeader {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.agentPanelTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.agentPanelTitle svg {
+  width: 16px;
+  height: 16px;
+  color: #0ea5e9;
+}
+
+[data-theme='light'] .agentPanelTitle {
+  color: #111;
+}
+
+.agentPanelContent {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.agentRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.agentRow:hover {
+  background: rgba(14, 165, 233, 0.08);
+  border-color: rgba(14, 165, 233, 0.2);
+}
+
+[data-theme='light'] .agentRow {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .agentRow:hover {
+  background: rgba(14, 165, 233, 0.08);
+  border-color: rgba(14, 165, 233, 0.2);
+}
+
+.agentLabel {
+  font-size: 12px;
+  color: #888;
+  min-width: 50px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.agentLabel svg {
+  width: 14px;
+  height: 14px;
+  color: #0ea5e9;
+}
+
+.agentSelect {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px;
+  transition: all 0.2s ease;
+}
+
+.agentSelect:hover {
+  border-color: rgba(14, 165, 233, 0.4);
+  background-color: rgba(14, 165, 233, 0.05);
+}
+
+.agentSelect:focus {
+  outline: none;
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+}
+
+[data-theme='light'] .agentSelect {
+  background-color: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #111;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+[data-theme='light'] .agentSelect:hover {
+  border-color: rgba(14, 165, 233, 0.4);
+  background-color: rgba(14, 165, 233, 0.05);
+}
+
+.agentSelect option {
+  background: #0a0a0a;
+  color: #fff;
+  padding: 8px;
+}
+
+[data-theme='light'] .agentSelect option {
+  background: #fff;
+  color: #111;
+}
+
+/* Input Area - Textarea + Send Button - Compact */
+.inputArea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  background: transparent;
+}
+
+/* Textarea - NO background, NO border */
+.textarea {
+  flex: 1;
+  min-height: 36px;
+  max-height: 120px;
+  padding: 8px 12px;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: var(--text-primary, #fff);
+  font-size: 14px;
+  line-height: 1.4;
+  resize: none;
+  font-family: inherit;
+}
+
+[data-theme='light'] .textarea {
+  color: #111;
+}
+
+.textarea::placeholder {
+  color: #666;
+}
+
+.textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Send Button - Minimal */
+.sendButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #0ea5e9;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.sendButton:hover:not(:disabled) {
+  color: #fff;
+}
+
+[data-theme='light'] .sendButton:hover:not(:disabled) {
+  color: #111;
+}
+
+.sendButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.sendButton svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Tools Row - Compact and scrollable on mobile */
+.toolsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  gap: 4px;
+  overflow-x: visible;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  position: relative;
+  z-index: 10001;
+}
+
+.toolsRow::-webkit-scrollbar {
+  display: none;
+}
+
+.toolsLeft {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toolsRight {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Tool Button - Minimal, no background */
+.toolButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border: none;
+  background: transparent;
+  color: #888;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  gap: 6px;
+}
+
+.toolButton:hover {
+  color: #fff;
+}
+
+[data-theme='light'] .toolButton:hover {
+  color: #111;
+}
+
+.toolButton.active {
+  color: #0ea5e9;
+}
+
+.toolButton.danger:hover {
+  color: #ef4444;
+}
+
+.toolButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.toolLabel {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Provider Button - Custom, no external styles */
+.providerButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  color: #888;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 10002;
+}
+
+.providerButton:hover {
+  color: #fff;
+}
+
+[data-theme='light'] .providerButton:hover {
+  color: #111;
+}
+
+.providerButton svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Provider Dropdown - Modern redesign */
+.providerDropdown {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 0;
+  min-width: 220px;
+  background: linear-gradient(180deg, #0a0a0a 0%, #121212 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  z-index: 99999;
+  pointer-events: auto !important;
+  backdrop-filter: blur(20px);
+}
+
+[data-theme='light'] .providerDropdown {
+  background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.providerDropdownHeader {
+  padding: 8px 12px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 4px;
+}
+
+[data-theme='light'] .providerDropdownHeader {
+  color: #888;
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+.providerOption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  background: transparent;
+  color: #aaa;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 10px;
+  margin: 2px 0;
+}
+
+.providerOption:hover {
+  background: rgba(14, 165, 233, 0.1);
+  color: #fff;
+  transform: translateX(2px);
+}
+
+[data-theme='light'] .providerOption:hover {
+  background: rgba(14, 165, 233, 0.1);
+  color: #111;
+}
+
+.providerOption.selected {
+  background: rgba(14, 165, 233, 0.15);
+  color: #0ea5e9;
+}
+
+.providerOption.selected::after {
+  content: '';
+  margin-left: auto;
+  width: 8px;
+  height: 8px;
+  background: #0ea5e9;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.5);
+}
+
+.providerIcon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.providerIcon svg {
+  width: 14px;
+  height: 14px;
+}
+
+[data-theme='light'] .providerIcon {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.providerName {
+  flex: 1;
+}
+
+.providerBadge {
+  font-size: 10px;
+  padding: 2px 6px;
+  background: rgba(14, 165, 233, 0.2);
+  color: #0ea5e9;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Sticker Panels (Memory, Conversations) - Modern redesign matching provider dropdown */
+.stickerPanel {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 0;
+  right: 0;
+  max-height: 400px;
+  background: linear-gradient(180deg, #0a0a0a 0%, #121212 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  z-index: 10000;
+  backdrop-filter: blur(20px);
+}
+
+[data-theme='light'] .stickerPanel {
+  background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.stickerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+[data-theme='light'] .stickerHeader {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.stickerTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stickerTitle svg {
+  width: 18px;
+  height: 18px;
+  color: #0ea5e9;
+}
+
+[data-theme='light'] .stickerTitle {
+  color: #111;
+}
+
+.stickerClose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  color: #888;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.stickerClose:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+[data-theme='light'] .stickerClose {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='light'] .stickerClose:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.stickerContent {
+  padding: 12px;
+  overflow-y: auto;
+  max-height: 320px;
+}
+
+.stickerEmpty {
+  text-align: center;
+  padding: 40px 24px;
+  color: #666;
+  font-size: 14px;
+}
+
+.stickerEmpty svg {
+  width: 48px;
+  height: 48px;
+  color: #444;
+  margin-bottom: 16px;
+}
+
+/* Memory/Conversation Items - Modern card style */
+.listItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
+}
+
+.listItem:hover {
+  background: rgba(14, 165, 233, 0.08);
+  border-color: rgba(14, 165, 233, 0.2);
+  transform: translateX(4px);
+}
+
+[data-theme='light'] .listItem {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme='light'] .listItem:hover {
+  background: rgba(14, 165, 233, 0.08);
+  border-color: rgba(14, 165, 233, 0.2);
+}
+
+.listItem.active {
+  background: rgba(14, 165, 233, 0.12);
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.listItemIcon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(14, 165, 233, 0.1);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.listItemIcon svg {
+  width: 18px;
+  height: 18px;
+  color: #0ea5e9;
+}
+
+.listItemContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.listItemTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-theme='light'] .listItemTitle {
+  color: #111;
+}
+
+.listItemMeta {
+  font-size: 12px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.listItemHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.listItemBadge {
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(14, 165, 233, 0.2);
+  color: #0ea5e9;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+[data-theme='light'] .listItemBadge {
+  background: rgba(14, 165, 233, 0.15);
+}
+
+.listItemTimestamp {
+  font-size: 11px;
+  color: #666;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.listItemTimestamp svg {
+  width: 12px;
+  height: 12px;
+}
+
+[data-theme='light'] .listItemTimestamp {
+  color: #888;
+}
+
+/* Autocomplete Dropdown - Transparent with shadow */
+.autocomplete {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 20px;
+  right: 20px;
+  background: var(--bg-primary, transparent);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  z-index: 200;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+[data-theme='light'] .autocomplete {
+  background: var(--bg-primary, transparent);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.autocompleteItem {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.autocompleteItem:hover,
+.autocompleteItem.selected {
+  background: rgba(14, 165, 233, 0.1);
+}
+
+.autocompleteTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+}
+
+[data-theme='light'] .autocompleteTitle {
+  color: #111;
+}
+
+.autocompleteDescription {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+  .chatInputRoot {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+  }
+  
+  .chatInputRoot.withSidebar {
+    left: 8px;
+  }
+  
+  .inputWrapper {
+    padding: 6px 10px;
+    border-radius: 12px;
+  }
+  
+  .inputArea {
+    padding: 2px 0;
+  }
+  
+  .textarea {
+    min-height: 32px;
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+  
+  .sendButton {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .toolsRow {
+    padding: 0;
+    gap: 2px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .toolsLeft,
+  .toolsRight {
+    flex-shrink: 0;
+    gap: 2px;
+  }
+  
+  .toolButton {
+    min-width: 28px;
+    height: 28px;
+    padding: 0 6px;
+  }
+  
+  .toolLabel {
+    display: none;
+  }
+  
+  .providerButton {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+  
+  .stickerPanel {
+    max-height: 280px;
+  }
+  
+  .agentPanel {
+    padding: 10px;
+  }
+}

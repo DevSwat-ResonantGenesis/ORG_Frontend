@@ -1,0 +1,216 @@
+/* ============== WORKFLOW CANVAS STYLES ============== */
+
+.canvas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  background: 
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  background-size: 20px 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+/* Zoom Controls */
+.zoomControls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 6px;
+  z-index: 100;
+}
+
+.zoomControls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.zoomControls button:hover {
+  background: rgba(14, 165, 233, 0.3);
+}
+
+.zoomControls span {
+  font-size: 11px;
+  color: #888;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Edges SVG */
+.edgesSvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform-origin: 0 0;
+}
+
+.edge {
+  pointer-events: auto;
+}
+
+.edgePath {
+  fill: none;
+  stroke: rgba(14, 165, 233, 0.6);
+  stroke-width: 2;
+  transition: stroke 0.2s;
+}
+
+.edgeHitArea {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 20;
+  cursor: pointer;
+}
+
+.edgeHitArea:hover + .edgePath,
+.edge:hover .edgePath {
+  stroke: #0ea5e9;
+  stroke-width: 3;
+}
+
+.edgeDelete {
+  fill: rgba(239, 68, 68, 0.8);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.edge:hover .edgeDelete {
+  opacity: 1;
+}
+
+.connectingLine {
+  stroke: rgba(14, 165, 233, 0.8);
+  stroke-width: 2;
+  stroke-dasharray: 5 5;
+  pointer-events: none;
+}
+
+/* Nodes Container */
+.nodesContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0;
+}
+
+/* Node */
+.node {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid #0ea5e9;
+  border-radius: 8px;
+  cursor: grab;
+  user-select: none;
+  transition: box-shadow 0.2s, transform 0.1s;
+  min-width: 80px;
+}
+
+.node:hover {
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+}
+
+.node.selected {
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.4);
+  transform: scale(1.02);
+}
+
+.node:active {
+  cursor: grabbing;
+}
+
+/* Node Icon */
+.nodeIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: #0ea5e9;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.nodeIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Node Label */
+.nodeLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* Connector */
+.connector {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background: #0ea5e9;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  cursor: crosshair;
+  z-index: 10;
+  transition: transform 0.2s;
+}
+
+.connector:hover {
+  transform: translateY(-50%) scale(1.3);
+}
+
+/* Delete Button */
+.deleteBtn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: #ef4444;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.deleteBtn svg {
+  width: 12px;
+  height: 12px;
+}
+
+.deleteBtn:hover {
+  background: #dc2626;
+  transform: scale(1.1);
+}

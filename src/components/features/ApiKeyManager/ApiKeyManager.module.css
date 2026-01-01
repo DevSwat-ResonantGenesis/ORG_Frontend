@@ -1,0 +1,233 @@
+/* API Key Manager Styles */
+
+.container {
+  width: 100%;
+}
+
+.compact {
+  font-size: var(--font-sm);
+}
+
+.title {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+  color: var(--text-primary);
+}
+
+.loading {
+  padding: var(--space-4);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.warning {
+  padding: var(--space-3);
+  background: var(--color-warning-100);
+  border: 1px solid var(--color-warning-300);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+}
+
+.warning strong {
+  display: block;
+  color: var(--color-warning-700);
+  margin-bottom: var(--space-1);
+}
+
+.warning p {
+  color: var(--color-warning-600);
+  font-size: var(--font-sm);
+  margin: 0;
+}
+
+.error {
+  padding: var(--space-3);
+  background: var(--color-danger-100);
+  color: var(--color-danger-700);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  font-size: var(--font-sm);
+}
+
+/* Keys List */
+.keysList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.keyItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.keyInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.keyProvider {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.keyName {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+}
+
+.keyPrefix {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-xs);
+}
+
+.keyPrefix code {
+  background: var(--bg-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+}
+
+.validBadge {
+  background: var(--color-success-100);
+  color: var(--color-success-700);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-xs);
+  font-weight: 500;
+}
+
+.invalidBadge {
+  background: var(--color-danger-100);
+  color: var(--color-danger-700);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-xs);
+  font-weight: 500;
+}
+
+.keyUsage {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+}
+
+.deleteButton {
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: 1px solid var(--color-danger-300);
+  color: var(--color-danger-600);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-xs);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background: var(--color-danger-100);
+}
+
+.deleteButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Add Form */
+.addForm {
+  padding: var(--space-4);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.formGroup {
+  margin-bottom: var(--space-3);
+}
+
+.formGroup label {
+  display: block;
+  font-size: var(--font-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.select,
+.input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+}
+
+.select:focus,
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+}
+
+.helpLink {
+  display: inline-block;
+  margin-top: var(--space-1);
+  font-size: var(--font-xs);
+  color: var(--color-primary-500);
+  text-decoration: none;
+}
+
+.helpLink:hover {
+  text-decoration: underline;
+}
+
+.validationSuccess {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-success-100);
+  color: var(--color-success-700);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  margin-bottom: var(--space-3);
+}
+
+.validationError {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-danger-100);
+  color: var(--color-danger-700);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  margin-bottom: var(--space-3);
+}
+
+.formActions {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}
+
+.addButton {
+  width: 100%;
+}
+
+/* Dark mode */
+[data-theme='dark'] .keyItem {
+  background: var(--bg-tertiary);
+}
+
+[data-theme='dark'] .addForm {
+  background: var(--bg-tertiary);
+}
+
+[data-theme='dark'] .select,
+[data-theme='dark'] .input {
+  background: var(--bg-secondary);
+}

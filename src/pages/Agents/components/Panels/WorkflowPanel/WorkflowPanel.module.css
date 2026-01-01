@@ -1,0 +1,635 @@
+/* ============== WORKFLOW PANEL STYLES ============== */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.panelHeader h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.viewTabs {
+  display: flex;
+  gap: 4px;
+}
+
+.viewTab {
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #888;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.viewTab:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.viewTab.active {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #a855f7;
+}
+
+.panelContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* Error Banner */
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  color: #ef4444;
+  font-size: 14px;
+  font-weight: 500;
+  animation: slideDown 0.3s ease;
+}
+
+.errorBanner svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Loading Banner */
+.loadingBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
+  color: #3b82f6;
+  font-size: 14px;
+  font-weight: 500;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Create Section */
+.createSection {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.createSection input {
+  flex: 1;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+
+.createSection input:focus {
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+.createBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #a855f7, #8b5cf6);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Workflows List */
+.workflowsList h3 {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+.workflowCard {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.workflowCard:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.workflowCard.selected {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+.workflowHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.workflowName {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.statusBadge.published {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.statusBadge.draft {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.statusBadge.validated {
+  background: rgba(14, 165, 233, 0.15);
+  color: #0ea5e9;
+}
+
+.statusBadge.deprecated {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.workflowDesc {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #888;
+}
+
+.workflowMeta {
+  display: flex;
+  gap: 16px;
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.workflowMeta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.workflowActions {
+  display: flex;
+  gap: 8px;
+}
+
+.workflowActions button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.workflowActions button:hover {
+  background: rgba(168, 85, 247, 0.2);
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+.deleteBtn {
+  color: #ef4444 !important;
+}
+
+.deleteBtn:hover {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Builder Section */
+.builderSection {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.builderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.builderHeader h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.builderActions {
+  display: flex;
+  gap: 8px;
+}
+
+.primaryBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.secondaryBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.canvasArea {
+  flex: 1;
+  min-height: 300px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.canvasPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  text-align: center;
+  padding: 40px;
+}
+
+.canvasPlaceholder svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.canvasPlaceholder p {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: #888;
+}
+
+.canvasPlaceholder span {
+  font-size: 12px;
+}
+
+.nodePreview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+}
+
+.previewNode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nodeType {
+  padding: 4px 8px;
+  background: rgba(168, 85, 247, 0.15);
+  border-radius: 4px;
+  font-size: 10px;
+  color: #a855f7;
+  text-transform: uppercase;
+}
+
+.nodeLabel {
+  font-size: 12px;
+  color: #fff;
+}
+
+.nodeArrow {
+  color: #666;
+  margin: 0 4px;
+}
+
+/* Builder Body Layout */
+.builderBody {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+
+.nodesPalette {
+  width: 180px;
+  min-width: 180px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  overflow-y: auto;
+}
+
+.nodesPalette h4 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #888;
+}
+
+.paletteGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.paletteNode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.paletteNode:hover {
+  background: rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.3);
+  transform: translateX(4px);
+}
+
+.paletteNode svg {
+  width: 16px;
+  height: 16px;
+  color: #0ea5e9;
+}
+
+.paletteNode span {
+  font-size: 12px;
+  color: #fff;
+}
+
+.paletteInfo {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.paletteInfo p {
+  margin: 0 0 8px;
+  font-size: 10px;
+  color: #666;
+  line-height: 1.4;
+}
+
+/* Canvas Area */
+.canvasArea {
+  flex: 1;
+  min-height: 400px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Node Configuration Panel */
+.nodeConfig {
+  width: 240px;
+  min-width: 240px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  overflow-y: auto;
+}
+
+.nodeConfig h4 {
+  margin: 0 0 16px;
+  font-size: 12px;
+  color: #888;
+}
+
+.configForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.configField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.configField label {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.configField input,
+.configField select {
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+}
+
+.configField input:focus,
+.configField select:focus {
+  border-color: rgba(14, 165, 233, 0.5);
+  outline: none;
+}
+
+.configValue {
+  padding: 8px 12px;
+  background: rgba(14, 165, 233, 0.1);
+  border-radius: 6px;
+  font-size: 12px;
+  color: #0ea5e9;
+  text-transform: capitalize;
+}
+
+/* Templates Section */
+.templatesSection h3 {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+.templatesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.templateCard {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.templateCard:hover {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+.templateIcon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.templateCard h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.templateCard p {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #888;
+}
+
+.templateMeta {
+  font-size: 11px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.useTemplateBtn {
+  padding: 8px 16px;
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 6px;
+  color: #a855f7;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #666;
+  text-align: center;
+}
+
+.emptyState svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.emptyState p {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .templatesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .paletteGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .createSection {
+    flex-direction: column;
+  }
+  
+  .templatesGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .workflowActions {
+    flex-wrap: wrap;
+  }
+}

@@ -1,0 +1,64 @@
+.container {
+  width: 100%;
+  margin-top: 24px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 24px 0;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border);
+}
+
+.divider span {
+  padding: 0 16px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ssoButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.loading {
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  padding: 12px;
+}
+
+@media (max-width: 768px) {
+  .buttons {
+    gap: 10px;
+  }
+
+  .ssoButton {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+}
+

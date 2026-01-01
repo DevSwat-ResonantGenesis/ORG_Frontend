@@ -1,0 +1,94 @@
+.diffContainer {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: white;
+}
+
+.diffHeader {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.oldHeader,
+.newHeader {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.oldHeader {
+  border-right: 1px solid #e5e7eb;
+}
+
+.headerLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.diffContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-height: 600px;
+  overflow: auto;
+}
+
+.oldCode,
+.newCode {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.oldCode {
+  border-right: 1px solid #e5e7eb;
+  background: #fef2f2;
+}
+
+.newCode {
+  background: #f0fdf4;
+}
+
+.line {
+  display: flex;
+  min-height: 1.5rem;
+  align-items: center;
+}
+
+.lineNumber {
+  display: inline-block;
+  width: 3rem;
+  padding: 0 0.5rem;
+  text-align: right;
+  color: #9ca3af;
+  font-size: 0.75rem;
+  user-select: none;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.lineContent {
+  flex: 1;
+  padding: 0 0.5rem;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.lineUnchanged {
+  background: transparent;
+}
+
+.lineAdded {
+  background: #d1fae5;
+}
+
+.lineRemoved {
+  background: #fee2e2;
+}
+
+.lineModified {
+  background: #fef3c7;
+}
+

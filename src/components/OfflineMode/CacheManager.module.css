@@ -1,0 +1,177 @@
+.container {
+  background: var(--card-background, #ffffff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.header h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: var(--background-secondary, #f9fafb);
+  border-radius: 0.5rem;
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color, #3b82f6);
+  margin-bottom: 0.25rem;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.syncSection,
+.projectsSection {
+  margin-bottom: 2rem;
+}
+
+.syncSection h4,
+.projectsSection h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.syncForm {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.input {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary-color, #3b82f6);
+}
+
+.syncButton {
+  padding: 0.75rem 1.5rem;
+  background: var(--primary-color, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.syncButton:hover:not(:disabled) {
+  background: var(--primary-hover, #2563eb);
+}
+
+.syncButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.projectsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.projectItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--background-secondary, #f9fafb);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 0.5rem;
+}
+
+.projectInfo {
+  flex: 1;
+}
+
+.projectId {
+  font-weight: 500;
+  color: var(--text-primary, #111827);
+  margin-bottom: 0.25rem;
+}
+
+.projectMeta {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.clearButton {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: var(--error-color, #ef4444);
+  border: 1px solid var(--error-color, #ef4444);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clearButton:hover {
+  background: var(--error-color, #ef4444);
+  color: white;
+}
+
+.emptyState {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary, #6b7280);
+}
+
+.loading,
+.notElectron {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background: var(--card-background-dark, #1f2937);
+    border-color: var(--border-color-dark, #374151);
+  }
+
+  .stats,
+  .projectItem {
+    background: var(--background-secondary-dark, #111827);
+    border-color: var(--border-color-dark, #374151);
+  }
+}
+

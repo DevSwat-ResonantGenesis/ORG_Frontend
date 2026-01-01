@@ -1,0 +1,383 @@
+/* ============== GOALS PANEL STYLES ============== */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.panelHeader h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.addBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.panelContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+/* Stats Bar */
+.statsBar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat {
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.statValue {
+  display: block;
+  font-size: 24px;
+  font-weight: 600;
+  color: #22c55e;
+}
+
+.statLabel {
+  font-size: 11px;
+  color: #888;
+}
+
+/* Filters Bar */
+.filtersBar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.filterBtn {
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #888;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filterBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.filterBtn.active {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+}
+
+/* Goals List */
+.goalsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.goalCard {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0;
+}
+
+.goalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.goalTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.priorityBadge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.priorityBadge.high {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.priorityBadge.medium {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.priorityBadge.low {
+  background: rgba(14, 165, 233, 0.15);
+  color: #0ea5e9;
+}
+
+.goalCard h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.statusBadge {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.statusBadge.active {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.statusBadge.completed {
+  background: rgba(14, 165, 233, 0.15);
+  color: #0ea5e9;
+}
+
+.statusBadge.paused {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.statusBadge.failed {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.goalDesc {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: #888;
+  line-height: 1.5;
+}
+
+/* Progress Section */
+.progressSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.progressBar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+.progressText {
+  font-size: 13px;
+  font-weight: 600;
+  color: #22c55e;
+  min-width: 40px;
+}
+
+/* Sub Goals */
+.subGoals {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.subGoals h5 {
+  margin: 0 0 10px;
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+}
+
+.subGoal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.checkIcon {
+  display: flex;
+  align-items: center;
+  color: #666;
+}
+
+.checkIcon.checked {
+  color: #22c55e;
+}
+
+.subGoal span.completed {
+  text-decoration: line-through;
+  color: #666;
+}
+
+/* Deadline */
+.deadline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #f59e0b;
+  margin-bottom: 16px;
+}
+
+/* Goal Actions */
+.goalActions {
+  display: flex;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.actionBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Notice */
+.notice {
+  padding: 16px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  color: #93c5fd;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* New Goal Form */
+.newGoalForm {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.goalInput {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.goalInput:focus {
+  outline: none;
+  border-color: #22c55e;
+}
+
+.formActions {
+  display: flex;
+  gap: 8px;
+}
+
+.formActions button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.formActions button:first-child {
+  background: #22c55e;
+  border: none;
+  color: #fff;
+}
+
+.formActions button:last-child {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #888;
+}
+
+/* Error Message */
+.errorMessage {
+  padding: 10px 14px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  color: #ef4444;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .statsBar {
+    flex-direction: column;
+  }
+  
+  .goalHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .goalActions {
+    flex-wrap: wrap;
+  }
+}

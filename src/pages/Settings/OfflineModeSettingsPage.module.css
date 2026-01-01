@@ -1,0 +1,121 @@
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary, #111827);
+}
+
+.description {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.6;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid var(--border-color, #e5e7eb);
+  margin-bottom: 2rem;
+  overflow-x: auto;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: var(--text-primary, #111827);
+  background: var(--background-secondary, #f9fafb);
+}
+
+.tab.active {
+  color: var(--primary-color, #3b82f6);
+  border-bottom-color: var(--primary-color, #3b82f6);
+}
+
+.tabIcon {
+  font-size: 1.125rem;
+}
+
+.tabLabel {
+  font-weight: 500;
+}
+
+.content {
+  min-height: 400px;
+}
+
+.tabContent {
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .header h1 {
+    color: var(--text-primary-dark, #f9fafb);
+  }
+
+  .tabs {
+    border-bottom-color: var(--border-color-dark, #374151);
+  }
+
+  .tab:hover {
+    background: var(--background-secondary-dark, #111827);
+    color: var(--text-primary-dark, #f9fafb);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .tabs {
+    gap: 0.25rem;
+  }
+
+  .tab {
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+  }
+
+  .tabLabel {
+    display: none;
+  }
+}
+

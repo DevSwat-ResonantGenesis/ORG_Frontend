@@ -1,0 +1,110 @@
+/**
+ * Input Styles - 2025 Redesign
+ * Standardized form inputs with proper focus states
+ */
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.input-wrapper-full-width {
+  width: 100%;
+}
+
+.input-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+}
+
+.input {
+  /* Base Styles */
+  width: 100%;
+  padding: var(--spacing-1) var(--spacing-2);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-base);
+  outline: none;
+  
+  /* Standard height */
+  min-height: 40px;
+}
+
+.input::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+}
+
+/* Focus State - High visibility for accessibility */
+.input:focus {
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+/* Error State */
+.input-error {
+  border-color: #ef4444;
+}
+
+.input-error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Disabled State */
+.input-disabled,
+.input:disabled {
+  background-color: var(--color-bg-disabled);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Helper Text */
+.input-helper {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+  margin-top: calc(var(--spacing-1) / 2);
+}
+
+.input-helper-error {
+  color: #ef4444;
+}
+
+/* Full Width */
+.input-full-width {
+  width: 100%;
+}
+
+/* ============================================================
+   DARK MODE ADJUSTMENTS
+   ============================================================ */
+
+html[data-theme="dark"] .input {
+  background-color: var(--color-bg-surface);
+  border-color: var(--color-border);
+}
+
+html[data-theme="dark"] .input:focus {
+  border-color: var(--color-accent-primary);
+}
+
+html[data-theme="dark"] .input-disabled,
+html[data-theme="dark"] .input:disabled {
+  background-color: var(--color-bg-disabled);
+}
+

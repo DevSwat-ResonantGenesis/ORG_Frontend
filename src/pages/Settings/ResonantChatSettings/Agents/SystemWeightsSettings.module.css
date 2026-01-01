@@ -1,0 +1,129 @@
+.container {
+  padding: var(--space-4);
+  background: var(--bg-secondary, #f9fafb);
+  border-radius: 12px;
+  border: 1px solid var(--border-color, #e5e7eb);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-4) 0;
+  line-height: 1.5;
+}
+
+.weightsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.weightCard {
+  padding: var(--space-4);
+  background: var(--bg, #ffffff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+}
+
+.weightHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.weightLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.weightValue {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-primary-600, #0284c7);
+}
+
+.slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-gray-200, #e5e7eb);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-primary-600, #0284c7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  background: var(--color-primary-700, #0369a1);
+  transform: scale(1.1);
+}
+
+.slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-primary-600, #0284c7);
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.slider::-moz-range-thumb:hover {
+  background: var(--color-primary-700, #0369a1);
+  transform: scale(1.1);
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3);
+  background: var(--bg, #ffffff);
+  border: 2px solid var(--border-color, #e5e7eb);
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.totalLabel {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.totalValue {
+  font-size: 18px;
+  color: var(--color-primary-600, #0284c7);
+}
+
+.loading {
+  padding: var(--space-4);
+  text-align: center;
+  color: var(--text-secondary);
+}
+

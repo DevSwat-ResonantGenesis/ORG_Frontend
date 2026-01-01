@@ -1,0 +1,115 @@
+/**
+ * Text Styles - 2025 Redesign
+ * Typography scale with consistent sizing and spacing
+ */
+
+.text {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family-primary);
+  line-height: var(--line-height-normal);
+}
+
+/* ============================================================
+   VARIANTS - Typography Scale
+   ============================================================ */
+
+.text-h1 {
+  font-size: clamp(36px, 5vw, 48px);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+}
+
+.text-h2 {
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.015em;
+}
+
+.text-h3 {
+  font-size: clamp(24px, 3vw, 30px);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.01em;
+}
+
+.text-h4 {
+  font-size: clamp(20px, 2.5vw, 24px);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+  letter-spacing: -0.008em;
+}
+
+.text-h5 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+}
+
+.text-h6 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+}
+
+.text-body {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-relaxed);
+}
+
+.text-body-lg {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-relaxed);
+}
+
+.text-body-sm {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+.text-caption {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+.text-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+}
+
+/* ============================================================
+   COLORS
+   ============================================================ */
+
+.text-color-primary {
+  color: var(--color-text-primary);
+}
+
+.text-color-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-color-muted {
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+}
+
+.text-color-accent {
+  color: var(--color-accent-primary);
+}
+
+.text-color-error {
+  color: #ef4444;
+}
+
+.text-color-success {
+  color: #22c55e;
+}
+

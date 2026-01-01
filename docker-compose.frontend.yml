@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: nginx:alpine
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Frontend files (writable so docker cp works)
+      # Note: We use docker cp to update files, not direct volume mount
+      # Keeping as writable allows docker cp to work properly
+      - ./dist:/usr/share/nginx/html
+      # SSL certificates (persistent)
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      # Nginx config (persistent, can be edited)
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    networks:
+      - frontend-network
+    healthcheck:
+      test: ["CMD", "sh", "-c", "ps aux | grep -q '[n]ginx' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  frontend-network:
+    driver: bridge
+

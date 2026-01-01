@@ -1,0 +1,303 @@
+.container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.pendingBadge {
+  background: #f59e0b;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
+
+.error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error button {
+  background: none;
+  border: none;
+  color: #991b1b;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+}
+
+.filters {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filterButton,
+.filterActive {
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background: white;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.filterButton:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.filterActive {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.tasksList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.taskCard {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.taskCard:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.taskHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.filePath {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 0.875rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.statusBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.statusPending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.statusApproved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.statusRejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.statusModify {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.statusDefault {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.description {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0.5rem 0;
+}
+
+.taskMeta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 0.5rem;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #6b7280;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #6b7280;
+}
+
+.reviewModal {
+  max-width: 100%;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modalHeader h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: #374151;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.descriptionSection {
+  margin-bottom: 1.5rem;
+}
+
+.descriptionSection h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+.descriptionSection p {
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.diffSection {
+  margin-bottom: 1.5rem;
+}
+
+.diffSection h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+.reviewActions {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.commentSection {
+  margin-bottom: 1rem;
+}
+
+.commentSection label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.commentSection textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  resize: vertical;
+}
+
+.commentSection textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.reviewComment {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.reviewComment h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+.reviewComment p {
+  color: #6b7280;
+  line-height: 1.6;
+  background: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+

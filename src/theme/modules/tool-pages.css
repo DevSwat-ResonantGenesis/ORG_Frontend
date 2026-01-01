@@ -1,0 +1,132 @@
+/* ============================================================
+   TOOL PAGES BASE LAYOUT - SHARED STYLES
+   Tool Pages Base Layout - Used by LLM Scanner & Validation Tool
+   These styles are shared across: LLMScannerPageFull, ValidationToolPageFull
+   ============================================================ */
+
+/* Page Wrappers - Keep page-specific for unique styling */
+.llm-scanner-page-compact,
+.validation-tool-page-compact {
+  min-height: calc(100vh - 60px);
+  padding: var(--space-md, 16px);
+  background: var(--bg);
+  color: var(--text-primary);
+}
+
+/* Container - Shared across both tools */
+.scanner-container-compact,
+.validation-container-compact {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+  height: calc(100vh - 100px);
+}
+
+/* Left Column - Shared */
+.scanner-left,
+.validation-left {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Right Column - Shared */
+.scanner-right,
+.validation-right {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Input Section */
+.input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+.input-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.input-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+/* Mode Toggle */
+.mode-toggle {
+  display: flex;
+  gap: 4px;
+  background: var(--surface);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+[data-theme="dark"] .mode-toggle {
+  background: var(--surface);
+}
+
+.mode-toggle button {
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  transition: all 0.2s;
+}
+
+.mode-toggle button.active {
+  background: var(--color-primary-500);
+  color: white;
+}
+
+/* Capabilities Description */
+.capabilities-description {
+  padding: 12px;
+  background: var(--surface);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+[data-theme="dark"] .capabilities-description {
+  background: var(--surface);
+}
+
+.capabilities-description h3 {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+}
+
+.capabilities-description h4 {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+}
+
+.capabilities-description p {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0 0 6px 0;
+}
+
+.capabilities-description p:last-child {
+  margin-bottom: 0;
+}
+

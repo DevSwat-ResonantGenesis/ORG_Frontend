@@ -1,0 +1,230 @@
+.evidence-graph-widget {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--border);
+}
+
+.widget-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary, #111827);
+  margin: 0;
+}
+
+.widget-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.widget-expand-btn,
+.widget-view-all-btn {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text-secondary, #374151);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.widget-expand-btn:hover,
+.widget-view-all-btn:hover {
+  background: var(--surface);
+  border-color: var(--color-primary-500);
+  color: var(--color-primary-500);
+}
+
+.widget-view-all-btn {
+  background: var(--color-primary-500);
+  color: white;
+  border-color: var(--color-primary-500);
+}
+
+.widget-view-all-btn:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: white;
+}
+
+.widget-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.widget-content.expanded {
+  grid-template-columns: 1fr;
+}
+
+.widget-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-tertiary, #6b7280);
+}
+
+.widget-empty p {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.empty-subtitle {
+  font-size: 14px;
+  color: var(--text-500, #9ca3af);
+}
+
+.prediction-preview-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.prediction-preview-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--color-primary-500);
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preview-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.preview-id {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  color: var(--text-tertiary, #6b7280);
+  background: var(--surface);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.preview-risk {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.preview-risk.risk-critical {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.preview-risk.risk-high {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.preview-risk.risk-medium {
+  background: #fef3c7;
+  color: #78350f;
+}
+
+.preview-scores {
+  display: flex;
+  gap: 12px;
+}
+
+.preview-score {
+  font-size: 12px;
+  color: var(--text-tertiary, #6b7280);
+}
+
+.preview-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary, #374151);
+  margin-bottom: 16px;
+  padding: 12px;
+  background: var(--surface);
+  border-radius: 6px;
+  border-left: 3px solid var(--color-primary-500);
+}
+
+.preview-graph {
+  margin-bottom: 16px;
+  padding: 16px;
+  background: var(--surface);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.preview-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.preview-date {
+  font-size: 12px;
+  color: var(--text-500, #9ca3af);
+}
+
+.preview-view-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-primary-500);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.preview-view-btn:hover {
+  color: #2563eb;
+}
+
+@media (max-width: 768px) {
+  .evidence-graph-widget {
+    padding: 20px;
+  }
+
+  .widget-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .widget-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .widget-content {
+    grid-template-columns: 1fr;
+  }
+}
+

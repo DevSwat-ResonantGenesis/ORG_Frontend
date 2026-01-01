@@ -1,0 +1,140 @@
+/* Usage Chart Styles */
+.container {
+  background: var(--bg-secondary, rgba(255, 255, 255, 0.03));
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+}
+
+.stats {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.statValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+}
+
+.statLabel {
+  font-size: 11px;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.trend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.trendUp {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.trendDown {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 8px 0;
+}
+
+.barContainer {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  cursor: pointer;
+}
+
+.bar {
+  width: 100%;
+  background: linear-gradient(180deg, #8b5cf6, #6366f1);
+  border-radius: 2px 2px 0 0;
+  transition: all 0.2s ease;
+  min-height: 2px;
+}
+
+.barHovered {
+  background: linear-gradient(180deg, #a78bfa, #818cf8);
+  transform: scaleX(1.1);
+}
+
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 8px 12px;
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.tooltipDate {
+  font-size: 11px;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+  margin-bottom: 2px;
+}
+
+.tooltipValue {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+}
+
+.xAxis {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 11px;
+  color: var(--text-tertiary, rgba(255, 255, 255, 0.4));
+}
+
+.loading,
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+  font-size: 13px;
+}

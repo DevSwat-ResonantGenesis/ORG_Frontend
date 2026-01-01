@@ -1,0 +1,982 @@
+/* Header Component - CSS Modules
+ * Modern, professional header with glass morphism and smooth animations
+ */
+
+/* ============================================
+   BASE HEADER STYLES
+   ============================================ */
+.header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 99999 !important;
+  box-sizing: border-box !important;
+  padding: 12px 32px !important;
+  height: 60px;
+  /* Transparent glass effect - very transparent */
+  background: rgba(10, 10, 15, 0.3) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  font-family: var(--font-primary);
+  /* Force GPU layer for proper stacking */
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  will-change: transform, background;
+  /* Ensure header stays on top */
+  isolation: isolate;
+}
+
+/* Subtle glow effect at bottom */
+.header::after {
+  content: '';
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(59, 130, 246, 0.4),
+    rgba(96, 165, 250, 0.5),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.headerScrolled {
+  background: rgba(10, 10, 15, 0.5) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Light mode */
+[data-theme='light'] .header {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .headerScrolled {
+  background: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ============================================
+   HEADER CONTENT LAYOUT
+   ============================================ */
+.content {
+  max-width: 100%;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+/* ============================================
+   LOGO STYLES
+   ============================================ */
+.logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  letter-spacing: -0.02em;
+  -webkit-text-fill-color: unset;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+[data-theme='light'] .logo {
+  color: #0f172a;
+}
+
+.logo:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+.logo:active {
+  transform: translateY(0);
+}
+
+.pageTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pageTitleSub {
+  font-size: 11px;
+  font-weight: 400;
+  color: #888;
+}
+
+/* ============================================
+   QUICK ACCESS TOOLBAR
+   ============================================ */
+.quickAccess {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 20px;
+  padding: 4px 8px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.quickAccessButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-tertiary);
+  position: relative;
+}
+
+.quickAccessButton::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: var(--accent-primary);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.2s ease;
+}
+
+.quickAccessButton:hover {
+  color: var(--text-primary);
+}
+
+.quickAccessButton:hover::before {
+  opacity: 0.08;
+  transform: scale(1);
+}
+
+.quickAccessButton.active {
+  color: var(--accent-primary);
+}
+
+.quickAccessButton.active::before {
+  opacity: 0.12;
+  transform: scale(1);
+}
+
+.quickAccessButton svg {
+  width: 18px;
+  height: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+[data-theme='dark'] .quickAccess {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] .quickAccessButton:hover::before,
+[data-theme='dark'] .quickAccessButton.active::before {
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+
+/* ============================================
+   HEADER ACTIONS
+   ============================================ */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+}
+
+/* ============================================
+   USER EMAIL BADGE
+   ============================================ */
+.userEmail {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+  transition: all 0.2s ease;
+}
+
+.userEmail:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--border-hover);
+}
+
+[data-theme='dark'] .userEmail {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .userEmail:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   CHAT ACTIONS (Resonant Chat Page)
+   ============================================ */
+.chatActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.upgradeButton {
+  padding: 8px 18px;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  border: none;
+  border-radius: 20px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(var(--accent-primary-rgb), 0.25);
+}
+
+.upgradeButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(var(--accent-primary-rgb), 0.35);
+}
+
+.upgradeButton:active {
+  transform: translateY(0);
+}
+
+/* ============================================
+   BURGER MENU BUTTON
+   ============================================ */
+.burgerMenu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: var(--text-primary);
+  padding: 8px;
+  border-radius: 10px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10001;
+  touch-action: manipulation;
+}
+
+.burgerMenu:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border);
+}
+
+.burgerMenu:active {
+  transform: scale(0.95);
+  background: var(--bg-tertiary);
+}
+
+.burgerMenu svg {
+  transition: transform 0.2s ease;
+}
+
+.burgerMenu:hover svg {
+  transform: scale(1.05);
+}
+
+[data-theme='dark'] .burgerMenu {
+  color: var(--text-primary);
+}
+
+[data-theme='dark'] .burgerMenu:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .burgerMenu:active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ============================================
+   AGENTOS SECTION STYLES
+   ============================================ */
+.agentOSSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+  margin-right: 16px;
+}
+
+.agentOSLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0ea5e9;
+  padding-right: 16px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.agentOSSearch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  min-width: 300px;
+}
+
+.agentOSSearch svg {
+  color: #666;
+  flex-shrink: 0;
+}
+
+.agentOSSearch input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+
+.agentOSSearch input::placeholder {
+  color: #666;
+}
+
+.agentOSStats {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #888;
+}
+
+.statDot {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+}
+
+.agentOSTime {
+  font-size: 12px;
+  color: #666;
+  font-family: monospace;
+}
+
+.agentOSNotif {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.agentOSNotif:hover {
+  background: rgba(14, 165, 233, 0.2);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #0ea5e9;
+}
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+@media (max-width: 1024px) {
+  .header {
+    padding: 10px 32px !important;
+  }
+  
+  .content {
+    gap: 16px;
+  }
+  
+  .quickAccess {
+    margin-left: 12px;
+    padding: 3px 6px;
+  }
+  
+  .userEmail {
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 8px 24px !important;
+  }
+  
+  .content {
+    gap: 12px;
+  }
+  
+  .logo {
+    font-size: 18px;
+  }
+  
+  .quickAccess {
+    display: none;
+  }
+  
+  .actions {
+    gap: 10px;
+  }
+  
+  .userEmail {
+    display: none;
+  }
+  
+  /* Show burger menu on mobile */
+  .burgerMenu {
+    display: flex;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px;
+  }
+  
+  /* Mobile auth: hide text buttons, show icon */
+  .authButtons {
+    display: none !important;
+  }
+
+  .authIconButton {
+    display: inline-flex !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 8px 16px !important;
+  }
+  
+  .content {
+    gap: 8px;
+  }
+  
+  /* Keep logo visible on mobile */
+  .logo {
+    display: block;
+    font-size: 16px;
+  }
+  
+  .actions {
+    gap: 8px;
+  }
+  
+  /* Show burger menu on mobile */
+  .burgerMenu {
+    display: flex;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px;
+  }
+  
+  .burgerMenu svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Extra small mobile keeps same auth behavior as <= 768px */
+  .authButtons {
+    display: none !important;
+  }
+}
+
+/* Default (desktop/tablet): show login icon button */
+.authButtons {
+  display: flex;
+}
+
+.authIconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.authIconButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+[data-theme='light'] .authIconButton {
+  border-color: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-primary);
+}
+
+[data-theme='light'] .authIconButton:hover {
+  background: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   ACCOUNT MENU
+   ============================================ */
+.accountWrapper {
+  position: relative;
+}
+
+.accountButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px 4px 4px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 36px;
+}
+
+.accountButton:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--border-hover);
+}
+
+.accountAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.accountChevron {
+  color: var(--text-tertiary);
+  transition: transform 0.2s ease;
+}
+
+.accountButton:hover .accountChevron {
+  color: var(--text-secondary);
+}
+
+[data-theme='dark'] .accountButton {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .accountButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Account Dropdown Menu */
+.accountMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 10002;
+  overflow: hidden;
+  animation: accountMenuFadeIn 0.15s ease;
+}
+
+@keyframes accountMenuFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+[data-theme='dark'] .accountMenu {
+  background: var(--bg-secondary);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.accountMenuHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+[data-theme='dark'] .accountMenuHeader {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.accountMenuAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.accountMenuInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.accountMenuEmail {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.accountMenuRole {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-transform: capitalize;
+}
+
+.accountMenuDivider {
+  height: 1px;
+  background: var(--border);
+  margin: 6px 12px;
+}
+
+[data-theme='dark'] .accountMenuDivider {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.accountMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.accountMenuItem:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.accountMenuItem svg {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.accountMenuItem:hover svg {
+  color: var(--text-secondary);
+}
+
+[data-theme='dark'] .accountMenuItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.accountMenuItemDanger {
+  color: #ef4444;
+}
+
+.accountMenuItemDanger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+.accountMenuItemDanger svg {
+  color: #ef4444;
+}
+
+.accountMenuItemDanger:hover svg {
+  color: #dc2626;
+}
+
+/* Auth Buttons (when not logged in) */
+.authButtons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .accountMenu {
+    min-width: 200px;
+  }
+  
+  .accountMenuHeader {
+    padding: 12px;
+  }
+  
+  .accountMenuAvatar {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+}
+
+/* ============================================
+   MAIN NAVIGATION
+   ============================================ */
+.mainNav {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: 32px;
+}
+
+.navItem {
+  position: relative;
+}
+
+.navButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.navButton:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.navButtonActive {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='light'] .navButton {
+  color: rgba(15, 23, 42, 0.7);
+}
+
+[data-theme='light'] .navButton:hover {
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme='light'] .navButtonActive {
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.navChevron {
+  transition: transform 0.2s ease;
+}
+
+.navButtonActive .navChevron {
+  transform: rotate(180deg);
+}
+
+/* ============================================
+   NAVIGATION DROPDOWN - Matches Header Style
+   ============================================ */
+.navDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 280px;
+  /* SOLID NON-TRANSPARENT BACKGROUND - CHANGED */
+  background: #1a1f2e !important;
+  border: 2px solid #3b82f6 !important;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10002;
+  overflow: hidden;
+  animation: navDropdownFadeIn 0.15s ease;
+  padding: 12px;
+}
+
+@keyframes navDropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Light mode - Solid non-transparent */
+[data-theme='light'] .navDropdown {
+  background: #ffffff !important;
+  border: 2px solid #3b82f6 !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.navDropdownGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, auto));
+  gap: 12px;
+}
+
+.navDropdownGridWide {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(160px, auto));
+  gap: 12px;
+}
+
+.navDropdownColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 160px;
+}
+
+/* Dropdown Labels - Default (Dark like header) */
+.navDropdownLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 12px 6px;
+  margin-bottom: 4px;
+}
+
+/* Dropdown Labels - Light Mode */
+[data-theme='light'] .navDropdownLabel {
+  color: #6b7280;
+}
+
+/* Dropdown Items - Default (Dark like header) */
+.navDropdownItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.navDropdownItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Dropdown Items - Light Mode */
+[data-theme='light'] .navDropdownItem:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Item Title - Default (Light text for dark dropdown) */
+.navDropdownItemTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: #f1f5f9;
+}
+
+/* Item Title - Light Mode */
+[data-theme='light'] .navDropdownItemTitle {
+  color: #111827;
+}
+
+/* Item Description - Default (Light text for dark dropdown) */
+.navDropdownItemDesc {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.4;
+}
+
+/* Item Description - Light Mode */
+[data-theme='light'] .navDropdownItemDesc {
+  color: #6b7280;
+}
+
+/* Hide nav on mobile */
+@media (max-width: 1024px) {
+  .mainNav {
+    display: none;
+  }
+}
+

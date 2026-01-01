@@ -1,0 +1,92 @@
+/* ============================================================
+   RESONANTGENESIS - LEGACY GLOBAL STYLES
+   ⚠️ WARNING: This file is NO LONGER IMPORTED by the application!
+   
+   Styles have been migrated to modular CSS files:
+   - Section 1 (FONTS) → src/theme/modules/fonts.css
+   - Section 2 (DESIGN TOKENS) → src/theme/modules/tokens.css
+   - Section 3 (BASE) → src/theme/modules/base.css
+   - Section 4/5/6 (THEMES) → src/theme/modules/themes.css
+   - Section 7 (TYPOGRAPHY) → src/theme/modules/typography.css
+   - Components → src/theme/modules/components.css + CSS Modules
+   
+   ⚠️ DO NOT add new styles here - use CSS Modules or modular files instead!
+   ⚠️ This file is kept for reference during migration only.
+   ============================================================ */
+
+/* ============================================================
+   GLOBAL BUTTON ALIGNMENT - ALL CARDS ACROSS PLATFORM
+   ============================================================ */
+/* MIGRATED: All styles moved to src/theme/modules/components.css */
+
+/* ============================================================
+   SECTION 8: PAGE STRUCTURE & LAYOUT
+   ============================================================ */
+/* MIGRATED: All styles moved to src/theme/modules/components.css */
+
+/* ============================================================
+   SECTION 9-11: COMPONENT STYLES
+   ============================================================ */
+/* MIGRATED: All styles moved to CSS Modules (Card.module.css, Table.module.css, Button.module.css) */
+
+/* ============================================================
+   SECTION 12: FORMS
+   ============================================================ */
+/* MIGRATED: All styles moved to src/theme/modules/forms.css */
+
+/* ============================================================
+   SECTION 12.5: UNIFIED PAGE TITLES
+   ============================================================ */
+/* MIGRATED: All styles moved to src/theme/modules/typography.css */
+
+/* ============================================================
+
+/* ============================================================
+   SECTION 15: BADGES & TAGS
+   ============================================================ */
+/* MIGRATED: All styles moved to Badge.module.css */
+
+/* ============================================================
+   SECTION 16: SCROLLBAR STYLING
+   ============================================================ */
+/* MIGRATED: Global scrollbar styles moved to src/theme/modules/base.css */
+
+/* ============================================================
+   SECTION 17: SECTION BACKGROUNDS
+   ============================================================ */
+/* MIGRATED: All styles moved to src/theme/modules/components.css */
+
+/* ============================================================
+   SECTION 18: LAYOUT UTILITIES
+   ============================================================ */
+/* MIGRATED: All styles moved to src/theme/modules/utilities.css */
+
+/* ============================================================
+   SECTION 19: RESPONSIVE FIXES
+   ============================================================ */
+/* MIGRATED: All responsive utilities moved to src/theme/modules/utilities.css */
+/* ============================================================
+   SECTION 20: MOBILE HERO FIXES
+   ============================================================ */
+/* MIGRATED: All styles moved to src/theme/modules/hero.css */
+
+/* ============================================================
+   SECTION 22: CONSISTENCY ENFORCEMENT
+   ============================================================ */
+/* MIGRATED: All styles moved to src/theme/modules/base.css */
+
+/* ============================================================
+   SECTION 23: CONTENT PAGES - SHARED LAYOUT
+   ============================================================ */
+/* MIGRATED: All styles moved to src/theme/modules/content-pages.css */
+
+/* ============================================================
+   SECTION 26: RESONANT CHAT PAGE SPECIFIC OVERRIDES
+   ============================================================ */
+/* MIGRATED: All styles moved to src/pages/ResonantChat/ResonantChatPage.module.css */
+
+/* ============================================================
+   GLOBAL SCROLLBAR - BLUE 2PX, 45% TRANSPARENT
+   Applied to all scrollable elements across platform
+   ============================================================ */
+/* MIGRATED: Global scrollbar styles moved to src/theme/modules/base.css */

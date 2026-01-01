@@ -1,0 +1,180 @@
+/* OpenAI-style Page Container - Consistent across ALL pages */
+/* MANDATORY: All content aligned to left border */
+
+.page-container {
+  max-width: 1400px;
+  margin: 0;
+  padding: 20px 16px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+@media (min-width: 768px) {
+  .page-container {
+    padding: 40px 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-container {
+    padding: 64px 48px;
+  }
+}
+
+/* Page Header - Consistent across ALL pages */
+/* MANDATORY: Page header aligns with page cards vertically */
+.page-header {
+  margin-bottom: 48px;
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.page-title {
+  font-size: var(--font-3xl);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 8px;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+  color: var(--text-primary);
+}
+
+@media (min-width: 768px) {
+  .page-title {
+    font-size: var(--font-4xl);
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-title {
+    font-size: var(--font-5xl);
+  }
+}
+
+.page-subtitle {
+  font-size: var(--font-base);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+@media (min-width: 768px) {
+  .page-subtitle {
+    font-size: var(--font-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-subtitle {
+    font-size: var(--font-xl);
+  }
+}
+
+/* Section - Consistent spacing */
+.page-section {
+  margin-bottom: 64px;
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.page-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Card - Consistent across ALL pages */
+/* MANDATORY: Same left/right padding and vertical alignment with page title */
+.page-card {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0;
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .page-card {
+    padding: 28px 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-card {
+    padding: 32px 48px; /* Same left/right padding as page-container */
+  }
+}
+
+.page-card:last-child {
+  margin-bottom: 0;
+}
+
+/* Table Container - Consistent */
+.table-container {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+/* Form Container - Consistent */
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Button Container - Consistent */
+.button-group {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .page-container {
+    padding: 48px 32px;
+  }
+  
+  .page-card {
+    padding: 32px 32px; /* Match container padding */
+  }
+  
+  .page-title {
+    font-size: var(--font-36);
+  }
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: 32px 24px;
+  }
+  
+  .page-card {
+    padding: 32px 24px; /* Match container padding */
+  }
+  
+  .page-title {
+    font-size: var(--font-3xl);
+  }
+  
+  .page-subtitle {
+    font-size: var(--font-base);
+  }
+}

@@ -1,0 +1,104 @@
+/* Status Bar - Uses IDE Design System */
+.statusBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 22px;
+  min-height: 22px;
+  max-height: 22px;
+  width: 100%;
+  background: var(--ide-bg-secondary);
+  border-top: 1px solid var(--ide-border);
+  padding: 0 var(--ide-space-2);
+  font-size: var(--ide-font-size-xs);
+  font-family: var(--ide-font-mono);
+  color: var(--ide-text-secondary);
+  flex-shrink: 0;
+  flex-grow: 0;
+  user-select: none;
+  z-index: calc(var(--ide-z-sticky, 200) + 50); /* Above terminal (200) */
+  box-sizing: border-box;
+  position: relative;
+  visibility: visible;
+  opacity: 1;
+}
+
+.statusBarLeft,
+.statusBarRight {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 100%;
+}
+
+.statusItem {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 var(--ide-space-2);
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  cursor: default;
+  transition: background-color var(--ide-transition-fast);
+  box-sizing: border-box;
+}
+
+.statusItemClickable {
+  cursor: pointer;
+}
+
+.statusItemClickable:hover {
+  background: var(--ide-surface-hover);
+}
+
+.statusItemError {
+  color: var(--ide-error);
+}
+
+.statusItemWarning {
+  color: var(--ide-warning);
+}
+
+.statusText {
+  color: var(--ide-text-secondary);
+  white-space: nowrap;
+  font-size: var(--ide-font-size-xs);
+  line-height: 1;
+}
+
+.statusTextMuted {
+  color: var(--ide-text-tertiary);
+  white-space: nowrap;
+  font-size: var(--ide-font-size-xs);
+  line-height: 1;
+}
+
+.statusDivider {
+  width: 1px;
+  height: 16px;
+  background: var(--ide-border);
+  margin: 0 var(--ide-space-1);
+  flex-shrink: 0;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-left: var(--ide-space-1);
+  flex-shrink: 0;
+}
+
+/* Light mode */
+[data-theme='light'] .statusBar {
+  background: var(--ide-bg-secondary);
+  border-top-color: var(--ide-border);
+}
+
+[data-theme='light'] .statusItemClickable:hover {
+  background: var(--ide-surface-hover);
+}
+

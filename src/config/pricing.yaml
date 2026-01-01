@@ -1,0 +1,412 @@
+# ============================================================
+# ResonantGenesis Pricing Configuration - Source of Truth
+# ============================================================
+# All pricing data should be derived from this file.
+# Usage is metered via Resonant Credits (1 credit ≈ $0.001)
+# ============================================================
+
+credit_rate:
+  value: 0.001
+  currency: USD
+  description: "1 credit ≈ $0.001"
+  mental_math: "1,000 credits = $1.00"
+
+# Credit Exchange Rates - Single Source of Truth
+credit_exchange:
+  # Tier 1: LLM Tokens (Most Expensive)
+  llm:
+    input_tokens_1k: 10
+    output_tokens_1k: 30
+    chat_message: 20
+    agent_reasoning_step: 50
+  
+  # Tier 2: Agent Execution
+  agents:
+    session_start: 100
+    step: 50
+    goal_completion: 200
+    team_run: 500
+    pipeline: 300
+  
+  # Tier 3: Compute
+  compute:
+    per_second: 1
+    per_minute: 60
+    code_execution_base: 5
+    preview_hour: 300
+  
+  # Tier 4: Workflows
+  workflows:
+    run_base: 50
+    step: 20
+    scheduled_trigger: 10
+    webhook_trigger: 5
+  
+  # Tier 5: Storage & Memory
+  storage:
+    per_mb: 1
+    per_gb: 1000
+    memory_write: 2
+    memory_read: 0
+    rag_upload: 10
+  
+  # Tier 6: Blockchain Audit
+  blockchain:
+    audit_entry: 100
+    verification: 10
+    compliance_report: 500
+    smart_contract_deploy: 1000
+  
+  # Tier 7: Hash Sphere
+  hash_sphere:
+    identity_add: 50
+    transaction_record: 20
+    trust_relationship: 10
+    perturbation_simulation: 100
+  
+  # Tier 8: Code Visualizer
+  code_visualizer:
+    codebase_analysis: 200
+    governance_check: 50
+    graph_export: 20
+
+# Credit Pack Pricing
+credit_packs:
+  - id: starter
+    name: Starter Pack
+    credits: 10000
+    price: 10
+    price_per_1k: 1.00
+    description: Quick top-up for light usage
+    recommended: false
+  
+  - id: growth
+    name: Growth Pack
+    credits: 50000
+    price: 40
+    price_per_1k: 0.80
+    savings: "20%"
+    description: Best value for regular users
+    recommended: true
+  
+  - id: scale
+    name: Scale Pack
+    credits: 200000
+    price: 120
+    price_per_1k: 0.60
+    savings: "40%"
+    description: Maximum savings for heavy usage
+    recommended: false
+
+plans:
+  # Developer - Free Forever
+  - id: developer
+    name: Developer
+    badge: Free Forever
+    price:
+      monthly: 0
+      yearly: 0
+      display: "$0"
+      period: "/month"
+    description: "For solo builders exploring ResonantGenesis. Get started with essential features and limited credits to test the platform."
+    credits:
+      included: 10000
+      display: "10,000 / month"
+      rollover: false
+      topups: false
+      note: "No rollover • No top-ups"
+    recommended: false
+    contact_sales: false
+    cta:
+      text: "Get Started Free"
+      style: secondary
+
+    limits:
+      agents:
+        active: 3
+        autonomous_mode: false
+        teams: false
+      chat:
+        conversations: -1
+        messages_per_day: -1
+        evidence_graph: false
+      hash_sphere_memory:
+        standalone_service: false
+        universe_access: false
+        multi_layer: false
+      ide_compute:
+        compute_hours: 10
+        preview_time: "1 hr/day"
+        ai_assistance: "Basic"
+      governance:
+        kill_switch: "Manual"
+        invariants: 5
+        snapshots: false
+      code_visualizer:
+        codebase_graphs: false
+        dependency_analysis: false
+        ci_integration: false
+
+    features:
+      - "Free forever"
+      - "10,000 credits/month"
+      - "Up to 3 agents (no autonomous mode)"
+      - "Unlimited conversations (limited by credits only)"
+      - "100 MB storage, 5 RAG documents"
+      - "10 compute hours/month"
+      - "Manual kill switch, 5 basic invariants"
+      - "No Hash Sphere Memory standalone"
+      - "No Code Visualizer"
+      - "Community support only"
+
+  # Plus - $49/month (RECOMMENDED)
+  - id: plus
+    name: Plus
+    badge: Professional
+    price:
+      monthly: 49
+      yearly: 490
+      display: "$49"
+      period: "/month"
+    description: "For serious builders, teams, and power users. Unlock autonomous agents, full AI assistance, and advanced features."
+    credits:
+      included: 75000
+      display: "75,000 / month"
+      rollover: true
+      rollover_limit: 37500
+      topups: true
+      topup_price: 8
+      topup_amount: 10000
+      note: "Rollover up to 37.5K • Top-ups: $8/10K"
+    recommended: true
+    contact_sales: false
+    cta:
+      text: "Start Plus Plan"
+      style: primary
+
+    limits:
+      agents:
+        active: 20
+        autonomous_mode: true
+        teams: true
+      chat:
+        conversations: -1
+        messages_per_day: -1
+        evidence_graph: true
+      hash_sphere_memory:
+        standalone_service: true
+        universe_access: "1 Universe"
+        multi_layer: false
+      ide_compute:
+        compute_hours: 100
+        preview_time: "Unlimited"
+        ai_assistance: "Full"
+      governance:
+        kill_switch: "Automated"
+        invariants: 15
+        snapshots: 10
+      code_visualizer:
+        codebase_graphs: true
+        dependency_analysis: true
+        ci_integration: false
+
+    features:
+      - "75,000 credits/month"
+      - "Rollover up to 37.5K credits"
+      - "Top-ups: $8/10K credits"
+      - "Up to 20 agents with autonomous mode"
+      - "Agent teams enabled"
+      - "Unlimited conversations (limited by credits only)"
+      - "Evidence graph access"
+      - "5 GB storage, 100 RAG documents"
+      - "100 compute hours/month, unlimited preview"
+      - "Full AI assistance"
+      - "Automated kill switch, 15 invariants, 10 snapshots"
+      - "Hash Sphere Memory: 1 Universe"
+      - "Code Visualizer: graphs + dependency analysis"
+      - "Email + Slack support"
+
+  # Enterprise - Custom Pricing
+  - id: enterprise
+    name: Enterprise
+    badge: Custom
+    price:
+      monthly: 0
+      yearly: 0
+      display: "Custom"
+      period: ""
+    description: "For organizations running AI as critical infrastructure. SLA guarantees, dedicated support, and custom deployments."
+    credits:
+      included: -1  # Custom
+      display: "Custom"
+      rollover: true
+      rollover_limit: -1  # Unlimited
+      topups: true
+      topup_price: 5
+      topup_amount: 10000
+      note: "Tailored to your needs"
+    recommended: false
+    contact_sales: true
+    cta:
+      text: "Contact Sales"
+      style: secondary
+
+    limits:
+      agents:
+        active: -1  # Unlimited
+        autonomous_mode: true
+        teams: "Hierarchies"
+      chat:
+        conversations: -1  # Unlimited
+        messages_per_day: -1  # Unlimited
+        custom_models: true
+      hash_sphere_memory:
+        standalone_service: true
+        universe_access: "Multi Universe"
+        multi_layer: true
+      ide_compute:
+        compute_hours: -1  # Unlimited
+        custom_runtimes: true
+        ai_assistance: "Full + Custom"
+      governance:
+        kill_switch: "SLA-backed"
+        invariants: "Custom"
+        snapshots: -1  # Unlimited
+      code_visualizer:
+        codebase_graphs: true
+        dependency_analysis: true
+        ci_integration: true
+
+    features:
+      - "Custom credits (tailored to your needs)"
+      - "Unlimited agents with full autonomous mode"
+      - "Agent team hierarchies"
+      - "Unlimited conversations, custom models"
+      - "100 GB+ storage, unlimited RAG documents"
+      - "Unlimited compute hours, custom runtimes"
+      - "Full + Custom AI assistance"
+      - "SLA-backed kill switch, custom invariants, unlimited snapshots"
+      - "Hash Sphere Memory: Multi Universe + Multi-layer"
+      - "Code Visualizer: full access + CI integration"
+      - "Hash Sphere API access"
+      - "Dedicated engineers, architecture guidance"
+      - "99.9% SLA guarantee"
+      - "SOC2, HIPAA, GDPR compliance"
+      - "On-premise/hybrid deployment option"
+
+# Hash Sphere Feature Comparison
+hash_sphere_features:
+  - capability: "View own identity node"
+    developer: true
+    plus: true
+    enterprise: true
+  - capability: "View full identity graph"
+    developer: false
+    plus: true
+    enterprise: true
+  - capability: "Trust relationship visualization"
+    developer: false
+    plus: true
+    enterprise: true
+  - capability: "Economic flow tracking"
+    developer: false
+    plus: false
+    enterprise: true
+  - capability: "System entropy metrics"
+    developer: false
+    plus: false
+    enterprise: true
+  - capability: "Invariant checks"
+    developer: false
+    plus: false
+    enterprise: true
+  - capability: "Perturbation simulation"
+    developer: false
+    plus: false
+    enterprise: true
+  - capability: "API Access"
+    developer: false
+    plus: false
+    enterprise: true
+
+# Core Platform Features (included in all plans)
+core_features:
+  - id: hash_sphere
+    name: Hash Sphere
+    badge: "Identity & Economic Graph"
+    description: "Unified identity layer with trust relationships, economic flow tracking, and system entropy metrics."
+    icon: globe
+
+  - id: resonant_chat
+    name: Resonant Chat
+    badge: "Governed Agent Actions"
+    description: "Persistent AI conversations with evidence graphs. Every action evaluated, logged, and auditable."
+    icon: brain
+
+  - id: agent_console
+    name: Agent Console
+    badge: "Multi-Agent Orchestration"
+    description: "Autonomous agents with goal-driven execution, swarm capabilities, and agent voting systems."
+    icon: users
+
+  - id: hash_sphere_memory
+    name: Hash Sphere Memory
+    badge: "Semantic Memory System"
+    description: "Revolutionary semantic memory that understands meaning. 3D memory space with resonance search and magnetic retrieval."
+    icon: database
+
+  - id: ide_compute
+    name: IDE & Compute
+    badge: "Governed Execution"
+    description: "Browser-based development with secure sandboxes, live previews, and AI pair-programming."
+    icon: code
+
+  - id: workflows
+    name: Workflows
+    badge: "Visual Orchestration"
+    description: "Visual workflow automation with scheduling, error handling, and SLA-backed execution."
+    icon: git_branch
+
+  - id: rara_governance
+    name: RARA Governance
+    badge: "AI Safety & Control"
+    description: "Kill switch, invariant enforcement, snapshot & rollback, and policy-based permissions."
+    icon: shield
+
+  - id: blockchain_audit
+    name: Blockchain Audit
+    badge: "Immutable Logs"
+    description: "Cryptographically signed audit entries with verification, compliance reports, and legal-grade proof."
+    icon: lock
+
+  - id: code_visualizer
+    name: Code Visualizer
+    badge: "Full Codebase Graph"
+    description: "Interactive codebase visualization with dependency graphs, governance rules, and CI integration."
+    icon: network
+
+  - id: marketplace
+    name: Marketplace
+    badge: "Agents, Tools, Templates"
+    description: "Browse, publish, and install agents, workflows, and policies. RARA-certified with dual-layer isolation."
+    icon: store
+
+# FAQ
+faq:
+  - question: "What happens when I run out of credits?"
+    answer: "Your agents pause until the next billing cycle or you purchase additional credits. You'll receive alerts before reaching your limit."
+
+  - question: "Can I change plans anytime?"
+    answer: "Yes! Upgrade instantly and get prorated access. Downgrade takes effect at the end of your billing cycle."
+
+  - question: "What's included in credit usage?"
+    answer: "Credits cover AI model calls, compute time, storage, and agent execution. You get real-time cost estimation before each action."
+
+  - question: "Do you offer volume discounts?"
+    answer: "Enterprise plans include 20% volume discounts at 1M+ credits. Contact sales for custom pricing on larger deployments."
+
+  - question: "Is there a self-hosted option?"
+    answer: "Enterprise plans support cloud, hybrid, or fully self-hosted deployments with data locality control and custom SSO."
+
+  - question: "What support is included?"
+    answer: "Developer: Community only. Plus: Email + Slack. Enterprise: Dedicated engineers, architecture guidance, and SLA guarantees."

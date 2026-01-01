@@ -1,0 +1,34 @@
+{
+    "folders": [
+        {
+            "name": "Frontend (ResonantGraphAI_FrontendV0.1)",
+            "path": "/Applications/ResonantGraphAI_FrontendV0.1"
+        },
+        {
+            "name": "Backend (ResonantGraphAIV0.1)",
+            "path": "/Applications/ResonantGraphAIV0.1"
+        }
+    ],
+    "settings": {
+        "files.exclude": {
+            "**/.git": false,
+            "**/node_modules": false,
+            "**/__pycache__": true,
+            "**/*.pyc": true
+        },
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-python.python",
+            "ms-python.vscode-pylance",
+            "dbaeumer.vscode-eslint",
+            "esbenp.prettier-vscode"
+        ]
+    }
+}

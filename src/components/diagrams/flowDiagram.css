@@ -1,0 +1,221 @@
+/* ============================================================
+   FLOW DIAGRAM - Process Flow Visualizations
+   ============================================================ */
+
+.flow-diagram-container {
+  width: 100%;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+.flow-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.flow-step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.flow-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  min-width: 140px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.flow-node:hover {
+  border-color: var(--accent-500);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.node-icon {
+  font-size: var(--font-3xl);
+  margin-bottom: 8px;
+}
+
+.node-label {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+
+.node-desc {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+.input-node {
+  border-color: var(--accent-500);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.process-node {
+  border-color: var(--text-300);
+}
+
+.output-node {
+  border-color: var(--success);
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.flow-arrow {
+  font-size: var(--font-2xl);
+  color: var(--text-400);
+  font-weight: 300;
+  min-width: 24px;
+}
+
+.flow-arrow-vertical {
+  font-size: var(--font-2xl);
+  color: var(--text-400);
+  font-weight: 300;
+  text-align: center;
+  margin: 8px 0;
+}
+
+/* Evidence Flow Grid */
+.evidence-flow .flow-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.flow-layer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.layer-label {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.layer-nodes {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.mini-node {
+  padding: 8px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: var(--font-xs);
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.mini-node:hover {
+  border-color: var(--accent-500);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+/* Animations */
+.flow-diagram-container.animated .flow-node {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.flow-diagram-container.animated .flow-node:nth-child(1) { animation-delay: 0.1s; }
+.flow-diagram-container.animated .flow-node:nth-child(2) { animation-delay: 0.2s; }
+.flow-diagram-container.animated .flow-node:nth-child(3) { animation-delay: 0.3s; }
+.flow-diagram-container.animated .flow-node:nth-child(4) { animation-delay: 0.4s; }
+.flow-diagram-container.animated .flow-node:nth-child(5) { animation-delay: 0.5s; }
+
+.flow-diagram-container.animated .flow-arrow {
+  animation: fadeIn 0.4s ease-out forwards;
+  opacity: 0;
+  animation-delay: 0.3s;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Interactive Mode */
+.flow-diagram-container.interactive .flow-node {
+  cursor: pointer;
+}
+
+.flow-diagram-container.interactive .flow-node:active {
+  transform: scale(0.98);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .flow-step {
+    flex-direction: column;
+  }
+  
+  .flow-arrow {
+    transform: rotate(90deg);
+    margin: 8px 0;
+  }
+  
+  .flow-node {
+    min-width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* Dark Mode */
+[data-theme="dark"] .flow-node {
+  background: var(--surface);
+}
+
+[data-theme="dark"] .mini-node {
+  background: var(--surface);
+}
+

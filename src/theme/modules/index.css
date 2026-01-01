@@ -1,0 +1,70 @@
+/* ============================================================
+   MODULAR CSS ARCHITECTURE - INDEX
+   Imports all CSS modules in correct order
+   ============================================================ */
+
+/* 1. Design Tokens - Must be first (CSS variables) - 2025 Design System */
+@import './tokens-2025.css';
+
+/* 2. Fonts - Font face declarations */
+@import './fonts.css';
+
+/* 2.5. Global Fonts - Apply system fonts globally */
+@import './fonts-global-2025.css';
+
+/* 3. Reset - CSS reset and normalize - 2025 Design System */
+@import './reset-2025.css';
+
+/* 4. Base - Base element styles */
+@import './base.css';
+
+/* 5. Themes - Dark/light theme styles */
+@import './themes.css';
+
+/* 6. Typography - Typography system - 2025 Design System */
+@import './typography-2025.css';
+
+/* 7. Components - Component styles (buttons, cards, tables, etc.) */
+@import './components.css';
+
+/* 8. Forms - Global form input styles */
+@import './forms.css';
+
+/* 9. Hero & Landing - Hero section and landing page styles */
+@import './hero.css';
+
+/* 10. Content Pages - Shared content page layouts */
+@import './content-pages.css';
+
+/* 11. Dashboard Layout - Shared dashboard layouts */
+@import './dashboard-layout.css';
+
+/* 12. Tool Pages - Shared tool page layouts */
+@import './tool-pages.css';
+
+/* 13. Utilities - Utility classes */
+@import './utilities.css';
+
+/* 14. Responsive - Mobile-first responsive utilities - 2025 Design System */
+@import './responsive-2025.css';
+
+/* 15. Typography Enforcement - MUST BE LAST to override all other styles */
+@import './typography-enforcement.css';
+
+/* 16. IDE Design System - Complete style hierarchy for IDE */
+@import './ide-design-system.css';
+
+/* 17. IDE Isolation - MUST BE ABSOLUTELY LAST to isolate IDE from all global styles */
+@import './ide-isolation.css';
+
+/* NOTE: global.css is NOT imported here to avoid circular dependencies and duplication.
+ * The modular CSS files (tokens, fonts, reset, base, themes, typography) already contain
+ * the extracted styles from global.css. Component-specific styles should be in CSS Modules
+ * (Button.module.css, Card.module.css, etc.), not in global.css.
+ * 
+ * Any remaining truly global/page-level styles in global.css should be migrated to:
+ * - components.css (for component-specific global styles)
+ * - utilities.css (for utility classes)
+ * - Or appropriate module files
+ */
+

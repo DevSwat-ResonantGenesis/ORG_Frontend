@@ -1,0 +1,414 @@
+/* Service Icons - Animated, visible in dark and light mode */
+
+.service-icon {
+  display: inline-block;
+  vertical-align: middle;
+  color: currentColor;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.service-icon .icon-path {
+  stroke: currentColor;
+  transition: all 0.3s ease;
+  animation: serviceIconPulse 3s ease-in-out infinite;
+}
+
+.service-icon .icon-dot {
+  fill: currentColor;
+  animation: serviceIconDotPulse 2s ease-in-out infinite;
+}
+
+@keyframes serviceIconPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes serviceIconDotPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+.service-icon:hover {
+  transform: scale(1.1);
+}
+
+.service-icon:hover .icon-path {
+  stroke-width: 2.5;
+  animation: serviceIconPulseHover 0.8s ease-in-out infinite;
+}
+
+.service-icon:hover .icon-dot {
+  transform: scale(1.3);
+}
+
+@keyframes serviceIconPulseHover {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* Service-specific colors */
+.risk-icon {
+  color: #ef4444;
+}
+
+.chat-icon {
+  color: #3b82f6;
+}
+
+.mlops-icon {
+  color: #8b5cf6;
+}
+
+.compliance-icon {
+  color: #10b981;
+}
+
+.audit-icon {
+  color: #f59e0b;
+}
+
+.hashsphere-icon {
+  color: #06b6d4;
+}
+
+.enterprise-icon {
+  color: #6366f1;
+}
+
+.billing-icon {
+  color: #ec4899;
+}
+
+.integration-icon {
+  color: #14b8a6;
+}
+
+.analytics-icon {
+  color: #f97316;
+}
+
+.security-icon {
+  color: #84cc16;
+}
+
+.evidence-icon {
+  color: #a855f7;
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .service-icon {
+  opacity: 0.95;
+}
+
+/* Light mode adjustments */
+[data-theme='light'] .service-icon {
+  opacity: 1;
+}
+
+/* Active state */
+.service-icon.active {
+  transform: scale(1.15);
+}
+
+.service-icon.active .icon-path {
+  stroke-width: 2.5;
+}
+
+/* ============================================================
+   Animated Differentiator Icons - 48px for Home Page
+   ============================================================ */
+
+.differentiator-icon {
+  width: 48px;
+  height: 48px;
+  color: currentColor;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Animated Chain Icon */
+.animated-chain-icon {
+  animation: chainIconFloat 3s ease-in-out infinite;
+}
+
+.chain-link {
+  animation: chainPulse 2s ease-in-out infinite;
+}
+
+.chain-link-1 {
+  animation-delay: 0s;
+}
+
+.chain-link-2 {
+  animation-delay: 0.5s;
+}
+
+.chain-link-3 {
+  animation-delay: 1s;
+}
+
+.chain-link-4 {
+  animation-delay: 1.5s;
+}
+
+.chain-connector {
+  animation: chainConnect 2s ease-in-out infinite;
+}
+
+@keyframes chainIconFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes chainPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes chainConnect {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+    stroke-width: 2.5;
+  }
+}
+
+/* Animated Hash Sphere Icon */
+.animated-hashsphere-icon {
+  animation: hashSphereRotate 4s linear infinite;
+}
+
+.hashsphere-ring-1 {
+  animation: hashSpherePulse 2s ease-in-out infinite;
+}
+
+.hashsphere-ring-2 {
+  animation: hashSpherePulse 2s ease-in-out infinite 0.5s;
+}
+
+.hashsphere-center {
+  animation: hashSphereCenterPulse 1.5s ease-in-out infinite;
+}
+
+.hashsphere-cross {
+  animation: hashSphereCrossRotate 3s linear infinite reverse;
+}
+
+.hashsphere-outer {
+  animation: hashSphereOuterRotate 6s linear infinite;
+  opacity: 0.5;
+}
+
+@keyframes hashSphereRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hashSpherePulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes hashSphereCenterPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.3);
+  }
+}
+
+@keyframes hashSphereCrossRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes hashSphereOuterRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animated Sync Icon */
+.animated-sync-icon {
+  animation: syncIconSpin 3s ease-in-out infinite;
+}
+
+.sync-group {
+  transform-origin: center;
+}
+
+.sync-arrow-1 {
+  animation: syncArrowPulse 1.5s ease-in-out infinite;
+}
+
+.sync-arrow-2 {
+  animation: syncArrowPulse 1.5s ease-in-out infinite 0.75s;
+}
+
+.sync-center {
+  animation: syncCenterPulse 2s ease-in-out infinite;
+}
+
+.sync-ring {
+  animation: syncRingRotate 4s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes syncIconSpin {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes syncArrowPulse {
+  0%, 100% {
+    opacity: 0.7;
+    stroke-width: 2;
+  }
+  50% {
+    opacity: 1;
+    stroke-width: 2.5;
+  }
+}
+
+@keyframes syncCenterPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes syncRingRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animated Chart Icon */
+.animated-chart-icon {
+  animation: chartIconFloat 3s ease-in-out infinite;
+}
+
+.chart-bar {
+  transform-origin: bottom;
+  animation: chartBarPulse 2s ease-in-out infinite;
+}
+
+.chart-bar-1 {
+  animation-delay: 0s;
+}
+
+.chart-bar-2 {
+  animation-delay: 0.3s;
+}
+
+.chart-bar-3 {
+  animation-delay: 0.6s;
+}
+
+.chart-bar-4 {
+  animation-delay: 0.9s;
+}
+
+.chart-base {
+  animation: chartBaseGlow 2s ease-in-out infinite;
+}
+
+@keyframes chartIconFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes chartBarPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scaleY(0.95);
+  }
+}
+
+@keyframes chartBaseGlow {
+  0%, 100% {
+    opacity: 0.6;
+    stroke-width: 1.5;
+  }
+  50% {
+    opacity: 1;
+    stroke-width: 2;
+  }
+}
+
+/* Dark mode adjustments for differentiator icons */
+[data-theme='dark'] .differentiator-icon {
+  opacity: 0.95;
+}
+
+/* Light mode adjustments */
+[data-theme='light'] .differentiator-icon {
+  opacity: 1;
+}
+

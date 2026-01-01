@@ -1,0 +1,85 @@
+/* ============================================================
+   TERMINAL PANEL - Two-Tone Design with Blue Accents
+   ============================================================ */
+.terminalPanel {
+  background: #0a0a0a;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  min-height: 100px;
+  z-index: 50;
+}
+
+/* Resize Handle */
+.resizeHandle {
+  height: 4px;
+  cursor: ns-resize;
+  background: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 51;
+  transition: background 0.15s ease;
+}
+
+.resizeHandle:hover {
+  background: rgba(59, 130, 246, 0.3);
+}
+
+.resizeHandle:active {
+  background: rgba(59, 130, 246, 0.5);
+}
+
+/* Collapsed Bar */
+.collapsedBar {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  background: #0a0a0a;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.collapsedBar:hover {
+  background: #0a0a0a;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.collapsedBar svg {
+  width: 14px;
+  height: 14px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ============================================================
+   LIGHT MODE SUPPORT
+   ============================================================ */
+[data-theme='light'] .terminalPanel {
+  background: #FAFAFA;
+  border-top-color: #E5E7EB;
+}
+
+[data-theme='light'] .collapsedBar {
+  background: #F3F4F6;
+  border-top-color: #E5E7EB;
+  color: #525252;
+}
+
+[data-theme='light'] .collapsedBar:hover {
+  background: #FFFFFF;
+  color: #0a0a0a;
+}
+
+[data-theme='light'] .resizeHandle:hover {
+  background: rgba(59, 130, 246, 0.2);
+}

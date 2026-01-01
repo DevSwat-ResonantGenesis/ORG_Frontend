@@ -1,0 +1,254 @@
+/* ============================================================
+   TEAM BUILDER - EXACT COPY FROM WORKING AGENTS PAGE
+   ============================================================ */
+
+.createTeamModal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s;
+}
+
+.closeButton:hover {
+  background: var(--color-gray-100);
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.label {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.configMode {
+  font-size: var(--font-size-xs);
+  color: var(--color-primary-600);
+  background: var(--color-primary-light);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.radioGroup > label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  cursor: pointer;
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: var(--color-bg-primary);
+  transition: background 0.2s;
+  margin: 0;
+}
+
+.radioGroup > label:hover {
+  background: var(--color-gray-100);
+}
+
+.radioGroup > label.radioSelected {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-500);
+}
+
+.radioGroup input[type="radio"] {
+  margin-top: 4px;
+  cursor: pointer;
+  accent-color: var(--color-primary-500);
+}
+
+.textarea {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-family: inherit;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color 0.2s;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+}
+
+.textarea::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.jsonEditor {
+  margin-top: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-primary-500);
+  border-radius: var(--radius-md);
+}
+
+.jsonTextarea {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  resize: vertical;
+  min-height: 300px;
+  transition: border-color 0.2s;
+}
+
+.jsonTextarea:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+}
+
+.jsonHelp {
+  margin-top: var(--space-2);
+  padding: var(--space-2);
+  background: var(--color-primary-light);
+  border-left: 3px solid var(--color-primary-500);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-primary-700);
+}
+
+.jsonHelp strong {
+  display: block;
+  margin-bottom: var(--space-2);
+  color: var(--color-primary-800);
+}
+
+.jsonHelp ul {
+  margin: var(--space-2) 0 0 var(--space-5);
+  padding: 0;
+}
+
+.jsonHelp li {
+  margin: var(--space-1) 0;
+}
+
+.jsonHelp code {
+  background: var(--color-primary-100);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-primary-700);
+}
+
+.agentsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-height: 300px;
+  overflow-y: auto;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-secondary);
+}
+
+.agentCheckbox {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.agentCheckbox:hover {
+  background: var(--color-gray-100);
+}
+
+.agentCheckbox input[type="checkbox"] {
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+.agentCheckboxInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0; /* Allow content to shrink */
+}
+
+.agentName {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  word-wrap: break-word;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.agentDescription {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  word-wrap: break-word;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.modalActions {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: flex-end;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+

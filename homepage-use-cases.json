@@ -1,0 +1,99 @@
+{
+  "useCases": [
+    {
+      "id": "content-moderation",
+      "title": "Content Moderation & Quality Assurance",
+      "problem": "Need to ensure AI-generated content is safe, accurate, and compliant before publication.",
+      "solution": [
+        "Use LLM Scanner to scan all AI outputs",
+        "Detect risks (hallucinations, bias, toxicity)",
+        "Enforce content policies automatically",
+        "Generate audit trails for compliance"
+      ],
+      "whoUses": ["Content platforms", "Social media companies", "News organizations", "Marketing teams"],
+      "services": ["AI Risk Management", "LLM Scanner", "Policy Management", "Audit Logging"]
+    },
+    {
+      "id": "customer-support",
+      "title": "Customer Support Automation",
+      "problem": "Need AI-powered customer support that remembers context and provides accurate, evidence-based responses.",
+      "solution": [
+        "Deploy Resonant Chat with persistent memory",
+        "Route to best AI provider automatically",
+        "Provide evidence-backed responses",
+        "Track conversation history and context"
+      ],
+      "whoUses": ["E-commerce companies", "SaaS companies", "Service providers", "Support teams"],
+      "services": ["Resonant Chat", "Context Memory", "Multi-AI Routing", "Analytics"]
+    },
+    {
+      "id": "compliance-monitoring",
+      "title": "Compliance & Regulatory Monitoring",
+      "problem": "Need to ensure AI systems comply with GDPR, HIPAA, SOC 2, and other regulations.",
+      "solution": [
+        "Use Policy Management to define compliance rules",
+        "Monitor all AI outputs for violations",
+        "Generate compliance reports automatically",
+        "Maintain audit trails for regulators"
+      ],
+      "whoUses": ["Healthcare organizations", "Financial services", "Legal firms", "Regulated industries"],
+      "services": ["Policy Management", "Compliance Monitoring", "Audit Logging", "Reporting"]
+    },
+    {
+      "id": "ml-lifecycle",
+      "title": "ML Model Lifecycle Management",
+      "problem": "Need to manage ML models from training to production with monitoring and drift detection.",
+      "solution": [
+        "Use MLOps platform for training job management",
+        "Version control for models",
+        "Drift detection and alerts",
+        "Auto-retraining capabilities",
+        "Performance monitoring"
+      ],
+      "whoUses": ["ML engineers", "Data science teams", "AI product companies", "Research organizations"],
+      "services": ["MLOps", "Model Management", "Drift Detection", "Training Jobs"]
+    },
+    {
+      "id": "research-analysis",
+      "title": "Research & Semantic Analysis",
+      "problem": "Need to visualize and understand relationships in text data.",
+      "solution": [
+        "Use intelligent visualization tools",
+        "Map text relationships",
+        "Discover patterns and connections",
+        "Explore semantic clusters"
+      ],
+      "whoUses": ["Researchers", "Data scientists", "Academic institutions", "R&D teams"],
+      "services": ["Context Memory", "Intelligent Visualization", "Pattern Recognition", "Semantic Analysis"]
+    },
+    {
+      "id": "enterprise-governance",
+      "title": "Enterprise AI Governance",
+      "problem": "Need centralized governance for AI systems across the organization.",
+      "solution": [
+        "Multi-tenant organization management",
+        "Role-based access control",
+        "Centralized policy enforcement",
+        "Unified audit logging",
+        "SSO integration"
+      ],
+      "whoUses": ["Large enterprises", "Multi-team organizations", "Regulated companies", "Government agencies"],
+      "services": ["Organization Management", "RBAC", "Policy Management", "SSO", "Audit Logging"]
+    },
+    {
+      "id": "risk-assessment",
+      "title": "AI Risk Assessment & Mitigation",
+      "problem": "Need to identify and mitigate risks in AI systems before they cause problems.",
+      "solution": [
+        "Comprehensive risk scanning",
+        "Real-time risk scoring",
+        "Evidence graphs for explainability",
+        "Actionable recommendations",
+        "Historical risk tracking"
+      ],
+      "whoUses": ["Risk management teams", "Quality assurance", "Security teams", "Compliance officers"],
+      "services": ["AI Risk Management", "LLM Scanner", "Evidence Graphs", "Analytics"]
+    }
+  ]
+}
+

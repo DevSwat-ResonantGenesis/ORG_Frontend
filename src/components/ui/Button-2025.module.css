@@ -1,0 +1,146 @@
+/* ============================================================
+   BUTTON COMPONENT 2025
+   Modern, Minimal, Professional
+   ============================================================ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--font-16);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  white-space: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ============================================================
+   VARIANTS
+   ============================================================ */
+
+/* Primary */
+.buttonPrimary {
+  background-color: #6366f1;
+  color: #ffffff;
+  border-color: #6366f1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .buttonPrimary {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.buttonPrimary:hover:not(:disabled) {
+  background-color: #4f46e5;
+  border-color: #4f46e5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+[data-theme='light'] .buttonPrimary:hover:not(:disabled) {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.buttonPrimary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+}
+
+/* Secondary */
+.buttonSecondary {
+  background-color: transparent;
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+.buttonSecondary:hover:not(:disabled) {
+  background-color: var(--surface-hover);
+  border-color: var(--border);
+  transform: translateY(-1px);
+}
+
+.buttonSecondary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Ghost */
+.buttonGhost {
+  background-color: transparent;
+  color: #ffffff;
+  border-color: transparent;
+}
+
+[data-theme='light'] .buttonGhost {
+  color: #1a1a1a;
+}
+
+.buttonGhost:hover:not(:disabled) {
+  background-color: rgba(255,255,255,0.1);
+}
+
+[data-theme='light'] .buttonGhost:hover:not(:disabled) {
+  background-color: rgba(0,0,0,0.05);
+}
+
+/* ============================================================
+   SIZES
+   ============================================================ */
+
+.buttonSmall {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-14);
+}
+
+.buttonLarge {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--font-18);
+}
+
+/* ============================================================
+   FULL WIDTH
+   ============================================================ */
+
+.buttonFullWidth {
+  width: 100%;
+}
+
+/* ============================================================
+   MOBILE OPTIMIZATION
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .button {
+    padding: var(--space-3) var(--space-5);
+    font-size: var(--font-16);
+    min-height: 44px; /* Touch target size */
+  }
+  
+  .buttonSmall {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-14);
+    min-height: 36px;
+  }
+  
+  .buttonLarge {
+    padding: var(--space-4) var(--space-6);
+    font-size: var(--font-18);
+    min-height: 52px;
+  }
+}
+

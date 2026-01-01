@@ -1,0 +1,152 @@
+.container {
+  padding: var(--space-4);
+  background: var(--color-white, #ffffff);
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--color-gray-200, #e5e7eb);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+  margin: 0;
+}
+
+.infoIcon {
+  color: var(--color-gray-500, #6b7280);
+  cursor: help;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary, #111827);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.inlineInfoIcon {
+  color: var(--color-gray-400, #9ca3af);
+  cursor: help;
+}
+
+.input {
+  padding: var(--space-3);
+  border: 1px solid var(--color-gray-300, #d1d5db);
+  border-radius: var(--radius-sm, 6px);
+  font-size: 14px;
+  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+  background: var(--color-white, #ffffff);
+  color: var(--text-primary, #111827);
+  transition: border-color 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary-500, #0ea5e9);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.input:disabled {
+  background: var(--color-gray-50, #f9fafb);
+  cursor: not-allowed;
+}
+
+.textarea {
+  padding: var(--space-3);
+  border: 1px solid var(--color-gray-300, #d1d5db);
+  border-radius: var(--radius-sm, 6px);
+  font-size: 14px;
+  font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+  background: var(--color-white, #ffffff);
+  color: var(--text-primary, #111827);
+  transition: border-color 0.2s ease;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-500, #0ea5e9);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.textarea:disabled {
+  background: var(--color-gray-50, #f9fafb);
+  cursor: not-allowed;
+}
+
+.helpText {
+  font-size: 12px;
+  color: var(--color-gray-600, #4b5563);
+  margin: 0;
+}
+
+.errorMessage {
+  padding: var(--space-3);
+  background: var(--color-red-50, #fef2f2);
+  border: 1px solid var(--color-red-200, #fecaca);
+  border-radius: var(--radius-sm, 6px);
+  color: var(--color-red-700, #b91c1c);
+  font-size: 14px;
+}
+
+.successMessage {
+  padding: var(--space-3);
+  background: var(--color-green-50, #f0fdf4);
+  border: 1px solid var(--color-green-200, #bbf7d0);
+  border-radius: var(--radius-sm, 6px);
+  color: var(--color-green-700, #15803d);
+  font-size: 14px;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.importButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-primary-600, #0284c7);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm, 6px);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.importButton:hover:not(:disabled) {
+  background: var(--color-primary-700, #0369a1);
+}
+
+.importButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

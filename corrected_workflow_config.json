@@ -1,0 +1,57 @@
+{
+  "workflow_config": {
+    "type": "sequential",
+    "steps": [
+      {
+        "id": "profile",
+        "agentId": "actual-agent-uuid-1",
+        "inputKey": "userInput",
+        "outputKey": "profile",
+        "role": "Profile Extractor"
+      },
+      {
+        "id": "metabolism",
+        "agentId": "actual-agent-uuid-2",
+        "inputKey": "profile",
+        "outputKey": "metabolicData",
+        "role": "Metabolic Calculator"
+      },
+      {
+        "id": "mealplan",
+        "agentId": "actual-agent-uuid-3",
+        "inputKey": "metabolicData",
+        "outputKey": "mealPlan",
+        "role": "Meal Plan Builder"
+      },
+      {
+        "id": "grocery",
+        "agentId": "actual-agent-uuid-4",
+        "inputKey": "mealPlan",
+        "outputKey": "groceryList",
+        "role": "Grocery Compiler"
+      },
+      {
+        "id": "fitness",
+        "agentId": "actual-agent-uuid-5",
+        "inputKey": "profile",
+        "outputKey": "fitnessPlan",
+        "role": "Fitness Planner"
+      },
+      {
+        "id": "sleep",
+        "agentId": "actual-agent-uuid-6",
+        "inputKey": "profile",
+        "outputKey": "sleepPlan",
+        "role": "Sleep & Stress Planner"
+      },
+      {
+        "id": "report",
+        "agentId": "actual-agent-uuid-7",
+        "inputKey": ["profile", "metabolicData", "mealPlan", "groceryList", "fitnessPlan", "sleepPlan"],
+        "outputKey": "finalReport",
+        "role": "Report Builder"
+      }
+    ]
+  }
+}
+

@@ -1,0 +1,332 @@
+{
+  "services": [
+    {
+      "id": "ai-risk-management",
+      "name": "AI Risk Management",
+      "icon": "🛡️",
+      "tagline": "Scan, detect, and mitigate AI risks in real-time",
+      "description": "Complete AI risk detection and mitigation platform with real-time scanning, policy enforcement, and compliance monitoring.",
+      "features": [
+        "6 comprehensive risk categories (hallucinations, bias, toxicity, privacy, compliance, factual accuracy)",
+        "Instant risk scoring and severity levels",
+        "Evidence graphs and resonance scoring",
+        "Actionable recommendations",
+        "Policy enforcement"
+      ],
+      "pricing": "Free basic scanning available | Premium for advanced features",
+      "useCases": [
+        "Content moderation",
+        "Quality assurance",
+        "Pre-publication validation",
+        "AI output screening"
+      ],
+      "category": "core"
+    },
+    {
+      "id": "multi-ai-chat",
+      "name": "Multi-AI Chat Platform",
+      "icon": "💬",
+      "tagline": "Intelligent chat with infinite memory and evidence-based responses",
+      "description": "Routes queries to the best AI provider (ChatGPT, Claude, Gemini) automatically. Remembers everything through memory anchors and resonance hashing.",
+      "features": [
+        "Routes to best AI automatically (ChatGPT, Claude, Gemini)",
+        "Remembers all conversations through memory anchors",
+        "Evidence-backed responses with source citations",
+        "Validity scoring for every response",
+        "File attachments and conversation management"
+      ],
+      "pricing": "Subscription-based",
+      "useCases": [
+        "Personal AI assistant",
+        "Knowledge base",
+        "Research & analysis",
+        "Customer support"
+      ],
+      "category": "core"
+    },
+    {
+      "id": "mlops",
+      "name": "MLOps & Model Management",
+      "icon": "🔬",
+      "tagline": "Complete ML lifecycle management for production AI",
+      "description": "Training, versioning, monitoring, and managing AI models with drift detection and auto-retraining.",
+      "features": [
+        "Training job management and monitoring",
+        "Model versioning and registry",
+        "Drift detection and alerts",
+        "Auto-retraining capabilities",
+        "Model evaluation and performance tracking",
+        "Enhanced explainability and interpretability"
+      ],
+      "pricing": "Enterprise plans",
+      "useCases": [
+        "Model lifecycle management",
+        "Production ML operations",
+        "Model monitoring",
+        "Performance optimization"
+      ],
+      "category": "mlops"
+    },
+    {
+      "id": "compliance",
+      "name": "Policy & Compliance Management",
+      "icon": "📋",
+      "tagline": "Automated compliance monitoring and policy enforcement",
+      "description": "Comprehensive policy enforcement and compliance monitoring system with automated violation detection and reporting.",
+      "features": [
+        "Custom policy creation and enforcement",
+        "GDPR, HIPAA, SOC 2, ISO 27001 compliance",
+        "Real-time violation detection",
+        "Compliance dashboards and reports",
+        "Regulatory reporting and export"
+      ],
+      "pricing": "Enterprise plans",
+      "useCases": [
+        "Regulatory compliance",
+        "Policy enforcement",
+        "Risk mitigation",
+        "Audit preparation"
+      ],
+      "category": "governance"
+    },
+    {
+      "id": "audit",
+      "name": "Audit & Logging Platform",
+      "icon": "📊",
+      "tagline": "Immutable, tamper-proof audit trails with hash chain verification",
+      "description": "Complete audit logging system with hash chain verification and AI operation tracking.",
+      "features": [
+        "Complete system and AI audit logging",
+        "Hash chain verification for integrity",
+        "Advanced search and filtering",
+        "Compliance bundle generation",
+        "Export capabilities (JSON/CSV)"
+      ],
+      "pricing": "Enterprise plans",
+      "useCases": [
+        "Compliance documentation",
+        "Security auditing",
+        "Forensic analysis",
+        "Regulatory reporting"
+      ],
+      "category": "governance"
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise Organization Management",
+      "icon": "🏢",
+      "tagline": "Multi-tenant platform with enterprise SSO and access control",
+      "description": "Complete multi-tenant organization management with role-based access control, SSO integration, and API key management.",
+      "features": [
+        "User and organization management",
+        "7 role-based access levels",
+        "SAML/OIDC SSO integration",
+        "API key management",
+        "Complete data isolation"
+      ],
+      "pricing": "Enterprise plans",
+      "useCases": [
+        "Enterprise deployments",
+        "Multi-organization management",
+        "Team collaboration",
+        "Access control"
+      ],
+      "category": "enterprise"
+    },
+    {
+      "id": "billing",
+      "name": "Billing & Subscription Management",
+      "icon": "💳",
+      "tagline": "Complete billing solution with Stripe integration",
+      "description": "Subscription management, invoicing, and payment processing with Stripe integration.",
+      "features": [
+        "Subscription management",
+        "Automated invoicing",
+        "Payment processing",
+        "Usage tracking and reporting",
+        "Financial management tools"
+      ],
+      "pricing": "Included in all plans",
+      "useCases": [
+        "Subscription management",
+        "Payment processing",
+        "Financial reporting",
+        "Usage tracking"
+      ],
+      "category": "business"
+    },
+    {
+      "id": "integrations",
+      "name": "Integration & Marketplace",
+      "icon": "🔌",
+      "tagline": "Extensible platform with webhooks and third-party integrations",
+      "description": "Webhook support, third-party integrations, and marketplace templates for connecting with existing tools.",
+      "features": [
+        "Webhook integration",
+        "Slack, Teams, PagerDuty integrations",
+        "Custom integrations",
+        "Marketplace templates",
+        "API access"
+      ],
+      "pricing": "Enterprise plans",
+      "useCases": [
+        "Workflow automation",
+        "Notification systems",
+        "Incident management",
+        "Team collaboration"
+      ],
+      "category": "integration"
+    },
+    {
+      "id": "analytics",
+      "name": "Analytics & Reporting",
+      "icon": "📈",
+      "tagline": "Comprehensive analytics and reporting platform",
+      "description": "Performance metrics, risk analytics, compliance reporting, and custom reports with export capabilities.",
+      "features": [
+        "Performance metrics and dashboards",
+        "Risk analytics and trends",
+        "Compliance reporting",
+        "Custom reports",
+        "Export capabilities"
+      ],
+      "pricing": "Enterprise plans",
+      "useCases": [
+        "Performance monitoring",
+        "Risk analysis",
+        "Compliance reporting",
+        "Business intelligence"
+      ],
+      "category": "analytics"
+    },
+    {
+      "id": "hashsphere",
+      "name": "HashSphere Visualization",
+      "icon": "🎯",
+      "tagline": "Interactive 3D semantic visualization and analysis",
+      "description": "Interactive 3D visualization tool that maps text and hashes to semantic coordinates for analysis and research.",
+      "features": [
+        "3D semantic coordinate mapping",
+        "Resonance cluster visualization",
+        "Relationship discovery",
+        "Interactive exploration",
+        "Pattern recognition"
+      ],
+      "pricing": "Included in platform",
+      "useCases": [
+        "Semantic analysis",
+        "Research & visualization",
+        "Pattern discovery",
+        "Concept mapping"
+      ],
+      "category": "visualization"
+    }
+  ],
+  "packages": [
+    {
+      "id": "free",
+      "name": "Free",
+      "icon": "🆓",
+      "price": "Free",
+      "features": [
+        "Basic LLM Risk Scanner",
+        "Text Validation",
+        "Hash-Word Mapping"
+      ],
+      "limitations": [
+        "Rate-limited (5-10 requests/minute)",
+        "No evidence graphs",
+        "No resonance scoring",
+        "No historical tracking"
+      ],
+      "bestFor": "Individual users, testing, evaluation"
+    },
+    {
+      "id": "professional",
+      "name": "Professional",
+      "icon": "💼",
+      "price": "Custom",
+      "features": [
+        "Full LLM Risk Scanner",
+        "Resonant Chat (limited)",
+        "Basic Predictions",
+        "Policy Management",
+        "Compliance Monitoring",
+        "Audit Logging",
+        "User Management (up to 10 users)",
+        "API Keys"
+      ],
+      "bestFor": "Small teams, startups, professional use"
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise",
+      "icon": "🏢",
+      "price": "Custom",
+      "features": [
+        "All Professional features",
+        "Unlimited users",
+        "Full Resonant Chat",
+        "Complete MLOps",
+        "Advanced ML Features",
+        "SSO Integration",
+        "Custom Integrations",
+        "Advanced Analytics",
+        "Priority Support",
+        "SLA Guarantee"
+      ],
+      "bestFor": "Large organizations, enterprise deployments, compliance requirements"
+    },
+    {
+      "id": "platform",
+      "name": "Platform",
+      "icon": "🚀",
+      "price": "Custom",
+      "features": [
+        "All Enterprise features",
+        "Platform Administration",
+        "Cross-Organization Access",
+        "System Administration",
+        "Feature Flags",
+        "Custom Development",
+        "White-label Options"
+      ],
+      "bestFor": "Platform developers, resellers, custom deployments"
+    }
+  ],
+  "keyFeatures": [
+    "Multi-Tenant Architecture - Complete organization isolation",
+    "Role-Based Access Control - 7 granular roles",
+    "Enterprise SSO - SAML/OIDC support",
+    "Compliance Ready - GDPR, HIPAA, SOC 2, ISO 27001",
+    "Tamper-Proof Logs - Hash chain verification",
+    "Real-Time Processing - Instant analysis and responses",
+    "Evidence-Based - Transparent and verifiable",
+    "Scalable - Handles enterprise-scale workloads",
+    "Secure - JWT, MFA, API keys, rate limiting",
+    "Observable - Complete monitoring and logging"
+  ],
+  "useCases": [
+    {
+      "category": "Content Moderation",
+      "services": ["AI Risk Management", "Policy & Compliance Management"]
+    },
+    {
+      "category": "AI Development",
+      "services": ["MLOps & Model Management", "Analytics & Reporting"]
+    },
+    {
+      "category": "Compliance & Governance",
+      "services": ["Policy & Compliance Management", "Audit & Logging Platform"]
+    },
+    {
+      "category": "Customer Support",
+      "services": ["Multi-AI Chat Platform", "Integration & Marketplace"]
+    },
+    {
+      "category": "Research & Analysis",
+      "services": ["HashSphere Visualization", "Analytics & Reporting"]
+    }
+  ]
+}
+

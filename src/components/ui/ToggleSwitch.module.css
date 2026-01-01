@@ -1,0 +1,159 @@
+.toggleWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggleWrapper.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggleWrapper.checked .toggleSlider {
+  background: var(--color-green-500, #10b981) !important;
+  border-color: var(--color-green-600, #059669) !important;
+}
+
+.toggleWrapper.unchecked .toggleSlider {
+  background: var(--color-gray-400, #9ca3af) !important;
+  border-color: var(--color-gray-400, #9ca3af) !important;
+}
+
+.toggleInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSlider {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-gray-400, #9ca3af);
+  border-radius: 9999px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  border: 2px solid var(--color-gray-400, #9ca3af);
+  overflow: hidden;
+}
+
+.toggleSlider::before {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  z-index: 2;
+}
+
+.toggleText {
+  position: absolute;
+  font-size: 9px;
+  font-weight: 700;
+  color: white;
+  z-index: 1;
+  transition: opacity 0.2s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+/* OFF State - Gray */
+.toggleInput:not(:checked) + .toggleSlider {
+  background: var(--color-gray-400, #9ca3af);
+  border-color: var(--color-gray-500, #6b7280);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggleInput:not(:checked) + .toggleSlider .toggleText {
+  opacity: 0.9;
+  left: 6px;
+}
+
+/* ON State - Green */
+.toggleInput:checked + .toggleSlider {
+  background: var(--color-green-500, #10b981);
+  border-color: var(--color-green-600, #059669);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.toggleInput:checked + .toggleSlider .toggleText {
+  opacity: 0.9;
+  right: 6px;
+}
+
+.toggleInput:checked + .toggleSlider::before {
+  transform: translateX(100%);
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(5, 150, 105, 0.2);
+}
+
+.toggleInput:not(:checked) + .toggleSlider::before {
+  background: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.toggleInput:focus + .toggleSlider {
+  outline: 2px solid var(--color-primary-500, #0ea5e9);
+  outline-offset: 2px;
+}
+
+/* Sizes */
+.small .toggleSlider {
+  width: 32px;
+  height: 18px;
+}
+
+.small .toggleSlider::before {
+  width: 14px;
+  height: 14px;
+  top: 2px;
+  left: 2px;
+}
+
+.small .toggleInput:checked + .toggleSlider::before {
+  transform: translateX(14px);
+}
+
+.medium .toggleSlider {
+  width: 44px;
+  height: 24px;
+}
+
+.medium .toggleSlider::before {
+  width: 20px;
+  height: 20px;
+  top: 2px;
+  left: 2px;
+}
+
+.medium .toggleInput:checked + .toggleSlider::before {
+  transform: translateX(20px);
+}
+
+.large .toggleSlider {
+  width: 56px;
+  height: 30px;
+}
+
+.large .toggleSlider::before {
+  width: 26px;
+  height: 26px;
+  top: 2px;
+  left: 2px;
+}
+
+.large .toggleInput:checked + .toggleSlider::before {
+  transform: translateX(26px);
+}
+
+.toggleLabel {
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+

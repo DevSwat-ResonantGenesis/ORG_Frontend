@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scroll Test</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: system-ui;
+    }
+    .test-container {
+      display: flex;
+      flex-direction: column;
+      height: 400px;
+      border: 3px solid red;
+      overflow: hidden;
+    }
+    .header {
+      flex-shrink: 0;
+      background: yellow;
+      padding: 10px;
+    }
+    .scrollable {
+      flex: 1 1 0%;
+      min-height: 0;
+      height: 0;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      background: lightblue;
+      padding: 10px;
+    }
+    .content {
+      height: 2000px;
+      background: repeating-linear-gradient(0deg, #ccc, #ccc 20px, #fff 20px, #fff 40px);
+    }
+  </style>
+</head>
+<body>
+  <h1>Scroll Test Page</h1>
+  <p>If this works, the issue is with your app's CSS/JS. If this doesn't work, the issue is with your browser.</p>
+  
+  <div class="test-container">
+    <div class="header">Header (should not scroll)</div>
+    <div class="scrollable">
+      <div class="content">
+        <h2>Scrollable Content (2000px tall)</h2>
+        <p>Try scrolling this with:</p>
+        <ul>
+          <li>Mouse wheel</li>
+          <li>Trackpad gestures</li>
+          <li>Scrollbar drag</li>
+          <li>Arrow keys (when focused)</li>
+        </ul>
+        <p>If you can scroll this, the CSS structure is correct.</p>
+        <p style="margin-top: 1500px;">Bottom of content</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
