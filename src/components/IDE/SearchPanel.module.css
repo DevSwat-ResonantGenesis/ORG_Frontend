@@ -166,7 +166,7 @@
   font-size: 12px;
 }
 
-.filterInput:focus { outline: none; border-color: rgba(255, 255, 255, 0.2); }
+.filterInput:focus { outline: none; border-color: var(--ide-text-secondary, 0.2); }
 .filterInput::placeholder { color: #555; }
 
 .results {

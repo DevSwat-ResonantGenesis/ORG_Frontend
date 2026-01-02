@@ -102,3 +102,15 @@ export const changePassword = async (oldPassword: string, newPassword: string) =
   });
   return res.data;
 };
+
+/**
+ * Check if user is authenticated by checking session data
+ */
+export const isAuthenticated = (): boolean => {
+  try {
+    const sessionData = localStorage.getItem('rg_session_data');
+    return sessionData !== null;
+  } catch {
+    return false;
+  }
+};

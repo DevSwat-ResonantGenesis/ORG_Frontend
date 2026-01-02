@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   border-left: 1px solid #3c3c3c;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 12px;
@@ -142,7 +142,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   color: #cccccc;
   font-weight: 600;
   font-size: 11px;
@@ -180,7 +180,7 @@
 }
 
 .stackFrame:hover {
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
 }
 
 .activeFrame {
@@ -216,7 +216,7 @@
 }
 
 .varRow:hover {
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
 }
 
 .expandIcon {
@@ -325,7 +325,7 @@
 
 .content::-webkit-scrollbar-track,
 .sectionContent::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
 }
 
 .content::-webkit-scrollbar-thumb,

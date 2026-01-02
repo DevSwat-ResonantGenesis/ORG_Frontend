@@ -4,6 +4,8 @@ import { useSearchParams, useLocation } from 'react-router-dom';
 import { CursorIDELayoutRefactored as CursorIDELayout } from '@/components/IDE/CursorIDELayoutRefactored';
 import { IDEHeader } from '@/components/IDE/IDEHeader';
 import { LoadingState } from '@/components/shared/LoadingState';
+import { getSessionData } from '@/utils/auth-cookies';
+import { listUserProjects } from '@/api/code';
 import styles from './IDEPage.module.css';
 
 interface ProjectFile {
@@ -18,9 +20,25 @@ interface LocationState {
 }
 
 /**
+ * Get user-specific storage key for IDE project
+ * This ensures each user has their own project storage on this device
+ */
+const getUserProjectKey = (): string => {
+  const session = getSessionData();
+  const userId = session?.userId || session?.email || 'guest';
+  return `ide-project-id-${userId}`;
+};
+
+/**
  * IDE Page Component
  * Standalone IDE page accessible via /ide route
  * Uses Cursor-style interface
+ * 
+ * Project Loading Priority:
+ * 1. URL parameter (?projectId=xxx)
+ * 2. Navigation state (from BuildModule)
+ * 3. Local storage (user-specific key)
+ * 4. Backend API (cross-device sync)
  */
 const IDEPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -36,17 +54,20 @@ const IDEPage: React.FC = () => {
     locationState?.projectName
   );
   
+  // Use user-specific project storage key
+  const userProjectKey = getUserProjectKey();
   const [projectId, setProjectId] = useState<string | undefined>(
-    urlProjectId || localStorage.getItem('ide-project-id') || undefined
+    urlProjectId || localStorage.getItem(userProjectKey) || undefined
   );
+  const [loadingProjects, setLoadingProjects] = useState(false);
   
   // Update projectId when URL param changes
   useEffect(() => {
     if (urlProjectId) {
       setProjectId(urlProjectId);
-      localStorage.setItem('ide-project-id', urlProjectId);
+      localStorage.setItem(userProjectKey, urlProjectId);
     }
-  }, [urlProjectId]);
+  }, [urlProjectId, userProjectKey]);
   
   // Handle project files from BuildModule navigation
   useEffect(() => {
@@ -57,6 +78,44 @@ const IDEPage: React.FC = () => {
       window.history.replaceState({}, document.title);
     }
   }, [locationState]);
+  
+  // Load user's most recent project from backend if no local project
+  // This enables cross-device project access
+  useEffect(() => {
+    const loadFromBackend = async () => {
+      // Skip if we already have a project from URL, navigation, or localStorage
+      if (projectId || urlProjectId || locationState?.projectFiles) {
+        return;
+      }
+      
+      const session = getSessionData();
+      if (!session?.email) {
+        // Not logged in, skip backend fetch
+        return;
+      }
+      
+      setLoadingProjects(true);
+      try {
+        const { projects } = await listUserProjects();
+        if (projects && projects.length > 0) {
+          // Load the most recent project
+          const mostRecent = projects[0];
+          setProjectId(mostRecent.project_id);
+          localStorage.setItem(userProjectKey, mostRecent.project_id);
+          if (mostRecent.name) {
+            setInitialProjectName(mostRecent.name);
+          }
+          console.log('📂 Loaded project from backend:', mostRecent.project_id);
+        }
+      } catch (error) {
+        console.warn('Failed to load projects from backend:', error);
+      } finally {
+        setLoadingProjects(false);
+      }
+    };
+    
+    loadFromBackend();
+  }, [userProjectKey]); // Only run once per user
 
   useEffect(() => {
     // Remove any padding/margin from body when IDE is mounted
@@ -82,11 +141,11 @@ const IDEPage: React.FC = () => {
   const handleProjectIdChange = (newProjectId: string) => {
     if (newProjectId) {
       setProjectId(newProjectId);
-      localStorage.setItem('ide-project-id', newProjectId);
+      localStorage.setItem(userProjectKey, newProjectId);
     } else {
       // Clear project
       setProjectId(undefined);
-      localStorage.removeItem('ide-project-id');
+      localStorage.removeItem(userProjectKey);
     }
   };
 

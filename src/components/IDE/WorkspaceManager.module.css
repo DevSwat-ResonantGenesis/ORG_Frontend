@@ -163,7 +163,7 @@
   transition: all 0.15s;
 }
 
-.projectCard:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.1); }
+.projectCard:hover { background: rgba(255, 255, 255, 0.05); border-color: var(--ide-text-secondary, 0.1); }
 .projectCard.current { border-color: #0ea5e9; background: rgba(14, 165, 233, 0.08); }
 
 .projectHeader {
@@ -265,7 +265,7 @@
 
 .modalContent {
   width: 450px;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
   overflow: hidden;

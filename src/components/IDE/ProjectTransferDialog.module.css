@@ -106,7 +106,7 @@
 }
 
 .input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: var(--ide-text-secondary, 0.3);
 }
 
 .input:disabled {

@@ -401,3 +401,70 @@
 .ide-container .ide-shadow-md { box-shadow: var(--ide-shadow-md); }
 .ide-container .ide-shadow-lg { box-shadow: var(--ide-shadow-lg); }
 
+/* ============================================================
+   GLOBAL LIGHT MODE OVERRIDES
+   These use [data-theme='light'] to override all IDE components
+   ============================================================ */
+
+/* Force light mode on all elements inside IDE container */
+[data-theme='light'] {
+  --ide-bg-primary: #ffffff !important;
+  --ide-bg-secondary: #fafafa !important;
+  --ide-bg-tertiary: #f4f4f5 !important;
+  --ide-surface: #ffffff !important;
+  --ide-surface-elevated: #ffffff !important;
+  --ide-surface-hover: rgba(0, 0, 0, 0.04) !important;
+  --ide-surface-active: rgba(0, 0, 0, 0.08) !important;
+  --ide-border: #e4e4e7 !important;
+  --ide-border-hover: #d4d4d8 !important;
+  --ide-border-subtle: #f4f4f5 !important;
+  --ide-text-primary: #18181b !important;
+  --ide-text-secondary: #52525b !important;
+  --ide-text-tertiary: #71717a !important;
+  --ide-text-muted: #a1a1aa !important;
+  --ide-black: #ffffff !important;
+  background: #ffffff !important;
+  color: #18181b !important;
+}
+
+/* Override hardcoded dark backgrounds */
+[data-theme='light'] *:not(pre):not(code):not(.monaco-editor *) {
+  background-color: inherit;
+}
+
+/* Force white background on major sections */
+[data-theme='light'] > div,
+[data-theme='light'] > section,
+[data-theme='light'] > aside,
+[data-theme='light'] > nav,
+[data-theme='light'] > header,
+[data-theme='light'] > footer {
+  background: #ffffff !important;
+}
+
+/* Light mode for any element with dark background */
+[data-theme='light'] [style*="background: #0a0a0a"],
+[data-theme='light'] [style*="background:#0a0a0a"],
+[data-theme='light'] [style*="background-color: #0a0a0a"],
+[data-theme='light'] [style*="background-color:#0a0a0a"] {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+/* Light scrollbars */
+[data-theme='light'] ::-webkit-scrollbar {
+  background: #f4f4f5;
+}
+
+[data-theme='light'] ::-webkit-scrollbar-track {
+  background: #f4f4f5;
+}
+
+[data-theme='light'] ::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+}
+
+[data-theme='light'] ::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
+}
+

@@ -101,20 +101,59 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Light theme */
+/* Light theme - Complete override */
 .ideContainer[data-theme='light'] {
-  --ide-bg-primary: #fafafa;
-  --ide-bg-secondary: #ffffff;
+  /* Backgrounds - Light */
+  --ide-bg-primary: #ffffff;
+  --ide-bg-secondary: #fafafa;
   --ide-bg-tertiary: #f4f4f5;
   --ide-surface: #ffffff;
   --ide-surface-elevated: #ffffff;
-  --ide-surface-hover: rgba(0, 0, 0, 0.03);
+  --ide-surface-hover: rgba(0, 0, 0, 0.04);
+  --ide-surface-active: rgba(0, 0, 0, 0.08);
+  
+  /* Borders - Visible in light mode */
   --ide-border: #e4e4e7;
   --ide-border-hover: #d4d4d8;
+  --ide-border-focus: rgba(59, 130, 246, 0.4);
+  --ide-border-subtle: #f4f4f5;
+  
+  /* Text - Dark on light */
   --ide-text-primary: #18181b;
   --ide-text-secondary: #52525b;
   --ide-text-tertiary: #71717a;
-  --ide-accent-500: #52525b;
+  --ide-text-muted: #a1a1aa;
+  
+  /* Accent - Keep blue but adjust for light */
+  --ide-accent: #2563eb;
+  --ide-accent-light: #3b82f6;
+  --ide-accent-dark: #1d4ed8;
+  --ide-accent-glow: rgba(37, 99, 235, 0.2);
+  --ide-accent-subtle: rgba(37, 99, 235, 0.1);
+  --ide-accent-400: #3b82f6;
+  --ide-accent-500: #2563eb;
+  --ide-accent-600: #1d4ed8;
+  
+  /* Semantic colors */
+  --ide-success: #16a34a;
+  --ide-success-bg: rgba(22, 163, 74, 0.1);
+  --ide-warning: #ca8a04;
+  --ide-warning-bg: rgba(202, 138, 4, 0.1);
+  --ide-error: #dc2626;
+  --ide-error-bg: rgba(220, 38, 38, 0.1);
+  --ide-info: var(--ide-accent);
+  --ide-info-bg: var(--ide-accent-subtle);
+  
+  /* Shadows - Softer for light mode */
+  --ide-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --ide-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --ide-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --ide-shadow-glow: 0 0 20px var(--ide-accent-glow);
+  --ide-shadow-inset: inset 0 1px 0 rgba(0, 0, 0, 0.03);
+  
+  /* Apply light background */
+  background: var(--ide-bg-primary);
+  color: var(--ide-text-primary);
 }
 
 /* ============================================================
@@ -227,7 +266,7 @@
   top: calc(100% + 8px);
   right: 0;
   min-width: 240px;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   border: none;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -279,12 +318,12 @@
 .accountMenuName {
   font-size: 14px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--ide-text-secondary, 0.95);
 }
 
 .accountMenuEmail {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--ide-text-secondary, 0.5);
 }
 
 .accountMenuItem {
@@ -293,7 +332,7 @@
   gap: 12px;
   padding: 10px 12px;
   border-radius: 8px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--ide-text-secondary, 0.7);
   cursor: pointer;
   transition: all 0.15s ease;
   border: none;
@@ -306,7 +345,7 @@
 
 .accountMenuItem:hover {
   background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--ide-text-secondary, 0.95);
 }
 
 .accountMenuItem:hover svg {
@@ -382,7 +421,7 @@
 .activityBar {
   width: 44px;
   min-width: 44px;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   border-right: none;
   box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
   display: flex;
@@ -427,7 +466,7 @@
   background: transparent;
   border: none;
   border-radius: 6px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--ide-text-secondary, 0.4);
   cursor: pointer;
   transition: all 0.15s ease;
   position: relative;
@@ -440,7 +479,7 @@
 
 .activityBarButton:hover {
   background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--ide-text-secondary, 0.8);
 }
 
 .activityBarButton.active {
@@ -581,7 +620,7 @@
   top: calc(100% + 8px);
   left: var(--ide-space-4);
   min-width: 240px;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   border: none;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -889,7 +928,7 @@
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   border: none;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -1628,7 +1667,7 @@
 /* Feature Section Styles */
 .featureSection {
   padding: 16px;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   margin-bottom: 12px;
@@ -1696,4 +1735,207 @@
   height: 100%;
   background: var(--ide-bg-secondary);
   border-left: 1px solid var(--ide-border);
+}
+
+/* ============================================================
+   COMPREHENSIVE LIGHT MODE OVERRIDES
+   Forces all child elements to use light colors
+   ============================================================ */
+.ideContainer[data-theme='light'] * {
+  --ide-bg-primary: #ffffff;
+  --ide-bg-secondary: #fafafa;
+  --ide-bg-tertiary: #f4f4f5;
+  --ide-surface: #ffffff;
+  --ide-surface-elevated: #ffffff;
+  --ide-surface-hover: rgba(0, 0, 0, 0.04);
+  --ide-surface-active: rgba(0, 0, 0, 0.08);
+  --ide-border: #e4e4e7;
+  --ide-border-hover: #d4d4d8;
+  --ide-border-subtle: #f4f4f5;
+  --ide-text-primary: #18181b;
+  --ide-text-secondary: #52525b;
+  --ide-text-tertiary: #71717a;
+  --ide-text-muted: #a1a1aa;
+}
+
+/* Force light backgrounds on all major containers */
+.ideContainer[data-theme='light'] .toolbar,
+.ideContainer[data-theme='light'] .sidebar,
+.ideContainer[data-theme='light'] .activityBar,
+.ideContainer[data-theme='light'] .sidePanel,
+.ideContainer[data-theme='light'] .chatPanel,
+.ideContainer[data-theme='light'] .terminalPanel,
+.ideContainer[data-theme='light'] .statusBar,
+.ideContainer[data-theme='light'] .tabsBar,
+.ideContainer[data-theme='light'] .fileTree,
+.ideContainer[data-theme='light'] .editorArea,
+.ideContainer[data-theme='light'] .mainContent {
+  background: #ffffff !important;
+  color: #18181b !important;
+}
+
+/* Light mode for sidebar items */
+.ideContainer[data-theme='light'] .sidebarItem,
+.ideContainer[data-theme='light'] .activityBarItem {
+  color: #52525b !important;
+}
+
+.ideContainer[data-theme='light'] .sidebarItem:hover,
+.ideContainer[data-theme='light'] .activityBarItem:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #18181b !important;
+}
+
+.ideContainer[data-theme='light'] .sidebarItem.active,
+.ideContainer[data-theme='light'] .activityBarItem.active {
+  background: rgba(59, 130, 246, 0.1) !important;
+  color: #2563eb !important;
+}
+
+/* Light mode for tabs */
+.ideContainer[data-theme='light'] .tab {
+  background: #f4f4f5 !important;
+  color: #52525b !important;
+  border-color: #e4e4e7 !important;
+}
+
+.ideContainer[data-theme='light'] .tab.active,
+.ideContainer[data-theme='light'] .tabActive {
+  background: #ffffff !important;
+  color: #18181b !important;
+}
+
+/* Light mode borders */
+.ideContainer[data-theme='light'] .toolbar,
+.ideContainer[data-theme='light'] .statusBar {
+  border-color: #e4e4e7 !important;
+}
+
+/* Light mode input fields */
+.ideContainer[data-theme='light'] input,
+.ideContainer[data-theme='light'] textarea,
+.ideContainer[data-theme='light'] select {
+  background: #ffffff !important;
+  color: #18181b !important;
+  border-color: #e4e4e7 !important;
+}
+
+.ideContainer[data-theme='light'] input::placeholder,
+.ideContainer[data-theme='light'] textarea::placeholder {
+  color: #a1a1aa !important;
+}
+
+/* Light mode buttons */
+.ideContainer[data-theme='light'] button:not(.ide-button-primary) {
+  background: #f4f4f5 !important;
+  color: #18181b !important;
+  border-color: #e4e4e7 !important;
+}
+
+.ideContainer[data-theme='light'] button:not(.ide-button-primary):hover {
+  background: #e4e4e7 !important;
+}
+
+/* Light mode file tree */
+.ideContainer[data-theme='light'] .fileItem,
+.ideContainer[data-theme='light'] .folderItem,
+.ideContainer[data-theme='light'] .treeItem {
+  color: #18181b !important;
+}
+
+.ideContainer[data-theme='light'] .fileItem:hover,
+.ideContainer[data-theme='light'] .folderItem:hover,
+.ideContainer[data-theme='light'] .treeItem:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Light mode chat messages */
+.ideContainer[data-theme='light'] .userMessage {
+  background: #f4f4f5 !important;
+  color: #18181b !important;
+}
+
+.ideContainer[data-theme='light'] .assistantMessage {
+  background: #ffffff !important;
+  color: #18181b !important;
+  border: 1px solid #e4e4e7 !important;
+}
+
+/* Light mode scrollbars */
+.ideContainer[data-theme='light'] ::-webkit-scrollbar-track {
+  background: #f4f4f5 !important;
+}
+
+.ideContainer[data-theme='light'] ::-webkit-scrollbar-thumb {
+  background: #d4d4d8 !important;
+}
+
+.ideContainer[data-theme='light'] ::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa !important;
+}
+
+/* ============================================================
+   LIGHT MODE - Using :global() for CSS Modules compatibility
+   ============================================================ */
+
+/* Activity Bar Light Mode */
+:global([data-theme='light']) .activityBar {
+  background: #ffffff;
+  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .activityBarButton {
+  color: #52525b;
+}
+
+:global([data-theme='light']) .activityBarButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #18181b;
+}
+
+:global([data-theme='light']) .activityBarButton.active {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.1);
+}
+
+/* Toolbar Light Mode */
+:global([data-theme='light']) .toolbar {
+  background: #fafafa;
+  border-bottom-color: #e4e4e7;
+}
+
+:global([data-theme='light']) .toolbarButton {
+  color: #52525b;
+}
+
+:global([data-theme='light']) .toolbarButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #18181b;
+}
+
+/* Side Panel Light Mode */
+:global([data-theme='light']) .sidePanel {
+  background: #ffffff;
+  border-right-color: #e4e4e7;
+}
+
+:global([data-theme='light']) .sidePanelHeader {
+  background: #fafafa;
+  border-bottom-color: #e4e4e7;
+  color: #18181b;
+}
+
+/* Main Content Light Mode */
+:global([data-theme='light']) .mainContent {
+  background: #ffffff;
+}
+
+:global([data-theme='light']) .editorArea {
+  background: #ffffff;
+}
+
+/* IDE Container Light Mode */
+:global([data-theme='light']).ideContainer {
+  background: #ffffff;
+  color: #18181b;
 }

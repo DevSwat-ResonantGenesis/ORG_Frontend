@@ -9,6 +9,13 @@ const codeExecutionClient = axios.create({
   timeout: 60000,
 });
 
+// Direct client for IDE Service (bypasses Gateway auth for Git operations)
+const ideServiceClient = axios.create({
+  baseURL: 'http://localhost:8080',
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 30000,
+});
+
 /**
  * Code Features API Client
  * Provides code completion, generation, refactoring, indexing, and search
@@ -686,20 +693,55 @@ export const uploadProject = async (
 };
 
 // ============================================
+// User Projects API
+// ============================================
+
+export interface UserProject {
+  project_id: string;
+  name?: string;
+  created_at?: string;
+  updated_at?: string;
+  files_count?: number;
+}
+
+/**
+ * List all projects for the authenticated user
+ * GET /code/projects
+ * Enables cross-device project access
+ * Note: This endpoint may not be available in all deployments
+ */
+export const listUserProjects = async (): Promise<{ projects: UserProject[]; count: number }> => {
+  try {
+    const response = await fastapiClient.get('/code/projects');
+    return response.data;
+  } catch (error: any) {
+    // Don't log error for 404 - endpoint may not be deployed yet
+    if (error?.response?.status !== 404) {
+      logger.error('List user projects error', error);
+    }
+    return { projects: [], count: 0 };
+  }
+};
+
+// ============================================
 // Git Operations API
 // ============================================
 
 export interface GitStatus {
-  is_repo: boolean;
+  initialized: boolean;
+  is_repo?: boolean;
   files: Array<{
     status: string;
     file: string;
-    status_text: string;
+    status_text?: string;
   }>;
-  has_changes: boolean;
+  has_changes?: boolean;
   branch: string | null;
-  message: string;
+  message?: string;
   error?: string;
+  staged?: Array<{ path: string; status: string }>;
+  modified?: Array<{ path: string; status: string }>;
+  untracked?: Array<{ path: string; status: string }>;
 }
 
 export interface GitCommitResponse {
@@ -726,63 +768,70 @@ export interface GitCommit {
 
 /**
  * Initialize git repository
- * POST /git/init
+ * POST /git/init - Direct to IDE Service
  */
 export const initGitRepo = async (
   projectId: string
 ): Promise<{ success: boolean; message: string; error?: string }> => {
   try {
-    const response = await fastapiClient.post('/git/init', {
+    const response = await ideServiceClient.post('/git/init', {
       project_id: projectId
     });
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     logger.error('Init git repo error', error);
-    throw error;
+    return { success: false, message: 'Failed to initialize', error: error.message };
   }
 };
 
 /**
  * Get git status
- * POST /git/status
+ * POST /git/status - Direct to IDE Service
  */
 export const getGitStatus = async (
   projectId: string
 ): Promise<GitStatus> => {
   try {
-    const response = await fastapiClient.post('/git/status', {
+    const response = await ideServiceClient.post('/git/status', {
       project_id: projectId
     });
-    return response.data;
+    const data = response.data;
+    // Transform to expected format
+    const files: Array<{ file: string; status: string }> = [
+      ...(data.staged || []).map((f: any) => ({ file: f.path || f, status: 'A' })),
+      ...(data.modified || []).map((f: any) => ({ file: f.path || f, status: 'M' })),
+      ...(data.untracked || []).map((f: any) => ({ file: f.path || f, status: '??' })),
+    ];
+    return { ...data, files };
   } catch (error) {
     logger.error('Get git status error', error);
-    throw error;
+    return { initialized: false, branch: null, files: [] };
   }
 };
 
 /**
  * Stage files
- * POST /git/add
+ * POST /git/stage - Direct to IDE Service
  */
 export const stageFiles = async (
   projectId: string,
   files?: string[]
 ): Promise<{ success: boolean; message: string; error?: string }> => {
   try {
-    const response = await fastapiClient.post('/git/add', {
+    const response = await ideServiceClient.post('/git/stage', {
       project_id: projectId,
-      files
+      file_paths: files
     });
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     logger.error('Stage files error', error);
-    throw error;
+    return { success: false, message: 'Failed to stage', error: error.message };
   }
 };
 
 /**
  * Commit changes
- * POST /git/commit
+ * POST /git/commit - Direct to IDE Service
  */
 export const commitChanges = async (
   projectId: string,
@@ -790,21 +839,21 @@ export const commitChanges = async (
   autoGenerate: boolean = true
 ): Promise<GitCommitResponse> => {
   try {
-    const response = await fastapiClient.post('/git/commit', {
+    const commitMessage = message || (autoGenerate ? 'Auto-generated commit' : 'Commit');
+    const response = await ideServiceClient.post('/git/commit', {
       project_id: projectId,
-      message,
-      auto_generate: autoGenerate
+      message: commitMessage
     });
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     logger.error('Commit changes error', error);
-    throw error;
+    return { success: false, message: 'Failed to commit', output: '', error: error.message };
   }
 };
 
 /**
  * Create or switch branch
- * POST /git/branch
+ * POST /git/branch - Direct to IDE Service
  */
 export const manageBranch = async (
   projectId: string,
@@ -812,48 +861,51 @@ export const manageBranch = async (
   create: boolean = true
 ): Promise<GitBranchResponse> => {
   try {
-    const response = await fastapiClient.post('/git/branch', {
+    const response = await ideServiceClient.post('/git/branch', {
       project_id: projectId,
       branch_name: branchName,
-      create
+      action: create ? 'create' : 'checkout'
     });
-    return response.data;
-  } catch (error) {
+    return { ...response.data, branch: branchName };
+  } catch (error: any) {
     logger.error('Manage branch error', error);
-    throw error;
+    return { success: false, branch: '', output: '', error: error.message };
   }
 };
 
 /**
  * List branches
- * GET /git/branches
+ * POST /git/branch - Direct to IDE Service
  */
 export const listBranches = async (
   projectId: string
 ): Promise<{ branches: string[] }> => {
   try {
-    const response = await fastapiClient.get(`/git/branches?project_id=${projectId}`);
-    return response.data;
+    const response = await ideServiceClient.post('/git/branch', {
+      project_id: projectId,
+      action: 'list'
+    });
+    return { branches: response.data.branches || [] };
   } catch (error) {
     logger.error('List branches error', error);
-    throw error;
+    return { branches: [] };
   }
 };
 
 /**
  * Get commit log
- * GET /git/log
+ * GET /git/log - Direct to IDE Service
  */
 export const getCommitLog = async (
   projectId: string,
   limit: number = 10
 ): Promise<{ commits: GitCommit[] }> => {
   try {
-    const response = await fastapiClient.get(`/git/log?project_id=${projectId}&limit=${limit}`);
-    return response.data;
+    const response = await ideServiceClient.get(`/git/log/${projectId}?limit=${limit}`);
+    return { commits: response.data.commits || [] };
   } catch (error) {
     logger.error('Get commit log error', error);
-    throw error;
+    return { commits: [] };
   }
 };
 

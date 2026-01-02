@@ -10,20 +10,22 @@ const defineCustomThemes = (monaco: any) => {
   // Using Monaco's actual token names for JavaScript/TypeScript
   monaco.editor.defineTheme('resonant-dark', {
     base: 'vs-dark',
-    inherit: false, // Don't inherit - define all rules explicitly
+    inherit: true, // Inherit base rules for languages we don't explicitly define
     rules: [
       // Default
-      { token: '', foreground: '9CDCFE' },
+      { token: '', foreground: 'D4D4D4' },
       
       // Comments (green)
       { token: 'comment', foreground: '6A9955', fontStyle: 'italic' },
       { token: 'comment.js', foreground: '6A9955', fontStyle: 'italic' },
       { token: 'comment.ts', foreground: '6A9955', fontStyle: 'italic' },
+      { token: 'comment.css', foreground: '6A9955', fontStyle: 'italic' },
       
       // Keywords (blue)
       { token: 'keyword', foreground: '569CD6' },
       { token: 'keyword.js', foreground: '569CD6' },
       { token: 'keyword.ts', foreground: '569CD6' },
+      { token: 'keyword.css', foreground: '569CD6' },
       
       // Control keywords (purple/magenta)
       { token: 'keyword.control', foreground: 'C586C0' },
@@ -36,12 +38,15 @@ const defineCustomThemes = (monaco: any) => {
       { token: 'string.ts', foreground: 'CE9178' },
       { token: 'string.html', foreground: 'CE9178' },
       { token: 'string.css', foreground: 'CE9178' },
+      { token: 'string.value.css', foreground: 'CE9178' },
       
       // Numbers (light green)
       { token: 'number', foreground: 'B5CEA8' },
       { token: 'number.js', foreground: 'B5CEA8' },
       { token: 'number.ts', foreground: 'B5CEA8' },
       { token: 'number.hex', foreground: 'B5CEA8' },
+      { token: 'number.css', foreground: 'B5CEA8' },
+      { token: 'number.hex.css', foreground: 'CE9178' },
       
       // Types (teal)
       { token: 'type', foreground: '4EC9B0' },
@@ -59,14 +64,17 @@ const defineCustomThemes = (monaco: any) => {
       { token: 'delimiter.bracket', foreground: 'FFD700' },
       { token: 'delimiter.parenthesis', foreground: 'DA70D6' },
       { token: 'delimiter.square', foreground: '179FFF' },
+      { token: 'delimiter.css', foreground: 'D4D4D4' },
       
       // Operators
       { token: 'operator', foreground: 'D4D4D4' },
       { token: 'operator.js', foreground: 'D4D4D4' },
+      { token: 'operator.css', foreground: 'D4D4D4' },
       
       // HTML Tags (blue)
       { token: 'tag', foreground: '569CD6' },
       { token: 'tag.html', foreground: '569CD6' },
+      { token: 'tag.css', foreground: 'D7BA7D' },
       { token: 'metatag', foreground: '569CD6' },
       { token: 'metatag.html', foreground: '569CD6' },
       { token: 'metatag.content.html', foreground: 'CE9178' },
@@ -77,12 +85,21 @@ const defineCustomThemes = (monaco: any) => {
       { token: 'attribute.value', foreground: 'CE9178' },
       { token: 'attribute.value.html', foreground: 'CE9178' },
       
-      // CSS
+      // CSS Selectors (gold/yellow)
+      { token: 'tag.css', foreground: 'D7BA7D' },
+      { token: 'tag.id.css', foreground: 'D7BA7D' },
+      { token: 'tag.class.css', foreground: 'D7BA7D' },
+      { token: 'selector.css', foreground: 'D7BA7D' },
+      
+      // CSS Properties (light blue)
       { token: 'attribute.name.css', foreground: '9CDCFE' },
+      { token: 'property-name.css', foreground: '9CDCFE' },
+      
+      // CSS Values (orange/green for numbers)
       { token: 'attribute.value.css', foreground: 'CE9178' },
       { token: 'attribute.value.number.css', foreground: 'B5CEA8' },
       { token: 'attribute.value.unit.css', foreground: 'B5CEA8' },
-      { token: 'selector.css', foreground: 'D7BA7D' },
+      { token: 'property-value.css', foreground: 'CE9178' },
       
       // Regex
       { token: 'regexp', foreground: 'D16969' },

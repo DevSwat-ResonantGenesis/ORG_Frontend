@@ -1,10 +1,12 @@
-import React, { memo } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { useIDE } from '../context/IDEContext';
 import { CursorFileTree, type FileNode } from '../CursorFileTree';
 import { CodeSearchPanel } from '../CodeSearchPanel';
 import { GitPanel } from '../GitPanel';
 import { IDESettingsPanel } from '../IDESettingsPanel';
 import { ResizablePanel } from '../ResizablePanel';
+import { DebuggerPanel } from '../DebuggerPanel';
+import { useDSIDP } from '@/hooks/useDSIDPAccelerator';
 import styles from '../CursorIDELayout.module.css';
 
 interface IDESidePanelProps {
@@ -22,6 +24,8 @@ interface IDESidePanelProps {
   onUploadClick?: () => void;
   loading?: boolean;
   monacoEditor?: any;
+  onRunCode?: () => void;
+  activeFilePath?: string;
 }
 
 export const IDESidePanel = memo(function IDESidePanel({
@@ -39,6 +43,8 @@ export const IDESidePanel = memo(function IDESidePanel({
   onUploadClick,
   loading,
   monacoEditor,
+  onRunCode,
+  activeFilePath,
 }: IDESidePanelProps) {
   const { state, dispatch } = useIDE();
   const {
@@ -136,32 +142,49 @@ export const IDESidePanel = memo(function IDESidePanel({
 
   // Git View / Source Control
   if (activeView === 'git') {
-    if (projectId) {
-      return (
-        <ResizablePanel
-          direction="horizontal"
-          defaultSize={gitPanelWidth}
-          minSize={280}
-          maxSize={600}
-          onResize={handleGitPanelWidthChange}
-          className={styles.gitViewContainer}
-        >
-          <GitPanel projectId={projectId} />
-        </ResizablePanel>
-      );
-    }
     return (
       <ResizablePanel
         direction="horizontal"
-        defaultSize={280}
-        minSize={200}
-        maxSize={500}
-        className={styles.viewContainer}
+        defaultSize={gitPanelWidth}
+        minSize={280}
+        maxSize={600}
+        onResize={handleGitPanelWidthChange}
+        className={styles.gitViewContainer}
       >
-        <div className={styles.viewHeader}>Source Control</div>
-        <div className={styles.viewContent} style={{ padding: '16px', color: 'var(--ide-text-secondary)' }}>
-          <p>No project loaded. Upload a project to use Git features.</p>
-        </div>
+        {projectId ? (
+          <GitPanel projectId={projectId} />
+        ) : (
+          <div className={styles.viewContainer}>
+            <div className={styles.viewHeader}>
+              <h3>Source Control</h3>
+            </div>
+            <div className={styles.viewContent} style={{ padding: '16px' }}>
+              <div className={styles.featureSection}>
+                <h4>Git Integration</h4>
+                <p style={{ color: 'var(--ide-text-secondary)', marginBottom: '12px' }}>
+                  No project loaded. Upload or create a project to use Git features.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <button 
+                    className={styles.actionButton}
+                    onClick={onUploadClick}
+                  >
+                    📁 Upload Project
+                  </button>
+                </div>
+              </div>
+              <div className={styles.featureSection}>
+                <h4>Features</h4>
+                <ul style={{ color: 'var(--ide-text-secondary)', fontSize: '12px', paddingLeft: '16px' }}>
+                  <li>Initialize repositories</li>
+                  <li>Stage & commit changes</li>
+                  <li>Branch management</li>
+                  <li>View commit history</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
       </ResizablePanel>
     );
   }
@@ -243,33 +266,15 @@ export const IDESidePanel = memo(function IDESidePanel({
     return (
       <ResizablePanel
         direction="horizontal"
-        defaultSize={350}
+        defaultSize={400}
         minSize={300}
-        maxSize={600}
+        maxSize={700}
         className={styles.runViewContainer}
       >
-        <div className={styles.viewContainer}>
-          <div className={styles.viewHeader}>
-            <h3>Run & Debug</h3>
-          </div>
-          <div className={styles.viewContent}>
-            <div className={styles.featureSection}>
-              <h4>Launch Configurations</h4>
-              <p>No configurations yet</p>
-              <button className={styles.actionButton}>Create Configuration</button>
-            </div>
-            <div className={styles.featureSection}>
-              <h4>Breakpoints</h4>
-              <p>Set breakpoints to debug code</p>
-              <button className={styles.actionButton}>Add Breakpoint</button>
-            </div>
-            <div className={styles.featureSection}>
-              <h4>Watch Variables</h4>
-              <p>Monitor variable values</p>
-              <button className={styles.actionButton}>Add Watch</button>
-            </div>
-          </div>
-        </div>
+        <DebuggerPanel 
+          filePath={activeFilePath}
+          onClose={() => dispatch({ type: 'SET_ACTIVE_VIEW', payload: 'files' })}
+        />
       </ResizablePanel>
     );
   }
@@ -361,8 +366,123 @@ export const IDESidePanel = memo(function IDESidePanel({
     );
   }
 
-  // DSID-P Accelerator is now integrated into chat panel (toggle mode)
-  // No separate panel needed
+  // DSID-P Accelerator Metrics Panel
+  if (activeView === 'dsidp') {
+    return <DSIDPMetricsPanel />;
+  }
 
   return null;
 });
+
+// DSID-P Metrics Panel Component
+const DSIDPMetricsPanel: React.FC = () => {
+  const { dispatch } = useIDE();
+  const {
+    initialized,
+    executing,
+    costMetrics,
+    performanceMetrics,
+    currentTask,
+  } = useDSIDP();
+
+  return (
+    <ResizablePanel
+      direction="horizontal"
+      defaultSize={350}
+      minSize={300}
+      maxSize={600}
+      className={styles.dsidpViewContainer}
+    >
+      <div className={styles.viewContainer}>
+        <div className={styles.viewHeader}>
+          <h3>DSID-P Accelerator</h3>
+          <span style={{ 
+            fontSize: 10, 
+            padding: '2px 6px', 
+            borderRadius: 4,
+            background: initialized ? 'var(--ide-success)' : 'var(--ide-warning)',
+            color: 'white'
+          }}>
+            {initialized ? 'Active' : 'Initializing'}
+          </span>
+        </div>
+        <div className={styles.viewContent}>
+          {/* Status */}
+          <div className={styles.featureSection}>
+            <h4>Status</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>State:</span>
+                <span style={{ color: executing ? 'var(--ide-accent)' : 'var(--ide-text-secondary)' }}>
+                  {executing ? '⚡ Executing' : '● Idle'}
+                </span>
+              </div>
+              {currentTask && (
+                <div style={{ fontSize: 11, color: 'var(--ide-text-secondary)' }}>
+                  Current: {currentTask.description?.substring(0, 40) || 'Task'}...
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Cost Metrics */}
+          <div className={styles.featureSection}>
+            <h4>💰 Cost Metrics</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Total Cost:</span>
+                <span style={{ fontWeight: 600, color: 'var(--ide-accent)' }}>
+                  ${costMetrics?.totalCost?.toFixed(4) || '0.0000'}
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Total Tokens:</span>
+                <span>{costMetrics?.totalTokens?.toLocaleString() || 0}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Total Requests:</span>
+                <span>{costMetrics?.totalRequests?.toLocaleString() || 0}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Performance Metrics */}
+          <div className={styles.featureSection}>
+            <h4>⚡ Performance</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Response Time:</span>
+                <span>{performanceMetrics?.responseTime?.toFixed(0) || 0}ms</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Memory Usage:</span>
+                <span>{performanceMetrics?.memoryUsage?.toFixed(1) || 0} MB</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Cache Hit Rate:</span>
+                <span style={{ color: 'var(--ide-success)' }}>
+                  {(performanceMetrics?.cacheHitRate * 100)?.toFixed(1) || 0}%
+                </span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>Active Connections:</span>
+                <span>{performanceMetrics?.activeConnections || 0}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className={styles.featureSection}>
+            <h4>Actions</h4>
+            <button 
+              className={styles.actionButton}
+              onClick={() => dispatch({ type: 'SET_ACTIVE_VIEW', payload: 'files' })}
+            >
+              Close Panel
+            </button>
+          </div>
+        </div>
+      </div>
+    </ResizablePanel>
+  );
+};

@@ -7,7 +7,7 @@
   justify-content: space-between;
   height: 36px;
   padding: 0 8px;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   position: relative;
   z-index: 1000;
   flex-shrink: 0;
@@ -28,7 +28,7 @@
 .burgerBtn {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--ide-text-secondary, 0.6);
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
@@ -40,7 +40,7 @@
 
 .burgerBtn:hover {
   background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--ide-text-secondary, 0.9);
 }
 
 .logo {
@@ -64,12 +64,12 @@
 .logoText {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--ide-text-secondary, 0.9);
 }
 
 .projectName {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--ide-text-secondary, 0.5);
   padding-left: 8px;
   margin-left: 8px;
   border-left: 1px solid rgba(255, 255, 255, 0.1);
@@ -95,7 +95,7 @@
   position: absolute;
   top: 100%;
   left: 8px;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   min-width: 180px;
   padding: 4px;
   border-radius: 6px;
@@ -111,7 +111,7 @@
   padding: 8px 10px;
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--ide-text-secondary, 0.8);
   font-size: 12px;
   text-align: left;
   cursor: pointer;

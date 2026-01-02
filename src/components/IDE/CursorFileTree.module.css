@@ -378,16 +378,42 @@
   background: var(--ide-surface-hover);
 }
 
-[data-theme='light'] .folderRow {
-  color: var(--ide-text-primary);
+:global([data-theme='light']) .folderRow {
+  color: #18181b;
   font-weight: 500;
 }
 
-[data-theme='light'] .fileIcon {
-  color: var(--ide-text-secondary);
+:global([data-theme='light']) .fileIcon {
+  color: #52525b;
 }
 
-[data-theme='light'] .emptyTree {
-  color: var(--ide-text-tertiary);
+:global([data-theme='light']) .emptyTree {
+  color: #71717a;
 }
 
+:global([data-theme='light']) .fileTree {
+  background: #ffffff;
+  border-right-color: #e4e4e7;
+}
+
+:global([data-theme='light']) .treeHeader {
+  background: #fafafa;
+  border-color: #e4e4e7;
+  color: #52525b;
+}
+
+:global([data-theme='light']) .treeContent {
+  background: #ffffff;
+}
+
+:global([data-theme='light']) .node {
+  color: #18181b;
+}
+
+:global([data-theme='light']) .nodeContent:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+:global([data-theme='light']) .nodeContent.selected {
+  background: rgba(59, 130, 246, 0.1);
+}

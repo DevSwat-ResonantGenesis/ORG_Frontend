@@ -2,6 +2,7 @@ import React, { memo, useCallback, useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useIDE } from '../context/IDEContext';
 import { useThemeStore } from '@/store/themeStore';
+import { getSessionData, clearSessionData } from '@/utils/auth-cookies';
 import styles from '../CursorIDELayout.module.css';
 
 interface IDEToolbarProps {
@@ -13,6 +14,7 @@ interface IDEToolbarProps {
   hasUnsavedChanges?: boolean;
   userName?: string;
   onLogout?: () => void;
+  onRunCode?: () => void;
 }
 
 export const IDEToolbar = memo(function IDEToolbar({
@@ -22,14 +24,20 @@ export const IDEToolbar = memo(function IDEToolbar({
   onToggleSplitView,
   onMenuClick,
   hasUnsavedChanges,
-  userName = 'User',
+  userName: propUserName,
   onLogout,
+  onRunCode,
 }: IDEToolbarProps) {
   const navigate = useNavigate();
   const { state, dispatch } = useIDE();
   const { theme, toggleTheme } = useThemeStore();
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const accountRef = useRef<HTMLDivElement>(null);
+  
+  // Get real user data from session
+  const sessionData = getSessionData();
+  const userName = propUserName || sessionData?.user || sessionData?.email?.split('@')[0] || 'Guest';
+  const userEmail = sessionData?.email || 'Not logged in';
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -148,6 +156,18 @@ export const IDEToolbar = memo(function IDEToolbar({
           </svg>
         </button>
 
+        {/* Run Code */}
+        <button 
+          className={styles.toolbarButton} 
+          onClick={onRunCode} 
+          title="Run Code (⌘Enter)"
+          style={{ color: 'var(--ide-accent)' }}
+        >
+          <svg viewBox="0 0 16 16" fill="currentColor" stroke="none">
+            <path d="M4 2L14 8L4 14V2Z" />
+          </svg>
+        </button>
+
         {/* Divider */}
         <div style={{ width: 1, height: 16, background: 'var(--ide-border)', margin: '0 4px' }} />
 
@@ -263,7 +283,7 @@ export const IDEToolbar = memo(function IDEToolbar({
                 <div className={styles.accountMenuAvatar}>{getInitials(userName)}</div>
                 <div className={styles.accountMenuInfo}>
                   <div className={styles.accountMenuName}>{userName}</div>
-                  <div className={styles.accountMenuEmail}>user@resonant.ai</div>
+                  <div className={styles.accountMenuEmail}>{userEmail}</div>
                 </div>
               </div>
               <div className={styles.accountMenuDivider} />
@@ -298,7 +318,7 @@ export const IDEToolbar = memo(function IDEToolbar({
                 Settings
               </button>
               <div className={styles.accountMenuDivider} />
-              <button className={`${styles.accountMenuItem} ${styles.danger}`} onClick={() => { onLogout ? onLogout() : navigate('/login'); setShowAccountMenu(false); }}>
+              <button className={`${styles.accountMenuItem} ${styles.danger}`} onClick={() => { clearSessionData(); onLogout ? onLogout() : navigate('/login'); setShowAccountMenu(false); }}>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M6 2H3C2.5 2 2 2.5 2 3V13C2 13.5 2.5 14 3 14H6M11 11L14 8L11 5M6 8H14" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>

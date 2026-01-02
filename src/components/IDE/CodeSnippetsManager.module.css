@@ -131,7 +131,7 @@
 }
 
 .snippetCard:hover {
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: var(--ide-text-secondary, 0.15);
 }
 
 .snippetCard.expanded {
@@ -301,7 +301,7 @@
   max-height: 90vh;
   overflow-y: auto;
   padding: 24px;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
 }

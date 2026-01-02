@@ -5,11 +5,13 @@ import styles from './CursorTerminalPanel.module.css';
 interface CursorTerminalPanelProps {
   initialHeight?: number;
   projectId?: string;
+  files?: Array<{ name: string; path: string; type?: string }>;
 }
 
 export const CursorTerminalPanel: React.FC<CursorTerminalPanelProps> = ({
   initialHeight = 200,
   projectId,
+  files = [],
 }) => {
   const [visible, setVisible] = useState(true);
   const [height, setHeight] = useState(initialHeight);
@@ -133,30 +135,45 @@ export const CursorTerminalPanel: React.FC<CursorTerminalPanelProps> = ({
   const simulateCommand = (command: string): string => {
     const cmd = command.trim().toLowerCase();
     if (cmd === 'ls' || cmd === 'dir') {
-      return 'file1.txt\nfile2.js\nfolder1/\n';
+      // Show actual project files instead of fake ones
+      if (files.length > 0) {
+        return files.map(f => f.type === 'folder' ? `${f.name}/` : f.name).join('\n');
+      }
+      return '(no files in project)';
     } else if (cmd === 'pwd') {
-      return projectId ? `/projects/${projectId}` : '/';
+      return projectId ? `/projects/${projectId}` : '/workspace';
     } else if (cmd.startsWith('echo ')) {
-      return command.substring(5) + '\n';
+      return command.substring(5);
     } else if (cmd === 'help') {
-      return 'Available commands: ls, pwd, echo, help\n';
+      return 'Available commands: ls, pwd, echo, cat, help\nNote: Terminal runs in simulation mode when no project is loaded.';
+    } else if (cmd.startsWith('cat ')) {
+      const fileName = command.substring(4).trim();
+      const file = files.find(f => f.name === fileName || f.path === fileName || f.path.endsWith('/' + fileName));
+      if (file) {
+        return `[Content of ${fileName} - open in editor to view]`;
+      }
+      return `cat: ${fileName}: No such file`;
+    } else if (cmd === 'clear') {
+      return '';
     }
-    return `Command not found: ${command}\n`;
+    return `Command not found: ${command}\nType 'help' for available commands.`;
   };
 
   const executeTerminalCommand = async (command: string, projectId: string): Promise<{ output: string; error?: string }> => {
     try {
-      // Call backend API for command execution
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/api/code/code/execute`, {
+      // Direct connection to code_execution_service (port 8002) for terminal commands
+      // This bypasses the gateway for faster execution
+      const CODE_EXECUTION_URL = 'http://localhost:8002';
+      
+      const response = await fetch(`${CODE_EXECUTION_URL}/terminal/execute`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify({
-          project_id: projectId,
           command: command,
+          cwd: `/tmp/resonant_projects/${projectId}`,
+          timeout: 30,
         }),
       });
 
@@ -166,11 +183,12 @@ export const CursorTerminalPanel: React.FC<CursorTerminalPanelProps> = ({
 
       const data = await response.json();
       return {
-        output: data.output || data.result || '',
-        error: data.error
+        output: data.stdout || data.output || '',
+        error: data.stderr || data.error || undefined
       };
     } catch (error: any) {
       // Fallback to simulated command if API fails
+      console.warn('Terminal execution failed, using simulation:', error.message);
       const simulatedOutput = simulateCommand(command);
       return {
         output: simulatedOutput,

@@ -93,12 +93,16 @@
 }
 
 /* Light mode */
-[data-theme='light'] .statusBar {
-  background: var(--ide-bg-secondary);
-  border-top-color: var(--ide-border);
+:global([data-theme='light']) .statusBar {
+  background: #fafafa;
+  border-top-color: #e4e4e7;
+  color: #52525b;
 }
 
-[data-theme='light'] .statusItemClickable:hover {
-  background: var(--ide-surface-hover);
+:global([data-theme='light']) .statusItem {
+  color: #52525b;
 }
 
+:global([data-theme='light']) .statusItemClickable:hover {
+  background: rgba(0, 0, 0, 0.05);
+}

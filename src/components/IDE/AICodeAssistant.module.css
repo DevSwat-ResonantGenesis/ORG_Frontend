@@ -147,7 +147,7 @@
 
 .suggestionCard:hover {
   background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: var(--ide-text-secondary, 0.15);
 }
 
 .suggestionCard.selected {

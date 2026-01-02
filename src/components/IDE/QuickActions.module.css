@@ -22,7 +22,7 @@
 .container {
   width: 560px;
   max-height: 60vh;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);

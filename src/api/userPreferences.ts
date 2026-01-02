@@ -197,11 +197,11 @@ export const resetUserPreferences = async (): Promise<UserPreferences> => {
  */
 export const migrateLocalPreferencesToBackend = async (): Promise<void> => {
   try {
-    // Collect all localStorage preferences
-    const localPrefs: Partial<UserPreferences> = {
-      chat: {},
-      agent: {},
-      display: {},
+    // Collect all localStorage preferences - start with defaults
+    const localPrefs: UserPreferences = {
+      chat: { ...DEFAULT_PREFERENCES.chat },
+      agent: { ...DEFAULT_PREFERENCES.agent },
+      display: { ...DEFAULT_PREFERENCES.display },
     };
     
     // Chat preferences

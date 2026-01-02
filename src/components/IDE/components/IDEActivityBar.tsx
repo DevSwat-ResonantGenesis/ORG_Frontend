@@ -7,14 +7,19 @@ export const IDEActivityBar = memo(function IDEActivityBar() {
   const { activeView } = state;
 
   const handleViewChange = useCallback((view: ActiveView) => {
+    // Toggle behavior: if clicking the same view, go back to files (close the panel)
+    if (activeView === view) {
+      dispatch({ type: 'SET_ACTIVE_VIEW', payload: 'files' });
+      return;
+    }
+    
     dispatch({ type: 'SET_ACTIVE_VIEW', payload: view });
     if (view === 'git') {
       dispatch({ type: 'TOGGLE_GIT_PANEL', payload: true });
     }
-    if (view === 'search') {
-      dispatch({ type: 'SET_COMMAND_PALETTE', payload: { open: true, mode: 'file' } });
-    }
-  }, [dispatch]);
+    // Search only opens side panel, not command palette popup
+    // Command palette is opened via Cmd+P keyboard shortcut
+  }, [dispatch, activeView]);
 
   return (
     <div className={styles.activityBar}>
@@ -54,20 +59,6 @@ export const IDEActivityBar = memo(function IDEActivityBar() {
             <circle cx="10" cy="16" r="2" />
             <circle cx="16" cy="10" r="2" />
             <path d="M10 6v4m0 0h4m-4 0v4" strokeLinecap="round" />
-          </svg>
-        </button>
-
-        {/* AI Chat */}
-        <button
-          className={`${styles.activityBarButton} ${activeView === 'ai' ? styles.active : ''}`}
-          onClick={() => handleViewChange('ai')}
-          title="AI Assistant"
-        >
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M4 6a2 2 0 012-2h8a2 2 0 012 2v6a2 2 0 01-2 2H8l-4 3v-3a2 2 0 01-2-2V6z" />
-            <circle cx="7" cy="9" r="1" fill="currentColor" />
-            <circle cx="10" cy="9" r="1" fill="currentColor" />
-            <circle cx="13" cy="9" r="1" fill="currentColor" />
           </svg>
         </button>
 

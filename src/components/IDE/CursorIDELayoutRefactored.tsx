@@ -513,6 +513,58 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
     monacoEditor?.getAction('editor.action.gotoLine')?.run();
   }, [monacoEditor]);
 
+  // Run current file code
+  const handleRunCode = useCallback(async () => {
+    if (!activeTabId || !activeFileContent) {
+      showError('No file open to run');
+      return;
+    }
+
+    // Detect language from file extension
+    const ext = activeTabId.split('.').pop()?.toLowerCase() || '';
+    const langMap: Record<string, string> = {
+      py: 'python',
+      js: 'javascript',
+      ts: 'typescript',
+      jsx: 'jsx',
+      tsx: 'tsx',
+      sh: 'bash',
+    };
+    const language = langMap[ext];
+
+    if (!language) {
+      showError(`Cannot run .${ext} files directly. Use terminal instead.`);
+      return;
+    }
+
+    // Show terminal and execute
+    dispatch({ type: 'TOGGLE_TERMINAL', payload: true });
+
+    try {
+      const CODE_EXECUTION_URL = 'http://localhost:8002';
+      const response = await fetch(`${CODE_EXECUTION_URL}/code/execute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: activeFileContent,
+          language: language,
+          timeout: 30,
+        }),
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        success(`✅ Code executed successfully`);
+        console.log('Execution output:', result.output);
+      } else {
+        showError(`❌ Execution failed: ${result.error || 'Unknown error'}`);
+      }
+    } catch (error: any) {
+      showError(`Failed to execute code: ${error.message}`);
+    }
+  }, [activeTabId, activeFileContent, dispatch, success, showError]);
+
   // Command action map
   const commandActions = useMemo(() => ({
     save: handleSave,
@@ -555,6 +607,7 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
         onToggleSplitView={handleToggleSplitView}
         onMenuClick={() => dispatch({ type: 'SET_COMMAND_PALETTE', payload: { open: true, mode: 'command' } })}
         hasUnsavedChanges={activeTabId ? unsavedChanges.has(activeTabId) : false}
+        onRunCode={handleRunCode}
       />
 
       {/* Dialogs */}
@@ -605,6 +658,8 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
           onUploadClick={() => fileInputRef.current?.click()}
           loading={loading}
           monacoEditor={monacoEditor}
+          onRunCode={handleRunCode}
+          activeFilePath={activeTabId || undefined}
         />
 
         {/* Main Panel */}
@@ -624,7 +679,7 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
               onSave={handleSave}
               onEditorMount={handleEditorMount}
             />
-            {showTerminal && <CursorTerminalPanel projectId={projectId} />}
+            {showTerminal && <CursorTerminalPanel projectId={projectId} files={files} />}
           </div>
         </div>
 

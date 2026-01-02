@@ -1,6 +1,6 @@
 .contextMenu {
   position: fixed;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -20,7 +20,7 @@
   padding: 8px 12px;
   background: transparent;
   border: none;
-  color: #e8e8e8;
+  color: var(--ide-text-primary, #e8e8e8);
   font-size: 13px;
   font-weight: 400;
   cursor: pointer;

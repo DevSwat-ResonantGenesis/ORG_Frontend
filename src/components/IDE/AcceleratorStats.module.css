@@ -8,7 +8,7 @@
   background: rgba(255, 255, 255, 0.03);
   border-radius: 6px;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--ide-text-secondary, 0.7);
 }
 
 .statItem {
@@ -54,7 +54,7 @@
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--ide-text-secondary, 0.9);
 }
 
 .connectionStatus {
@@ -93,7 +93,7 @@
 
 .statLabel {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--ide-text-secondary, 0.5);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 4px;
@@ -102,7 +102,7 @@
 .statValue {
   font-size: 20px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--ide-text-secondary, 0.95);
   line-height: 1.2;
 }
 
@@ -120,7 +120,7 @@
 
 .statUnit {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--ide-text-secondary, 0.4);
   margin-top: 2px;
 }
 

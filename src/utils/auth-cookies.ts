@@ -79,6 +79,12 @@ export const clearSessionData = () => {
   // Clear guest data from sessionStorage
   sessionStorage.removeItem('guest-conversations');
   sessionStorage.removeItem('guest-memories');
+  // SECURITY: Clear IDE project data to prevent leaking to next user
+  localStorage.removeItem('ide-project-id');
+  localStorage.removeItem('dsidp_ide_memory');
+  localStorage.removeItem('ide-tabs');
+  localStorage.removeItem('ide-active-tab');
+  localStorage.removeItem('ide-open-files');
 };
 
 /**

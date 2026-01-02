@@ -499,7 +499,7 @@ const ResonantChatPage: React.FC = () => {
               setProviderStats(mappedStats);
             }
           } catch (statsError) {
-            logger.warn('Failed to fetch provider stats', statsError);
+            logger.warn('Failed to fetch provider stats', statsError as Record<string, unknown>);
           }
           
           // Fetch user analytics
@@ -509,7 +509,7 @@ const ResonantChatPage: React.FC = () => {
               setUserAnalytics(analytics);
             }
           } catch (analyticsError) {
-            logger.warn('Failed to fetch user analytics', analyticsError);
+            logger.warn('Failed to fetch user analytics', analyticsError as Record<string, unknown>);
           }
         } catch (error) {
           logger.error('Failed to fetch available providers', error);

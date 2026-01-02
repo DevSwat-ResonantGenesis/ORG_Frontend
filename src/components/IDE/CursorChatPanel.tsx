@@ -437,22 +437,8 @@ export const CursorChatPanel: React.FC<CursorChatPanelProps> = React.memo(({
         }
       }
       
-      // SMART EXECUTION (frontend simulation) - only when accelerator is OFF
-      if (useSmartExecution && !acceleratorMode) {
-        const smartResponse = await handleSmartExecution(userMessage.content);
-        if (smartResponse) {
-          response = smartResponse;
-          const assistantMessage: Message = {
-            id: (Date.now() + 1).toString(),
-            role: 'assistant',
-            content: response,
-            timestamp: new Date(),
-          };
-          setMessages(prev => [...prev, assistantMessage]);
-          setIsLoading(false);
-          return; // Skip normal handling if smart execution handled it
-        }
-      }
+      // Smart execution simulation disabled - using real backend responses only
+      // The fake execution plan popup has been removed for cleaner chat flow
 
       // Get system prompt - either from custom agent or built-in agent
       let systemPrompt: string | undefined;
@@ -915,31 +901,7 @@ export const CursorChatPanel: React.FC<CursorChatPanelProps> = React.memo(({
 
   return (
     <div className={styles.chatPanel}>
-      {/* Smart Execution Visualizer */}
-      {executionPlan && (
-        <ExecutionVisualizer
-          plan={executionPlan}
-          suggestions={suggestions}
-          onSuggestionClick={(suggestion) => {
-            if (suggestion.action) {
-              suggestion.action();
-            }
-          }}
-          onPause={() => {
-            const executor = getSmartExecutor();
-            executor.pause();
-          }}
-          onResume={() => {
-            const executor = getSmartExecutor();
-            executor.resume();
-          }}
-          onCancel={() => {
-            const executor = getSmartExecutor();
-            executor.cancel();
-            setExecutionPlan(null);
-          }}
-        />
-      )}
+      {/* Execution plan removed - now integrated inline in chat messages */}
 
       {/* Accelerator Settings Panel - overlay */}
       <AcceleratorSettings 
@@ -948,15 +910,6 @@ export const CursorChatPanel: React.FC<CursorChatPanelProps> = React.memo(({
       />
       
       <div className={styles.chatMessages}>
-        {/* Accelerator Process Flow - inline at top of messages */}
-        {acceleratorMode && acceleratorExecuting && (
-          <div className={styles.acceleratorFlowInline}>
-            <AcceleratorProcessFlow 
-              isActive={acceleratorExecuting}
-              compact={true}
-            />
-          </div>
-        )}
         {messages.map((message) => (
           <div
             key={message.id}

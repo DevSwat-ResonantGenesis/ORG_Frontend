@@ -6,7 +6,7 @@
   flex-direction: column;
   gap: 4px;
   padding: 6px 8px;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   font-size: 11px;
 }
 
@@ -29,7 +29,7 @@
 
 .errorText {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--ide-text-secondary, 0.8);
   line-height: 1.4;
   word-break: break-word;
 }
@@ -40,7 +40,7 @@
   align-items: center;
   gap: 6px;
   padding: 2px 0;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--ide-text-secondary, 0.6);
 }
 
 .typingDots {
@@ -66,7 +66,7 @@
 
 .typingText {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--ide-text-secondary, 0.5);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -96,7 +96,7 @@
 
 .progressText {
   font-size: 9px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--ide-text-secondary, 0.4);
   min-width: 24px;
   text-align: right;
 }
@@ -135,7 +135,7 @@
 
 .stepItem.completed .stepIcon { color: #22c55e; }
 .stepItem.running .stepIcon { color: #3b82f6; }
-.stepItem.pending .stepIcon { color: rgba(255, 255, 255, 0.3); }
+.stepItem.pending .stepIcon { color: var(--ide-text-secondary, 0.3); }
 .stepItem.failed .stepIcon { color: #ef4444; }
 
 .spinner {
@@ -153,14 +153,14 @@
 
 .stepName {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--ide-text-secondary, 0.7);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.stepItem.completed .stepName { color: rgba(255, 255, 255, 0.5); }
-.stepItem.running .stepName { color: rgba(255, 255, 255, 0.9); }
+.stepItem.completed .stepName { color: var(--ide-text-secondary, 0.5); }
+.stepItem.running .stepName { color: var(--ide-text-secondary, 0.9); }
 
 /* Step tooltip on hover */
 .stepTooltip {
@@ -168,7 +168,7 @@
   left: 100%;
   top: 0;
   margin-left: 8px;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   padding: 8px;
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -179,7 +179,7 @@
 
 .tooltipContent {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--ide-text-secondary, 0.7);
   line-height: 1.4;
   margin-bottom: 6px;
 }
@@ -213,7 +213,7 @@
 .fileItem.deleted .fileAction { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
 
 .filePath {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--ide-text-secondary, 0.6);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -234,12 +234,12 @@
 
 .metricLabel {
   font-size: 9px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--ide-text-secondary, 0.4);
 }
 
 .metricValue {
   font-size: 9px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--ide-text-secondary, 0.7);
   font-family: 'SF Mono', monospace;
 }
 
@@ -257,7 +257,7 @@
 
 .detailIcon {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--ide-text-secondary, 0.4);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -265,14 +265,14 @@
 }
 
 .detailIcon:hover {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--ide-text-secondary, 0.7);
 }
 
 .detailsExpanded {
   position: absolute;
   bottom: 100%;
   left: 0;
-  background: #0a0a0a;
+  background: var(--ide-bg-primary, #0a0a0a);
   padding: 8px;
   border-radius: 4px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
@@ -300,7 +300,7 @@
 
 .detailItem {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--ide-text-secondary, 0.7);
   padding-left: 8px;
   line-height: 1.4;
 }

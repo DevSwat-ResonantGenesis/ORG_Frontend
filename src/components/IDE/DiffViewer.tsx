@@ -233,11 +233,11 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
               textDecoration: 'line-through',
             },
             codeFold: {
-              backgroundColor: '#0a0a0a',
+              backgroundColor: 'var(--ide-bg-primary, #0a0a0a)',
             },
             titleBlock: {
-              backgroundColor: '#151515',
-              borderBottom: '1px solid #0a0a0a',
+              backgroundColor: 'var(--ide-bg-secondary, #151515)',
+              borderBottom: '1px solid var(--ide-border, #0a0a0a)',
             },
           }}
         />
