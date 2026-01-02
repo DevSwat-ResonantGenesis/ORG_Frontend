@@ -287,6 +287,24 @@ export const generateProject = async (
       response: error.response?.data,
       status: error.response?.status
     });
+    
+    // Check for LLM-related errors and provide user-friendly message
+    const errorMsg = error?.response?.data?.detail || error?.response?.data?.message || error?.message || '';
+    const isLLMError = 
+      errorMsg.toLowerCase().includes('quota') ||
+      errorMsg.toLowerCase().includes('rate limit') ||
+      errorMsg.toLowerCase().includes('insufficient') ||
+      errorMsg.toLowerCase().includes('credit') ||
+      errorMsg.toLowerCase().includes('api key') ||
+      errorMsg.toLowerCase().includes('failed to generate') ||
+      error?.response?.status === 429;
+    
+    if (isLLMError) {
+      throw new Error(
+        'AI service requires your own API key. Please go to Settings → API Keys to add your OpenAI or Anthropic key to use Project Builder.'
+      );
+    }
+    
     throw error;
   }
 };

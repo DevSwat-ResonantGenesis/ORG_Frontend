@@ -34,14 +34,26 @@ const getAuthToken = (): string | null => {
   return match ? match[1] : null;
 };
 
-// Get user ID from session storage or local storage
+// Get user ID from session cookie (new) or localStorage (legacy)
 const getUserId = (): string | null => {
-  if (typeof localStorage === 'undefined') return null;
+  if (typeof document === 'undefined') return null;
   try {
-    const sessionData = localStorage.getItem('rg_session');
-    if (sessionData) {
-      const parsed = JSON.parse(sessionData);
-      return parsed.user_id || parsed.userId || null;
+    // Check cookie first (new secure method)
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === 'rg_session' && value) {
+        const parsed = JSON.parse(decodeURIComponent(value));
+        return parsed.userId || parsed.user_id || null;
+      }
+    }
+    // Fallback to localStorage (legacy)
+    if (typeof localStorage !== 'undefined') {
+      const legacyData = localStorage.getItem('rg_session_data');
+      if (legacyData) {
+        const parsed = JSON.parse(legacyData);
+        return parsed.userId || parsed.user_id || null;
+      }
     }
   } catch {
     // Ignore parse errors

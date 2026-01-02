@@ -6,6 +6,7 @@ import { GitPanel } from '../GitPanel';
 import { IDESettingsPanel } from '../IDESettingsPanel';
 import { ResizablePanel } from '../ResizablePanel';
 import { DebuggerPanel } from '../DebuggerPanel';
+import { ProjectBuilderPanel } from '../ProjectBuilderPanel';
 import { useDSIDP } from '@/hooks/useDSIDPAccelerator';
 import styles from '../CursorIDELayout.module.css';
 
@@ -369,6 +370,27 @@ export const IDESidePanel = memo(function IDESidePanel({
   // DSID-P Accelerator Metrics Panel
   if (activeView === 'dsidp') {
     return <DSIDPMetricsPanel />;
+  }
+
+  // Project Builder View
+  if (activeView === 'builder') {
+    return (
+      <ResizablePanel
+        direction="horizontal"
+        defaultSize={450}
+        minSize={350}
+        maxSize={700}
+        className={styles.builderViewContainer}
+      >
+        <ProjectBuilderPanel
+          onProjectSelect={(projectId) => {
+            // Navigate to project in file explorer
+            dispatch({ type: 'SET_ACTIVE_VIEW', payload: 'files' });
+          }}
+          onClose={() => dispatch({ type: 'SET_ACTIVE_VIEW', payload: 'files' })}
+        />
+      </ResizablePanel>
+    );
   }
 
   return null;

@@ -21,7 +21,8 @@ export type ActiveView =
   | 'settings' 
   | 'ai' 
   | 'editor'
-  | 'dsidp';
+  | 'dsidp'
+  | 'builder';
 
 export type SplitView = 'none' | 'horizontal' | 'vertical';
 export type GitStatus = 'clean' | 'modified' | 'conflict';

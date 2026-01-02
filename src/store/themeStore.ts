@@ -13,9 +13,14 @@ interface ThemeState {
 // IMPORTANT: Website starts with light mode by default
 const getInitialTheme = (): Theme => {
   if (typeof window === 'undefined') return 'light';
-  // Check for saved preference, default to light
-  const saved = localStorage.getItem('rg_theme');
-  return (saved as Theme) || 'light'; // Default to light mode
+  try {
+    // Check for saved preference, default to light
+    const saved = localStorage.getItem('rg_theme');
+    return (saved as Theme) || 'light'; // Default to light mode
+  } catch {
+    // localStorage may be blocked in iframes or private browsing
+    return 'light';
+  }
 };
 
 export const useThemeStore = create<ThemeState>((set) => {
@@ -40,7 +45,9 @@ export const useThemeStore = create<ThemeState>((set) => {
     setTheme: (t) => {
       if (typeof window !== 'undefined') {
         // Save theme preference
+        try {
           localStorage.setItem('rg_theme', t);
+        } catch { /* ignore in iframes */ }
         
         // Set theme attributes - let global.css handle all styling
         document.documentElement.setAttribute('data-theme', t);
@@ -55,7 +62,9 @@ export const useThemeStore = create<ThemeState>((set) => {
       set((state) => {
         const next = state.theme === 'dark' ? 'light' : 'dark';
         if (typeof window !== 'undefined') {
-          localStorage.setItem('rg_theme', next);
+          try {
+            localStorage.setItem('rg_theme', next);
+          } catch { /* ignore in iframes */ }
           
           // Set theme attributes - let global.css handle all styling
           document.documentElement.setAttribute('data-theme', next);

@@ -181,13 +181,20 @@ export const checkServiceAccess = async (): Promise<{
 
 /**
  * Supported API key providers
+ * Users can add their own keys for any of these providers (BYOK)
  */
 export const API_KEY_PROVIDERS = [
-  { id: 'openai', name: 'OpenAI', placeholder: 'sk-proj-...', helpUrl: 'https://platform.openai.com/api-keys' },
-  { id: 'anthropic', name: 'Anthropic (Claude)', placeholder: 'sk-ant-...', helpUrl: 'https://console.anthropic.com/settings/keys' },
-  { id: 'google', name: 'Google (Gemini)', placeholder: 'AIza...', helpUrl: 'https://aistudio.google.com/app/apikey' },
-  { id: 'mistral', name: 'Mistral AI', placeholder: '...', helpUrl: 'https://console.mistral.ai/api-keys' },
-  { id: 'groq', name: 'Groq', placeholder: 'gsk_...', helpUrl: 'https://console.groq.com/keys' },
+  { id: 'openai', name: 'OpenAI', placeholder: 'sk-proj-...', helpUrl: 'https://platform.openai.com/api-keys', models: ['gpt-4o', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'] },
+  { id: 'anthropic', name: 'Anthropic (Claude)', placeholder: 'sk-ant-...', helpUrl: 'https://console.anthropic.com/settings/keys', models: ['claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku'] },
+  { id: 'google', name: 'Google (Gemini)', placeholder: 'AIza...', helpUrl: 'https://aistudio.google.com/app/apikey', models: ['gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro'] },
+  { id: 'mistral', name: 'Mistral AI', placeholder: '...', helpUrl: 'https://console.mistral.ai/api-keys', models: ['mistral-large', 'mistral-medium', 'mistral-small'] },
+  { id: 'groq', name: 'Groq (Fast)', placeholder: 'gsk_...', helpUrl: 'https://console.groq.com/keys', models: ['llama-3.1-70b', 'llama-3.1-8b', 'mixtral-8x7b'] },
+  { id: 'cohere', name: 'Cohere', placeholder: '...', helpUrl: 'https://dashboard.cohere.com/api-keys', models: ['command-r-plus', 'command-r', 'command'] },
+  { id: 'together', name: 'Together AI', placeholder: '...', helpUrl: 'https://api.together.xyz/settings/api-keys', models: ['llama-3.1-405b', 'mixtral-8x22b', 'qwen-2-72b'] },
+  { id: 'deepseek', name: 'DeepSeek', placeholder: 'sk-...', helpUrl: 'https://platform.deepseek.com/api_keys', models: ['deepseek-chat', 'deepseek-coder'] },
+  { id: 'openrouter', name: 'OpenRouter (100+ models)', placeholder: 'sk-or-...', helpUrl: 'https://openrouter.ai/keys', models: ['auto', 'openai/gpt-4o', 'anthropic/claude-3-opus'] },
+  { id: 'perplexity', name: 'Perplexity AI', placeholder: 'pplx-...', helpUrl: 'https://www.perplexity.ai/settings/api', models: ['llama-3.1-sonar-large', 'llama-3.1-sonar-small'] },
+  { id: 'fireworks', name: 'Fireworks AI (Fast)', placeholder: '...', helpUrl: 'https://fireworks.ai/api-keys', models: ['llama-v3p1-405b', 'llama-v3p1-70b'] },
 ];
 
 export interface AvailableProvidersResponse {

@@ -11,6 +11,8 @@ import {
   SearchIcon,
   MemoryIcon,
   ChevronDownIcon,
+  HistoryIcon,
+  NewChatIcon,
 } from '@/components/Icons/ResonantChatIcons';
 import { VoiceInput } from '@/components/ResonantChat/VoiceInput';
 import styles from './ChatInputBar.module.css';
@@ -377,15 +379,13 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           </div>
         )}
 
-        {/* Conversations Panel */}
+        {/* Chat History Panel - Shows list of chats, click to load full chat */}
         {showConversations && (
           <div className={styles.stickerPanel}>
             <div className={styles.stickerHeader}>
               <span className={styles.stickerTitle}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                </svg>
-                Conversations ({conversations.length})
+                <HistoryIcon />
+                My Chats ({conversations.length})
               </span>
               <button className={styles.stickerClose} onClick={onCloseConversations}>
                 <CloseIcon />
@@ -397,7 +397,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                   </svg>
-                  <div>No conversations yet</div>
+                  <div>No chats yet</div>
                   <div style={{ fontSize: '12px', marginTop: '8px', opacity: 0.7 }}>Start chatting to create one</div>
                 </div>
               ) : (
@@ -414,7 +414,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                     </div>
                     <div className={styles.listItemContent}>
                       <div className={styles.listItemHeader}>
-                        <span className={styles.listItemTitle}>{conv.title || 'Untitled Conversation'}</span>
+                        <span className={styles.listItemTitle}>{conv.title || 'Untitled Chat'}</span>
                         {(conv as any).message_count !== undefined && (
                           <span className={styles.listItemBadge}>{(conv as any).message_count} msgs</span>
                         )}
@@ -642,9 +642,23 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
             
+            {/* History Button - Shows chat history list */}
+            {onShowConversations && (
+              <button
+                className={`${styles.toolButton} ${styles.historyButton} ${showConversations ? styles.active : ''}`}
+                onClick={showConversations ? onCloseConversations : handleShowConversations}
+                title="Chat History"
+              >
+                <HistoryIcon />
+                <span className={styles.toolLabel}>History</span>
+              </button>
+            )}
+
+            {/* New Chat Button */}
             {onNewChat && (
-              <button className={styles.toolButton} onClick={onNewChat} title="New Chat">
-                <PlusIcon />
+              <button className={`${styles.toolButton} ${styles.newChatButton}`} onClick={onNewChat} title="New Chat">
+                <NewChatIcon />
+                <span className={styles.toolLabel}>New</span>
               </button>
             )}
             
@@ -673,12 +687,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
             
-            {onOpenIDE && (
-              <button className={styles.toolButton} onClick={onOpenIDE} title="Open IDE">
-                <PenIcon />
-                <span className={styles.toolLabel}>IDE</span>
-              </button>
-            )}
             
             {onAttachFile && (
               <button 
@@ -712,18 +720,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
 
-            {onShowConversations && (
-              <button
-                className={`${styles.toolButton} ${showConversations ? styles.active : ''}`}
-                onClick={showConversations ? onCloseConversations : handleShowConversations}
-                title="Conversations"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                </svg>
-              </button>
-            )}
-
             {onShowSettings && (
               <button
                 className={`${styles.toolButton} ${showSettings ? styles.active : ''}`}
@@ -737,18 +733,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
             
-            {onToggleSplitView && (
-              <button
-                className={`${styles.toolButton} ${splitViewEnabled ? styles.active : ''}`}
-                onClick={onToggleSplitView}
-                title="Split View"
-              >
-                <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
-                  <path d="M2 2H7V14H2V2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M9 2H14V14H9V2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-            )}
 
             {/* Copy Entire Chat */}
             {onCopyChat && (

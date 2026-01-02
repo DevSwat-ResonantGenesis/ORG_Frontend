@@ -24,7 +24,32 @@ export interface SessionData {
 export const getSession = (): SessionData => {
   const token = localStorage.getItem(TOKEN_KEY) || localStorage.getItem(LEGACY_KEY);
   
-  // Try new cookie-based session data first
+  // Try cookie-based session data first (new secure method)
+  try {
+    if (typeof document !== 'undefined') {
+      const cookies = document.cookie.split(';');
+      for (const cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'rg_session' && value) {
+          const sessionData = JSON.parse(decodeURIComponent(value));
+          if (sessionData.email) {
+            return {
+              token,
+              email: sessionData.email,
+              role: sessionData.role || null,
+              org: sessionData.org,
+              plan: sessionData.plan || 'free',
+              organization: sessionData.organization || sessionData.org
+            };
+          }
+        }
+      }
+    }
+  } catch (e) {
+    // Fall through to legacy storage
+  }
+  
+  // Fallback to legacy localStorage
   try {
     const sessionDataStr = localStorage.getItem('rg_session_data');
     if (sessionDataStr) {
@@ -41,10 +66,10 @@ export const getSession = (): SessionData => {
       }
     }
   } catch (e) {
-    // Fall through to legacy storage
+    // Fall through to very legacy storage
   }
   
-  // Fallback to legacy storage
+  // Very legacy fallback
   return {
     token,
     email: localStorage.getItem('rg_email'),

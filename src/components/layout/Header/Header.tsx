@@ -178,9 +178,9 @@ export const Header: React.FC<HeaderProps> = ({
                         <span className={styles.navDropdownItemTitle}>Resonant Chat</span>
                         <span className={styles.navDropdownItemDesc}>AI-powered conversations</span>
                       </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/ide'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Resonant IDE</span>
-                        <span className={styles.navDropdownItemDesc}>AI coding environment</span>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/build'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Project Builder</span>
+                        <span className={styles.navDropdownItemDesc}>AI project generation</span>
                       </button>
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/agents'); setActiveDropdown(null); }}>
                         <span className={styles.navDropdownItemTitle}>Agents</span>
@@ -195,10 +195,6 @@ export const Header: React.FC<HeaderProps> = ({
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/workflow-designer'); setActiveDropdown(null); }}>
                         <span className={styles.navDropdownItemTitle}>Workflow Designer</span>
                         <span className={styles.navDropdownItemDesc}>Visual workflow builder</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/agent-templates'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Agent Templates</span>
-                        <span className={styles.navDropdownItemDesc}>Pre-built agent templates</span>
                       </button>
                     </div>
                   </div>
@@ -302,10 +298,6 @@ export const Header: React.FC<HeaderProps> = ({
                         <span className={styles.navDropdownItemTitle}>Code Visualizer</span>
                         <span className={styles.navDropdownItemDesc}>Codebase analysis</span>
                       </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/api-keys'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>API Keys</span>
-                        <span className={styles.navDropdownItemDesc}>Manage API access</span>
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -341,17 +333,13 @@ export const Header: React.FC<HeaderProps> = ({
                       </button>
                     </div>
                     <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/network/workflows'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Workflow Designer</span>
-                        <span className={styles.navDropdownItemDesc}>Visual workflow builder</span>
-                      </button>
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/network/history'); setActiveDropdown(null); }}>
                         <span className={styles.navDropdownItemTitle}>Execution History</span>
                         <span className={styles.navDropdownItemDesc}>View past runs</span>
                       </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/network/templates'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Agent Templates</span>
-                        <span className={styles.navDropdownItemDesc}>Pre-built templates</span>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/network/node'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Node Status</span>
+                        <span className={styles.navDropdownItemDesc}>Network node info</span>
                       </button>
                     </div>
                   </div>
@@ -377,31 +365,7 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           {/* AgentOS-specific elements when on /agents page */}
-          {location.pathname.startsWith('/agents') && (
-            <div className={styles.agentOSSection}>
-              <span className={styles.agentOSLabel}>AgentOS</span>
-              <div className={styles.agentOSSearch}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="11" cy="11" r="8"/>
-                  <path d="m21 21-4.35-4.35"/>
-                </svg>
-                <input type="text" placeholder="Search agents, workflows, executions..." />
-              </div>
-              <div className={styles.agentOSStats}>
-                <span className={styles.statDot}></span>
-                <span>0 Active</span>
-              </div>
-              <div className={styles.agentOSTime}>
-                {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-              </div>
-              <button className={styles.agentOSNotif} title="Notifications">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-                </svg>
-              </button>
-            </div>
-          )}
+          {/* AgentOS minimal header - search moved to page */}
           
           <div className={styles.actions}>
             {/* Theme Toggle - Always visible */}

@@ -639,3 +639,27 @@ export const DefaultFileIcon: React.FC<{ className?: string }> = ({ className = 
   </svg>
 );
 
+export const HistoryIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
+  <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" style={{ strokeDasharray: 56.5, strokeDashoffset: 56.5, animation: 'drawCircle 0.8s ease-out forwards' }} />
+    <path d="M12 7V12L15 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ strokeDasharray: 12, strokeDashoffset: 12, animation: 'drawPath 0.5s ease-out 0.4s forwards' }} />
+    <path d="M3 12H1M5.5 5.5L4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ animation: 'fadeIn 0.3s ease-out 0.6s forwards', opacity: 0 }} />
+    <style>{`
+      @keyframes drawCircle { to { stroke-dashoffset: 0; } }
+      @keyframes drawPath { to { stroke-dashoffset: 0; } }
+      @keyframes fadeIn { to { opacity: 1; } }
+    `}</style>
+  </svg>
+);
+
+export const NewChatIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
+  <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ strokeDasharray: 28, strokeDashoffset: 28, animation: 'drawPlus 0.5s ease-out forwards' }} />
+    <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" strokeWidth="2" style={{ strokeDasharray: 68, strokeDashoffset: 68, animation: 'drawRect 0.8s ease-out 0.2s forwards' }} />
+    <style>{`
+      @keyframes drawPlus { to { stroke-dashoffset: 0; } }
+      @keyframes drawRect { to { stroke-dashoffset: 0; } }
+    `}</style>
+  </svg>
+);
+

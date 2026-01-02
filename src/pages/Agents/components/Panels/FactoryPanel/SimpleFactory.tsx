@@ -101,7 +101,7 @@ const SimpleFactoryComponent: React.FC<SimpleFactoryProps> = ({ className }) => 
 
       const newAgent: Agent = {
         id: response.id,
-        hash: `0x${response.id.slice(0, 16)}`,
+        hash: response.id,
         name: response.name,
         type: 'executor',
         status: 'idle',
@@ -116,14 +116,19 @@ const SimpleFactoryComponent: React.FC<SimpleFactoryProps> = ({ className }) => 
         pendingApprovals: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
-        ownerId: 'user-1',
+        ownerId: response.id,
         config: {
           provider: template.provider,
           model: template.model,
           systemPrompt: template.prompt,
           temperature: 0.7,
           maxTokens: 4096,
-          tools: [],
+          tools: (response.tools || []).map((toolName: string) => ({
+            id: toolName,
+            name: toolName,
+            description: toolName,
+            enabled: true,
+          })),
           memoryConfig: { shortTermLimit: 10, longTermEnabled: true, vectorStoreEnabled: false, contextWindow: 8192 },
           autonomyConfig: { canSpawnSubAgents: false, canModifySelf: false, canAccessNetwork: true, canExecuteCode: false, maxConcurrentTasks: 5 },
         },
@@ -165,7 +170,7 @@ const SimpleFactoryComponent: React.FC<SimpleFactoryProps> = ({ className }) => 
 
       const newAgent: Agent = {
         id: response.id,
-        hash: `0x${response.id.slice(0, 16)}`,
+        hash: response.id,
         name: response.name,
         type: 'executor',
         status: 'idle',
@@ -180,14 +185,19 @@ const SimpleFactoryComponent: React.FC<SimpleFactoryProps> = ({ className }) => 
         pendingApprovals: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
-        ownerId: 'user-1',
+        ownerId: response.id,
         config: {
           provider: 'openai',
           model: 'gpt-4-turbo',
           systemPrompt: 'You are a helpful AI assistant.',
           temperature: 0.7,
           maxTokens: 4096,
-          tools: [],
+          tools: (response.tools || []).map((toolName: string) => ({
+            id: toolName,
+            name: toolName,
+            description: toolName,
+            enabled: true,
+          })),
           memoryConfig: { shortTermLimit: 10, longTermEnabled: true, vectorStoreEnabled: false, contextWindow: 8192 },
           autonomyConfig: { canSpawnSubAgents: false, canModifySelf: false, canAccessNetwork: true, canExecuteCode: false, maxConcurrentTasks: 5 },
         },

@@ -1,4 +1,4 @@
-import { createMemory, deleteConversation, deleteMemory, getConversation, listConversations, listMemories, updateConversation, updateMemory, uploadFile, type MemoryResponse } from '@/api/rag';
+import { createMemory, deleteConversation, deleteMemory, listConversations, listMemories, updateConversation, updateMemory, uploadFile, type MemoryResponse } from '@/api/rag';
 import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, getProviderStats, getUserAnalytics, type UserAnalytics } from '@/api/resonantChat';
 import { triggerChatSync } from '@/context/ChatContext';
 import { fetchAvailableProviders } from '@/api/userApiKeys';
@@ -632,19 +632,16 @@ const ResonantChatPage: React.FC = () => {
   const [generatedProject, setGeneratedProject] = useState<{ description: string; projectType?: string } | null>(null);
   const [showBuildModule, setShowBuildModule] = useState(false);
 
-  // Check URL parameters for project generation
+  // Check URL parameters for project generation - redirect to standalone Build page
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('generate') === 'true') {
-      setBuildMode(true);
-      setGeneratedProject({
-        description: params.get('description') || 'New project',
-        projectType: params.get('projectType') || undefined
-      });
-      // Clean URL
-      window.history.replaceState({}, '', '/resonant-chat');
+      const description = params.get('description') || 'New project';
+      const projectType = params.get('projectType') || 'react';
+      // Redirect to standalone Build page
+      navigate(`/build?description=${encodeURIComponent(description)}&type=${projectType}`);
     }
-  }, []);
+  }, [navigate]);
 
   // IDE navigation - redirects to /ide page
 
@@ -945,8 +942,8 @@ const ResonantChatPage: React.FC = () => {
           const data = await getChatHistory(savedChatId);
           const chatMessages = data?.messages || (Array.isArray(data) ? data : []);
           if (chatMessages.length > 0) {
-            const formattedMessages = chatMessages.map((msg: { role: string; content: string; created_at?: string; provider?: string; validity?: number; resonance_score?: number; hash?: string; anchors?: string[] }) => ({
-              id: `msg-${Date.now()}-${Math.random()}`,
+            const formattedMessages = chatMessages.map((msg: { id?: string; role: string; content: string; created_at?: string; provider?: string; validity?: number; resonance_score?: number; hash?: string; anchors?: string[] }) => ({
+              id: msg.id || `msg-${Date.now()}-${Math.random()}`,
               role: msg.role as 'user' | 'assistant' | 'system',
               content: msg.content,
               timestamp: msg.created_at ? new Date(msg.created_at) : new Date(),
@@ -975,8 +972,8 @@ const ResonantChatPage: React.FC = () => {
           const data = await getChatHistory(chatId);
           const chatMessages = data?.messages || (Array.isArray(data) ? data : []);
           if (chatMessages.length > 0) {
-            const formattedMessages = chatMessages.map((msg: { role: string; content: string; created_at?: string; provider?: string; validity?: number; resonance_score?: number; hash?: string; anchors?: string[] }) => ({
-              id: `msg-${Date.now()}-${Math.random()}`,
+            const formattedMessages = chatMessages.map((msg: { id?: string; role: string; content: string; created_at?: string; provider?: string; validity?: number; resonance_score?: number; hash?: string; anchors?: string[] }) => ({
+              id: msg.id || `msg-${Date.now()}-${Math.random()}`,
               role: msg.role as 'user' | 'assistant' | 'system',
               content: msg.content,
               timestamp: msg.created_at ? new Date(msg.created_at) : new Date(),
@@ -1498,13 +1495,12 @@ const ResonantChatPage: React.FC = () => {
     setIsLoading(true);
 
     // Check if build mode is active (only triggered by manual button click)
-    // DISABLED: Automatic project detection from messages - users must use button
+    // Navigate to standalone Build page with description as query param
     if (buildMode) {
-      // Show project builder (only when button is clicked)
-      setGeneratedProject({
-        description: currentInput,
-        projectType: undefined // Let user specify or auto-detect in builder
-      });
+      // Navigate to standalone Build page
+      const buildUrl = `/build?description=${encodeURIComponent(currentInput)}&type=${detectProjectIntent(currentInput).projectType || 'react'}`;
+      navigate(buildUrl);
+      setBuildMode(false); // Reset build mode
       setIsLoading(false);
       return;
     }
@@ -2285,14 +2281,31 @@ const ResonantChatPage: React.FC = () => {
 
       if (isLoggedIn) {
         try {
-          const data = await getConversation(conversationId, 100);
-          conversationMessages = data.map((msg: { role: string; content: string; created_at?: string; provider?: string; validity?: number; sources?: Array<Record<string, any>> }) => ({
-            id: `msg-${Date.now()}-${Math.random()}`,
+          // Use getChatHistory from resonantChat.ts to load from chat_service
+          const data = await getChatHistory(conversationId);
+          
+          // Handle both array format and object with messages array
+          let messagesArray: any[] = [];
+          let agentHash: string | null = null;
+          
+          if (Array.isArray(data)) {
+            messagesArray = data;
+          } else if (data?.messages && Array.isArray(data.messages)) {
+            messagesArray = data.messages;
+            agentHash = data.agent_hash || null;
+          }
+          
+          conversationMessages = messagesArray.map((msg: any) => ({
+            id: msg.id || `msg-${Date.now()}-${Math.random()}`,
             role: msg.role as 'user' | 'assistant' | 'system',
             content: msg.content,
-            timestamp: msg.created_at ? new Date(msg.created_at) : new Date(),
-            aiProvider: msg.provider,
+            timestamp: msg.timestamp ? new Date(msg.timestamp) : (msg.created_at ? new Date(msg.created_at) : new Date()),
+            aiProvider: msg.aiProvider || msg.ai_provider,
             validity: msg.validity,
+            hash: msg.hash,
+            resonanceScore: msg.resonanceScore || msg.resonance_score || 0,
+            xyz: msg.xyz || (msg.xyz_x !== undefined ? [msg.xyz_x, msg.xyz_y || 0, msg.xyz_z || 0] : undefined),
+            anchors: msg.anchors || [],
             sources: msg.sources?.map((s: Record<string, any>) => ({
               id: s.id || String(Math.random()),
               content: s.content || '',
@@ -2302,8 +2315,13 @@ const ResonantChatPage: React.FC = () => {
               metadata: s.metadata || {},
             })),
           }));
+          
+          // Update agent hash if available
+          if (agentHash && !selectedAgentHash) {
+            setSelectedAgentHash(agentHash);
+          }
         } catch (error: unknown) {
-          logger.error('Failed to load conversation from backend', error);
+          logger.error('Failed to load conversation from resonant-chat backend', error);
           throw error;
         }
       } else {
@@ -2322,6 +2340,8 @@ const ResonantChatPage: React.FC = () => {
 
       setMessages(conversationMessages);
       setCurrentConversationId(conversationId);
+      // Save to localStorage for persistence
+      localStorage.setItem(CHAT_STORAGE_KEY, conversationId);
       success('Conversation loaded');
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to load conversation';
@@ -2329,7 +2349,7 @@ const ResonantChatPage: React.FC = () => {
     } finally {
       setIsLoadingConversation(null);
     }
-  }, [isLoggedIn, success, showError]);
+  }, [isLoggedIn, success, showError, selectedAgentHash]);
 
   // Handle new chat - clears messages and conversation ID
   const handleNewChat = useCallback(() => {
@@ -3718,24 +3738,9 @@ const ResonantChatPage: React.FC = () => {
           onClearChat={messages.length > 0 ? handleClearChat : undefined}
           onCancel={handleCancel}
           onBuild={() => {
-            // Open the new BuildModule if there are code blocks in messages
-            const lastAssistantMessage = messages.filter(m => m.role === 'assistant').pop();
-            if (lastAssistantMessage) {
-              setSelectedCodeMessage(lastAssistantMessage.id);
-              setSplitViewEnabled(true);
-              setShowBuildModule(true);
-            } else {
-              // Fallback to old behavior if no messages
-              setBuildMode(!buildMode);
-              if (!buildMode) {
-                setGeneratedProject({
-                  description: input.trim() || 'New project',
-                  projectType: undefined
-                });
-              } else {
-                setGeneratedProject(null);
-              }
-            }
+            // Navigate directly to the Build page
+            const description = input.trim() || 'New project';
+            navigate(`/build?description=${encodeURIComponent(description)}`);
           }}
           onOpenIDE={() => navigate('/ide')}
           onAttachFile={() => fileInputRef.current?.click()}

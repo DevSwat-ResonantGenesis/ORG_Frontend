@@ -105,11 +105,38 @@ export const changePassword = async (oldPassword: string, newPassword: string) =
 
 /**
  * Check if user is authenticated by checking session data
+ * Uses the auth-cookies module which handles both cookies and localStorage migration
  */
 export const isAuthenticated = (): boolean => {
   try {
-    const sessionData = localStorage.getItem('rg_session_data');
-    return sessionData !== null;
+    // Use getSessionData which handles both cookie and localStorage (migration)
+    // Import synchronously to avoid async issues
+    const SESSION_COOKIE_NAME = 'rg_session';
+    
+    // Check for session cookie first
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === SESSION_COOKIE_NAME && value) {
+        return true;
+      }
+    }
+    
+    // Fallback: check legacy localStorage
+    const legacyData = localStorage.getItem('rg_session_data');
+    if (legacyData) {
+      // Migrate to cookie for future checks
+      try {
+        const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
+        document.cookie = `${SESSION_COOKIE_NAME}=${encodeURIComponent(legacyData)}; expires=${expires}; path=/; SameSite=Strict`;
+        localStorage.removeItem('rg_session_data');
+      } catch (e) {
+        // Migration failed, but user is still authenticated
+      }
+      return true;
+    }
+    
+    return false;
   } catch {
     return false;
   }

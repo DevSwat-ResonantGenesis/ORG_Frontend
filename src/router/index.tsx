@@ -4,6 +4,7 @@ import MainLayout from '../layout/MainLayout';
 import ProtectedRoute from './ProtectedRoute';
 import RoleRoute from './RoleRoute';
 import OwnerProtectedRoute from './OwnerProtectedRoute';
+import PlanRestrictedRoute from './PlanRestrictedRoute';
 
 // CANONICAL PAGES - Dashboard handles all billing features
 const AccountPage = lazy(() => import('../pages/Account/AccountPage'));
@@ -70,6 +71,7 @@ const AIChatConsoleV2 = lazy(() => import('../pages/AIChatConsoleV2/AIChatConsol
 const PricingPage = lazy(() => import('../pages/Public/PricingPageComplete'));
 const APIDocsPage = lazy(() => import('../pages/API/APIDocsPage'));
 const IDEPage = lazy(() => import('../pages/IDE/IDEPage'));
+const BuildPage = lazy(() => import('../pages/Build/BuildPage'));
 const EmbeddingTestPage = lazy(() => import('../pages/Test/EmbeddingTestPage'));
 const ReviewQueuePage = lazy(() => import('../pages/AIReview/ReviewQueuePage'));
 const AgentTeamsPage = lazy(() => import('../pages/AgentTeams/AgentTeamsPage'));
@@ -131,6 +133,15 @@ const withPublicShell = (node: React.ReactNode) => (
 
 const withRole = (node: React.ReactNode, roles: string[]) =>
   withShell(<RoleRoute allowed={roles}>{node}</RoleRoute>);
+
+// Plan-restricted routes - requires specific subscription plan
+const withPlanRestriction = (node: React.ReactNode, requiredPlan: 'free' | 'plus' | 'pro' | 'enterprise') => (
+  <ProtectedRoute>
+    <MainLayout>
+      <PlanRestrictedRoute requiredPlan={requiredPlan}>{node}</PlanRestrictedRoute>
+    </MainLayout>
+  </ProtectedRoute>
+);
 
 // Owner-protected routes - uses separate owner token authentication
 const withOwnerAuth = (node: React.ReactNode) => (
@@ -434,9 +445,14 @@ const router = createBrowserRouter([
     path: '/resonant-chat',
     element: withPublicShell(<ResonantChatPage />) // Public - supports guest mode
   },
+  // IDE disabled - using Build Page instead
+  // {
+  //   path: '/ide',
+  //   element: withShell(<IDEPage />) // IDE page - requires authentication
+  // },
   {
-    path: '/ide',
-    element: withShell(<IDEPage />) // IDE page - requires authentication
+    path: '/build',
+    element: withShell(<BuildPage />) // Standalone Project Builder page
   },
   {
     path: '/ai-chat-console-v2',
@@ -450,30 +466,30 @@ const router = createBrowserRouter([
     path: '/dsid-p',
     element: withPublicShell(<DSIDPPage />)
   },
-  // Decentralized Network
+  // Decentralized Network - Protected routes (require authentication)
   {
     path: '/network/agents',
-    element: withPublicShell(<AgentBrowserPage />)
+    element: withShell(<AgentBrowserPage />)
   },
   {
     path: '/network/publish',
-    element: withPublicShell(<AgentPublishPage />)
+    element: withShell(<AgentPublishPage />)
   },
   {
     path: '/network/marketplace',
-    element: withPublicShell(<AgentMarketplacePage />)
+    element: withShell(<AgentMarketplacePage />)
   },
   {
     path: '/network/workflows',
-    element: withPublicShell(<WorkflowDesignerPage />)
+    element: withShell(<WorkflowDesignerPage />)
   },
   {
     path: '/network/history',
-    element: withPublicShell(<ExecutionHistoryPage />)
+    element: withShell(<ExecutionHistoryPage />)
   },
   {
     path: '/network/templates',
-    element: withPublicShell(<AgentTemplatesPage />)
+    element: withShell(<AgentTemplatesPage />)
   },
   // Shortcut routes for network pages
   {
@@ -519,42 +535,42 @@ const router = createBrowserRouter([
     path: '/hash-sphere-memory-api',
     element: withPublicShell(<HashSphereMemoryAPI />)
   },
-  // Control Plane - User routes (access based on user's plan, NOT owner-only)
+  // Control Plane - Requires Plus plan or higher
   {
     path: '/control-plane',
-    element: withShell(<ControlPlaneOverview />)
+    element: withPlanRestriction(<ControlPlaneOverview />, 'plus')
   },
   {
     path: '/control-plane/semantics',
-    element: withShell(<SemanticExplorer />)
+    element: withPlanRestriction(<SemanticExplorer />, 'plus')
   },
   {
     path: '/control-plane/trust',
-    element: withShell(<TrustDashboard />)
+    element: withPlanRestriction(<TrustDashboard />, 'plus')
   },
   {
     path: '/control-plane/governance',
-    element: withShell(<GovernanceCenter />)
+    element: withPlanRestriction(<GovernanceCenter />, 'plus')
   },
   {
     path: '/control-plane/compliance',
-    element: withShell(<ComplianceHub />)
+    element: withPlanRestriction(<ComplianceHub />, 'plus')
   },
   {
     path: '/control-plane/security',
-    element: withShell(<SecurityMonitor />)
+    element: withPlanRestriction(<SecurityMonitor />, 'plus')
   },
   {
     path: '/control-plane/performance',
-    element: withShell(<PerformanceDashboard />)
+    element: withPlanRestriction(<PerformanceDashboard />, 'plus')
   },
   {
     path: '/control-plane/live',
-    element: withShell(<LiveExecutionMonitor />)
+    element: withPlanRestriction(<LiveExecutionMonitor />, 'plus')
   },
   {
     path: '/control-plane/guided',
-    element: withShell(<ControlPlaneGuide />)
+    element: withPlanRestriction(<ControlPlaneGuide />, 'plus')
   },
   // Developer Tools
   {

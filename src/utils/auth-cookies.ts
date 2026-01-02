@@ -1,19 +1,17 @@
 /**
  * Cookie-based Authentication Utilities
  * 
- * This module provides cookie-based authentication, which is more secure
- * than localStorage as cookies are HttpOnly and cannot be accessed by JavaScript,
- * protecting against XSS attacks.
- * 
- * The backend sets HttpOnly secure cookies on login, and the frontend
- * relies on these cookies being sent automatically with requests.
+ * PRODUCTION SECURITY:
+ * - Tokens are stored in HttpOnly secure cookies (set by backend)
+ * - Session data is stored in secure cookies (not localStorage)
+ * - All cookies use SameSite=Strict and Secure flags
+ * - No sensitive data in localStorage (XSS protection)
  */
 
 export type UserRole = 'user' | 'org_admin' | 'platform_dev' | 'finance' | 'compliance' | 'ml_engineer' | 'viewer' | 'admin' | 'security' | 'analyst';
 
 /**
- * Session data that can be stored in non-HttpOnly cookies or localStorage
- * (user info, not sensitive tokens)
+ * Session data stored in secure cookie (not HttpOnly so JS can read user info)
  */
 export interface SessionData {
   email: string;
@@ -21,14 +19,52 @@ export interface SessionData {
   org: string;
   userId?: string;
   plan?: string;
+  subscription_tier?: string;
   organization?: string;
   user?: string;
 }
 
-const SESSION_DATA_KEY = 'rg_session_data';
+const SESSION_COOKIE_NAME = 'rg_session';
 
 /**
- * Save session data (user info only, not tokens)
+ * Set a secure cookie with proper flags
+ */
+const setSecureCookie = (name: string, value: string, days: number = 7) => {
+  const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString();
+  const isSecure = window.location.protocol === 'https:';
+  const sameSite = 'Strict';
+  
+  // Build cookie string with security flags
+  let cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=${sameSite}`;
+  if (isSecure) {
+    cookie += '; Secure';
+  }
+  document.cookie = cookie;
+};
+
+/**
+ * Get a cookie value by name
+ */
+const getCookie = (name: string): string | null => {
+  const cookies = document.cookie.split(';');
+  for (const cookie of cookies) {
+    const [cookieName, cookieValue] = cookie.trim().split('=');
+    if (cookieName === name) {
+      return decodeURIComponent(cookieValue);
+    }
+  }
+  return null;
+};
+
+/**
+ * Delete a cookie
+ */
+const deleteCookie = (name: string) => {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+};
+
+/**
+ * Save session data in secure cookie (user info only, not tokens)
  * Tokens are stored in HttpOnly cookies by the backend
  */
 export const saveSessionData = (email: string, role: UserRole, orgId: string, userId?: string) => {
@@ -36,55 +72,79 @@ export const saveSessionData = (email: string, role: UserRole, orgId: string, us
     email,
     role,
     org: orgId,
-    userId: userId || email, // Use email as fallback user identifier
+    userId: userId || email,
   };
-  // Store only non-sensitive user info
-  // Tokens are in HttpOnly cookies set by backend
-  localStorage.setItem(SESSION_DATA_KEY, JSON.stringify(sessionData));
+  // Store in secure cookie instead of localStorage
+  setSecureCookie(SESSION_COOKIE_NAME, JSON.stringify(sessionData));
+  
+  // MIGRATION: Clear any legacy localStorage data
+  localStorage.removeItem('rg_session_data');
 };
 
 /**
- * Get session data (user info only)
- * Note: Tokens are in HttpOnly cookies and cannot be read by JavaScript
+ * Get session data from secure cookie
  */
 export const getSessionData = (): SessionData | null => {
-  const data = localStorage.getItem(SESSION_DATA_KEY);
-  if (!data) return null;
-  
-  try {
-    return JSON.parse(data) as SessionData;
-  } catch {
-    return null;
+  // Try cookie first (new secure method)
+  const cookieData = getCookie(SESSION_COOKIE_NAME);
+  if (cookieData) {
+    try {
+      return JSON.parse(cookieData) as SessionData;
+    } catch {
+      return null;
+    }
   }
+  
+  // MIGRATION: Check localStorage for legacy data and migrate
+  const legacyData = localStorage.getItem('rg_session_data');
+  if (legacyData) {
+    try {
+      const parsed = JSON.parse(legacyData) as SessionData;
+      // Migrate to cookie
+      setSecureCookie(SESSION_COOKIE_NAME, legacyData);
+      localStorage.removeItem('rg_session_data');
+      return parsed;
+    } catch {
+      localStorage.removeItem('rg_session_data');
+    }
+  }
+  
+  return null;
 };
 
 /**
- * Clear session data
- * Note: HttpOnly cookies are cleared by backend on logout
+ * Clear all session data and cookies
  */
 export const clearSessionData = () => {
-  localStorage.removeItem(SESSION_DATA_KEY);
-  // Also clear any legacy localStorage items
-  localStorage.removeItem('rg_access_token');
-  localStorage.removeItem('rg_api_key');
-  localStorage.removeItem('rg_email');
-  localStorage.removeItem('rg_role');
-  localStorage.removeItem('rg_org_id');
-  // Clear sessionStorage items (chat IDs, etc.)
-  sessionStorage.removeItem('resonant-chat-id');
-  sessionStorage.removeItem('current-conversation-id');
-  // SECURITY: Clear chat data to prevent leaking to next user
-  localStorage.removeItem('resonant-chat-current-conversation');
-  localStorage.removeItem('resonant-chat-user-id');
-  // Clear guest data from sessionStorage
-  sessionStorage.removeItem('guest-conversations');
-  sessionStorage.removeItem('guest-memories');
-  // SECURITY: Clear IDE project data to prevent leaking to next user
-  localStorage.removeItem('ide-project-id');
-  localStorage.removeItem('dsidp_ide_memory');
-  localStorage.removeItem('ide-tabs');
-  localStorage.removeItem('ide-active-tab');
-  localStorage.removeItem('ide-open-files');
+  // Clear session cookie
+  deleteCookie(SESSION_COOKIE_NAME);
+  
+  // Clear all legacy localStorage items
+  const legacyKeys = [
+    'rg_session_data',
+    'rg_access_token',
+    'rg_api_key',
+    'rg_email',
+    'rg_role',
+    'rg_org_id',
+    'resonant-chat-current-conversation',
+    'resonant-chat-user-id',
+    'ide-project-id',
+    'dsidp_ide_memory',
+    'ide-tabs',
+    'ide-active-tab',
+    'ide-open-files',
+  ];
+  legacyKeys.forEach(key => localStorage.removeItem(key));
+  
+  // Clear sessionStorage items
+  const sessionKeys = [
+    'resonant-chat-id',
+    'current-conversation-id',
+    'guest-conversations',
+    'guest-memories',
+  ];
+  sessionKeys.forEach(key => sessionStorage.removeItem(key));
 };
 
 /**

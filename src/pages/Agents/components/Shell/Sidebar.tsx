@@ -37,9 +37,6 @@ const SidebarComponent: React.FC<SidebarProps> = ({ className }) => {
   return (
     <aside className={`${styles.sidebar} ${sidebarCollapsed ? styles.collapsed : ''} ${className || ''}`}>
       <div className={styles.sidebarHeader}>
-        <div className={styles.logo}>
-          <Icons.Logo />
-        </div>
         <button className={styles.collapseBtn} onClick={toggleSidebar}>
           {sidebarCollapsed ? <Icons.ChevronRight /> : <Icons.ChevronDown />}
         </button>
@@ -59,14 +56,7 @@ const SidebarComponent: React.FC<SidebarProps> = ({ className }) => {
         ))}
       </nav>
 
-      <div className={styles.sidebarFooter}>
-        {!sidebarCollapsed && (
-          <div className={styles.version}>
-            <span>v0.1.0</span>
-            <span className={styles.status}>Enterprise Ready: 55%</span>
-          </div>
-        )}
-      </div>
+      <div className={styles.sidebarFooter} />
     </aside>
   );
 };

@@ -49,7 +49,12 @@ const MetricsFooter: React.FC = memo(() => {
   const activeAgents = agents.filter(a => a.status === 'active').length;
   const runningExecutions = executions.filter(e => e.status === 'running').length;
   const completedToday = executions.filter(e => e.status === 'completed').length;
-  const totalCost = agents.reduce((sum, a) => sum + a.costToday, 0);
+  const totalCost = agents.reduce((sum, a) => sum + (a.costToday || 0), 0);
+  
+  // Calculate real success rate from executions
+  const totalExecutions = executions.length;
+  const successfulExecutions = executions.filter(e => e.status === 'completed').length;
+  const successRate = totalExecutions > 0 ? ((successfulExecutions / totalExecutions) * 100).toFixed(1) : '0.0';
 
   return (
     <footer className={styles.metricsFooter}>
@@ -65,7 +70,7 @@ const MetricsFooter: React.FC = memo(() => {
       </div>
       <div className={styles.metricItem}>
         <Icons.CheckCircle />
-        <span className={styles.metricValue}>{completedToday || 247}</span>
+        <span className={styles.metricValue}>{completedToday}</span>
         <span className={styles.metricLabel}>Completed Today</span>
       </div>
       <div className={styles.metricItem}>
@@ -75,12 +80,12 @@ const MetricsFooter: React.FC = memo(() => {
       </div>
       <div className={styles.metricItem}>
         <Icons.TrendingUp />
-        <span className={styles.metricValue}>94.2%</span>
+        <span className={styles.metricValue}>{successRate}%</span>
         <span className={styles.metricLabel}>Success Rate</span>
       </div>
       <div className={styles.metricItem}>
         <Icons.Wallet />
-        <span className={styles.metricValue}>${wallet.totalBalance?.toFixed(2) || '1,250.00'}</span>
+        <span className={styles.metricValue}>${(wallet.totalBalance || 0).toFixed(2)}</span>
         <span className={styles.metricLabel}>Balance</span>
       </div>
     </footer>

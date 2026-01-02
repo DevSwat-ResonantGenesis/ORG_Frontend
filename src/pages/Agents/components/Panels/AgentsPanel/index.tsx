@@ -75,7 +75,8 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   }, []);
 
   const copyAgentHash = useCallback((agent: Agent) => {
-    const hash = `0x${agent.id.split('-').join('').slice(0, 40)}`;
+    // Use the real agent hash or ID
+    const hash = agent.hash || agent.id;
     navigator.clipboard.writeText(hash);
   }, []);
 

@@ -1939,3 +1939,11 @@
   background: #ffffff;
   color: #18181b;
 }
+
+/* Project Builder View Container */
+.builderViewContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ide-bg-primary, #0a0a0a);
+}

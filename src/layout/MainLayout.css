@@ -155,8 +155,26 @@
 }
 
 /* Network pages - ultra compact */
-.main-content:not(:has(.idePageContainer)) > .page-wrapper {
+.main-content:not(:has(.idePageContainer)):not(:has(.buildPage)) > .page-wrapper {
   padding-top: 5px !important;
+}
+
+/* Build Page - flush with header, no padding */
+.main-content:has(.buildPage) {
+  padding-top: 48px !important;
+  padding-bottom: 0 !important;
+}
+
+.main-content:has(.buildPage) > .page-wrapper {
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.page-wrapper:has(.buildPage) {
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 /* IDE Page - Full control, no global styles */

@@ -180,8 +180,15 @@ export const sendResonantMessage = async (
   // Apply Social Cognition Layer for adaptive interpersonal mirroring
   const enhancedRequest = applySocialCognitionToRequest(request);
   
+  // Convert chatId to chat_id for backend compatibility (snake_case)
+  const backendRequest = {
+    ...enhancedRequest,
+    chat_id: enhancedRequest.chatId,  // Backend expects snake_case
+    chatId: undefined,  // Remove camelCase version
+  };
+  
   try {
-    const response = await fastapiClient.post('/resonant-chat/message', enhancedRequest);
+    const response = await fastapiClient.post('/resonant-chat/message', backendRequest);
     return response.data;
   } catch (error: any) {
     // Handle auth errors - DO NOT fallback, require re-login
@@ -201,6 +208,27 @@ export const sendResonantMessage = async (
     if (error?.response?.status === 402) {
       const detail = error?.response?.data?.detail;
       throw new Error(detail?.message || 'Insufficient credits. Please purchase more credits to continue.');
+    }
+
+    // Handle LLM-related errors (quota, rate limit, API key issues)
+    const errorMsg = error?.response?.data?.detail || error?.response?.data?.message || error?.message || '';
+    const isLLMError = 
+      errorMsg.toLowerCase().includes('quota') ||
+      errorMsg.toLowerCase().includes('rate limit') ||
+      errorMsg.toLowerCase().includes('insufficient') ||
+      errorMsg.toLowerCase().includes('credit') ||
+      errorMsg.toLowerCase().includes('api key') ||
+      errorMsg.toLowerCase().includes('failed to generate') ||
+      error?.response?.status === 429;
+    
+    if (isLLMError) {
+      logger.error('LLM service unavailable - user needs to add API key', {
+        component: 'ResonantChat',
+        error: errorMsg
+      });
+      throw new Error(
+        'AI service requires your own API key. Please go to Settings → API Keys to add your OpenAI, Anthropic, or other provider key to continue using Resonant Chat.'
+      );
     }
 
     // Check if backend is unavailable (404, 501, network errors)
@@ -709,6 +737,13 @@ export const getChatMetrics = async (chatId: string): Promise<ChatMetrics | null
  * Returns quality, hallucination, token count for a single message
  */
 export const getMessageMetrics = async (messageId: string): Promise<MessageMetrics | null> => {
+  // Skip if messageId is not a valid UUID (frontend-generated IDs like "msg-123..." won't work)
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!uuidRegex.test(messageId)) {
+    // Silently skip - this is a frontend-generated ID, not a backend UUID
+    return null;
+  }
+  
   try {
     const response = await fastapiClient.get(`/resonant-chat/message-metrics/${messageId}`);
     // Only return if we have valid metrics data
