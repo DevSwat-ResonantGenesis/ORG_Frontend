@@ -12,8 +12,23 @@ export interface Capability {
   category: 'core' | 'tool' | 'integration' | 'custom';
   enabled: boolean;
   required_permissions: string[];
+  requiredPermissions?: string[];
   created_at?: string;
   updated_at?: string;
+  // Enhanced fields
+  executionMode?: 'sync' | 'async' | 'streaming';
+  timeout?: number;
+  rateLimit?: number;
+  costPerCall?: number;
+  apiEndpoint?: string;
+  authType?: string;
+  // Usage stats
+  callsToday?: number;
+  totalCalls?: number;
+  successRate?: number;
+  lastUsed?: string;
+  totalCost?: number;
+  avgLatency?: number;
 }
 
 export interface AddCapabilityRequest {
@@ -22,6 +37,20 @@ export interface AddCapabilityRequest {
   category?: string;
   enabled?: boolean;
   required_permissions?: string[];
+  // Enhanced fields
+  capability_type?: 'action' | 'tool' | 'integration' | 'workflow';
+  execution_mode?: 'sync' | 'async' | 'streaming';
+  rate_limit?: number;
+  timeout?: number;
+  retry_policy?: 'none' | 'linear' | 'exponential';
+  max_retries?: number;
+  input_schema?: object;
+  output_schema?: object;
+  webhook_url?: string;
+  api_endpoint?: string;
+  auth_type?: 'none' | 'api_key' | 'oauth2' | 'bearer';
+  cost_per_call?: number;
+  tags?: string[];
 }
 
 export interface UpdateCapabilityRequest {
@@ -113,17 +142,38 @@ export const addCapability = async (
         category: capability.category || 'custom',
         enabled: capability.enabled !== false,
         required_permissions: capability.required_permissions || [],
+        // Enhanced fields
+        capability_type: capability.capability_type || 'action',
+        execution_mode: capability.execution_mode || 'sync',
+        rate_limit: capability.rate_limit,
+        timeout: capability.timeout || 30,
+        retry_policy: capability.retry_policy || 'none',
+        max_retries: capability.max_retries || 3,
+        input_schema: capability.input_schema,
+        output_schema: capability.output_schema,
+        webhook_url: capability.webhook_url,
+        api_endpoint: capability.api_endpoint,
+        auth_type: capability.auth_type || 'none',
+        cost_per_call: capability.cost_per_call || 0,
+        tags: capability.tags || [],
       }
     );
     
+    const capData = response.data.capability || response.data;
     return {
-      id: response.data.id,
-      name: response.data.capability.name,
-      description: response.data.capability.description,
-      category: response.data.capability.category,
-      enabled: response.data.capability.enabled,
-      required_permissions: response.data.capability.required_permissions,
-      created_at: response.data.capability.created_at,
+      id: response.data.id || capData.id,
+      name: capData.name,
+      description: capData.description,
+      category: capData.category,
+      enabled: capData.enabled,
+      required_permissions: capData.required_permissions || [],
+      executionMode: capData.execution_mode,
+      timeout: capData.timeout,
+      rateLimit: capData.rate_limit,
+      costPerCall: capData.cost_per_call,
+      apiEndpoint: capData.api_endpoint,
+      authType: capData.auth_type,
+      created_at: capData.created_at,
     };
   } catch (error: any) {
     console.error('Failed to add capability:', error);

@@ -186,7 +186,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <path d="M2 14H14" strokeLinecap="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Marketplace</span>
+              <span className={styles.usmLabel}>General Store</span>
               {location.pathname === '/marketplace' && <span className={styles.usmActiveIndicator} />}
             </button>
 
@@ -239,7 +239,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <rect x="9" y="9" width="5" height="5" rx="1" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Marketplace</span>
+              <span className={styles.usmLabel}>DSID Marketplace</span>
               {location.pathname === '/network/marketplace' && <span className={styles.usmActiveIndicator} />}
             </button>
 

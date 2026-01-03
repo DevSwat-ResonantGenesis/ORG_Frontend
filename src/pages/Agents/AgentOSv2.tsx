@@ -3,7 +3,9 @@ import { useUIStore, useAgentStore, useExecutionStore, useEconomyStore } from '.
 import { Sidebar } from './components/Shell';
 import { PanelErrorBoundary, PanelSkeleton, Icons } from './components/shared';
 import { Header } from '../../components/layout/Header/Header';
+import { listAgents } from '../../api/agents';
 import type { SidebarSection } from '../../types';
+import type { Agent } from '../../types';
 import styles from './AgentOSv2.module.css';
 
 // ============== LAZY LOADED PANELS ==============
@@ -97,6 +99,66 @@ const MetricsFooter: React.FC = memo(() => {
 const AgentOSv2: React.FC = () => {
   const activeSection = useUIStore((state) => state.activeSection);
   const sidebarCollapsed = useUIStore((state) => state.sidebarCollapsed);
+  const setAgents = useAgentStore((state) => state.setAgents);
+  const setLoading = useAgentStore((state) => state.setLoading);
+
+  // Load agents from backend on mount
+  useEffect(() => {
+    const loadAgentsFromBackend = async () => {
+      setLoading(true);
+      try {
+        const backendAgents = await listAgents();
+        // Transform backend response to match Agent type
+        const agents: Agent[] = backendAgents.map((a) => ({
+          id: a.id,
+          hash: `0x${a.id.replace(/-/g, '').slice(0, 40)}`,
+          name: a.name,
+          type: 'executor',
+          status: (a.status === 'active' ? 'active' : 'idle') as 'idle' | 'active' | 'paused' | 'archived',
+          mode: 'governed' as const,
+          version: '1.0.0',
+          capabilities: ['reasoning', 'code', 'research'],
+          executions: 0,
+          costToday: 0,
+          walletBalance: 0,
+          pendingApprovals: 0,
+          riskLevel: 'low' as const,
+          utilityScore: 0.5,
+          ownerId: a.created_by || '',
+          config: {
+            provider: 'openai',
+            model: (a.meta_data as any)?.model || 'gpt-4-turbo-preview',
+            systemPrompt: '',
+            temperature: 0.7,
+            maxTokens: 4096,
+            tools: [],
+            memoryConfig: {
+              shortTermLimit: 10,
+              longTermEnabled: false,
+              vectorStoreEnabled: false,
+              contextWindow: 4096,
+            },
+            autonomyConfig: {
+              canSpawnSubAgents: false,
+              canModifySelf: false,
+              canAccessNetwork: false,
+              canExecuteCode: false,
+              maxConcurrentTasks: 5,
+            },
+          },
+          createdAt: new Date(a.created_at),
+          updatedAt: new Date(a.updated_at),
+        }));
+        setAgents(agents);
+      } catch (error) {
+        console.error('Failed to load agents from backend:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAgentsFromBackend();
+  }, [setAgents, setLoading]);
 
   // Render the appropriate panel based on active section
   const renderPanel = () => {

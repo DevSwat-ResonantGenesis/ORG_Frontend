@@ -142,7 +142,7 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
   }, []);
 
   // Transform API entries to display format
-  const displayEntries: AuditEntry[] = auditEntries.map(entry => ({
+  const displayEntries: AuditEntry[] = (auditEntries || []).map(entry => ({
     id: entry.id || entry.entry_hash,
     timestamp: new Date(entry.timestamp || entry.created_at || Date.now()),
     action: entry.action || entry.event_type,
@@ -460,18 +460,18 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
         {/* Stats */}
         <div className={styles.statsBar}>
           <div className={styles.stat}>
-            <span className={styles.statValue}>{mockEntries.length}</span>
+            <span className={styles.statValue}>{stats?.total_entries || totalEntries}</span>
             <span className={styles.statLabel}>Total Events</span>
           </div>
           <div className={styles.stat}>
             <span className={`${styles.statValue} ${styles.success}`}>
-              {mockEntries.filter(e => e.result === 'success').length}
+              {stats ? Math.round(stats.total_entries * stats.success_rate) : 0}
             </span>
             <span className={styles.statLabel}>Successful</span>
           </div>
           <div className={styles.stat}>
             <span className={`${styles.statValue} ${styles.error}`}>
-              {mockEntries.filter(e => e.result === 'failure').length}
+              {stats ? Math.round(stats.total_entries * (1 - stats.success_rate)) : 0}
             </span>
             <span className={styles.statLabel}>Failed</span>
           </div>

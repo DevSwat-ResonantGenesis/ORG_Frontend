@@ -196,6 +196,10 @@ export const Header: React.FC<HeaderProps> = ({
                         <span className={styles.navDropdownItemTitle}>Workflow Designer</span>
                         <span className={styles.navDropdownItemDesc}>Visual workflow builder</span>
                       </button>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/marketplace'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>General Store</span>
+                        <span className={styles.navDropdownItemDesc}>Templates & UI Skins</span>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -320,8 +324,8 @@ export const Header: React.FC<HeaderProps> = ({
                   <div className={styles.navDropdownGrid}>
                     <div className={styles.navDropdownColumn}>
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/network/marketplace'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Marketplace</span>
-                        <span className={styles.navDropdownItemDesc}>Browse & deploy agents</span>
+                        <span className={styles.navDropdownItemTitle}>DSID Marketplace</span>
+                        <span className={styles.navDropdownItemDesc}>T3 verified agents only</span>
                       </button>
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/network/agents'); setActiveDropdown(null); }}>
                         <span className={styles.navDropdownItemTitle}>Agent Browser</span>

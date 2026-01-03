@@ -284,28 +284,41 @@ const SimpleFactoryComponent: React.FC<SimpleFactoryProps> = ({ className }) => 
                   className={styles.templateCard}
                   style={{ '--card-color': template.color } as React.CSSProperties}
                 >
-                  <div className={styles.templateIcon}>
-                    {getIcon(template.icon)}
+                  {/* Card Header with Icon and Info */}
+                  <div className={styles.cardHeader}>
+                    <div className={styles.templateIcon}>
+                      {getIcon(template.icon)}
+                    </div>
+                    <div className={styles.cardInfo}>
+                      <h3>{template.name}</h3>
+                    </div>
                   </div>
-                  <h3>{template.name}</h3>
-                  <p>{template.description}</p>
-                  <button
-                    className={styles.createButton}
-                    onClick={() => createAgentFromTemplate(template)}
-                    disabled={isCreating}
-                  >
-                    {isCreating ? (
-                      <>
-                        <Icons.Refresh className={styles.spin} />
-                        Creating...
-                      </>
-                    ) : (
-                      <>
-                        <Icons.Plus />
-                        Create Agent
-                      </>
-                    )}
-                  </button>
+                  
+                  {/* Description */}
+                  <div className={styles.cardBody}>
+                    <p>{template.description}</p>
+                  </div>
+                  
+                  {/* Footer with Create Button */}
+                  <div className={styles.cardFooter}>
+                    <button
+                      className={styles.createButton}
+                      onClick={() => createAgentFromTemplate(template)}
+                      disabled={isCreating}
+                    >
+                      {isCreating ? (
+                        <>
+                          <Icons.Refresh className={styles.spin} />
+                          Creating...
+                        </>
+                      ) : (
+                        <>
+                          <Icons.Plus />
+                          Create Agent
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

@@ -539,17 +539,20 @@ export default function AgentMarketplacePage() {
         {/* Header */}
         <div style={styles.header}>
           <div style={styles.headerTop}>
-            <h1 style={styles.title}>Agent Marketplace</h1>
+            <h1 style={styles.title}>🌐 DSID Network Marketplace</h1>
+            <p style={{ fontSize: '0.85rem', color: '#888', margin: '4px 0 0 0' }}>
+              DSID-verified (Trust Level T3) agents only - Decentralized & cryptographically verified
+            </p>
           </div>
 
           {/* Status Bar */}
           <div style={styles.statusBar}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <div style={{ ...styles.statusDot, background: status?.running ? '#10b981' : '#ef4444' }} />
-              Node: {status?.running ? 'Online' : 'Offline'}
+              RARA Node: {status?.running ? 'Online' : 'Offline'}
             </div>
             <div style={{ color: '#666' }}>|</div>
-            <div>{categoryCounts.all || 0} agents available</div>
+            <div>{categoryCounts.all || 0} verified agents</div>
           </div>
 
           {/* Search */}

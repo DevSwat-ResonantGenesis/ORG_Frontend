@@ -1,11 +1,10 @@
 /**
- * Team Dashboard - Enterprise-Grade Multi-Agent Operator Console Styles
+ * Team Dashboard - Compact Modern Design
  */
 
 .container {
   min-height: 100vh;
   background: var(--bg-primary);
-  padding: 0;
 }
 
 .loading,
@@ -13,17 +12,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 400px;
-  font-size: 16px;
+  min-height: 200px;
+  font-size: 14px;
   color: var(--text-secondary);
 }
 
-/* Header */
+/* Header - Compact */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  padding: 10px 16px;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
   position: sticky;
@@ -34,7 +33,7 @@
 .headerLeft {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .backButton {
@@ -42,10 +41,10 @@
   border: none;
   color: var(--text-secondary);
   cursor: pointer;
-  font-size: 14px;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: all 0.2s;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: all 0.15s;
 }
 
 .backButton:hover {
@@ -55,13 +54,13 @@
 
 .headerTitle h1 {
   margin: 0;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .teamId {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-tertiary);
   font-family: monospace;
 }
@@ -69,98 +68,103 @@
 .headerRight {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
 }
 
 .headerStat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 12px;
   border-right: 1px solid var(--border);
 }
 
 .headerStat:last-of-type {
   border-right: none;
+  padding-right: 0;
 }
 
 .headerStatValue {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
 }
 
 .headerStatLabel {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-tertiary);
   text-transform: uppercase;
 }
 
 /* State Indicator */
 .stateIndicator {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
+  gap: 4px;
+  padding: 2px 8px;
   background: var(--bg-tertiary);
-  border-radius: 20px;
-  font-size: 13px;
+  border-radius: 12px;
+  font-size: 11px;
   font-weight: 500;
 }
 
 .stateSmall {
-  padding: 2px 6px;
-  font-size: 11px;
+  padding: 1px 5px;
+  font-size: 10px;
 }
 
 .stateIcon {
+  font-size: 8px;
+}
+
+.stateLabel {
   font-size: 10px;
 }
 
 /* Trust Badge */
 .trustBadge {
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
   font-weight: 700;
   color: white;
 }
 
 .trustSmall {
-  padding: 2px 6px;
-  font-size: 10px;
+  padding: 1px 4px;
+  font-size: 9px;
 }
 
 /* Role Badge */
 .roleBadge {
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
   font-weight: 600;
   color: white;
   text-transform: capitalize;
 }
 
-/* Navigation Tabs */
+/* Navigation Tabs - Compact */
 .tabs {
   display: flex;
-  gap: 4px;
-  padding: 12px 24px;
+  gap: 2px;
+  padding: 6px 16px;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
   overflow-x: auto;
 }
 
 .tab {
-  padding: 10px 16px;
+  padding: 6px 12px;
   background: transparent;
   border: none;
-  border-radius: 6px;
-  font-size: 14px;
+  border-radius: 4px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
   white-space: nowrap;
 }
 
@@ -170,101 +174,101 @@
 }
 
 .tabActive {
-  background: var(--color-primary-100);
-  color: var(--color-primary-600);
+  background: rgba(14, 165, 233, 0.15);
+  color: #0ea5e9;
 }
 
-/* Content */
+/* Content - Compact */
 .content {
-  padding: 24px;
+  padding: 12px 16px;
   max-width: 1400px;
   margin: 0 auto;
 }
 
-/* Panel */
+/* Panel - Compact */
 .panel {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 24px;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
 }
 
 .panelHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .panelTitle {
-  margin: 0 0 8px 0;
-  font-size: 18px;
+  margin: 0 0 4px 0;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .panelDescription {
-  margin: 0 0 20px 0;
-  font-size: 14px;
+  margin: 0 0 10px 0;
+  font-size: 12px;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
-/* Overview Grid */
+/* Overview Grid - Compact */
 .overviewGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
 }
 
-/* Stats Grid */
+/* Stats Grid - Compact */
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 12px;
+  gap: 2px;
+  padding: 8px;
   background: var(--bg-tertiary);
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .statLabel {
-  font-size: 12px;
+  font-size: 10px;
   color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .statValue {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
-/* Agent List */
+/* Agent List - Compact */
 .agentsList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
 }
 
 .agentCard {
   background: var(--bg-tertiary);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 12px 16px;
+  border-radius: 6px;
+  padding: 8px 10px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
 }
 
 .agentCard:hover {
-  border-color: var(--color-primary-300);
+  border-color: #0ea5e9;
   background: var(--bg-primary);
 }
 
@@ -272,57 +276,57 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .agentName {
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .agentBadges {
   display: flex;
-  gap: 6px;
+  gap: 4px;
 }
 
 .agentStats {
   display: flex;
-  gap: 16px;
-  font-size: 12px;
+  gap: 12px;
+  font-size: 10px;
   color: var(--text-tertiary);
 }
 
-/* Activity Preview */
+/* Activity Preview - Compact */
 .activityPreview {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 4px;
+  margin-bottom: 8px;
 }
 
 .activityItem {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
+  gap: 8px;
+  padding: 4px 8px;
   background: var(--bg-tertiary);
-  border-radius: 6px;
-  font-size: 13px;
+  border-radius: 4px;
+  font-size: 11px;
 }
 
 .activityTime {
   font-family: monospace;
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-tertiary);
-  min-width: 80px;
+  min-width: 60px;
 }
 
 .activityAgent {
   font-weight: 500;
   color: var(--text-primary);
-  min-width: 80px;
+  min-width: 60px;
 }
 
 .activityTask {
@@ -331,60 +335,60 @@
 }
 
 .activityOutcome {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
 }
 
 .activityOutcome.success {
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(16, 185, 129, 0.15);
   color: #10b981;
 }
 
 .activityOutcome.failure {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.15);
   color: #ef4444;
 }
 
 .activityOutcome.blocked {
-  background: rgba(245, 158, 11, 0.1);
+  background: rgba(245, 158, 11, 0.15);
   color: #f59e0b;
 }
 
-/* Graph View */
+/* Graph View - Compact */
 .graphContainer {
-  min-height: 400px;
+  min-height: 200px;
   position: relative;
 }
 
 .graphLegend {
   display: flex;
-  gap: 20px;
-  padding: 12px 16px;
+  gap: 12px;
+  padding: 8px 12px;
   background: var(--bg-tertiary);
-  border-radius: 8px;
-  margin-bottom: 20px;
+  border-radius: 6px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
 }
 
 .legendItem {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
+  gap: 4px;
+  font-size: 10px;
   color: var(--text-secondary);
 }
 
 .legendDot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
 }
 
 .legendLine {
-  width: 20px;
+  width: 16px;
   height: 2px;
   background: var(--text-tertiary);
 }
@@ -403,10 +407,10 @@
 
 .graphNodes {
   position: relative;
-  height: 300px;
+  height: 180px;
   background: var(--bg-tertiary);
-  border-radius: 8px;
-  margin-bottom: 20px;
+  border-radius: 6px;
+  margin-bottom: 10px;
 }
 
 .graphNode {
@@ -414,36 +418,36 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 12px 16px;
+  gap: 2px;
+  padding: 8px 12px;
   background: var(--bg-secondary);
-  border: 2px solid var(--border);
-  border-radius: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
 }
 
 .graphNode:hover,
 .graphNodeSelected {
-  border-color: var(--color-primary-500);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #0ea5e9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .graphNodeName {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .dependenciesList {
   background: var(--bg-tertiary);
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: 6px;
+  padding: 10px;
 }
 
 .dependenciesList h3 {
-  margin: 0 0 12px 0;
-  font-size: 14px;
+  margin: 0 0 8px 0;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -451,10 +455,10 @@
 .dependencyItem {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 0;
+  gap: 8px;
+  padding: 4px 0;
   border-bottom: 1px solid var(--border);
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .dependencyItem:last-child {
@@ -462,7 +466,7 @@
 }
 
 .depArrow {
-  font-size: 16px;
+  font-size: 12px;
   font-weight: bold;
 }
 
@@ -480,41 +484,41 @@
 
 .depType {
   margin-left: auto;
-  font-size: 11px;
+  font-size: 9px;
   color: var(--text-tertiary);
   text-transform: uppercase;
 }
 
-/* Resources */
+/* Resources - Compact */
 .resourcesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px;
 }
 
 .resourceCard {
   background: var(--bg-tertiary);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: 6px;
+  padding: 10px;
 }
 
 .resourceHeader {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .resourceIcon {
-  font-size: 24px;
-  width: 40px;
-  height: 40px;
+  font-size: 16px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--bg-secondary);
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .resourceInfo {
@@ -523,21 +527,21 @@
 
 .resourceName {
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .resourceType {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-tertiary);
   text-transform: capitalize;
 }
 
 .accessBadge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -558,15 +562,15 @@
 }
 
 .resourceUsage {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .usageBar {
-  height: 6px;
+  height: 4px;
   background: var(--bg-secondary);
-  border-radius: 3px;
+  border-radius: 2px;
   overflow: hidden;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .usageBarFill {
@@ -576,12 +580,12 @@
 }
 
 .usageText {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-tertiary);
 }
 
 .resourceUsedBy {
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .usedByLabel {
@@ -593,18 +597,18 @@
   color: var(--text-secondary);
 }
 
-/* Orchestration */
+/* Orchestration - Compact */
 .orchestrationList {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 }
 
 .orchestrationCard {
   background: var(--bg-tertiary);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: 6px;
+  padding: 10px;
 }
 
 .orchestrationCard.disabled {
@@ -615,12 +619,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .orchestrationName {
   margin: 0;
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -629,25 +633,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  padding: 16px;
+  gap: 10px;
+  padding: 10px;
   background: var(--bg-secondary);
-  border-radius: 8px;
-  margin-bottom: 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
 }
 
 .flowAgent {
-  padding: 8px 16px;
+  padding: 4px 10px;
   background: var(--bg-tertiary);
   border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 13px;
+  border-radius: 4px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--text-primary);
 }
 
 .flowArrow {
-  font-size: 24px;
+  font-size: 16px;
   font-weight: bold;
 }
 
@@ -666,7 +670,7 @@
 .orchestrationDetails {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 10px;
 }
 
 .orchestrationCondition {
@@ -675,9 +679,9 @@
 
 .orchestrationCondition code {
   background: var(--bg-secondary);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 11px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 10px;
 }
 
 .orchestrationAction {
@@ -697,12 +701,12 @@
   color: #ef4444;
 }
 
-/* Toggle Switch */
+/* Toggle Switch - Compact */
 .toggle {
   position: relative;
   display: inline-block;
-  width: 44px;
-  height: 24px;
+  width: 36px;
+  height: 20px;
 }
 
 .toggle input {
@@ -727,28 +731,28 @@
 .toggleSlider::before {
   position: absolute;
   content: "";
-  height: 18px;
-  width: 18px;
+  height: 14px;
+  width: 14px;
   left: 2px;
   bottom: 2px;
   background-color: white;
-  transition: 0.3s;
+  transition: 0.2s;
   border-radius: 50%;
 }
 
 .toggle input:checked + .toggleSlider {
-  background-color: var(--color-primary-500);
-  border-color: var(--color-primary-500);
+  background-color: #0ea5e9;
+  border-color: #0ea5e9;
 }
 
 .toggle input:checked + .toggleSlider::before {
-  transform: translateX(20px);
+  transform: translateX(16px);
 }
 
-/* Ledger Table */
+/* Ledger Table - Compact */
 .ledgerControls {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .ledgerTable {
@@ -758,23 +762,23 @@
 .ledgerTable table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .ledgerTable th {
   text-align: left;
-  padding: 12px 8px;
+  padding: 6px;
   background: var(--bg-tertiary);
   color: var(--text-tertiary);
   font-weight: 600;
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   border-bottom: 1px solid var(--border);
 }
 
 .ledgerTable td {
-  padding: 12px 8px;
+  padding: 6px;
   border-bottom: 1px solid var(--border);
   color: var(--text-secondary);
 }
@@ -785,16 +789,16 @@
 
 .timeCell {
   font-family: monospace;
-  font-size: 12px;
+  font-size: 10px;
   white-space: nowrap;
 }
 
 .agentLink {
   background: transparent;
   border: none;
-  color: var(--color-primary-500);
+  color: #0ea5e9;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 11px;
   padding: 0;
 }
 
@@ -803,9 +807,9 @@
 }
 
 .outcomeBadge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -832,7 +836,7 @@
 
 .hashCell {
   font-family: monospace;
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .copyButton {
@@ -841,67 +845,67 @@
   color: var(--text-tertiary);
   cursor: pointer;
   font-family: monospace;
-  font-size: 11px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: all 0.2s;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: all 0.15s;
 }
 
 .copyButton:hover {
   background: var(--bg-tertiary);
-  color: var(--color-primary-500);
+  color: #0ea5e9;
 }
 
-/* Members */
+/* Members - Compact */
 .roleLegend {
   display: flex;
-  gap: 24px;
-  padding: 16px;
+  gap: 16px;
+  padding: 8px 12px;
   background: var(--bg-tertiary);
-  border-radius: 8px;
-  margin-bottom: 20px;
+  border-radius: 6px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
 }
 
 .roleInfo {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
+  gap: 6px;
+  font-size: 10px;
   color: var(--text-secondary);
 }
 
 .membersList {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 8px;
 }
 
 .memberCard {
   background: var(--bg-tertiary);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px;
+  border-radius: 6px;
+  padding: 10px;
 }
 
 .memberHeader {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .memberAvatar {
-  width: 40px;
-  height: 40px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: var(--color-primary-500);
+  background: #0ea5e9;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 12px;
 }
 
 .memberInfo {
@@ -910,35 +914,35 @@
 
 .memberName {
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .memberEmail {
-  font-size: 12px;
+  font-size: 10px;
   color: var(--text-tertiary);
 }
 
 .memberPermissions {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 12px;
+  gap: 4px;
+  padding: 8px;
   background: var(--bg-secondary);
-  border-radius: 6px;
-  margin-bottom: 12px;
+  border-radius: 4px;
+  margin-bottom: 8px;
 }
 
 .permissionGroup {
   display: flex;
-  gap: 8px;
-  font-size: 12px;
+  gap: 6px;
+  font-size: 10px;
 }
 
 .permissionLabel {
   color: var(--text-tertiary);
-  min-width: 70px;
+  min-width: 50px;
 }
 
 .permissionValue {
@@ -954,30 +958,187 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12px;
+  font-size: 10px;
   color: var(--text-tertiary);
+}
+
+/* Modal Styles - Compact */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.modalClose {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.modalClose:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.modalContent {
+  padding: 16px;
+  overflow-y: auto;
+  max-height: 60vh;
+}
+
+.modalDescription {
+  margin: 0 0 12px 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-tertiary);
+}
+
+.formGroup {
+  margin-bottom: 12px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.formGroup input[type="checkbox"] {
+  margin-right: 6px;
+}
+
+.select,
+.input {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 12px;
+  transition: all 0.15s;
+}
+
+.select:focus,
+.input:focus {
+  outline: none;
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
+}
+
+.trustRequirement {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 6px;
+  font-size: 11px;
+  color: #f59e0b;
+  margin-top: 12px;
+}
+
+.trustIcon {
+  font-size: 14px;
+}
+
+.nftInfo {
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.nftInfoItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+}
+
+.nftInfoLabel {
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.nftInfoValue {
+  color: var(--text-primary);
+  font-size: 11px;
+  font-family: monospace;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
     align-items: flex-start;
+    padding: 8px 12px;
   }
   
   .headerRight {
     width: 100%;
     justify-content: flex-start;
     flex-wrap: wrap;
+    gap: 8px;
   }
   
   .tabs {
-    padding: 8px 16px;
+    padding: 4px 12px;
   }
   
   .content {
-    padding: 16px;
+    padding: 8px 12px;
   }
   
   .overviewGrid {
@@ -985,15 +1146,27 @@
   }
   
   .graphNodes {
-    height: 200px;
+    height: 150px;
   }
   
   .orchestrationFlow {
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
   }
   
   .flowArrow {
     transform: rotate(90deg);
+  }
+  
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .membersList {
+    grid-template-columns: 1fr;
+  }
+  
+  .resourcesGrid {
+    grid-template-columns: 1fr;
   }
 }

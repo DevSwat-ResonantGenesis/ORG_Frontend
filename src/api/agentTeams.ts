@@ -477,3 +477,30 @@ export const mintTeamAsNFT = async (
   }
 };
 
+/**
+ * List team on DSID Network Marketplace
+ * POST /agent-teams/{team_id}/list-marketplace
+ */
+export const listTeamOnMarketplace = async (
+  team_id: string,
+  params: {
+    price: number;
+    listing_type: 'sale' | 'rent' | 'both';
+    rent_price_per_day?: number;
+    description?: string;
+  }
+): Promise<{ 
+  success: boolean; 
+  listing_id: string; 
+  marketplace_url: string;
+  message: string;
+}> => {
+  try {
+    const response = await fastapiClient.post(`/agent-teams/${team_id}/list-marketplace`, params);
+    return response.data;
+  } catch (error) {
+    logger.apiError(`/agent-teams/${team_id}/list-marketplace`, error);
+    throw error;
+  }
+};
+

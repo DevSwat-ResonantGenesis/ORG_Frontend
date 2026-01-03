@@ -298,7 +298,7 @@ const EnhancedSidebar: React.FC<EnhancedSidebarProps> = ({
               onClick={() => { navigate('/marketplace'); if (onClose) onClose(); }}
             >
               <StorageIcon />
-              <span>Marketplace</span>
+              <span>General Store</span>
             </button>
           </div>
         </div>

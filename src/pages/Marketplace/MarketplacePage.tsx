@@ -324,9 +324,9 @@ const MarketplacePage: React.FC = () => {
     <div className={styles.helpCenterPage}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h1>Marketplace</h1>
+          <h1>🏪 General Store</h1>
           <p className={styles.subtitle}>
-            The most advanced AI marketplace - Buy, sell, rent agents, plugins, and more with blockchain verification.
+            Templates & UI Skins - Digital assets, themes, and agent templates for your workspace.
           </p>
         </div>
 
