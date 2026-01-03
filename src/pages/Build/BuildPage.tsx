@@ -240,6 +240,7 @@ export const BuildPage: React.FC = () => {
   const [generatedFiles, setGeneratedFiles] = useState<ProjectFile[]>([]);
   const [selectedFile, setSelectedFile] = useState<ProjectFile | null>(null);
   const [setupInstructions, setSetupInstructions] = useState('');
+  const [isSetupExpanded, setIsSetupExpanded] = useState(false);
   
   // Projects state
   const [projects, setProjects] = useState<UserProject[]>([]);
@@ -1448,11 +1449,33 @@ export const BuildPage: React.FC = () => {
               )}
             </div>
 
-            {/* Setup Instructions */}
+            {/* Setup Instructions - Collapsible */}
             {setupInstructions && (
               <div className={styles.setupSection}>
-                <h3><ClipboardIcon /> Setup Instructions</h3>
-                <pre className={styles.setupContent}>{setupInstructions}</pre>
+                <button 
+                  className={styles.setupToggle}
+                  onClick={() => setIsSetupExpanded(!isSetupExpanded)}
+                >
+                  <ClipboardIcon />
+                  <span>Setup Instructions</span>
+                  <svg 
+                    width="16" 
+                    height="16" 
+                    viewBox="0 0 16 16" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2"
+                    style={{ 
+                      transform: isSetupExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.2s ease'
+                    }}
+                  >
+                    <path d="M4 6l4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                {isSetupExpanded && (
+                  <pre className={styles.setupContent}>{setupInstructions}</pre>
+                )}
               </div>
             )}
           </div>
