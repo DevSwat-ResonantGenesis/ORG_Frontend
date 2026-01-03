@@ -874,19 +874,20 @@
   display: flex;
   gap: 6px;
   align-items: center;
+  max-width: 50%;
 }
 
 .modificationTextarea {
   flex: 1;
-  padding: 6px 10px;
+  padding: 4px 8px;
   background: #111111;
   border: 1px solid #222;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 11px;
   color: #fafafa;
   resize: none;
-  min-height: 28px;
-  max-height: 48px;
+  min-height: 24px;
+  max-height: 32px;
   font-family: inherit;
 }
 
