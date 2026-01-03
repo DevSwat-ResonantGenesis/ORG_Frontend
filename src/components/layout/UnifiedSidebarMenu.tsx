@@ -469,24 +469,22 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
 
           <div className={styles.usmDivider} />
 
-          {/* Developer Tools Section */}
+          {/* Code Visualizer Section */}
           <div className={styles.usmSection}>
-            <div className={styles.usmSectionTitle}>Developer Tools</div>
+            <div className={styles.usmSectionTitle}>Code Visualizer</div>
             
             <button
-              className={`${styles.usmItem} ${location.pathname === '/state-physics' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/state-physics'); onClose(); }}
+              className={`${styles.usmItem} ${location.pathname === '/code-visualizer' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/code-visualizer'); onClose(); }}
             >
               <span className={styles.usmIcon}>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="8" r="6" />
-                  <circle cx="8" cy="8" r="3" />
-                  <circle cx="8" cy="8" r="1" fill="currentColor" />
-                  <path d="M8 2V4M8 12V14M2 8H4M12 8H14" strokeLinecap="round" />
+                  <rect x="2" y="2" width="12" height="12" rx="1" />
+                  <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>State Physics</span>
-              {location.pathname === '/state-physics' && <span className={styles.usmActiveIndicator} />}
+              <span className={styles.usmLabel}>Visualizer</span>
+              {location.pathname === '/code-visualizer' && <span className={styles.usmActiveIndicator} />}
             </button>
 
             <button
@@ -506,19 +504,28 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               <span className={styles.usmLabel}>Hash Sphere Memory</span>
               {location.pathname === '/hash-sphere-memory' && <span className={styles.usmActiveIndicator} />}
             </button>
+          </div>
 
+          <div className={styles.usmDivider} />
+
+          {/* State Physics Section */}
+          <div className={styles.usmSection}>
+            <div className={styles.usmSectionTitle}>State Physics</div>
+            
             <button
-              className={`${styles.usmItem} ${location.pathname === '/code-visualizer' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/code-visualizer'); onClose(); }}
+              className={`${styles.usmItem} ${location.pathname === '/state-physics' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/state-physics'); onClose(); }}
             >
               <span className={styles.usmIcon}>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="2" width="12" height="12" rx="1" />
-                  <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="8" cy="8" r="6" />
+                  <circle cx="8" cy="8" r="3" />
+                  <circle cx="8" cy="8" r="1" fill="currentColor" />
+                  <path d="M8 2V4M8 12V14M2 8H4M12 8H14" strokeLinecap="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Code Visualizer</span>
-              {location.pathname === '/code-visualizer' && <span className={styles.usmActiveIndicator} />}
+              <span className={styles.usmLabel}>Physics Engine</span>
+              {location.pathname === '/state-physics' && <span className={styles.usmActiveIndicator} />}
             </button>
           </div>
 
