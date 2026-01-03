@@ -49,7 +49,7 @@ export const LLMErrorNotification: React.FC<LLMErrorNotificationProps> = ({
   };
 
   const handleAddKey = () => {
-    navigate('/settings/api-keys');
+    navigate('/profile');
   };
 
   const containerStyle: React.CSSProperties = inline ? {
@@ -258,7 +258,7 @@ export const getLLMErrorMessage = (error: any, service?: string): string => {
   const serviceName = service ? SERVICE_DESCRIPTIONS[service] || service : 'this service';
   
   if (!error) {
-    return `To use ${serviceName}, please add your own API key in Settings.`;
+    return `To use ${serviceName}, please add your own API key in your Profile.`;
   }
   
   const errorStr = typeof error === 'string' 
@@ -266,18 +266,18 @@ export const getLLMErrorMessage = (error: any, service?: string): string => {
     : (error?.message || error?.detail || '').toLowerCase();
   
   if (errorStr.includes('quota') || errorStr.includes('credit') || errorStr.includes('insufficient')) {
-    return `To continue using ${serviceName}, please add your own API key. Go to Settings → API Keys to add your OpenAI, Anthropic, or other provider key.`;
+    return `To continue using ${serviceName}, please add your own API key. Go to Profile to add your OpenAI, Anthropic, or other provider key.`;
   }
   
   if (errorStr.includes('rate limit')) {
-    return `Rate limit reached. Add your own API key in Settings → API Keys for uninterrupted service.`;
+    return `Rate limit reached. Add your own API key in your Profile for uninterrupted service.`;
   }
   
   if (errorStr.includes('failed to generate')) {
-    return `AI generation failed. Please add your own API key in Settings → API Keys to use ${serviceName}.`;
+    return `AI generation failed. Please add your own API key in your Profile to use ${serviceName}.`;
   }
   
-  return `To use ${serviceName}, please add your own API key in Settings → API Keys.`;
+  return `To use ${serviceName}, please add your own API key in your Profile.`;
 };
 
 export default LLMErrorNotification;

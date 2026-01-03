@@ -525,10 +525,15 @@ const router = createBrowserRouter([
     path: '/state-physics-api',
     element: withPublicShell(<StatePhysicsAPI />)
   },
-  // API Keys Management - Protected route
+  // API Keys Management - Redirect to Profile page
   {
     path: '/api-keys',
-    element: withShell(<APIKeysPage />)
+    element: <Navigate to="/profile" replace />
+  },
+  // Settings API Keys - Redirect to Profile page
+  {
+    path: '/settings/api-keys',
+    element: <Navigate to="/profile" replace />
   },
     // Hash Sphere Memory API - Public pricing and documentation page
   {
