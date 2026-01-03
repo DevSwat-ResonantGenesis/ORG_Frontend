@@ -30,18 +30,6 @@ export const ProductShowcaseSection = () => {
             title: 'AI Teams',
             description: 'Collaborate with AI agent teams',
             image: '/images/showcase/agent4.png',
-        },
-        {
-            number: '05',
-            title: 'Sale & Rent',
-            description: 'Monetize your agents in the marketplace',
-            image: '/images/showcase/step5-marketplace.png',
-        },
-        {
-            number: '06',
-            title: 'Own Identity',
-            description: 'Give your AI its own sovereign identity',
-            image: '/images/showcase/step6-identity.png',
         }
     ];
 
