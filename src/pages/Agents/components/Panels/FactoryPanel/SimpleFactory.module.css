@@ -63,8 +63,8 @@
 
 .viewToggle button.active {
   color: #fff;
-  background: rgba(59, 130, 246, 0.2);
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3);
+  background: transparent;
+  box-shadow: none;
 }
 
 .viewToggle button svg {
