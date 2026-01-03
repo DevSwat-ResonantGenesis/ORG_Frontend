@@ -98,16 +98,13 @@ const EconomyPanelComponent: React.FC<EconomyPanelProps> = ({ className }) => {
     credit(parseFloat(amount), 'Wallet Funded');
   }, [credit]);
 
-  // Wallet addresses from billing data or defaults
-  const walletAddresses = billingData?.wallets || [
-    { chain: 'Resonant Network', address: 'Not connected', balance: 0, symbol: 'RES' },
-  ];
+  // Wallet addresses from billing data
+  const walletAddresses = billingData?.wallets || [];
+  const hasWallets = walletAddresses.length > 0;
 
-  // Staking pools - fetch from API when available
-  const stakingPools = billingData?.staking_pools || [
-    { id: 'sp1', name: 'AGT Staking Pool', apy: 12.5, totalStaked: 0, yourStake: 0, rewards: 0 },
-    { id: 'sp2', name: 'Compute Pool', apy: 8.2, totalStaked: 0, yourStake: 0, rewards: 0 },
-  ];
+  // Staking pools from billing data
+  const stakingPools = billingData?.staking_pools || [];
+  const hasStakingPools = stakingPools.length > 0;
 
   return (
     <div className={`${styles.panel} ${className || ''}`}>
@@ -177,7 +174,7 @@ const EconomyPanelComponent: React.FC<EconomyPanelProps> = ({ className }) => {
             <div className={styles.walletsSection}>
               <h3><Icons.Wallet /> Connected Wallets</h3>
               <div className={styles.walletsList}>
-                {walletAddresses.map((w: any, i: number) => (
+                {hasWallets ? walletAddresses.map((w: any, i: number) => (
                   <div key={i} className={`${styles.walletItem} ${w.chain === 'Resonant Network' ? styles.primary : ''}`}>
                     <span className={styles.walletChain}>{w.chain}</span>
                     <code className={styles.walletAddress}>{w.address}</code>
@@ -189,7 +186,11 @@ const EconomyPanelComponent: React.FC<EconomyPanelProps> = ({ className }) => {
                       <Icons.Copy />
                     </button>
                   </div>
-                ))}
+                )) : (
+                  <div className={styles.emptyState}>
+                    No wallets connected. Connect a wallet to manage your funds.
+                  </div>
+                )}
               </div>
             </div>
 
@@ -259,7 +260,7 @@ const EconomyPanelComponent: React.FC<EconomyPanelProps> = ({ className }) => {
           <div className={styles.stakingSection}>
             <h3>Staking Pools</h3>
             <div className={styles.poolsList}>
-              {stakingPools.map((pool: any) => (
+              {hasStakingPools ? stakingPools.map((pool: any) => (
                 <div key={pool.id} className={styles.poolItem}>
                   <div className={styles.poolHeader}>
                     <span className={styles.poolName}>{pool.name}</span>
@@ -289,7 +290,11 @@ const EconomyPanelComponent: React.FC<EconomyPanelProps> = ({ className }) => {
                     )}
                   </div>
                 </div>
-              ))}
+              )) : (
+                <div className={styles.emptyState}>
+                  No staking pools available. Staking will be available when the Resonant Network launches.
+                </div>
+              )}
             </div>
           </div>
         )}
