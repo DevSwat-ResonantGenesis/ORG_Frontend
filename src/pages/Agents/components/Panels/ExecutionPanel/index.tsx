@@ -11,6 +11,15 @@ import styles from './ExecutionPanel.module.css';
 
 type ViewMode = 'active' | 'history' | 'queue' | 'metrics';
 
+interface ExecutionStats {
+  total_executions: number;
+  successful: number;
+  failed: number;
+  avg_duration_ms: number;
+  total_tokens: number;
+  total_cost: number;
+}
+
 interface ExecutionPanelProps {
   className?: string;
 }
@@ -30,6 +39,7 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedExecution, setSelectedExecution] = useState<executionsApi.Execution | null>(null);
+  const [executionStats, setExecutionStats] = useState<ExecutionStats | null>(null);
 
   const runningExecutions = realExecutions.filter(e => e.status === 'running');
   const completedExecutions = realExecutions.filter(e => e.status === 'completed');
@@ -77,6 +87,18 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
     }
   }, [selectedAgentId, filter]);
 
+  // Fetch execution stats for metrics view
+  const fetchStats = useCallback(async () => {
+    if (!selectedAgentId) return;
+    
+    try {
+      const stats = await executionsApi.getExecutionStats(selectedAgentId);
+      setExecutionStats(stats);
+    } catch (err: any) {
+      console.error('Failed to fetch execution stats:', err);
+    }
+  }, [selectedAgentId]);
+
   useEffect(() => {
     fetchExecutions();
     // Refresh every 5 seconds for active executions
@@ -87,6 +109,13 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
     }, 5000);
     return () => clearInterval(interval);
   }, [fetchExecutions, activeView]);
+
+  // Fetch stats when metrics view is active
+  useEffect(() => {
+    if (activeView === 'metrics') {
+      fetchStats();
+    }
+  }, [activeView, fetchStats]);
 
   // Set default agent if none selected
   useEffect(() => {
@@ -278,23 +307,39 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
             <div className={styles.metricsGrid}>
               <div className={styles.metricCard}>
                 <h4>Total Executions</h4>
-                <span className={styles.metricValue}>247</span>
-                <span className={styles.metricChange}>+12% from last week</span>
+                <span className={styles.metricValue}>
+                  {executionStats?.total_executions ?? 0}
+                </span>
+                <span className={styles.metricChange}>All time</span>
               </div>
               <div className={styles.metricCard}>
                 <h4>Success Rate</h4>
-                <span className={styles.metricValue}>94.2%</span>
-                <span className={styles.metricChange}>+2.1% from last week</span>
+                <span className={styles.metricValue}>
+                  {executionStats && executionStats.total_executions > 0
+                    ? ((executionStats.successful / executionStats.total_executions) * 100).toFixed(1)
+                    : '0.0'}%
+                </span>
+                <span className={styles.metricChange}>
+                  {executionStats?.successful ?? 0} successful / {executionStats?.failed ?? 0} failed
+                </span>
               </div>
               <div className={styles.metricCard}>
                 <h4>Avg Duration</h4>
-                <span className={styles.metricValue}>45.3s</span>
-                <span className={styles.metricChange}>-8% from last week</span>
+                <span className={styles.metricValue}>
+                  {executionStats?.avg_duration_ms 
+                    ? formatDuration(executionStats.avg_duration_ms)
+                    : '0s'}
+                </span>
+                <span className={styles.metricChange}>Per execution</span>
               </div>
               <div className={styles.metricCard}>
                 <h4>Total Cost</h4>
-                <span className={styles.metricValue}>$12.45</span>
-                <span className={styles.metricChange}>+5% from last week</span>
+                <span className={styles.metricValue}>
+                  ${(executionStats?.total_cost ?? 0).toFixed(2)}
+                </span>
+                <span className={styles.metricChange}>
+                  {executionStats?.total_tokens?.toLocaleString() ?? 0} tokens used
+                </span>
               </div>
             </div>
           </div>
