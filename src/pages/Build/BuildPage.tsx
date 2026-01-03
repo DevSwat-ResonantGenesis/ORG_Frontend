@@ -44,6 +44,12 @@ const DownloadIcon = () => (
   </svg>
 );
 
+const UploadIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M8 10V2m0 0L5 5m3-3l3 3M3 12v1.5a.5.5 0 00.5.5h9a.5.5 0 00.5-.5V12" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 const GitHubIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
     <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
@@ -256,6 +262,10 @@ export const BuildPage: React.FC = () => {
   const [selectedRepo, setSelectedRepo] = useState<string>('');
   const [newRepoName, setNewRepoName] = useState('');
   const [isPushingToGitHub, setIsPushingToGitHub] = useState(false);
+  
+  // Upload state
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   // Initialize from URL params
   useEffect(() => {
@@ -578,6 +588,64 @@ export const BuildPage: React.FC = () => {
     } catch (err: any) {
       logger.error('Failed to download project', err);
       setError(err?.message || 'Failed to download project');
+    }
+  };
+
+  // Upload project ZIP file
+  const handleUploadProject = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    if (!file.name.endsWith('.zip')) {
+      setError('Please upload a ZIP file');
+      return;
+    }
+    
+    setIsUploading(true);
+    setError(null);
+    
+    try {
+      // Upload the ZIP file to backend - it will create a project with ID
+      const response = await uploadProject(file);
+      
+      if (response?.project_id) {
+        // Set the current project ID
+        setCurrentProjectId(response.project_id);
+        setProjectName(file.name.replace('.zip', ''));
+        
+        // Fetch the project files to display
+        const filesResponse = await getProjectFiles(response.project_id);
+        const files = filesResponse?.files || [];
+        
+        if (files.length > 0) {
+          const projectFiles = files.map((f: { path: string; content: string; language?: string }) => ({
+            path: f.path,
+            content: f.content,
+            language: f.language || 'plaintext',
+            explanation: '',
+          })) as ProjectFile[];
+          
+          setGeneratedFiles(projectFiles);
+          setSelectedFile(projectFiles[0]);
+          setViewMode('result');
+          
+          // Refresh projects list
+          loadProjects();
+        }
+        
+        alert(`Project uploaded successfully! ID: ${response.project_id}`);
+      } else {
+        setError('Failed to upload project - no project ID returned');
+      }
+    } catch (err: any) {
+      logger.error('Failed to upload project', err);
+      setError(err?.message || 'Failed to upload project');
+    } finally {
+      setIsUploading(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -1004,6 +1072,19 @@ export const BuildPage: React.FC = () => {
         </div>
         
         <div className={styles.tabBarRight}>
+          {/* Upload Project Button - Always visible */}
+          <button onClick={() => fileInputRef.current?.click()} className={styles.tabButton}>
+            <UploadIcon />
+            <span>Upload Project</span>
+          </button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleUploadProject}
+            accept=".zip"
+            style={{ display: 'none' }}
+          />
+          
           {/* Action Buttons - Show when in result mode */}
           {viewMode === 'result' && generatedFiles.length > 0 && (
             <>
@@ -1018,10 +1099,6 @@ export const BuildPage: React.FC = () => {
               <button onClick={handleSaveToBackend} className={styles.tabButton}>
                 <SaveIcon />
                 <span>Save Project</span>
-              </button>
-              <button onClick={() => setViewMode('create')} className={styles.tabButton}>
-                <PlusIcon />
-                <span>New Build</span>
               </button>
             </>
           )}
