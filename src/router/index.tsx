@@ -540,42 +540,42 @@ const router = createBrowserRouter([
     path: '/hash-sphere-memory-api',
     element: withPublicShell(<HashSphereMemoryAPI />)
   },
-  // Control Plane - Requires Plus plan or higher
+  // Control Plane - Requires Enterprise plan
   {
     path: '/control-plane',
-    element: withPlanRestriction(<ControlPlaneOverview />, 'plus')
+    element: withPlanRestriction(<ControlPlaneOverview />, 'enterprise')
   },
   {
     path: '/control-plane/semantics',
-    element: withPlanRestriction(<SemanticExplorer />, 'plus')
+    element: withPlanRestriction(<SemanticExplorer />, 'enterprise')
   },
   {
     path: '/control-plane/trust',
-    element: withPlanRestriction(<TrustDashboard />, 'plus')
+    element: withPlanRestriction(<TrustDashboard />, 'enterprise')
   },
   {
     path: '/control-plane/governance',
-    element: withPlanRestriction(<GovernanceCenter />, 'plus')
+    element: withPlanRestriction(<GovernanceCenter />, 'enterprise')
   },
   {
     path: '/control-plane/compliance',
-    element: withPlanRestriction(<ComplianceHub />, 'plus')
+    element: withPlanRestriction(<ComplianceHub />, 'enterprise')
   },
   {
     path: '/control-plane/security',
-    element: withPlanRestriction(<SecurityMonitor />, 'plus')
+    element: withPlanRestriction(<SecurityMonitor />, 'enterprise')
   },
   {
     path: '/control-plane/performance',
-    element: withPlanRestriction(<PerformanceDashboard />, 'plus')
+    element: withPlanRestriction(<PerformanceDashboard />, 'enterprise')
   },
   {
     path: '/control-plane/live',
-    element: withPlanRestriction(<LiveExecutionMonitor />, 'plus')
+    element: withPlanRestriction(<LiveExecutionMonitor />, 'enterprise')
   },
   {
     path: '/control-plane/guided',
-    element: withPlanRestriction(<ControlPlaneGuide />, 'plus')
+    element: withPlanRestriction(<ControlPlaneGuide />, 'enterprise')
   },
   // Developer Tools
   {

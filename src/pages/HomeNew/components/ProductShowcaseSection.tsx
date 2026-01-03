@@ -23,13 +23,13 @@ export const ProductShowcaseSection = () => {
             number: '03',
             title: 'AI Agents Workflow',
             description: 'Create and orchestrate AI agent workflows',
-            image: '/images/showcase/step3-agents.png',
+            image: '/images/showcase/step3-agentworkflow.png',
         },
         {
             number: '04',
             title: 'AI Teams',
             description: 'Collaborate with AI agent teams',
-            image: '/images/showcase/step4-teams.png',
+            image: '/images/showcase/agent4.png',
         },
         {
             number: '05',
