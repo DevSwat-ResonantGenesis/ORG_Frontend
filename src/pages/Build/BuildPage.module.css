@@ -777,7 +777,7 @@
   overflow-x: auto;
 }
 
-/* Project Modification Section - Fixed Bottom Bar, Centered */
+/* Project Modification Section - Fixed Bottom Bar, Centered, Glassmorphism */
 .modificationSection {
   position: fixed;
   bottom: 0;
@@ -786,11 +786,14 @@
   width: 100%;
   max-width: 800px;
   margin: 0;
-  padding: 10px 20px;
-  background: #0a0a0a;
-  border: 1px solid #1a1a1a;
+  padding: 12px 20px;
+  background: rgba(20, 20, 25, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-bottom: none;
-  border-radius: 12px 12px 0 0;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.4);
   z-index: 100;
 }
 
