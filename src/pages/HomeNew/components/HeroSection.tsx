@@ -59,6 +59,8 @@ export const HeroSection = () => {
                             if (chatInput.trim()) {
                                 // Store pending message in localStorage for ResonantChatPage to pick up
                                 localStorage.setItem('resonant-chat-pending-message', chatInput.trim());
+                                // Set flag to use existing chat instead of creating new one
+                                localStorage.setItem('resonant-chat-use-existing', 'true');
                                 navigate('/resonant-chat');
                             }
                         }}

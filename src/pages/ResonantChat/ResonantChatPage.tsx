@@ -437,6 +437,23 @@ const ResonantChatPage: React.FC = () => {
 
     const ensureConversation = async () => {
       let conversationId = localStorage.getItem(CHAT_STORAGE_KEY);
+      
+      // Check if coming from hero section with "use existing" flag
+      const useExisting = localStorage.getItem('resonant-chat-use-existing');
+      if (useExisting) {
+        // Clear the flag
+        localStorage.removeItem('resonant-chat-use-existing');
+        
+        // If we have an existing conversation, use it (don't create new)
+        if (conversationId) {
+          logger.info('[ResonantChat] Using existing conversation from hero input:', conversationId);
+          if (!cancelled) {
+            setCurrentConversationId(conversationId);
+          }
+          return;
+        }
+        // If no existing conversation, fall through to create one
+      }
 
       if (!conversationId) {
         try {
