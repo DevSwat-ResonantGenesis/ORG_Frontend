@@ -1105,23 +1105,23 @@
 
 .projectMeta {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
   font-size: 10px;
   color: var(--text-tertiary, #52525b);
 }
 
-.projectTech {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.projectTech .techBadge {
-  padding: 2px 5px;
-  background: #1a1a1a;
+/* Tech badges inline within meta row */
+.projectMeta .techBadge,
+.techBadge {
+  padding: 2px 6px;
+  background: transparent;
+  border: 1px solid #27272a;
   border-radius: 3px;
   font-size: 9px;
   color: #71717a;
+  display: inline-flex;
 }
 
 /* Compact action buttons */

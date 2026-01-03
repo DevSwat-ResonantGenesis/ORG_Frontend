@@ -550,6 +550,37 @@ export const BuildPage: React.FC = () => {
     }
   };
 
+  // Download a specific project from the projects list
+  const handleDownloadProject = async (project: UserProject) => {
+    try {
+      // First, fetch the project files
+      const response = await getProjectFiles(project.project_id);
+      const files = response?.files || [];
+      
+      if (files.length > 0) {
+        const zip = new JSZip();
+        files.forEach((file: { path: string; content: string }) => {
+          zip.file(file.path, file.content);
+        });
+        
+        const blob = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${project.name}-${Date.now()}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } else {
+        setError('No files found in project');
+      }
+    } catch (err: any) {
+      logger.error('Failed to download project', err);
+      setError(err?.message || 'Failed to download project');
+    }
+  };
+
   // Live Preview state
   const [showPreview, setShowPreview] = useState(false);
   const [previewHtml, setPreviewHtml] = useState('');
@@ -1393,7 +1424,7 @@ export const BuildPage: React.FC = () => {
                         <FolderIcon /> Open
                       </button>
                       <button
-                        onClick={handleDownloadZip}
+                        onClick={() => handleDownloadProject(project)}
                         className={styles.actionButton}
                       >
                         <DownloadIcon /> Download
