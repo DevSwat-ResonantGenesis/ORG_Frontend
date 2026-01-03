@@ -15,33 +15,33 @@ export const ProductShowcaseSection = () => {
         },
         {
             number: '02',
-            title: 'Preview',
-            description: 'See live preview as code generates',
-            image: '/images/showcase/step2-preview.png',
+            title: 'Build',
+            description: 'Export complete project files',
+            image: '/images/showcase/step2-build.png',
         },
         {
             number: '03',
-            title: 'Build',
-            description: 'Export complete project files',
-            image: '/images/showcase/step3-build.png',
+            title: 'AI Agents Workflow',
+            description: 'Create and orchestrate AI agent workflows',
+            image: '/images/showcase/step3-agents.png',
         },
         {
             number: '04',
-            title: 'Project Builder',
-            description: 'Continue in full development environment',
-            image: '/images/showcase/step4-ide.png',
+            title: 'AI Teams',
+            description: 'Collaborate with AI agent teams',
+            image: '/images/showcase/step4-teams.png',
         },
         {
             number: '05',
-            title: 'Home',
-            description: 'Your AI governance platform',
-            image: '/images/showcase/step5-homepage.png',
+            title: 'Sale & Rent',
+            description: 'Monetize your agents in the marketplace',
+            image: '/images/showcase/step5-marketplace.png',
         },
         {
             number: '06',
-            title: 'Dashboard',
-            description: 'Monitor and manage your agents',
-            image: '/images/showcase/step6-dashboard.png',
+            title: 'Own Identity',
+            description: 'Give your AI its own sovereign identity',
+            image: '/images/showcase/step6-identity.png',
         }
     ];
 
@@ -68,7 +68,7 @@ export const ProductShowcaseSection = () => {
             <div className={styles.showcaseNav}>
                 <div className={styles.showcaseNavHeader}>
                     <span className={styles.showcaseNavBadge}>Workflow</span>
-                    <h2 className={styles.showcaseNavTitle}>Chat, Build, Agents<br/>Team, Marketplace</h2>
+                    <h2 className={styles.showcaseNavTitle}>From Idea<br/>to Production</h2>
                 </div>
                 <div className={styles.showcaseNavSteps}>
                     {steps.map((step, index) => (
