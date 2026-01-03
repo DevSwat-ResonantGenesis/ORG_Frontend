@@ -1530,32 +1530,65 @@ export const BuildPage: React.FC = () => {
             </div>
             
             <div className={styles.modalContent}>
-              {/* Manual push instructions - primary option */}
-              <div className={styles.githubConnect}>
-                <p style={{ marginBottom: '12px', fontSize: '13px', color: '#a1a1aa' }}>
-                  To push your project to GitHub:
-                </p>
-                <ol style={{ margin: '0 0 16px 0', padding: '0 0 0 20px', fontSize: '12px', color: '#a1a1aa', lineHeight: '1.8' }}>
-                  <li>Download the ZIP file using the "Download ZIP" button</li>
-                  <li>Create a new repository on GitHub: <strong>{newRepoName || 'my-project'}</strong></li>
-                  <li>Extract the ZIP and run these commands:</li>
-                </ol>
-                <pre className={styles.githubCommands}>
-{`git init
-git add .
-git commit -m "Initial commit from Project Builder"
-git remote add origin https://github.com/YOUR_USERNAME/${newRepoName || 'my-project'}.git
-git push -u origin main`}
-                </pre>
-                <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
-                  <button onClick={handleDownloadZip} className={styles.githubPushButton}>
-                    <DownloadIcon /> Download ZIP First
+              {!githubStatus?.connected ? (
+                /* Not connected - show connect button */
+                <div className={styles.githubConnect}>
+                  <p style={{ marginBottom: '16px', fontSize: '13px', color: '#a1a1aa' }}>
+                    Connect your GitHub account to push projects directly.
+                  </p>
+                  <button onClick={handleConnectGitHub} className={styles.githubConnectButton}>
+                    <GitHubIcon /> Connect GitHub Account
                   </button>
-                  <button onClick={() => setShowGitHubModal(false)} className={styles.githubConnectButton} style={{ background: 'transparent', border: '1px solid #27272a' }}>
-                    Close
-                  </button>
+                  
+                  <div style={{ margin: '20px 0', borderTop: '1px solid #27272a', paddingTop: '20px' }}>
+                    <p style={{ marginBottom: '12px', fontSize: '12px', color: '#71717a' }}>
+                      Or push manually:
+                    </p>
+                    <ol style={{ margin: '0 0 16px 0', padding: '0 0 0 20px', fontSize: '11px', color: '#71717a', lineHeight: '1.8' }}>
+                      <li>Download the ZIP file</li>
+                      <li>Create a new repository on GitHub</li>
+                      <li>Extract and run git commands</li>
+                    </ol>
+                    <button onClick={handleDownloadZip} className={styles.githubPushButton} style={{ fontSize: '12px', padding: '8px 16px' }}>
+                      <DownloadIcon /> Download ZIP
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                /* Connected - show repo selection */
+                <div className={styles.githubRepoSelect}>
+                  <p style={{ marginBottom: '12px', fontSize: '13px', color: '#a1a1aa' }}>
+                    Connected as <strong style={{ color: '#fff' }}>{githubStatus.username}</strong>
+                  </p>
+                  
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '12px', color: '#71717a' }}>
+                      Repository Name
+                    </label>
+                    <input
+                      type="text"
+                      value={newRepoName}
+                      onChange={(e) => setNewRepoName(e.target.value)}
+                      placeholder="my-project"
+                      className={styles.githubInput}
+                      style={{ width: '100%', padding: '10px 12px', background: '#0a0a0a', border: '1px solid #27272a', borderRadius: '8px', color: '#fff', fontSize: '14px' }}
+                    />
+                  </div>
+                  
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button 
+                      onClick={handleConfirmPushToGitHub} 
+                      className={styles.githubPushButton}
+                      disabled={isPushingToGitHub}
+                    >
+                      {isPushingToGitHub ? 'Pushing...' : 'Push to GitHub'}
+                    </button>
+                    <button onClick={() => setShowGitHubModal(false)} className={styles.githubConnectButton} style={{ background: 'transparent', border: '1px solid #27272a' }}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
