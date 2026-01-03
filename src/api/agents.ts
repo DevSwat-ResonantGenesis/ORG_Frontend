@@ -23,13 +23,13 @@ export interface AgentResponse {
 
 /**
  * List agents
- * GET /agents
+ * GET /api/v1/agents
  */
 export const listAgents = async (params?: {
   status_filter?: string;
 }): Promise<AgentResponse[]> => {
   try {
-    const response = await fastapiClient.get('/agents', { params });
+    const response = await fastapiClient.get('/api/v1/agents', { params });
     return Array.isArray(response.data) ? response.data : [];
   } catch (error: any) {
     const isConnectionError = 
@@ -38,7 +38,7 @@ export const listAgents = async (params?: {
       error?.message?.includes('Network Error');
     
     if (!isConnectionError) {
-      logger.apiError('/agents', error);
+      logger.apiError('/api/v1/agents', error);
     }
     return [];
   }
@@ -46,14 +46,14 @@ export const listAgents = async (params?: {
 
 /**
  * Get agent by ID
- * GET /agents/{agent_id}
+ * GET /api/v1/agents/{agent_id}
  */
 export const getAgent = async (agent_id: string): Promise<AgentResponse> => {
   try {
-    const response = await fastapiClient.get(`/agents/${agent_id}`);
+    const response = await fastapiClient.get(`/api/v1/agents/${agent_id}`);
     return response.data;
   } catch (error) {
-    logger.apiError(`/agents/${agent_id}`, error);
+    logger.apiError(`/api/v1/agents/${agent_id}`, error);
     throw error;
   }
 };
@@ -89,21 +89,21 @@ export interface CreateAgentResponse {
 
 /**
  * Create a new agent
- * POST /agents
+ * POST /api/v1/agents
  */
 export const createAgent = async (data: CreateAgentRequest): Promise<CreateAgentResponse> => {
   try {
-    const response = await fastapiClient.post('/agents', data);
+    const response = await fastapiClient.post('/api/v1/agents', data);
     return response.data;
   } catch (error) {
-    logger.apiError('/agents', error);
+    logger.apiError('/api/v1/agents', error);
     throw error;
   }
 };
 
 /**
  * Start an agent session
- * POST /agents/{agent_id}/sessions
+ * POST /api/v1/agents/{agent_id}/sessions
  */
 export const startAgentSession = async (
   agent_id: string, 
@@ -111,41 +111,41 @@ export const startAgentSession = async (
   context?: Record<string, any>
 ): Promise<{ id: string; status: string }> => {
   try {
-    const response = await fastapiClient.post(`/agents/${agent_id}/sessions`, {
+    const response = await fastapiClient.post(`/api/v1/agents/${agent_id}/sessions`, {
       goal,
       context,
     });
     return response.data;
   } catch (error) {
-    logger.apiError(`/agents/${agent_id}/sessions`, error);
+    logger.apiError(`/api/v1/agents/${agent_id}/sessions`, error);
     throw error;
   }
 };
 
 /**
  * Stop an agent session
- * POST /agents/sessions/{session_id}/cancel
+ * POST /api/v1/agents/sessions/{session_id}/cancel
  */
 export const stopAgentSession = async (session_id: string): Promise<{ status: string }> => {
   try {
-    const response = await fastapiClient.post(`/agents/sessions/${session_id}/cancel`);
+    const response = await fastapiClient.post(`/api/v1/agents/sessions/${session_id}/cancel`);
     return response.data;
   } catch (error) {
-    logger.apiError(`/agents/sessions/${session_id}/cancel`, error);
+    logger.apiError(`/api/v1/agents/sessions/${session_id}/cancel`, error);
     throw error;
   }
 };
 
 /**
  * Delete an agent
- * DELETE /agents/{agent_id}
+ * DELETE /api/v1/agents/{agent_id}
  */
 export const deleteAgent = async (agent_id: string): Promise<{ status: string }> => {
   try {
-    const response = await fastapiClient.delete(`/agents/${agent_id}`);
+    const response = await fastapiClient.delete(`/api/v1/agents/${agent_id}`);
     return response.data;
   } catch (error) {
-    logger.apiError(`/agents/${agent_id}`, error);
+    logger.apiError(`/api/v1/agents/${agent_id}`, error);
     throw error;
   }
 };
