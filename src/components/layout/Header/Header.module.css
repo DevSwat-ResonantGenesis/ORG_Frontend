@@ -474,16 +474,6 @@
     display: none;
   }
   
-  /* Show burger menu on mobile */
-  .burgerMenu {
-    display: flex;
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-    padding: 8px;
-  }
-  
   /* Mobile auth: hide text buttons, show icon */
   .authButtons {
     display: none !important;
@@ -511,21 +501,6 @@
   
   .actions {
     gap: 8px;
-  }
-  
-  /* Show burger menu on mobile */
-  .burgerMenu {
-    display: flex;
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
-    padding: 8px;
-  }
-  
-  .burgerMenu svg {
-    width: 20px;
-    height: 20px;
   }
   
   /* Extra small mobile keeps same auth behavior as <= 768px */
@@ -977,6 +952,137 @@
 @media (max-width: 1024px) {
   .mainNav {
     display: none;
+  }
+}
+
+/* ============================================
+   MOBILE MENU - Dropdown Style
+   ============================================ */
+.mobileMenu {
+  display: none;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-primary);
+  z-index: 999;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 1024px) {
+  .mobileMenu {
+    display: block;
+  }
+}
+
+.mobileMenuContent {
+  padding: 16px 20px 32px;
+  max-width: 100%;
+}
+
+.mobileMenuSection {
+  margin-bottom: 24px;
+}
+
+.mobileMenuSectionTitle {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+  padding: 8px 12px;
+  margin-bottom: 4px;
+}
+
+.mobileMenuItem {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.mobileMenuItem:hover,
+.mobileMenuItem:active {
+  background: var(--bg-secondary);
+}
+
+.mobileMenuAuth {
+  display: flex;
+  gap: 12px;
+  padding: 16px 12px;
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+}
+
+.mobileMenuAuthButton {
+  flex: 1;
+  padding: 12px 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mobileMenuAuthButton:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-hover);
+}
+
+.mobileMenuAuthButtonPrimary {
+  flex: 1;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mobileMenuAuthButtonPrimary:hover {
+  opacity: 0.9;
+}
+
+/* Burger menu - hidden on desktop, shown on mobile */
+.burgerMenu {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  flex-shrink: 0;
+}
+
+.burgerMenu:hover {
+  background: var(--bg-secondary);
+}
+
+@media (max-width: 1024px) {
+  .burgerMenu {
+    display: flex;
   }
 }
 

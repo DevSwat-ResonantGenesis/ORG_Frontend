@@ -152,14 +152,34 @@ export const Header: React.FC<HeaderProps> = ({
     <>
       <header className={`${styles.header} ${isScrolled ? styles.headerScrolled : ''}`}>
         <div className={styles.content}>
-          <div 
-                  className={styles.logo}
-                  onClick={() => goToHome(navigate)}
-                >
-                  ResonantGenesis
-                </div>
+          {/* Mobile Burger Menu Button - Before Logo */}
+          <button
+            className={styles.burgerMenu}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            )}
+          </button>
 
-          {/* Main Navigation */}
+          <div 
+            className={styles.logo}
+            onClick={() => goToHome(navigate)}
+          >
+            ResonantGenesis
+          </div>
+
+          {/* Main Navigation - Desktop */
           <nav ref={navRef} className={styles.mainNav}>
             {/* Solutions Dropdown */}
             <div className={styles.navItem}>
@@ -374,19 +394,6 @@ export const Header: React.FC<HeaderProps> = ({
           {/* AgentOS minimal header - search moved to page */}
           
           <div className={styles.actions}>
-            {/* Mobile Burger Menu Button */}
-            <button
-              className={styles.burgerMenu}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Open menu"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
-            </button>
-
             {/* Theme Toggle - Always visible */}
             <ThemeToggle />
 
@@ -472,11 +479,114 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </header>
 
-      {/* Mobile Sidebar Menu */}
-      <UnifiedSidebarMenu 
-        isOpen={isMobileMenuOpen} 
-        onClose={() => setIsMobileMenuOpen(false)} 
-      />
+      {/* Mobile Dropdown Menu - Same navigation as desktop */}
+      {isMobileMenuOpen && (
+        <div className={styles.mobileMenu}>
+          <div className={styles.mobileMenuContent}>
+            {/* Solutions */}
+            <div className={styles.mobileMenuSection}>
+              <div className={styles.mobileMenuSectionTitle}>Solutions</div>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/resonant-chat'); setIsMobileMenuOpen(false); }}>
+                Resonant Chat
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/build'); setIsMobileMenuOpen(false); }}>
+                Project Builder
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/agents'); setIsMobileMenuOpen(false); }}>
+                Agents
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/agent-teams'); setIsMobileMenuOpen(false); }}>
+                Agent Teams
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/workflow-designer'); setIsMobileMenuOpen(false); }}>
+                Workflow Designer
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/marketplace'); setIsMobileMenuOpen(false); }}>
+                General Store
+              </button>
+            </div>
+
+            {/* Control Plane */}
+            <div className={styles.mobileMenuSection}>
+              <div className={styles.mobileMenuSectionTitle}>Control Plane</div>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane'); setIsMobileMenuOpen(false); }}>
+                Overview
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane/live'); setIsMobileMenuOpen(false); }}>
+                Live Monitor
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane/performance'); setIsMobileMenuOpen(false); }}>
+                Performance
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane/semantics'); setIsMobileMenuOpen(false); }}>
+                Semantics
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane/trust'); setIsMobileMenuOpen(false); }}>
+                Trust
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane/governance'); setIsMobileMenuOpen(false); }}>
+                Governance
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane/security'); setIsMobileMenuOpen(false); }}>
+                Security
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane/compliance'); setIsMobileMenuOpen(false); }}>
+                Compliance
+              </button>
+            </div>
+
+            {/* Developer */}
+            <div className={styles.mobileMenuSection}>
+              <div className={styles.mobileMenuSectionTitle}>Developer</div>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/state-physics'); setIsMobileMenuOpen(false); }}>
+                State Physics
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/hash-sphere-memory'); setIsMobileMenuOpen(false); }}>
+                Hash Sphere Memory
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/code-visualizer'); setIsMobileMenuOpen(false); }}>
+                Code Visualizer
+              </button>
+            </div>
+
+            {/* Decentralized */}
+            <div className={styles.mobileMenuSection}>
+              <div className={styles.mobileMenuSectionTitle}>Decentralized</div>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/network/marketplace'); setIsMobileMenuOpen(false); }}>
+                DSID Marketplace
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/network/agents'); setIsMobileMenuOpen(false); }}>
+                Agent Browser
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/network/publish'); setIsMobileMenuOpen(false); }}>
+                Publish Agent
+              </button>
+            </div>
+
+            {/* Other Links */}
+            <div className={styles.mobileMenuSection}>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/enterprise'); setIsMobileMenuOpen(false); }}>
+                Enterprise
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/pricing'); setIsMobileMenuOpen(false); }}>
+                Pricing
+              </button>
+            </div>
+
+            {/* Auth Section */}
+            {!isLoggedIn && (
+              <div className={styles.mobileMenuAuth}>
+                <button className={styles.mobileMenuAuthButton} onClick={() => { navigate('/login'); setIsMobileMenuOpen(false); }}>
+                  Log In
+                </button>
+                <button className={styles.mobileMenuAuthButtonPrimary} onClick={() => { navigate('/signup'); setIsMobileMenuOpen(false); }}>
+                  Sign Up
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 };

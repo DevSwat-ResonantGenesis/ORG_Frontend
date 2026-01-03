@@ -16,6 +16,7 @@ import { clearSession } from '../../utils/auth';
 import fastapiClient from '../../api/fastapiClient';
 import { goToDashboard } from '../../utils/navigation';
 import { useThemeStore } from '../../store/themeStore';
+import { initiateSSO } from '../../api/sso';
 
 const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties> => ({
   container: {
@@ -199,6 +200,7 @@ export default function LoginPageNew() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [oauthLoading, setOauthLoading] = useState<string | null>(null);
 
   useEffect(() => {
     clearSessionData();
@@ -236,6 +238,18 @@ export default function LoginPageNew() {
       setError(message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleOAuthLogin = async (provider: string) => {
+    setError('');
+    setOauthLoading(provider);
+    try {
+      const authUrl = await initiateSSO(provider);
+      window.location.href = authUrl;
+    } catch (err: any) {
+      setError(`${provider} login is not available. Please use email/password.`);
+      setOauthLoading(null);
     }
   };
 
@@ -302,11 +316,21 @@ export default function LoginPageNew() {
           </div>
 
           <div style={styles.socialBtns}>
-            <button type="button" style={styles.socialBtn}>
-              Google
+            <button 
+              type="button" 
+              style={{ ...styles.socialBtn, opacity: oauthLoading === 'google' ? 0.6 : 1 }}
+              onClick={() => handleOAuthLogin('google')}
+              disabled={!!oauthLoading}
+            >
+              {oauthLoading === 'google' ? 'Connecting...' : 'Google'}
             </button>
-            <button type="button" style={styles.socialBtn}>
-              GitHub
+            <button 
+              type="button" 
+              style={{ ...styles.socialBtn, opacity: oauthLoading === 'github' ? 0.6 : 1 }}
+              onClick={() => handleOAuthLogin('github')}
+              disabled={!!oauthLoading}
+            >
+              {oauthLoading === 'github' ? 'Connecting...' : 'GitHub'}
             </button>
           </div>
         </form>

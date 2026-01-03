@@ -14,6 +14,7 @@ import {
   Check,
 } from 'lucide-react';
 import { useThemeStore } from "../../store/themeStore";
+import { initiateSSO } from '../../api/sso';
 
 const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties> => ({
   container: {
@@ -245,6 +246,19 @@ export default function SignupPageNew() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState<string | null>(null);
+
+  const handleOAuthSignup = async (provider: string) => {
+    setError('');
+    setOauthLoading(provider);
+    try {
+      const authUrl = await initiateSSO(provider);
+      window.location.href = authUrl;
+    } catch (err: any) {
+      setError(`${provider} signup is not available. Please use email/password.`);
+      setOauthLoading(null);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -381,11 +395,21 @@ export default function SignupPageNew() {
             </div>
 
             <div style={styles.socialBtns}>
-              <button type="button" style={styles.socialBtn}>
-                Google
+              <button 
+                type="button" 
+                style={{ ...styles.socialBtn, opacity: oauthLoading === 'google' ? 0.6 : 1 }}
+                onClick={() => handleOAuthSignup('google')}
+                disabled={!!oauthLoading}
+              >
+                {oauthLoading === 'google' ? 'Connecting...' : 'Google'}
               </button>
-              <button type="button" style={styles.socialBtn}>
-                GitHub
+              <button 
+                type="button" 
+                style={{ ...styles.socialBtn, opacity: oauthLoading === 'github' ? 0.6 : 1 }}
+                onClick={() => handleOAuthSignup('github')}
+                disabled={!!oauthLoading}
+              >
+                {oauthLoading === 'github' ? 'Connecting...' : 'GitHub'}
               </button>
             </div>
           </form>
