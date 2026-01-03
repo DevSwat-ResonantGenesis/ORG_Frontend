@@ -1,6 +1,6 @@
 /**
  * Governance API Client
- * Handles governance policies, rules, and compliance
+ * Handles governance policies, rules, compliance, approvals, and limits
  */
 
 import fastapiClient from './fastapiClient';
@@ -9,12 +9,31 @@ export interface GovernancePolicy {
   id: string;
   name: string;
   description: string;
-  policy_type: string;
-  type?: 'approval' | 'limit' | 'restriction' | 'automation';
-  scope?: 'global' | 'agent' | 'workflow';
-  rules: any[];
-  status: string;
-  created_at: string;
+  policy_type?: string;
+  type: 'approval' | 'limit' | 'restriction' | 'automation';
+  scope: 'global' | 'agent' | 'workflow';
+  rules: string[];
+  status: 'active' | 'inactive' | 'draft';
+  created_at?: string;
+}
+
+export interface PendingApproval {
+  id: string;
+  agentName: string;
+  agentId: string;
+  action: string;
+  cost: number;
+  requestedAt: Date;
+  reason: string;
+  status: 'pending' | 'approved' | 'rejected';
+}
+
+export interface ResourceLimit {
+  id: string;
+  name: string;
+  limit: number;
+  used: number;
+  unit: string;
 }
 
 export interface ComplianceCheck {
@@ -29,8 +48,19 @@ export interface ComplianceCheck {
  */
 export const listPolicies = async (): Promise<GovernancePolicy[]> => {
   try {
-    const response = await fastapiClient.get('/blockchain/governance/policies');
-    return response.data;
+    const response = await fastapiClient.get('/blockchain/governance/policy/list');
+    // Transform backend response to frontend format
+    const policies = response.data?.policies || [];
+    return policies.map((p: any) => ({
+      id: p.policy_id || p.id,
+      name: p.name,
+      description: p.description || '',
+      type: p.type || 'approval',
+      scope: p.scope || 'global',
+      rules: p.constraints || p.rules || [],
+      status: p.status || 'active',
+      created_at: p.created_at,
+    }));
   } catch (error: any) {
     console.error('Failed to list policies:', error);
     return [];
@@ -38,15 +68,102 @@ export const listPolicies = async (): Promise<GovernancePolicy[]> => {
 };
 
 /**
- * Get policy by ID
+ * Create a new policy
  */
-export const getPolicy = async (policyId: string): Promise<GovernancePolicy | null> => {
+export const createPolicy = async (policy: Partial<GovernancePolicy>): Promise<GovernancePolicy | null> => {
   try {
-    const response = await fastapiClient.get(`/blockchain/governance/policies/${policyId}`);
-    return response.data;
+    const response = await fastapiClient.post('/blockchain/governance/policy/add', {
+      name: policy.name,
+      description: policy.description,
+      source: 'user',
+      constraints: policy.rules || [],
+      applies_to: policy.scope || 'global',
+      priority: 1,
+    });
+    return response.data?.policy || null;
   } catch (error: any) {
-    console.error('Failed to get policy:', error);
-    return null;
+    console.error('Failed to create policy:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get pending approvals
+ */
+export const listPendingApprovals = async (): Promise<PendingApproval[]> => {
+  try {
+    const response = await fastapiClient.get('/api/v1/agents/approvals/pending');
+    return (response.data?.approvals || []).map((a: any) => ({
+      id: a.id,
+      agentName: a.agent_name || a.agentName,
+      agentId: a.agent_id || a.agentId,
+      action: a.action,
+      cost: a.cost || 0,
+      requestedAt: new Date(a.requested_at || a.requestedAt),
+      reason: a.reason,
+      status: a.status || 'pending',
+    }));
+  } catch (error: any) {
+    console.error('Failed to list pending approvals:', error);
+    return [];
+  }
+};
+
+/**
+ * Approve an action
+ */
+export const approveAction = async (approvalId: string): Promise<boolean> => {
+  try {
+    await fastapiClient.post(`/api/v1/agents/approvals/${approvalId}/approve`);
+    return true;
+  } catch (error: any) {
+    console.error('Failed to approve action:', error);
+    return false;
+  }
+};
+
+/**
+ * Reject an action
+ */
+export const rejectAction = async (approvalId: string, reason?: string): Promise<boolean> => {
+  try {
+    await fastapiClient.post(`/api/v1/agents/approvals/${approvalId}/reject`, { reason });
+    return true;
+  } catch (error: any) {
+    console.error('Failed to reject action:', error);
+    return false;
+  }
+};
+
+/**
+ * Get resource limits
+ */
+export const getResourceLimits = async (): Promise<ResourceLimit[]> => {
+  try {
+    const response = await fastapiClient.get('/api/v1/agents/limits');
+    return response.data?.limits || [];
+  } catch (error: any) {
+    console.error('Failed to get resource limits:', error);
+    // Return default limits if API fails
+    return [
+      { id: 'daily_spend', name: 'Daily Spend Limit', limit: 100, used: 0, unit: '$' },
+      { id: 'hourly_tokens', name: 'Token Limit (Hourly)', limit: 50000, used: 0, unit: 'tokens' },
+      { id: 'concurrent_exec', name: 'Concurrent Executions', limit: 10, used: 0, unit: 'executions' },
+      { id: 'daily_api', name: 'API Calls (Daily)', limit: 10000, used: 0, unit: 'calls' },
+    ];
+  }
+};
+
+/**
+ * Update a resource limit
+ */
+export const updateResourceLimit = async (limitId: string, newLimit: number): Promise<boolean> => {
+  try {
+    await fastapiClient.put(`/api/v1/agents/limits/${limitId}`, { limit: newLimit });
+    return true;
+  } catch (error: any) {
+    console.error('Failed to update resource limit:', error);
+    return false;
   }
 };
 

@@ -8,16 +8,6 @@ import styles from './GovernancePanel.module.css';
 // Contract: reads [agent, session], writes [agent]
 // Forbidden: [economy]
 
-interface Policy {
-  id: string;
-  name: string;
-  description: string;
-  type: 'approval' | 'limit' | 'restriction' | 'automation';
-  status: 'active' | 'inactive' | 'draft';
-  scope: 'global' | 'agent' | 'workflow';
-  rules: string[];
-}
-
 interface GovernancePanelProps {
   className?: string;
 }
@@ -26,9 +16,13 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
   const agents = useAgentStore(state => state.agents);
   const [activeTab, setActiveTab] = useState<'policies' | 'approvals' | 'limits'>('policies');
   const [policies, setPolicies] = useState<governanceApi.GovernancePolicy[]>([]);
+  const [pendingApprovals, setPendingApprovals] = useState<governanceApi.PendingApproval[]>([]);
+  const [resourceLimits, setResourceLimits] = useState<governanceApi.ResourceLimit[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedPolicy, setSelectedPolicy] = useState<governanceApi.GovernancePolicy | null>(null);
 
+  // Fetch policies
   const fetchPolicies = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -42,17 +36,52 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
     }
   }, []);
 
+  // Fetch pending approvals
+  const fetchApprovals = useCallback(async () => {
+    try {
+      const data = await governanceApi.listPendingApprovals();
+      setPendingApprovals(data);
+    } catch (err: any) {
+      console.error('Failed to load approvals:', err);
+    }
+  }, []);
+
+  // Fetch resource limits
+  const fetchLimits = useCallback(async () => {
+    try {
+      const data = await governanceApi.getResourceLimits();
+      setResourceLimits(data);
+    } catch (err: any) {
+      console.error('Failed to load limits:', err);
+    }
+  }, []);
+
+  // Load data based on active tab
   useEffect(() => {
-    fetchPolicies();
-  }, [fetchPolicies]);
+    if (activeTab === 'policies') {
+      fetchPolicies();
+    } else if (activeTab === 'approvals') {
+      fetchApprovals();
+    } else if (activeTab === 'limits') {
+      fetchLimits();
+    }
+  }, [activeTab, fetchPolicies, fetchApprovals, fetchLimits]);
 
-  const [selectedPolicy, setSelectedPolicy] = useState<any | null>(null);
+  // Handle approve action
+  const handleApprove = async (approvalId: string) => {
+    const success = await governanceApi.approveAction(approvalId);
+    if (success) {
+      setPendingApprovals(prev => prev.filter(a => a.id !== approvalId));
+    }
+  };
 
-  const pendingApprovals = [
-    { id: 'ap1', agentName: 'Research-01', action: 'Execute workflow', cost: 15.50, requestedAt: new Date(Date.now() - 300000), reason: 'Cost exceeds $10 threshold' },
-    { id: 'ap2', agentName: 'Data-Analyzer', action: 'External API call', cost: 0, requestedAt: new Date(Date.now() - 600000), reason: 'Domain not in whitelist' },
-    { id: 'ap3', agentName: 'Code-Generator', action: 'Code execution', cost: 2.30, requestedAt: new Date(Date.now() - 900000), reason: 'Requires elevated permissions' },
-  ];
+  // Handle reject action
+  const handleReject = async (approvalId: string) => {
+    const success = await governanceApi.rejectAction(approvalId);
+    if (success) {
+      setPendingApprovals(prev => prev.filter(a => a.id !== approvalId));
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -159,7 +188,7 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
                     <div className={styles.approvalHeader}>
                       <span className={styles.agentName}>{approval.agentName}</span>
                       <span className={styles.approvalTime}>
-                        {Math.round((Date.now() - approval.requestedAt.getTime()) / 60000)}m ago
+                        {Math.round((Date.now() - new Date(approval.requestedAt).getTime()) / 60000)}m ago
                       </span>
                     </div>
                     <div className={styles.approvalAction}>{approval.action}</div>
@@ -170,10 +199,10 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
                       </div>
                     )}
                     <div className={styles.approvalActions}>
-                      <button className={styles.approveBtn}>
+                      <button className={styles.approveBtn} onClick={() => handleApprove(approval.id)}>
                         <Icons.Check /> Approve
                       </button>
-                      <button className={styles.rejectBtn}>
+                      <button className={styles.rejectBtn} onClick={() => handleReject(approval.id)}>
                         <Icons.XCircle /> Reject
                       </button>
                     </div>
@@ -194,46 +223,33 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
           <div className={styles.limitsSection}>
             <h3>Resource Limits</h3>
             <div className={styles.limitsGrid}>
-              <div className={styles.limitCard}>
-                <h4>Daily Spend Limit</h4>
-                <div className={styles.limitValue}>$100.00</div>
-                <div className={styles.limitProgress}>
-                  <div className={styles.progressBar}>
-                    <div className={styles.progressFill} style={{ width: '45%' }}></div>
+              {resourceLimits.map(limit => {
+                const percentage = limit.limit > 0 ? (limit.used / limit.limit) * 100 : 0;
+                const formatValue = (val: number, unit: string) => {
+                  if (unit === '$') return `$${val.toFixed(2)}`;
+                  if (val >= 1000) return val.toLocaleString();
+                  return val.toString();
+                };
+                return (
+                  <div key={limit.id} className={styles.limitCard}>
+                    <h4>{limit.name}</h4>
+                    <div className={styles.limitValue}>
+                      {limit.unit === '$' ? `$${limit.limit.toFixed(2)}` : limit.limit.toLocaleString()}
+                    </div>
+                    <div className={styles.limitProgress}>
+                      <div className={styles.progressBar}>
+                        <div 
+                          className={styles.progressFill} 
+                          style={{ width: `${Math.min(percentage, 100)}%` }}
+                        ></div>
+                      </div>
+                      <span>
+                        {formatValue(limit.used, limit.unit)} / {formatValue(limit.limit, limit.unit)}
+                      </span>
+                    </div>
                   </div>
-                  <span>$45.00 / $100.00</span>
-                </div>
-              </div>
-              <div className={styles.limitCard}>
-                <h4>Token Limit (Hourly)</h4>
-                <div className={styles.limitValue}>50,000</div>
-                <div className={styles.limitProgress}>
-                  <div className={styles.progressBar}>
-                    <div className={styles.progressFill} style={{ width: '32%' }}></div>
-                  </div>
-                  <span>16,000 / 50,000</span>
-                </div>
-              </div>
-              <div className={styles.limitCard}>
-                <h4>Concurrent Executions</h4>
-                <div className={styles.limitValue}>10</div>
-                <div className={styles.limitProgress}>
-                  <div className={styles.progressBar}>
-                    <div className={styles.progressFill} style={{ width: '30%' }}></div>
-                  </div>
-                  <span>3 / 10</span>
-                </div>
-              </div>
-              <div className={styles.limitCard}>
-                <h4>API Calls (Daily)</h4>
-                <div className={styles.limitValue}>10,000</div>
-                <div className={styles.limitProgress}>
-                  <div className={styles.progressBar}>
-                    <div className={styles.progressFill} style={{ width: '67%' }}></div>
-                  </div>
-                  <span>6,700 / 10,000</span>
-                </div>
-              </div>
+                );
+              })}
             </div>
           </div>
         )}
