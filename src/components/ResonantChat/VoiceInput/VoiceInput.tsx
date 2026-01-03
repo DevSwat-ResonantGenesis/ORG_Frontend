@@ -42,16 +42,37 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
   const [isSupported, setIsSupported] = useState(true);
   const [interimTranscript, setInterimTranscript] = useState('');
   const recognitionRef = useRef<any>(null);
+  const isListeningRef = useRef(isListening);
+  
+  // Store callbacks in refs to avoid stale closures
+  const onTranscriptRef = useRef(onTranscript);
+  const onListeningChangeRef = useRef(onListeningChange);
+  
+  // Keep refs in sync
+  useEffect(() => {
+    onTranscriptRef.current = onTranscript;
+  }, [onTranscript]);
+  
+  useEffect(() => {
+    onListeningChangeRef.current = onListeningChange;
+  }, [onListeningChange]);
+  
+  useEffect(() => {
+    isListeningRef.current = isListening;
+  }, [isListening]);
 
+  // Initialize speech recognition only once
   useEffect(() => {
     // Check for browser support
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     
     if (!SpeechRecognition) {
+      console.warn('🎤 Speech recognition not supported in this browser');
       setIsSupported(false);
       return;
     }
 
+    console.log('🎤 Initializing speech recognition...');
     const recognition = new SpeechRecognition();
     recognition.continuous = true;
     recognition.interimResults = true;
@@ -70,40 +91,48 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
         }
       }
 
+      console.log('🎤 Speech result - interim:', interim, 'final:', final);
       setInterimTranscript(interim);
       
       if (final) {
-        onTranscript(final);
+        console.log('🎤 Final transcript received:', final);
+        // Use ref to get latest callback
+        onTranscriptRef.current(final);
         setInterimTranscript('');
       }
     };
 
     recognition.onerror = (event: any) => {
-      console.error('Speech recognition error:', event.error);
+      console.error('🎤 Speech recognition error:', event.error);
       setIsListening(false);
-      onListeningChange?.(false);
+      onListeningChangeRef.current?.(false);
     };
 
     recognition.onend = () => {
-      if (isListening) {
+      console.log('🎤 Recognition ended, isListening:', isListeningRef.current);
+      if (isListeningRef.current) {
         // Restart if still supposed to be listening
         try {
+          console.log('🎤 Restarting recognition...');
           recognition.start();
         } catch (e) {
+          console.error('🎤 Failed to restart:', e);
           setIsListening(false);
-          onListeningChange?.(false);
+          onListeningChangeRef.current?.(false);
         }
       }
     };
 
     recognitionRef.current = recognition;
+    console.log('🎤 Speech recognition initialized successfully');
 
     return () => {
       if (recognitionRef.current) {
+        console.log('🎤 Cleaning up speech recognition');
         recognitionRef.current.stop();
       }
     };
-  }, [onTranscript, onListeningChange, isListening]);
+  }, []); // Empty deps - only initialize once
 
   const toggleListening = async () => {
     if (!recognitionRef.current) {
