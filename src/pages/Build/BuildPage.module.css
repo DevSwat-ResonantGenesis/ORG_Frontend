@@ -606,12 +606,14 @@
   border-color: var(--accent-secondary, #818cf8);
 }
 
-/* File Browser - Compact */
+/* File Browser - Compact, Fixed Height */
 .fileBrowser {
   display: flex;
   gap: 0;
-  height: 100%;
+  height: calc(100vh - 130px);
+  max-height: calc(100vh - 130px);
   width: 100%;
+  overflow: hidden;
 }
 
 .emptyTree {
@@ -622,7 +624,8 @@
 }
 
 .fileTree {
-  width: 180px;
+  width: 200px;
+  min-width: 200px;
   flex-shrink: 0;
   background: #0a0a0a;
   border: none;
@@ -631,7 +634,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .fileTreeHeader {
@@ -685,7 +689,7 @@
   font-size: 14px;
 }
 
-/* Code Preview - Compact */
+/* Code Preview - Compact, Fixed Height with Scroll */
 .codePreview {
   flex: 1;
   background: #0c0c0c;
@@ -695,6 +699,7 @@
   flex-direction: column;
   min-width: 0;
   height: 100%;
+  overflow: hidden;
 }
 
 .codeHeader {
@@ -735,6 +740,11 @@
   flex: 1;
   min-height: 0;
   height: 100%;
+  overflow: hidden;
+}
+
+.editorContainer > div {
+  height: 100% !important;
 }
 
 .noSelection {

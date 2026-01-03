@@ -1323,7 +1323,7 @@ export const BuildPage: React.FC = () => {
                         )}
                         <div className={styles.editorContainer}>
                           <Editor
-                            height="500px"
+                            height="100%"
                             theme="vs-dark"
                             language={getLanguageFromPath(selectedFile.path)}
                             value={selectedFile.content}
