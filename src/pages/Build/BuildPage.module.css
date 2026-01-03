@@ -1,73 +1,76 @@
-/* Build Page Styles */
+/* Build Page Styles - Compact Professional Design */
 
 .buildPage {
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 48px);
-  background: var(--bg-primary, #0a0a0f);
+  background: var(--bg-primary, #09090b);
   color: var(--text-primary, #e4e4e7);
-  margin: -10px 0 0 0;
+  margin: 0;
   padding: 0;
   width: 100%;
   position: relative;
 }
 
-/* Tab Bar */
+/* Tab Bar - Compact */
 .tabBar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 24px;
-  background: var(--bg-secondary, #111118);
-  border-bottom: none;
-  min-height: 44px;
+  gap: 4px;
+  padding: 0 12px;
+  background: #0a0a0a;
+  border-bottom: 1px solid #1a1a1a;
+  min-height: 36px;
 }
 
 .tabBarLeft {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
 }
 
 .tabBarRight {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
   margin-left: auto;
 }
 
 .tabButton {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
+  gap: 6px;
+  padding: 6px 10px;
   background: transparent;
   border: none;
-  color: var(--text-secondary, #a1a1aa);
-  font-size: 14px;
+  color: var(--text-secondary, #71717a);
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
+  border-radius: 4px;
 }
 
 .tabButton:hover {
   color: var(--text-primary, #e4e4e7);
+  background: rgba(255,255,255,0.05);
 }
 
 .tabButton.active {
   color: #a78bfa;
+  background: rgba(139, 92, 246, 0.1);
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
   background: rgba(139, 92, 246, 0.2);
-  border-radius: 10px;
-  font-size: 11px;
+  border-radius: 8px;
+  font-size: 10px;
   font-weight: 600;
   color: #a78bfa;
 }
@@ -76,39 +79,39 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   opacity: 0.8;
 }
 
 .tabIcon svg {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   stroke: currentColor;
   stroke-width: 2;
 }
 
 .tabButton svg {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
   display: inline-block;
   vertical-align: middle;
   stroke: currentColor;
 }
 
-/* Stats Inline */
+/* Stats Inline - Compact */
 .statsInline {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
 }
 
 .statItem {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
+  gap: 4px;
+  font-size: 11px;
   color: var(--text-tertiary, #52525b);
 }
 
@@ -146,10 +149,10 @@
   letter-spacing: 0.5px;
 }
 
-/* Main Content */
+/* Main Content - Compact */
 .main {
   flex: 1;
-  padding: 32px;
+  padding: 12px 16px;
   overflow-y: auto;
 }
 
@@ -474,33 +477,34 @@
   background: #09090b;
 }
 
-/* Result Tabs - Minimal */
+/* Result Tabs - Compact */
 .resultTabs {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 16px;
-  border-bottom: none;
-  background: #09090b;
+  gap: 2px;
+  padding: 2px 12px;
+  border-bottom: 1px solid #1a1a1a;
+  background: #0a0a0a;
+  min-height: 32px;
 }
 
 .resultTab {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
+  gap: 4px;
+  padding: 4px 10px;
   background: transparent;
   border: none;
-  border-radius: 4px;
+  border-radius: 3px;
   color: #71717a;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
   cursor: pointer;
-  transition: color 0.15s;
+  transition: all 0.15s;
 }
 
 .resultTab:hover {
-  background: var(--bg-hover, #1f1f28);
+  background: rgba(255,255,255,0.05);
   color: var(--text-primary, #e4e4e7);
 }
 
@@ -513,20 +517,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
   background: var(--accent-primary, #6366f1);
-  border-radius: 10px;
-  font-size: 11px;
+  border-radius: 8px;
+  font-size: 10px;
   font-weight: 600;
   color: white;
 }
 
 .previewNote {
   margin-left: auto;
-  font-size: 12px;
-  color: var(--text-tertiary, #71717a);
+  font-size: 11px;
+  color: var(--text-tertiary, #52525b);
 }
 
 /* Result Content - Full Height */
@@ -598,7 +602,7 @@
   border-color: var(--accent-secondary, #818cf8);
 }
 
-/* File Browser - Full Screen */
+/* File Browser - Compact */
 .fileBrowser {
   display: flex;
   gap: 0;
@@ -607,18 +611,18 @@
 }
 
 .emptyTree {
-  padding: 20px;
+  padding: 12px;
   text-align: center;
-  color: var(--text-tertiary, #71717a);
-  font-size: 13px;
+  color: var(--text-tertiary, #52525b);
+  font-size: 11px;
 }
 
 .fileTree {
-  width: 220px;
+  width: 180px;
   flex-shrink: 0;
   background: #0a0a0a;
   border: none;
-  border-right: 1px solid #18181b;
+  border-right: 1px solid #1a1a1a;
   border-radius: 0;
   display: flex;
   flex-direction: column;
@@ -647,16 +651,16 @@
 .fileTreeContent {
   flex: 1;
   overflow-y: auto;
-  padding: 8px 0;
+  padding: 4px 0;
 }
 
 .treeItem {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: 6px;
+  padding: 4px 10px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   transition: all 0.15s;
 }
 
@@ -677,10 +681,10 @@
   font-size: 14px;
 }
 
-/* Code Preview - Full Width */
+/* Code Preview - Compact */
 .codePreview {
   flex: 1;
-  background: #0f0f0f;
+  background: #0c0c0c;
   border: none;
   border-radius: 0;
   display: flex;
@@ -693,25 +697,26 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 12px;
-  border-bottom: 1px solid #18181b;
+  padding: 4px 10px;
+  border-bottom: 1px solid #1a1a1a;
   background: #0a0a0a;
+  min-height: 28px;
 }
 
 .codeHeaderLeft {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 13px;
+  gap: 8px;
+  font-size: 12px;
   font-weight: 500;
 }
 
 .codeLang {
-  padding: 4px 10px;
-  background: var(--bg-tertiary, #18181b);
-  border-radius: 6px;
-  font-size: 11px;
-  color: var(--text-secondary, #a1a1aa);
+  padding: 2px 6px;
+  background: #18181b;
+  border-radius: 3px;
+  font-size: 10px;
+  color: var(--text-secondary, #71717a);
 }
 
 .fileExplanation {
@@ -768,13 +773,13 @@
   overflow-x: auto;
 }
 
-/* Project Modification Section - Minimal Bottom Bar */
+/* Project Modification Section - Compact Bottom Bar */
 .modificationSection {
   margin: 0;
-  padding: 8px 16px;
+  padding: 6px 12px;
   background: #0a0a0a;
   border: none;
-  border-top: 1px solid #18181b;
+  border-top: 1px solid #1a1a1a;
   border-radius: 0;
 }
 
@@ -782,17 +787,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .modificationSection h3 {
   margin: 0;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 6px;
-  color: #a1a1aa;
+  gap: 4px;
+  color: #71717a;
 }
 
 .projectStateIndicator {
@@ -872,28 +877,28 @@
 }
 
 .modificationHint {
-  margin: 0 0 8px 0;
-  font-size: 12px;
+  margin: 0 0 4px 0;
+  font-size: 10px;
   color: #52525b;
 }
 
 .modificationInput {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
 }
 
 .modificationTextarea {
   flex: 1;
-  padding: 8px 12px;
-  background: #18181b;
-  border: 1px solid #27272a;
-  border-radius: 6px;
-  font-size: 13px;
+  padding: 6px 10px;
+  background: #111111;
+  border: 1px solid #222;
+  border-radius: 4px;
+  font-size: 12px;
   color: #fafafa;
   resize: none;
-  min-height: 36px;
-  max-height: 60px;
+  min-height: 28px;
+  max-height: 48px;
   font-family: inherit;
 }
 
@@ -903,7 +908,7 @@
 }
 
 .modificationTextarea::placeholder {
-  color: var(--text-tertiary, #71717a);
+  color: #52525b;
 }
 
 .modificationTextarea:disabled {
@@ -914,13 +919,13 @@
 .modifyButton {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 4px;
+  padding: 6px 12px;
   background: #6366f1;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   color: white;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.15s;
