@@ -25,7 +25,7 @@
   gap: 20px;
   padding: 0 20px;
   background: #0a0a0a;
-  border-bottom: 1px solid #1a1a1a;
+  border-bottom: none;
   height: 30px;
   min-height: 30px;
   max-height: 30px;
