@@ -135,16 +135,74 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
   }, []); // Empty deps - only initialize once
 
   const toggleListening = async () => {
+    console.log('🎤 Toggle listening clicked, current state:', isListening);
+    
     if (!recognitionRef.current) {
-      console.error('🎤 Speech recognition not initialized');
-      return;
+      console.error('🎤 Speech recognition not initialized, trying to reinitialize...');
+      // Try to reinitialize
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+        
+        recognition.onresult = (event: any) => {
+          let interim = '';
+          let final = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              final += transcript;
+            } else {
+              interim += transcript;
+            }
+          }
+          console.log('🎤 Speech result - interim:', interim, 'final:', final);
+          setInterimTranscript(interim);
+          if (final) {
+            console.log('🎤 Final transcript received:', final);
+            onTranscriptRef.current(final);
+            setInterimTranscript('');
+          }
+        };
+        
+        recognition.onerror = (event: any) => {
+          console.error('🎤 Speech recognition error:', event.error);
+          setIsListening(false);
+          onListeningChangeRef.current?.(false);
+        };
+        
+        recognition.onend = () => {
+          console.log('🎤 Recognition ended, isListening:', isListeningRef.current);
+          if (isListeningRef.current) {
+            try {
+              recognition.start();
+            } catch (e) {
+              setIsListening(false);
+              onListeningChangeRef.current?.(false);
+            }
+          }
+        };
+        
+        recognitionRef.current = recognition;
+        console.log('🎤 Speech recognition reinitialized');
+      } else {
+        alert('Speech recognition not supported in this browser');
+        return;
+      }
     }
 
     if (isListening) {
       console.log('🎤 Stopping voice input...');
-      recognitionRef.current.stop();
+      try {
+        recognitionRef.current.stop();
+      } catch (e) {
+        console.log('🎤 Stop error (ignored):', e);
+      }
       setIsListening(false);
-      onListeningChange?.(false);
+      isListeningRef.current = false;
+      onListeningChangeRef.current?.(false);
       setInterimTranscript('');
     } else {
       try {
@@ -153,9 +211,20 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
         await navigator.mediaDevices.getUserMedia({ audio: true });
         console.log('🎤 Microphone permission granted, starting recognition...');
         
+        // Stop any existing recognition first
+        try {
+          recognitionRef.current.stop();
+        } catch (e) {
+          // Ignore - might not be running
+        }
+        
+        // Small delay before starting
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         recognitionRef.current.start();
         setIsListening(true);
-        onListeningChange?.(true);
+        isListeningRef.current = true;
+        onListeningChangeRef.current?.(true);
         console.log('🎤 Voice input started - speak now!');
       } catch (e: any) {
         console.error('🎤 Failed to start speech recognition:', e);
@@ -163,6 +232,10 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
           alert('Microphone access denied. Please allow microphone access in your browser settings.');
         } else if (e.name === 'NotFoundError') {
           alert('No microphone found. Please connect a microphone.');
+        } else if (e.message?.includes('already started')) {
+          // Already running, just update state
+          setIsListening(true);
+          isListeningRef.current = true;
         } else {
           alert('Failed to start voice input: ' + e.message);
         }
