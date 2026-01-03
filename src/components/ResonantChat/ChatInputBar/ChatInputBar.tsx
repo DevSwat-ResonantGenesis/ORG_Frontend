@@ -150,9 +150,15 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
+  const valueRef = useRef(value); // Track current value for voice input
   const [showMentionAutocomplete, setShowMentionAutocomplete] = useState(false);
   const [mentionQuery, setMentionQuery] = useState('');
   const [showProviderDropdown, setShowProviderDropdown] = useState(false);
+  
+  // Keep valueRef in sync with value prop
+  useEffect(() => {
+    valueRef.current = value;
+  }, [value]);
 
   // Close all dropdowns/panels when clicking outside
   useEffect(() => {
@@ -706,7 +712,14 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             
             {/* Voice Input */}
             <VoiceInput
-              onTranscript={(text) => onChange(value + (value ? ' ' : '') + text)}
+              onTranscript={(text) => {
+                // Use ref to get current value to avoid stale closure
+                const currentValue = valueRef.current;
+                const newValue = currentValue + (currentValue ? ' ' : '') + text;
+                onChange(newValue);
+                // Focus the textarea after voice input
+                textareaRef.current?.focus();
+              }}
               disabled={isLoading || disabled}
             />
             
