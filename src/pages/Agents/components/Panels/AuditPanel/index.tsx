@@ -141,19 +141,25 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
     setCases(prev => prev.map(c => c.id === caseId ? { ...c, status: 'resolved' } : c));
   }, []);
 
-  // Mock entries for demo
-  const mockEntries: AuditEntry[] = [
-    { id: 'a1', timestamp: new Date(), action: 'agent.create', actor: { userId: 'user-1' }, target: { type: 'agent', id: 'agent-1', name: 'Research-01' }, details: { model: 'gpt-4' }, result: 'success' },
-    { id: 'a2', timestamp: new Date(Date.now() - 60000), action: 'agent.start', actor: { userId: 'user-1' }, target: { type: 'agent', id: 'agent-1', name: 'Research-01' }, details: {}, result: 'success' },
-    { id: 'a3', timestamp: new Date(Date.now() - 120000), action: 'execution.start', actor: { userId: 'user-1', agentId: 'agent-1' }, target: { type: 'execution', id: 'exec-1' }, details: { workflowId: 'wf-1' }, result: 'success' },
-    { id: 'a4', timestamp: new Date(Date.now() - 180000), action: 'execution.complete', actor: { userId: 'user-1', agentId: 'agent-1' }, target: { type: 'execution', id: 'exec-1' }, details: { duration: 45000, tokens: 1250 }, result: 'success' },
-    { id: 'a5', timestamp: new Date(Date.now() - 240000), action: 'auth.login', actor: { userId: 'user-1', ip: '192.168.1.1' }, target: { type: 'user', id: 'user-1' }, details: { method: 'password' }, result: 'success' },
-    { id: 'a6', timestamp: new Date(Date.now() - 300000), action: 'config.update', actor: { userId: 'user-1' }, target: { type: 'config', id: 'settings' }, details: { key: 'theme', value: 'dark' }, result: 'success' },
-    { id: 'a7', timestamp: new Date(Date.now() - 360000), action: 'agent.stop', actor: { userId: 'user-1' }, target: { type: 'agent', id: 'agent-2', name: 'Data-Analyzer' }, details: { reason: 'manual' }, result: 'success' },
-    { id: 'a8', timestamp: new Date(Date.now() - 420000), action: 'execution.fail', actor: { userId: 'user-1', agentId: 'agent-2' }, target: { type: 'execution', id: 'exec-2' }, details: { error: 'Rate limit exceeded' }, result: 'failure' },
-  ];
+  // Transform API entries to display format
+  const displayEntries: AuditEntry[] = auditEntries.map(entry => ({
+    id: entry.id || entry.entry_hash,
+    timestamp: new Date(entry.timestamp || entry.created_at || Date.now()),
+    action: entry.action || entry.event_type,
+    actor: { 
+      userId: entry.user || entry.actor_id || 'system',
+      agentId: entry.actor_dsid,
+    },
+    target: { 
+      type: entry.target_type || entry.event_category || 'unknown',
+      id: entry.target_id || '',
+      name: entry.target_id,
+    },
+    details: entry.metadata || {},
+    result: entry.success ? 'success' : 'failure',
+  }));
 
-  const filteredEntries = mockEntries.filter(entry => {
+  const filteredEntries = displayEntries.filter(entry => {
     if (filter !== 'all') {
       const actionPrefix = entry.action.split('.')[0];
       if (filter === 'auth' && actionPrefix !== 'auth') return false;
@@ -188,7 +194,7 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
   };
 
   const exportAuditLog = () => {
-    const data = JSON.stringify(mockEntries, null, 2);
+    const data = JSON.stringify(auditEntries, null, 2);
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -293,43 +299,41 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
             <div className={styles.statsGrid}>
               <div className={styles.statCard}>
                 <span className={styles.statLabel}>Total Audited Actions</span>
-                <span className={styles.statValue}>12,847</span>
+                <span className={styles.statValue}>{stats?.total_entries?.toLocaleString() || totalEntries || 0}</span>
               </div>
               <div className={styles.statCard}>
-                <span className={styles.statLabel}>Verification Rate</span>
-                <span className={styles.statValue}>99.2%</span>
+                <span className={styles.statLabel}>Success Rate</span>
+                <span className={styles.statValue}>{stats?.success_rate?.toFixed(1) || '0.0'}%</span>
               </div>
               <div className={styles.statCard}>
-                <span className={styles.statLabel}>Avg Response Time</span>
-                <span className={styles.statValue}>1.8s</span>
+                <span className={styles.statLabel}>Recent Activity</span>
+                <span className={styles.statValue}>{stats?.recent_activity || 0}</span>
               </div>
               <div className={styles.statCard}>
-                <span className={styles.statLabel}>Compliance Score</span>
-                <span className={styles.statValue}>94%</span>
+                <span className={styles.statLabel}>Categories</span>
+                <span className={styles.statValue}>{Object.keys(stats?.categories || {}).length}</span>
               </div>
             </div>
 
             <div className={styles.chartsRow}>
               <div className={styles.chartCard}>
-                <h4>Audit Activity (7 days)</h4>
-                <div className={styles.barChart}>
-                  {[120, 180, 150, 220, 280, 350, 320].map((val, i) => (
-                    <div key={i} className={styles.barWrapper}>
-                      <div className={styles.bar} style={{ height: `${(val / 350) * 100}%` }}>
-                        <span className={styles.barValue}>{val}</span>
-                      </div>
-                      <span className={styles.barLabel}>{['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i]}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className={styles.chartCard}>
-                <h4>Action Distribution</h4>
+                <h4>Action Distribution by Category</h4>
                 <div className={styles.pieChart}>
-                  <div className={styles.pieItem}><span className={styles.pieDot} style={{ background: '#0ea5e9' }} /> Wallet (35%)</div>
-                  <div className={styles.pieItem}><span className={styles.pieDot} style={{ background: '#22c55e' }} /> API (28%)</div>
-                  <div className={styles.pieItem}><span className={styles.pieDot} style={{ background: '#a855f7' }} /> Goals (22%)</div>
-                  <div className={styles.pieItem}><span className={styles.pieDot} style={{ background: '#f59e0b' }} /> Other (15%)</div>
+                  {stats?.categories && Object.entries(stats.categories).length > 0 ? (
+                    Object.entries(stats.categories).map(([category, count], i) => {
+                      const colors = ['#0ea5e9', '#22c55e', '#a855f7', '#f59e0b', '#ef4444', '#06b6d4'];
+                      const total = Object.values(stats.categories).reduce((a, b) => a + b, 0);
+                      const percent = total > 0 ? ((count / total) * 100).toFixed(0) : 0;
+                      return (
+                        <div key={category} className={styles.pieItem}>
+                          <span className={styles.pieDot} style={{ background: colors[i % colors.length] }} />
+                          {category} ({percent}%)
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className={styles.emptyState}>No category data available</div>
+                  )}
                 </div>
               </div>
             </div>
