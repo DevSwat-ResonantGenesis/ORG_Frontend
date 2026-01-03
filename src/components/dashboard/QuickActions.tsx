@@ -25,7 +25,7 @@ interface QuickAction {
 const DEFAULT_ACTIONS: QuickAction[] = [
   { label: 'Start Chat', description: 'AI conversations', icon: 'chat', path: '/resonant-chat', primary: true },
   { label: 'Create Agent', description: 'Build AI agents', icon: 'agent', path: '/agents' },
-  { label: 'Open IDE', description: 'Code editor', icon: 'ide', path: '/ide' },
+  { label: 'Project Builder', description: 'Build projects', icon: 'ide', path: '/build' },
   { label: 'Buy Credits', description: 'Add more credits', icon: 'credits', path: '/pricing' },
 ];
 

@@ -747,6 +747,53 @@
   height: 100% !important;
 }
 
+/* Monaco Editor - Ensure syntax highlighting is preserved */
+.editorContainer :global(.monaco-editor) {
+  background: #1e1e1e !important;
+}
+
+.editorContainer :global(.monaco-editor .margin) {
+  background: #1e1e1e !important;
+}
+
+/* Preserve Monaco syntax highlighting tokens */
+.editorContainer :global(.monaco-editor .mtk1) { color: #d4d4d4 !important; }
+.editorContainer :global(.monaco-editor .mtk2) { color: #1e1e1e !important; }
+.editorContainer :global(.monaco-editor .mtk3) { color: #000080 !important; }
+.editorContainer :global(.monaco-editor .mtk4) { color: #6a9955 !important; }
+.editorContainer :global(.monaco-editor .mtk5) { color: #569cd6 !important; }
+.editorContainer :global(.monaco-editor .mtk6) { color: #b5cea8 !important; }
+.editorContainer :global(.monaco-editor .mtk7) { color: #646695 !important; }
+.editorContainer :global(.monaco-editor .mtk8) { color: #c586c0 !important; }
+.editorContainer :global(.monaco-editor .mtk9) { color: #9cdcfe !important; }
+.editorContainer :global(.monaco-editor .mtk10) { color: #f44747 !important; }
+.editorContainer :global(.monaco-editor .mtk11) { color: #ce9178 !important; }
+.editorContainer :global(.monaco-editor .mtk12) { color: #6796e6 !important; }
+.editorContainer :global(.monaco-editor .mtk13) { color: #808080 !important; }
+.editorContainer :global(.monaco-editor .mtk14) { color: #d16969 !important; }
+.editorContainer :global(.monaco-editor .mtk15) { color: #dcdcaa !important; }
+.editorContainer :global(.monaco-editor .mtk16) { color: #4ec9b0 !important; }
+.editorContainer :global(.monaco-editor .mtk17) { color: #c586c0 !important; }
+.editorContainer :global(.monaco-editor .mtk18) { color: #4fc1ff !important; }
+.editorContainer :global(.monaco-editor .mtk19) { color: #ce9178 !important; }
+.editorContainer :global(.monaco-editor .mtk20) { color: #d7ba7d !important; }
+.editorContainer :global(.monaco-editor .mtk21) { color: #b5cea8 !important; }
+.editorContainer :global(.monaco-editor .mtk22) { color: #569cd6 !important; }
+
+/* Keywords, strings, comments, functions */
+.editorContainer :global(.monaco-editor .mtk5),
+.editorContainer :global(.monaco-editor .keyword) { color: #569cd6 !important; }
+.editorContainer :global(.monaco-editor .mtk11),
+.editorContainer :global(.monaco-editor .string) { color: #ce9178 !important; }
+.editorContainer :global(.monaco-editor .mtk4),
+.editorContainer :global(.monaco-editor .comment) { color: #6a9955 !important; }
+.editorContainer :global(.monaco-editor .mtk15),
+.editorContainer :global(.monaco-editor .function) { color: #dcdcaa !important; }
+.editorContainer :global(.monaco-editor .mtk16),
+.editorContainer :global(.monaco-editor .type) { color: #4ec9b0 !important; }
+.editorContainer :global(.monaco-editor .mtk6),
+.editorContainer :global(.monaco-editor .number) { color: #b5cea8 !important; }
+
 .noSelection {
   display: flex;
   flex-direction: column;
