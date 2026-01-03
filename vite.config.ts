@@ -188,130 +188,14 @@ export default defineConfig({
     'import.meta.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL || '')
   },
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks: (id) => {
-          // Split vendor libraries into logical chunks for better caching and loading
-          
-          // React core - keep all React packages together to avoid initialization issues
-          if (id.includes('node_modules/react/') || 
-              id.includes('node_modules/react-dom/') ||
-              id.includes('node_modules/scheduler/') ||
-              id.includes('node_modules/react-is/') ||
-              id.includes('node_modules/use-sync-external-store/')) {
-            return 'vendor-react';
-          }
-          
-          // React Router - separate chunk
-          if (id.includes('node_modules/react-router')) {
-            return 'vendor-router';
-          }
-          
-          // ECharts - separate chunk (largest library, ~800KB, loaded on-demand)
-          if (id.includes('node_modules/echarts')) {
-            return 'echarts-vendor';
-          }
-          
-          // Recharts - separate chunk (charting library)
-          if (id.includes('node_modules/recharts')) {
-            return 'vendor-recharts';
-          }
-          
-          // UI libraries - separate chunk
-          if (id.includes('node_modules/@tanstack/react-table') || 
-              id.includes('node_modules/cytoscape') ||
-              id.includes('node_modules/zustand')) {
-            return 'ui-vendor';
-          }
-          
-          // Axios and HTTP libraries
-          if (id.includes('node_modules/axios')) {
-            return 'vendor-http';
-          }
-          
-          // Markdown and syntax highlighting
-          if (id.includes('node_modules/react-markdown') || 
-              id.includes('node_modules/react-syntax-highlighter') ||
-              id.includes('node_modules/prismjs') ||
-              id.includes('node_modules/remark') ||
-              id.includes('node_modules/rehype')) {
-            return 'vendor-markdown';
-          }
-          
-          // Sentry (monitoring)
-          if (id.includes('node_modules/@sentry')) {
-            return 'vendor-monitoring';
-          }
-          
-          // Large utility libraries
-          if (id.includes('node_modules/html2canvas')) {
-            return 'vendor-utils';
-          }
-          
-          // Monaco Editor - separate chunk (large editor library)
-          if (id.includes('node_modules/monaco-editor') || id.includes('node_modules/@monaco-editor')) {
-            return 'vendor-monaco';
-          }
-          
-          // Date libraries
-          if (id.includes('node_modules/date-fns') || id.includes('node_modules/dayjs') || id.includes('node_modules/moment')) {
-            return 'vendor-date';
-          }
-          
-          // Form libraries
-          if (id.includes('node_modules/react-hook-form') || id.includes('node_modules/formik') || id.includes('node_modules/yup') || id.includes('node_modules/zod')) {
-            return 'vendor-forms';
-          }
-          
-          // Animation libraries
-          if (id.includes('node_modules/framer-motion') || id.includes('node_modules/react-spring')) {
-            return 'vendor-animation';
-          }
-          
-          // All other vendors - split by size
-          if (id.includes('node_modules')) {
-            return 'vendor';
-          }
-          
-          // AgentOS Panel splitting - each panel loads independently
-          if (id.includes('src/pages/Agents/components/Panels/AgentsPanel')) {
-            return 'panel-agents';
-          }
-          if (id.includes('src/pages/Agents/components/Panels/FactoryPanel')) {
-            return 'panel-factory';
-          }
-          if (id.includes('src/pages/Agents/components/Panels/WorkflowPanel')) {
-            return 'panel-workflow';
-          }
-          if (id.includes('src/pages/Agents/components/Panels/EconomyPanel')) {
-            return 'panel-economy';
-          }
-          
-          // AgentOS stores - separate chunk for state management
-          if (id.includes('src/stores/')) {
-            return 'agentos-stores';
-          }
-          
-          // Observability layer
-          if (id.includes('src/observability/')) {
-            return 'agentos-observability';
-          }
-          
-          // Security layer
-          if (id.includes('src/security/')) {
-            return 'agentos-security';
-          }
-        },
-      },
-    },
-    chunkSizeWarningLimit: 1000, // Allow larger chunks to avoid splitting React
-    sourcemap: false, // Disable sourcemaps in production for smaller bundles
+    chunkSizeWarningLimit: 2000,
+    sourcemap: false,
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true, // Remove console.log in production
+        drop_console: true,
         drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info', 'console.debug'], // Remove specific console methods
+        pure_funcs: ['console.log', 'console.info', 'console.debug'],
       },
     },
   },
