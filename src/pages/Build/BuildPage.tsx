@@ -857,37 +857,75 @@ export const BuildPage: React.FC = () => {
 
   return (
     <div className={styles.buildPage}>
-      {/* Modern Minimal Tab Bar */}
+      {/* Unified Single Top Bar - 30px height, 20px spacing */}
       <div className={styles.tabBar}>
         <div className={styles.tabBarLeft}>
+          {/* View Mode Tabs */}
           <button
-            className={`${styles.tabButton} ${viewMode === 'create' || viewMode === 'building' || viewMode === 'result' ? styles.active : ''}`}
+            className={`${styles.tabButton} ${viewMode === 'create' || viewMode === 'building' ? styles.active : ''}`}
             onClick={() => setViewMode('create')}
           >
-            <span className={styles.tabIcon}><PlusIcon /></span>
+            <PlusIcon />
             <span>New Build</span>
           </button>
+          
+          {/* Result View Tabs - Show when in result mode */}
+          {viewMode === 'result' && (
+            <>
+              <button 
+                className={`${styles.tabButton} ${!showPreview ? styles.active : ''}`}
+                onClick={() => setShowPreview(false)}
+              >
+                <FolderIcon />
+                <span>Project Files</span>
+                <span className={styles.badge}>{generatedFiles.length}</span>
+              </button>
+              <button 
+                className={`${styles.tabButton} ${showPreview ? styles.active : ''}`}
+                onClick={() => setShowPreview(true)}
+              >
+                <EyeIcon />
+                <span>Live Preview</span>
+              </button>
+            </>
+          )}
+          
           <button
             className={`${styles.tabButton} ${viewMode === 'projects' ? styles.active : ''}`}
             onClick={() => { setViewMode('projects'); loadProjects(); }}
           >
-            <span className={styles.tabIcon}><FolderIcon /></span>
+            <FolderIcon />
             <span>My Projects</span>
             {projects.length > 0 && <span className={styles.badge}>{projects.length}</span>}
           </button>
+          
+          {/* Stats */}
+          {generatedFiles.length > 0 && (
+            <span className={styles.statItem}>{generatedFiles.length} files created</span>
+          )}
         </div>
+        
         <div className={styles.tabBarRight}>
-          {stats && (
-            <div className={styles.statsInline}>
-              <span className={styles.statItem}>
-                <span className={styles.statIcon}><FileDocIcon /></span>
-                <span>{stats.total_files || 0} files</span>
-              </span>
-              <span className={styles.statItem}>
-                <span className={styles.statIcon}><CoinIcon /></span>
-                <span>{stats.storage_used_mb?.toFixed(1) || 0} MB</span>
-              </span>
-            </div>
+          {/* Action Buttons - Show when in result mode */}
+          {viewMode === 'result' && generatedFiles.length > 0 && (
+            <>
+              <button onClick={handleDownloadZip} className={styles.tabButton}>
+                <DownloadIcon />
+                <span>Download ZIP</span>
+              </button>
+              <button onClick={handlePushToGitHub} className={styles.tabButton}>
+                <GitHubIcon />
+                <span>Push to GitHub</span>
+              </button>
+              <button onClick={handleSaveToBackend} className={styles.tabButton}>
+                <SaveIcon />
+                <span>Save Project</span>
+              </button>
+              <button onClick={() => setViewMode('create')} className={styles.tabButton}>
+                <PlusIcon />
+                <span>New Build</span>
+              </button>
+            </>
           )}
         </div>
       </div>
