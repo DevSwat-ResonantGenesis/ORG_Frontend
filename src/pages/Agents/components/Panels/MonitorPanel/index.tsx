@@ -130,15 +130,14 @@ const MonitorPanelComponent: React.FC<MonitorPanelProps> = ({ className }) => {
               <div className={styles.statCard}>
                 <div className={styles.statIcon}><Icons.Agents /></div>
                 <div className={styles.statInfo}>
-                  <span className={styles.statValue}>{activeAgents || 3}</span>
+                  <span className={styles.statValue}>{activeAgents}</span>
                   <span className={styles.statLabel}>Active Agents</span>
                 </div>
-                <span className={`${styles.statChange} ${styles.positive}`}>+2</span>
               </div>
               <div className={styles.statCard}>
                 <div className={styles.statIcon}><Icons.Execution /></div>
                 <div className={styles.statInfo}>
-                  <span className={styles.statValue}>{runningExecutions || 1}</span>
+                  <span className={styles.statValue}>{runningExecutions}</span>
                   <span className={styles.statLabel}>Running</span>
                 </div>
               </div>
@@ -148,7 +147,6 @@ const MonitorPanelComponent: React.FC<MonitorPanelProps> = ({ className }) => {
                   <span className={styles.statValue}>{totalExecutionsToday}</span>
                   <span className={styles.statLabel}>Executions Today</span>
                 </div>
-                <span className={`${styles.statChange} ${styles.positive}`}>+12%</span>
               </div>
               <div className={styles.statCard}>
                 <div className={styles.statIcon}><Icons.TrendingUp /></div>
@@ -156,7 +154,6 @@ const MonitorPanelComponent: React.FC<MonitorPanelProps> = ({ className }) => {
                   <span className={styles.statValue}>{successRate}%</span>
                   <span className={styles.statLabel}>Success Rate</span>
                 </div>
-                <span className={`${styles.statChange} ${styles.positive}`}>+2.1%</span>
               </div>
             </div>
 
@@ -214,20 +211,17 @@ const MonitorPanelComponent: React.FC<MonitorPanelProps> = ({ className }) => {
           <div className={styles.agentsMonitor}>
             <h3>Agent Status</h3>
             <div className={styles.agentsList}>
-              {(agents.length > 0 ? agents : [
-                { id: 'a1', name: 'Research-Agent-01', status: 'active', executions: 45, costToday: 2.34 },
-                { id: 'a2', name: 'Data-Analyzer', status: 'idle', executions: 12, costToday: 0.89 },
-                { id: 'a3', name: 'Code-Generator', status: 'active', executions: 78, costToday: 5.67 },
-                { id: 'a4', name: 'Support-Bot', status: 'paused', executions: 156, costToday: 1.23 },
-              ]).map((agent: any) => (
+              {agents.length > 0 ? agents.map((agent: any) => (
                 <div key={agent.id} className={styles.agentRow}>
                   <span className={`${styles.statusDot} ${styles[agent.status]}`}></span>
                   <span className={styles.agentName}>{agent.name}</span>
-                  <span className={styles.agentStat}>{agent.executions} runs</span>
+                  <span className={styles.agentStat}>{agent.executions || 0} runs</span>
                   <span className={styles.agentStat}>${agent.costToday?.toFixed(2) || '0.00'}</span>
                   <span className={`${styles.statusBadge} ${styles[agent.status]}`}>{agent.status}</span>
                 </div>
-              ))}
+              )) : (
+                <div className={styles.emptyState}>No agents created yet. Create an agent in the Factory panel.</div>
+              )}
             </div>
           </div>
         )}

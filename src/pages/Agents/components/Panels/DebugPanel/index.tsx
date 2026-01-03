@@ -63,17 +63,55 @@ const DebugPanelComponent: React.FC<DebugPanelProps> = ({ className }) => {
   const [logFilter, setLogFilter] = useState<'all' | 'debug' | 'info' | 'warn' | 'error'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Mock logs for demo (logger.getBuffer() returns LogEntry[] from observability)
-  const mockLogs: LogEntry[] = [
-    { id: 'l1', timestamp: new Date(), level: 'info', source: 'AgentStore', message: 'Agent state updated', data: { agentId: 'agent-1' } },
-    { id: 'l2', timestamp: new Date(Date.now() - 1000), level: 'debug', source: 'WebSocket', message: 'Message received', data: { type: 'heartbeat' } },
-    { id: 'l3', timestamp: new Date(Date.now() - 2000), level: 'warn', source: 'ExecutionEngine', message: 'Execution taking longer than expected', data: { execId: 'exec-1', duration: 45000 } },
-    { id: 'l4', timestamp: new Date(Date.now() - 3000), level: 'error', source: 'APIClient', message: 'Request failed: 429 Too Many Requests', data: { endpoint: '/api/v1/agents' } },
-    { id: 'l5', timestamp: new Date(Date.now() - 4000), level: 'info', source: 'Router', message: 'Navigation to /agents', data: {} },
-    { id: 'l6', timestamp: new Date(Date.now() - 5000), level: 'debug', source: 'UIStore', message: 'Active section changed', data: { from: 'agents', to: 'debug' } },
-  ];
+  // Real logs from console capture (empty initially, populated by observability system)
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [networkRequests, setNetworkRequests] = useState<Array<{
+    id: string;
+    method: string;
+    url: string;
+    status: number;
+    duration: number;
+    size: string;
+  }>>([]);
 
-  const filteredLogs = mockLogs.filter(log => {
+  // Capture console logs
+  useEffect(() => {
+    const originalConsole = {
+      log: console.log,
+      info: console.info,
+      warn: console.warn,
+      error: console.error,
+      debug: console.debug,
+    };
+
+    const captureLog = (level: LogEntry['level'], ...args: any[]) => {
+      const message = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+      setLogs(prev => [{
+        id: `log-${Date.now()}-${Math.random()}`,
+        timestamp: new Date(),
+        level,
+        source: 'Console',
+        message,
+        data: args.length > 1 ? { args } : undefined,
+      }, ...prev].slice(0, 100)); // Keep last 100 logs
+    };
+
+    console.log = (...args) => { originalConsole.log(...args); captureLog('info', ...args); };
+    console.info = (...args) => { originalConsole.info(...args); captureLog('info', ...args); };
+    console.warn = (...args) => { originalConsole.warn(...args); captureLog('warn', ...args); };
+    console.error = (...args) => { originalConsole.error(...args); captureLog('error', ...args); };
+    console.debug = (...args) => { originalConsole.debug(...args); captureLog('debug', ...args); };
+
+    return () => {
+      console.log = originalConsole.log;
+      console.info = originalConsole.info;
+      console.warn = originalConsole.warn;
+      console.error = originalConsole.error;
+      console.debug = originalConsole.debug;
+    };
+  }, []);
+
+  const filteredLogs = logs.filter(log => {
     if (logFilter !== 'all' && log.level !== logFilter) return false;
     if (searchQuery) {
       return log.message.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -166,12 +204,7 @@ const DebugPanelComponent: React.FC<DebugPanelProps> = ({ className }) => {
           <div className={styles.networkSection}>
             <h3>Network Requests</h3>
             <div className={styles.requestsList}>
-              {[
-                { id: 'r1', method: 'GET', url: '/api/v1/agents', status: 200, duration: 45, size: '2.3 KB' },
-                { id: 'r2', method: 'POST', url: '/api/v1/executions', status: 201, duration: 120, size: '1.1 KB' },
-                { id: 'r3', method: 'GET', url: '/api/v1/workflows', status: 200, duration: 32, size: '5.6 KB' },
-                { id: 'r4', method: 'GET', url: '/api/v1/agents/agent-1', status: 429, duration: 15, size: '0.2 KB' },
-              ].map(req => (
+              {networkRequests.length > 0 ? networkRequests.map(req => (
                 <div key={req.id} className={styles.requestRow}>
                   <span className={`${styles.method} ${styles[req.method.toLowerCase()]}`}>{req.method}</span>
                   <span className={styles.url}>{req.url}</span>
@@ -179,7 +212,9 @@ const DebugPanelComponent: React.FC<DebugPanelProps> = ({ className }) => {
                   <span className={styles.duration}>{req.duration}ms</span>
                   <span className={styles.size}>{req.size}</span>
                 </div>
-              ))}
+              )) : (
+                <div className={styles.emptyState}>No network requests captured yet</div>
+              )}
             </div>
           </div>
         )}
@@ -211,20 +246,20 @@ const DebugPanelComponent: React.FC<DebugPanelProps> = ({ className }) => {
             <h3>Performance Metrics</h3>
             <div className={styles.metricsGrid}>
               <div className={styles.metricCard}>
-                <h4>Render Time</h4>
-                <span className={styles.metricValue}>12.4ms</span>
+                <h4>Logs Captured</h4>
+                <span className={styles.metricValue}>{logs.length}</span>
               </div>
               <div className={styles.metricCard}>
-                <h4>Memory Usage</h4>
-                <span className={styles.metricValue}>45.2 MB</span>
+                <h4>Agents Loaded</h4>
+                <span className={styles.metricValue}>{agents.length}</span>
               </div>
               <div className={styles.metricCard}>
-                <h4>API Latency (avg)</h4>
-                <span className={styles.metricValue}>53ms</span>
+                <h4>Executions</h4>
+                <span className={styles.metricValue}>{executions.length}</span>
               </div>
               <div className={styles.metricCard}>
-                <h4>WebSocket RTT</h4>
-                <span className={styles.metricValue}>8ms</span>
+                <h4>Network Requests</h4>
+                <span className={styles.metricValue}>{networkRequests.length}</span>
               </div>
             </div>
           </div>
