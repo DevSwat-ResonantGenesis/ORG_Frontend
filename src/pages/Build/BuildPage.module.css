@@ -891,9 +891,9 @@
 
 .modificationInput {
   display: flex;
-  gap: 6px;
+  gap: 10px;
   align-items: center;
-  max-width: 50%;
+  width: 100%;
 }
 
 .modificationTextarea {
