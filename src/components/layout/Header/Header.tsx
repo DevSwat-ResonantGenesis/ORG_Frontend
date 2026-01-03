@@ -179,7 +179,7 @@ export const Header: React.FC<HeaderProps> = ({
             ResonantGenesis
           </div>
 
-          {/* Main Navigation - Desktop */
+          {/* Main Navigation - Desktop */}
           <nav ref={navRef} className={styles.mainNav}>
             {/* Solutions Dropdown */}
             <div className={styles.navItem}>
