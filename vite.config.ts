@@ -193,8 +193,11 @@ export default defineConfig({
         manualChunks: (id) => {
           // Split vendor libraries into logical chunks for better caching and loading
           
-          // React core - separate chunk (most frequently used)
-          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
+          // React core - keep all React packages together to avoid initialization issues
+          if (id.includes('node_modules/react/') || 
+              id.includes('node_modules/react-dom/') ||
+              id.includes('node_modules/scheduler/') ||
+              id.includes('node_modules/react-is/')) {
             return 'vendor-react';
           }
           
