@@ -14,6 +14,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import styles from './FloatingChatWidget.module.css';
 import messageStyles from './FloatingChatWidgetMessages.module.css';
 import { ModuleOutputs } from '@/components/ResonantChat/ModuleOutputs';
+import { VoiceInput } from '@/components/ResonantChat/VoiceInput';
 
 interface ModuleOutputs {
   word_representation?: {
@@ -102,7 +103,13 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
   // Messages are loaded ONLY from backend - no localStorage backup
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
+  const inputValueRef = useRef(''); // Track current input for voice input
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Keep inputValueRef in sync
+  useEffect(() => {
+    inputValueRef.current = input;
+  }, [input]);
   // Use the same conversation ID as the full chat page for continuity
   // SECURITY: Only load if user hasn't changed
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(() => {
@@ -990,6 +997,15 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
                       onKeyDown={handleKeyDown}
                       placeholder="Type your message..."
                       rows={1}
+                      disabled={isLoading}
+                    />
+                    <VoiceInput
+                      onTranscript={(text) => {
+                        const currentValue = inputValueRef.current;
+                        const newValue = currentValue + (currentValue ? ' ' : '') + text;
+                        setInput(newValue);
+                        inputRef.current?.focus();
+                      }}
                       disabled={isLoading}
                     />
                     <button

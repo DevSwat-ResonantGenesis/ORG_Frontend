@@ -2,11 +2,13 @@
   position: relative;
   display: inline-flex;
   align-items: center;
+  gap: 8px;
 }
 
 .voiceButton {
   width: 36px;
   height: 36px;
+  min-width: 36px;
   border-radius: 50%;
   border: none;
   background: var(--bg-secondary, #2a2a2a);
@@ -39,23 +41,44 @@
   opacity: 0.3;
 }
 
+/* Inline transcript display - shows next to the button */
 .interimTranscript {
   position: absolute;
-  bottom: 100%;
+  bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  background: var(--bg-secondary, #2a2a2a);
-  border: 1px solid var(--border-color, #444);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 12px;
-  color: var(--text-secondary, #aaa);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--text-primary, #fff);
   white-space: nowrap;
-  max-width: 200px;
+  max-width: 280px;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+}
+
+/* Listening indicator text */
+.interimTranscript::before {
+  content: '🎤 ';
+}
+
+/* Arrow pointing to button */
+.interimTranscript::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(59, 130, 246, 0.3);
 }
 
 @keyframes pulse {
@@ -68,4 +91,18 @@
   100% {
     box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
   }
+}
+
+/* Listening state animation for transcript */
+@keyframes transcriptPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.interimTranscript {
+  animation: transcriptPulse 1.5s ease-in-out infinite;
 }
