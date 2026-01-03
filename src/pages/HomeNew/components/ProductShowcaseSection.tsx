@@ -27,7 +27,7 @@ export const ProductShowcaseSection = () => {
         },
         {
             number: '04',
-            title: 'IDE',
+            title: 'Project Builder',
             description: 'Continue in full development environment',
             image: '/images/showcase/step4-ide.png',
         },
@@ -68,7 +68,7 @@ export const ProductShowcaseSection = () => {
             <div className={styles.showcaseNav}>
                 <div className={styles.showcaseNavHeader}>
                     <span className={styles.showcaseNavBadge}>Workflow</span>
-                    <h2 className={styles.showcaseNavTitle}>From Idea<br/>to Production</h2>
+                    <h2 className={styles.showcaseNavTitle}>Chat, Build, Agents<br/>Team, Marketplace</h2>
                 </div>
                 <div className={styles.showcaseNavSteps}>
                     {steps.map((step, index) => (

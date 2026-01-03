@@ -7,6 +7,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
+import { UnifiedSidebarMenu } from '../UnifiedSidebarMenu';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { clearSession } from '@/utils/auth';
 import { isAuthenticated, getSessionData } from '@/utils/auth-cookies';
@@ -34,6 +35,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [headerHeight, setHeaderHeight] = useState(60);
     const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const accountRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
   
@@ -372,6 +374,19 @@ export const Header: React.FC<HeaderProps> = ({
           {/* AgentOS minimal header - search moved to page */}
           
           <div className={styles.actions}>
+            {/* Mobile Burger Menu Button */}
+            <button
+              className={styles.burgerMenu}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Open menu"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+
             {/* Theme Toggle - Always visible */}
             <ThemeToggle />
 
@@ -456,6 +471,12 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       </header>
+
+      {/* Mobile Sidebar Menu */}
+      <UnifiedSidebarMenu 
+        isOpen={isMobileMenuOpen} 
+        onClose={() => setIsMobileMenuOpen(false)} 
+      />
     </>
   );
 };

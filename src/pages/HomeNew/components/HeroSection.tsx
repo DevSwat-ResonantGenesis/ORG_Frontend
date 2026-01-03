@@ -66,7 +66,7 @@ export const HeroSection = () => {
                         }}
                         selectedProvider="auto"
                         onProviderChange={() => {}}
-                        placeholder="Type a goal. Hit @ to pull anchors inline."
+                        placeholder="Start typing..."
                         isLoading={false}
                         disabled={false}
                     />
