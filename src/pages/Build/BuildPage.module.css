@@ -165,7 +165,7 @@
 /* Main Content - Compact, with bottom padding for fixed input bar */
 .main {
   flex: 1;
-  padding: 12px 16px 100px 16px;
+  padding: 0 16px 100px 16px;
   overflow-y: auto;
 }
 
