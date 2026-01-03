@@ -196,6 +196,7 @@ import {
   type WorkspaceStats,
 } from '@/api/projectBuilder';
 import { generateProject, uploadProject, type ProjectFile } from '@/api/code';
+import { getGitHubStatus, connectGitHub, listGitHubRepos, syncGitHub, type GitHubStatus, type GitHubRepo } from '@/api/github';
 import { logger } from '@/utils/logger';
 import { isAuthenticated } from '@/api/auth';
 import { FileIcon } from '@/components/IDE/FileIcon';
@@ -247,6 +248,14 @@ export const BuildPage: React.FC = () => {
   const [isModifying, setIsModifying] = useState(false);
   const [projectState, setProjectState] = useState<'generated' | 'runtime'>('generated');
   const [isPromoting, setIsPromoting] = useState(false);
+  
+  // GitHub state
+  const [githubStatus, setGithubStatus] = useState<GitHubStatus | null>(null);
+  const [githubRepos, setGithubRepos] = useState<GitHubRepo[]>([]);
+  const [showGitHubModal, setShowGitHubModal] = useState(false);
+  const [selectedRepo, setSelectedRepo] = useState<string>('');
+  const [newRepoName, setNewRepoName] = useState('');
+  const [isPushingToGitHub, setIsPushingToGitHub] = useState(false);
 
   // Initialize from URL params
   useEffect(() => {
@@ -727,11 +736,69 @@ export const BuildPage: React.FC = () => {
     }
   }, [viewMode, generatedFiles]);
 
+  // Check GitHub status on mount
+  useEffect(() => {
+    const checkGitHubStatus = async () => {
+      try {
+        const status = await getGitHubStatus();
+        setGithubStatus(status);
+        if (status.connected) {
+          const repos = await listGitHubRepos();
+          setGithubRepos(repos);
+        }
+      } catch (err) {
+        logger.error('Failed to check GitHub status', err);
+      }
+    };
+    checkGitHubStatus();
+  }, []);
+
   // Push to GitHub
   const handlePushToGitHub = async () => {
-    // For now, show instructions - full OAuth integration would be needed
-    const repoName = projectName || 'my-project';
-    alert(`To push to GitHub:\n\n1. Download the ZIP file\n2. Create a new repository: ${repoName}\n3. Extract and push:\n\ngit init\ngit add .\ngit commit -m "Initial commit from Project Builder"\ngit remote add origin https://github.com/YOUR_USERNAME/${repoName}.git\ngit push -u origin main\n\nFull GitHub OAuth integration coming soon!`);
+    // Check if connected to GitHub
+    if (!githubStatus?.connected) {
+      // Show modal to connect
+      setShowGitHubModal(true);
+      return;
+    }
+    
+    // Show modal to select/create repo
+    setNewRepoName(projectName || 'my-project');
+    setShowGitHubModal(true);
+  };
+
+  // Connect to GitHub OAuth
+  const handleConnectGitHub = () => {
+    connectGitHub();
+  };
+
+  // Push project to selected repo
+  const handleConfirmPushToGitHub = async () => {
+    if (!currentProjectId) {
+      setError('No project to push');
+      return;
+    }
+
+    setIsPushingToGitHub(true);
+    try {
+      const result = await syncGitHub(
+        currentProjectId,
+        'push',
+        `Initial commit from Project Builder: ${projectName || 'New Project'}`
+      );
+      
+      if (result.success) {
+        setShowGitHubModal(false);
+        alert('Successfully pushed to GitHub!');
+      } else {
+        setError(result.message || 'Failed to push to GitHub');
+      }
+    } catch (err: any) {
+      logger.error('Failed to push to GitHub', err);
+      setError(err?.message || 'Failed to push to GitHub');
+    } finally {
+      setIsPushingToGitHub(false);
+    }
   };
 
   // Update file content (make editor editable)
@@ -1342,6 +1409,90 @@ export const BuildPage: React.FC = () => {
           </div>
         )}
       </main>
+
+      {/* GitHub Modal */}
+      {showGitHubModal && (
+        <div className={styles.modalOverlay} onClick={() => setShowGitHubModal(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3><GitHubIcon /> Push to GitHub</h3>
+              <button onClick={() => setShowGitHubModal(false)} className={styles.modalClose}>
+                <CloseIcon />
+              </button>
+            </div>
+            
+            <div className={styles.modalContent}>
+              {!githubStatus?.connected ? (
+                /* Not connected - show connect button */
+                <div className={styles.githubConnect}>
+                  <p>Connect your GitHub account to push projects directly.</p>
+                  <button onClick={handleConnectGitHub} className={styles.githubConnectButton}>
+                    <GitHubIcon /> Connect GitHub Account
+                  </button>
+                  <div className={styles.githubManualInstructions}>
+                    <p className={styles.githubManualTitle}>Or push manually:</p>
+                    <pre className={styles.githubCommands}>
+{`git init
+git add .
+git commit -m "Initial commit from Project Builder"
+git remote add origin https://github.com/YOUR_USERNAME/${newRepoName}.git
+git push -u origin main`}
+                    </pre>
+                  </div>
+                </div>
+              ) : (
+                /* Connected - show repo selection */
+                <div className={styles.githubPush}>
+                  <p className={styles.githubConnectedAs}>
+                    Connected as <strong>{githubStatus.username}</strong>
+                  </p>
+                  
+                  <div className={styles.githubRepoSelect}>
+                    <label>Select existing repository:</label>
+                    <select 
+                      value={selectedRepo} 
+                      onChange={(e) => setSelectedRepo(e.target.value)}
+                      className={styles.githubSelect}
+                    >
+                      <option value="">-- Create new repository --</option>
+                      {githubRepos.map(repo => (
+                        <option key={repo.full_name} value={repo.full_name}>
+                          {repo.full_name} {repo.private ? '🔒' : ''}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {!selectedRepo && (
+                    <div className={styles.githubNewRepo}>
+                      <label>New repository name:</label>
+                      <input
+                        type="text"
+                        value={newRepoName}
+                        onChange={(e) => setNewRepoName(e.target.value)}
+                        placeholder="my-project"
+                        className={styles.githubInput}
+                      />
+                    </div>
+                  )}
+                  
+                  <button 
+                    onClick={handleConfirmPushToGitHub}
+                    disabled={isPushingToGitHub}
+                    className={styles.githubPushButton}
+                  >
+                    {isPushingToGitHub ? (
+                      <><span className={styles.spinner}></span> Pushing...</>
+                    ) : (
+                      <><RocketIcon /> Push to GitHub</>
+                    )}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
