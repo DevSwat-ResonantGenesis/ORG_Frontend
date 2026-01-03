@@ -1300,22 +1300,24 @@ export const BuildPage: React.FC = () => {
               <div className={styles.projectsGrid}>
                 {projects.map((project) => (
                   <div key={project.project_id} className={styles.projectCard}>
+                    {/* Row 1: Title + Status */}
                     <div className={styles.projectHeader}>
-                      <h3>{project.name}</h3>
+                      <h3 title={project.name}>{project.name}</h3>
                       <span className={`${styles.status} ${styles[project.status]}`}>
                         {project.status}
                       </span>
                     </div>
-                    <p className={styles.projectDesc}>{project.description}</p>
+                    
+                    {/* Row 2: Meta + Tech badges */}
                     <div className={styles.projectMeta}>
                       <span><FolderIcon /> {project.files_count} files</span>
-                      <span><CoinIcon /> {project.total_cost} credits</span>
-                    </div>
-                    <div className={styles.projectTech}>
-                      {project.tech_stack?.map((tech) => (
+                      <span><CoinIcon /> credits</span>
+                      {project.tech_stack?.slice(0, 4).map((tech) => (
                         <span key={tech} className={styles.techBadge}>{tech}</span>
                       ))}
                     </div>
+                    
+                    {/* Row 3: Compact action buttons */}
                     <div className={styles.projectActions}>
                       <button
                         onClick={() => handleOpenProject(project)}
@@ -1330,6 +1332,9 @@ export const BuildPage: React.FC = () => {
                         <DownloadIcon /> Download
                       </button>
                     </div>
+                    
+                    {/* Description tooltip on hover */}
+                    <p className={styles.projectDesc}>{project.description}</p>
                   </div>
                 ))}
               </div>
