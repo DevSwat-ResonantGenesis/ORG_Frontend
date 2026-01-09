@@ -63,7 +63,7 @@ const NegotiationPanelComponent: React.FC<NegotiationPanelProps> = ({ className 
       ]);
 
       if (negResponse.status === 'fulfilled') {
-        const negs = negResponse.value.data.map((n: any) => ({
+        const negs = (negResponse.value.data || []).map((n: any) => ({
           id: n.id,
           agents: [n.initiator_id, n.target_id || 'Network'].filter(Boolean),
           topic: n.task_description || n.type || 'Negotiation',
@@ -76,7 +76,7 @@ const NegotiationPanelComponent: React.FC<NegotiationPanelProps> = ({ className 
       }
 
       if (contractsResponse.status === 'fulfilled') {
-        setContracts(contractsResponse.value.data);
+        setContracts(contractsResponse.value.data || []);
       }
     } catch (err: any) {
       console.error('Failed to fetch negotiations:', err);

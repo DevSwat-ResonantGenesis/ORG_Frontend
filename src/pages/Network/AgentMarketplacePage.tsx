@@ -431,13 +431,15 @@ export default function AgentMarketplacePage() {
     try {
       const { agents: allAgents } = await searchAgents();
       // Count by category
-      const counts: Record<string, number> = { all: allAgents.length };
-      allAgents.forEach(agent => {
+      const counts: Record<string, number> = { all: allAgents?.length || 0 };
+      allAgents?.forEach(agent => {
         counts[agent.category] = (counts[agent.category] || 0) + 1;
       });
       setCategoryCounts(counts);
     } catch (error) {
       console.error('Failed to count agents:', error);
+      // Set default counts when API fails
+      setCategoryCounts({ all: 0 });
     }
   }
 
@@ -447,9 +449,11 @@ export default function AgentMarketplacePage() {
       const { agents: fetchedAgents } = await searchAgents({
         category: selectedCategory !== 'all' ? selectedCategory : undefined,
       });
-      setAgents(fetchedAgents);
+      setAgents(fetchedAgents || []);
     } catch (error) {
       console.error('Failed to load agents:', error);
+      // Set empty array when API fails
+      setAgents([]);
     } finally {
       setLoading(false);
     }
@@ -499,7 +503,7 @@ export default function AgentMarketplacePage() {
     }
   }
 
-  const featuredAgents = agents.slice(0, 2);
+  const featuredAgents = agents?.slice(0, 2) || [];
 
   return (
     <div style={styles.container}>

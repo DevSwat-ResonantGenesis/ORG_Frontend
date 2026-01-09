@@ -50,11 +50,37 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
+        configure: (proxy, options) => {
+          proxy.on('error', (err, req, res) => {
+            console.log('proxy error', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('Sending Request to the Target:', req.method, req.url);
+          });
+          proxy.on('proxyRes', (proxyRes, req, res) => {
+            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+          });
+        },
+      },
+      '/agent-teams': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy, options) => {
+          proxy.on('error', (err, req, res) => {
+            console.log('agent-teams proxy error', err);
+          });
+        },
       },
       '/auth': {
         target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
+        configure: (proxy, options) => {
+          proxy.on('error', (err, req, res) => {
+            console.log('auth proxy error', err);
+          });
+        },
       },
       // NOTE: /public is NOT proxied - it's used by React Router for frontend pages
       // Backend public endpoints should be accessed via /api/public/*
@@ -64,6 +90,11 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
+        configure: (proxy, options) => {
+          proxy.on('error', (err, req, res) => {
+            console.log('billing proxy error', err);
+          });
+        },
       },
       '/user': {
         target: 'http://localhost:8000',
@@ -79,16 +110,31 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
+        configure: (proxy, options) => {
+          proxy.on('error', (err, req, res) => {
+            console.log('resonant-chat proxy error', err);
+          });
+        },
       },
       '/hash-sphere': {
         target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
+        configure: (proxy, options) => {
+          proxy.on('error', (err, req, res) => {
+            console.log('hash-sphere proxy error', err);
+          });
+        },
       },
       '/rag': {
         target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,
+        configure: (proxy, options) => {
+          proxy.on('error', (err, req, res) => {
+            console.log('rag proxy error', err);
+          });
+        },
       },
       '/settings': {
         target: 'http://localhost:8000',
@@ -146,11 +192,6 @@ export default defineConfig({
         secure: false,
       },
       '/predict': {
-        target: 'http://localhost:8000',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/agent-teams': {
         target: 'http://localhost:8000',
         changeOrigin: true,
         secure: false,

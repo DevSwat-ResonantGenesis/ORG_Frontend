@@ -43,7 +43,7 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
     setError(null);
     try {
       const response = await fastapiClient.get(`/agents/goals/${selectedAgent.id}`);
-      const backendGoals = response.data.map((g: any) => ({
+      const backendGoals = (response.data || []).map((g: any) => ({
         id: g.id,
         title: g.description?.substring(0, 50) || 'Unnamed Goal',
         description: g.description || '',

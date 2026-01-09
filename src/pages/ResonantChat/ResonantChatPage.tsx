@@ -3415,53 +3415,7 @@ const ResonantChatPage: React.FC = () => {
                           ))}
                         </div>
                       )}
-                      {/* Web Search Results Display */}
-                      {message.role === 'assistant' && message.webSearchResults && message.webSearchResults.length > 0 && (
-                        <div style={{
-                          marginTop: '12px',
-                          padding: '12px',
-                          background: 'rgba(59, 130, 246, 0.1)',
-                          borderRadius: '12px',
-                          border: '1px solid rgba(59, 130, 246, 0.2)',
-                        }}>
-                          <div style={{ fontSize: '12px', color: '#60a5fa', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <circle cx="11" cy="11" r="8" />
-                              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                            </svg>
-                            Web Search Results ({message.webSearchResults.length})
-                          </div>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            {message.webSearchResults.slice(0, 5).map((result, idx) => (
-                              <div key={idx} style={{
-                                padding: '8px',
-                                background: 'rgba(0, 0, 0, 0.2)',
-                                borderRadius: '8px',
-                              }}>
-                                <a
-                                  href={result.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  style={{
-                                    color: '#60a5fa',
-                                    textDecoration: 'none',
-                                    fontWeight: 500,
-                                    fontSize: '13px',
-                                  }}
-                                >
-                                  {result.title}
-                                </a>
-                                <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>
-                                  {result.snippet.substring(0, 150)}...
-                                </div>
-                                <div style={{ fontSize: '10px', color: '#666', marginTop: '2px' }}>
-                                  {result.source} • {result.url.substring(0, 50)}...
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                      {/* Web Search Results Display - REMOVED */}
                       {/* Hash Sphere Module Outputs */}
                       {message.role === 'assistant' && message.modules && (
                         <ModuleOutputs modules={message.modules} collapsed={true} />

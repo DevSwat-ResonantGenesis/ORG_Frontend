@@ -362,7 +362,7 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
                   <h4>{report.name}</h4>
                   <p className={styles.reportDate}><Icons.Calendar /> {report.dateRange}</p>
                   <div className={styles.scoreCircle}>
-                    <span className={styles.scoreValue}>{report.score}%</span>
+                    <span className={styles.scoreValue}>{isNaN(report.score) ? 0 : report.score}%</span>
                   </div>
                   <div className={styles.findingsTags}>
                     {report.findings.map((f, i) => (
@@ -465,13 +465,13 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
           </div>
           <div className={styles.stat}>
             <span className={`${styles.statValue} ${styles.success}`}>
-              {stats ? Math.round(stats.total_entries * stats.success_rate) : 0}
+              {stats ? Math.round(stats.total_entries * (stats.success_rate || 0)) : 0}
             </span>
             <span className={styles.statLabel}>Successful</span>
           </div>
           <div className={styles.stat}>
             <span className={`${styles.statValue} ${styles.error}`}>
-              {stats ? Math.round(stats.total_entries * (1 - stats.success_rate)) : 0}
+              {stats ? Math.round(stats.total_entries * (1 - (stats.success_rate || 0))) : 0}
             </span>
             <span className={styles.statLabel}>Failed</span>
           </div>

@@ -3,13 +3,14 @@ import { useExecutionStore, useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import type { Execution } from '../../../../../types';
 import * as executionsApi from '../../../../../api/executions';
+import { LiveWorkflowView } from './LiveWorkflowView';
 import styles from './ExecutionPanel.module.css';
 
 // ============== EXECUTION PANEL ==============
 // Contract: reads [execution, agent, workflow], writes [execution]
 // Forbidden: [economy]
 
-type ViewMode = 'active' | 'history' | 'queue' | 'metrics';
+type ViewMode = 'active' | 'live' | 'history' | 'queue' | 'metrics';
 
 interface ExecutionStats {
   total_executions: number;
@@ -41,10 +42,10 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
   const [selectedExecution, setSelectedExecution] = useState<executionsApi.Execution | null>(null);
   const [executionStats, setExecutionStats] = useState<ExecutionStats | null>(null);
 
-  const runningExecutions = realExecutions.filter(e => e.status === 'running');
-  const completedExecutions = realExecutions.filter(e => e.status === 'completed');
-  const failedExecutions = realExecutions.filter(e => e.status === 'failed');
-  const queuedExecutions = realExecutions.filter(e => e.status === 'initializing');
+  const runningExecutions = realExecutions?.filter(e => e.status === 'running') || [];
+  const completedExecutions = realExecutions?.filter(e => e.status === 'completed') || [];
+  const failedExecutions = realExecutions?.filter(e => e.status === 'failed') || [];
+  const queuedExecutions = realExecutions?.filter(e => e.status === 'initializing') || [];
 
   const getAgentName = useCallback((agentId: string) => {
     return agents.find(a => a.id === agentId)?.name || 'Unknown Agent';
@@ -78,10 +79,11 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
         limit: 50,
         status: filter !== 'all' ? filter : undefined,
       });
-      setRealExecutions(response.executions);
+      setRealExecutions(response.executions || []);
     } catch (err: any) {
       console.error('Failed to fetch executions:', err);
       setError(err.message || 'Failed to load executions');
+      setRealExecutions([]); // Reset to empty array on error
     } finally {
       setIsLoading(false);
     }
@@ -142,13 +144,19 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
           </select>
         </div>
         <div className={styles.viewTabs}>
-          {(['active', 'history', 'queue', 'metrics'] as ViewMode[]).map(view => (
+          {(['active', 'live', 'history', 'queue', 'metrics'] as ViewMode[]).map(view => (
             <button
               key={view}
               className={`${styles.viewTab} ${activeView === view ? styles.active : ''}`}
               onClick={() => setActiveView(view)}
             >
-              {view.charAt(0).toUpperCase() + view.slice(1)}
+              {view === 'live' && (
+                <>
+                  <Icons.Activity />
+                  Live Workflow
+                </>
+              )}
+              {view !== 'live' && view.charAt(0).toUpperCase() + view.slice(1)}
               {view === 'active' && runningExecutions.length > 0 && (
                 <span className={styles.badge}>{runningExecutions.length}</span>
               )}
@@ -250,6 +258,35 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
               <div className={styles.emptyState}>
                 <Icons.Execution />
                 <p>No active executions</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Live Workflow View */}
+        {activeView === 'live' && (
+          <div className={styles.liveWorkflowView}>
+            {selectedExecution ? (
+              <LiveWorkflowView
+                sessionId={selectedExecution.id}
+                agentId={selectedExecution.agentId}
+                agentName={getAgentName(selectedExecution.agentId)}
+                isActive={selectedExecution.status === 'running' || selectedExecution.status === 'initializing'}
+              />
+            ) : (
+              <div className={styles.noSelection}>
+                <div className={styles.noSelectionContent}>
+                  <Icons.Activity />
+                  <h3>Select an Execution</h3>
+                  <p>Choose an active execution from the Active tab to see its live workflow.</p>
+                  <button 
+                    className={styles.switchToActiveTab}
+                    onClick={() => setActiveView('active')}
+                  >
+                    <Icons.Eye />
+                    View Active Executions
+                  </button>
+                </div>
               </div>
             )}
           </div>

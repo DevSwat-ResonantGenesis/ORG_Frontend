@@ -365,7 +365,7 @@ const AgentTeamsPage: React.FC = () => {
                 </div>
                 <div className={styles.articleCard} style={{cursor: 'default'}}>
                   <div style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'var(--color-primary-500)' }}>
-                    {teams.reduce((sum, team) => sum + team.member_count, 0)}
+                    {teams.reduce((sum, team) => sum + (team.member_count || 0), 0)}
                   </div>
                   <div style={{ fontSize: 'var(--font-xs)', color: 'var(--text-secondary)' }}>Total Agents</div>
                 </div>
