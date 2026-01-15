@@ -60,15 +60,15 @@ const UnifiedUserDashboard: React.FC = () => {
   const [conversations, setConversations] = useState<any[]>([]);
   const [stats, setStats] = useState<DashboardStats>({
     credits: 0,
-    creditsLimit: getPlanCredits('developer'),
+    creditsLimit: 10000, // Developer tier default
     messages: 0,
     conversations: 0,
     conversationsLimit: -1,
     agents: 0,
-    agentsLimit: 3,
+    agentsLimit: -1, // Unlimited - we bill by credits only
     memories: 0,
     ragDocuments: 0,
-    ragDocumentsLimit: 5,
+    ragDocumentsLimit: -1,
   });
 
   useEffect(() => {
@@ -139,7 +139,7 @@ const UnifiedUserDashboard: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          plan: 'plus',
+          plan_id: 'plus',
           billing_cycle: 'monthly',
           success_url: `${window.location.origin}/dashboard?success=true`,
           cancel_url: `${window.location.origin}/dashboard?canceled=true`,
@@ -156,7 +156,7 @@ const UnifiedUserDashboard: React.FC = () => {
     }
   };
 
-  const handleBuyCredits = async (creditPack: number) => {
+  const handleBuyCredits = async (packId: string) => {
     setBuyCreditsLoading(true);
     try {
       const response = await fetch('/billing/checkout/credits', {
@@ -164,7 +164,7 @@ const UnifiedUserDashboard: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          credits: creditPack,
+          pack_id: packId,
           success_url: `${window.location.origin}/dashboard?credits_purchased=true`,
           cancel_url: `${window.location.origin}/dashboard?canceled=true`,
         }),
@@ -172,6 +172,9 @@ const UnifiedUserDashboard: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         window.location.href = data.checkout_url || data.url;
+      } else {
+        const error = await response.json();
+        console.error('Credit purchase failed:', error);
       }
     } catch (err) {
       console.error('Credit purchase failed:', err);
@@ -277,31 +280,31 @@ const UnifiedUserDashboard: React.FC = () => {
             <div className={styles.creditPacks}>
               <button 
                 className={styles.creditPack}
-                onClick={() => handleBuyCredits(10000)}
+                onClick={() => handleBuyCredits('basic')}
                 disabled={buyCreditsLoading}
               >
                 <span className={styles.creditPackAmount}>10,000</span>
                 <span className={styles.creditPackLabel}>credits</span>
-                <span className={styles.creditPackPrice}>$9</span>
+                <span className={styles.creditPackPrice}>$8</span>
               </button>
               <button 
                 className={styles.creditPack}
-                onClick={() => handleBuyCredits(50000)}
+                onClick={() => handleBuyCredits('growth')}
                 disabled={buyCreditsLoading}
               >
                 <span className={styles.creditPackAmount}>50,000</span>
                 <span className={styles.creditPackLabel}>credits</span>
-                <span className={styles.creditPackPrice}>$39</span>
+                <span className={styles.creditPackPrice}>$35</span>
                 <span className={styles.creditPackBadge}>Popular</span>
               </button>
               <button 
                 className={styles.creditPack}
-                onClick={() => handleBuyCredits(100000)}
+                onClick={() => handleBuyCredits('professional')}
                 disabled={buyCreditsLoading}
               >
                 <span className={styles.creditPackAmount}>100,000</span>
                 <span className={styles.creditPackLabel}>credits</span>
-                <span className={styles.creditPackPrice}>$69</span>
+                <span className={styles.creditPackPrice}>$60</span>
                 <span className={styles.creditPackBadge}>Best Value</span>
               </button>
             </div>

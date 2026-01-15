@@ -176,7 +176,7 @@ const OwnerDashboardComplete: React.FC = () => {
         maxMemoryItems: 1000,
         apiRatePerMin: 30,
         fileUploadMb: 5,
-        agentsAllowed: 3,
+        agentsAllowed: -1,  // Unlimited - we bill by credits only
         computeHours: 10,
       }
     },
@@ -2275,7 +2275,7 @@ const OwnerDashboardComplete: React.FC = () => {
           maxMemoryItems: pricing?.developer?.limits?.maxMemoryItems ?? 1000,
           apiRatePerMin: pricing?.developer?.limits?.apiRatePerMin ?? 30,
           fileUploadMb: pricing?.developer?.limits?.fileUploadMb ?? 5,
-          agentsAllowed: pricing?.developer?.limits?.agentsAllowed ?? 3,
+          agentsAllowed: pricing?.developer?.limits?.agentsAllowed ?? -1,
           computeHours: pricing?.developer?.limits?.computeHours ?? 10,
         }
       },
@@ -2863,7 +2863,7 @@ const OwnerDashboardComplete: React.FC = () => {
                     maxMemoryItems: 1000,
                     apiRatePerMin: 30,
                     fileUploadMb: 5,
-                    agentsAllowed: 3,
+                    agentsAllowed: -1,  // Unlimited - we bill by credits only
                     computeHours: 10,
                   }
                 },

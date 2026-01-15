@@ -9,35 +9,35 @@ import { isAuthenticated, getSessionData } from '../utils/auth-cookies';
 
 interface PlanRestrictedRouteProps {
   children: React.ReactNode;
-  requiredPlan: 'free' | 'plus' | 'pro' | 'enterprise';
+  requiredPlan: 'developer' | 'plus' | 'enterprise';
   redirectTo?: string;
 }
 
-type PlanLevel = 'guest' | 'free' | 'plus' | 'pro' | 'enterprise';
+type PlanLevel = 'guest' | 'developer' | 'plus' | 'enterprise';
 
 const PLAN_HIERARCHY: Record<PlanLevel, number> = {
   guest: 0,
-  free: 1,
+  developer: 1,
   plus: 2,
-  pro: 3,
-  enterprise: 4,
+  enterprise: 3,
 };
 
 const getUserPlan = (): PlanLevel => {
   if (!isAuthenticated()) return 'guest';
   
   const sessionData = getSessionData();
-  const plan = sessionData?.plan || sessionData?.subscription_tier || 'free';
+  const plan = sessionData?.plan || sessionData?.subscription_tier || 'developer';
   
   // Debug logging
   console.log('[PlanRestrictedRoute] Session data:', sessionData);
   console.log('[PlanRestrictedRoute] Detected plan:', plan);
   
-  if (plan === 'plus' || plan === 'starter') return 'plus';
-  if (plan === 'pro' || plan === 'professional') return 'pro';
+  // Map legacy plan names to new names
+  if (plan === 'plus' || plan === 'starter' || plan === 'pro' || plan === 'professional') return 'plus';
   if (plan === 'enterprise') return 'enterprise';
   
-  return 'free';
+  // developer, free, or any other value defaults to developer
+  return 'developer';
 };
 
 const hasAccess = (requiredPlan: PlanLevel): boolean => {
@@ -155,8 +155,7 @@ const UpgradePrompt: React.FC<{ requiredPlan: string }> = ({ requiredPlan }) => 
           fontSize: '0.875rem',
           color: 'var(--text-tertiary)',
         }}>
-          {requiredPlan === 'plus' && 'Plus plan starts at $29/month'}
-          {requiredPlan === 'pro' && 'Pro plan starts at $99/month'}
+          {requiredPlan === 'plus' && 'Plus plan starts at $49/month'}
           {requiredPlan === 'enterprise' && 'Contact us for Enterprise pricing'}
         </p>
       </div>

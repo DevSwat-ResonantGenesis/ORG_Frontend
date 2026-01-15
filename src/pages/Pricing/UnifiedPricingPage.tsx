@@ -16,7 +16,7 @@ const UnifiedPricingPage: React.FC = () => {
       credits: '10,000 credits/month',
       features: [
         '10,000 credits/month',
-        'Up to 3 agents (no autonomous mode)',
+        'Unlimited agents (billed by credits)',
         '10 compute hours/month',
         'Manual kill switch, 5 invariants',
         'Community support',
@@ -33,7 +33,7 @@ const UnifiedPricingPage: React.FC = () => {
       features: [
         '75,000 credits/month',
         'Rollover up to 37.5K credits',
-        'Up to 20 agents with autonomous mode',
+        'Unlimited agents with autonomous mode',
         'Agent teams enabled',
         '100 compute hours/month',
         'Hash Sphere Memory: 1 Universe',

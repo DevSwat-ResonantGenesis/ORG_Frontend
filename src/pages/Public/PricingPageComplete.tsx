@@ -132,7 +132,7 @@ const PricingPage: React.FC = () => {
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({
-            plan: plan.id,
+            plan_id: plan.id,
             billing_cycle: billingPeriod,
             success_url: `${window.location.origin}/dashboard?success=true`,
             cancel_url: `${window.location.origin}/pricing?canceled=true`,
@@ -242,7 +242,7 @@ const PricingPage: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          plan: apiType === 'state_physics' 
+          plan_id: apiType === 'state_physics' 
           ? `state_physics_${planId}`  // "state_physics_dev", "state_physics_startup"
           : `hash_sphere_memory_${planId === 'starter' ? 'dev' : planId === 'builder' ? 'startup' : planId}`,  // Map pricing page IDs to backend IDs
           billing_cycle: 'monthly',  // API subscriptions are monthly

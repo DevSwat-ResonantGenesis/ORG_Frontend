@@ -18,38 +18,31 @@ export interface PlatformPlan {
 
 /**
  * Platform Plans - Main product bundles
+ * Aligned with pricing.yaml: developer, plus, enterprise
  */
 export const PLATFORM_PLANS: PlatformPlan[] = [
   {
-    id: 'starter',
-    name: 'Starter',
-    monthlyPrice: 99,
-    yearlyPrice: 990,
-    description: 'Essential AI governance for individuals and small teams',
+    id: 'developer',
+    name: 'Developer',
+    monthlyPrice: 0,
+    yearlyPrice: 0,
+    description: 'Free forever for solo builders exploring ResonantGenesis',
     popular: false,
   },
   {
-    id: 'professional',
-    name: 'Professional',
-    monthlyPrice: 499,
-    yearlyPrice: 4990,
-    description: 'Complete AI governance platform for growing teams',
+    id: 'plus',
+    name: 'Plus',
+    monthlyPrice: 49,
+    yearlyPrice: 490,
+    description: 'For serious builders, teams, and power users with autonomous agents',
     popular: true,
-  },
-  {
-    id: 'business',
-    name: 'Business',
-    monthlyPrice: 2499,
-    yearlyPrice: 24990,
-    description: 'Enterprise AI governance with all products and features',
-    popular: false,
   },
   {
     id: 'enterprise',
     name: 'Enterprise',
     monthlyPrice: 0, // Custom pricing
     yearlyPrice: 0, // Custom pricing
-    description: 'For large enterprises and regulated industries',
+    description: 'For organizations running AI as critical infrastructure',
     popular: false,
   },
 ];

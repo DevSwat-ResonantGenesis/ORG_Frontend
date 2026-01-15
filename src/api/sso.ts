@@ -49,7 +49,14 @@ export interface SSOCallbackResponse {
 export const getSSOProviders = async (): Promise<SSOProvider[]> => {
   try {
     const response = await fastapiClient.get('/auth/sso/providers'); // Suppress error logging for connection tests
-    return response.data;
+    const data = response.data;
+    if (Array.isArray(data)) {
+      return data;
+    }
+    if (Array.isArray(data?.providers)) {
+      return data.providers;
+    }
+    return [];
   } catch (error: any) {
     // Don't log errors for 401 (unauthorized - expected on login page), 429, 404, or 501
     if (error?.response?.status === 401 || error?.response?.status === 429 || error?.response?.status === 404 || error?.response?.status === 501) {
@@ -158,4 +165,3 @@ function generateState(): string {
   crypto.getRandomValues(array);
   return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
 }
-

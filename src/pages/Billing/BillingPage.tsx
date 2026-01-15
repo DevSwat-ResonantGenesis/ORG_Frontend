@@ -51,8 +51,13 @@ const BillingPage = () => {
       setLoading(true);
       try {
         // Load credit balance
-        const balanceRes = await fastapiClient.get('/billing/credits/balance');
-        setCreditBalance(balanceRes.data);
+        const balanceRes = await fastapiClient.get('/billing/credits');
+        setCreditBalance({
+          available: balanceRes.data?.balance || 0,
+          used: balanceRes.data?.lifetime_used || 0,
+          total: (balanceRes.data?.balance || 0) + (balanceRes.data?.lifetime_used || 0),
+          rollover: balanceRes.data?.expiring_credits || 0,
+        });
 
         // Load payment methods
         try {
@@ -106,7 +111,7 @@ const BillingPage = () => {
   const handleUpgradePlan = async () => {
     try {
       const response = await fastapiClient.post('/billing/checkout/subscription', {
-        plan: 'plus',
+        plan_id: 'plus',
         billing_cycle: 'monthly',
         success_url: `${window.location.origin}/billing?success=upgrade`,
         cancel_url: `${window.location.origin}/billing?canceled=true`,

@@ -138,11 +138,11 @@ export const PLANS: Plan[] = [
     },
     description: 'For solo builders exploring ResonantGenesis. Get started with essential features and limited credits to test the platform.',
     credits: {
-      included: 1000,
-      display: '1,000 / month',
+      included: 10000,
+      display: '10,000 / month',
       rollover: false,
-      topups: false,
-      note: 'No rollover • No top-ups',
+      topups: true,
+      note: 'No rollover • Top-ups available',
     },
     recommended: false,
     contactSales: false,
@@ -152,7 +152,7 @@ export const PLANS: Plan[] = [
     },
     limits: {
       agents: {
-        active: 3,
+        active: -1,  // Unlimited - we bill by credits only
         autonomousMode: false,
         teams: false,
       },
@@ -184,8 +184,8 @@ export const PLANS: Plan[] = [
     },
     features: [
       'Free forever',
-      '1,000 credits/month',
-      'Up to 3 agents (no autonomous mode)',
+      '10,000 credits/month',
+      'Unlimited agents (billed by credits)',
       'Unlimited conversations (limited by credits only)',
       '100 MB storage, 5 RAG documents',
       '10 compute hours/month',
@@ -226,7 +226,7 @@ export const PLANS: Plan[] = [
     },
     limits: {
       agents: {
-        active: 20,
+        active: -1,  // Unlimited - we bill by credits only
         autonomousMode: true,
         teams: true,
       },
@@ -260,7 +260,7 @@ export const PLANS: Plan[] = [
       '75,000 credits/month',
       'Rollover up to 37.5K credits',
       'Top-ups: $8/10K credits',
-      'Up to 20 agents with autonomous mode',
+      'Unlimited agents with autonomous mode',
       'Agent teams enabled',
       'Unlimited conversations (limited by credits only)',
       'Evidence graph access',

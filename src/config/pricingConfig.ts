@@ -152,14 +152,14 @@ export const getSimplePlanLimits = (planId: string): SimplePlanLimits => {
   const plan = getPlanById(planId);
   if (!plan) {
     return {
-      agents: 3,
+      agents: -1, // Unlimited - we bill by credits only
       autonomousMode: false,
       teams: false,
       conversations: -1,
       messagesPerDay: -1,
-      computeHours: 10,
+      computeHours: -1,
       storageMb: 100,
-      ragDocuments: 5,
+      ragDocuments: -1,
     };
   }
   
@@ -178,7 +178,7 @@ export const getSimplePlanLimits = (planId: string): SimplePlanLimits => {
 
 export const getPlanCredits = (planId: string): number => {
   const plan = getPlanById(planId);
-  if (!plan) return 1000;
+  if (!plan) return 10000; // Default to developer tier (10K credits)
   return plan.credits.included;
 };
 

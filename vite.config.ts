@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
 import path from 'path';
 
+const apiProxyTarget = process.env.VITE_API_PROXY_TARGET || 'http://localhost:8000';
+const wsProxyTarget = process.env.VITE_WS_PROXY_TARGET || 'ws://localhost:8000';
+
 export default defineConfig({
   plugins: [
     react(), 
@@ -35,19 +38,19 @@ export default defineConfig({
     proxy: {
       // WebSocket proxy for real-time updates
       '/ws': {
-        target: 'ws://localhost:8000',
+        target: wsProxyTarget,
         ws: true,
         changeOrigin: true,
       },
       // IDE service routes
       '/ide': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       // Proxy all API requests to backend - makes cookies work (same-origin)
       '/api': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
         configure: (proxy, options) => {
@@ -63,7 +66,7 @@ export default defineConfig({
         },
       },
       '/agent-teams': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
         configure: (proxy, options) => {
@@ -73,12 +76,19 @@ export default defineConfig({
         },
       },
       '/auth': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
+        cookieDomainRewrite: '',
+        cookiePathRewrite: '/',
         configure: (proxy, options) => {
           proxy.on('error', (err, req, res) => {
             console.log('auth proxy error', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            if (req.headers.cookie) {
+              proxyReq.setHeader('Cookie', req.headers.cookie);
+            }
           });
         },
       },
@@ -87,37 +97,56 @@ export default defineConfig({
       // NOTE: /agents is NOT proxied - it's used by React Router for AgentOS frontend
       // Backend agent endpoints should be accessed via /api/v1/agents/*
       '/billing': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
+        cookieDomainRewrite: '',
+        cookiePathRewrite: '/',
         configure: (proxy, options) => {
           proxy.on('error', (err, req, res) => {
             console.log('billing proxy error', err);
           });
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            // Forward cookies from browser to backend
+            if (req.headers.cookie) {
+              proxyReq.setHeader('Cookie', req.headers.cookie);
+            }
+          });
         },
       },
       '/user': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
+        cookieDomainRewrite: '',
+        cookiePathRewrite: '/',
       },
       '/orgs': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
+        cookieDomainRewrite: '',
+        cookiePathRewrite: '/',
       },
       '/resonant-chat': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
+        cookieDomainRewrite: '',
+        cookiePathRewrite: '/',
         configure: (proxy, options) => {
           proxy.on('error', (err, req, res) => {
             console.log('resonant-chat proxy error', err);
           });
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            if (req.headers.cookie) {
+              proxyReq.setHeader('Cookie', req.headers.cookie);
+            }
+          });
         },
       },
       '/hash-sphere': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
         configure: (proxy, options) => {
@@ -127,92 +156,99 @@ export default defineConfig({
         },
       },
       '/rag': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
+        cookieDomainRewrite: '',
+        cookiePathRewrite: '/',
         configure: (proxy, options) => {
           proxy.on('error', (err, req, res) => {
             console.log('rag proxy error', err);
           });
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            if (req.headers.cookie) {
+              proxyReq.setHeader('Cookie', req.headers.cookie);
+            }
+          });
         },
       },
       '/settings': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/admin': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/ml': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/code': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/git': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/github': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/marketplace': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/usage': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/policies': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/compliance': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/audit': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/predict': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/ai-agent': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/ai': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/finance': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },
       '/users': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
       },

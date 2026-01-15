@@ -280,7 +280,7 @@ export default function SignupPageNew() {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/public/signup', {
+      const response = await fetch('/api/v1/public/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password, plan }),

@@ -41,7 +41,7 @@ const PricingPage: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          plan: planId,
+          plan_id: planId,
           billing_cycle: billingPeriod,
           success_url: `${window.location.origin}/dashboard?subscription=success&plan=${planId}`,
           cancel_url: `${window.location.origin}/pricing?canceled=true`,

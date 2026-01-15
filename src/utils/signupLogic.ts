@@ -124,9 +124,9 @@ export const PLANS: PlanOption[] = [
     isTrial: false,
     requiresApiKey: false,
     limits: {
-      tokens: 1000,          // 1,000 credits/month (no rollover, no top-ups)
-      agents: 3,
-      teams: 0,              // No agent teams
+      tokens: 10000,         // 10,000 credits/month (no rollover, top-ups available)
+      agents: -1,            // Unlimited - we bill by credits only
+      teams: -1,             // Unlimited - we bill by credits only
       users: 1,
       memoryAnchors: 10,
       providers: ['openai', 'gemini', 'claude'],
@@ -139,8 +139,8 @@ export const PLANS: PlanOption[] = [
     },
     features: [
       'Free forever',
-      '1,000 credits/month',
-      'Up to 3 agents (no autonomous mode)',
+      '10,000 credits/month',
+      'Unlimited agents (billed by credits)',
       'Unlimited conversations (limited by credits only)',
       '100 MB storage, 5 RAG documents',
       '10 compute hours/month',
@@ -236,10 +236,11 @@ export const PLANS: PlanOption[] = [
  * New pricing: Better value at scale
  */
 export const TOKEN_PACKS = [
-  { id: 'pack-100k', tokens: 100000, price: 5, label: '100K tokens', perK: 0.05, name: '100K Credits', popular: false },
-  { id: 'pack-500k', tokens: 500000, price: 20, label: '500K tokens', perK: 0.04, name: '500K Credits', popular: true },
-  { id: 'pack-1m', tokens: 1000000, price: 35, label: '1M tokens', perK: 0.035, name: '1M Credits', popular: false },
-  { id: 'pack-5m', tokens: 5000000, price: 150, label: '5M tokens', perK: 0.03, name: '5M Credits', popular: false },
+  { id: 'starter', tokens: 5000, price: 5, label: '5K credits', perK: 1.00, name: 'Starter Pack', popular: false },
+  { id: 'basic', tokens: 10000, price: 8, label: '10K credits', perK: 0.80, name: 'Basic Pack', popular: false },
+  { id: 'growth', tokens: 50000, price: 35, label: '50K credits', perK: 0.70, name: 'Growth Pack', popular: true },
+  { id: 'scale', tokens: 100000, price: 60, label: '100K credits', perK: 0.60, name: 'Scale Pack', popular: false },
+  { id: 'enterprise', tokens: 500000, price: 250, label: '500K credits', perK: 0.50, name: 'Enterprise Pack', popular: false },
 ];
 
 /**

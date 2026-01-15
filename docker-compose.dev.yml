@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  frontend_dev:
+    image: node:22-alpine
+    container_name: frontend_dev
+    working_dir: /app
+    command: sh -c 'apk add --no-cache git >/dev/null 2>&1 && git config --global url."https://github.com/".insteadOf "ssh://git@github.com/" && git config --global url."https://github.com/".insteadOf "git@github.com:" && rm -rf node_modules/* && npm install --no-fund --no-audit && npm run dev -- --host 0.0.0.0 --port 5175'
+    environment:
+      VITE_API_PROXY_TARGET: "http://genesis_backend_3-gateway-1:8000"
+      VITE_WS_PROXY_TARGET: "ws://genesis_backend_3-gateway-1:8000"
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - "5175:5175"
+    networks:
+      - backend-network
+      - egress-network
+    restart: unless-stopped
+
+networks:
+  backend-network:
+    external: true
+    name: genesis_backend_3_backend-network
+  egress-network:
+    external: true
+    name: genesis_backend_3_egress-network

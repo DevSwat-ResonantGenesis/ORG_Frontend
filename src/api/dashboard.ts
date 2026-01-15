@@ -77,12 +77,8 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
   // Days remaining from REAL data only
   const daysRemaining = dashboard?.days_remaining ?? null;
 
-  // Calculate burn rate from usage this period
-  // Use days elapsed in billing period (30 - days_remaining)
-  const daysElapsed = daysRemaining !== null ? 30 - daysRemaining : null;
-  const burnRate = usedThisMonth !== null && usedThisMonth > 0 && daysElapsed !== null && daysElapsed > 0 
-    ? Math.round(usedThisMonth / daysElapsed) 
-    : null;
+  // Burn rate from backend (or calculate if not provided)
+  const burnRate = dashboard?.burn_rate ?? null;
 
   // Build usage breakdown from REAL data only - no estimates
   let usageBreakdown: { service: string; credits: number; percentage: number }[] = [];

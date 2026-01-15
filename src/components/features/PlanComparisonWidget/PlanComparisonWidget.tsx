@@ -14,8 +14,8 @@ interface PlanComparisonWidgetProps {
 
 const PLAN_FEATURES = {
   developer: {
-    credits: '1,000/month',
-    agents: '3 agents',
+    credits: '10,000/month',
+    agents: 'Unlimited',
     conversations: 'Unlimited',
     messages: 'Unlimited',
     ragDocs: '5 documents',

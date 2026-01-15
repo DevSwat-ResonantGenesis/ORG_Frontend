@@ -385,8 +385,8 @@ const ResonantChatPage: React.FC = () => {
   // SECURITY: Only load if user hasn't changed
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(() => {
     // Check if user changed before loading
-    const session = getSession();
-    const currentUserId = (session as any)?.user?.id;
+    const sessionData = getSessionData();
+    const currentUserId = sessionData?.userId || sessionData?.email;
     const storedUserId = localStorage.getItem('resonant-chat-user-id');
     
     // If user changed, don't load old conversation ID
@@ -401,8 +401,8 @@ const ResonantChatPage: React.FC = () => {
   // Load selected agent hash from localStorage
   // SECURITY: Only load if user hasn't changed
   const [selectedAgentHash, setSelectedAgentHash] = useState<string | null>(() => {
-    const session = getSession();
-    const currentUserId = (session as any)?.user?.id;
+    const sessionData = getSessionData();
+    const currentUserId = sessionData?.userId || sessionData?.email;
     const storedUserId = localStorage.getItem('resonant-chat-user-id');
     
     if (currentUserId && storedUserId && currentUserId !== storedUserId) {

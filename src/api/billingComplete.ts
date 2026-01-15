@@ -347,7 +347,7 @@ export const createCheckoutSession = async (
   cancelUrl: string
 ): Promise<{ session_id: string; url: string }> => {
   const response = await fastapiClient.post('/billing/checkout/subscription', {
-    plan,
+    plan_id: plan,
     billing_cycle: billingCycle,
     success_url: successUrl,
     cancel_url: cancelUrl,
