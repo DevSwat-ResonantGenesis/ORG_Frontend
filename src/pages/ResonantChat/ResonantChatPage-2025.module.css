@@ -282,14 +282,18 @@
   justify-content: flex-end;
 }
 
-/* Message Header */
+/* Message Header - Reduced brightness */
 .messageHeader {
   display: flex;
   align-items: center;
   gap: var(--chat-spacing-sm);
   margin-bottom: var(--chat-spacing-sm);
   font-size: 12px;
-  color: var(--text-tertiary, #666);
+  color: var(--text-tertiary, #555);  /* Reduced brightness */
+}
+
+[data-theme='light'] .messageHeader {
+  color: var(--text-tertiary, #888);
 }
 
 .messageHeaderIcon {
@@ -302,7 +306,7 @@
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: var(--text-tertiary, #666);
+  color: var(--text-tertiary, #555);  /* Reduced brightness */
 }
 
 .messageHeaderIcon:hover {
@@ -318,7 +322,7 @@
   background: var(--surface-tertiary, rgba(255, 255, 255, 0.06));
   border-radius: 4px;
   font-weight: 500;
-  color: var(--text-secondary, #888);
+  color: var(--text-secondary, #666);  /* Reduced brightness */
 }
 
 .messageQuality {
@@ -334,14 +338,18 @@
 
 .timestamp {
   margin-left: auto;
-  color: var(--text-tertiary, #555);
+  color: var(--text-tertiary, #555);  /* Reduced brightness */
 }
 
-/* Message Content */
+/* Message Content - Reduced contrast for better readability */
 .messageContent {
   font-size: 15px;
   line-height: 1.7;
-  color: var(--text-primary, #fff);
+  color: rgba(255, 255, 255, 0.8);  /* Reduced to 80% for less brightness */
+}
+
+[data-theme='light'] .messageContent {
+  color: rgba(17, 24, 39, 0.8);  /* Reduced contrast for light theme */
 }
 
 .messageContent p {
@@ -375,16 +383,18 @@
   padding: 0;
   border: none;
   background: transparent;
-  color: #666;
+  color: #fff;
   border-radius: 6px;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.15s ease;
+  opacity: 0.5;  /* 50% transparent */
 }
 
 .resonant-chat-message-action-button:hover {
   background: rgba(255, 255, 255, 0.08);
   color: #fff;
+  opacity: 1;  /* Full opacity on hover */
 }
 
 .resonant-chat-message-action-button.delete-button:hover {
@@ -426,15 +436,17 @@
   padding: 0;
   border: none;
   background: transparent;
-  color: #555;
+  color: #fff;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
+  opacity: 0.5;  /* 50% transparent */
 }
 
 .feedbackButton:hover {
   background: rgba(255, 255, 255, 0.08);
-  color: #888;
+  color: #fff;
+  opacity: 1;  /* Full opacity on hover */
 }
 
 .feedbackButton.positive:hover,
@@ -475,7 +487,7 @@
   padding: 4px 8px;
   border: none;
   background: transparent;
-  color: #666;
+  color: #555;  /* Reduced brightness */
   border-radius: 4px;
   font-size: 11px;
   cursor: pointer;

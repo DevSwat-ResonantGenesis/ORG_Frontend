@@ -50,6 +50,37 @@ client.interceptors.response.use(
   async (error) => {
     const config = error.config;
     
+    // Handle 401 (Unauthorized) - try to refresh token
+    if (error.response?.status === 401 && !config.__isRetryRequest) {
+      config.__isRetryRequest = true;
+      
+      try {
+        // Try to refresh the token
+        const { refreshToken } = await import('./auth');
+        const newToken = await refreshToken();
+        
+        if (newToken) {
+          console.log('[API Client] ✅ Token refreshed successfully, retrying request');
+          // Retry the original request - cookies are automatically updated
+          return client(config);
+        }
+      } catch (refreshError) {
+        console.warn('[API Client] ⚠️ Token refresh failed:', refreshError);
+        // Token refresh failed - user needs to re-login
+        // Clear session and redirect to login
+        try {
+          const { clearSessionData } = await import('../utils/auth-cookies');
+          clearSessionData();
+        } catch (e) {
+          localStorage.removeItem('rg_session_data');
+        }
+        // Redirect to login page
+        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+          window.location.href = '/login?session_expired=true';
+        }
+      }
+    }
+    
     // Handle 429 (Too Many Requests) with exponential backoff retry
     if (error.response?.status === 429) {
       const retryCount = config.__retryCount || 0;

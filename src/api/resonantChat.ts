@@ -370,29 +370,41 @@ export const getChatHistory = async (chatId?: string) => {
     const url = chatId
       ? `/resonant-chat/conversations/${chatId}`
       : '/resonant-chat/conversations';
+    logger.info(`[getChatHistory] Fetching from: ${url}`, { chatId, component: 'ResonantChat' });
     const response = await fastapiClient.get(url);
+    logger.info(`[getChatHistory] Response:`, { 
+      dataType: typeof response.data, 
+      isArray: Array.isArray(response.data),
+      length: Array.isArray(response.data) ? response.data.length : 'N/A',
+      component: 'ResonantChat' 
+    });
     return response.data;
   } catch (error: any) {
     // Handle specific error cases gracefully
     const status = error?.response?.status;
     
-    // 404: Conversation not found - clear invalid ID
+    // 401: Not authenticated - return empty array (user will be redirected by auth interceptor)
+    if (status === 401) {
+      console.warn('[getChatHistory] 401 Unauthorized - user may need to re-login');
+      return chatId ? { messages: [] } : [];
+    }
+    
+    // 404: Conversation not found
     if (status === 404) {
-      logger.warn('Conversation not found, clearing stored ID', { chatId, component: 'ResonantChat' });
-      localStorage.removeItem('resonant-chat-current-conversation');
+      logger.warn('Conversation not found', { chatId, component: 'ResonantChat' });
       return null;
     }
     
-    // 405: Method not allowed - endpoint issue, return empty
+    // 405: Method not allowed - endpoint issue, return empty array for list
     if (status === 405) {
       logger.warn('Chat history endpoint returned 405, returning empty', { component: 'ResonantChat' });
-      return { messages: [] };
+      return chatId ? { messages: [] } : [];
     }
     
     // 429: Rate limited - already handled by retry logic, just return empty
     if (status === 429) {
       logger.warn('Rate limited on chat history, returning empty', { component: 'ResonantChat' });
-      return { messages: [] };
+      return chatId ? { messages: [] } : [];
     }
     
     logger.error('Resonant Chat history error', error, { component: 'ResonantChat' });
@@ -705,6 +717,29 @@ export interface MessageMetrics {
       content_hash: string | null;
       parent_dsid: string | null;
     };
+    enhanced_metrics?: {
+      calculation_method: string;
+      confidence: number;
+      semantic_similarity_source?: 'embeddings' | 'fallback' | string;
+      resonant_energy_breakdown?: Record<string, number>;
+      evidence_breakdown?: Record<string, number>;
+      anchor_breakdown?: Record<string, number>;
+      coherence_breakdown?: Record<string, number>;
+      memory_breakdown?: Record<string, number>;
+    };
+    rag_verification?: {
+      verified: boolean;
+      reason: string;
+      support_score: number;
+      claims_checked?: number;
+      claims_supported?: number;
+      claim_details?: Array<{
+        claim: string;
+        type: string;
+        supported: boolean;
+        support_type: string;
+      }>;
+    };
   };
 }
 
@@ -758,3 +793,13 @@ export const getMessageMetrics = async (messageId: string): Promise<MessageMetri
   }
 };
 
+
+export const archiveConversation = async (conversationId: string) => {
+  try {
+    const response = await fastapiClient.put(`/resonant-chat/conversations/${conversationId}/archive`);
+    return response.data;
+  } catch (error: any) {
+    logger.error('Failed to archive conversation:', error);
+    throw error;
+  }
+};

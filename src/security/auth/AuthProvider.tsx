@@ -1,10 +1,14 @@
 // ============== AUTH PROVIDER ==============
 
-import React, { createContext, useContext, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useRef, ReactNode } from 'react';
 import { useSessionStore } from '../../stores';
 import { initPermissionChecker } from '../permissions';
 import { auditTrail } from '../../observability';
 import type { Permission } from '../../types';
+
+// Proactive token refresh interval (50 minutes - before 60 min expiry)
+// Increased from 45 to 50 minutes to give more buffer time
+const TOKEN_REFRESH_INTERVAL_MS = 50 * 60 * 1000;
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -34,12 +38,63 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     hasPermission,
   } = useSessionStore();
 
+  const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
   // Initialize permission checker when permissions change
   useEffect(() => {
     if (permissions.length > 0) {
       initPermissionChecker(permissions);
     }
   }, [permissions]);
+
+  // Proactive token refresh - refresh before expiry to prevent logout
+  useEffect(() => {
+    const isAuthenticated = authStatus === 'authenticated';
+    
+    if (isAuthenticated) {
+      // Start proactive refresh interval
+      const refreshTokenProactively = async () => {
+        try {
+          console.log('[AuthProvider] 🔄 Attempting proactive token refresh...');
+          const { refreshToken } = await import('../../api/auth');
+          const newToken = await refreshToken();
+          if (newToken) {
+            console.log('[AuthProvider] ✅ Proactive token refresh successful at', new Date().toLocaleTimeString());
+          } else {
+            console.warn('[AuthProvider] ⚠️ Proactive token refresh returned null');
+          }
+        } catch (error) {
+          console.warn('[AuthProvider] ⚠️ Proactive token refresh failed:', error);
+          // Don't logout on proactive refresh failure - let the 401 handler deal with it
+        }
+      };
+
+      // Clear any existing interval
+      if (refreshIntervalRef.current) {
+        clearInterval(refreshIntervalRef.current);
+      }
+
+      // Do an immediate refresh on mount to ensure token is fresh
+      refreshTokenProactively();
+
+      // Set up new interval for proactive refresh
+      refreshIntervalRef.current = setInterval(refreshTokenProactively, TOKEN_REFRESH_INTERVAL_MS);
+      console.log('[AuthProvider] 🔄 Proactive token refresh scheduled every 50 minutes');
+
+      return () => {
+        if (refreshIntervalRef.current) {
+          clearInterval(refreshIntervalRef.current);
+          refreshIntervalRef.current = null;
+        }
+      };
+    } else {
+      // Clear interval when logged out
+      if (refreshIntervalRef.current) {
+        clearInterval(refreshIntervalRef.current);
+        refreshIntervalRef.current = null;
+      }
+    }
+  }, [authStatus]);
 
   const login = (newUserId: string, newRoles: string[], newPermissions: Permission[]) => {
     storeLogin(newUserId, newRoles, newPermissions);

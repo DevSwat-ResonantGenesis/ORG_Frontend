@@ -344,7 +344,16 @@ const getIdeWsUrl = (path: string) => {
 };
 
 export const ideWebSocket = getWebSocket(getIdeWsUrl('/ws/ide'));
-export const chatWebSocket = getWebSocket(getWsUrl('/api/chat/ws'));
+// Note: chatWebSocket is disabled - use WebSocketClient from websocketClient.ts for resonant-chat
+// The /api/chat/ws endpoint doesn't exist, causing 404 errors
+// export const chatWebSocket = getWebSocket(getWsUrl('/api/chat/ws'));
+export const chatWebSocket = {
+  isConnected: false,
+  send: () => Promise.resolve(),
+  on: () => () => {},
+  connect: () => Promise.resolve(),
+  disconnect: () => {},
+};
 
 // ============== REACT HOOK ==============
 import { useState, useEffect, useCallback } from 'react';

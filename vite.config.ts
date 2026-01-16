@@ -53,12 +53,18 @@ export default defineConfig({
         target: apiProxyTarget,
         changeOrigin: true,
         secure: false,
+        cookieDomainRewrite: '',
+        cookiePathRewrite: '/',
         configure: (proxy, options) => {
           proxy.on('error', (err, req, res) => {
             console.log('proxy error', err);
           });
           proxy.on('proxyReq', (proxyReq, req, res) => {
             console.log('Sending Request to the Target:', req.method, req.url);
+            // Forward cookies from browser to backend
+            if (req.headers.cookie) {
+              proxyReq.setHeader('Cookie', req.headers.cookie);
+            }
           });
           proxy.on('proxyRes', (proxyRes, req, res) => {
             console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
@@ -139,9 +145,13 @@ export default defineConfig({
             console.log('resonant-chat proxy error', err);
           });
           proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('resonant-chat Sending Request:', req.method, req.url);
             if (req.headers.cookie) {
               proxyReq.setHeader('Cookie', req.headers.cookie);
             }
+          });
+          proxy.on('proxyRes', (proxyRes, req, res) => {
+            console.log('resonant-chat Response:', proxyRes.statusCode, req.url);
           });
         },
       },

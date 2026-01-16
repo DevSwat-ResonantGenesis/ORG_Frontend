@@ -308,6 +308,13 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
             </button>
           </div>
           <div className={styles.headerActions}>
+            <button
+              className={styles.backToChatButton}
+              onClick={onClose}
+              title="Back to Chat"
+            >
+              ← Back to Chat
+            </button>
             {codeBlocks && codeBlocks.length > 0 && (
               <button
                 className={styles.buildButton}
@@ -344,8 +351,8 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
               <CloseIcon />
             </button>
           </div>
-
         </div>
+
         {/* Tab Content */}
         <div className={styles.codePanelContent}>
           {/* Code Tab */}

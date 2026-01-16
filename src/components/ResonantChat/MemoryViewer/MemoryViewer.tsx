@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getSession } from '@/utils/auth';
+import fastapiClient from '@/api/fastapiClient';
 
 interface MemoryEntry {
   id: string;
@@ -46,6 +47,7 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState<'memories' | 'projects'>('memories');
   const [selectedProject, setSelectedProject] = useState<ProjectContext | null>(null);
   const [totalMemories, setTotalMemories] = useState(0);
+  const [avgRelevance, setAvgRelevance] = useState(0);
 
   useEffect(() => {
     if (isOpen) {
@@ -56,32 +58,29 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const session = await getSession();
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-      };
-      if (session?.token) {
-        headers['Authorization'] = `Bearer ${session.token}`;
+      // Use fastapiClient which handles auth automatically
+      const response = await fastapiClient.get('/resonant-chat/agents/stats');
+      const data = response.data;
+      console.log('[MemoryViewer] Agent stats response:', data);
+      const memoryData = data.data?.memory || data.memory || {};
+      
+      if (memoryData.recent_memories) {
+        setMemories(memoryData.recent_memories);
       }
-
-      const statsRes = await fetch('/api/resonant-chat/agents/stats', { headers });
-      if (statsRes.ok) {
-        const data = await statsRes.json();
-        const memoryData = data.data?.memory || data.memory || {};
-        
-        if (memoryData.recent_memories) {
-          setMemories(memoryData.recent_memories);
-        }
-        if (memoryData.total_count !== undefined) {
-          setTotalMemories(memoryData.total_count);
-        } else {
-          setTotalMemories(memoryData.recent_memories?.length || 0);
-        }
-        
-        // Fetch project contexts if available
-        if (data.data?.projects || data.projects) {
-          setProjects(data.data?.projects || data.projects || []);
-        }
+      if (memoryData.total_count !== undefined) {
+        setTotalMemories(memoryData.total_count);
+      } else {
+        setTotalMemories(memoryData.recent_memories?.length || 0);
+      }
+      
+      // Get avg_relevance from API response
+      if (memoryData.avg_relevance !== undefined) {
+        setAvgRelevance(memoryData.avg_relevance);
+      }
+      
+      // Fetch project contexts if available
+      if (data.data?.projects || data.projects) {
+        setProjects(data.data?.projects || data.projects || []);
       }
     } catch (error) {
       console.error('Failed to fetch memory data:', error);
@@ -184,7 +183,7 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: '#8b5cf6' }}>
-              {memories.length > 0 ? Math.round(memories.reduce((sum, m) => sum + (m.relevance_score || 0), 0) / memories.length * 100) : 0}%
+              {avgRelevance > 0 ? avgRelevance : (memories.length > 0 ? Math.round(memories.reduce((sum, m) => sum + (m.relevance_score || 0), 0) / memories.length * 100) : 0)}%
             </div>
             <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase' }}>Avg Relevance</div>
           </div>

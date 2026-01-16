@@ -88,6 +88,7 @@ interface FloatingChatWidgetProps {
 
 // Use same storage key as ResonantChatPage for sync
 const chatStorageKey = 'resonant-chat-current-conversation';
+const messagesStorageKey = 'resonant-chat-live-messages'; // For live sync between widget and main page
 
 const getChatIdFromResponse = (response: any): string | null =>
   response?.id || response?.chatId || response?.chat_id || response?.chat?.id || null;
@@ -248,7 +249,25 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
       if (latestConversationId && latestConversationId !== currentConversationId) {
         setCurrentConversationId(latestConversationId);
       }
-      // Reload messages from backend (not localStorage)
+      // Try to load messages from localStorage first (live sync)
+      const liveMessages = localStorage.getItem(messagesStorageKey);
+      if (liveMessages) {
+        try {
+          const parsed = JSON.parse(liveMessages);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const formattedMessages: Message[] = parsed.map((msg: any) => ({
+              ...msg,
+              timestamp: new Date(msg.timestamp),
+            }));
+            setMessages(formattedMessages);
+            logger.info('[FloatingChatWidget] ✅ Loaded messages from localStorage live sync:', formattedMessages.length);
+            return;
+          }
+        } catch (e) {
+          logger.warn('[FloatingChatWidget] Failed to parse live messages from localStorage');
+        }
+      }
+      // Fallback to backend if no live messages
       if (isOpen && (latestConversationId || currentConversationId)) {
         loadChatHistory();
       }
@@ -257,6 +276,46 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
     window.addEventListener('resonant-chat-sync', handleChatSync);
     return () => window.removeEventListener('resonant-chat-sync', handleChatSync);
   }, [isOpen, isLoggedIn, currentConversationId]);
+
+  // Live sync messages from localStorage (updated by ResonantChatPage)
+  // Use ref to avoid re-render loop - messages dependency was causing performance issues
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
+  
+  useEffect(() => {
+    const syncMessagesFromStorage = () => {
+      const liveMessages = localStorage.getItem(messagesStorageKey);
+      if (liveMessages) {
+        try {
+          const parsed = JSON.parse(liveMessages);
+          if (Array.isArray(parsed)) {
+            const formattedMessages: Message[] = parsed.map((msg: any) => ({
+              ...msg,
+              timestamp: new Date(msg.timestamp),
+            }));
+            // Only update if messages changed - use ref to avoid stale closure
+            if (JSON.stringify(formattedMessages.map(m => m.id)) !== JSON.stringify(messagesRef.current.map(m => m.id))) {
+              setMessages(formattedMessages);
+              logger.info('[FloatingChatWidget] 🔄 Live sync: Updated messages from localStorage');
+            }
+          }
+        } catch (e) {
+          // Ignore parse errors
+        }
+      }
+    };
+
+    // Listen for storage changes (from ResonantChatPage)
+    window.addEventListener('storage', syncMessagesFromStorage);
+    
+    // Listen for custom sync event instead of polling - much more efficient
+    window.addEventListener('resonant-chat-sync', syncMessagesFromStorage);
+
+    return () => {
+      window.removeEventListener('storage', syncMessagesFromStorage);
+      window.removeEventListener('resonant-chat-sync', syncMessagesFromStorage);
+    };
+  }, []); // Empty dependency - use ref for messages to avoid re-render loop
 
   // Auto-scroll to bottom when new messages arrive or when opening
   useEffect(() => {
@@ -608,10 +667,19 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
         xyz: response.message?.xyz,
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
+      const updatedMessages = [...messages, userMessage, assistantMessage];
+      setMessages(updatedMessages);
+      
+      // HYBRID SYNC: Save messages to localStorage for live sync with ResonantChatPage
+      const messagesToSync = updatedMessages.map(m => ({
+        ...m,
+        timestamp: m.timestamp instanceof Date ? m.timestamp.toISOString() : m.timestamp,
+      }));
+      localStorage.setItem(messagesStorageKey, JSON.stringify(messagesToSync));
       
       // Trigger sync to notify other chat components (e.g., full chat page)
       triggerChatSync();
+      window.dispatchEvent(new CustomEvent('resonant-chat-sync'));
       
       success('Message sent successfully');
     } catch (err: any) {

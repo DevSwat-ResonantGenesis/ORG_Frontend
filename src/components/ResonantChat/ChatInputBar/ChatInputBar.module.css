@@ -22,7 +22,7 @@
 .inputWrapper {
   max-width: 800px;
   margin: 0 auto;
-  background: var(--bg-primary, #0a0a0a);
+  background: rgba(10, 10, 10, 0.95);
   padding: 8px 12px;
   display: flex;
   flex-direction: column;
@@ -229,7 +229,13 @@
 }
 
 .textarea::placeholder {
-  color: #666;
+  color: #fff;
+  opacity: 0.5;  /* 50% transparent */
+}
+
+[data-theme='light'] .textarea::placeholder {
+  color: #000;
+  opacity: 0.5;
 }
 
 .textarea:focus {
@@ -304,7 +310,7 @@
   gap: 4px;
 }
 
-/* Tool Button - Minimal, no background */
+/* Tool Button - 50% transparent */
 .toolButton {
   display: inline-flex;
   align-items: center;
@@ -314,19 +320,27 @@
   padding: 0 8px;
   border: none;
   background: transparent;
-  color: #888;
+  color: #fff;
   border-radius: 8px;
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition: all 0.15s ease;
   gap: 6px;
+  opacity: 0.5;  /* 50% transparent */
 }
 
 .toolButton:hover {
   color: #fff;
+  opacity: 1;  /* Full opacity on hover */
+}
+
+[data-theme='light'] .toolButton {
+  color: #000;
+  opacity: 0.5;
 }
 
 [data-theme='light'] .toolButton:hover {
-  color: #111;
+  color: #000;
+  opacity: 1;
 }
 
 .toolButton.active {
@@ -347,58 +361,142 @@
   font-weight: 500;
 }
 
-/* History Button - Prominent styling */
+/* Animated Icon Buttons */
+.animatedIcon {
+  transition: all 0.2s ease;
+}
+
+.animatedIcon:hover {
+  transform: scale(1.1);
+}
+
+.animatedIcon:active {
+  transform: scale(0.95);
+}
+
+/* Rocket Icon Animation - Lift off on hover */
+.rocketIcon {
+  transition: transform 0.3s ease;
+}
+
+.animatedIcon:hover .rocketIcon {
+  transform: translateY(-2px) rotate(-15deg);
+  animation: rocketPulse 0.6s ease infinite;
+}
+
+@keyframes rocketPulse {
+  0%, 100% { transform: translateY(-2px) rotate(-15deg); }
+  50% { transform: translateY(-4px) rotate(-15deg); }
+}
+
+/* Attach/Paperclip Icon Animation - Wiggle on hover */
+.attachIcon {
+  transition: transform 0.2s ease;
+}
+
+.animatedIcon:hover .attachIcon {
+  animation: attachWiggle 0.4s ease;
+}
+
+@keyframes attachWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+}
+
+/* Split View Icon Animation - Expand on hover */
+.splitIcon {
+  transition: transform 0.2s ease;
+}
+
+.animatedIcon:hover .splitIcon {
+  animation: splitExpand 0.3s ease;
+}
+
+@keyframes splitExpand {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scaleX(1.15); }
+}
+
+/* History Button - 50% transparent */
 .historyButton {
-  background: rgba(14, 165, 233, 0.1);
-  border: 1px solid rgba(14, 165, 233, 0.2);
-  color: #0ea5e9;
-  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 6px 10px;
   border-radius: 10px;
+  transition: all 0.2s ease;
+  opacity: 0.5;  /* 50% transparent */
 }
 
 .historyButton:hover {
-  background: rgba(14, 165, 233, 0.2);
-  color: #38bdf8;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  transform: scale(1.05);
+  opacity: 1;  /* Full opacity on hover */
+}
+
+.historyButton:hover svg {
+  animation: historyPulse 0.5s ease;
+}
+
+@keyframes historyPulse {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-15deg); }
+  75% { transform: rotate(15deg); }
 }
 
 .historyButton.active {
-  background: rgba(14, 165, 233, 0.25);
-  border-color: rgba(14, 165, 233, 0.4);
+  background: rgba(14, 165, 233, 0.15);
+  color: #0ea5e9;
 }
 
 [data-theme='light'] .historyButton {
-  background: rgba(14, 165, 233, 0.08);
-  border-color: rgba(14, 165, 233, 0.15);
+  color: #aaa;
 }
 
 [data-theme='light'] .historyButton:hover {
-  background: rgba(14, 165, 233, 0.15);
+  background: rgba(0, 0, 0, 0.05);
+  color: #666;
 }
 
-/* New Chat Button - Prominent styling */
+/* New Chat Button - 50% transparent */
 .newChatButton {
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.2);
-  color: #22c55e;
-  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 6px 10px;
   border-radius: 10px;
+  transition: all 0.2s ease;
+  opacity: 0.5;  /* 50% transparent */
 }
 
 .newChatButton:hover {
-  background: rgba(34, 197, 94, 0.2);
-  color: #4ade80;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  transform: scale(1.05);
+  opacity: 1;  /* Full opacity on hover */
+}
+
+.newChatButton:hover svg {
+  animation: newChatPop 0.3s ease;
+}
+
+@keyframes newChatPop {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
 }
 
 [data-theme='light'] .newChatButton {
-  background: rgba(34, 197, 94, 0.08);
-  border-color: rgba(34, 197, 94, 0.15);
+  color: #aaa;
 }
 
 [data-theme='light'] .newChatButton:hover {
-  background: rgba(34, 197, 94, 0.15);
+  background: rgba(0, 0, 0, 0.05);
+  color: #666;
 }
 
-/* Provider Button - Custom, no external styles */
+/* Provider Button - 50% transparent */
 .providerButton {
   display: inline-flex;
   align-items: center;
@@ -406,17 +504,19 @@
   padding: 6px 12px;
   border: none;
   background: transparent;
-  color: #888;
+  color: #fff;
   font-size: 13px;
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition: all 0.15s ease;
   pointer-events: auto !important;
   position: relative;
   z-index: 10002;
+  opacity: 0.5;  /* 50% transparent */
 }
 
 .providerButton:hover {
   color: #fff;
+  opacity: 1;  /* Full opacity on hover */
 }
 
 [data-theme='light'] .providerButton:hover {

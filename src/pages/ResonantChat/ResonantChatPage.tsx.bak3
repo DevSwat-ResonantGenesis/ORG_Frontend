@@ -1,5 +1,5 @@
 import { createMemory, deleteConversation, deleteMemory, listConversations, listMemories, updateConversation, updateMemory, uploadFile, type MemoryResponse } from '@/api/rag';
-import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, getProviderStats, getUserAnalytics, archiveConversation, type UserAnalytics } from '@/api/resonantChat';
+import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, getProviderStats, getUserAnalytics, type UserAnalytics } from '@/api/resonantChat';
 import { triggerChatSync } from '@/context/ChatContext';
 import { fetchAvailableProviders } from '@/api/userApiKeys';
 import { fetchUsageSummary } from '@/api/usage';
@@ -111,7 +111,8 @@ interface ModuleOutputs {
   error?: string;
 }
 
-// NOTE: No localStorage for conversation ID - always load from backend for cross-device sync
+// Use same key as FloatingChatWidget for sync
+const CHAT_STORAGE_KEY = 'resonant-chat-current-conversation';
 
 const getChatIdFromResponse = (response: any): string | null =>
   response?.id || response?.chatId || response?.chat_id || response?.chat?.id || null;
@@ -375,7 +376,9 @@ const ResonantChatPage: React.FC = () => {
     }
   }, [initialMessage]);
 
-  // Conversation ID loaded purely from backend - no localStorage for cross-device sync
+  // Load chatId from localStorage on mount (synced with FloatingChatWidget)
+  // SECURITY: Only load if user hasn't changed
+  // Conversation ID is loaded from backend, not localStorage
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
 
   // Load selected agent hash from localStorage
@@ -392,7 +395,12 @@ const ResonantChatPage: React.FC = () => {
     return localStorage.getItem('resonant-chat-selected-agent-hash');
   });
 
-  // NOTE: Removed localStorage sync - conversations are loaded only from backend
+  // HYBRID: Save to localStorage for FloatingChatWidget and Hero input sync
+  useEffect(() => {
+    if (currentConversationId) {
+      localStorage.setItem(CHAT_STORAGE_KEY, currentConversationId);
+    }
+  }, [currentConversationId]);
 
   // Save selected agent hash to localStorage whenever it changes
   useEffect(() => {
@@ -409,53 +417,47 @@ const ResonantChatPage: React.FC = () => {
     let cancelled = false;
 
     const ensureConversation = async () => {
-      // Always load from backend - no localStorage for cross-device sync
+      // ALWAYS load from backend - get user's most recent conversation
       try {
-        console.log('[ResonantChat] 🔄 Loading conversations from backend...');
-        const conversations = await getChatHistory();
-        
-        console.log('[ResonantChat] 📦 getChatHistory returned:', {
-          type: typeof conversations,
-          isArray: Array.isArray(conversations),
-          length: Array.isArray(conversations) ? conversations.length : 'N/A',
-          data: conversations
-        });
+        logger.info('[ResonantChat] Loading conversations from backend...');
+        const conversations = await getChatHistory(); // Gets all user conversations
         
         if (!cancelled && conversations && Array.isArray(conversations) && conversations.length > 0) {
-          // Sort by last_message_at or created_at descending to get the most recent active conversation
-          const sortedConversations = [...conversations].sort((a: any, b: any) => {
-            const dateA = new Date(a.last_message_at || a.created_at || 0).getTime();
-            const dateB = new Date(b.last_message_at || b.created_at || 0).getTime();
-            return dateB - dateA;
-          });
-          
-          // Find the most recent conversation with messages (message_count > 0)
-          const mostRecentWithMessages = sortedConversations.find((c: any) => c.message_count > 0);
-          const mostRecentConversation = mostRecentWithMessages || sortedConversations[0];
+          // Sort by created_at descending and get the most recent
+          const sortedConversations = conversations.sort((a: any, b: any) => 
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
+          const mostRecentConversation = sortedConversations[0];
           const conversationId = mostRecentConversation.id;
           
-          console.log('[ResonantChat] ✅ Loading most recent conversation:', conversationId, 'title:', mostRecentConversation.title, 'messages:', mostRecentConversation.message_count);
+          logger.info('[ResonantChat] Loaded most recent conversation from backend:', conversationId);
           setCurrentConversationId(conversationId);
           return;
-        } else {
-          console.log('[ResonantChat] ⚠️ No conversations returned from backend or empty array');
         }
       } catch (error) {
-        console.error('[ResonantChat] ❌ Failed to load conversations from backend', error);
+        logger.warn('[ResonantChat] Failed to load conversations from backend, will create new', error);
       }
 
-      // No existing conversations found - user can start a new chat by typing
+      // Only create new conversation if no existing ones found
       if (!cancelled) {
-        console.log('[ResonantChat] 📝 No existing conversations found. User can start a new chat by typing.');
+        try {
+          logger.info('[ResonantChat] No existing conversations, creating new...');
+          const newChat = await createChat();
+          const newChatId = getChatIdFromResponse(newChat);
+          if (newChatId) {
+            logger.info('[ResonantChat] Created new conversation:', newChatId);
+            setCurrentConversationId(newChatId);
+          }
+        } catch (error) {
+          logger.error('Failed to initialize Resonant Chat conversation', error);
+        }
       }
     };
 
-    // Small delay to ensure auth is fully initialized
-    const timer = setTimeout(ensureConversation, 100);
+    ensureConversation();
 
     return () => {
       cancelled = true;
-      clearTimeout(timer);
     };
   }, [isLoggedIn]);
 
@@ -575,11 +577,22 @@ const ResonantChatPage: React.FC = () => {
           }
         } catch (error: any) {
           logger.error('[ResonantChatPage] Failed to load chat history', error);
-          // If chat not found (404), clear the conversation ID
+          // If chat not found (404), clear the stored ID and create new chat
           if (error?.response?.status === 404 || error?.response?.status === 403) {
-            logger.info('[ResonantChatPage] Chat not found, clearing conversation ID');
+            logger.info('[ResonantChatPage] Chat not found, clearing stored ID');
+            localStorage.removeItem(CHAT_STORAGE_KEY);
             setCurrentConversationId(null);
-            // Don't auto-create - let user start a new chat by typing
+            // Create new chat
+            try {
+              const newChat = await createChat();
+              const newChatId = getChatIdFromResponse(newChat);
+              if (newChatId) {
+                localStorage.setItem(CHAT_STORAGE_KEY, newChatId);
+                setCurrentConversationId(newChatId);
+              }
+            } catch (createError) {
+              logger.error('[ResonantChatPage] Failed to create new chat', createError);
+            }
           }
         }
       }
@@ -589,47 +602,28 @@ const ResonantChatPage: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentConversationId, isLoggedIn]); // messages.length intentionally excluded to prevent reload loops
 
-  // HYBRID SYNC: Listen for live messages from FloatingChatWidget
-  // Use ref to avoid re-render loop - messages dependency was causing infinite loops
-  const messagesRef = useRef(messages);
-  messagesRef.current = messages;
-  
+  // Listen for chat sync events from floating widget
+  // Only sync if we don't have active messages (prevents overwriting during chat)
   useEffect(() => {
-    const syncMessagesFromWidget = () => {
-      const liveMessages = localStorage.getItem('resonant-chat-live-messages');
-      if (liveMessages) {
-        try {
-          const parsed = JSON.parse(liveMessages);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            // Only update if messages changed (compare by IDs) - use ref to avoid stale closure
-            const currentIds = messagesRef.current.map(m => m.id).join(',');
-            const newIds = parsed.map((m: any) => m.id).join(',');
-            if (currentIds !== newIds) {
-              const formattedMessages: Message[] = parsed.map((msg: any) => ({
-                ...msg,
-                timestamp: new Date(msg.timestamp),
-              }));
-              setMessages(formattedMessages);
-              logger.info('[ResonantChatPage] 🔄 Live sync: Updated messages from FloatingChatWidget');
-            }
-          }
-        } catch (e) {
-          // Ignore parse errors
-        }
+    const handleChatSync = () => {
+      logger.info('[ResonantChatPage] Received chat sync event');
+      
+      // First, sync conversation ID from localStorage (in case widget created a new one)
+      const latestConversationId = localStorage.getItem(CHAT_STORAGE_KEY);
+      
+      // Update state if conversation ID changed
+      if (latestConversationId && latestConversationId !== currentConversationId) {
+        logger.info('[ResonantChatPage] Syncing conversation ID from localStorage:', latestConversationId);
+        setCurrentConversationId(latestConversationId);
       }
+      
+      // Don't reload if we already have messages - prevents overwriting during active chat
+      // The sync event is mainly for syncing conversation ID, not for reloading messages
     };
 
-    // Listen for storage changes (from FloatingChatWidget)
-    window.addEventListener('storage', syncMessagesFromWidget);
-    
-    // Listen for custom sync event (same-tab updates)
-    window.addEventListener('resonant-chat-sync', syncMessagesFromWidget);
-
-    return () => {
-      window.removeEventListener('storage', syncMessagesFromWidget);
-      window.removeEventListener('resonant-chat-sync', syncMessagesFromWidget);
-    };
-  }, []); // Empty dependency - use ref for messages to avoid re-render loop
+    window.addEventListener('resonant-chat-sync', handleChatSync);
+    return () => window.removeEventListener('resonant-chat-sync', handleChatSync);
+  }, [currentConversationId]);
 
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; id: string; type: 'message' | 'source' } | null>(null);
   const [showFiles, setShowFiles] = useState(false);
@@ -811,20 +805,7 @@ const ResonantChatPage: React.FC = () => {
     }
   }, [messages.length, scrollToBottom]);
 
-  // HYBRID SYNC: Save messages to localStorage for live sync with FloatingChatWidget
-  // Backend is still source of truth, but localStorage enables real-time widget sync
-  useEffect(() => {
-    if (messages.length > 0 && currentConversationId) {
-      // Save messages to localStorage for FloatingChatWidget live sync
-      const messagesToSync = messages.map(m => ({
-        ...m,
-        timestamp: m.timestamp instanceof Date ? m.timestamp.toISOString() : m.timestamp,
-      }));
-      localStorage.setItem('resonant-chat-live-messages', JSON.stringify(messagesToSync));
-      // Trigger sync event for same-tab updates
-      window.dispatchEvent(new CustomEvent('resonant-chat-sync'));
-    }
-  }, [messages, currentConversationId]);
+  // Messages NOT saved to localStorage - backend is source of truth
 
   // Note: Conversation ID is already saved to localStorage in the earlier useEffect
   // This duplicate was removed to avoid redundancy
@@ -905,22 +886,18 @@ const ResonantChatPage: React.FC = () => {
   // IMPORTANT: Only use real backend metrics - never fake them locally
   useEffect(() => {
     const loadChatMetrics = async () => {
-      console.log('[Metrics] Loading metrics for:', currentConversationId, 'isLoggedIn:', isLoggedIn);
       if (currentConversationId && isLoggedIn) {
         try {
           const metrics = await getChatMetrics(currentConversationId);
-          console.log('[Metrics] Received metrics:', metrics);
           // metrics will be null if backend fails or no real metrics available
           setChatMetrics(metrics);
         } catch (error) {
           logger.error('Failed to load chat metrics from API', error);
-          console.log('[Metrics] Error loading metrics:', error);
           // Don't calculate fake local metrics - set to null to show N/A
           setChatMetrics(null);
         }
       } else {
         // Not logged in or no conversation - no metrics available
-        console.log('[Metrics] No conversation ID or not logged in, setting null');
         setChatMetrics(null);
       }
     };
@@ -935,11 +912,8 @@ const ResonantChatPage: React.FC = () => {
     const timer = setTimeout(() => {
       const totalTokens = messages.reduce((sum, m) => sum + Math.round(m.content.length / 4), 0);
       
-      console.log('[UsageStats] Updating usageStats, chatMetrics:', chatMetrics);
-      
       // Only use real backend metrics - null means "N/A" in the UI
       if (chatMetrics && chatMetrics.metrics_available) {
-        console.log('[UsageStats] Setting quality:', chatMetrics.quality, 'hallucination:', chatMetrics.hallucination);
         setUsageStats({
           messages: chatMetrics.message_count || messages.length,
           tokens: chatMetrics.tokens || totalTokens,
@@ -948,7 +922,6 @@ const ResonantChatPage: React.FC = () => {
         });
       } else {
         // No real metrics available - show message count and tokens only
-        console.log('[UsageStats] No metrics available, setting N/A');
         setUsageStats({
           messages: messages.length,
           tokens: totalTokens,
@@ -960,8 +933,77 @@ const ResonantChatPage: React.FC = () => {
     return () => clearTimeout(timer);
   }, [chatMetrics, messages.length]); // Use messages.length instead of messages array
 
-  // NOTE: Removed duplicate loadLastChat effect - chat loading is handled by ensureConversation (line 414-482)
-  // and loadChatHistory (line 544-623) effects to prevent race conditions and duplicate chat creation
+  // Load last chat from backend on mount (for cross-device sync)
+  useEffect(() => {
+    const loadLastChat = async () => {
+      if (!isLoggedIn) return;
+      
+      try {
+        // Check if there's a saved chat ID from this session
+        const savedChatId = localStorage.getItem('resonant-chat-current-conversation');
+        
+        if (savedChatId) {
+          // Load the saved chat from resonant-chat API
+          const data = await getChatHistory(savedChatId);
+          const chatMessages = data?.messages || (Array.isArray(data) ? data : []);
+          if (chatMessages.length > 0) {
+            const formattedMessages = chatMessages.map((msg: { id?: string; role: string; content: string; created_at?: string; provider?: string; validity?: number; resonance_score?: number; hash?: string; anchors?: string[] }) => ({
+              id: msg.id || `msg-${Date.now()}-${Math.random()}`,
+              role: msg.role as 'user' | 'assistant' | 'system',
+              content: msg.content,
+              timestamp: msg.created_at ? new Date(msg.created_at) : new Date(),
+              aiProvider: msg.provider,
+              validity: msg.validity,
+              resonanceScore: msg.resonance_score,
+              hash: msg.hash,
+              anchors: msg.anchors,
+            }));
+            // Sort by timestamp ascending (oldest first, newest at bottom)
+            formattedMessages.sort((a: { timestamp: Date }, b: { timestamp: Date }) => 
+              a.timestamp.getTime() - b.timestamp.getTime()
+            );
+            setMessages(formattedMessages);
+            setCurrentConversationId(savedChatId);
+            return;
+          }
+        }
+        
+        // If no saved chat, load the most recent one from resonant-chat API
+        const chats = await getChatHistory(); // Gets list of chats when no ID provided
+        const chatList = Array.isArray(chats) ? chats : [];
+        if (chatList.length > 0) {
+          const mostRecent = chatList[0] as any;
+          const chatId = typeof mostRecent === 'string' ? mostRecent : mostRecent.id;
+          const data = await getChatHistory(chatId);
+          const chatMessages = data?.messages || (Array.isArray(data) ? data : []);
+          if (chatMessages.length > 0) {
+            const formattedMessages = chatMessages.map((msg: { id?: string; role: string; content: string; created_at?: string; provider?: string; validity?: number; resonance_score?: number; hash?: string; anchors?: string[] }) => ({
+              id: msg.id || `msg-${Date.now()}-${Math.random()}`,
+              role: msg.role as 'user' | 'assistant' | 'system',
+              content: msg.content,
+              timestamp: msg.created_at ? new Date(msg.created_at) : new Date(),
+              aiProvider: msg.provider,
+              validity: msg.validity,
+              resonanceScore: msg.resonance_score,
+              hash: msg.hash,
+              anchors: msg.anchors,
+            }));
+            // Sort by timestamp ascending (oldest first, newest at bottom)
+            formattedMessages.sort((a: { timestamp: Date }, b: { timestamp: Date }) => 
+              a.timestamp.getTime() - b.timestamp.getTime()
+            );
+            setMessages(formattedMessages);
+            setCurrentConversationId(chatId);
+            localStorage.setItem('resonant-chat-current-conversation', chatId);
+          }
+        }
+      } catch (error) {
+        logger.error('Failed to load last chat from backend', error);
+      }
+    };
+    
+    loadLastChat();
+  }, [isLoggedIn]);
 
   // Load settings from backend API (with localStorage fallback)
   useEffect(() => {
@@ -1117,24 +1159,9 @@ const ResonantChatPage: React.FC = () => {
     resizeTextarea();
   }, [input]);
 
-  // Debounce refs for loadConversations
-  const conversationsLoadedRef = useRef(false);
-  const conversationsLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
-  const loadConversations = async (force = false) => {
-    // Skip if already loaded recently unless forced
-    if (!force && conversationsLoadedRef.current) {
-      return;
-    }
-    
-    // Debounce: cancel pending load
-    if (conversationsLoadTimeoutRef.current) {
-      clearTimeout(conversationsLoadTimeoutRef.current);
-    }
-    
+  const loadConversations = async () => {
     try {
       setIsLoadingConversations(true);
-      conversationsLoadedRef.current = true;
       let formattedConversations: Array<{ id: string; title?: string; created_at?: string; message_count?: number; last_message_at?: string }> = [];
       
       // Try to load from resonant-chat API if logged in
@@ -1202,33 +1229,14 @@ const ResonantChatPage: React.FC = () => {
       }
     } finally {
       setIsLoadingConversations(false);
-      // Reset flag after 10 seconds to allow refresh
-      setTimeout(() => {
-        conversationsLoadedRef.current = false;
-      }, 10000);
     }
   };
 
-  // Load memory anchors (debounced to prevent excessive API calls)
-  const anchorsLoadedRef = useRef(false);
-  const anchorsLoadTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
-  const loadMemoryAnchors = async (force = false) => {
-    // Skip if already loaded recently (within 5 seconds) unless forced
-    if (!force && anchorsLoadedRef.current) {
-      return;
-    }
-    
-    // Debounce: cancel pending load and schedule new one
-    if (anchorsLoadTimeoutRef.current) {
-      clearTimeout(anchorsLoadTimeoutRef.current);
-    }
-    
-    anchorsLoadTimeoutRef.current = setTimeout(async () => {
-      try {
-        if (isLoggedIn) {
-          anchorsLoadedRef.current = true;
-          const anchors = await getMemoryAnchors();
+  // Load memory anchors
+  const loadMemoryAnchors = async () => {
+    try {
+      if (isLoggedIn) {
+        const anchors = await getMemoryAnchors();
         // Handle both old format (string[]) and new format (object[])
         if (Array.isArray(anchors)) {
           const formattedAnchors = anchors.map((anchor: any) => {
@@ -1249,30 +1257,15 @@ const ResonantChatPage: React.FC = () => {
         } else {
           setMemoryAnchors([]);
         }
-        }
-      } catch (error: unknown) {
-        logger.error('Failed to load memory anchors', error);
-        setMemoryAnchors([]);
       }
-      
-      // Reset flag after 5 seconds to allow refresh
-      setTimeout(() => {
-        anchorsLoadedRef.current = false;
-      }, 5000);
-    }, 500); // 500ms debounce
+    } catch (error: unknown) {
+      logger.error('Failed to load memory anchors', error);
+      setMemoryAnchors([]);
+    }
   };
 
-  // Debounce refs for loadMemories
-  const memoriesLoadedRef = useRef(false);
-  
-  const loadMemories = async (force = false) => {
-    // Skip if already loaded recently unless forced
-    if (!force && memoriesLoadedRef.current) {
-      return;
-    }
-    
+  const loadMemories = async () => {
     try {
-      memoriesLoadedRef.current = true;
       let allMemories: any[] = [];
       
       // 1. Load saved memories from API (context/facts)
@@ -1385,11 +1378,6 @@ const ResonantChatPage: React.FC = () => {
 
       console.log('📚 Total memories loaded:', allMemories.length, allMemories.map(m => ({ id: m.id, type: m.type, name: m.name })));
       setMemories(allMemories as any);
-      
-      // Reset flag after 10 seconds to allow refresh
-      setTimeout(() => {
-        memoriesLoadedRef.current = false;
-      }, 10000);
     } catch (error: unknown) {
       console.error('❌ Failed to load memories:', error);
       logger.error('Failed to load memories', error);
@@ -1410,10 +1398,6 @@ const ResonantChatPage: React.FC = () => {
       } catch {
         setMemories([]);
       }
-      // Reset flag on error too
-      setTimeout(() => {
-        memoriesLoadedRef.current = false;
-      }, 5000);
     }
   };
 
@@ -1602,8 +1586,9 @@ const ResonantChatPage: React.FC = () => {
         })
         .filter((path): path is string => !!path);
 
-      // Get chatId from state only - no localStorage fallback
-      const chatIdToUse = currentConversationId || undefined;
+      // Get chatId from state or sessionStorage (for persistence after refresh)
+      // Use localStorage for chatId persistence (consistent with initialization on line 381)
+      const chatIdToUse = currentConversationId || localStorage.getItem(CHAT_STORAGE_KEY) || undefined;
       console.log('💬 Using chatId:', chatIdToUse, 'currentConversationId:', currentConversationId);
 
       // Use sendResonantMessage for all users (Hash Sphere-powered messaging)
@@ -1659,7 +1644,8 @@ const ResonantChatPage: React.FC = () => {
       if (resonantResponse.chatId && !currentConversationId) {
         console.log('💬 Saving new chatId:', resonantResponse.chatId);
         setCurrentConversationId(resonantResponse.chatId);
-        // NOTE: No localStorage - conversations are loaded only from backend
+        // Use localStorage for persistence across page refreshes (consistent with initialization)
+        localStorage.setItem(CHAT_STORAGE_KEY, resonantResponse.chatId);
       }
 
       // Check if response is an error
@@ -1745,7 +1731,8 @@ const ResonantChatPage: React.FC = () => {
                   // Save chatId from createChat response
                   if (response?.chatId) {
                     setCurrentConversationId(response.chatId);
-                    // NOTE: No localStorage - conversations are loaded only from backend
+                    // Use localStorage for consistency with other chatId storage
+                    localStorage.setItem(CHAT_STORAGE_KEY, response.chatId);
                   }
                 })
                 .catch((error: unknown) => {
@@ -2277,35 +2264,18 @@ const ResonantChatPage: React.FC = () => {
   };
 
   // Handle clear chat - frontend only (preserves hash sphere integrity)
-  const handleClearChat = useCallback(async () => {
+  const handleClearChat = useCallback(() => {
     if (messages.length === 0) return;
-    if (window.confirm('Archive this conversation? You can view archived conversations later.')) {
-      try {
-        // Archive conversation from backend if it exists
-        if (currentConversationId) {
-          await archiveConversation(currentConversationId);
-          // NOTE: No localStorage to clear - conversations are loaded only from backend
-        }
-        
-        // Clear local state
-        setMessages([]);
-        setInput('');
-        setHasStartedTyping(false);
-        setAttachedFiles([]);
-        setShowFiles(false);
-        setCurrentConversationId(null);
-      } catch (error) {
-        console.error('Failed to archive conversation:', error);
-        // Still clear local state even if backend delete fails
-        setMessages([]);
-        setInput('');
-        setHasStartedTyping(false);
-        setAttachedFiles([]);
-        setShowFiles(false);
-        setCurrentConversationId(null);
-      }
+    if (window.confirm('Clear all messages?')) {
+      setMessages([]);
+      setInput('');
+      setHasStartedTyping(false);
+      setAttachedFiles([]);
+      setShowFiles(false);
+      setCurrentConversationId(null);
     }
-  }, [messages.length, currentConversationId]);
+  }, [messages.length]);
+
   // Load conversation into chat
   const handleLoadConversation = useCallback(async (conversationId: string) => {
     try {
@@ -2377,7 +2347,8 @@ const ResonantChatPage: React.FC = () => {
       setCurrentConversationId(conversationId);
       // Mark this conversation as loaded to prevent unnecessary reloads
       setLoadedConversationId(conversationId);
-      // NOTE: No localStorage - conversations are loaded only from backend
+      // Save to localStorage for persistence
+      localStorage.setItem(CHAT_STORAGE_KEY, conversationId);
       success('Conversation loaded');
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to load conversation';
@@ -2396,7 +2367,8 @@ const ResonantChatPage: React.FC = () => {
     setCurrentConversationId(null);
     // Clear loaded conversation tracking to allow fresh load
     setLoadedConversationId(null);
-    // NOTE: No localStorage to clear - conversations are loaded only from backend
+    // Clear saved conversation ID from localStorage when starting new conversation
+    localStorage.removeItem('resonant-chat-current-conversation');
     success('New chat started');
   }, [success]);
 
@@ -2420,10 +2392,10 @@ const ResonantChatPage: React.FC = () => {
 
       if (isLoggedIn) {
         try {
-          await archiveConversation(conversationId);
+          await deleteConversation(conversationId);
         } catch (error: unknown) {
           // If API fails, still remove from UI (graceful degradation)
-          logger.error('Failed to archive conversation from backend', error);
+          logger.error('Failed to delete conversation from backend', error);
         }
       } else {
         // Delete from sessionStorage for guests
@@ -2442,7 +2414,7 @@ const ResonantChatPage: React.FC = () => {
 
       success('Conversation deleted');
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to archive conversation';
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete conversation';
       showError(errorMessage);
     } finally {
       setIsDeletingConversation(null);
@@ -3256,13 +3228,12 @@ const ResonantChatPage: React.FC = () => {
                               alignItems: 'center',
                               gap: '3px',
                               fontSize: '11px',
-                              color: message.anchors && message.anchors.length > 0 ? 'rgba(34, 197, 94, 0.5)' : 'rgba(102, 102, 102, 0.5)',
+                              color: message.anchors && message.anchors.length > 0 ? '#22c55e' : '#666',
                               borderRadius: '4px',
                               transition: 'all 0.2s',
-                              opacity: 0.5,
                             }}
-                            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(34, 197, 94, 0.1)'; e.currentTarget.style.opacity = '1'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background = 'none'; e.currentTarget.style.opacity = '0.5'; }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(34, 197, 94, 0.1)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = 'none'; }}
                           >
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.54" />
@@ -3307,13 +3278,12 @@ const ResonantChatPage: React.FC = () => {
                               alignItems: 'center',
                               gap: '3px',
                               fontSize: '11px',
-                              color: message.resonanceScore ? (message.resonanceScore > 0.7 ? 'rgba(34, 197, 94, 0.5)' : message.resonanceScore > 0.5 ? 'rgba(234, 179, 8, 0.5)' : 'rgba(239, 68, 68, 0.5)') : 'rgba(102, 102, 102, 0.5)',
+                              color: message.resonanceScore ? (message.resonanceScore > 0.7 ? '#22c55e' : message.resonanceScore > 0.5 ? '#eab308' : '#ef4444') : '#666',
                               borderRadius: '4px',
                               transition: 'all 0.2s',
-                              opacity: 0.5,
                             }}
-                            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(14, 165, 233, 0.1)'; e.currentTarget.style.opacity = '1'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background = 'none'; e.currentTarget.style.opacity = '0.5'; }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(14, 165, 233, 0.1)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = 'none'; }}
                           >
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M3 3v18h18" />
@@ -3328,12 +3298,12 @@ const ResonantChatPage: React.FC = () => {
                           <span className={styles.validityScore}>Validity: {(message.validity * 100).toFixed(1)}%</span>
                         )}
                         {message.hash && message.role === 'assistant' && (
-                          <span className={styles.timestamp} style={{ marginLeft: '8px', fontSize: '11px', opacity: 0.5 }}>
+                          <span className={styles.timestamp} style={{ marginLeft: '8px', fontSize: '11px', opacity: 0.6 }}>
                             ID: {message.hash.substring(0, 8)}...
                           </span>
                         )}
                         {showTimestamps && message.timestamp && (
-                          <span className={styles.timestamp} style={{ opacity: 0.5 }}>
+                          <span className={styles.timestamp}>
                             {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         )}
