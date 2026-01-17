@@ -108,11 +108,21 @@ fastapiClient.interceptors.response.use(
         
         // Include actual error detail from backend if available
         const backendDetail = error?.response?.data?.detail;
-        const errorMessage = backendDetail || errorMessages[error.response.status] || 'Request failed';
+        // Handle both string and object error details
+        let errorMessage: string;
+        if (typeof backendDetail === 'string') {
+          errorMessage = backendDetail;
+        } else if (backendDetail?.message) {
+          errorMessage = backendDetail.message;
+        } else {
+          errorMessage = errorMessages[error.response.status] || 'Request failed';
+        }
         return Promise.reject({
           error: errorMessage,
           message: errorMessage,
-          status: error.response.status
+          status: error.response.status,
+          // Include full detail for components that need it (e.g., upgrade prompts)
+          detail: backendDetail
         });
       }
     }

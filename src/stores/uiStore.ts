@@ -34,7 +34,7 @@ interface UIState {
 const initialState: Pick<UIState, 'activeSection' | 'selectedAgentId' | 'sidebarCollapsed' | 'commandPaletteOpen' | 'theme' | 'searchQuery' | 'filters' | 'sortOrder'> = {
   activeSection: 'agents',
   selectedAgentId: null,
-  sidebarCollapsed: false,
+  sidebarCollapsed: true,
   commandPaletteOpen: false,
   theme: 'dark',
   searchQuery: '',

@@ -13,33 +13,42 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 16px;
+  padding: 12px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .panelHeader h2 {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
+  color: #fff;
 }
 
 .agentSelector select {
-  padding: 8px 12px;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 6px;
   color: #fff;
-  font-size: 13px;
-  min-width: 180px;
+  font-size: 12px;
+  min-width: 200px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.agentSelector select:hover {
+  border-color: rgba(168, 85, 247, 0.4);
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .panelContent {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 16px;
 }
 
 /* Stats Bar */
@@ -123,26 +132,30 @@
 /* Capabilities Grid */
 .capabilitiesGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 .capabilityCard {
   position: relative;
-  padding: 14px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
   transition: all 0.2s;
+  cursor: pointer;
 }
 
 .capabilityCard:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
 }
 
 .capabilityCard.enabled {
-  border-color: rgba(34, 197, 94, 0.3);
+  border-color: rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.03);
 }
 
 .capabilityCard.selected {
@@ -261,16 +274,21 @@
 }
 
 .capabilityCard h4 {
-  margin: 0 0 8px;
-  font-size: 14px;
-  font-weight: 500;
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
 }
 
 .capabilityCard p {
-  margin: 0 0 12px;
-  font-size: 12px;
+  margin: 0 0 8px;
+  font-size: 11px;
   color: #888;
-  line-height: 1.4;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .permissions {
@@ -296,22 +314,22 @@
 
 /* Usage Stats */
 .usageStats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  padding: 10px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 6px;
-  margin-bottom: 10px;
+  display: flex;
+  gap: 12px;
+  padding: 8px 0;
+  margin-bottom: 8px;
 }
 
 .usageStat {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
 }
 
 .usageValue {
   display: block;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   color: #fff;
 }
@@ -321,9 +339,10 @@
 .usageValue.bad { color: #ef4444; }
 
 .usageLabel {
-  font-size: 9px;
+  font-size: 8px;
   color: #666;
   text-transform: uppercase;
+  margin-top: 2px;
 }
 
 /* Config Info */
@@ -352,21 +371,22 @@
 /* Card Actions */
 .cardActions {
   display: flex;
-  gap: 6px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 4px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .actionBtn {
   flex: 1;
-  padding: 6px 8px;
+  padding: 5px 6px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 4px;
   color: #888;
-  font-size: 10px;
+  font-size: 9px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
+  white-space: nowrap;
 }
 
 .actionBtn:hover {
@@ -418,35 +438,38 @@
 
 /* Analytics Section */
 .analyticsSection {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .analyticsGrid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .analyticCard {
-  padding: 14px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 8px;
+  flex: 1;
+  min-width: 100px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
   text-align: center;
 }
 
 .analyticValue {
   display: block;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
   color: #a855f7;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .analyticLabel {
-  font-size: 10px;
+  font-size: 9px;
   color: #888;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Bulk Toolbar */
@@ -564,28 +587,38 @@
 
 /* Add Section */
 .addSection {
-  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+  margin-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .addBtn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 12px 24px;
+  padding: 10px 20px;
   background: linear-gradient(135deg, #a855f7, #8b5cf6);
   border: none;
   border-radius: 8px;
   color: #fff;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
 }
 
 .addBtn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
+}
+
+.addBtn svg {
+  width: 16px;
+  height: 16px;
 }
 
 /* Modal */

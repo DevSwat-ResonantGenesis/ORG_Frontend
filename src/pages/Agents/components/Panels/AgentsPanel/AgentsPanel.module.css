@@ -114,12 +114,13 @@
   display: flex;
   flex-direction: column;
   padding: 0;
+  margin-bottom: 4px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .agentCard:hover {
@@ -225,11 +226,14 @@
   display: flex;
   justify-content: center;
   gap: 4px;
-  padding: 6px 8px;
+  padding: 8px;
   background: rgba(0, 0, 0, 0.2);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0 0 12px 12px;
   flex-wrap: nowrap;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
+  z-index: 1;
 }
 
 .actionBtn {
@@ -937,4 +941,104 @@
   .agentIdValue {
     width: 100%;
   }
+}
+
+/* ============== STATUS INDICATOR ============== */
+.statusIndicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.statusIndicator .statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #666;
+  flex-shrink: 0;
+}
+
+.statusIndicator[data-status="starting"] .statusDot,
+.statusIndicator[data-status="running"] .statusDot {
+  background: #0ea5e9;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.statusIndicator[data-status="completed"] .statusDot {
+  background: #22c55e;
+}
+
+.statusIndicator[data-status="failed"] .statusDot {
+  background: #ef4444;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.9); }
+}
+
+.statusText {
+  flex: 1;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.statusIndicator[data-status="completed"] .statusText {
+  color: #22c55e;
+}
+
+.statusIndicator[data-status="failed"] .statusText {
+  color: #ef4444;
+}
+
+.statusLoader {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(14, 165, 233, 0.2);
+  border-top-color: #0ea5e9;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============== RESULT AREA ============== */
+.resultArea {
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.resultHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(34, 197, 94, 0.1);
+  border-bottom: 1px solid rgba(34, 197, 94, 0.15);
+  font-size: 11px;
+  font-weight: 600;
+  color: #22c55e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.resultHeader svg {
+  width: 12px;
+  height: 12px;
+}
+
+.resultContent {
+  padding: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #ddd;
+  white-space: pre-wrap;
 }

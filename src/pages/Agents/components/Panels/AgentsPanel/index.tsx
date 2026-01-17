@@ -71,38 +71,64 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     setError(null);
   }, []);
 
+  // Session state for run modal
+  const [sessionStatus, setSessionStatus] = useState<'idle' | 'starting' | 'running' | 'completed' | 'failed'>('idle');
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup polling on unmount
+  useEffect(() => {
+    return () => {
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    };
+  }, []);
+
   // Handle Run agent
   const handleRunAgent = useCallback(async () => {
     if (!modalAgent || !goalInput.trim()) return;
     
     setIsRunning(true);
+    setSessionStatus('starting');
     setError(null);
     
     try {
       const session = await startAgentSession(modalAgent.id, goalInput.trim());
+      setSessionId(session.id);
+      setSessionStatus('running');
       updateAgent(modalAgent.id, { status: 'active' as const });
       
-      // Add initial message
-      setMessages(prev => [...prev, {
-        id: `msg-${Date.now()}`,
-        role: 'user',
-        content: goalInput.trim(),
-        timestamp: new Date(),
-      }]);
-      
-      // Simulate agent response (in real app, this would come from WebSocket/polling)
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          id: `msg-${Date.now()}`,
-          role: 'agent',
-          content: `Started working on: "${goalInput.trim()}"\n\nSession ID: ${session.id}\n\nI'm analyzing the task and will provide updates as I progress...`,
-          timestamp: new Date(),
-        }]);
-      }, 1000);
+      // Poll for session status
+      pollIntervalRef.current = setInterval(async () => {
+        try {
+          const res = await fetch(`/api/v1/agents/${modalAgent.id}/sessions/${session.id}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.status === 'completed') {
+              setSessionStatus('completed');
+              setMessages([{
+                id: `msg-${Date.now()}`,
+                role: 'agent',
+                content: data.final_output || 'Task completed successfully.',
+                timestamp: new Date(),
+              }]);
+              updateAgent(modalAgent.id, { status: 'idle' as const });
+              if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+            } else if (data.status === 'failed') {
+              setSessionStatus('failed');
+              setError(data.error_message || 'Agent execution failed');
+              updateAgent(modalAgent.id, { status: 'idle' as const });
+              if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+            }
+          }
+        } catch (e) {
+          // Ignore polling errors
+        }
+      }, 2000);
       
       setGoalInput('');
     } catch (err: any) {
       setError(err.message || 'Failed to start agent');
+      setSessionStatus('failed');
       console.error('Failed to start agent:', err);
     } finally {
       setIsRunning(false);
@@ -283,41 +309,77 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
             <div className={styles.modalBody}>
               {error && <div className={styles.errorMsg}>{error}</div>}
               
-              <div className={styles.inputGroup}>
-                <label>What should the agent do?</label>
-                <textarea
-                  value={goalInput}
-                  onChange={(e) => setGoalInput(e.target.value)}
-                  placeholder="Enter a goal or task for the agent..."
-                  rows={3}
-                  autoFocus
-                />
-              </div>
+              {/* Status Indicator - Compact */}
+              {sessionStatus !== 'idle' && (
+                <div className={styles.statusIndicator} data-status={sessionStatus}>
+                  <div className={styles.statusDot} />
+                  <span className={styles.statusText}>
+                    {sessionStatus === 'starting' && 'Starting agent...'}
+                    {sessionStatus === 'running' && 'Processing task...'}
+                    {sessionStatus === 'completed' && 'Completed'}
+                    {sessionStatus === 'failed' && 'Failed'}
+                  </span>
+                  {(sessionStatus === 'starting' || sessionStatus === 'running') && (
+                    <div className={styles.statusLoader} />
+                  )}
+                </div>
+              )}
               
-              {/* Messages area */}
-              {messages.length > 0 && (
-                <div className={styles.messagesArea}>
-                  {messages.map((msg) => (
-                    <div key={msg.id} className={`${styles.message} ${styles[msg.role]}`}>
-                      <div className={styles.messageContent}>{msg.content}</div>
-                      <div className={styles.messageTime}>
-                        {msg.timestamp.toLocaleTimeString()}
-                      </div>
-                    </div>
-                  ))}
-                  <div ref={messagesEndRef} />
+              {/* Show input only when idle or failed */}
+              {(sessionStatus === 'idle' || sessionStatus === 'failed') && (
+                <div className={styles.inputGroup}>
+                  <label>What should the agent do?</label>
+                  <textarea
+                    value={goalInput}
+                    onChange={(e) => setGoalInput(e.target.value)}
+                    placeholder="Enter a goal or task for the agent..."
+                    rows={3}
+                    autoFocus
+                  />
+                </div>
+              )}
+              
+              {/* Show result when completed */}
+              {sessionStatus === 'completed' && messages.length > 0 && (
+                <div className={styles.resultArea}>
+                  <div className={styles.resultHeader}>
+                    <Icons.CheckCircle /> Result
+                  </div>
+                  <div className={styles.resultContent}>
+                    {messages[messages.length - 1]?.content}
+                  </div>
                 </div>
               )}
             </div>
             <div className={styles.modalFooter}>
-              <button className={styles.cancelBtn} onClick={closeModal}>Cancel</button>
-              <button 
-                className={styles.primaryBtn} 
-                onClick={handleRunAgent}
-                disabled={!goalInput.trim() || isRunning}
-              >
-                {isRunning ? 'Starting...' : 'Run Agent'}
+              <button className={styles.cancelBtn} onClick={() => {
+                if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+                setSessionStatus('idle');
+                setMessages([]);
+                closeModal();
+              }}>
+                {sessionStatus === 'completed' ? 'Close' : 'Cancel'}
               </button>
+              {(sessionStatus === 'idle' || sessionStatus === 'failed') && (
+                <button 
+                  className={styles.primaryBtn} 
+                  onClick={handleRunAgent}
+                  disabled={!goalInput.trim() || isRunning}
+                >
+                  {isRunning ? 'Starting...' : 'Run Agent'}
+                </button>
+              )}
+              {sessionStatus === 'completed' && (
+                <button 
+                  className={styles.primaryBtn} 
+                  onClick={() => {
+                    setSessionStatus('idle');
+                    setMessages([]);
+                  }}
+                >
+                  Run Another Task
+                </button>
+              )}
             </div>
           </div>
         </div>
