@@ -221,7 +221,7 @@ const OwnerDashboardComplete: React.FC = () => {
       
       setPricingLoading(true);
       try {
-        const res = await fetch(`${API_BASE}/owner/auth/pricing`, {
+        const res = await fetch(`${API_BASE}/billing/pricing`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.ok) {
@@ -423,7 +423,7 @@ const OwnerDashboardComplete: React.FC = () => {
       const fetchPricing = async () => {
         const token = localStorage.getItem('owner_token') || localStorage.getItem('token');
         const endpoints = [
-          `${API_BASE}/owner/auth/pricing`,
+          `${API_BASE}/billing/pricing`,
         ];
         
         for (const endpoint of endpoints) {
@@ -2820,7 +2820,7 @@ const OwnerDashboardComplete: React.FC = () => {
             }
             
             try {
-              const res = await fetch(`${API_BASE}/owner/auth/pricing`, {
+              const res = await fetch(`${API_BASE}/billing/pricing`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(safePricing)
