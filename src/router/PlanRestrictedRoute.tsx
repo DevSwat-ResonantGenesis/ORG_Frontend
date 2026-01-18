@@ -9,15 +9,17 @@ import { isAuthenticated, getSessionData } from '../utils/auth-cookies';
 
 interface PlanRestrictedRouteProps {
   children: React.ReactNode;
-  requiredPlan: 'developer' | 'plus' | 'enterprise';
+  requiredPlan: 'developer' | 'plus' | 'enterprise' | 'free' | 'pro';
   redirectTo?: string;
 }
 
-type PlanLevel = 'guest' | 'developer' | 'plus' | 'enterprise';
+type PlanLevel = 'guest' | 'developer' | 'plus' | 'enterprise' | 'free' | 'pro';
 
 const PLAN_HIERARCHY: Record<PlanLevel, number> = {
   guest: 0,
+  free: 1,
   developer: 1,
+  pro: 2,
   plus: 2,
   enterprise: 3,
 };
