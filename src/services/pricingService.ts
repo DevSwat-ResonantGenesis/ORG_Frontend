@@ -128,7 +128,7 @@ export const pricingService = {
     try {
       const token = localStorage.getItem('owner_token') || localStorage.getItem('token');
       const endpoints = [
-        `${API_BASE}/billing/pricing`,
+        `${API_BASE}/owner/auth/pricing`,
       ];
 
       for (const endpoint of endpoints) {
@@ -354,9 +354,9 @@ export const pricingService = {
       }
     };
 
-      const endpoints = [
-        `${API_BASE}/billing/pricing`,
-      ];
+    const endpoints = [
+      `${API_BASE}/owner/auth/pricing`,
+    ];
 
     for (const endpoint of endpoints) {
       try {
