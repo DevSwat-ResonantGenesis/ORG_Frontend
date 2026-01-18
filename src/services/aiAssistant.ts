@@ -324,27 +324,26 @@ Consider the context of the current file and project when giving suggestions.`,
       let tokens = 0;
       const requestId = this.generateId();
 
-      const ws = chatWebSocket as any;
       const handleAbort = () => {
-        ws.send('chat:cancel', { requestId });
+        chatWebSocket.send('chat:cancel', { requestId });
         reject(new DOMException('Aborted', 'AbortError'));
       };
 
       signal.addEventListener('abort', handleAbort);
 
-      const unsubToken = ws.on(`chat:${requestId}:token`, (data: any) => {
+      const unsubToken = chatWebSocket.on(`chat:${requestId}:token`, (data) => {
         const token = (data as { token: string }).token;
         fullContent += token;
         tokens++;
         callbacks.onToken?.(token);
       });
 
-      const unsubComplete = ws.on(`chat:${requestId}:complete`, () => {
+      const unsubComplete = chatWebSocket.on(`chat:${requestId}:complete`, () => {
         cleanup();
         resolve({ content: fullContent, tokens, latency: Date.now() - startTime });
       });
 
-      const unsubError = ws.on(`chat:${requestId}:error`, (data: any) => {
+      const unsubError = chatWebSocket.on(`chat:${requestId}:error`, (data) => {
         cleanup();
         reject(new Error((data as { message: string }).message));
       });
@@ -356,7 +355,7 @@ Consider the context of the current file and project when giving suggestions.`,
         unsubError();
       };
 
-      ws.send('chat:stream', {
+      chatWebSocket.send('chat:stream', {
         requestId,
         messages,
         ...config,
