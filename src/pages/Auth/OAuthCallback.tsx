@@ -24,7 +24,24 @@ const OAuthCallbackPage: React.FC = () => {
         const code = searchParams.get('code');
         const state = searchParams.get('state');
         const errorParam = searchParams.get('error');
-        const provider = searchParams.get('provider') || 'oauth';
+        // Derive provider: prefer query param, otherwise find matching state in stored providers
+        let provider = searchParams.get('provider') || '';
+        if (!provider && state) {
+          // Look for a stored state that matches across all providers
+          for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i);
+            if (key && key.startsWith('sso_state_')) {
+              const stored = sessionStorage.getItem(key);
+              if (stored === state) {
+                provider = key.replace('sso_state_', '');
+                break;
+              }
+            }
+          }
+        }
+        if (!provider) {
+          provider = 'oauth';
+        }
 
         if (errorParam) {
           throw new Error(`OAuth error: ${errorParam}`);
