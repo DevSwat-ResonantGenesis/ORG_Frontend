@@ -60,7 +60,7 @@ const UnifiedUserDashboard: React.FC = () => {
   const [conversations, setConversations] = useState<any[]>([]);
   const [stats, setStats] = useState<DashboardStats>({
     credits: 0,
-    creditsLimit: 10000, // Developer tier default
+    creditsLimit: 0, // Will be fetched from API
     messages: 0,
     conversations: 0,
     conversationsLimit: -1,

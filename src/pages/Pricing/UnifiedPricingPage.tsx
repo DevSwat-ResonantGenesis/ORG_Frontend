@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Check, Brain, Atom } from 'lucide-react';
 
-const UnifiedPricingPage: React.FC = () => {
-  const navigate = useNavigate();
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
 
   // Platform Plans - from pricing.ts
