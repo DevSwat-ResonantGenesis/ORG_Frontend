@@ -160,15 +160,15 @@ export const PLANS: PlanOption[] = [
     bestFor: 'Serious builders and power users',
     limits: {
       tokens: 75000,         // 75,000 credits/month (rollover up to 37.5K, top-ups $8/10K)
-      agents: -1,            // Unlimited agents (billed by credits)
+      agents: -1,            // Unlimited agents (credits-only billing)
       agentTeams: -1,        // Unlimited agent teams (agents working together)
       userTeams: 0,          // No user teams (single user only)
       users: 1,              // Single user only
-      memoryAnchors: 100,
+      memoryAnchors: -1,     // Unlimited (credits-only)
       providers: ['openai', 'gemini', 'claude', 'mistral', 'groq'],
-      agentExecutions: 5000,
-      workflowRuns: 500,
-      publishedAgents: 25,
+      agentExecutions: -1,   // Unlimited (credits-only)
+      workflowRuns: -1,      // Unlimited (credits-only)
+      publishedAgents: -1,   // Unlimited (credits-only)
       storage: 5000,         // 5 GB
       apiRateLimit: 100,
       executionTimeout: 120,

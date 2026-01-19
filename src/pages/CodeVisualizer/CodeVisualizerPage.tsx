@@ -6,6 +6,13 @@ import styles from './CodeVisualizerPage.module.css';
 
 const DESKTOP_APP_URL = import.meta.env.VITE_DESKTOP_APP_URL || '/download';
 
+// File size limits
+const FILE_SIZE_LIMITS = {
+  BROWSER_MAX_MB: 50,        // Browser upload limit
+  DESKTOP_RECOMMENDED_MB: 100,
+  DESKTOP_MAX_MB: 1000,      // Desktop app limit
+};
+
 const CodeVisualizerPage: React.FC = () => {
   const navigate = useNavigate();
   const apiUrl = useMemo(() => getApiUrl(), []);
@@ -24,6 +31,22 @@ const CodeVisualizerPage: React.FC = () => {
   }, [navigate]);
 
   const handleUpload = async () => {
+    // Validate file size
+    if (file) {
+      const sizeMB = file.size / (1024 * 1024);
+      
+      if (sizeMB > FILE_SIZE_LIMITS.BROWSER_MAX_MB) {
+        alert(
+          `File too large (${sizeMB.toFixed(1)}MB).\n\n` +
+          `Browser limit: ${FILE_SIZE_LIMITS.BROWSER_MAX_MB}MB\n` +
+          `Use desktop app for files >${FILE_SIZE_LIMITS.BROWSER_MAX_MB}MB.`
+        );
+        return;
+      }
+    }
+    
+    setIsUploading(true);
+    
     setError(null);
     setResult(null);
 
