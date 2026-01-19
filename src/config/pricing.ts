@@ -261,7 +261,7 @@ export const PLANS: Plan[] = [
       'Rollover up to 37.5K credits',
       'Top-ups: $8/10K credits',
       'Unlimited agents with autonomous mode',
-      'Agent teams enabled',
+      'Individual account (no teams)',
       'Unlimited conversations (limited by credits only)',
       'Evidence graph access',
       '5 GB storage, 100 RAG documents',

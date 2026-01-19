@@ -33,8 +33,8 @@ const plans = [
     features: [
       '75,000 credits/month',
       'Rollover up to 37.5K credits',
-      'Up to 20 agents with autonomous mode',
-      'Agent teams enabled',
+      'Unlimited agents with autonomous mode',
+      'Individual account (no teams)',
       '100 compute hours/month',
       'Hash Sphere Memory: 1 Universe',
       'Email + Slack support',
@@ -72,9 +72,9 @@ interface FeatureComparisonItem {
 
 const featureComparison: FeatureComparisonItem[] = [
   { name: 'Credits/Month', developer: '10,000', plus: '75,000', enterprise: 'Custom' },
-  { name: 'Agents', developer: '3', plus: '20', enterprise: 'Unlimited' },
+  { name: 'Agents', developer: 'Unlimited', plus: 'Unlimited', enterprise: 'Unlimited' },
   { name: 'Autonomous Mode', developer: false, plus: true, enterprise: true },
-  { name: 'Agent Teams', developer: false, plus: true, enterprise: true },
+  { name: 'Team Features', developer: false, plus: false, enterprise: true },
   { name: 'Compute Hours/Month', developer: '10', plus: '100', enterprise: 'Unlimited' },
   { name: 'Hash Sphere Memory', developer: false, plus: true, enterprise: true },
   { name: 'Code Visualizer', developer: false, plus: true, enterprise: true },

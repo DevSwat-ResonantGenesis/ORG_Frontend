@@ -157,12 +157,12 @@ export const PLANS: PlanOption[] = [
     category: 'platform',
     price: { monthly: 49, yearly: 490 },
     recommended: true,
-    bestFor: 'Serious builders, teams, and power users',
+    bestFor: 'Serious builders and power users',
     limits: {
       tokens: 75000,         // 75,000 credits/month (rollover up to 37.5K, top-ups $8/10K)
-      agents: 20,
-      teams: 5,              // Agent teams enabled
-      users: 5,
+      agents: -1,            // Unlimited agents (billed by credits)
+      teams: 0,              // No team features (single user)
+      users: 1,              // Single user only
       memoryAnchors: 100,
       providers: ['openai', 'gemini', 'claude', 'mistral', 'groq'],
       agentExecutions: 5000,
@@ -176,14 +176,10 @@ export const PLANS: PlanOption[] = [
       '75,000 credits/month',
       'Rollover up to 37.5K credits',
       'Top-ups: $8/10K credits',
-      'Up to 20 agents with autonomous mode',
-      'Agent teams enabled',
-      'Unlimited conversations (limited by credits only)',
+      'Unlimited agents with autonomous mode',
+      'Individual account (no teams)',
+      'Unlimited conversations (credits-only)',
       'Evidence graph access',
-      '5 GB storage, 100 RAG documents',
-      '100 compute hours/month, unlimited preview',
-      'Full AI assistance',
-      'Automated kill switch, 15 invariants, 10 snapshots',
       'Hash Sphere Memory: 1 Universe',
       'Code Visualizer: graphs + dependency analysis',
       'Email + Slack support',
