@@ -1827,14 +1827,11 @@ const OwnerDashboardComplete: React.FC = () => {
       {/* Emergence Hash Sphere - Physics Simulation (Port 8091) */}
       <div className={styles.card} style={{ marginTop: '24px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
         <h3 className={styles.cardTitle} style={{ color: '#60a5fa' }}>⬡ Emergence Hash Sphere Visualizer</h3>
-        <p style={{ color: '#64748b', fontSize: '13px', marginBottom: '16px' }}>Emergence physics simulation - A governed artificial economy where intelligence obeys physics, cost, and time.</p>
         <div style={{ 
           height: '500px', 
-          background: 'linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%)',
-          borderRadius: '12px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          borderRadius: '8px', 
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%)'
           position: 'relative',
           overflow: 'hidden'
         }}>
