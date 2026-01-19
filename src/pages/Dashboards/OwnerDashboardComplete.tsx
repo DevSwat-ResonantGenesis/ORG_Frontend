@@ -1816,7 +1816,7 @@ const OwnerDashboardComplete: React.FC = () => {
           </div>
         </div>
         <div style={{ marginTop: '12px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <a href="http://localhost:8091" target="_blank" rel="noopener noreferrer" className={`${styles.agentBtn} ${styles.agentBtnPrimary}`} style={{ textDecoration: 'none' }}>🖥️ Open Full Screen</a>
+          <a href={`${API_BASE}/api/state-physics`} target="_blank" rel="noopener noreferrer" className={`${styles.agentBtn} ${styles.agentBtnPrimary}`} style={{ textDecoration: 'none' }}>🖥️ Open Full Screen</a>
           <button className={styles.agentBtn} onClick={handleCreateAnchor}>➕ Create Anchor</button>
           <button className={styles.agentBtn} onClick={handleHashText}>🔗 Test Hash</button>
           <button className={styles.agentBtn} onClick={() => window.open(`${API_BASE}/memory/stats`, '_blank')}>📊 Memory Stats</button>

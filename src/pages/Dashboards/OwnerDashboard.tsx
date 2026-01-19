@@ -761,13 +761,13 @@ const OwnerDashboard: React.FC = () => {
       <div className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>🌌 Platform State Physics - Real-Time 3D Visualization</h2>
-          <a href="http://localhost:8091" target="_blank" rel="noopener noreferrer" className={styles.logoutBtn} style={{ textDecoration: 'none' }}>
+          <a href={`${API_BASE}/api/state-physics`} target="_blank" rel="noopener noreferrer" className={styles.logoutBtn} style={{ textDecoration: 'none' }}>
             Open Full Screen →
           </a>
         </div>
         <div className={styles.card} style={{ padding: 0, overflow: 'hidden', height: '600px' }}>
           <iframe 
-            src="http://localhost:8091" 
+            src={`${API_BASE}/api/state-physics`} 
             style={{ 
               width: '100%', 
               height: '100%', 
