@@ -532,7 +532,7 @@ export const reliabilityService = new ReliabilityService();
 // Initialize default health checks
 reliabilityService.registerHealthCheck('gateway', async () => {
   try {
-    const response = await fetch('http://localhost:8000/health');
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/health`);
     return response.ok;
   } catch {
     return false;
@@ -541,7 +541,7 @@ reliabilityService.registerHealthCheck('gateway', async () => {
 
 reliabilityService.registerHealthCheck('ide-service', async () => {
   try {
-    const response = await fetch('http://localhost:8080/health');
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ide/health`);
     return response.ok;
   } catch {
     return false;

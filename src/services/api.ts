@@ -5,8 +5,8 @@ import { apiCache, CACHE_CONFIGS, createCacheKey } from '../utils/apiCache';
 import { requestQueue } from '../utils/performanceOptimizer';
 
 // ============== CONFIGURATION ==============
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-const IDE_SERVICE_URL = import.meta.env.VITE_IDE_URL || 'http://localhost:8080';
+export const API_BASE_URL = import.meta.env.VITE_API_URL;
+export const IDE_SERVICE_URL = import.meta.env.VITE_IDE_URL;
 
 interface RequestConfig {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';

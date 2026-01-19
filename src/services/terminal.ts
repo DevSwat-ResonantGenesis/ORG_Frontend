@@ -231,7 +231,7 @@ class TerminalService {
   // Execute command and return output (non-interactive)
   async exec(command: string, cwd?: string): Promise<{ stdout: string; stderr: string; exitCode: number }> {
     try {
-      const response = await fetch('http://localhost:8080/api/terminal/exec', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/terminal/exec`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ command, cwd }),

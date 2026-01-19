@@ -288,7 +288,7 @@ class GitService {
   }
 
   private async request(endpoint: string, body?: unknown): Promise<any> {
-    const response = await fetch(`http://localhost:8080/api${endpoint}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api${endpoint}`, {
       method: body ? 'POST' : 'GET',
       headers: { 'Content-Type': 'application/json' },
       body: body ? JSON.stringify({ ...(body as object), repoPath: this.repoPath }) : undefined,

@@ -250,7 +250,7 @@ Consider the context of the current file and project when giving suggestions.`,
     }
 
     // Fallback to SSE/fetch streaming
-    const response = await fetch('http://localhost:8000/api/llm/chat/stream', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/llm/chat/stream`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

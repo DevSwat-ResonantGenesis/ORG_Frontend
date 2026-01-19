@@ -110,7 +110,7 @@ class FileSystemService {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/api/files/read?path=${encodeURIComponent(path)}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ide/files/load?path=${encodeURIComponent(path)}`);
       if (!response.ok) throw new Error('Failed to read file');
       
       const data = await response.json();
@@ -133,7 +133,7 @@ class FileSystemService {
     const previousContent = this.files.get(path)?.content;
 
     try {
-      const response = await fetch('http://localhost:8080/api/files/write', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ide/files/write`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ path, content }),
@@ -167,7 +167,7 @@ class FileSystemService {
   // Create file
   async createFile(path: string, content = ''): Promise<FileNode> {
     try {
-      const response = await fetch('http://localhost:8080/api/files/create', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ide/files/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ path, content, type: 'file' }),
@@ -201,7 +201,7 @@ class FileSystemService {
   // Create directory
   async createDirectory(path: string): Promise<FileNode> {
     try {
-      const response = await fetch('http://localhost:8080/api/files/create', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ide/files/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ path, type: 'directory' }),
@@ -234,7 +234,7 @@ class FileSystemService {
     const file = this.files.get(path);
     
     try {
-      const response = await fetch('http://localhost:8080/api/files/delete', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ide/files/delete`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ path }),
@@ -263,7 +263,7 @@ class FileSystemService {
   // Rename file or directory
   async rename(oldPath: string, newPath: string): Promise<void> {
     try {
-      const response = await fetch('http://localhost:8080/api/files/rename', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ide/files/rename`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ oldPath, newPath }),
@@ -290,7 +290,7 @@ class FileSystemService {
   // Move file or directory
   async move(sourcePath: string, destPath: string): Promise<void> {
     try {
-      const response = await fetch('http://localhost:8080/api/files/move', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ide/files/move`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sourcePath, destPath }),

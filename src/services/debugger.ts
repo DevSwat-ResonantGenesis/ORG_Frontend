@@ -79,7 +79,7 @@ export interface DebugEvent {
 
 // ============== DEBUGGER SERVICE ==============
 class DebuggerService {
-  private ws = getWebSocket('ws://localhost:8080/ws/debug');
+  private ws = getWebSocket(`${import.meta.env.VITE_WS_URL}/ws/debug`);
   private sessions = new Map<string, DebugSession>();
   private breakpoints = new Map<string, Breakpoint[]>();
   private watchExpressions: WatchExpression[] = [];
