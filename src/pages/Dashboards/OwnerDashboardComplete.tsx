@@ -1191,7 +1191,7 @@ const OwnerDashboardComplete: React.FC = () => {
                     `Tasks Completed: ${agent.tasksCompleted}\n` +
                     `Last Action: ${agent.lastAction}\n\n` +
                     `To view full logs, check:\n` +
-                    `- Agent Engine: http://localhost:8086/autonomous/agents/${agent.id}/status\n` +
+                    `- Agent Engine: ${import.meta.env.VITE_AGENT_ENGINE_URL || API_BASE + '/api/agents'}/autonomous/agents/${agent.id}/status\n` +
                     `- Docker logs: docker logs agent_engine_service`);
                 }}>View Logs</button>
               </div>
@@ -1233,10 +1233,10 @@ const OwnerDashboardComplete: React.FC = () => {
         <div className={styles.card} style={{ marginTop: '24px' }}>
           <h3 className={styles.cardTitle}>⚡ Agent Engine Controls</h3>
           <div style={{ display: 'flex', gap: '12px', marginTop: '16px', flexWrap: 'wrap' }}>
-            <button className={`${styles.agentBtn} ${styles.agentBtnPrimary}`} onClick={() => window.open('http://localhost:8086/autonomous/daemon/status', '_blank')}>📊 Daemon Status</button>
-            <button className={styles.agentBtn} onClick={() => window.open('http://localhost:8086/autonomous/runtime/stats', '_blank')}>📈 Runtime Stats</button>
-            <button className={styles.agentBtn} onClick={() => window.open('http://localhost:8086/autonomous/capabilities', '_blank')}>🔧 Capabilities</button>
-            <button className={styles.agentBtn} onClick={() => window.open('http://localhost:8086/docs', '_blank')}>📚 API Docs</button>
+            <button className={`${styles.agentBtn} ${styles.agentBtnPrimary}`} onClick={() => window.open(`${import.meta.env.VITE_AGENT_ENGINE_URL || API_BASE + '/api/agents'}/autonomous/daemon/status`, '_blank')}>📊 Daemon Status</button>
+            <button className={styles.agentBtn} onClick={() => window.open(`${import.meta.env.VITE_AGENT_ENGINE_URL || API_BASE + '/api/agents'}/autonomous/runtime/stats`, '_blank')}>📈 Runtime Stats</button>
+            <button className={styles.agentBtn} onClick={() => window.open(`${import.meta.env.VITE_AGENT_ENGINE_URL || API_BASE + '/api/agents'}/autonomous/capabilities`, '_blank')}>🔧 Capabilities</button>
+            <button className={styles.agentBtn} onClick={() => window.open(`${import.meta.env.VITE_AGENT_ENGINE_URL || API_BASE + '/api/agents'}/docs`, '_blank')}>📚 API Docs</button>
           </div>
         </div>
       </div>
@@ -1788,9 +1788,9 @@ const OwnerDashboardComplete: React.FC = () => {
           position: 'relative',
           overflow: 'hidden'
         }}>
-          {/* Try to load the Hash Sphere visualization from port 8091 or show interactive fallback */}
+          {/* Try to load the Hash Sphere visualization from gateway or show interactive fallback */}
           <iframe 
-            src="http://localhost:8091" 
+            src={`${API_BASE}/api/state-physics`}
             style={{ 
               width: '100%', 
               height: '100%', 
@@ -1836,7 +1836,7 @@ const OwnerDashboardComplete: React.FC = () => {
           overflow: 'hidden'
         }}>
           <iframe 
-            src="http://localhost:8091" 
+            src={`${API_BASE}/api/state-physics`}
             style={{ 
               width: '100%', 
               height: '100%', 
@@ -1847,13 +1847,13 @@ const OwnerDashboardComplete: React.FC = () => {
           />
         </div>
         <div style={{ marginTop: '12px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <a href="http://localhost:8091" target="_blank" rel="noopener noreferrer" className={`${styles.agentBtn} ${styles.agentBtnPrimary}`} style={{ textDecoration: 'none' }}>
+          <a href={`${API_BASE}/api/state-physics`} target="_blank" rel="noopener noreferrer" className={`${styles.agentBtn} ${styles.agentBtnPrimary}`} style={{ textDecoration: 'none' }}>
             🖥️ Open Full Screen
           </a>
-          <a href="http://localhost:8091/docs" target="_blank" rel="noopener noreferrer" className={styles.agentBtn} style={{ textDecoration: 'none' }}>
+          <a href={`${API_BASE}/api/state-physics/docs`} target="_blank" rel="noopener noreferrer" className={styles.agentBtn} style={{ textDecoration: 'none' }}>
             📚 API Docs
           </a>
-          <button className={styles.agentBtn} onClick={() => window.open('http://localhost:8091/state', '_blank')}>📊 View State</button>
+          <button className={styles.agentBtn} onClick={() => window.open(`${API_BASE}/api/state-physics/state`, '_blank')}>📊 View State</button>
           <button className={styles.agentBtn} onClick={() => alert('⬡ Emergence Hash Sphere\n\nThis is a constraint-governed state-space universe visualizer.\n\nFeatures:\n- Physics simulation with entropy\n- Agent-based economy\n- Resource caps & safety limits\n- Real-time visualization\n\nPort: 8091')}>ℹ️ About</button>
         </div>
       </div>
@@ -3255,15 +3255,15 @@ const OwnerDashboardComplete: React.FC = () => {
               <span style={{ width: '8px', height: '8px', background: '#22c55e', borderRadius: '50%' }}></span>
               📈 Gateway Metrics (Raw JSON)
             </a>
-            <a href="http://localhost:8093/status" target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <a href={`${import.meta.env.VITE_RARA_URL || API_BASE + '/api/rara'}/status`} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ width: '8px', height: '8px', background: '#22c55e', borderRadius: '50%' }}></span>
               🤖 RARA Status (Raw JSON)
             </a>
-            <a href="http://localhost:8093/agents" target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <a href={`${import.meta.env.VITE_RARA_URL || API_BASE + '/api/rara'}/agents`} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ width: '8px', height: '8px', background: '#22c55e', borderRadius: '50%' }}></span>
               🤖 RARA Agents (Raw JSON)
             </a>
-            <a href="http://localhost:8091" target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <a href={`${API_BASE}/api/state-physics`} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ width: '8px', height: '8px', background: '#22c55e', borderRadius: '50%' }}></span>
               🌐 Hash Sphere Visualizer
             </a>
