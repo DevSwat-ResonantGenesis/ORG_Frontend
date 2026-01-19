@@ -5,7 +5,7 @@
 
 import axios from 'axios';
 
-const BUILD_SERVICE_URL = 'http://localhost:8003';
+const BUILD_SERVICE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const buildClient = axios.create({
   baseURL: BUILD_SERVICE_URL,

@@ -53,7 +53,7 @@ const StopIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="cur
 
 // API Configuration
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-const RARA_BASE = 'http://localhost:8093';
+const RARA_BASE = API_BASE; // All requests go through gateway
 
 // ============== TYPES ==============
 interface RARAStatus {
