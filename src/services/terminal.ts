@@ -36,7 +36,7 @@ type StatusHandler = (session: TerminalSession) => void;
 
 // ============== TERMINAL SERVICE ==============
 class TerminalService {
-  private ws = getWebSocket('ws://localhost:8080/ws/terminal');
+  private ws = getWebSocket(`${import.meta.env.VITE_WS_URL}/ws/terminal`);
   private sessions = new Map<string, TerminalSession>();
   private outputHandlers = new Map<string, Set<OutputHandler>>();
   private statusHandlers = new Set<StatusHandler>();
