@@ -5,6 +5,7 @@ import {
   Atom, Shield, TrendingUp, Zap, Eye, Lock, Check, 
   Copy, ExternalLink, Code, Server, Key, ArrowRight 
 } from 'lucide-react';
+import { ENV } from '../../config/env';
 
 const StatePhysicsAPI: React.FC = () => {
   const navigate = useNavigate();
@@ -192,7 +193,7 @@ const StatePhysicsAPI: React.FC = () => {
           {/* Quick Demo Link */}
           <div className="flex justify-center gap-4 mb-16">
             <button
-              onClick={() => window.open(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/state-physics`, '_blank')}
+              onClick={() => window.open(`${ENV.apiUrl}/api/state-physics`, '_blank')}
               className="px-6 py-3 rounded-lg bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-all flex items-center gap-2"
             >
               <Eye className="w-5 h-5" />

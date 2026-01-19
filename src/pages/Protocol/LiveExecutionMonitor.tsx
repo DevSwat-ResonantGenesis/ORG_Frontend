@@ -160,7 +160,8 @@ const LiveExecutionMonitor: React.FC = () => {
   // Fetch real execution data from backend
   const fetchRealExecutions = useCallback(async () => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      import { ENV } from '../../config/env';
+      const apiUrl = ENV.apiUrl;
       const response = await fetch(`${apiUrl}/executions/history?limit=50`);
       if (!response.ok) return;
       const data = await response.json();

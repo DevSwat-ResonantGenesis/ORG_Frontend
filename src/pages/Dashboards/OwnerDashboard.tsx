@@ -145,8 +145,10 @@ interface PlatformStats {
   conversionRate: number;
 }
 
+import { ENV } from '../../config/env';
+
 // API Configuration
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE = ENV.apiUrl;
 
 // Default empty data
 const defaultStats: PlatformStats = {
@@ -562,7 +564,7 @@ const OwnerDashboard: React.FC = () => {
       <div className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}><ServerIcon /> Service Health</h2>
-          <a href={import.meta.env.VITE_GRAFANA_URL || 'http://localhost:3000'} target="_blank" rel="noopener noreferrer" className={styles.logoutBtn} style={{ textDecoration: 'none' }}>
+          <a href={ENV.grafanaUrl} target="_blank" rel="noopener noreferrer" className={styles.logoutBtn} style={{ textDecoration: 'none' }}>
             Open Grafana Dashboard →
           </a>
         </div>
@@ -723,13 +725,13 @@ const OwnerDashboard: React.FC = () => {
         <div className={styles.card}>
           <h3 className={styles.cardTitle}><ServerIcon /> Monitoring Tools</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
-            <a href={import.meta.env.VITE_GRAFANA_URL || 'http://localhost:3000'} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>
+            <a href={ENV.grafanaUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>
               📊 Grafana Dashboard
             </a>
-            <a href={import.meta.env.VITE_PROMETHEUS_URL || 'http://localhost:9090'} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>
+            <a href={ENV.prometheusUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>
               📈 Prometheus Metrics
             </a>
-            <a href={import.meta.env.VITE_ALERTMANAGER_URL || 'http://localhost:9093'} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>
+            <a href={ENV.alertmanagerUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>
               🔔 Alertmanager
             </a>
             <a href={`${API_BASE}/api/auth/metrics`} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>

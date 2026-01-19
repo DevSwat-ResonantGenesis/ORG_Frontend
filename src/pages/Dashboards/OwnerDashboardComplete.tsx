@@ -51,8 +51,10 @@ const PlayIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="cur
 const PauseIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>;
 const StopIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg>;
 
+import { ENV } from '../../config/env';
+
 // API Configuration
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE = ENV.apiUrl;
 const RARA_BASE = API_BASE; // All requests go through gateway
 
 // ============== TYPES ==============

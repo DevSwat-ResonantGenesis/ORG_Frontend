@@ -38,7 +38,9 @@ interface PublishResult {
   error?: string;
 }
 
-const NODE_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+import { ENV } from '../../config/env';
+
+const NODE_API_URL = ENV.apiUrl;
 
 const styles: Record<string, React.CSSProperties> = {
   container: {

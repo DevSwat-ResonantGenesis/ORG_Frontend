@@ -242,8 +242,10 @@ const styles: Record<string, React.CSSProperties> = {
   },
 };
 
+import { ENV } from '../../config/env';
+
 // API base URL for node service
-const NODE_API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const NODE_API_BASE = ENV.apiUrl;
 
 // Fetch real execution history from backend
 async function fetchExecutionHistory(): Promise<{ executions: ExecutionRecord[]; stats: any }> {

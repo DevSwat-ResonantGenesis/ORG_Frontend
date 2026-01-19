@@ -86,7 +86,9 @@ const UserPlusIcon = () => (
   </svg>
 );
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+import { ENV } from '../../config/env';
+
+const API_BASE = ENV.apiUrl;
 
 interface Employee {
   id: string;

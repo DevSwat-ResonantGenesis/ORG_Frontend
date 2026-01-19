@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { isAuthenticated } from '../../utils/auth-cookies';
 import styles from './HashSpherePage.module.css';
 
-const HASH_SPHERE_URL = import.meta.env.VITE_HASH_SPHERE_URL || 'http://localhost:8091';
+import { ENV } from '../../config/env';
+
+const HASH_SPHERE_URL = ENV.hashSphereUrl;
 
 const HashSpherePage: React.FC = () => {
   const navigate = useNavigate();

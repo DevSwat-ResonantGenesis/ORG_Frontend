@@ -41,8 +41,10 @@ const EyeOffIcon = () => (
   </svg>
 );
 
+import { ENV } from '../../config/env';
+
 // API Configuration
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE = ENV.apiUrl;
 
 const styles: Record<string, React.CSSProperties> = {
   container: {

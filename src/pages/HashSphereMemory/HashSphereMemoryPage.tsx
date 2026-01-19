@@ -9,7 +9,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import styles from './HashSphereMemoryPage.module.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+import { ENV } from '../../config/env';
+
+const API_URL = ENV.apiUrl;
 
 // Memory type color mapping
 const TYPE_COLORS: Record<string, string> = {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Atom, Shield, TrendingUp, Zap, Eye, Lock } from 'lucide-react';
+import { ENV } from '../../../config/env';
 
 export const StatePhysicsSection: React.FC = () => {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ export const StatePhysicsSection: React.FC = () => {
           >
             {/* Embedded iframe preview or static image */}
             <iframe
-              src={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/state-physics`}
+              src={`${ENV.apiUrl}/api/state-physics`}
               className="w-full h-full border-0"
               title="State Physics Preview"
               style={{ pointerEvents: 'none' }}
@@ -82,7 +83,7 @@ export const StatePhysicsSection: React.FC = () => {
                 <p className="text-gray-300 mb-4">Experience the full interactive demo</p>
                 <div className="flex gap-4 justify-center">
                   <button
-                    onClick={() => window.open(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/state-physics`, '_blank')}
+                    onClick={() => window.open(`${ENV.apiUrl}/api/state-physics`, '_blank')}
                     className="px-6 py-3 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 text-white font-semibold hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg shadow-purple-500/30"
                   >
                     🎮 Try Demo

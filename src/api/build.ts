@@ -4,8 +4,9 @@
  */
 
 import axios from 'axios';
+import { ENV } from '../config/env';
 
-const BUILD_SERVICE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const BUILD_SERVICE_URL = ENV.apiUrl;
 
 const buildClient = axios.create({
   baseURL: BUILD_SERVICE_URL,

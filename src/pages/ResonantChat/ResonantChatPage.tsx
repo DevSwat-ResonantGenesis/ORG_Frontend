@@ -969,7 +969,8 @@ const ResonantChatPage: React.FC = () => {
       try {
         if (isLoggedIn) {
           // Load from backend API
-          const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+          import { ENV } from '../../config/env';
+          const apiUrl = ENV.apiUrl;
           const response = await fetch(`${apiUrl}/user/preferences`, {
             credentials: 'include',
           });
@@ -1048,7 +1049,8 @@ const ResonantChatPage: React.FC = () => {
     }
     
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      import { ENV } from '../../config/env';
+      const apiUrl = ENV.apiUrl;
       await fetch(`${apiUrl}/user/preferences/${category}`, {
         method: 'PATCH',
         credentials: 'include',

@@ -67,7 +67,9 @@ interface ExecutionResult {
   error?: string;
 }
 
-const NODE_API = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+import { ENV } from '../../config/env';
+
+const NODE_API = ENV.apiUrl;
 
 const styles: Record<string, React.CSSProperties> = {
   container: {

@@ -46,7 +46,8 @@ const LiveWorkflowViewComponent: React.FC<LiveWorkflowViewProps> = ({
 
     try {
       // Connect to the WebSocket endpoint for real-time updates
-      const wsUrl = `ws://localhost:8000/agents/sessions/${sessionId}/stream`;
+      import { ENV } from '../../../../../config/env';
+      const wsUrl = `${ENV.wsUrl}/agents/sessions/${sessionId}/stream`;
       wsRef.current = new WebSocket(wsUrl);
 
       wsRef.current.onopen = () => {

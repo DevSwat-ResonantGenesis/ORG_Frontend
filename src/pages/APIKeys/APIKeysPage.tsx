@@ -50,7 +50,8 @@ const APIKeysPage: React.FC = () => {
       
       try {
         setLoading(true);
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        import { ENV } from '../../config/env';
+        const API_URL = ENV.apiUrl;
         
         const response = await fetch(`${API_URL}/auth/api-keys`, {
           headers: {
@@ -187,7 +188,8 @@ const APIKeysPage: React.FC = () => {
       }
       
       try {
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+        import { ENV } from '../../config/env';
+        const API_URL = ENV.apiUrl;
         
         const response = await fetch(`${API_URL}/auth/api-keys/revoke`, {
           method: 'POST',
