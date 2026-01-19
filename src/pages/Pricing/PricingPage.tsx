@@ -2,119 +2,141 @@
  * Pricing Page - Display subscription plans and pricing
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Check, X, Zap, Star, Building2, ChevronDown } from 'lucide-react';
+import { fetchPlans } from '../../api/pricing';
 import { isAuthenticated } from '@/utils/auth-cookies';
-import { Check, Code, Star, Building2, ChevronDown, X } from 'lucide-react';
 
-const plans = [
-  {
-    name: 'Developer',
-    price: { monthly: 0, yearly: 0 },
-    description: 'For solo builders exploring ResonantGenesis',
-    icon: Code,
-    features: [
-      '10,000 credits/month',
-      'Up to 3 agents (no autonomous mode)',
-      '10 compute hours/month',
-      '100 MB storage',
-      'Manual kill switch, 5 invariants',
-      'Community support',
-    ],
-    cta: 'Get Started Free',
-    popular: false,
-    isCustom: false,
-  },
-  {
-    name: 'Plus',
-    price: { monthly: 49, yearly: 490 },
-    description: 'For serious builders and teams',
-    icon: Star,
-    features: [
-      '75,000 credits/month',
-      'Rollover up to 37.5K credits',
-      'Unlimited agents with autonomous mode',
-      'Individual account (no teams)',
-      '100 compute hours/month',
-      'Hash Sphere Memory: 1 Universe',
-      'Email + Slack support',
-    ],
-    cta: 'Start Plus Plan',
-    popular: true,
-    isCustom: false,
-  },
-  {
-    name: 'Enterprise',
-    price: { monthly: 0, yearly: 0 },
-    description: 'For organizations running AI as critical infrastructure',
-    icon: Building2,
-    features: [
-      'Custom credits (tailored)',
-      'Unlimited agents with full autonomous mode',
-      'Agent team hierarchies',
-      'Unlimited compute hours',
-      'Hash Sphere Memory: Multi Universe',
-      'SLA-backed kill switch',
-      'Dedicated support + SLA',
-    ],
-    cta: 'Contact Sales',
-    popular: false,
-    isCustom: true,
-  },
-];
-
-interface FeatureComparisonItem {
-  name: string;
-  developer: boolean | string;
-  plus: boolean | string;
-  enterprise: boolean | string;
-}
-
-const featureComparison: FeatureComparisonItem[] = [
-  { name: 'Credits/Month', developer: '10,000', plus: '75,000', enterprise: 'Custom' },
-  { name: 'Agents', developer: 'Unlimited', plus: 'Unlimited', enterprise: 'Unlimited' },
-  { name: 'Autonomous Mode', developer: false, plus: true, enterprise: true },
-  { name: 'Team Features', developer: false, plus: false, enterprise: true },
-  { name: 'Compute Hours/Month', developer: '10', plus: '100', enterprise: 'Unlimited' },
-  { name: 'Hash Sphere Memory', developer: false, plus: true, enterprise: true },
-  { name: 'Code Visualizer', developer: false, plus: true, enterprise: true },
-  { name: 'SSO/SAML', developer: false, plus: false, enterprise: true },
-  { name: 'SLA Guarantee', developer: false, plus: false, enterprise: true },
-  { name: 'On-premise Option', developer: false, plus: false, enterprise: true },
-];
-
-const faqs = [
-  {
-    question: 'Can I change plans at any time?',
-    answer: 'Yes! You can upgrade or downgrade your plan at any time. When upgrading, you\'ll be charged the prorated difference. When downgrading, the change takes effect at the end of your billing cycle.',
-  },
-  {
-    question: 'What happens if I exceed my limits?',
-    answer: 'We\'ll notify you when you\'re approaching your limits. You can either upgrade your plan or purchase additional credits. We never cut off access without warning.',
-  },
-  {
-    question: 'Is there a free tier?',
-    answer: 'Yes! The Developer plan is completely free with 10,000 credits per month. No credit card required.',
-  },
-  {
-    question: 'What payment methods do you accept?',
-    answer: 'We accept all major credit cards (Visa, Mastercard, American Express) and can arrange invoicing for Enterprise customers.',
-  },
-  {
-    question: 'Can I get a refund?',
-    answer: 'We offer a 30-day money-back guarantee for all paid plans. If you\'re not satisfied, contact us for a full refund.',
-  },
-  {
-    question: 'Do you offer discounts for startups or non-profits?',
-    answer: 'Yes! We offer special pricing for startups, non-profits, and educational institutions. Contact us to learn more.',
-  },
-];
-
-export default function PricingPage() {
+const PricingPage: React.FC = () => {
+  const navigate = useNavigate();
+  const [plans, setPlans] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [annual, setAnnual] = useState(true);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const navigate = useNavigate();
   const isLoggedIn = isAuthenticated();
+
+  useEffect(() => {
+    async function loadPricing() {
+      try {
+        const data = await fetchPlans();
+        if (data) {
+          const transformedPlans = [
+            {
+              name: data.developer?.name || 'Developer',
+              price: data.developer?.price || { monthly: 0, yearly: 0 },
+              description: 'For solo builders exploring ResonantGenesis',
+              icon: Zap,
+              features: [
+                `${data.developer?.credits?.included?.toLocaleString() || '10,000'} credits/month`,
+                'Up to 3 agents (no autonomous mode)',
+                '10 compute hours/month',
+                '100 MB storage',
+                'Manual kill switch, 5 invariants',
+                'Community support',
+              ],
+              cta: 'Get Started Free',
+              popular: false,
+              isCustom: false,
+            },
+            {
+              name: data.plus?.name || 'Plus',
+              price: data.plus?.price || { monthly: 49, yearly: 490 },
+              description: 'For serious builders and teams',
+              icon: Star,
+              features: [
+                `${data.plus?.credits?.included?.toLocaleString() || '75,000'} credits/month`,
+                `Rollover up to ${((data.plus?.credits?.rollover_limit || 37500) / 1000).toFixed(1)}K credits`,
+                'Unlimited agents with autonomous mode',
+                'Individual account (no teams)',
+                '100 compute hours/month',
+                'Hash Sphere Memory: 1 Universe',
+                'Email + Slack support',
+              ],
+              cta: 'Start Plus Plan',
+              popular: true,
+              isCustom: false,
+            },
+            {
+              name: data.enterprise?.name || 'Enterprise',
+              price: { monthly: 0, yearly: 0 },
+              description: 'For organizations running AI as critical infrastructure',
+              icon: Building2,
+              features: [
+                'Custom credits (tailored)',
+                'Unlimited agents with full autonomous mode',
+                'Agent team hierarchies',
+                'Unlimited compute hours',
+                'Hash Sphere Memory: Multi Universe',
+                'SLA-backed kill switch',
+                'Dedicated support + SLA',
+              ],
+              cta: 'Contact Sales',
+              popular: false,
+              isCustom: true,
+            },
+          ];
+          setPlans(transformedPlans);
+        }
+      } catch (error) {
+        console.error('Failed to load pricing:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadPricing();
+  }, []);
+
+  if (loading) {
+    return <div>Loading pricing...</div>;
+  }
+
+  interface FeatureComparisonItem {
+    name: string;
+    developer: boolean | string;
+    plus: boolean | string;
+    enterprise: boolean | string;
+  }
+
+  const featureComparison: FeatureComparisonItem[] = [
+    { name: 'Credits/Month', developer: '10,000', plus: '75,000', enterprise: 'Custom' },
+    { name: 'Agents', developer: 'Unlimited', plus: 'Unlimited', enterprise: 'Unlimited' },
+    { name: 'Autonomous Mode', developer: false, plus: true, enterprise: true },
+    { name: 'Team Features', developer: false, plus: false, enterprise: true },
+    { name: 'Compute Hours/Month', developer: '10', plus: '100', enterprise: 'Unlimited' },
+    { name: 'Hash Sphere Memory', developer: false, plus: true, enterprise: true },
+    { name: 'Code Visualizer', developer: false, plus: true, enterprise: true },
+    { name: 'SSO/SAML', developer: false, plus: false, enterprise: true },
+    { name: 'SLA Guarantee', developer: false, plus: false, enterprise: true },
+    { name: 'On-premise Option', developer: false, plus: false, enterprise: true },
+  ];
+
+  const faqs = [
+    {
+      question: 'Can I change plans at any time?',
+      answer: 'Yes! You can upgrade or downgrade your plan at any time. When upgrading, you\'ll be charged the prorated difference. When downgrading, the change takes effect at the end of your billing cycle.',
+    },
+    {
+      question: 'What happens if I exceed my limits?',
+      answer: 'We\'ll notify you when you\'re approaching your limits. You can either upgrade your plan or purchase additional credits. We never cut off access without warning.',
+    },
+    {
+      question: 'Is there a free tier?',
+      answer: 'Yes! The Developer plan is completely free with 10,000 credits per month. No credit card required.',
+    },
+    {
+      question: 'What payment methods do you accept?',
+      answer: 'We accept all major credit cards (Visa, Mastercard, American Express) and can arrange invoicing for Enterprise customers.',
+    },
+    {
+      question: 'Can I get a refund?',
+      answer: 'We offer a 30-day money-back guarantee for all paid plans. If you\'re not satisfied, contact us for a full refund.',
+    },
+    {
+      question: 'Do you offer discounts for startups or non-profits?',
+      answer: 'Yes! We offer special pricing for startups, non-profits, and educational institutions. Contact us to learn more.',
+    },
+  ];
 
   const handlePlanSelect = (planName: string) => {
     if (isLoggedIn) {

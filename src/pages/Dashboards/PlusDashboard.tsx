@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getSessionData, isAuthenticated } from '../../utils/auth-cookies';
+import { fetchPlan } from '../../api/pricing';
 import styles from './PlusDashboard.module.css';
 
 // Icons
@@ -83,7 +84,7 @@ const PlusDashboard: React.FC = () => {
   const [stats, setStats] = useState<OrgStats>({
     teamMembers: 0,
     creditsUsed: 0,
-    creditsTotal: 100000,
+    creditsTotal: 75000, // Will be fetched from API
     apiCalls: 0,
     activeAgents: 0,
   });
@@ -99,10 +100,26 @@ const PlusDashboard: React.FC = () => {
       navigate('/dashboard');
       return;
     }
-    loadData();
-  }, []);
+    fetchStats();
+    
+    // Fetch Plus tier pricing
+    async function loadPlusPricing() {
+      try {
+        const planData = await fetchPlan('plus');
+        if (planData?.credits?.included) {
+          setStats(prev => ({
+            ...prev,
+            creditsTotal: planData.credits.included
+          }));
+        }
+      } catch (error) {
+        console.error('Failed to load Plus pricing:', error);
+      }
+    }
+    loadPlusPricing();
+  }, [navigate, session]);
 
-  const loadData = async () => {
+  const fetchStats = async () => {
     try {
       // Fetch org stats
       setIsLoading(false);
