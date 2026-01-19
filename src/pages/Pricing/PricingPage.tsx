@@ -101,8 +101,9 @@ const PricingPage: React.FC = () => {
   const featureComparison: FeatureComparisonItem[] = [
     { name: 'Credits/Month', developer: '10,000', plus: '75,000', enterprise: 'Custom' },
     { name: 'Agents', developer: 'Unlimited', plus: 'Unlimited', enterprise: 'Unlimited' },
+    { name: 'Agent Teams', developer: false, plus: true, enterprise: true },
     { name: 'Autonomous Mode', developer: false, plus: true, enterprise: true },
-    { name: 'Team Features', developer: false, plus: false, enterprise: true },
+    { name: 'User Teams (Multi-User)', developer: false, plus: false, enterprise: true },
     { name: 'Compute Hours/Month', developer: '10', plus: '100', enterprise: 'Unlimited' },
     { name: 'Hash Sphere Memory', developer: false, plus: true, enterprise: true },
     { name: 'Code Visualizer', developer: false, plus: true, enterprise: true },

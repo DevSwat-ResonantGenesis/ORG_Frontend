@@ -161,8 +161,9 @@ export const PLANS: PlanOption[] = [
     limits: {
       tokens: 75000,         // 75,000 credits/month (rollover up to 37.5K, top-ups $8/10K)
       agents: -1,            // Unlimited agents (billed by credits)
-      teams: -1,             // Unlimited teams
-      users: -1,             // Unlimited users
+      agentTeams: -1,        // Unlimited agent teams (agents working together)
+      userTeams: 0,          // No user teams (single user only)
+      users: 1,              // Single user only
       memoryAnchors: 100,
       providers: ['openai', 'gemini', 'claude', 'mistral', 'groq'],
       agentExecutions: 5000,
@@ -177,7 +178,8 @@ export const PLANS: PlanOption[] = [
       'Rollover up to 37.5K credits',
       'Top-ups: $8/10K credits',
       'Unlimited agents (credits-only)',
-      'Unlimited teams and users',
+      'Unlimited agent teams (agents working together)',
+      'Individual account (no user teams)',
       'Unlimited conversations (credits-only)',
       'Evidence graph access',
       'Hash Sphere Memory: 1 Universe',

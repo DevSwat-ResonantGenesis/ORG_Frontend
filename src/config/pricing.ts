@@ -228,7 +228,10 @@ export const PLANS: Plan[] = [
       agents: {
         active: -1,  // Unlimited - credits-only billing
         autonomousMode: true,
-        teams: false,  // No teams for Plus (single user)
+        agentTeams: true,  // Agent teams enabled (agents working together)
+      },
+      userTeams: {
+        enabled: false,  // No user teams (single user only)
       },
       chat: {
         conversations: -1,
@@ -261,7 +264,8 @@ export const PLANS: Plan[] = [
       'Rollover up to 37.5K credits',
       'Top-ups: $8/10K credits',
       'Unlimited agents (credits-only)',
-      'Individual account (no teams)',
+      'Unlimited agent teams (agents working together)',
+      'Individual account (no user teams)',
       'Unlimited conversations (limited by credits only)',
       'Evidence graph access',
       '5 GB storage, 100 RAG documents',

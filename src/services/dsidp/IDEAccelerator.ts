@@ -416,7 +416,7 @@ export class IDEAccelerator {
   private memory: CrossSessionMemory;
   private resonantNodeUrl: string;
 
-  constructor(resonantNodeUrl: string = 'http://localhost:8081') {
+  constructor(resonantNodeUrl: string = import.meta.env.VITE_NODE_API_URL || 'http://localhost:8081') {
     this.cache = new SemanticCache();
     this.executor = new ParallelExecutor(this.cache);
     this.verifier = new GovernanceVerifier();
