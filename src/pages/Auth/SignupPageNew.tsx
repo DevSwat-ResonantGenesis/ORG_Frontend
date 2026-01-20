@@ -283,16 +283,37 @@ export default function SignupPageNew() {
       const response = await fetch('/api/v1/public/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, plan }),
+        credentials: 'include', // Important: include cookies
+        body: JSON.stringify({ 
+          email, 
+          password, 
+          full_name: name,
+          username: email.split('@')[0],
+        }),
       });
       
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.message || 'Signup failed');
+        throw new Error(data.detail || data.message || 'Signup failed');
+      }
+      
+      const data = await response.json();
+      
+      // Save session data from response
+      if (data.user && data.org_id) {
+        import('../../utils/auth-cookies').then(({ saveSessionData }) => {
+          saveSessionData({
+            email: data.user.email,
+            role: data.role || 'owner',
+            org: data.org_id,
+            userId: data.user.id,
+          });
+        });
       }
       
       setSuccess(true);
-      setTimeout(() => navigate('/login'), 2000);
+      // Redirect to dashboard instead of login
+      setTimeout(() => navigate('/dashboard'), 1000);
     } catch (err: any) {
       setError(err.message || 'Signup failed. Please try again.');
     } finally {
