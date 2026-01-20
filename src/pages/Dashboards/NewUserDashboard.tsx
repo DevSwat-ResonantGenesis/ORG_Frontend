@@ -83,7 +83,7 @@ const NewUserDashboard: React.FC = () => {
   return (
     <div className={styles.dashboard}>
       {/* Alerts */}
-      {data.alerts.length > 0 && (
+      {data.alerts && Array.isArray(data.alerts) && data.alerts.length > 0 && (
         <AlertBanner 
           alerts={data.alerts.map(a => ({
             ...a,

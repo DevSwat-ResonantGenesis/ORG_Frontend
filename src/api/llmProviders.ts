@@ -2,8 +2,7 @@
  * LLM Provider Management API
  * For platform owner to manage multi-LLM provider configurations
  */
-
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+import fastapiClient from './fastapiClient';
 
 export interface LLMProvider {
   id: string;
@@ -58,148 +57,71 @@ const getHeaders = () => ({
  * Get all LLM providers
  */
 export async function getLLMProviders(): Promise<LLMProvider[]> {
-  const response = await fetch(`${API_BASE}/owner/auth/llm-providers`, {
-    headers: getHeaders(),
-  });
-  
-  if (!response.ok) {
-    throw new Error(`Failed to fetch LLM providers: ${response.statusText}`);
-  }
-  
-  const data = await response.json();
-  return data.providers || [];
+  const response = await fastapiClient.get('/owner/auth/llm-providers');
+  return response.data?.providers || [];
 }
 
 /**
  * Get a specific LLM provider
  */
 export async function getLLMProvider(providerId: string): Promise<LLMProvider> {
-  const response = await fetch(`${API_BASE}/owner/auth/llm-providers/${providerId}`, {
-    headers: getHeaders(),
-  });
-  
-  if (!response.ok) {
-    throw new Error(`Failed to fetch LLM provider: ${response.statusText}`);
-  }
-  
-  const data = await response.json();
-  return data.provider;
+  const response = await fastapiClient.get(`/owner/auth/llm-providers/${providerId}`);
+  return response.data?.provider || response.data;
 }
 
 /**
  * Create a new LLM provider
  */
 export async function createLLMProvider(provider: Partial<LLMProvider>): Promise<LLMProvider> {
-  const response = await fetch(`${API_BASE}/owner/auth/llm-providers`, {
-    method: 'POST',
-    headers: getHeaders(),
-    body: JSON.stringify(provider),
-  });
-  
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.detail || `Failed to create LLM provider: ${response.statusText}`);
-  }
-  
-  const data = await response.json();
-  return data.provider;
+  const response = await fastapiClient.post('/owner/auth/llm-providers', provider);
+  return response.data?.provider || response.data;
 }
 
 /**
  * Update an existing LLM provider
  */
 export async function updateLLMProvider(providerId: string, provider: Partial<LLMProvider>): Promise<LLMProvider> {
-  const response = await fetch(`${API_BASE}/owner/auth/llm-providers/${providerId}`, {
-    method: 'PUT',
-    headers: getHeaders(),
-    body: JSON.stringify(provider),
-  });
-  
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.detail || `Failed to update LLM provider: ${response.statusText}`);
-  }
-  
-  const data = await response.json();
-  return data.provider;
+  const response = await fastapiClient.put(`/owner/auth/llm-providers/${providerId}`, provider);
+  return response.data?.provider || response.data;
 }
 
 /**
  * Delete an LLM provider
  */
 export async function deleteLLMProvider(providerId: string): Promise<void> {
-  const response = await fetch(`${API_BASE}/owner/auth/llm-providers/${providerId}`, {
-    method: 'DELETE',
-    headers: getHeaders(),
-  });
-  
-  if (!response.ok) {
-    throw new Error(`Failed to delete LLM provider: ${response.statusText}`);
-  }
+  await fastapiClient.delete(`/owner/auth/llm-providers/${providerId}`);
 }
 
 /**
  * Test connectivity to an LLM provider
  */
 export async function testLLMProvider(providerId: string): Promise<TestResult> {
-  const response = await fetch(`${API_BASE}/owner/auth/llm-providers/${providerId}/test`, {
-    method: 'POST',
-    headers: getHeaders(),
-  });
-  
-  if (!response.ok) {
-    throw new Error(`Failed to test LLM provider: ${response.statusText}`);
-  }
-  
-  return response.json();
+  const response = await fastapiClient.post(`/owner/auth/llm-providers/${providerId}/test`);
+  return response.data;
 }
 
 /**
  * Toggle LLM provider enabled/disabled
  */
 export async function toggleLLMProvider(providerId: string): Promise<{ enabled: boolean }> {
-  const response = await fetch(`${API_BASE}/owner/auth/llm-providers/${providerId}/toggle`, {
-    method: 'POST',
-    headers: getHeaders(),
-  });
-  
-  if (!response.ok) {
-    throw new Error(`Failed to toggle LLM provider: ${response.statusText}`);
-  }
-  
-  return response.json();
+  const response = await fastapiClient.post(`/owner/auth/llm-providers/${providerId}/toggle`);
+  return response.data;
 }
 
 /**
  * Get usage metrics for a specific provider
  */
 export async function getLLMProviderUsage(providerId: string): Promise<LLMProviderUsage> {
-  const response = await fetch(`${API_BASE}/owner/auth/llm-providers/${providerId}/usage`, {
-    headers: getHeaders(),
-  });
-  
-  if (!response.ok) {
-    throw new Error(`Failed to fetch LLM provider usage: ${response.statusText}`);
-  }
-  
-  const data = await response.json();
-  return data.usage;
+  const response = await fastapiClient.get(`/owner/auth/llm-providers/${providerId}/usage`);
+  return response.data?.usage || response.data;
 }
 
 /**
  * Get usage metrics for all providers
  */
 export async function getAllLLMProvidersUsage(): Promise<LLMProviderUsage[]> {
-  const response = await fetch(`${API_BASE}/owner/auth/llm-providers-usage`, {
-    headers: getHeaders(),
-  });
-  
-  if (!response.ok) {
-    throw new Error(`Failed to fetch LLM providers usage: ${response.statusText}`);
-  }
-  
-  const data = await response.json();
-  return data.usage || [];
+  const response = await fastapiClient.get('/owner/auth/llm-providers-usage');
+  return response.data?.usage || response.data || [];
 }
 
 /**
