@@ -1833,9 +1833,8 @@ const OwnerDashboardComplete: React.FC = () => {
           height: '500px', 
           borderRadius: '8px', 
           overflow: 'hidden',
-          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%)'
-          position: 'relative',
-          overflow: 'hidden'
+          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%)',
+          position: 'relative'
         }}>
           <iframe 
             src={`${API_BASE}/api/state-physics`}
