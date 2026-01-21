@@ -28,6 +28,13 @@ jobs:
         env:
           NODE_ENV: production
           VITE_API_URL: https://dev-swat.com
+          VITE_WS_URL: wss://dev-swat.com/ws
+          VITE_GRAFANA_URL: https://dev-swat.com/grafana
+          VITE_PROMETHEUS_URL: https://dev-swat.com/prometheus
+          VITE_ALERTMANAGER_URL: https://dev-swat.com/alertmanager
+          VITE_AGENT_ENGINE_URL: https://dev-swat.com/agent-engine
+          VITE_RARA_URL: https://dev-swat.com/rara
+          VITE_HASH_SPHERE_URL: https://dev-swat.com/hash-sphere
 
       - name: Deploy to Droplet
         uses: appleboy/scp-action@master
