@@ -8,6 +8,7 @@
     "dev": "vite",
     "dev:electron": "node scripts/dev-electron.js",
     "build": "vite build",
+    "build:check": "tsc && vite build",
     "preview": "vite preview",
     "electron:build": "tsc -p electron/tsconfig.json",
     "electron:dev": "npm run electron:build && cross-env NODE_ENV=development electron electron/dist/main.js",
