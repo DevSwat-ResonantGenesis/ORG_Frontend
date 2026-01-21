@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:  # Allow manual triggers
 
 jobs:
   deploy:
@@ -17,14 +18,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build with production environment
         run: npm run build
         env:
           NODE_ENV: production
+          VITE_API_URL: https://dev-swat.com/api
 
       - name: Deploy to Droplet
         uses: appleboy/scp-action@master
@@ -35,6 +38,7 @@ jobs:
           source: "dist/*"
           target: "/tmp/frontend_deploy"
           strip_components: 0
+          rm: true
 
       - name: Update nginx container
         uses: appleboy/ssh-action@master
@@ -43,7 +47,33 @@ jobs:
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
+            echo "🚀 Starting frontend deployment..."
+            
+            # Backup current frontend
+            docker exec genesis_nginx sh -c "cp -r /usr/share/nginx/html /usr/share/nginx/html.backup.$(date +%Y%m%d_%H%M%S)" || true
+            
+            # Copy new build to nginx container
+            echo "📦 Copying new frontend files..."
             docker cp /tmp/frontend_deploy/dist/. genesis_nginx:/usr/share/nginx/html/
+            
+            # Reload nginx
+            echo "♻️  Reloading nginx..."
             docker exec genesis_nginx nginx -s reload
+            
+            # Cleanup
             rm -rf /tmp/frontend_deploy
-            echo "Frontend deployed successfully at $(date)"
+            
+            echo "✅ Frontend deployed successfully at $(date)"
+
+      - name: Health Check
+        run: |
+          echo "🏥 Running health checks..."
+          sleep 5
+          
+          # Check if frontend is accessible
+          curl -f https://dev-swat.com/ || exit 1
+          echo "✅ Frontend health check passed"
+          
+          # Check if API is accessible from frontend
+          curl -f https://dev-swat.com/api/health || exit 1
+          echo "✅ API health check passed"
