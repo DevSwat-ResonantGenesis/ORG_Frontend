@@ -967,9 +967,10 @@ const ResonantChatPage: React.FC = () => {
   // Load settings from backend API (with localStorage fallback)
   useEffect(() => {
     const loadPreferences = async () => {
-      try          if (isLoggedIn) {
-            // Load from backend API
-            const apiUrl = ENV.apiUrl;
+      try {
+        if (isLoggedIn) {
+          // Load from backend API
+          const apiUrl = ENV.apiUrl;
           const response = await fetch(`${apiUrl}/user/preferences`, {
             credentials: 'include',
           });
@@ -1048,7 +1049,6 @@ const ResonantChatPage: React.FC = () => {
     }
     
     try {
-      import { ENV } from '../../config/env';
       const apiUrl = ENV.apiUrl;
       await fetch(`${apiUrl}/user/preferences/${category}`, {
         method: 'PATCH',

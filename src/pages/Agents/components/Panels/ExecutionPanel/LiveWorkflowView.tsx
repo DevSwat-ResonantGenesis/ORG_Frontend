@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Icons } from '../../shared/Icons';
 import styles from './LiveWorkflowView.module.css';
+import { ENV } from '@/config/env';
 
 interface WorkflowStep {
   id: string;
@@ -46,7 +47,6 @@ const LiveWorkflowViewComponent: React.FC<LiveWorkflowViewProps> = ({
 
     try {
       // Connect to the WebSocket endpoint for real-time updates
-      import { ENV } from '../../../../../config/env';
       const wsUrl = `${ENV.wsUrl}/agents/sessions/${sessionId}/stream`;
       wsRef.current = new WebSocket(wsUrl);
 
