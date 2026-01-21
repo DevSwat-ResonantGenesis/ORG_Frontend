@@ -474,7 +474,7 @@ const ResonantChatPage: React.FC = () => {
             'mistral': 'mistral',
             'groq': 'groq',
           };
-          const mapped = providersData.userKeyProviders
+          const mapped = (providersData.userKeyProviders || [])
             .map(p => providerMap[p] || p as Provider)
             .filter(Boolean);
           setAvailableProviders(mapped);
@@ -872,8 +872,10 @@ const ResonantChatPage: React.FC = () => {
     fetch('/resonant-chat/agents/list')
       .then(res => res.json())
       .then(data => {
-        if (data.agents) {
+        if (data.agents && Array.isArray(data.agents)) {
           setAvailableAgents(data.agents.map((a: any) => ({ hash: a.id, name: a.name })));
+        } else {
+          logger.warn('Invalid agents data received:', data);
         }
       })
       .catch(err => logger.error('Failed to load agents', err));
@@ -882,7 +884,7 @@ const ResonantChatPage: React.FC = () => {
     fetch('/resonant-chat/teams')
       .then(res => res.json())
       .then(data => {
-        if (data.teams && data.teams.length > 0) {
+        if (data.teams && Array.isArray(data.teams) && data.teams.length > 0) {
           // Map API response to AgentTeam format
           setTeams(data.teams.map((t: any) => ({
             id: t.id,
