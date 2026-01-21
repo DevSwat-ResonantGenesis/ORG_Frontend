@@ -3117,7 +3117,7 @@ const ResonantChatPage: React.FC = () => {
           onToggleShortcutsInfo={() => setShowShortcutsInfo(!showShortcutsInfo)}
           currentTheme={theme as 'light' | 'dark'}
           onToggleTheme={toggleTheme}
-          teams={teams.map(t => ({ id: t.id, name: t.name }))}
+          teams={Array.isArray(teams) ? teams.map(t => ({ id: t.id, name: t.name })) : []}
           selectedTeamId={selectedTeamId}
           onSelectTeam={setSelectedTeamId}
         />
@@ -3731,7 +3731,7 @@ const ResonantChatPage: React.FC = () => {
           agents={availableAgents}
           selectedTeamId={selectedTeamId}
           onSelectTeam={setSelectedTeamId}
-          teams={teams.map((t: AgentTeam) => ({ id: t.id, name: t.name }))}
+          teams={Array.isArray(teams) ? teams.map((t: AgentTeam) => ({ id: t.id, name: t.name })) : []}
           onNewChat={handleNewChat}
           onClearChat={messages.length > 0 ? handleClearChat : undefined}
           onCancel={handleCancel}
