@@ -904,7 +904,7 @@ const ResonantChatPage: React.FC = () => {
           listAgentTeams().then(setTeams).catch(e => logger.error('Failed to load teams fallback', e));
         }
       });
-  }, [isLoggedIn]); // Only run on login state change, not on every message
+  }, []); // Only run on mount
 
   // Load chat metrics from backend when conversation changes
   // IMPORTANT: Only use real backend metrics - never fake them locally
