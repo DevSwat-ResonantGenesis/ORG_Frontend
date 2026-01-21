@@ -6,6 +6,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { ENV } from '../../config/env';
 import styles from './ProtocolPages.module.css';
 
 type EventSource = 'user' | 'system' | 'governance' | 'replay';
@@ -160,7 +161,6 @@ const LiveExecutionMonitor: React.FC = () => {
   // Fetch real execution data from backend
   const fetchRealExecutions = useCallback(async () => {
     try {
-      import { ENV } from '../../config/env';
       const apiUrl = ENV.apiUrl;
       const response = await fetch(`${apiUrl}/executions/history?limit=50`);
       if (!response.ok) return;

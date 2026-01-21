@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import APIUsageDashboard from '../../components/dashboard/APIUsageDashboard';
 import { isAuthenticated } from '../../utils/auth-cookies';
+import { ENV } from '../../config/env';
 
 interface APIKey {
   id: string;
@@ -50,7 +51,6 @@ const APIKeysPage: React.FC = () => {
       
       try {
         setLoading(true);
-        import { ENV } from '../../config/env';
         const API_URL = ENV.apiUrl;
         
         const response = await fetch(`${API_URL}/auth/api-keys`, {
@@ -188,7 +188,6 @@ const APIKeysPage: React.FC = () => {
       }
       
       try {
-        import { ENV } from '../../config/env';
         const API_URL = ENV.apiUrl;
         
         const response = await fetch(`${API_URL}/auth/api-keys/revoke`, {

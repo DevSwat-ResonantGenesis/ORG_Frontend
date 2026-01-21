@@ -48,6 +48,7 @@ import { MetricsDashboard } from '@/components/ResonantChat/MetricsDashboard';
 import { MemoryViewer } from '@/components/ResonantChat/MemoryViewer';
 import { ModuleOutputs } from '@/components/ResonantChat/ModuleOutputs';
 import { TeamSelector } from '@/components/ResonantChat/TeamSelector';
+import { ENV } from '@/config/env';
 import { FloatingHome } from '@/components/ResonantChat/FloatingHome';
 import type { ProjectFile } from '@/components/ResonantChat/SplitView';
 
@@ -966,11 +967,9 @@ const ResonantChatPage: React.FC = () => {
   // Load settings from backend API (with localStorage fallback)
   useEffect(() => {
     const loadPreferences = async () => {
-      try {
-        if (isLoggedIn) {
-          // Load from backend API
-          import { ENV } from '../../config/env';
-          const apiUrl = ENV.apiUrl;
+      try          if (isLoggedIn) {
+            // Load from backend API
+            const apiUrl = ENV.apiUrl;
           const response = await fetch(`${apiUrl}/user/preferences`, {
             credentials: 'include',
           });
