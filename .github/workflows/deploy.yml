@@ -27,7 +27,7 @@ jobs:
         run: npm run build
         env:
           NODE_ENV: production
-          VITE_API_URL: https://dev-swat.com/api
+          VITE_API_URL: https://dev-swat.com
 
       - name: Deploy to Droplet
         uses: appleboy/scp-action@master
