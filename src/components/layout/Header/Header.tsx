@@ -110,7 +110,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   // Get user initials for avatar
   const getUserInitials = () => {
-    if (sessionData?.email) {
+    if (sessionData?.email && typeof sessionData.email === 'string' && sessionData.email.length > 0) {
       return sessionData.email.charAt(0).toUpperCase();
     }
     return 'U';
@@ -403,7 +403,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <button 
                   className={styles.accountButton}
                   onClick={() => setShowAccountMenu(!showAccountMenu)}
-                  title={sessionData?.email || 'Account'}
+                  title={typeof sessionData?.email === 'string' ? sessionData.email : 'Account'}
                 >
                   <div className={styles.accountAvatar}>
                     {getUserInitials()}
@@ -419,8 +419,8 @@ export const Header: React.FC<HeaderProps> = ({
                     <div className={styles.accountMenuHeader}>
                       <div className={styles.accountMenuAvatar}>{getUserInitials()}</div>
                       <div className={styles.accountMenuInfo}>
-                        <span className={styles.accountMenuEmail}>{sessionData?.email}</span>
-                        <span className={styles.accountMenuRole}>{sessionData?.role || 'User'}</span>
+                        <span className={styles.accountMenuEmail}>{typeof sessionData?.email === 'string' ? sessionData.email : ''}</span>
+                        <span className={styles.accountMenuRole}>{typeof sessionData?.role === 'string' ? sessionData.role : 'User'}</span>
                       </div>
                     </div>
                     <div className={styles.accountMenuDivider} />

@@ -477,7 +477,7 @@ const EnhancedSidebar: React.FC<EnhancedSidebarProps> = ({
         {isLoggedIn && user ? (
           <div className={styles.userInfo}>
             <div className={styles.userAvatar}>
-              {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
+              {(typeof user.name === 'string' && user.name.length > 0) ? user.name.charAt(0).toUpperCase() : (typeof user.email === 'string' && user.email.length > 0) ? user.email.charAt(0).toUpperCase() : 'U'}
             </div>
             <div className={styles.userDetails}>
               <div className={styles.userName}>{user.name || user.email}</div>
