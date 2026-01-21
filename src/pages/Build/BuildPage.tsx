@@ -459,7 +459,7 @@ export const BuildPage: React.FC = () => {
       if (result.success) {
         // Reload project files
         const filesResponse = await getProjectFiles(currentProjectId);
-        if (filesResponse.files) {
+        if (filesResponse.files && Array.isArray(filesResponse.files)) {
           const updatedFiles = filesResponse.files.map(f => ({
             path: f.path,
             content: f.content,
@@ -509,7 +509,7 @@ export const BuildPage: React.FC = () => {
     try {
       // Load project files
       const filesResponse = await getProjectFiles(project.project_id);
-      if (filesResponse.files && filesResponse.files.length > 0) {
+      if (filesResponse.files && Array.isArray(filesResponse.files) && filesResponse.files.length > 0) {
         const loadedFiles = filesResponse.files.map(f => ({
           path: f.path,
           content: f.content,
@@ -618,7 +618,7 @@ export const BuildPage: React.FC = () => {
         const filesResponse = await getProjectFiles(response.project_id);
         const files = filesResponse?.files || [];
         
-        if (files.length > 0) {
+        if (Array.isArray(files) && files.length > 0) {
           const projectFiles = files.map((f: { path: string; content: string; language?: string }) => ({
             path: f.path,
             content: f.content,
@@ -663,7 +663,7 @@ export const BuildPage: React.FC = () => {
     const readmeFile = generatedFiles.find(f => f.path.toLowerCase() === 'readme.md');
     
     // Collect all CSS content
-    const cssContent = cssFiles.map(f => f.content).join('\n');
+    const cssContent = (Array.isArray(cssFiles) ? cssFiles : []).map(f => f.content).join('\n');
     
     // If we have an index.html, use it directly with injected CSS
     if (htmlFile) {
@@ -703,10 +703,10 @@ export const BuildPage: React.FC = () => {
     }
     
     // Build file tree HTML
-    const fileTreeHtml = Object.entries(filesByDir).map(([dir, files]) => `
+    const fileTreeHtml = Object.entries(filesByDir || {}).map(([dir, files]) => `
       <div class="dir-group">
         <div class="dir-name">📁 ${dir}/</div>
-        ${files.map(f => `<div class="file-item">📄 ${f}</div>`).join('')}
+        ${(Array.isArray(files) ? files : []).map(f => `<div class="file-item">📄 ${f}</div>`).join('')}
       </div>
     `).join('');
     
@@ -904,7 +904,7 @@ export const BuildPage: React.FC = () => {
   // Update file content (make editor editable)
   const handleFileChange = (newContent: string | undefined) => {
     if (!selectedFile || !newContent) return;
-    setGeneratedFiles(prev => prev.map(f => 
+    setGeneratedFiles(prev => (Array.isArray(prev) ? prev : []).map(f => 
       f.path === selectedFile.path ? { ...f, content: newContent } : f
     ));
     setSelectedFile({ ...selectedFile, content: newContent });
@@ -986,7 +986,7 @@ export const BuildPage: React.FC = () => {
   };
 
   const renderFileTree = (node: any, path = '', level = 0) => {
-    return Object.entries(node).map(([key, value]: [string, any]) => {
+    return Object.entries(node || {}).map(([key, value]: [string, any]) => {
       if (key === '_file') return null;
       
       const fullPath = path ? `${path}/${key}` : key;
@@ -1139,7 +1139,7 @@ export const BuildPage: React.FC = () => {
               <div className={styles.formGroup}>
                 <label>Project Template</label>
                 <div className={styles.templateGrid}>
-                  {templates.map((template) => (
+                  {(Array.isArray(templates) ? templates : []).map((template) => (
                     <div
                       key={template.type}
                       className={`${styles.templateCard} ${selectedTemplate === template.type ? styles.selected : ''}`}
@@ -1152,7 +1152,7 @@ export const BuildPage: React.FC = () => {
                         <h4>{template.name}</h4>
                         <p>{template.description}</p>
                         <div className={styles.templateTech}>
-                          {template.tech_stack?.map((tech) => (
+                          {(Array.isArray(template.tech_stack) ? template.tech_stack : []).map((tech) => (
                             <span key={tech} className={styles.techBadge}>{tech}</span>
                           ))}
                         </div>
@@ -1496,7 +1496,7 @@ export const BuildPage: React.FC = () => {
               </div>
             ) : (
               <div className={styles.projectsGrid}>
-                {projects.map((project) => (
+                {(Array.isArray(projects) ? projects : []).map((project) => (
                   <div key={project.project_id} className={styles.projectCard}>
                     {/* Row 1: Title + Status */}
                     <div className={styles.projectHeader}>
@@ -1510,7 +1510,7 @@ export const BuildPage: React.FC = () => {
                     <div className={styles.projectMeta}>
                       <span><FolderIcon /> {project.files_count} files</span>
                       <span><CoinIcon /> credits</span>
-                      {project.tech_stack?.slice(0, 4).map((tech) => (
+                      {(Array.isArray(project.tech_stack) ? project.tech_stack : []).slice(0, 4).map((tech) => (
                         <span key={tech} className={styles.techBadge}>{tech}</span>
                       ))}
                     </div>
