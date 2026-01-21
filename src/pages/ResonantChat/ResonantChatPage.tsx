@@ -863,6 +863,8 @@ const ResonantChatPage: React.FC = () => {
 
   // Load conversations and memories on mount and when messages change
   useEffect(() => {
+    // Reset the loaded flag on mount to ensure conversations load on page reload
+    conversationsLoadedRef.current = false;
     loadConversations();
     loadMemories();
     
