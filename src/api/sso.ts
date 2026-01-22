@@ -48,7 +48,7 @@ export interface SSOCallbackResponse {
  */
 export const getSSOProviders = async (): Promise<SSOProvider[]> => {
   try {
-    const response = await fastapiClient.get('/auth/sso/providers'); // Suppress error logging for connection tests
+    const response = await fastapiClient.get('/auth/sso/providers',); // Suppress error logging for connection tests
     const data = response.data;
     if (Array.isArray(data)) {
       return data;
