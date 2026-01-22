@@ -76,7 +76,7 @@ const PricingPage: React.FC = () => {
 
     setCreditPackLoading(pack.id);
     try {
-      const response = await fetch('/billing/checkout/credits', {
+      const response = await fetch('/api/billing/checkout/credits', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ const PricingPage: React.FC = () => {
       
       setCheckoutLoading(plan.id);
       try {
-        const response = await fetch('/billing/checkout/subscription', {
+        const response = await fetch('/api/billing/checkout/subscription', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -237,7 +237,7 @@ const PricingPage: React.FC = () => {
     setApiCheckoutLoading(loadingKey);
     
     try {
-      const response = await fetch('/billing/checkout/subscription', {
+      const response = await fetch('/api/billing/checkout/subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

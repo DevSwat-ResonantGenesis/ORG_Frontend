@@ -36,7 +36,7 @@ const PricingPage: React.FC = () => {
     // For paid plans, redirect to Stripe checkout
     setLoadingPlan(planId);
     try {
-      const response = await fetch('/billing/checkout/subscription', {
+      const response = await fetch('/api/billing/checkout/subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -72,7 +72,7 @@ const PricingPage: React.FC = () => {
 
     setLoadingTokenPack(packId);
     try {
-      const response = await fetch('/billing/checkout/credits', {
+      const response = await fetch('/api/billing/checkout/credits', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

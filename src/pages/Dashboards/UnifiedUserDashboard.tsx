@@ -158,7 +158,7 @@ const UnifiedUserDashboard: React.FC = () => {
   const handleUpgrade = async () => {
     setUpgradeLoading(true);
     try {
-      const response = await fetch('/billing/checkout/subscription', {
+      const response = await fetch('/api/billing/checkout/subscription', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -183,7 +183,7 @@ const UnifiedUserDashboard: React.FC = () => {
   const handleBuyCredits = async (packId: string) => {
     setBuyCreditsLoading(true);
     try {
-      const response = await fetch('/billing/checkout/credits', {
+      const response = await fetch('/api/billing/checkout/credits', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
