@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:  # Allow manual triggers
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     
     steps:
@@ -23,18 +23,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build with production environment
+      - name: Build frontend for production
         run: npm run build
         env:
           NODE_ENV: production
-          VITE_API_URL: https://dev-swat.com
-          VITE_WS_URL: wss://dev-swat.com/ws
-          VITE_GRAFANA_URL: https://dev-swat.com/grafana
-          VITE_PROMETHEUS_URL: https://dev-swat.com/prometheus
-          VITE_ALERTMANAGER_URL: https://dev-swat.com/alertmanager
-          VITE_AGENT_ENGINE_URL: https://dev-swat.com/agent-engine
-          VITE_RARA_URL: https://dev-swat.com/rara
-          VITE_HASH_SPHERE_URL: https://dev-swat.com/hash-sphere
+          VITE_API_URL: http://dev-swat.com
+          VITE_WS_URL: ws://dev-swat.com/ws
+          VITE_GRAFANA_URL: http://dev-swat.com/grafana
+          VITE_PROMETHEUS_URL: http://dev-swat.com/prometheus
+          VITE_ALERTMANAGER_URL: http://dev-swat.com/alertmanager
+          VITE_AGENT_ENGINE_URL: http://dev-swat.com/agent-engine
+          VITE_RARA_URL: http://dev-swat.com/rara
+          VITE_HASH_SPHERE_URL: http://dev-swat.com/hash-sphere
 
       - name: Deploy to Droplet
         uses: appleboy/scp-action@master
@@ -43,44 +43,37 @@ jobs:
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           source: "dist/*"
-          target: "/tmp/frontend_deploy"
-          strip_components: 0
-          rm: true
+          target: "/root/genesis2026_production_backend/frontend_dist"
+          strip_components: 1
+          overwrite: true
 
-      - name: Update nginx container
+      - name: Restart Nginx
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.DROPLET_HOST }}
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
-            echo "🚀 Starting frontend deployment..."
+            echo "🚀 Deploying frontend to production..."
             
-            # Backup current frontend
-            docker exec genesis_nginx sh -c "cp -r /usr/share/nginx/html /usr/share/nginx/html.backup.$(date +%Y%m%d_%H%M%S)" || true
+            cd /root/genesis2026_production_backend
             
-            # Copy new build to nginx container
-            echo "📦 Copying new frontend files..."
-            docker cp /tmp/frontend_deploy/dist/. genesis_nginx:/usr/share/nginx/html/
+            echo "♻️  Restarting nginx to load new frontend..."
+            docker-compose restart nginx
             
-            # Reload nginx
-            echo "♻️  Reloading nginx..."
-            docker exec genesis_nginx nginx -s reload
-            
-            # Cleanup
-            rm -rf /tmp/frontend_deploy
+            echo "⏳ Waiting for nginx to restart..."
+            sleep 5
             
             echo "✅ Frontend deployed successfully at $(date)"
+            echo "🌐 Frontend available at http://dev-swat.com"
 
       - name: Health Check
         run: |
           echo "🏥 Running health checks..."
           sleep 5
           
-          # Check if frontend is accessible
-          curl -f https://dev-swat.com/ || exit 1
+          curl -f http://137.184.234.252/ || exit 1
           echo "✅ Frontend health check passed"
           
-          # Check if API is accessible from frontend
-          curl -f https://dev-swat.com/api/health || exit 1
+          curl -f http://137.184.234.252/health || exit 1
           echo "✅ API health check passed"
