@@ -8,7 +8,9 @@ body:
     attributes:
       value: |
         ## Frontend Bug Report
-        Report bugs to help us improve the user interface.
+        Report frontend bugs to help us improve the user interface.
+        
+        **For backend bugs, use:** https://github.com/louienemesh/genesis2026_production_backend/issues/new/choose
         
   - type: dropdown
     id: severity

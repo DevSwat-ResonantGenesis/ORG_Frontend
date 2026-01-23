@@ -10,6 +10,8 @@ body:
         ## Frontend Feature Request
         Propose a new frontend feature or UI enhancement.
         
+        **For backend features, use:** https://github.com/louienemesh/genesis2026_production_backend/issues/new/choose
+        
   - type: dropdown
     id: priority
     attributes:
@@ -88,7 +90,7 @@ body:
     attributes:
       label: Implementation Considerations
       options:
-        - label: Requires new API endpoints
+        - label: Requires new API endpoints (backend work needed)
         - label: Requires state management changes
         - label: Requires new dependencies
         - label: Requires design system updates

@@ -12,6 +12,8 @@ body:
         ## Frontend Deployment Request
         Use this template to request a frontend production deployment.
         
+        **For backend deployments, use:** https://github.com/louienemesh/genesis2026_production_backend/issues/new/choose
+        
   - type: input
     id: pr-number
     attributes:
