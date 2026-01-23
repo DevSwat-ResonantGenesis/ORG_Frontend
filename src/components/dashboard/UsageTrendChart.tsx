@@ -20,7 +20,10 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
   data,
   height = 200,
 }) => {
-  if (!data || data.length < 2) {
+  // Ensure data is an array and has valid entries
+  const validData = Array.isArray(data) ? data : [];
+  
+  if (validData.length < 2) {
     return (
       <div className={styles.widget}>
         <div className={styles.header}>
@@ -35,14 +38,14 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
     );
   }
 
-  const maxTokens = Math.max(...data.map(d => d.tokens), 1);
-  const totalTokens = data.reduce((sum, d) => sum + d.tokens, 0);
-  const avgTokens = Math.round(totalTokens / data.length);
+  const maxTokens = Math.max(...validData.map(d => d.tokens), 1);
+  const totalTokens = validData.reduce((sum, d) => sum + d.tokens, 0);
+  const avgTokens = Math.round(totalTokens / validData.length);
   
   // Calculate trend
-  const midpoint = Math.floor(data.length / 2);
-  const recentSum = data.slice(midpoint).reduce((sum, d) => sum + d.tokens, 0);
-  const previousSum = data.slice(0, midpoint).reduce((sum, d) => sum + d.tokens, 0);
+  const midpoint = Math.floor(validData.length / 2);
+  const recentSum = validData.slice(midpoint).reduce((sum, d) => sum + d.tokens, 0);
+  const previousSum = validData.slice(0, midpoint).reduce((sum, d) => sum + d.tokens, 0);
   const trend = previousSum > 0 ? ((recentSum - previousSum) / previousSum) * 100 : 0;
 
   const formatNumber = (num: number): string => {
@@ -61,8 +64,8 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
   const chartHeight = 100;
   const padding = 5;
   
-  const points = data.map((d, i) => {
-    const x = padding + (i / (data.length - 1)) * (chartWidth - 2 * padding);
+  const points = validData.map((d, i) => {
+    const x = padding + (i / (validData.length - 1)) * (chartWidth - 2 * padding);
     const y = chartHeight - padding - (d.tokens / maxTokens) * (chartHeight - 2 * padding);
     return { x, y, ...d };
   });
@@ -76,7 +79,7 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
         <div className={styles.titleRow}>
           <TrendingUp className={styles.icon} size={20} />
           <span className={styles.title}>Usage Trends</span>
-          <span className={styles.period}>Last {data.length} days</span>
+          <span className={styles.period}>Last {validData.length} days</span>
         </div>
         <div className={styles.stats}>
           <div className={styles.stat}>
@@ -123,9 +126,9 @@ export const UsageTrendChart: React.FC<UsageTrendChartProps> = ({
 
       {/* X-axis labels */}
       <div className={styles.xAxis}>
-        <span>{formatDate(data[0]?.date)}</span>
-        <span>{formatDate(data[Math.floor(data.length / 2)]?.date)}</span>
-        <span>{formatDate(data[data.length - 1]?.date)}</span>
+        <span>{formatDate(validData[0]?.date)}</span>
+        <span>{formatDate(validData[Math.floor(validData.length / 2)]?.date)}</span>
+        <span>{formatDate(validData[validData.length - 1]?.date)}</span>
       </div>
     </div>
   );
