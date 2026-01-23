@@ -1,0 +1,111 @@
+name: 🚀 Frontend Deployment Request
+description: Request a frontend production deployment
+title: "[DEPLOY-FRONTEND] "
+labels: ["deployment", "frontend", "production"]
+assignees:
+  - devops-team
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Frontend Deployment Request
+        Use this template to request a frontend production deployment.
+        
+  - type: input
+    id: pr-number
+    attributes:
+      label: Pull Request Number
+      description: Link to the PR being deployed
+      placeholder: "#123"
+    validations:
+      required: true
+
+  - type: textarea
+    id: changes
+    attributes:
+      label: Changes Description
+      description: What frontend changes are being deployed?
+      placeholder: |
+        - Updated user dashboard UI
+        - Fixed mobile responsiveness
+        - Added new feature component
+        - Performance improvements
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: pre-deployment
+    attributes:
+      label: Pre-Deployment Checklist
+      description: Verify all prerequisites are met
+      options:
+        - label: Code reviewed and approved
+          required: true
+        - label: All tests passing
+          required: true
+        - label: Build successful locally
+          required: true
+        - label: Tested in development environment
+          required: false
+        - label: No console errors
+          required: true
+        - label: Mobile responsive verified
+          required: false
+        - label: Team notified
+          required: true
+
+  - type: dropdown
+    id: deployment-window
+    attributes:
+      label: Deployment Window
+      description: When should this be deployed?
+      options:
+        - Immediate (Low Traffic)
+        - Scheduled - Low Traffic Period
+        - Scheduled - Maintenance Window
+        - Emergency - ASAP
+    validations:
+      required: true
+
+  - type: textarea
+    id: rollback-plan
+    attributes:
+      label: Rollback Plan
+      description: How to rollback if issues occur
+      placeholder: |
+        Automatic rollback: Restore from /var/backups/frontend/
+        Manual rollback: rsync previous backup to /var/www/frontend/
+        Estimated rollback time: 30 seconds
+    validations:
+      required: true
+
+  - type: input
+    id: runbook
+    attributes:
+      label: Runbook Reference
+      description: Link to deployment runbook
+      value: "runbooks/deployment-frontend.md"
+
+  - type: textarea
+    id: testing
+    attributes:
+      label: Testing Plan
+      description: What will you test post-deployment?
+      placeholder: |
+        - Homepage loads correctly
+        - User authentication flow
+        - Critical user paths
+        - Mobile view
+        - Browser compatibility
+    validations:
+      required: true
+
+  - type: input
+    id: contact
+    attributes:
+      label: Primary Contact
+      description: Who is responsible for this deployment?
+      placeholder: "@username"
+    validations:
+      required: true

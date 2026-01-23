@@ -1,0 +1,148 @@
+name: 🐛 Frontend Bug Report
+description: Report a frontend bug or UI issue
+title: "[BUG-FRONTEND] "
+labels: ["bug", "frontend", "needs-triage"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Frontend Bug Report
+        Report bugs to help us improve the user interface.
+        
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug?
+      options:
+        - P0 - Critical (Site Unusable)
+        - P1 - High (Major Feature Broken)
+        - P2 - Medium (Minor Issue)
+        - P3 - Low (Cosmetic/Nice to Have)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      description: Which part of the frontend is affected?
+      options:
+        - Homepage
+        - User Dashboard
+        - Authentication (Login/Signup)
+        - Navigation
+        - Forms
+        - Mobile View
+        - Performance
+        - Styling/CSS
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Clear description of the bug
+      placeholder: What happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How to reproduce this bug
+      placeholder: |
+        1. Go to...
+        2. Click on...
+        3. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should happen?
+      placeholder: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: What actually happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: console-errors
+    attributes:
+      label: Console Errors
+      description: Any errors in browser console (F12)
+      placeholder: Paste console errors here
+      render: javascript
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      description: Which browser are you using?
+      options:
+        - Chrome
+        - Firefox
+        - Safari
+        - Edge
+        - Mobile Safari (iOS)
+        - Mobile Chrome (Android)
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: browser-version
+    attributes:
+      label: Browser Version
+      description: What version of the browser?
+      placeholder: "e.g., Chrome 120.0.6099.109"
+
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device Type
+      description: What device are you using?
+      options:
+        - Desktop
+        - Mobile
+        - Tablet
+    validations:
+      required: true
+
+  - type: input
+    id: screen-size
+    attributes:
+      label: Screen Size
+      description: Screen resolution or device model
+      placeholder: "e.g., 1920x1080 or iPhone 14 Pro"
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshots
+      description: Add screenshots if applicable
+      placeholder: Drag and drop images here
+
+  - type: checkboxes
+    id: ai-agent-safe
+    attributes:
+      label: AI Agent Assignment
+      description: Can an AI agent work on this?
+      options:
+        - label: Safe for AI agent to investigate
+        - label: Safe for AI agent to fix
+        - label: Requires human review before deployment
