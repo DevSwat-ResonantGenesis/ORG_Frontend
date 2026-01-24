@@ -29,7 +29,7 @@ const DEFAULT_PRICING = {
       id: 'plus',
       name: 'Plus',
       price: { monthly: 49, yearly: 490 },
-      credits: { included: 75000, rollover: true, rolloverLimit: 37500, topups: true, topupPrice: 8, topupAmount: 10000 },
+      credits: { included: 50000, rollover: true, rolloverLimit: 25000, topups: true, topupPrice: 8, topupAmount: 10000 },
       limits: {
         agents: { active: 20, autonomousMode: true, teams: true },
         chat: { conversations: -1, messagesPerDay: -1, messagesPerConversation: -1 },

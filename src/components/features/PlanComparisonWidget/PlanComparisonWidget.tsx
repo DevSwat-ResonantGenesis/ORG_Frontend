@@ -28,7 +28,7 @@ const PLAN_FEATURES = {
     codeVisualizer: false,
   },
   plus: {
-    credits: '75,000/month',
+    credits: '50,000/month',
     agents: '20 agents',
     conversations: 'Unlimited',
     messages: 'Unlimited',

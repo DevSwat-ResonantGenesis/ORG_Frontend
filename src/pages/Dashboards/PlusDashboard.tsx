@@ -84,7 +84,7 @@ const PlusDashboard: React.FC = () => {
   const [stats, setStats] = useState<OrgStats>({
     teamMembers: 0,
     creditsUsed: 0,
-    creditsTotal: 75000, // Will be fetched from API
+    creditsTotal: 50000, // Will be fetched from API
     apiCalls: 0,
     activeAgents: 0,
   });
