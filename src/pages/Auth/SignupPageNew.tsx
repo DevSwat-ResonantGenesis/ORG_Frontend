@@ -299,8 +299,16 @@ export default function SignupPageNew() {
       
       const data = await response.json();
       
-      // Save session data from response
-      if (data.user && data.org_id) {
+      // Check if email verification is required (new flow)
+      if (data.email_verification_required) {
+        setSuccess(true);
+        setError(''); // Clear any errors
+        // Don't redirect - user needs to verify email first
+        return;
+      }
+      
+      // Legacy flow: Save session data from response (if auto-login is enabled)
+      if (data.user && data.org_id && data.access_token) {
         import('../../utils/auth-cookies').then(({ saveSessionData }) => {
           saveSessionData({
             email: data.user.email,
@@ -309,11 +317,13 @@ export default function SignupPageNew() {
             userId: data.user.id,
           });
         });
+        setSuccess(true);
+        // Only redirect to dashboard if we got tokens (auto-login)
+        setTimeout(() => navigate('/dashboard'), 1000);
+      } else {
+        // No tokens = email verification required
+        setSuccess(true);
       }
-      
-      setSuccess(true);
-      // Redirect to dashboard instead of login
-      setTimeout(() => navigate('/dashboard'), 1000);
     } catch (err: any) {
       setError(err.message || 'Signup failed. Please try again.');
     } finally {
@@ -338,9 +348,17 @@ export default function SignupPageNew() {
         {plan === 'free' && <div style={{ marginBottom: '1rem' }} />}
 
         {success ? (
-          <div style={styles.success}>
-            <Check size={16} />
-            Account created! Redirecting to login...
+          <div style={{ ...styles.success, flexDirection: 'column', alignItems: 'flex-start', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Check size={16} />
+              <strong>Account created successfully!</strong>
+            </div>
+            <p style={{ margin: 0, lineHeight: '1.5' }}>
+              Please check your email inbox and click the verification link to activate your account.
+            </p>
+            <Link to="/login" style={{ color: '#10b981', textDecoration: 'underline', marginTop: '0.5rem' }}>
+              Go to Login →
+            </Link>
           </div>
         ) : (
           <form style={styles.form} onSubmit={handleSubmit}>
