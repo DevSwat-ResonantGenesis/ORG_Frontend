@@ -43,7 +43,7 @@ jobs:
           username: ${{ secrets.DROPLET_USER }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           source: "dist/*"
-          target: "/root/genesis2026_production_backend/frontend_dist"
+          target: "/var/www/frontend"
           strip_components: 1
           overwrite: true
 
