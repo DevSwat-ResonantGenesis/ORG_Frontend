@@ -300,6 +300,11 @@ export const BuildPage: React.FC = () => {
     loadStats();
   }, []);
 
+  // Ensure arrays are always arrays (defensive)
+  const safeGeneratedFiles = Array.isArray(generatedFiles) ? generatedFiles : [];
+  const safeTemplates = Array.isArray(templates) ? templates : [];
+  const safeProjects = Array.isArray(projects) ? projects : [];
+
   // Poll build progress
   useEffect(() => {
     if (!currentProjectId || viewMode !== 'building') return;
@@ -329,7 +334,7 @@ export const BuildPage: React.FC = () => {
   const loadTemplates = async () => {
     try {
       const response = await listTemplates();
-      setTemplates(response.templates);
+      setTemplates(Array.isArray(response?.templates) ? response.templates : []);
     } catch (err) {
       // Use default templates if API fails
       setTemplates([
@@ -343,7 +348,7 @@ export const BuildPage: React.FC = () => {
   const loadProjects = async () => {
     try {
       const response = await listProjects();
-      setProjects(response.projects);
+      setProjects(Array.isArray(response?.projects) ? response.projects : []);
     } catch (err) {
       logger.error('Failed to load projects', err);
     }
@@ -375,7 +380,7 @@ export const BuildPage: React.FC = () => {
         project_type: selectedTemplate,
       });
 
-      if (response.files && response.files.length > 0) {
+      if (response?.files && Array.isArray(response.files) && response.files.length > 0) {
         setGeneratedFiles(response.files);
         setSelectedFile(response.files[0]);
         setSetupInstructions(response.setup_instructions || '');
@@ -538,11 +543,11 @@ export const BuildPage: React.FC = () => {
   };
 
   const handleDownloadZip = async () => {
-    if (generatedFiles.length === 0) return;
+    if (safeGeneratedFiles.length === 0) return;
 
     try {
       const zip = new JSZip();
-      generatedFiles.forEach(file => {
+      safeGeneratedFiles.forEach(file => {
         zip.file(file.path, file.content);
       });
       
@@ -911,12 +916,12 @@ export const BuildPage: React.FC = () => {
   };
 
   const handleSaveToBackend = async () => {
-    if (generatedFiles.length === 0) return;
+    if (safeGeneratedFiles.length === 0) return;
 
     try {
       // Create ZIP and upload
       const zip = new JSZip();
-      generatedFiles.forEach(file => {
+      safeGeneratedFiles.forEach(file => {
         zip.file(file.path, file.content);
       });
       
@@ -972,7 +977,7 @@ export const BuildPage: React.FC = () => {
   // Build file tree structure
   const buildFileTree = () => {
     const tree: any = {};
-    generatedFiles.forEach(file => {
+    (Array.isArray(generatedFiles) ? generatedFiles : []).forEach(file => {
       const parts = file.path.split('/');
       let current = tree;
       parts.forEach((part, idx) => {
@@ -1045,7 +1050,7 @@ export const BuildPage: React.FC = () => {
               >
                 <FolderIcon />
                 <span>Project Files</span>
-                <span className={styles.badge}>{generatedFiles.length}</span>
+                <span className={styles.badge}>{safeGeneratedFiles.length}</span>
               </button>
               <button 
                 className={`${styles.tabButton} ${showPreview ? styles.active : ''}`}
@@ -1063,12 +1068,12 @@ export const BuildPage: React.FC = () => {
           >
             <FolderIcon />
             <span>My Projects</span>
-            {projects.length > 0 && <span className={styles.badge}>{projects.length}</span>}
+            {safeProjects.length > 0 && <span className={styles.badge}>{safeProjects.length}</span>}
           </button>
           
           {/* Stats */}
-          {generatedFiles.length > 0 && (
-            <span className={styles.statItem}>{generatedFiles.length} files created</span>
+          {safeGeneratedFiles.length > 0 && (
+            <span className={styles.statItem}>{safeGeneratedFiles.length} files created</span>
           )}
         </div>
         
@@ -1087,7 +1092,7 @@ export const BuildPage: React.FC = () => {
           />
           
           {/* Action Buttons - Show when in result mode */}
-          {viewMode === 'result' && generatedFiles.length > 0 && (
+          {viewMode === 'result' && safeGeneratedFiles.length > 0 && (
             <>
               <button onClick={handleDownloadZip} className={styles.tabButton}>
                 <DownloadIcon />
@@ -1251,7 +1256,7 @@ export const BuildPage: React.FC = () => {
                 <span className={styles.successIcon}><CheckIcon /></span>
                 <div>
                   <h2>Project Generated!</h2>
-                  <p>{generatedFiles.length} files created</p>
+                  <p>{safeGeneratedFiles.length} files created</p>
                 </div>
               </div>
               <div className={styles.resultActions}>
@@ -1277,7 +1282,7 @@ export const BuildPage: React.FC = () => {
                 onClick={() => setShowPreview(false)}
               >
                 <FolderIcon /> Project Files
-                <span className={styles.tabBadge}>{generatedFiles.length}</span>
+                <span className={styles.tabBadge}>{safeGeneratedFiles.length}</span>
               </button>
               <button 
                 className={`${styles.resultTab} ${showPreview ? styles.activeTab : ''}`}
@@ -1296,7 +1301,7 @@ export const BuildPage: React.FC = () => {
                   {/* File Tree */}
                   <div className={styles.fileTree}>
                     <div className={styles.fileTreeContent}>
-                      {generatedFiles.length > 0 ? (
+                      {safeGeneratedFiles.length > 0 ? (
                         renderFileTree(buildFileTree())
                       ) : (
                         <div className={styles.emptyTree}>No files generated</div>
@@ -1485,7 +1490,7 @@ export const BuildPage: React.FC = () => {
         {viewMode === 'projects' && (
           <div className={styles.projectsView}>
             <h2>My Projects</h2>
-            {projects.length === 0 ? (
+            {safeProjects.length === 0 ? (
               <div className={styles.emptyState}>
                 <span className={styles.emptyIcon}><MailboxIcon /></span>
                 <h3>No Projects Yet</h3>
@@ -1496,7 +1501,7 @@ export const BuildPage: React.FC = () => {
               </div>
             ) : (
               <div className={styles.projectsGrid}>
-                {(Array.isArray(projects) ? projects : []).map((project) => (
+                {safeProjects.map((project) => (
                   <div key={project.project_id} className={styles.projectCard}>
                     {/* Row 1: Title + Status */}
                     <div className={styles.projectHeader}>

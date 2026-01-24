@@ -101,6 +101,18 @@ export interface WebSearchResult {
   source: string;
 }
 
+export interface ToolResult {
+  tool_name: string;
+  success: boolean;
+  result?: {
+    action?: string;
+    url?: string;
+    page?: string;
+    [key: string]: any;
+  };
+  error?: string;
+}
+
 export interface ResonantChatResponse {
   message: ResonantChatMessage & { xyz?: [number, number, number] };
   anchors: string[];
@@ -111,6 +123,7 @@ export interface ResonantChatResponse {
   chatId?: string; // Chat ID for persistence
   generatedImages?: GeneratedImage[];
   webSearchResults?: WebSearchResult[];
+  toolResults?: ToolResult[];
 }
 
 /**

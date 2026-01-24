@@ -621,6 +621,17 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
       
       logger.info('[FloatingChatWidget] Response received:', response);
 
+      // Handle tool results (e.g., navigation)
+      if (response.toolResults && response.toolResults.length > 0) {
+        for (const toolResult of response.toolResults) {
+          if (toolResult.success && toolResult.result?.action === 'navigate' && toolResult.result?.url) {
+            logger.info('[FloatingChatWidget] Navigation tool executed:', toolResult.result.url);
+            // Use window.location for navigation
+            window.location.href = toolResult.result.url;
+          }
+        }
+      }
+
       // Ensure content is always a string - response.message is a ResonantChatMessage object
       let assistantContent = '';
       if (response.message?.content) {

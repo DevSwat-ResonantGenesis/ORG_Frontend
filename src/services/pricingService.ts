@@ -16,7 +16,7 @@ const DEFAULT_PRICING = {
       id: 'developer',
       name: 'Developer',
       price: { monthly: 0, yearly: 0 },
-      credits: { included: 10000, rollover: false, topups: false },
+      credits: { included: 1000, rollover: false, topups: false },
       limits: {
         agents: { active: 3, autonomousMode: false, teams: false },
         chat: { conversations: -1, messagesPerDay: -1, messagesPerConversation: -1 },
