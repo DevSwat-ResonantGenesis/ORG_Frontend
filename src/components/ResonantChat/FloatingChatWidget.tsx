@@ -165,39 +165,17 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
   const buttonRef = useRef<HTMLButtonElement>(null);
   const resizeHandleRef = useRef<HTMLDivElement>(null);
 
-  // Load conversation history when opening - sync with ResonantChatPage
+  // Load existing conversation from localStorage - DO NOT auto-create new conversations
+  // New conversations should only be created when user explicitly starts a new chat
   useEffect(() => {
     if (!isLoggedIn) return;
 
-    let cancelled = false;
-
-    const ensureConversation = async () => {
-      // Check localStorage first (synced with ResonantChatPage)
-      let conversationId = localStorage.getItem(chatStorageKey);
-
-      if (!conversationId) {
-        try {
-          const newChat = await createChat();
-          const newChatId = getChatIdFromResponse(newChat);
-          if (newChatId) {
-            conversationId = newChatId;
-            localStorage.setItem(chatStorageKey, newChatId);
-          }
-        } catch (error) {
-          logger.error('Failed to initialize floating chat conversation', error);
-        }
-      }
-
-      if (!cancelled && conversationId) {
-        setCurrentConversationId(conversationId);
-      }
-    };
-
-    ensureConversation();
-
-    return () => {
-      cancelled = true;
-    };
+    // Only load existing conversation, never auto-create
+    const conversationId = localStorage.getItem(chatStorageKey);
+    if (conversationId) {
+      setCurrentConversationId(conversationId);
+    }
+    // If no conversation exists, user can start one by typing a message
   }, [isLoggedIn]);
 
   useEffect(() => {
