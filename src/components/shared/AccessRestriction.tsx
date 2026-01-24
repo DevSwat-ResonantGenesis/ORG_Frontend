@@ -164,7 +164,7 @@ export const AccessRestriction: React.FC<AccessRestrictionProps> = ({
                 <li>Full Control Plane access</li>
                 <li>Advanced analytics & metrics</li>
                 <li>Priority support</li>
-                <li>10,000 API calls/month</li>
+                <li>1,000 API calls/month</li>
               </>
             )}
             {requiredPlan === 'pro' && (

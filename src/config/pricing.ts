@@ -138,8 +138,8 @@ export const PLANS: Plan[] = [
     },
     description: 'For solo builders exploring ResonantGenesis. Get started with essential features and limited credits to test the platform.',
     credits: {
-      included: 10000,
-      display: '10,000 / month',
+      included: 1000,
+      display: '1,000 / month',
       rollover: false,
       topups: true,
       note: 'No rollover • Top-ups available',
@@ -184,7 +184,7 @@ export const PLANS: Plan[] = [
     },
     features: [
       'Free forever',
-      '10,000 credits/month',
+      '1,000 credits/month',
       'Unlimited agents (billed by credits)',
       'Unlimited conversations (limited by credits only)',
       '100 MB storage, 5 RAG documents',

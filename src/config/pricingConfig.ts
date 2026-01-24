@@ -178,7 +178,7 @@ export const getSimplePlanLimits = (planId: string): SimplePlanLimits => {
 
 export const getPlanCredits = (planId: string): number => {
   const plan = getPlanById(planId);
-  if (!plan) return 10000; // Default to developer tier (10K credits)
+  if (!plan) return 1000; // Default to developer tier (1K credits)
   return plan.credits.included;
 };
 

@@ -124,7 +124,7 @@ export const PLANS: PlanOption[] = [
     isTrial: false,
     requiresApiKey: false,
     limits: {
-      tokens: 10000,         // 10,000 credits/month (no rollover, top-ups available)
+      tokens: 1000,          // 1,000 credits/month (no rollover, top-ups available)
       agents: -1,            // Unlimited - we bill by credits only
       teams: -1,             // Unlimited - we bill by credits only
       users: 1,
@@ -139,7 +139,7 @@ export const PLANS: PlanOption[] = [
     },
     features: [
       'Free forever',
-      '10,000 credits/month',
+      '1,000 credits/month',
       'Unlimited agents (billed by credits)',
       'Unlimited conversations (limited by credits only)',
       '100 MB storage, 5 RAG documents',
