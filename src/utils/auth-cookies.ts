@@ -60,7 +60,12 @@ const getCookie = (name: string): string | null => {
  * Delete a cookie
  */
 const deleteCookie = (name: string) => {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  const base = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  document.cookie = base;
+  document.cookie = `${base} SameSite=Strict;`;
+  if (window.location.protocol === 'https:') {
+    document.cookie = `${base} SameSite=Strict; Secure;`;
+  }
 };
 
 /**
@@ -123,10 +128,13 @@ export const clearSessionData = () => {
   const legacyKeys = [
     'rg_session_data',
     'rg_access_token',
+    'rg_refresh_token',
     'rg_api_key',
     'rg_email',
     'rg_role',
     'rg_org_id',
+    'owner_token',
+    'owner_token_expires',
     'resonant-chat-current-conversation',
     'resonant-chat-user-id',
     'ide-project-id',

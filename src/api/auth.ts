@@ -1,6 +1,8 @@
 import logger from '../utils/logger';
 import client from './client';
 import fastapiClient from './fastapiClient';
+import { clearSession } from '../utils/auth';
+import { useSessionStore } from '@/stores';
 
 const TOKEN_KEY = 'rg_access_token';
 const REFRESH_TOKEN_KEY = 'rg_refresh_token';
@@ -55,10 +57,25 @@ export const logout = async () => {
     // Fallback: manually clear session data if import fails
     localStorage.removeItem('rg_session_data');
     localStorage.removeItem('rg_access_token');
+    localStorage.removeItem('rg_refresh_token');
     localStorage.removeItem('rg_api_key');
     localStorage.removeItem('rg_email');
     localStorage.removeItem('rg_role');
     localStorage.removeItem('rg_org_id');
+    localStorage.removeItem('owner_token');
+    localStorage.removeItem('owner_token_expires');
+  }
+
+  try {
+    clearSession();
+  } catch {
+    // ignore
+  }
+
+  try {
+    useSessionStore.getState().logout();
+  } catch {
+    // ignore
   }
 };
 

@@ -8,6 +8,7 @@ import fastapiClient from '../../api/fastapiClient';
 import { fetchUsageMetrics, type UsageMetrics } from '../../api/usage';
 import { listConversations } from '../../api/rag';
 import { getCreditPacks, type CreditPack } from '../../api/billing';
+import { logout as apiLogout } from '../../api/auth';
 import { Button } from '../../components/ui';
 import { ApiKeyManager } from '../../components/features/ApiKeyManager';
 import { getSession, clearSession } from '../../utils/auth';
@@ -257,9 +258,15 @@ const ProfilePage = () => {
     }
   };
 
-  const handleLogout = () => {
-    clearSession();
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await apiLogout();
+    } catch {
+      // ignore
+    } finally {
+      clearSession();
+      window.location.href = '/login';
+    }
   };
 
   const handleCopyReferral = () => {

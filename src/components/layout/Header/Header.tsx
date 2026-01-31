@@ -126,7 +126,7 @@ export const Header: React.FC<HeaderProps> = ({
       import('@/utils/auth-cookies').then(({ clearSessionData }) => {
         clearSessionData();
       }).catch(() => {});
-      navigate('/login', { replace: true });
+      window.location.href = '/login';
     }
   };
 

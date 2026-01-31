@@ -77,7 +77,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
     } finally {
       clearSession();
       onClose();
-      navigate('/');
+      window.location.href = '/login';
     }
   };
 
