@@ -1,12 +1,12 @@
 import React, { memo } from 'react';
-import SimpleFactory from './SimpleFactory';
+import AdvancedFactory from './AdvancedFactory';
 
 interface FactoryPanelProps {
   className?: string;
 }
 
 const FactoryPanelComponent: React.FC<FactoryPanelProps> = ({ className }) => {
-  return <SimpleFactory className={className} />;
+  return <AdvancedFactory className={className} />;
 };
 
 export const FactoryPanel = memo(FactoryPanelComponent);
