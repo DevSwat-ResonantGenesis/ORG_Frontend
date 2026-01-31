@@ -61,10 +61,23 @@ const getCookie = (name: string): string | null => {
  */
 const deleteCookie = (name: string) => {
   const base = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-  document.cookie = base;
-  document.cookie = `${base} SameSite=Strict;`;
-  if (window.location.protocol === 'https:') {
-    document.cookie = `${base} SameSite=Strict; Secure;`;
+  const hostname = window.location.hostname;
+  const parts = hostname.split('.').filter(Boolean);
+  const rootDomain = parts.length >= 2 ? parts.slice(-2).join('.') : hostname;
+  const domainVariants = [
+    '',
+    ` domain=${hostname};`,
+    ` domain=.${hostname};`,
+    ` domain=${rootDomain};`,
+    ` domain=.${rootDomain};`,
+  ];
+
+  for (const domain of domainVariants) {
+    document.cookie = `${base}${domain}`;
+    document.cookie = `${base} SameSite=Strict;${domain}`;
+    if (window.location.protocol === 'https:') {
+      document.cookie = `${base} SameSite=Strict; Secure;${domain}`;
+    }
   }
 };
 

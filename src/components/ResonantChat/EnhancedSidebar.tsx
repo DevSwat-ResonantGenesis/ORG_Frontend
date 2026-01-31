@@ -19,6 +19,7 @@ import {
 import { ProviderSelector, type Provider } from '@/components/ui/ProviderSelector';
 import { clearSession, getSession } from '@/utils/auth';
 import { clearSessionData, isAuthenticated } from '@/utils/auth-cookies';
+import { logout as apiLogout } from '@/api/auth';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './EnhancedSidebar-2025.module.css';
@@ -223,12 +224,18 @@ const EnhancedSidebar: React.FC<EnhancedSidebarProps> = ({
   }, []);
 
   const handleLogout = async () => {
-    clearSessionData();
-    clearSession();
-    setIsLoggedIn(false);
-    setUser(null);
-    navigate('/login');
-    if (onClose) onClose();
+    try {
+      await apiLogout();
+    } catch {
+      // ignore
+    } finally {
+      clearSessionData();
+      clearSession();
+      setIsLoggedIn(false);
+      setUser(null);
+      if (onClose) onClose();
+      window.location.href = '/login';
+    }
   };
 
   const handleProfile = () => {

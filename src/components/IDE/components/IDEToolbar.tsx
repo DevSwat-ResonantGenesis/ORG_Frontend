@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useIDE } from '../context/IDEContext';
 import { useThemeStore } from '@/store/themeStore';
 import { getSessionData, clearSessionData } from '@/utils/auth-cookies';
+import { logout as apiLogout } from '@/api/auth';
+import { clearSession } from '@/utils/auth';
 import styles from '../CursorIDELayout.module.css';
 
 interface IDEToolbarProps {
@@ -318,7 +320,7 @@ export const IDEToolbar = memo(function IDEToolbar({
                 Settings
               </button>
               <div className={styles.accountMenuDivider} />
-              <button className={`${styles.accountMenuItem} ${styles.danger}`} onClick={() => { clearSessionData(); onLogout ? onLogout() : navigate('/login'); setShowAccountMenu(false); }}>
+              <button className={`${styles.accountMenuItem} ${styles.danger}`} onClick={() => { apiLogout().catch(() => {}).finally(() => { clearSessionData(); clearSession(); onLogout ? onLogout() : (window.location.href = '/login'); setShowAccountMenu(false); }); }}>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M6 2H3C2.5 2 2 2.5 2 3V13C2 13.5 2.5 14 3 14H6M11 11L14 8L11 5M6 8H14" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
