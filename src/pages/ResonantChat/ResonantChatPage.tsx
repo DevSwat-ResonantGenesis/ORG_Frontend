@@ -1662,6 +1662,22 @@ const ResonantChatPage: React.FC = () => {
         teamId: (agentMode && selectedTeamId) ? selectedTeamId : undefined, // Pass teamId if in Team mode
       });
 
+      // Handle tool results (e.g., navigation)
+      if (resonantResponse.toolResults && resonantResponse.toolResults.length > 0) {
+        for (const toolResult of resonantResponse.toolResults) {
+          if (toolResult.success && toolResult.result?.action === 'navigate' && toolResult.result?.url) {
+            const url = toolResult.result.url;
+            const isInternal = typeof url === 'string' && url.startsWith('/') && !url.startsWith('//');
+            logger.info('[ResonantChatPage] Navigation tool executed:', url);
+            if (isInternal) {
+              navigate(url);
+            } else {
+              window.open(url, '_blank', 'noopener,noreferrer');
+            }
+          }
+        }
+      }
+
       // Save chatId from response if provided (backend creates chat if not provided)
       if (resonantResponse.chatId && !currentConversationId) {
         console.log('💬 Saving new chatId:', resonantResponse.chatId);
