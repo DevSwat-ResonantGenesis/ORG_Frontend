@@ -1658,8 +1658,8 @@ const ResonantChatPage: React.FC = () => {
         code_selection: codeSelection || undefined,
         preferred_provider: selectedProvider !== 'auto' ? selectedProvider : undefined,
         use_rag: useHashSphere ? false : true, // If Hash Sphere is enabled, RAG is optional
-        agent_hash: (agentMode && !selectedTeamId) ? selectedAgentHash || undefined : undefined, // Pass agent hash only if not in Team mode
-        teamId: (agentMode && selectedTeamId) ? selectedTeamId : undefined, // Pass teamId if in Team mode
+        agent_hash: (!selectedTeamId) ? selectedAgentHash || undefined : undefined,
+        teamId: selectedTeamId || undefined,
       });
 
       // Handle tool results (e.g., navigation)
