@@ -80,6 +80,8 @@ interface Message {
   driftScore?: number; // Semantic drift score 0.0-1.0
   auditHash?: string; // Immutable audit entry reference
   lifecycleState?: string; // Agent lifecycle state
+  generatedImages?: Array<{ url?: string; base64_data?: string; revised_prompt?: string; model: string; size: string }>;
+  webSearchResults?: Array<{ title: string; url: string; snippet: string; source: string }>;
 }
 
 interface FloatingChatWidgetProps {
@@ -559,6 +561,8 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
             xyz: msg.xyz,
             modules: msg.modules,
             metrics: msg.metrics,
+            generatedImages: msg.generatedImages,
+            webSearchResults: msg.webSearchResults,
           };
         });
         logger.info('Formatted messages:', formattedMessages.length);
@@ -654,6 +658,8 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
         anchors: response.anchors,
         resonanceScore: response.resonanceScore,
         xyz: response.message?.xyz,
+        generatedImages: response.generatedImages,
+        webSearchResults: response.webSearchResults,
       };
 
       const updatedMessages = [...messages, userMessage, assistantMessage];
@@ -1009,12 +1015,108 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
                               h2: ({ children }) => <h2 className={messageStyles.markdownHeading}>{children}</h2>,
                               h3: ({ children }) => <h3 className={messageStyles.markdownHeading}>{children}</h3>,
                               blockquote: ({ children }) => <blockquote className={messageStyles.markdownBlockquote}>{children}</blockquote>,
-                              a: ({ href, children }) => <a href={href} className={messageStyles.markdownLink} target="_blank" rel="noopener noreferrer">{children}</a>,
+                              a: ({ href, children }) => {
+                                const isInternal = typeof href === 'string' && href.startsWith('/') && !href.startsWith('//');
+                                if (isInternal) {
+                                  return (
+                                    <a
+                                      href={href}
+                                      className={messageStyles.markdownLink}
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        navigate(href);
+                                      }}
+                                    >
+                                      {children}
+                                    </a>
+                                  );
+                                }
+                                return (
+                                  <a href={href} className={messageStyles.markdownLink} target="_blank" rel="noopener noreferrer">
+                                    {children}
+                                  </a>
+                                );
+                              },
                             }}
                           >
                             {typeof msg.content === 'string' ? msg.content : String(msg.content || '')}
                           </ReactMarkdown>
                         </div>
+                        {msg.role === 'assistant' && msg.webSearchResults && msg.webSearchResults.length > 0 && (
+                          <div style={{
+                            marginTop: '10px',
+                            padding: '10px',
+                            background: 'rgba(14, 165, 233, 0.08)',
+                            borderRadius: '10px',
+                            border: '1px solid rgba(14, 165, 233, 0.18)',
+                          }}>
+                            <div style={{
+                              fontSize: '12px',
+                              color: 'rgba(14, 165, 233, 0.9)',
+                              marginBottom: '8px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                            }}>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                              </svg>
+                              Web Search Results ({msg.webSearchResults.length})
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                              {msg.webSearchResults.map((r, idx) => (
+                                <div key={`${msg.id}-ws-${idx}`} style={{
+                                  padding: '8px',
+                                  borderRadius: '8px',
+                                  background: 'rgba(0, 0, 0, 0.15)',
+                                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                                }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', alignItems: 'flex-start' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                      <a
+                                        href={r.url}
+                                        className={messageStyles.markdownLink}
+                                        target={r.url?.startsWith('/') ? undefined : '_blank'}
+                                        rel={r.url?.startsWith('/') ? undefined : 'noopener noreferrer'}
+                                        onClick={(e) => {
+                                          if (r.url?.startsWith('/')) {
+                                            e.preventDefault();
+                                            navigate(r.url);
+                                          }
+                                        }}
+                                        style={{ fontWeight: 600 }}
+                                      >
+                                        {r.title || r.url}
+                                      </a>
+                                      <div style={{ fontSize: '11px', opacity: 0.7 }}>{r.source}</div>
+                                    </div>
+                                    {r.url && (
+                                      <button
+                                        className={styles.sendButton}
+                                        onClick={() => {
+                                          if (r.url.startsWith('/')) {
+                                            navigate(r.url);
+                                          } else {
+                                            window.open(r.url, '_blank', 'noopener,noreferrer');
+                                          }
+                                        }}
+                                        style={{ padding: '6px 10px' }}
+                                      >
+                                        Open
+                                      </button>
+                                    )}
+                                  </div>
+                                  {r.snippet && (
+                                    <div style={{ marginTop: '6px', fontSize: '12px', lineHeight: 1.4, opacity: 0.9 }}>
+                                      {r.snippet}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                         {/* Hash Sphere Module Outputs */}
                         {msg.role === 'assistant' && msg.modules && (
                           <ModuleOutputs modules={msg.modules} collapsed={true} />

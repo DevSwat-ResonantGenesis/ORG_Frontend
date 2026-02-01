@@ -558,6 +558,8 @@ const ResonantChatPage: React.FC = () => {
                 anchors: msg.anchors || [],
                 resonanceScore: msg.resonanceScore || msg.resonance_score || 0,
                 xyz: msg.xyz || (msg.xyz_x !== undefined ? [msg.xyz_x, msg.xyz_y || 0, msg.xyz_z || 0] : undefined),
+                generatedImages: msg.generatedImages || [],
+                webSearchResults: msg.webSearchResults || [],
               }));
               logger.info('[ResonantChatPage] Loaded messages:', loadedMessages.length);
               setMessages(loadedMessages);
@@ -3375,7 +3377,28 @@ const ResonantChatPage: React.FC = () => {
                             h2: ({ children }) => <h2 className={styles.markdownHeading}>{children}</h2>,
                             h3: ({ children }) => <h3 className={styles.markdownHeading}>{children}</h3>,
                             blockquote: ({ children }) => <blockquote className={styles.markdownBlockquote}>{children}</blockquote>,
-                            a: ({ href, children }) => <a href={href} className={styles.markdownLink} target="_blank" rel="noopener noreferrer">{children}</a>,
+                            a: ({ href, children }) => {
+                              const isInternal = typeof href === 'string' && href.startsWith('/') && !href.startsWith('//');
+                              if (isInternal) {
+                                return (
+                                  <a
+                                    href={href}
+                                    className={styles.markdownLink}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      navigate(href);
+                                    }}
+                                  >
+                                    {children}
+                                  </a>
+                                );
+                              }
+                              return (
+                                <a href={href} className={styles.markdownLink} target="_blank" rel="noopener noreferrer">
+                                  {children}
+                                </a>
+                              );
+                            },
                             table: ({ children }) => <table className={styles.markdownTable}>{children}</table>,
                             thead: ({ children }) => <thead>{children}</thead>,
                             tbody: ({ children }) => <tbody>{children}</tbody>,
@@ -3442,7 +3465,87 @@ const ResonantChatPage: React.FC = () => {
                           ))}
                         </div>
                       )}
-                      {/* Web Search Results Display - REMOVED */}
+                      {message.role === 'assistant' && message.webSearchResults && message.webSearchResults.length > 0 && (
+                        <div style={{
+                          marginTop: '12px',
+                          padding: '12px',
+                          background: 'rgba(14, 165, 233, 0.08)',
+                          borderRadius: '12px',
+                          border: '1px solid rgba(14, 165, 233, 0.18)',
+                        }}>
+                          <div style={{
+                            width: '100%',
+                            fontSize: '12px',
+                            color: 'rgba(14, 165, 233, 0.9)',
+                            marginBottom: '8px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                          }}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <circle cx="11" cy="11" r="8" />
+                              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                            Web Search Results ({message.webSearchResults.length})
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            {message.webSearchResults.map((r, idx) => (
+                              <div key={`${message.id}-ws-${idx}`} style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '6px',
+                                padding: '10px',
+                                borderRadius: '10px',
+                                background: 'rgba(0, 0, 0, 0.15)',
+                                border: '1px solid rgba(255, 255, 255, 0.06)',
+                              }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', alignItems: 'flex-start' }}>
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                    <a
+                                      href={r.url}
+                                      className={styles.markdownLink}
+                                      target={r.url?.startsWith('/') ? undefined : '_blank'}
+                                      rel={r.url?.startsWith('/') ? undefined : 'noopener noreferrer'}
+                                      onClick={(e) => {
+                                        if (r.url?.startsWith('/')) {
+                                          e.preventDefault();
+                                          navigate(r.url);
+                                        }
+                                      }}
+                                      style={{ fontWeight: 600, fontSize: '13px' }}
+                                    >
+                                      {r.title || r.url}
+                                    </a>
+                                    <div style={{ fontSize: '11px', opacity: 0.7 }}>
+                                      {r.source}
+                                    </div>
+                                  </div>
+                                  {r.url && (
+                                    <button
+                                      className={styles['resonant-chat-input-button']}
+                                      onClick={() => {
+                                        if (r.url.startsWith('/')) {
+                                          navigate(r.url);
+                                        } else {
+                                          window.open(r.url, '_blank', 'noopener,noreferrer');
+                                        }
+                                      }}
+                                      style={{ padding: '6px 10px', fontSize: '12px' }}
+                                    >
+                                      <span className={styles['resonant-chat-input-label']}>Open</span>
+                                    </button>
+                                  )}
+                                </div>
+                                {r.snippet && (
+                                  <div style={{ fontSize: '12px', lineHeight: 1.4, opacity: 0.9 }}>
+                                    {r.snippet}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                       {/* Hash Sphere Module Outputs */}
                       {message.role === 'assistant' && message.modules && (
                         <ModuleOutputs modules={message.modules} collapsed={true} />
