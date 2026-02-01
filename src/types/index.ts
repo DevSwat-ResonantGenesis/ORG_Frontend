@@ -196,6 +196,8 @@ export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
 export interface Agent {
   id: string;
   hash: string;
+  dsid?: string;
+  persisted?: boolean;
   name: string;
   type: AgentType;
   status: AgentStatus;

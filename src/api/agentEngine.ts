@@ -80,6 +80,8 @@ export interface WorkflowTrigger {
   trigger_count: number;
 }
 
+const AGENTS_BASE = '/api/v1/agents';
+
 // Agent Definition APIs
 export const createAgent = async (data: {
   name: string;
@@ -91,22 +93,22 @@ export const createAgent = async (data: {
   tools?: string[];
   safety_config?: Record<string, unknown>;
 }): Promise<AgentDefinition> => {
-  const res = await client.post('/agents/', data);
+  const res = await client.post(`${AGENTS_BASE}`, data);
   return res.data;
 };
 
 export const listAgents = async (): Promise<AgentDefinition[]> => {
-  const res = await client.get('/agents/');
+  const res = await client.get(`${AGENTS_BASE}`);
   return res.data;
 };
 
 export const getAgent = async (agentId: string): Promise<AgentDefinition> => {
-  const res = await client.get(`/agents/${agentId}`);
+  const res = await client.get(`${AGENTS_BASE}/${agentId}`);
   return res.data;
 };
 
 export const deleteAgent = async (agentId: string): Promise<void> => {
-  await client.delete(`/agents/${agentId}`);
+  await client.delete(`${AGENTS_BASE}/${agentId}`);
 };
 
 // Session APIs
@@ -115,7 +117,7 @@ export const startSession = async (
   goal: string,
   context?: Record<string, unknown>
 ): Promise<AgentSession> => {
-  const res = await client.post(`/agents/${agentId}/sessions`, {
+  const res = await client.post(`${AGENTS_BASE}/${agentId}/sessions`, {
     goal,
     context,
   });
@@ -127,22 +129,22 @@ export const listSessions = async (
   status?: string
 ): Promise<AgentSession[]> => {
   const params = status ? { status_filter: status } : {};
-  const res = await client.get(`/agents/${agentId}/sessions`, { params });
+  const res = await client.get(`${AGENTS_BASE}/${agentId}/sessions`, { params });
   return res.data;
 };
 
 export const getSession = async (sessionId: string): Promise<AgentSession> => {
-  const res = await client.get(`/agents/sessions/${sessionId}`);
+  const res = await client.get(`${AGENTS_BASE}/sessions/${sessionId}`);
   return res.data;
 };
 
 export const getSessionSteps = async (sessionId: string): Promise<AgentStep[]> => {
-  const res = await client.get(`/agents/sessions/${sessionId}/steps`);
+  const res = await client.get(`${AGENTS_BASE}/sessions/${sessionId}/steps`);
   return res.data;
 };
 
 export const cancelSession = async (sessionId: string): Promise<void> => {
-  await client.post(`/agents/sessions/${sessionId}/cancel`);
+  await client.post(`${AGENTS_BASE}/sessions/${sessionId}/cancel`);
 };
 
 export const approveStep = async (
@@ -150,7 +152,7 @@ export const approveStep = async (
   stepId: string,
   approved: boolean = true
 ): Promise<void> => {
-  await client.post(`/agents/sessions/${sessionId}/approve/${stepId}`, null, {
+  await client.post(`${AGENTS_BASE}/sessions/${sessionId}/approve/${stepId}`, null, {
     params: { approved },
   });
 };
@@ -166,13 +168,13 @@ export const createTool = async (data: {
   risk_level?: string;
   requires_approval?: boolean;
 }): Promise<ToolDefinition> => {
-  const res = await client.post('/agents/tools', data);
+  const res = await client.post(`${AGENTS_BASE}/tools`, data);
   return res.data;
 };
 
 export const listTools = async (category?: string): Promise<ToolDefinition[]> => {
   const params = category ? { category } : {};
-  const res = await client.get('/agents/tools', { params });
+  const res = await client.get(`${AGENTS_BASE}/tools`, { params });
   return res.data;
 };
 
@@ -186,12 +188,12 @@ export const createSafetyRule = async (data: {
   parameters?: Record<string, unknown>;
   priority?: number;
 }): Promise<SafetyRule> => {
-  const res = await client.post('/agents/safety-rules', data);
+  const res = await client.post(`${AGENTS_BASE}/safety-rules`, data);
   return res.data;
 };
 
 export const listSafetyRules = async (): Promise<SafetyRule[]> => {
-  const res = await client.get('/agents/safety-rules');
+  const res = await client.get(`${AGENTS_BASE}/safety-rules`);
   return res.data;
 };
 
@@ -208,18 +210,18 @@ export const createTrigger = async (
     input_template?: Record<string, unknown>;
   }
 ): Promise<WorkflowTrigger> => {
-  const res = await client.post(`/agents/${agentId}/triggers`, data);
+  const res = await client.post(`${AGENTS_BASE}/${agentId}/triggers`, data);
   return res.data;
 };
 
 export const listTriggers = async (agentId: string): Promise<WorkflowTrigger[]> => {
-  const res = await client.get(`/agents/${agentId}/triggers`);
+  const res = await client.get(`${AGENTS_BASE}/${agentId}/triggers`);
   return res.data;
 };
 
 // Health check
 export const healthCheck = async (): Promise<{ status: string }> => {
-  const res = await client.get('/agents/health');
+  const res = await client.get(`${AGENTS_BASE}/health`);
   return res.data;
 };
 

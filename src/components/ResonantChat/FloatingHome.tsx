@@ -52,7 +52,7 @@ const allProviders = [
   { id: 'auto', name: 'Auto' },
   { id: 'openai', name: 'GPT-4' },
   { id: 'anthropic', name: 'Claude' },
-  { id: 'google', name: 'Gemini' },
+  { id: 'gemini', name: 'Gemini' },
   { id: 'mistral', name: 'Mistral' },
   { id: 'groq', name: 'Groq' },
 ];
@@ -73,6 +73,12 @@ export const FloatingHome: React.FC<FloatingHomeProps> = ({
   const [loading, setLoading] = useState(false);
   const [activeSelector, setActiveSelector] = useState<'agent' | 'provider' | 'team' | null>(null);
 
+  const normalizeProvider = (provider: string) => {
+    if (provider === 'claude') return 'anthropic';
+    if (provider === 'google') return 'gemini';
+    return provider;
+  };
+
   // Load agents, teams, and available providers
   useEffect(() => {
     if (!isLoggedIn) return;
@@ -87,7 +93,7 @@ export const FloatingHome: React.FC<FloatingHomeProps> = ({
         ]);
         setAgents(agentsData.slice(0, 8));
         setTeams(teamsData.slice(0, 8));
-        setAvailableProviders(providersData.providers || []);
+        setAvailableProviders((providersData.providers || []).map(normalizeProvider));
       } catch (err) {
         console.error('Failed to load agents/teams', err);
       } finally {
@@ -144,7 +150,10 @@ export const FloatingHome: React.FC<FloatingHomeProps> = ({
               <>
                 <button
                   className={`${styles.selectorOption} ${!selectedAgentHash ? styles.selected : ''}`}
-                  onClick={() => { onAgentSelect?.(null); setActiveSelector(null); }}
+                  onClick={() => {
+                    onAgentSelect?.(null);
+                    setActiveSelector(null);
+                  }}
                 >
                   Auto
                 </button>
@@ -155,7 +164,11 @@ export const FloatingHome: React.FC<FloatingHomeProps> = ({
                     <button
                       key={agent.id}
                       className={`${styles.selectorOption} ${selectedAgentHash === agent.id ? styles.selected : ''}`}
-                      onClick={() => { onAgentSelect?.(agent.id); setActiveSelector(null); }}
+                      onClick={() => {
+                        onAgentSelect?.(agent.id);
+                        onTeamSelect?.(null);
+                        setActiveSelector(null);
+                      }}
                     >
                       {agent.name}
                     </button>
@@ -182,7 +195,10 @@ export const FloatingHome: React.FC<FloatingHomeProps> = ({
               <>
                 <button
                   className={`${styles.selectorOption} ${!selectedTeamId ? styles.selected : ''}`}
-                  onClick={() => { onTeamSelect?.(null); setActiveSelector(null); }}
+                  onClick={() => {
+                    onTeamSelect?.(null);
+                    setActiveSelector(null);
+                  }}
                 >
                   None
                 </button>
@@ -193,7 +209,11 @@ export const FloatingHome: React.FC<FloatingHomeProps> = ({
                     <button
                       key={team.id}
                       className={`${styles.selectorOption} ${selectedTeamId === team.id ? styles.selected : ''}`}
-                      onClick={() => { onTeamSelect?.(team.id); setActiveSelector(null); }}
+                      onClick={() => {
+                        onTeamSelect?.(team.id);
+                        onAgentSelect?.(null);
+                        setActiveSelector(null);
+                      }}
                     >
                       {team.name}
                     </button>

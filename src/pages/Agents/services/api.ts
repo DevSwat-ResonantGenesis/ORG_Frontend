@@ -1,7 +1,7 @@
 // ============== AGENTOS API SERVICE ==============
 // Centralized API client for all AgentOS panels
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://api.resonant.network';
+import fastapiClient from '../../../api/fastapiClient';
 
 interface ApiOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -10,35 +10,17 @@ interface ApiOptions {
 }
 
 class AgentOSApi {
-  private baseUrl: string;
-
-  constructor(baseUrl: string = API_BASE) {
-    this.baseUrl = baseUrl;
-  }
-
-  private getAuthHeaders(): Record<string, string> {
-    const token = localStorage.getItem('auth_token') || '';
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    };
-  }
-
   private async request<T>(endpoint: string, options: ApiOptions = {}): Promise<T> {
     const { method = 'GET', body, headers = {} } = options;
     
     try {
-      const response = await fetch(`${this.baseUrl}${endpoint}`, {
-        method,
-        headers: { ...this.getAuthHeaders(), ...headers },
-        body: body ? JSON.stringify(body) : undefined,
+      const response = await fastapiClient.request<T>({
+        url: endpoint,
+        method: method as any,
+        headers,
+        data: body,
       });
-
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
-      }
-
-      return await response.json();
+      return response.data;
     } catch (error) {
       console.error(`API request failed: ${endpoint}`, error);
       throw error;

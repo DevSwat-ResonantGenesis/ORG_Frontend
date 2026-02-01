@@ -114,7 +114,7 @@ const CreateTeamPage: React.FC = () => {
             agentId: agentId,
             inputKey: inputKey,
             outputKey: outputKey,
-            role: agent?.meta_data?.role || agent?.name,
+            role: agent?.name,
           });
         });
         

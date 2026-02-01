@@ -2,6 +2,9 @@ import React, { memo, useState, useCallback, useEffect } from 'react';
 import { useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import type { Agent } from '../../../../../types';
+import { createAgent as createAgentApi } from '../../../../../api/agents';
+import { fetchUserApiKeys } from '../../../../../api/userApiKeys';
+import { getProviders as getResonantProviders } from '../../../../../api/resonantChat';
 import styles from './AdvancedFactory.module.css';
 
 // ============== ADVANCED AGENT FACTORY ==============
@@ -54,22 +57,31 @@ interface AdvancedConfig {
   autoScale: boolean;
   minInstances: number;
   maxInstances: number;
+
+  // Routing
+  routingMode: 'auto' | 'manual' | 'fallback';
+  fallbackChain: string[];
 }
 
 const PROVIDERS = {
-  openai: { 
-    name: 'OpenAI', 
-    models: ['gpt-4-turbo', 'gpt-4', 'gpt-4o', 'gpt-3.5-turbo', 'o1-preview', 'o1-mini'],
+  groq: {
+    name: 'Groq',
+    models: ['llama-3.3-70b-versatile', 'llama-3.1-70b-versatile', 'mixtral-8x7b-32768'],
     icon: 'Zap'
   },
-  anthropic: { 
-    name: 'Anthropic', 
-    models: ['claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku', 'claude-3.5-sonnet'],
+  openai: {
+    name: 'OpenAI',
+    models: ['gpt-4o', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'],
+    icon: 'Zap'
+  },
+  anthropic: {
+    name: 'Anthropic',
+    models: ['claude-3.5-sonnet', 'claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku'],
     icon: 'Brain'
   },
-  google: { 
-    name: 'Google', 
-    models: ['gemini-pro', 'gemini-ultra', 'gemini-1.5-pro'],
+  google: {
+    name: 'Gemini',
+    models: ['gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro'],
     icon: 'Globe'
   },
   local: { 
@@ -77,6 +89,55 @@ const PROVIDERS = {
     models: ['llama-3-70b', 'llama-3-8b', 'mistral-7b', 'codellama-34b', 'mixtral-8x7b'],
     icon: 'Server'
   },
+};
+
+type ResonantProvider = {
+  id: string;
+  provider_key?: string;
+  name: string;
+  available: boolean;
+  has_user_key?: boolean;
+  uses_credits?: boolean;
+  model?: string;
+  description?: string;
+  capabilities?: string[];
+};
+
+type ResonantProvidersResponse = {
+  providers: ResonantProvider[];
+  default?: string;
+  fallback_chain?: string[];
+  fallback_chain_provider_keys?: string[];
+  message?: string | null;
+  credits?: {
+    remaining?: number | null;
+    total?: number | null;
+    unlimited?: boolean;
+  };
+};
+
+const _normalize_provider_id = (id: string) => {
+  const v = (id || '').toLowerCase();
+  if (v === 'chatgpt') return 'openai';
+  if (v === 'gemini') return 'google';
+  if (v === 'claude') return 'anthropic';
+  return v;
+};
+
+const _category_for_capabilities = (caps?: string[]): string => {
+  const c = (caps || []).map(x => (x || '').toLowerCase());
+  if (c.includes('video')) return 'Video';
+  if (c.includes('speech') || c.includes('audio') || c.includes('voice')) return 'Speech';
+  if (c.includes('image') || c.includes('vision')) return 'Image';
+  if (c.includes('coding') || c.includes('code')) return 'Coding';
+  return 'Chat / General';
+};
+
+const _get_default_model_for_provider = (providerId: string): string => {
+  const provider = (PROVIDERS as any)[providerId];
+  const models: string[] | undefined = provider?.models;
+  if (models && models.length > 0) return models[0];
+  return '';
 };
 
 const TOOLS = [
@@ -122,8 +183,8 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
     type: 'executor',
     mode: 'governed',
     tags: [],
-    provider: 'openai',
-    model: 'gpt-4-turbo',
+    provider: 'groq',
+    model: 'llama-3.3-70b-versatile',
     systemPrompt: '',
     temperature: 0.7,
     maxTokens: 4096,
@@ -147,12 +208,157 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
     autoScale: false,
     minInstances: 1,
     maxInstances: 5,
+
+    routingMode: 'auto',
+    fallbackChain: ['groq', 'google', 'openai', 'anthropic'],
   });
 
   const [importData, setImportData] = useState('');
   const [apiKey, setApiKey] = useState('');
   const [showApiKey, setShowApiKey] = useState(false);
   const [createdAgentId, setCreatedAgentId] = useState<string | null>(null);
+
+  const [resonantProviders, setResonantProviders] = useState<ResonantProvidersResponse | null>(null);
+
+  const [providerKeyStatus, setProviderKeyStatus] = useState<Record<string, 'configured' | 'missing' | 'unknown'>>({});
+
+  useEffect(() => {
+    const loadProviderKeyStatus = async () => {
+      try {
+        const keys = await fetchUserApiKeys();
+        const configured = new Set(
+          keys
+            .filter((k) => k.isValid)
+            .map((k) => (k.provider || '').toLowerCase())
+            .filter(Boolean)
+        );
+
+        const status: Record<string, 'configured' | 'missing' | 'unknown'> = {};
+        for (const id of Object.keys(PROVIDERS)) {
+          const normalized = id.toLowerCase();
+          if (normalized === 'local') {
+            status[id] = 'configured';
+            continue;
+          }
+
+          if (configured.has(normalized)) {
+            status[id] = 'configured';
+            continue;
+          }
+
+          status[id] = 'missing';
+        }
+
+        setProviderKeyStatus(status);
+      } catch {
+        setProviderKeyStatus({});
+      }
+    };
+
+    loadProviderKeyStatus();
+  }, []);
+
+  useEffect(() => {
+    const loadProviders = async () => {
+      try {
+        const data = (await getResonantProviders()) as ResonantProvidersResponse;
+        setResonantProviders(data);
+        const chainSource = (data.fallback_chain_provider_keys || data.fallback_chain || []);
+        const chain = chainSource.map(_normalize_provider_id).filter(Boolean);
+        if (chain.length > 0) {
+          setConfig((prev) => ({
+            ...prev,
+            fallbackChain: chain,
+            provider: prev.routingMode === 'auto' ? chain[0] : prev.provider,
+            model:
+              prev.routingMode === 'auto'
+                ? _get_default_model_for_provider(chain[0]) || prev.model
+                : prev.model,
+          }));
+        }
+      } catch {
+        setResonantProviders(null);
+      }
+    };
+
+    loadProviders();
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (error) {
+          e.preventDefault();
+          setError(null);
+          return;
+        }
+      }
+
+      if (activeTab !== 'create') return;
+
+      const target = e.target as HTMLElement | null;
+      const tag = (target?.tagName || '').toLowerCase();
+      const isTextArea = tag === 'textarea';
+      if (isTextArea) return;
+
+      if (e.key === 'Enter' && !e.shiftKey) {
+        if (step < 6) {
+          if (!requiredForStep(step)) return;
+          e.preventDefault();
+          setStep((s) => Math.min(6, s + 1));
+        }
+      }
+
+      if (e.key === 'Enter' && e.shiftKey) {
+        if (step > 1) {
+          e.preventDefault();
+          setStep((s) => Math.max(1, s - 1));
+        }
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [activeTab, error, step, requiredForStep]);
+
+  const canUseProvider = useCallback((providerId: string) => {
+    const status = providerKeyStatus[providerId];
+    if (!status) return true;
+    return status === 'configured';
+  }, [providerKeyStatus]);
+
+  const providerCapsByKey = (resonantProviders?.providers || []).reduce<Record<string, string[]>>((acc, p) => {
+    const key = _normalize_provider_id(p.provider_key || p.id);
+    if (key) acc[key] = p.capabilities || [];
+    return acc;
+  }, {});
+
+  const availableProviderIds = (resonantProviders?.providers || [])
+    .filter((p) => p.available)
+    .map((p) => _normalize_provider_id(p.provider_key || p.id));
+
+  const visibleProviders = Object.entries(PROVIDERS)
+    .filter(([id]) => id === 'local' || availableProviderIds.length === 0 || availableProviderIds.includes(id));
+
+  const categorizedProviders = visibleProviders.reduce<Record<string, Array<[string, any]>>>((acc, entry) => {
+    const [id] = entry;
+    const caps = providerCapsByKey[id];
+    const category = id === 'local' ? 'Local' : _category_for_capabilities(caps);
+    if (!acc[category]) acc[category] = [];
+    acc[category].push(entry);
+    return acc;
+  }, {});
+
+  const requiredForStep = useCallback((s: number) => {
+    if (s === 1) return Boolean(config.name.trim());
+    if (s === 2) {
+      if (config.routingMode === 'auto') return Boolean(config.fallbackChain?.length) && Boolean(config.model);
+      if (!config.provider) return false;
+      if (config.provider !== 'local' && !canUseProvider(config.provider)) return false;
+      return Boolean(config.model);
+    }
+    return true;
+  }, [config, canUseProvider]);
 
   const updateConfig = useCallback((updates: Partial<AdvancedConfig>) => {
     setConfig(prev => ({ ...prev, ...updates }));
@@ -184,25 +390,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
 
   // Backend API calls
   const createAgentAPI = async (agentData: any) => {
-    try {
-      const response = await fetch(`${API_BASE}/api/v1/agents`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`,
-        },
-        body: JSON.stringify(agentData),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
-      }
-      
-      return await response.json();
-    } catch (err) {
-      console.error('API call failed, using local store:', err);
-      return null;
-    }
+    return createAgentApi(agentData);
   };
 
   const generateApiKey = async () => {
@@ -243,19 +431,85 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
       const agentData = {
         name: config.name,
         description: config.description,
+        system_prompt: config.systemPrompt,
+        model: config.model,
+        temperature: config.temperature,
+        max_tokens: config.maxTokens,
+        tools: config.tools,
+        safety_config: {
+          provider: config.provider,
+          topP: config.topP,
+          frequencyPenalty: config.frequencyPenalty,
+          presencePenalty: config.presencePenalty,
+          tags: config.tags,
+          routing: {
+            mode: config.routingMode,
+            fallback_chain: config.fallbackChain,
+          },
+          memoryConfig: {
+            shortTermLimit: 10,
+            longTermEnabled: config.memoryEnabled,
+            vectorStoreEnabled: config.vectorStoreEnabled,
+            contextWindow: config.contextWindow,
+          },
+          autonomyConfig: {
+            canSpawnSubAgents: config.canSpawnSubAgents,
+            canModifySelf: config.canModifySelf,
+            canAccessNetwork: config.canAccessNetwork,
+            canExecuteCode: config.canExecuteCode,
+            maxConcurrentTasks: config.maxConcurrentTasks,
+          },
+          deployment: {
+            environment: config.environment,
+            autoScale: config.autoScale,
+            minInstances: config.minInstances,
+            maxInstances: config.maxInstances,
+          },
+          developer: {
+            webhookUrl: config.webhookUrl,
+            apiKeyEnabled: config.apiKeyEnabled,
+            rateLimitPerMinute: config.rateLimitPerMinute,
+          },
+        },
+      };
+
+      // Create agent on backend (no local fallback)
+      const response = await createAgentAPI(agentData);
+      setCreatedAgentId(response.id);
+
+      // Add to store
+      const newAgent: Agent = {
+        id: response.id,
+        hash: response.manifest_hash || response.id,
+        dsid: response.dsid || undefined,
+        persisted: true,
+        name: response.name,
         type: config.type,
+        status: 'idle',
         mode: config.mode,
-        tags: config.tags,
+        version: String(response.version) + '.0.0',
+        capabilities: config.tools,
+        walletBalance: 100,
+        riskLevel: 'low',
+        utilityScore: 0,
+        executions: 0,
+        costToday: 0,
+        pendingApprovals: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        ownerId: 'user-1',
         config: {
           provider: config.provider,
           model: config.model,
           systemPrompt: config.systemPrompt,
           temperature: config.temperature,
           maxTokens: config.maxTokens,
-          topP: config.topP,
-          frequencyPenalty: config.frequencyPenalty,
-          presencePenalty: config.presencePenalty,
-          tools: config.tools,
+          tools: config.tools.map((toolId: string) => ({
+            id: toolId,
+            name: toolId,
+            description: toolId,
+            enabled: true,
+          })),
           memoryConfig: {
             shortTermLimit: 10,
             longTermEnabled: config.memoryEnabled,
@@ -270,42 +524,6 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
             maxConcurrentTasks: config.maxConcurrentTasks,
           },
         },
-        deployment: {
-          environment: config.environment,
-          autoScale: config.autoScale,
-          minInstances: config.minInstances,
-          maxInstances: config.maxInstances,
-        },
-        developer: {
-          webhookUrl: config.webhookUrl,
-          apiKeyEnabled: config.apiKeyEnabled,
-          rateLimitPerMinute: config.rateLimitPerMinute,
-        },
-      };
-
-      // Try backend first
-      const apiResult = await createAgentAPI(agentData);
-      
-      // Create local agent
-      const newAgent: Agent = {
-        id: apiResult?.id || `agent-${Date.now()}`,
-        hash: apiResult?.hash || `0x${Date.now().toString(16)}`,
-        name: config.name,
-        type: config.type as any,
-        status: 'idle',
-        mode: config.mode,
-        version: '1.0.0',
-        capabilities: config.tools,
-        walletBalance: 100,
-        riskLevel: 'low',
-        utilityScore: 0,
-        executions: 0,
-        costToday: 0,
-        pendingApprovals: 0,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        ownerId: 'user-1',
-        config: agentData.config as any,
       };
 
       addAgent(newAgent);
@@ -318,8 +536,8 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
       setCreatedAgentId(newAgent.id);
       setSuccess(`Agent "${config.name}" created successfully!`);
 
-    } catch (err) {
-      setError('Failed to create agent. Please try again.');
+    } catch (err: any) {
+      setError(err?.message || 'Agent was not created on server. Fix auth/API first.');
     } finally {
       setIsCreating(false);
     }
@@ -381,24 +599,6 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
 
   return (
     <div className={`${styles.panel} ${className || ''}`}>
-      <div className={styles.tabsContainer}>
-        <div className={styles.tabs}>
-          {(['create', 'templates', 'import', 'developer'] as const).map(tab => (
-            <button
-              key={tab}
-              className={`${styles.tab} ${activeTab === tab ? styles.active : ''}`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab === 'create' && <Icons.Plus />}
-              {tab === 'templates' && <Icons.Grid />}
-              {tab === 'import' && <Icons.Upload />}
-              {tab === 'developer' && <Icons.Code />}
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* Status Messages */}
       {error && (
         <div className={styles.errorBanner}>
@@ -422,31 +622,79 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
         </div>
       )}
 
-      <div className={styles.panelContent}>
-        {/* Create Tab */}
-        {activeTab === 'create' && (
-          <div className={styles.createSection}>
-            {/* Step Progress */}
-            <div className={styles.stepProgress}>
-              {[
-                { num: 1, label: 'Identity', icon: <Icons.User /> },
-                { num: 2, label: 'AI Model', icon: <Icons.Brain /> },
-                { num: 3, label: 'Tools', icon: <Icons.Zap /> },
-                { num: 4, label: 'Memory', icon: <Icons.Database /> },
-                { num: 5, label: 'Autonomy', icon: <Icons.Lock /> },
-                { num: 6, label: 'Deploy', icon: <Icons.Upload /> },
-              ].map(s => (
-                <button
-                  key={s.num}
-                  className={`${styles.stepBtn} ${step === s.num ? styles.active : ''} ${step > s.num ? styles.completed : ''}`}
-                  onClick={() => setStep(s.num)}
-                >
-                  <span className={styles.stepIcon}>{step > s.num ? <Icons.Check /> : s.icon}</span>
-                  <span className={styles.stepLabel}>{s.label}</span>
-                </button>
-              ))}
-            </div>
+      <div className={styles.panelBody}>
+        <aside className={styles.navColumn}>
+          <div className={styles.navHeader}>
+            <div className={styles.navTitle}>Agent Factory</div>
+            <div className={styles.navSubtitle}>Guided build flow</div>
+          </div>
 
+          <div className={styles.navSection}>
+            <button
+              className={`${styles.navItem} ${activeTab === 'templates' ? styles.active : ''}`}
+              onClick={() => setActiveTab('templates')}
+            >
+              <span className={styles.navItemIcon}><Icons.Grid /></span>
+              <span className={styles.navItemLabel}>Templates</span>
+            </button>
+            <button
+              className={`${styles.navItem} ${activeTab === 'import' ? styles.active : ''}`}
+              onClick={() => setActiveTab('import')}
+            >
+              <span className={styles.navItemIcon}><Icons.Upload /></span>
+              <span className={styles.navItemLabel}>Import</span>
+            </button>
+            <button
+              className={`${styles.navItem} ${activeTab === 'developer' ? styles.active : ''}`}
+              onClick={() => setActiveTab('developer')}
+            >
+              <span className={styles.navItemIcon}><Icons.Code /></span>
+              <span className={styles.navItemLabel}>Developer</span>
+            </button>
+          </div>
+
+          <div className={styles.navDivider} />
+
+          <div className={styles.navSectionTitle}>Create</div>
+          <div className={styles.navSection}>
+            {[
+              { num: 1, label: 'Identity', icon: <Icons.User /> },
+              { num: 2, label: 'AI Model', icon: <Icons.Brain /> },
+              { num: 3, label: 'Tools', icon: <Icons.Zap /> },
+              { num: 4, label: 'Memory', icon: <Icons.Database /> },
+              { num: 5, label: 'Autonomy', icon: <Icons.Lock /> },
+              { num: 6, label: 'Deploy', icon: <Icons.Upload /> },
+            ].map((s) => (
+              <button
+                key={s.num}
+                className={`${styles.stepNavItem} ${activeTab === 'create' && step === s.num ? styles.active : ''} ${step > s.num ? styles.completed : ''}`}
+                onClick={() => {
+                  setActiveTab('create');
+                  setStep(s.num);
+                }}
+              >
+                <span className={styles.stepNavIcon}>{step > s.num ? <Icons.Check /> : s.icon}</span>
+                <span className={styles.stepNavLabel}>{s.label}</span>
+              </button>
+            ))}
+          </div>
+        </aside>
+
+        <div className={styles.panelContent}>
+          <div className={styles.contentColumn}>
+          {/* Create Tab */}
+          {activeTab === 'create' && (
+            <div className={styles.createSection}>
+            <div className={styles.stepHeader}>
+              <div className={styles.stepHeaderTitle}>
+                Step {step} of 6
+              </div>
+              <div className={styles.stepHeaderSummary}>
+                <span className={styles.summaryChip}>{config.name.trim() ? config.name.trim() : 'Unnamed agent'}</span>
+                <span className={styles.summaryChip}>{config.routingMode === 'auto' ? 'Auto routing' : config.provider || 'No provider'}</span>
+                <span className={styles.summaryChip}>{config.model || 'No model'}</span>
+              </div>
+            </div>
             {/* Step 1: Identity */}
             {step === 1 && (
               <div className={styles.formSection}>
@@ -507,23 +755,103 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
             {step === 2 && (
               <div className={styles.formSection}>
                 <h3><Icons.Brain /> AI Model Configuration</h3>
-                <div className={styles.providerGrid}>
-                  {Object.entries(PROVIDERS).map(([key, provider]) => (
+
+                {resonantProviders?.message && (
+                  <div className={styles.providerNotice}>
+                    {resonantProviders.message}
+                  </div>
+                )}
+
+                <div className={styles.routingRow}>
+                  <div className={styles.routingLabel}>Smart routing</div>
+                  <div className={styles.routingOptions}>
                     <button
-                      key={key}
-                      className={`${styles.providerCard} ${config.provider === key ? styles.active : ''}`}
-                      onClick={() => updateConfig({ provider: key, model: provider.models[0] })}
+                      type="button"
+                      className={`${styles.routingBtn} ${config.routingMode === 'auto' ? styles.active : ''}`}
+                      onClick={() => {
+                        const primary = (config.fallbackChain?.[0] || 'groq');
+                        updateConfig({
+                          routingMode: 'auto',
+                          provider: primary,
+                          model: _get_default_model_for_provider(primary) || config.model,
+                        });
+                      }}
                     >
-                      <Icons.Zap />
-                      <span>{provider.name}</span>
+                      Auto
                     </button>
+                    <button
+                      type="button"
+                      className={`${styles.routingBtn} ${config.routingMode === 'manual' ? styles.active : ''}`}
+                      onClick={() => updateConfig({ routingMode: 'manual' })}
+                    >
+                      Manual
+                    </button>
+                    <button
+                      type="button"
+                      className={`${styles.routingBtn} ${config.routingMode === 'fallback' ? styles.active : ''}`}
+                      onClick={() => updateConfig({ routingMode: 'fallback' })}
+                    >
+                      Fallback chain
+                    </button>
+                  </div>
+                </div>
+
+                {config.routingMode !== 'manual' && (
+                  <div className={styles.fallbackChainRow}>
+                    <div className={styles.fallbackChainLabel}>Fallback order</div>
+                    <div className={styles.fallbackChainChips}>
+                      {(config.fallbackChain || []).map((p) => (
+                        <span key={p} className={styles.fallbackChip}>{p}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className={styles.providerGrid}>
+                  {Object.entries(categorizedProviders).map(([category, entries]) => (
+                    <div key={category} className={styles.providerGroup}>
+                      <div className={styles.providerGroupTitle}>{category}</div>
+                      <div className={styles.providerGroupGrid}>
+                        {entries.map(([key, provider]) => (
+                          <button
+                            key={key}
+                            className={`${styles.providerCard} ${config.provider === key ? styles.active : ''}`}
+                            onClick={() => {
+                              if (config.routingMode !== 'manual') {
+                                setError('Switch routing to Manual to select a specific provider.');
+                                return;
+                              }
+                              if (key !== 'local' && !canUseProvider(key)) {
+                                setError(`No API key configured for ${provider.name}. Add one in Profile → API Keys.`);
+                                return;
+                              }
+                              updateConfig({ provider: key, model: provider.models[0] });
+                            }}
+                          >
+                            <Icons.Zap />
+                            <span>{provider.name}</span>
+                            {providerKeyStatus[key] === 'configured' && (
+                              <span className={styles.providerBadgeConfigured}>Configured</span>
+                            )}
+                            {providerKeyStatus[key] === 'missing' && key !== 'local' && (
+                              <span className={styles.providerBadgeMissing}>Add Key</span>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   ))}
+                </div>
+
+                <div className={styles.providerHintRow}>
+                  <span className={styles.providerHintText}>Providers marked “Add Key” require BYOK.</span>
+                  <a className={styles.manageKeysLink} href="/profile">Manage API Keys</a>
                 </div>
                 <div className={styles.formGrid}>
                   <div className={styles.field}>
                     <label>Model</label>
                     <select value={config.model} onChange={e => updateConfig({ model: e.target.value })}>
-                      {PROVIDERS[config.provider as keyof typeof PROVIDERS]?.models.map(m => (
+                      {(PROVIDERS[config.provider as keyof typeof PROVIDERS]?.models || []).map(m => (
                         <option key={m} value={m}>{m}</option>
                       ))}
                     </select>
@@ -706,7 +1034,9 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                 <Icons.Download /> Export Config
               </button>
               {step < 6 ? (
-                <button className={styles.nextBtn} onClick={() => setStep(step + 1)}>
+                <button className={styles.nextBtn} onClick={() => setStep(step + 1)}
+                  disabled={!requiredForStep(step)}
+                >
                   Next <Icons.ChevronRight />
                 </button>
               ) : (
@@ -723,90 +1053,90 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                 </button>
               )}
             </div>
-          </div>
-        )}
-
-        {/* Templates Tab */}
-        {activeTab === 'templates' && (
-          <div className={styles.templatesSection}>
-            <h3>Agent Templates</h3>
-            <p className={styles.sectionDesc}>Start with a pre-configured template</p>
-            <div className={styles.templatesGrid}>
-              {TEMPLATES.map(template => (
-                <div key={template.id} className={styles.templateCard} onClick={() => applyTemplate(template)}>
-                  <div className={styles.templateHeader}>
-                    <Icons.Agents />
-                    <h4>{template.name}</h4>
-                  </div>
-                  <p>{template.description}</p>
-                  <div className={styles.templateMeta}>
-                    <span>{template.provider}</span>
-                    <span>{template.model}</span>
-                  </div>
-                  <div className={styles.templateTools}>
-                    {template.tools.map(t => <span key={t}>{t}</span>)}
-                  </div>
-                  <button className={styles.useTemplateBtn}>Use Template</button>
-                </div>
-              ))}
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Import Tab */}
-        {activeTab === 'import' && (
-          <div className={styles.importSection}>
-            <h3>Import/Export Configuration</h3>
-            <div className={styles.importArea}>
-              <label>Paste JSON Configuration</label>
-              <textarea
-                value={importData}
-                onChange={e => setImportData(e.target.value)}
-                placeholder='{"name": "My Agent", "type": "executor", ...}'
-                rows={10}
-              />
-              <div className={styles.importActions}>
-                <button className={styles.importBtn} onClick={handleImport}>
-                  <Icons.Upload /> Import
-                </button>
-                <button className={styles.exportBtn} onClick={handleExport}>
-                  <Icons.Download /> Export Current
-                </button>
+          {/* Templates Tab */}
+          {activeTab === 'templates' && (
+            <div className={styles.templatesSection}>
+              <h3>Agent Templates</h3>
+              <p className={styles.sectionDesc}>Start with a pre-configured template</p>
+              <div className={styles.templatesGrid}>
+                {TEMPLATES.map(template => (
+                  <div key={template.id} className={styles.templateCard} onClick={() => applyTemplate(template)}>
+                    <div className={styles.templateHeader}>
+                      <Icons.Agents />
+                      <h4>{template.name}</h4>
+                    </div>
+                    <p>{template.description}</p>
+                    <div className={styles.templateMeta}>
+                      <span>{template.provider}</span>
+                      <span>{template.model}</span>
+                    </div>
+                    <div className={styles.templateTools}>
+                      {template.tools.map(t => <span key={t}>{t}</span>)}
+                    </div>
+                    <button className={styles.useTemplateBtn}>Use Template</button>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Developer Tab */}
-        {activeTab === 'developer' && (
-          <div className={styles.developerSection}>
-            <h3><Icons.Code /> Developer Tools</h3>
-            
-            <div className={styles.devCard}>
-              <h4>API Key Management</h4>
-              <p>Generate API keys for programmatic agent access</p>
-              <div className={styles.apiKeySection}>
-                {apiKey ? (
-                  <div className={styles.apiKeyDisplay}>
-                    <input 
-                      type={showApiKey ? 'text' : 'password'} 
-                      value={apiKey} 
-                      readOnly 
-                    />
-                    <button onClick={() => setShowApiKey(!showApiKey)}>
-                      {showApiKey ? <Icons.EyeOff /> : <Icons.Eye />}
-                    </button>
-                    <button onClick={() => navigator.clipboard.writeText(apiKey)}>
-                      <Icons.Copy />
-                    </button>
-                  </div>
-                ) : (
-                  <button className={styles.generateKeyBtn} onClick={generateApiKey}>
-                    <Icons.Key /> Generate API Key
+          {/* Import Tab */}
+          {activeTab === 'import' && (
+            <div className={styles.importSection}>
+              <h3>Import/Export Configuration</h3>
+              <div className={styles.importArea}>
+                <label>Paste JSON Configuration</label>
+                <textarea
+                  value={importData}
+                  onChange={e => setImportData(e.target.value)}
+                  placeholder='{"name": "My Agent", "type": "executor", ...}'
+                  rows={10}
+                />
+                <div className={styles.importActions}>
+                  <button className={styles.importBtn} onClick={handleImport}>
+                    <Icons.Upload /> Import
                   </button>
-                )}
+                  <button className={styles.exportBtn} onClick={handleExport}>
+                    <Icons.Download /> Export Current
+                  </button>
+                </div>
               </div>
             </div>
+          )}
+
+          {/* Developer Tab */}
+          {activeTab === 'developer' && (
+            <div className={styles.developerSection}>
+              <h3><Icons.Code /> Developer Tools</h3>
+              
+              <div className={styles.devCard}>
+                <h4>API Key Management</h4>
+                <p>Generate API keys for programmatic agent access</p>
+                <div className={styles.apiKeySection}>
+                  {apiKey ? (
+                    <div className={styles.apiKeyDisplay}>
+                      <input 
+                        type={showApiKey ? 'text' : 'password'} 
+                        value={apiKey} 
+                        readOnly 
+                      />
+                      <button onClick={() => setShowApiKey(!showApiKey)}>
+                        {showApiKey ? <Icons.EyeOff /> : <Icons.Eye />}
+                      </button>
+                      <button onClick={() => navigator.clipboard.writeText(apiKey)}>
+                        <Icons.Copy />
+                      </button>
+                    </div>
+                  ) : (
+                    <button className={styles.generateKeyBtn} onClick={generateApiKey}>
+                      <Icons.Key /> Generate API Key
+                    </button>
+                  )}
+                </div>
+              </div>
 
             <div className={styles.devCard}>
               <h4>Webhook Configuration</h4>
@@ -860,8 +1190,10 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                 />
               </div>
             </div>
+            </div>
+          )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

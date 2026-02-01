@@ -21,14 +21,14 @@ const SERVICES = [
   { name: 'Gateway', endpoint: '/health' },
   { name: 'Auth', endpoint: '/auth/health' },
   { name: 'Chat', endpoint: '/resonant-chat/health' },
-  { name: 'Memory', endpoint: '/memory/health' },
-  { name: 'Agents', endpoint: '/agents/health' },
-  { name: 'ML', endpoint: '/ml/health' },
-  { name: 'LLM', endpoint: '/llm/health' },
-  { name: 'Workflow', endpoint: '/workflow/health' },
-  { name: 'IDE', endpoint: '/ide/health' },
-  { name: 'Billing', endpoint: '/billing/health' },
-  { name: 'Blockchain', endpoint: '/blockchain/health' },
+  { name: 'Memory', endpoint: '/api/v1/memory/health' },
+  { name: 'Agents', endpoint: '/api/v1/agents/health' },
+  { name: 'ML', endpoint: '/api/v1/ml/health' },
+  { name: 'LLM', endpoint: '/api/v1/llm/health' },
+  { name: 'Workflow', endpoint: '/api/v1/workflow/health' },
+  { name: 'IDE', endpoint: '/api/v1/ide/health' },
+  { name: 'Billing', endpoint: '/api/v1/billing/health' },
+  { name: 'Blockchain', endpoint: '/api/v1/blockchain/health' },
 ];
 
 async function checkService(name: string, endpoint: string): Promise<ServiceHealth> {
@@ -141,33 +141,33 @@ const ENDPOINT_TESTS: EndpointTest[] = [
   { name: 'List Chats', method: 'GET', endpoint: '/resonant-chat/chats', requiresAuth: true },
   
   // Agents endpoints
-  { name: 'Agents Health', method: 'GET', endpoint: '/agents/health', expectedStatus: 200 },
-  { name: 'List Agents', method: 'GET', endpoint: '/agents/', requiresAuth: true },
-  { name: 'List Tools', method: 'GET', endpoint: '/agents/tools', requiresAuth: true },
+  { name: 'Agents Health', method: 'GET', endpoint: '/api/v1/agents/health', expectedStatus: 200 },
+  { name: 'List Agents', method: 'GET', endpoint: '/api/v1/agents', requiresAuth: true },
+  { name: 'List Tools', method: 'GET', endpoint: '/api/v1/agents/tools', requiresAuth: true },
   
   // Memory endpoints
-  { name: 'Memory Health', method: 'GET', endpoint: '/memory/health', expectedStatus: 200 },
-  { name: 'Memory Stats', method: 'GET', endpoint: '/memory/stats', requiresAuth: true },
+  { name: 'Memory Health', method: 'GET', endpoint: '/api/v1/memory/health', expectedStatus: 200 },
+  { name: 'Memory Stats', method: 'GET', endpoint: '/api/v1/memory/stats', requiresAuth: true },
   
   // LLM endpoints
-  { name: 'LLM Health', method: 'GET', endpoint: '/llm/health', expectedStatus: 200 },
-  { name: 'List Providers', method: 'GET', endpoint: '/llm/providers', requiresAuth: true },
-  { name: 'List Models', method: 'GET', endpoint: '/llm/models', requiresAuth: true },
+  { name: 'LLM Health', method: 'GET', endpoint: '/api/v1/llm/health', expectedStatus: 200 },
+  { name: 'List Providers', method: 'GET', endpoint: '/api/v1/llm/providers', requiresAuth: true },
+  { name: 'List Models', method: 'GET', endpoint: '/api/v1/llm/models', requiresAuth: true },
   
   // ML endpoints
-  { name: 'ML Health', method: 'GET', endpoint: '/ml/health', expectedStatus: 200 },
-  { name: 'List Models', method: 'GET', endpoint: '/ml/models', requiresAuth: true },
+  { name: 'ML Health', method: 'GET', endpoint: '/api/v1/ml/health', expectedStatus: 200 },
+  { name: 'List Models', method: 'GET', endpoint: '/api/v1/ml/models', requiresAuth: true },
   
   // Workflow endpoints
-  { name: 'Workflow Health', method: 'GET', endpoint: '/workflow/health', expectedStatus: 200 },
-  { name: 'List Workflows', method: 'GET', endpoint: '/workflow/workflows', requiresAuth: true },
+  { name: 'Workflow Health', method: 'GET', endpoint: '/api/v1/workflow/health', expectedStatus: 200 },
+  { name: 'List Workflows', method: 'GET', endpoint: '/api/v1/workflow/workflows', requiresAuth: true },
   
   // IDE endpoints
-  { name: 'IDE Health', method: 'GET', endpoint: '/ide/health', expectedStatus: 200 },
+  { name: 'IDE Health', method: 'GET', endpoint: '/api/v1/ide/health', expectedStatus: 200 },
   
   // Billing endpoints
-  { name: 'Billing Health', method: 'GET', endpoint: '/billing/health', expectedStatus: 200 },
-  { name: 'List Plans', method: 'GET', endpoint: '/billing/plans' },
+  { name: 'Billing Health', method: 'GET', endpoint: '/api/v1/billing/health', expectedStatus: 200 },
+  { name: 'List Plans', method: 'GET', endpoint: '/api/v1/billing/plans' },
   
   // Marketplace endpoints
   { name: 'List Plugins', method: 'GET', endpoint: '/marketplace/plugins' },

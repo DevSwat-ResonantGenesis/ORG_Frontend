@@ -111,12 +111,14 @@ const AgentOSv2: React.FC = () => {
         // Transform backend response to match Agent type
         const agents: Agent[] = backendAgents.map((a) => ({
           id: a.id,
-          hash: `0x${a.id.replace(/-/g, '').slice(0, 40)}`,
+          hash: a.manifest_hash || `0x${a.id.replace(/-/g, '').slice(0, 40)}`,
+          dsid: a.dsid || undefined,
+          persisted: true,
           name: a.name,
           type: 'executor',
-          status: (a.status === 'active' ? 'active' : 'idle') as 'idle' | 'active' | 'paused' | 'archived',
+          status: (a.is_active ? 'active' : 'idle') as 'idle' | 'active' | 'paused' | 'archived',
           mode: 'governed' as const,
-          version: '1.0.0',
+          version: String(a.version) + '.0.0',
           capabilities: ['reasoning', 'code', 'research'],
           executions: 0,
           costToday: 0,
@@ -124,10 +126,10 @@ const AgentOSv2: React.FC = () => {
           pendingApprovals: 0,
           riskLevel: 'low' as const,
           utilityScore: 0.5,
-          ownerId: a.created_by || '',
+          ownerId: '',
           config: {
             provider: 'openai',
-            model: (a.meta_data as any)?.model || 'gpt-4-turbo-preview',
+            model: a.model || 'gpt-4-turbo-preview',
             systemPrompt: '',
             temperature: 0.7,
             maxTokens: 4096,
@@ -146,8 +148,8 @@ const AgentOSv2: React.FC = () => {
               maxConcurrentTasks: 5,
             },
           },
-          createdAt: new Date(a.created_at),
-          updatedAt: new Date(a.updated_at),
+          createdAt: new Date(),
+          updatedAt: new Date(),
         }));
         setAgents(agents);
       } catch (error) {

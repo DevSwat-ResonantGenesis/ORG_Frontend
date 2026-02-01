@@ -12,13 +12,12 @@ export interface AgentResponse {
   id: string;
   name: string;
   description?: string | null;
-  universe_id: string;
-  personality_config: Record<string, any>;
-  created_by: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
-  meta_data: Record<string, any>;
+  model: string;
+  tools?: string[] | null;
+  is_active: boolean;
+  version: number;
+  manifest_hash?: string | null;
+  dsid?: string | null;
 }
 
 /**
@@ -85,6 +84,19 @@ export interface CreateAgentResponse {
   tools?: string[] | null;
   is_active: boolean;
   version: number;
+  manifest_hash?: string | null;
+  dsid?: string | null;
+}
+
+export interface SessionResponse {
+  id: string;
+  agent_id: string;
+  status: string;
+  current_goal?: string | null;
+  loop_count: number;
+  total_tokens_used: number;
+  final_output?: string | null;
+  error_message?: string | null;
 }
 
 /**
@@ -109,7 +121,7 @@ export const startAgentSession = async (
   agent_id: string, 
   goal: string, 
   context?: Record<string, any>
-): Promise<{ id: string; status: string }> => {
+): Promise<SessionResponse> => {
   try {
     const response = await fastapiClient.post(`/api/v1/agents/${agent_id}/sessions`, {
       goal,

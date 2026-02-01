@@ -3,6 +3,7 @@
 
 import { useCallback } from 'react';
 import { useAgentStore } from '../../stores';
+import fastapiClient from '../fastapiClient';
 import { 
   AGENT_ENDPOINTS, 
   transformAgentResponse,
@@ -14,38 +15,23 @@ import {
   type ListAgentsResponse,
 } from '../contracts/agents';
 
-// Base API client (uses existing fastapiClient pattern)
+// Base API client (fastapiClient - cookie auth + x-user-id)
 const apiClient = {
   async get<T>(url: string): Promise<T> {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    });
-    if (!response.ok) throw new Error(`API Error: ${response.status}`);
-    return response.json();
+    const response = await fastapiClient.get<T>(url);
+    return response.data;
   },
   async post<T>(url: string, data?: unknown): Promise<T> {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: data ? JSON.stringify(data) : undefined,
-    });
-    if (!response.ok) throw new Error(`API Error: ${response.status}`);
-    return response.json();
+    const response = await fastapiClient.post<T>(url, data);
+    return response.data;
   },
   async put<T>(url: string, data?: unknown): Promise<T> {
-    const response = await fetch(url, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: data ? JSON.stringify(data) : undefined,
-    });
-    if (!response.ok) throw new Error(`API Error: ${response.status}`);
-    return response.json();
+    const response = await fastapiClient.put<T>(url, data);
+    return response.data;
   },
   async delete<T>(url: string): Promise<T> {
-    const response = await fetch(url, { method: 'DELETE' });
-    if (!response.ok) throw new Error(`API Error: ${response.status}`);
-    return response.json();
+    const response = await fastapiClient.delete<T>(url);
+    return response.data;
   },
 };
 

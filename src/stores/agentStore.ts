@@ -104,6 +104,7 @@ export const useAgentStore = create<AgentState>()(
           ...agent,
           id: `agent-${Date.now()}`,
           hash: `0x${Date.now().toString(16)}`,
+          persisted: false,
           name: newName,
           status: 'idle',
           version: '1.0.0',

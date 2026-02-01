@@ -70,6 +70,11 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
 
   const handleStartSession = async () => {
     if (!selectedAgent?.id || !newGoal.trim()) return;
+
+    if (selectedAgent.persisted === false) {
+      setError('This agent is not persisted on the server, so it cannot run sessions. Create the agent on the server first.');
+      return;
+    }
     
     setStartingSession(true);
     setError(null);

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useMemo, useRef, useEffect, useState } from 'react';
 import {
   ArchiveIcon,
   SendIcon,
@@ -155,6 +155,35 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const [showMentionAutocomplete, setShowMentionAutocomplete] = useState(false);
   const [mentionQuery, setMentionQuery] = useState('');
   const [showProviderDropdown, setShowProviderDropdown] = useState(false);
+
+  const normalizeProvider = (provider: string) => {
+    if (provider === 'claude') return 'anthropic';
+    if (provider === 'google') return 'gemini';
+    return provider;
+  };
+
+  const providerOptions = useMemo(() => {
+    const rawProviders =
+      availableProviders && availableProviders.length > 0
+        ? availableProviders
+        : ['auto', 'openai', 'gemini', 'anthropic', 'groq'];
+
+    const normalized = rawProviders.map(normalizeProvider);
+
+    const seen = new Set<string>();
+    const unique: string[] = [];
+    for (const p of normalized) {
+      if (!seen.has(p)) {
+        seen.add(p);
+        unique.push(p);
+      }
+    }
+
+    if (!seen.has('auto')) {
+      unique.unshift('auto');
+    }
+    return unique;
+  }, [availableProviders]);
   
   // Keep valueRef in sync with value prop
   useEffect(() => {
@@ -259,6 +288,20 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     onToggleAgentMode?.();
   };
 
+  const handleAgentSelectChange = (agentHash: string | null) => {
+    onSelectAgent?.(agentHash);
+    if (agentHash) {
+      onSelectTeam?.(null);
+    }
+  };
+
+  const handleTeamSelectChange = (teamId: string | null) => {
+    onSelectTeam?.(teamId);
+    if (teamId) {
+      onSelectAgent?.(null);
+    }
+  };
+
   return (
     <div className={`${styles.chatInputRoot} ${sidebarOpen ? styles.withSidebar : ''}`}>
       <div className={styles.inputWrapper} ref={inputWrapperRef}>
@@ -288,7 +331,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 <select
                   className={styles.agentSelect}
                   value={selectedAgent || ''}
-                  onChange={(e) => onSelectAgent?.(e.target.value || null)}
+                  onChange={(e) => handleAgentSelectChange(e.target.value || null)}
                 >
                   <option value="">Auto</option>
                   {agents.map(agent => (
@@ -309,7 +352,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 <select
                   className={styles.agentSelect}
                   value={selectedTeamId || ''}
-                  onChange={(e) => onSelectTeam?.(e.target.value || null)}
+                  onChange={(e) => handleTeamSelectChange(e.target.value || null)}
                 >
                   <option value="">No Team (Individual Agent)</option>
                   {teams.map(team => (
@@ -563,7 +606,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               {showProviderDropdown && (
                 <div className={styles.providerDropdown}>
                   <div className={styles.providerDropdownHeader}>Select Provider</div>
-                  {(availableProviders && availableProviders.length > 0 ? availableProviders : ['auto', 'openai', 'gemini', 'claude', 'groq']).map((provider) => (
+                  {providerOptions.map((provider) => (
                     <button
                       key={provider}
                       type="button"
@@ -571,7 +614,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        onProviderChange(provider);
+                        onProviderChange(normalizeProvider(provider));
                         setShowProviderDropdown(false);
                       }}
                     >
@@ -591,7 +634,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                           </svg>
                         )}
-                        {provider === 'claude' && (
+                        {provider === 'anthropic' && (
                           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <circle cx="12" cy="12" r="10" />
                             <path d="M12 6v6l4 2" />

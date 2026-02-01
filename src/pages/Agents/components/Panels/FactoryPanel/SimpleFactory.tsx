@@ -101,7 +101,9 @@ const SimpleFactoryComponent: React.FC<SimpleFactoryProps> = ({ className }) => 
 
       const newAgent: Agent = {
         id: response.id,
-        hash: response.id,
+        hash: response.manifest_hash || response.id,
+        dsid: response.dsid || undefined,
+        persisted: true,
         name: response.name,
         type: 'executor',
         status: 'idle',
@@ -170,7 +172,9 @@ const SimpleFactoryComponent: React.FC<SimpleFactoryProps> = ({ className }) => 
 
       const newAgent: Agent = {
         id: response.id,
-        hash: response.id,
+        hash: response.manifest_hash || response.id,
+        dsid: response.dsid || undefined,
+        persisted: true,
         name: response.name,
         type: 'executor',
         status: 'idle',

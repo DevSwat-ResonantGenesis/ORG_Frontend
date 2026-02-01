@@ -3,6 +3,7 @@ import { useAgentStore, selectAgents, selectSelectedAgent } from '../../../../..
 import { Icons } from '../../shared/Icons';
 import type { Agent } from '../../../../../types';
 import { startAgentSession, stopAgentSession, deleteAgent } from '../../../../../api/agents';
+import { getSession as getAgentSession } from '../../../../../api/agentEngine';
 import styles from './AgentsPanel.module.css';
 
 // ============== AGENTS PANEL ==============
@@ -86,6 +87,11 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   // Handle Run agent
   const handleRunAgent = useCallback(async () => {
     if (!modalAgent || !goalInput.trim()) return;
+
+    if (modalAgent.persisted === false) {
+      setError('This agent is not persisted on the server, so it cannot run sessions. Create the agent on the server first.');
+      return;
+    }
     
     setIsRunning(true);
     setSessionStatus('starting');
@@ -100,25 +106,22 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
       // Poll for session status
       pollIntervalRef.current = setInterval(async () => {
         try {
-          const res = await fetch(`/api/v1/agents/${modalAgent.id}/sessions/${session.id}`);
-          if (res.ok) {
-            const data = await res.json();
-            if (data.status === 'completed') {
-              setSessionStatus('completed');
-              setMessages([{
-                id: `msg-${Date.now()}`,
-                role: 'agent',
-                content: data.final_output || 'Task completed successfully.',
-                timestamp: new Date(),
-              }]);
-              updateAgent(modalAgent.id, { status: 'idle' as const });
-              if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
-            } else if (data.status === 'failed') {
-              setSessionStatus('failed');
-              setError(data.error_message || 'Agent execution failed');
-              updateAgent(modalAgent.id, { status: 'idle' as const });
-              if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
-            }
+          const data = await getAgentSession(session.id);
+          if (data.status === 'completed') {
+            setSessionStatus('completed');
+            setMessages([{
+              id: `msg-${Date.now()}`,
+              role: 'agent',
+              content: data.final_output || 'Task completed successfully.',
+              timestamp: new Date(),
+            }]);
+            updateAgent(modalAgent.id, { status: 'idle' as const });
+            if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+          } else if (data.status === 'failed') {
+            setSessionStatus('failed');
+            setError(data.error_message || 'Agent execution failed');
+            updateAgent(modalAgent.id, { status: 'idle' as const });
+            if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
           }
         } catch (e) {
           // Ignore polling errors
@@ -196,6 +199,11 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const copyAgentHash = useCallback((agent: Agent) => {
     const hash = agent.hash || agent.id;
     navigator.clipboard.writeText(hash);
+  }, []);
+
+  const copyAgentDsid = useCallback((agent: Agent) => {
+    if (!agent.dsid) return;
+    navigator.clipboard.writeText(agent.dsid);
   }, []);
 
   return (
@@ -469,11 +477,26 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                 <div className={styles.agentIdRow}>
                   <span className={styles.agentIdLabel}>Agent Hash</span>
                   <div className={styles.agentIdValue}>
-                    <code>{`0x${modalAgent.id.split('-').join('').slice(0, 40)}`}</code>
+                    <code>{modalAgent.hash || modalAgent.id}</code>
                     <button 
                       className={styles.copyBtn} 
                       onClick={() => copyAgentHash(modalAgent)}
                       title="Copy Agent Hash"
+                    >
+                      <Icons.Copy />
+                    </button>
+                  </div>
+                </div>
+
+                <div className={styles.agentIdRow}>
+                  <span className={styles.agentIdLabel}>DSID</span>
+                  <div className={styles.agentIdValue}>
+                    <code>{modalAgent.dsid || '—'}</code>
+                    <button 
+                      className={styles.copyBtn} 
+                      onClick={() => copyAgentDsid(modalAgent)}
+                      title="Copy DSID"
+                      disabled={!modalAgent.dsid}
                     >
                       <Icons.Copy />
                     </button>

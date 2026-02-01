@@ -4,6 +4,7 @@
  */
 
 import fastapiClient from './fastapiClient';
+import { getProviders as getResonantProviders } from './resonantChat';
 
 export interface ChatMessage {
   id: string;
@@ -156,8 +157,8 @@ export const addMessageToChat = async (
  */
 export const getProviders = async (): Promise<any[]> => {
   try {
-    const response = await fastapiClient.get('/resonant-chat/providers');
-    return response.data.providers || [];
+    const data: any = await getResonantProviders();
+    return data?.providers || [];
   } catch (error: any) {
     console.error('Failed to get providers:', error);
     return [];

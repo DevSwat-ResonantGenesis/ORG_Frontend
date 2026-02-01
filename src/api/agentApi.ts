@@ -160,12 +160,26 @@ const saveStoredAgents = (agents: AgentData[]) => {
 
 class AgentApiClient {
   private useLocalStorage = false;
+  private allowFallback: boolean;
+
+  constructor() {
+    const isDev = import.meta.env.DEV;
+    const enableFallback =
+      isDev &&
+      typeof window !== 'undefined' &&
+      new URLSearchParams(window.location.search).get('enable_agent_local_fallback') === '1';
+    this.allowFallback = enableFallback;
+  }
 
   // Try backend first, fallback to localStorage
   private async withFallback<T>(
     backendCall: () => Promise<T>,
     localFallback: () => T
   ): Promise<T> {
+    if (!this.allowFallback) {
+      return await backendCall();
+    }
+
     if (this.useLocalStorage) {
       return localFallback();
     }
@@ -184,7 +198,7 @@ class AgentApiClient {
   async listAgents(): Promise<AgentData[]> {
     return this.withFallback(
       async () => {
-        const response = await fastapiClient.get('/agents/');
+        const response = await fastapiClient.get('/api/v1/agents');
         return response.data.map(this.transformBackendAgent);
       },
       () => loadStoredAgents()
@@ -194,7 +208,7 @@ class AgentApiClient {
   async getAgent(agentId: string): Promise<AgentData | null> {
     return this.withFallback(
       async () => {
-        const response = await fastapiClient.get(`/agents/${agentId}`);
+        const response = await fastapiClient.get(`/api/v1/agents/${agentId}`);
         return this.transformBackendAgent(response.data);
       },
       () => {
@@ -234,7 +248,7 @@ class AgentApiClient {
 
     return this.withFallback(
       async () => {
-        const response = await fastapiClient.post('/agents/', {
+        const response = await fastapiClient.post('/api/v1/agents', {
           name: data.name,
           description: data.description,
           system_prompt: data.systemPrompt,
@@ -262,7 +276,7 @@ class AgentApiClient {
   async updateAgent(agentId: string, data: AgentUpdateRequest): Promise<AgentData> {
     return this.withFallback(
       async () => {
-        const response = await fastapiClient.patch(`/agents/${agentId}`, {
+        const response = await fastapiClient.patch(`/api/v1/agents/${agentId}`, {
           name: data.name,
           description: data.description,
           system_prompt: data.systemPrompt,
@@ -289,7 +303,7 @@ class AgentApiClient {
   async deleteAgent(agentId: string): Promise<void> {
     return this.withFallback(
       async () => {
-        await fastapiClient.delete(`/agents/${agentId}`);
+        await fastapiClient.delete(`/api/v1/agents/${agentId}`);
       },
       () => {
         const agents = loadStoredAgents();
@@ -318,7 +332,7 @@ class AgentApiClient {
   async startSession(agentId: string, goal: string, context?: Record<string, unknown>): Promise<AgentSession> {
     return this.withFallback(
       async () => {
-        const response = await fastapiClient.post(`/agents/${agentId}/sessions`, {
+        const response = await fastapiClient.post(`/api/v1/agents/${agentId}/sessions`, {
           goal,
           context,
         });
@@ -347,7 +361,7 @@ class AgentApiClient {
   async listSessions(agentId: string): Promise<AgentSession[]> {
     return this.withFallback(
       async () => {
-        const response = await fastapiClient.get(`/agents/${agentId}/sessions`);
+        const response = await fastapiClient.get(`/api/v1/agents/${agentId}/sessions`);
         return response.data.map((s: any) => ({
           id: s.id,
           agentId: s.agent_id,
