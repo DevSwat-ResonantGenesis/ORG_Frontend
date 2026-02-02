@@ -188,7 +188,7 @@ export type Permission =
   | 'admin:*';
 
 // Agent Domain
-export type AgentType = 'planner' | 'executor' | 'economic' | 'hybrid' | 'orchestrator';
+export type AgentType = string;
 export type AgentStatus = 'idle' | 'active' | 'paused' | 'failed' | 'terminated' | 'archived';
 export type AgentMode = 'governed' | 'unbounded';
 export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';

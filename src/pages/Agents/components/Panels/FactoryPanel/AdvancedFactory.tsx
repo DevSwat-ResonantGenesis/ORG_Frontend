@@ -2,9 +2,14 @@ import React, { memo, useState, useCallback, useEffect } from 'react';
 import { useAgentStore } from '../../../../../stores/agentStore';
 import { Icons } from '../../shared/Icons';
 import type { Agent } from '../../../../../types';
-import { createAgent as createAgentApi } from '../../../../../api/agents';
+import {
+  createAgent as createAgentApi,
+  createCustomTool as createCustomToolApi,
+  deleteCustomTool as deleteCustomToolApi,
+  getAgentProvidersCatalog,
+  listCustomTools,
+} from '../../../../../api/agents';
 import { fetchUserApiKeys } from '../../../../../api/userApiKeys';
-import { getProviders as getResonantProviders } from '../../../../../api/resonantChat';
 import styles from './AdvancedFactory.module.css';
 
 // ============== ADVANCED AGENT FACTORY ==============
@@ -91,7 +96,7 @@ const PROVIDERS = {
   },
 };
 
-type ResonantProvider = {
+type ProviderCatalogProvider = {
   id: string;
   provider_key?: string;
   name: string;
@@ -103,8 +108,8 @@ type ResonantProvider = {
   capabilities?: string[];
 };
 
-type ResonantProvidersResponse = {
-  providers: ResonantProvider[];
+type ProvidersCatalogResponse = {
+  providers: ProviderCatalogProvider[];
   default?: string;
   fallback_chain?: string[];
   fallback_chain_provider_keys?: string[];
@@ -216,9 +221,15 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
   const [showApiKey, setShowApiKey] = useState(false);
   const [createdAgentId, setCreatedAgentId] = useState<string | null>(null);
 
-  const [resonantProviders, setResonantProviders] = useState<ResonantProvidersResponse | null>(null);
+  const [resonantProviders, setResonantProviders] = useState<ProvidersCatalogResponse | null>(null);
 
   const [providerKeyStatus, setProviderKeyStatus] = useState<Record<string, 'configured' | 'missing' | 'unknown'>>({});
+
+  const [customTools, setCustomTools] = useState<Array<{ id: string; name: string; display_name?: string | null }>>([]);
+  const [newToolName, setNewToolName] = useState('');
+  const [newToolUrl, setNewToolUrl] = useState('');
+  const [newToolDescription, setNewToolDescription] = useState('');
+  const [isCreatingTool, setIsCreatingTool] = useState(false);
 
   useEffect(() => {
     const loadProviderKeyStatus = async () => {
@@ -259,7 +270,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
   useEffect(() => {
     const loadProviders = async () => {
       try {
-        const data = (await getResonantProviders()) as ResonantProvidersResponse;
+        const data = (await getAgentProvidersCatalog()) as ProvidersCatalogResponse;
         setResonantProviders(data);
         const chainSource = (data.fallback_chain_provider_keys || data.fallback_chain || []);
         const chain = chainSource.map(_normalize_provider_id).filter(Boolean);
@@ -282,6 +293,72 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
     loadProviders();
   }, []);
 
+  useEffect(() => {
+    const loadCustomTools = async () => {
+      try {
+        const tools = await listCustomTools();
+        setCustomTools((tools || []).map((t: any) => ({ id: t.id, name: t.name, display_name: t.display_name })));
+      } catch {
+        setCustomTools([]);
+      }
+    };
+    loadCustomTools();
+  }, []);
+
+  const refreshCustomTools = useCallback(async () => {
+    try {
+      const tools = await listCustomTools();
+      setCustomTools((tools || []).map((t: any) => ({ id: t.id, name: t.name, display_name: t.display_name })));
+    } catch {
+      setCustomTools([]);
+    }
+  }, []);
+
+  const handleCreateCustomTool = useCallback(async () => {
+    if (!newToolName.trim()) {
+      setError('Tool name is required');
+      return;
+    }
+    if (!newToolUrl.trim()) {
+      setError('Tool URL is required');
+      return;
+    }
+
+    setIsCreatingTool(true);
+    setError(null);
+    try {
+      await createCustomToolApi({
+        name: newToolName.trim(),
+        description: newToolDescription.trim() || undefined,
+        handler_type: 'http',
+        handler_config: {
+          url: newToolUrl.trim(),
+          method: 'POST',
+        },
+        risk_level: 'medium',
+        requires_approval: true,
+      });
+      setNewToolName('');
+      setNewToolUrl('');
+      setNewToolDescription('');
+      await refreshCustomTools();
+    } catch (e: any) {
+      setError(e?.message || 'Failed to create custom tool');
+    } finally {
+      setIsCreatingTool(false);
+    }
+  }, [newToolDescription, newToolName, newToolUrl, refreshCustomTools]);
+
+  const handleDeleteCustomTool = useCallback(async (toolId: string) => {
+    setError(null);
+    try {
+      await deleteCustomToolApi(toolId);
+      await refreshCustomTools();
+    } catch (e: any) {
+      setError(e?.message || 'Failed to delete custom tool');
+    }
+  }, [refreshCustomTools]);
+
   const canUseProvider = useCallback((providerId: string) => {
     const status = providerKeyStatus[providerId];
     if (!status) return true;
@@ -291,6 +368,12 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
   const providerCapsByKey = (resonantProviders?.providers || []).reduce<Record<string, string[]>>((acc, p) => {
     const key = _normalize_provider_id(p.provider_key || p.id);
     if (key) acc[key] = p.capabilities || [];
+    return acc;
+  }, {});
+
+  const providerMetaByKey = (resonantProviders?.providers || []).reduce<Record<string, ProviderCatalogProvider>>((acc, p) => {
+    const key = _normalize_provider_id(p.provider_key || p.id);
+    if (key) acc[key] = p;
     return acc;
   }, {});
 
@@ -387,14 +470,32 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
     setError(null);
 
     try {
+      const allowedActions: string[] = [];
+      const blockedActions: string[] = [];
+
+      if (config.canAccessNetwork) allowedActions.push('network_access');
+      else blockedActions.push('network_access');
+
+      if (config.canExecuteCode) allowedActions.push('code_execution');
+      else blockedActions.push('code_execution');
+
+      if (config.canSpawnSubAgents) allowedActions.push('spawn_sub_agents');
+      else blockedActions.push('spawn_sub_agents');
+
+      if (config.canModifySelf) allowedActions.push('modify_self');
+      else blockedActions.push('modify_self');
+
       const agentData = {
         name: config.name,
+        type: config.type,
         description: config.description,
         system_prompt: config.systemPrompt,
         model: config.model,
         temperature: config.temperature,
         max_tokens: config.maxTokens,
         tools: config.tools,
+        allowed_actions: allowedActions,
+        blocked_actions: blockedActions,
         safety_config: {
           provider: config.provider,
           topP: config.topP,
@@ -600,7 +701,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
           <div className={styles.contentColumn}>
             <div className={styles.stepHeader}>
               <div className={styles.stepHeaderTitle}>
-                Agent Factory
+                AGENT FACTORY
               </div>
               <div className={styles.stepHeaderSummary}>
                 <span className={styles.summaryChip}>{config.name.trim() ? config.name.trim() : 'Unnamed agent'}</span>
@@ -682,17 +783,31 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                       className={`${styles.modeBtn} ${config.mode === 'governed' ? styles.active : ''}`}
                       onClick={() => updateConfig({ mode: 'governed' })}
                     >
-                      <Icons.Lock /> Governed
-                      <span>Requires approval for sensitive actions</span>
+                      <div className={styles.modeBtnTop}>
+                        <Icons.Lock /> Governed
+                      </div>
+                      <div className={styles.modeBtnDesc}>Requires approval for sensitive actions</div>
                     </button>
                     <button
                       className={`${styles.modeBtn} ${config.mode === 'unbounded' ? styles.active : ''}`}
                       onClick={() => updateConfig({ mode: 'unbounded' })}
                     >
-                      <Icons.Unlock /> Unbounded
-                      <span>Full autonomy, no restrictions</span>
+                      <div className={styles.modeBtnTop}>
+                        <Icons.Unlock /> Unbounded
+                      </div>
+                      <div className={styles.modeBtnDesc}>Full autonomy, no restrictions</div>
                     </button>
                   </div>
+                </div>
+
+                <div className={styles.field}>
+                  <label>System Prompt</label>
+                  <textarea
+                    value={config.systemPrompt}
+                    onChange={e => updateConfig({ systemPrompt: e.target.value })}
+                    placeholder="You are a helpful AI assistant specialized in..."
+                    rows={5}
+                  />
                 </div>
               </div>
 
@@ -774,10 +889,13 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                           >
                             <Icons.Zap />
                             <span>{provider.name}</span>
-                            {providerKeyStatus[key] === 'configured' && (
-                              <span className={styles.providerBadgeConfigured}>Configured</span>
+                            {providerMetaByKey[key]?.has_user_key && (
+                              <span className={styles.providerBadgeConfigured}>BYOK</span>
                             )}
-                            {providerKeyStatus[key] === 'missing' && key !== 'local' && (
+                            {!providerMetaByKey[key]?.has_user_key && providerMetaByKey[key]?.uses_credits && (
+                              <span className={styles.providerBadgeConfigured}>Platform</span>
+                            )}
+                            {!providerMetaByKey[key]?.has_user_key && !providerMetaByKey[key]?.uses_credits && key !== 'local' && (
                               <span className={styles.providerBadgeMissing}>Add Key</span>
                             )}
                           </button>
@@ -811,15 +929,6 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                     </select>
                   </div>
                 </div>
-                <div className={styles.field}>
-                  <label>System Prompt</label>
-                  <textarea
-                    value={config.systemPrompt}
-                    onChange={e => updateConfig({ systemPrompt: e.target.value })}
-                    placeholder="You are a helpful AI assistant specialized in..."
-                    rows={5}
-                  />
-                </div>
                 <div className={styles.paramGrid}>
                   <div className={styles.paramField}>
                     <label>Temperature: {config.temperature}</label>
@@ -837,6 +946,10 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                     <label>Frequency Penalty: {config.frequencyPenalty}</label>
                     <input type="range" min="0" max="2" step="0.1" value={config.frequencyPenalty} onChange={e => updateConfig({ frequencyPenalty: parseFloat(e.target.value) })} />
                   </div>
+                  <div className={styles.paramField}>
+                    <label>Presence Penalty: {config.presencePenalty}</label>
+                    <input type="range" min="0" max="2" step="0.1" value={config.presencePenalty} onChange={e => updateConfig({ presencePenalty: parseFloat(e.target.value) })} />
+                  </div>
                 </div>
               </div>
 
@@ -844,6 +957,26 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
               <div className={styles.formSection}>
                 <h3><Icons.Zap /> Tools & Capabilities</h3>
                 <p className={styles.sectionDesc}>Select the tools this agent can use</p>
+
+                {customTools.length > 0 && (
+                  <div className={styles.customToolsStrip}>
+                    <div className={styles.customToolsTitle}>Your Tools</div>
+                    <div className={styles.customToolsRow}>
+                      {customTools.map((t) => (
+                        <button
+                          key={t.id}
+                          className={`${styles.customToolChip} ${config.tools.includes(t.name) ? styles.active : ''}`}
+                          onClick={() => toggleTool(t.name)}
+                          type="button"
+                          title={t.display_name || t.name}
+                        >
+                          {t.display_name || t.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className={styles.toolsGrid}>
                   {TOOLS.map(tool => (
                     <button
@@ -892,6 +1025,13 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                     <span className={styles.toggleLabel}>
                       <strong>Spawn Sub-Agents</strong>
                       <span>Create child agents for subtasks</span>
+                    </span>
+                  </label>
+                  <label className={styles.toggleItem}>
+                    <input type="checkbox" checked={config.canModifySelf} onChange={e => updateConfig({ canModifySelf: e.target.checked })} />
+                    <span className={styles.toggleLabel}>
+                      <strong>Self-Modification</strong>
+                      <span>Allow agent to update its own config</span>
                     </span>
                   </label>
                   <label className={styles.toggleItem}>
@@ -947,6 +1087,33 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                       <option value="staging">Staging</option>
                       <option value="production">Production</option>
                     </select>
+                  </div>
+                  <label className={styles.toggleItem}>
+                    <input type="checkbox" checked={config.autoScale} onChange={e => updateConfig({ autoScale: e.target.checked })} />
+                    <span className={styles.toggleLabel}>
+                      <strong>Auto Scale</strong>
+                      <span>Scale instances based on demand</span>
+                    </span>
+                  </label>
+                  <div className={styles.field}>
+                    <label>Min Instances</label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={99}
+                      value={config.minInstances}
+                      onChange={e => updateConfig({ minInstances: parseInt(e.target.value || '1') })}
+                    />
+                  </div>
+                  <div className={styles.field}>
+                    <label>Max Instances</label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={99}
+                      value={config.maxInstances}
+                      onChange={e => updateConfig({ maxInstances: parseInt(e.target.value || '1') })}
+                    />
                   </div>
                   <label className={styles.toggleItem}>
                     <input type="checkbox" checked={config.apiKeyEnabled} onChange={e => updateConfig({ apiKeyEnabled: e.target.checked })} />
@@ -1042,8 +1209,47 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                 <label><input type="checkbox" defaultChecked /> agent.created</label>
                 <label><input type="checkbox" defaultChecked /> agent.started</label>
                 <label><input type="checkbox" defaultChecked /> execution.completed</label>
-                <label><input type="checkbox" /> execution.failed</label>
+                <label><input type="checkbox" defaultChecked /> execution.failed</label>
               </div>
+            </div>
+
+            <div className={styles.devCard}>
+              <h4>Custom Tools</h4>
+              <p>Create and manage your own tool endpoints</p>
+
+              <div className={styles.formGrid}>
+                <div className={styles.field}>
+                  <label>Tool Name</label>
+                  <input value={newToolName} onChange={e => setNewToolName(e.target.value)} placeholder="e.g. my-webhook-tool" />
+                </div>
+                <div className={styles.field}>
+                  <label>Tool URL</label>
+                  <input value={newToolUrl} onChange={e => setNewToolUrl(e.target.value)} placeholder="https://your-api.com/tool" />
+                </div>
+              </div>
+              <div className={styles.field}>
+                <label>Description</label>
+                <input value={newToolDescription} onChange={e => setNewToolDescription(e.target.value)} placeholder="What does this tool do?" />
+              </div>
+              <div className={styles.importActions}>
+                <button className={styles.importBtn} onClick={handleCreateCustomTool} disabled={isCreatingTool}>
+                  {isCreatingTool ? 'Creating…' : 'Create Tool'}
+                </button>
+                <button className={styles.exportBtn} onClick={refreshCustomTools}>
+                  Refresh
+                </button>
+              </div>
+
+              {customTools.length > 0 && (
+                <div className={styles.customToolsList}>
+                  {customTools.map((t) => (
+                    <div key={t.id} className={styles.customToolRow}>
+                      <div className={styles.customToolRowName}>{t.display_name || t.name}</div>
+                      <button className={styles.backBtn} onClick={() => handleDeleteCustomTool(t.id)}>Delete</button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className={styles.devCard}>

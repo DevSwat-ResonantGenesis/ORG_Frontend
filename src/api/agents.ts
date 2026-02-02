@@ -11,6 +11,7 @@ import { logger } from '../utils/logger';
 export interface AgentResponse {
   id: string;
   name: string;
+  type?: string | null;
   description?: string | null;
   model: string;
   tools?: string[] | null;
@@ -62,6 +63,7 @@ export const getAgent = async (agent_id: string): Promise<AgentResponse> => {
  */
 export interface CreateAgentRequest {
   name: string;
+  type?: string;
   description?: string;
   system_prompt?: string;
   model?: string;
@@ -79,6 +81,7 @@ export interface CreateAgentRequest {
 export interface CreateAgentResponse {
   id: string;
   name: string;
+  type?: string | null;
   description?: string | null;
   model: string;
   tools?: string[] | null;
@@ -111,6 +114,76 @@ export const createAgent = async (data: CreateAgentRequest): Promise<CreateAgent
     logger.apiError('/api/v1/agents', error);
     throw error;
   }
+};
+
+export interface ProviderCatalogProvider {
+  id: string;
+  name: string;
+  available: boolean;
+  has_user_key?: boolean;
+  uses_credits?: boolean;
+  model?: string;
+  description?: string;
+  capabilities?: string[];
+}
+
+export interface AgentProvidersCatalogResponse {
+  providers: ProviderCatalogProvider[];
+  default?: string;
+  fallback_chain?: string[];
+  fallback_chain_provider_keys?: string[];
+  message?: string | null;
+  credits?: {
+    remaining?: number | null;
+    total?: number | null;
+    unlimited?: boolean;
+  };
+}
+
+export const getAgentProvidersCatalog = async (): Promise<AgentProvidersCatalogResponse> => {
+  const response = await fastapiClient.get('/api/v1/agents/providers');
+  return response.data;
+};
+
+export interface ToolDefinitionResponse {
+  id: string;
+  name: string;
+  display_name?: string | null;
+  description?: string | null;
+  category?: string | null;
+  risk_level: string;
+  is_active: boolean;
+}
+
+export interface CreateCustomToolRequest {
+  name: string;
+  description?: string;
+  category?: string;
+  parameters_schema?: Record<string, any>;
+  handler_type?: string;
+  handler_config?: Record<string, any>;
+  risk_level?: string;
+  requires_approval?: boolean;
+}
+
+export const listTools = async (category?: string): Promise<ToolDefinitionResponse[]> => {
+  const response = await fastapiClient.get('/api/v1/agents/tools', { params: category ? { category } : undefined });
+  return Array.isArray(response.data) ? response.data : [];
+};
+
+export const listCustomTools = async (): Promise<ToolDefinitionResponse[]> => {
+  const response = await fastapiClient.get('/api/v1/agents/tools/custom');
+  return Array.isArray(response.data) ? response.data : [];
+};
+
+export const createCustomTool = async (data: CreateCustomToolRequest): Promise<ToolDefinitionResponse> => {
+  const response = await fastapiClient.post('/api/v1/agents/tools/custom', data);
+  return response.data;
+};
+
+export const deleteCustomTool = async (toolId: string): Promise<{ deleted: boolean; id: string }> => {
+  const response = await fastapiClient.delete(`/api/v1/agents/tools/custom/${toolId}`);
+  return response.data;
 };
 
 /**
