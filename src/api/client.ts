@@ -55,9 +55,12 @@ client.interceptors.response.use(
       config.__isRetryRequest = true;
       
       try {
-        // Try to refresh the token
-        const { refreshToken } = await import('./auth');
-        const newToken = await refreshToken();
+        const refreshRes = await axios.post(
+          `${apiBaseUrl}/auth/refresh`,
+          {},
+          { withCredentials: true }
+        );
+        const newToken = refreshRes?.data?.access_token;
         
         if (newToken) {
           console.log('[API Client] ✅ Token refreshed successfully, retrying request');

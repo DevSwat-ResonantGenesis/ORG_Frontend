@@ -178,15 +178,24 @@ fastapiClient.interceptors.response.use(
       // Also handle "Missing or invalid Authorization header" from gateway
       if (detail.includes('expired') || detail.includes('Invalid token') || detail.includes('Token expired') || detail.includes('Not authenticated') || detail === 'Missing refresh token' || detail === 'Expired refresh token' || detail.includes('Missing or invalid') || detail === '') {
         try {
-          const { refreshToken, logout } = await import('./auth');
-          const newToken = await refreshToken();
+          const refreshRes = await axios.post(
+            `${apiBaseUrl}/auth/refresh`,
+            {},
+            { withCredentials: true }
+          );
+          const newToken = refreshRes?.data?.access_token;
           if (newToken && config) {
             // Mark as handled to prevent loops
             config.__auth401Handled = true;
             return fastapiClient.request(config);
           } else {
             // Refresh returned null - session is invalid, clear local state
-            logout();
+            try {
+              const { clearSessionData } = await import('../utils/auth-cookies');
+              clearSessionData();
+            } catch {
+              // ignore
+            }
             // Redirect to login if not already there
             if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/signup')) {
               window.location.href = '/login?expired=true';
@@ -195,8 +204,12 @@ fastapiClient.interceptors.response.use(
         } catch (refreshError) {
           // Refresh failed - clear session and redirect to login
           console.warn('Token refresh failed:', refreshError);
-          const { logout } = await import('./auth');
-          logout();
+          try {
+            const { clearSessionData } = await import('../utils/auth-cookies');
+            clearSessionData();
+          } catch {
+            // ignore
+          }
           if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/signup')) {
             window.location.href = '/login?expired=true';
           }

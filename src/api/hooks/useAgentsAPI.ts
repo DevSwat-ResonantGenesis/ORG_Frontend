@@ -2,7 +2,7 @@
 // React hooks for agent API operations
 
 import { useCallback } from 'react';
-import { useAgentStore } from '../../stores';
+import { useAgentStore } from '../../stores/agentStore';
 import fastapiClient from '../fastapiClient';
 import { 
   AGENT_ENDPOINTS, 

@@ -1,5 +1,5 @@
 import React, { memo, useState, useCallback, useEffect } from 'react';
-import { useAgentStore } from '../../../../../stores';
+import { useAgentStore } from '../../../../../stores/agentStore';
 import { Icons } from '../../shared/Icons';
 import type { Agent } from '../../../../../types';
 import { createAgent as createAgentApi } from '../../../../../api/agents';
@@ -171,8 +171,6 @@ interface AdvancedFactoryProps {
 const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className }) => {
   const { addAgent } = useAgentStore();
   
-  const [activeTab, setActiveTab] = useState<'create' | 'templates' | 'import' | 'developer'>('create');
-  const [step, setStep] = useState(1);
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -284,43 +282,6 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
     loadProviders();
   }, []);
 
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        if (error) {
-          e.preventDefault();
-          setError(null);
-          return;
-        }
-      }
-
-      if (activeTab !== 'create') return;
-
-      const target = e.target as HTMLElement | null;
-      const tag = (target?.tagName || '').toLowerCase();
-      const isTextArea = tag === 'textarea';
-      if (isTextArea) return;
-
-      if (e.key === 'Enter' && !e.shiftKey) {
-        if (step < 6) {
-          if (!requiredForStep(step)) return;
-          e.preventDefault();
-          setStep((s) => Math.min(6, s + 1));
-        }
-      }
-
-      if (e.key === 'Enter' && e.shiftKey) {
-        if (step > 1) {
-          e.preventDefault();
-          setStep((s) => Math.max(1, s - 1));
-        }
-      }
-    };
-
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [activeTab, error, step, requiredForStep]);
-
   const canUseProvider = useCallback((providerId: string) => {
     const status = providerKeyStatus[providerId];
     if (!status) return true;
@@ -384,8 +345,6 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
       model: template.model,
       tools: template.tools,
     }));
-    setActiveTab('create');
-    setStep(2);
   }, []);
 
   // Backend API calls
@@ -548,7 +507,6 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
       const data = JSON.parse(importData);
       if (data.name) {
         setConfig(prev => ({ ...prev, ...data }));
-        setActiveTab('create');
         setSuccess('Configuration imported successfully!');
       }
     } catch {
@@ -570,7 +528,6 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
   const handleReset = useCallback(() => {
     setSuccess(null);
     setCreatedAgentId(null);
-    setStep(1);
     setConfig(prev => ({ ...prev, name: '', description: '', tools: [] }));
   }, []);
 
@@ -595,6 +552,22 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
       Eye: <Icons.Eye />,
     };
     return iconMap[iconName] || <Icons.Zap />;
+  };
+
+  const getTemplateIcon = (templateType: string) => {
+    if (templateType === 'coder') return <Icons.Code />;
+    if (templateType === 'planner') return <Icons.List />;
+    if (templateType === 'researcher') return <Icons.Search />;
+    return <Icons.Agents />;
+  };
+
+  const templateAccent = (providerId: string) => {
+    const p = (providerId || '').toLowerCase();
+    if (p.includes('anthropic')) return '#a855f7';
+    if (p.includes('openai')) return '#3b82f6';
+    if (p.includes('google') || p.includes('gemini')) return '#10b981';
+    if (p.includes('groq')) return '#f59e0b';
+    return '#0ea5e9';
   };
 
   return (
@@ -623,71 +596,11 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
       )}
 
       <div className={styles.panelBody}>
-        <aside className={styles.navColumn}>
-          <div className={styles.navHeader}>
-            <div className={styles.navTitle}>Agent Factory</div>
-            <div className={styles.navSubtitle}>Guided build flow</div>
-          </div>
-
-          <div className={styles.navSection}>
-            <button
-              className={`${styles.navItem} ${activeTab === 'templates' ? styles.active : ''}`}
-              onClick={() => setActiveTab('templates')}
-            >
-              <span className={styles.navItemIcon}><Icons.Grid /></span>
-              <span className={styles.navItemLabel}>Templates</span>
-            </button>
-            <button
-              className={`${styles.navItem} ${activeTab === 'import' ? styles.active : ''}`}
-              onClick={() => setActiveTab('import')}
-            >
-              <span className={styles.navItemIcon}><Icons.Upload /></span>
-              <span className={styles.navItemLabel}>Import</span>
-            </button>
-            <button
-              className={`${styles.navItem} ${activeTab === 'developer' ? styles.active : ''}`}
-              onClick={() => setActiveTab('developer')}
-            >
-              <span className={styles.navItemIcon}><Icons.Code /></span>
-              <span className={styles.navItemLabel}>Developer</span>
-            </button>
-          </div>
-
-          <div className={styles.navDivider} />
-
-          <div className={styles.navSectionTitle}>Create</div>
-          <div className={styles.navSection}>
-            {[
-              { num: 1, label: 'Identity', icon: <Icons.User /> },
-              { num: 2, label: 'AI Model', icon: <Icons.Brain /> },
-              { num: 3, label: 'Tools', icon: <Icons.Zap /> },
-              { num: 4, label: 'Memory', icon: <Icons.Database /> },
-              { num: 5, label: 'Autonomy', icon: <Icons.Lock /> },
-              { num: 6, label: 'Deploy', icon: <Icons.Upload /> },
-            ].map((s) => (
-              <button
-                key={s.num}
-                className={`${styles.stepNavItem} ${activeTab === 'create' && step === s.num ? styles.active : ''} ${step > s.num ? styles.completed : ''}`}
-                onClick={() => {
-                  setActiveTab('create');
-                  setStep(s.num);
-                }}
-              >
-                <span className={styles.stepNavIcon}>{step > s.num ? <Icons.Check /> : s.icon}</span>
-                <span className={styles.stepNavLabel}>{s.label}</span>
-              </button>
-            ))}
-          </div>
-        </aside>
-
         <div className={styles.panelContent}>
           <div className={styles.contentColumn}>
-          {/* Create Tab */}
-          {activeTab === 'create' && (
-            <div className={styles.createSection}>
             <div className={styles.stepHeader}>
               <div className={styles.stepHeaderTitle}>
-                Step {step} of 6
+                Agent Factory
               </div>
               <div className={styles.stepHeaderSummary}>
                 <span className={styles.summaryChip}>{config.name.trim() ? config.name.trim() : 'Unnamed agent'}</span>
@@ -695,8 +608,41 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                 <span className={styles.summaryChip}>{config.model || 'No model'}</span>
               </div>
             </div>
+
+            <div className={styles.templatesSection}>
+              <h3>Agent Templates</h3>
+              <p className={styles.sectionDesc}>Start with a pre-configured template</p>
+              <div className={styles.templatesGrid}>
+                {TEMPLATES.map((template) => (
+                  <div
+                    key={template.id}
+                    className={styles.templateCard}
+                    style={{ ['--card-color' as any]: templateAccent(template.provider) } as any}
+                    onClick={() => applyTemplate(template)}
+                  >
+                    <div className={styles.cardHeader}>
+                      <div className={styles.templateIcon} style={{ background: templateAccent(template.provider) }}>
+                        {getTemplateIcon(template.type)}
+                      </div>
+                      <div className={styles.cardInfo}>
+                        <h3>{template.name}</h3>
+                      </div>
+                    </div>
+
+                    <div className={styles.cardBody}>
+                      <p>{template.description}</p>
+                    </div>
+
+                    <div className={styles.cardFooter}>
+                      <button className={styles.useTemplateBtn}>Use Template</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className={styles.createSection}>
             {/* Step 1: Identity */}
-            {step === 1 && (
               <div className={styles.formSection}>
                 <h3><Icons.User /> Agent Identity</h3>
                 <div className={styles.formGrid}>
@@ -749,10 +695,8 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                   </div>
                 </div>
               </div>
-            )}
 
             {/* Step 2: AI Model */}
-            {step === 2 && (
               <div className={styles.formSection}>
                 <h3><Icons.Brain /> AI Model Configuration</h3>
 
@@ -895,10 +839,8 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                   </div>
                 </div>
               </div>
-            )}
 
             {/* Step 3: Tools */}
-            {step === 3 && (
               <div className={styles.formSection}>
                 <h3><Icons.Zap /> Tools & Capabilities</h3>
                 <p className={styles.sectionDesc}>Select the tools this agent can use</p>
@@ -919,10 +861,8 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                   ))}
                 </div>
               </div>
-            )}
 
             {/* Step 4: Memory */}
-            {step === 4 && (
               <div className={styles.formSection}>
                 <h3><Icons.Database /> Memory Configuration</h3>
                 <div className={styles.toggleGrid}>
@@ -942,10 +882,8 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                   </label>
                 </div>
               </div>
-            )}
 
             {/* Step 5: Autonomy */}
-            {step === 5 && (
               <div className={styles.formSection}>
                 <h3><Icons.Lock /> Autonomy Settings</h3>
                 <div className={styles.toggleGrid}>
@@ -976,10 +914,8 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                   <input type="range" min="1" max="20" value={config.maxConcurrentTasks} onChange={e => updateConfig({ maxConcurrentTasks: parseInt(e.target.value) })} />
                 </div>
               </div>
-            )}
 
             {/* Step 6: Deploy */}
-            {step === 6 && (
               <div className={styles.formSection}>
                 <h3><Icons.Upload /> Review & Deploy</h3>
                 <div className={styles.reviewCard}>
@@ -1021,71 +957,26 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                   </label>
                 </div>
               </div>
-            )}
 
             {/* Navigation */}
             <div className={styles.formNav}>
-              {step > 1 && (
-                <button className={styles.backBtn} onClick={() => setStep(step - 1)}>
-                  <Icons.ChevronLeft /> Back
-                </button>
-              )}
               <button className={styles.exportBtn} onClick={handleExport}>
                 <Icons.Download /> Export Config
               </button>
-              {step < 6 ? (
-                <button className={styles.nextBtn} onClick={() => setStep(step + 1)}
-                  disabled={!requiredForStep(step)}
-                >
-                  Next <Icons.ChevronRight />
-                </button>
-              ) : (
-                <button 
-                  className={styles.createBtn} 
-                  onClick={handleCreate}
-                  disabled={!config.name.trim() || isCreating}
-                >
-                  {isCreating ? (
-                    <><Icons.Refresh /> Creating...</>
-                  ) : (
-                    <><Icons.Plus /> Create Agent</>
-                  )}
-                </button>
-              )}
+              <button 
+                className={styles.createBtn} 
+                onClick={handleCreate}
+                disabled={!requiredForStep(1) || !requiredForStep(2) || isCreating}
+              >
+                {isCreating ? (
+                  <><Icons.Refresh /> Creating...</>
+                ) : (
+                  <><Icons.Plus /> Create Agent</>
+                )}
+              </button>
             </div>
             </div>
-          )}
-
-          {/* Templates Tab */}
-          {activeTab === 'templates' && (
-            <div className={styles.templatesSection}>
-              <h3>Agent Templates</h3>
-              <p className={styles.sectionDesc}>Start with a pre-configured template</p>
-              <div className={styles.templatesGrid}>
-                {TEMPLATES.map(template => (
-                  <div key={template.id} className={styles.templateCard} onClick={() => applyTemplate(template)}>
-                    <div className={styles.templateHeader}>
-                      <Icons.Agents />
-                      <h4>{template.name}</h4>
-                    </div>
-                    <p>{template.description}</p>
-                    <div className={styles.templateMeta}>
-                      <span>{template.provider}</span>
-                      <span>{template.model}</span>
-                    </div>
-                    <div className={styles.templateTools}>
-                      {template.tools.map(t => <span key={t}>{t}</span>)}
-                    </div>
-                    <button className={styles.useTemplateBtn}>Use Template</button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Import Tab */}
-          {activeTab === 'import' && (
-            <div className={styles.importSection}>
+          <div className={styles.importSection}>
               <h3>Import/Export Configuration</h3>
               <div className={styles.importArea}>
                 <label>Paste JSON Configuration</label>
@@ -1105,11 +996,8 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                 </div>
               </div>
             </div>
-          )}
 
-          {/* Developer Tab */}
-          {activeTab === 'developer' && (
-            <div className={styles.developerSection}>
+          <div className={styles.developerSection}>
               <h3><Icons.Code /> Developer Tools</h3>
               
               <div className={styles.devCard}>
@@ -1191,7 +1079,6 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
               </div>
             </div>
             </div>
-          )}
           </div>
         </div>
       </div>

@@ -2,7 +2,7 @@ import logger from '../utils/logger';
 import client from './client';
 import fastapiClient from './fastapiClient';
 import { clearSession } from '../utils/auth';
-import { useSessionStore } from '@/stores';
+import { useSessionStore } from '@/stores/sessionStore';
 
 const TOKEN_KEY = 'rg_access_token';
 const REFRESH_TOKEN_KEY = 'rg_refresh_token';

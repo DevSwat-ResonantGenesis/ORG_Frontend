@@ -1,7 +1,7 @@
 // ============== AUTH PROVIDER ==============
 
 import React, { createContext, useContext, useEffect, useRef, ReactNode } from 'react';
-import { useSessionStore } from '../../stores';
+import { useSessionStore } from '../../stores/sessionStore';
 import { initPermissionChecker } from '../permissions';
 import { auditTrail } from '../../observability';
 import type { Permission } from '../../types';

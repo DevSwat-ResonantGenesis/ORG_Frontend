@@ -14,7 +14,6 @@ import styles from './AgentOSv2.module.css';
 const AgentsPanel = lazy(() => import('./components/Panels/AgentsPanel'));
 const SessionsPanel = lazy(() => import('./components/Panels/SessionsPanel'));
 const FactoryPanel = lazy(() => import('./components/Panels/FactoryPanel'));
-const AdvancedFactory = lazy(() => import('./components/Panels/FactoryPanel/AdvancedFactory'));
 const EconomyPanel = lazy(() => import('./components/Panels/EconomyPanel'));
 const ExecutionPanel = lazy(() => import('./components/Panels/ExecutionPanel'));
 const WorkflowPanel = lazy(() => import('./components/Panels/WorkflowPanel'));

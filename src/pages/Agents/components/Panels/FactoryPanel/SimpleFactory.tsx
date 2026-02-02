@@ -1,5 +1,5 @@
 import React, { memo, useState, useCallback } from 'react';
-import { useAgentStore } from '../../../../../stores';
+import { useAgentStore } from '../../../../../stores/agentStore';
 import { Icons } from '../../shared/Icons';
 import type { Agent } from '../../../../../types';
 import { createAgent as createAgentApi } from '../../../../../api/agents';

@@ -1,7 +1,6 @@
 import React from 'react';
 import { getSession } from '../../utils/auth';
 import { normalizeRole, type Role } from '../../utils/permissions';
-import DashboardPageMain from '../../pages/Dashboard/DashboardPage';
 import { ComplianceDashboard } from './ComplianceDashboard';
 import { MLDashboard } from './MLDashboard';
 import { FinanceDashboard } from './FinanceDashboard';
@@ -31,7 +30,7 @@ export const RoleBasedDashboard: React.FC<RoleBasedDashboardProps> = ({ children
     case 'org_admin':
     case 'user':
     default:
-      return <DashboardPageMain />;
+      return <>{children}</>;
   }
 };
 
