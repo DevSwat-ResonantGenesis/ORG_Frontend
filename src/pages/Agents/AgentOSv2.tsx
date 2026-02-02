@@ -45,7 +45,7 @@ const PlaceholderPanel: React.FC<{ name: string }> = memo(({ name }) => (
 // ============== METRICS FOOTER COMPONENT ==============
 const MetricsFooter: React.FC = memo(() => {
   const agents = useAgentStore((state) => state.agents);
-  const executions = useExecutionStore((state) => state.executions);
+  const executions = useExecutionStore((state) => (Array.isArray(state.executions) ? state.executions : []));
   const wallet = useEconomyStore((state) => state.wallet);
 
   const activeAgents = agents.filter(a => a.status === 'active').length;

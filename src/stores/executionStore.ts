@@ -11,7 +11,7 @@ interface ExecutionState {
   error: string | null;
   
   // Actions
-  setExecutions: (executions: Execution[]) => void;
+  setExecutions: (executions: Execution[] | unknown) => void;
   addExecution: (execution: Execution) => void;
   updateExecution: (id: string, updates: Partial<Execution>) => void;
   removeExecution: (id: string) => void;
@@ -46,7 +46,8 @@ export const useExecutionStore = create<ExecutionState>()(
     (set) => ({
       ...initialState,
       
-      setExecutions: (executions: Execution[]) => set({ executions }),
+      setExecutions: (executions: Execution[] | unknown) =>
+        set({ executions: Array.isArray(executions) ? (executions as Execution[]) : [] }),
       
       addExecution: (execution: Execution) => set((state) => ({
         executions: [...state.executions, execution]
@@ -172,8 +173,14 @@ export const useExecutionStore = create<ExecutionState>()(
 // Selectors
 export const selectExecutions = (state: ExecutionState) => state.executions;
 export const selectActiveExecution = (state: ExecutionState) =>
-  state.executions.find((e: Execution) => e.id === state.activeExecutionId) || null;
+  (Array.isArray(state.executions) ? state.executions : []).find(
+    (e: Execution) => e.id === state.activeExecutionId
+  ) || null;
 export const selectRunningExecutions = (state: ExecutionState) =>
-  state.executions.filter((e: Execution) => e.status === 'running');
+  (Array.isArray(state.executions) ? state.executions : []).filter(
+    (e: Execution) => e.status === 'running'
+  );
 export const selectExecutionsByAgent = (agentId: string) => (state: ExecutionState) =>
-  state.executions.filter((e: Execution) => e.agentId === agentId);
+  (Array.isArray(state.executions) ? state.executions : []).filter(
+    (e: Execution) => e.agentId === agentId
+  );
