@@ -47,9 +47,9 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
         id: g.id,
         title: g.description?.substring(0, 50) || 'Unnamed Goal',
         description: g.description || '',
-        priority: g.priority || 'medium',
-        status: g.status || 'active',
-        progress: g.progress || 0,
+        priority: typeof g.priority === 'number' ? (g.priority <= 3 ? 'high' : g.priority <= 5 ? 'medium' : 'low') : (g.priority || 'medium'),
+        status: g.status === 'completed' ? 'completed' : g.status === 'failed' ? 'failed' : g.status === 'paused' ? 'paused' : 'active',
+        progress: g.completion_percentage ?? g.progress ?? 0,
         deadline: g.deadline ? new Date(g.deadline) : undefined,
         agentId: selectedAgent.id,
         subGoals: g.sub_goals?.map((sg: any) => ({
@@ -76,8 +76,7 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
     try {
       await fastapiClient.post(`/agents/goals/${selectedAgent.id}/assign`, {
         description: newGoalTitle,
-        priority: 'medium',
-        status: 'active'
+        priority: 5
       });
       setNewGoalTitle('');
       setShowNewGoalForm(false);
