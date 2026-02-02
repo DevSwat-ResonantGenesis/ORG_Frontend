@@ -36,12 +36,14 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   
   // Modal state
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const [modalAgent, setModalAgent] = useState<Agent | null>(null);
+  const [modalAgentId, setModalAgentId] = useState<string | null>(null);
   const [goalInput, setGoalInput] = useState('');
   const [messageInput, setMessageInput] = useState('');
   const [messages, setMessages] = useState<AgentMessage[]>([]);
   const [isRunning, setIsRunning] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const modalAgent = modalAgentId ? agents.find((a: Agent) => a.id === modalAgentId) || null : null;
 
   const filteredAgents = agents.filter((agent: Agent) => {
     if (filter !== 'all' && agent.status !== filter) return false;
@@ -56,7 +58,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
   // Open modal
   const openModal = useCallback((type: ModalType, agent: Agent) => {
-    setModalAgent(agent);
+    setModalAgentId(agent.id);
     setActiveModal(type);
     setGoalInput('');
     setMessageInput('');
@@ -66,7 +68,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   // Close modal
   const closeModal = useCallback(() => {
     setActiveModal(null);
-    setModalAgent(null);
+    setModalAgentId(null);
     setGoalInput('');
     setMessageInput('');
     setError(null);
