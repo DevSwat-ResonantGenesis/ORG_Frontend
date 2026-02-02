@@ -1,7 +1,7 @@
 import React, { memo, useState, useCallback, useRef, useEffect } from 'react';
 import { useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
-import * as chatApi from '../../../../../api/chat';
+import * as agentEngineApi from '../../../../../api/agentEngine';
 import styles from './ChatPanel.module.css';
 
 // ============== CHAT PANEL ==============
@@ -28,76 +28,28 @@ const ChatPanelComponent: React.FC<ChatPanelProps> = ({ className }) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentChatId, setCurrentChatId] = useState<string | null>(null);
-  const [chats, setChats] = useState<chatApi.Chat[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const selectedAgent = agents.find(a => a.id === selectedAgentId) || agents[0];
-
-  // Fetch chat list on mount
-  useEffect(() => {
-    fetchChats();
-  }, []);
-
-  // Load chat history when chat is selected
-  useEffect(() => {
-    if (currentChatId) {
-      loadChatHistory(currentChatId);
-    }
-  }, [currentChatId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const fetchChats = async () => {
-    try {
-      const chatList = await chatApi.listChats(50);
-      setChats(chatList);
-    } catch (err: any) {
-      console.error('Failed to fetch chats:', err);
-    }
-  };
-
-  const loadChatHistory = async (chatId: string) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const history = await chatApi.getChatHistory(chatId);
-      const formattedMessages: Message[] = history.messages.map(msg => ({
-        id: msg.id,
-        role: msg.role,
-        content: msg.content,
-        timestamp: new Date(msg.timestamp),
-        agentId: selectedAgent?.id,
-        tokens: undefined,
-      }));
-      setMessages(formattedMessages);
-    } catch (err: any) {
-      console.error('Failed to load chat history:', err);
-      setError(err.message || 'Failed to load chat history');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const createNewChat = async () => {
-    try {
-      const response = await chatApi.createChat({
-        title: 'New Chat',
-        agent_hash: selectedAgent?.id,
-      });
-      setCurrentChatId(response.chatId);
-      setMessages([]);
-      await fetchChats();
-    } catch (err: any) {
-      console.error('Failed to create chat:', err);
-      setError(err.message || 'Failed to create chat');
-    }
-  };
+  useEffect(() => {
+    return () => {
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    };
+  }, []);
 
   const handleSend = useCallback(async () => {
     if (!input.trim() || isLoading) return;
+
+    if (!selectedAgent?.id) {
+      setError('Select an agent first');
+      return;
+    }
 
     const userMessage: Message = {
       id: `msg-${Date.now()}`,
@@ -113,44 +65,53 @@ const ChatPanelComponent: React.FC<ChatPanelProps> = ({ className }) => {
     setError(null);
 
     try {
-      // Create chat if none exists
-      let chatId = currentChatId;
-      if (!chatId) {
-        const newChat = await chatApi.createChat({
-          title: messageContent.substring(0, 50),
-          agent_hash: selectedAgent?.id,
-        });
-        chatId = newChat.chatId;
-        setCurrentChatId(chatId);
-        await fetchChats();
-      }
+      const contextMessages = messages
+        .filter(m => m.role === 'user' || m.role === 'assistant')
+        .map(m => ({ role: m.role, content: m.content }));
 
-      // Send message to backend
-      const response = await chatApi.sendMessage({
-        message: messageContent,
-        chat_id: chatId,
-        agent_hash: selectedAgent?.id,
-      });
+      const session = await agentEngineApi.startSession(
+        selectedAgent.id,
+        `Respond conversationally to the user's message.\n\nUSER MESSAGE:\n${messageContent}`,
+        {
+          chat_history: contextMessages,
+        },
+      );
 
-      // Add assistant response to messages
-      const assistantMessage: Message = {
-        id: response.message.id,
-        role: 'assistant',
-        content: response.message.content,
-        timestamp: new Date(response.message.timestamp),
-        agentId: selectedAgent?.id,
-      };
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
 
-      setMessages(prev => [...prev, assistantMessage]);
+      pollIntervalRef.current = setInterval(async () => {
+        try {
+          const data = await agentEngineApi.getSession(session.id);
+          if (data.status === 'completed') {
+            if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+            const assistantMessage: Message = {
+              id: `msg-${Date.now()}`,
+              role: 'assistant',
+              content: data.final_output || 'Completed.',
+              timestamp: new Date(),
+              agentId: selectedAgent?.id,
+            };
+            setMessages(prev => [...prev, assistantMessage]);
+            setIsLoading(false);
+          } else if (data.status === 'failed') {
+            if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+            setError(data.error_message || 'Agent execution failed');
+            setIsLoading(false);
+          }
+        } catch (e) {
+          // Ignore polling errors
+        }
+      }, 1500);
     } catch (err: any) {
       console.error('Failed to send message:', err);
       setError(err.message || 'Failed to send message');
       // Remove user message on error
       setMessages(prev => prev.filter(m => m.id !== userMessage.id));
-    } finally {
       setIsLoading(false);
+    } finally {
+      // Polling interval manages loading state
     }
-  }, [input, isLoading, selectedAgent, currentChatId, fetchChats]);
+  }, [input, isLoading, selectedAgent, messages]);
 
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -161,8 +122,8 @@ const ChatPanelComponent: React.FC<ChatPanelProps> = ({ className }) => {
   };
 
   const clearChat = () => {
+    if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
     setMessages([]);
-    setCurrentChatId(null);
     setError(null);
   };
 
