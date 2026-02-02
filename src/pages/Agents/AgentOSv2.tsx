@@ -4,6 +4,7 @@ import { Sidebar } from './components/Shell';
 import { PanelErrorBoundary, PanelSkeleton, Icons } from './components/shared';
 import { Header } from '../../components/layout/Header/Header';
 import { listAgents } from '../../api/agents';
+import agentOSApi from './services/api';
 import type { SidebarSection } from '../../types';
 import type { Agent } from '../../types';
 import styles from './AgentOSv2.module.css';
@@ -100,6 +101,7 @@ const AgentOSv2: React.FC = () => {
   const sidebarCollapsed = useUIStore((state) => state.sidebarCollapsed);
   const setAgents = useAgentStore((state) => state.setAgents);
   const setLoading = useAgentStore((state) => state.setLoading);
+  const updateAgent = useAgentStore((state) => state.updateAgent);
 
   // Load agents from backend on mount
   useEffect(() => {
@@ -151,6 +153,37 @@ const AgentOSv2: React.FC = () => {
           updatedAt: new Date(),
         }));
         setAgents(agents);
+
+        await Promise.allSettled(
+          agents
+            .filter((a) => a.persisted)
+            .map(async (a) => {
+              try {
+                const metrics: any = await agentOSApi.getAgentMetrics(a.id);
+
+                const executions = Number(metrics?.sessions_total ?? metrics?.executions ?? 0) || 0;
+                const running = Number(metrics?.sessions_by_status?.running ?? 0) || 0;
+                const completed = Number(metrics?.sessions_by_status?.completed ?? 0) || 0;
+                const failed = Number(metrics?.sessions_by_status?.failed ?? 0) || 0;
+                const totalTokens = Number(metrics?.total_tokens_used ?? 0) || 0;
+
+                updateAgent(a.id, {
+                  executions,
+                  utilityScore: a.utilityScore,
+                  costToday: a.costToday,
+                  riskLevel: a.riskLevel,
+                  walletBalance: a.walletBalance,
+                });
+
+                void running;
+                void completed;
+                void failed;
+                void totalTokens;
+              } catch {
+                return;
+              }
+            })
+        );
       } catch (error) {
         console.error('Failed to load agents from backend:', error);
       } finally {
@@ -159,7 +192,7 @@ const AgentOSv2: React.FC = () => {
     };
 
     loadAgentsFromBackend();
-  }, [setAgents, setLoading]);
+  }, [setAgents, setLoading, updateAgent]);
 
   // Render the appropriate panel based on active section
   const renderPanel = () => {
