@@ -133,7 +133,37 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     if (bulkSelectedCount === 0) return;
     if (!confirm(`Delete ${bulkSelectedCount} agent(s)? This cannot be undone.`)) return;
 
-    cExternal command hooks (Command Palette)
+    const ids = Array.from(selectedIds);
+    let deleted = 0;
+    for (const id of ids) {
+      try {
+        await deleteAgent(id);
+        removeAgent(id);
+        deleted += 1;
+      } catch (e: any) {
+        toast.error(e?.message || `Failed to delete agent ${id}`);
+      }
+    }
+
+    if (deleted > 0) toast.success(`Deleted ${deleted} agent(s)`);
+    exitBulkMode();
+  }, [bulkSelectedCount, exitBulkMode, removeAgent, selectedIds, toast]);
+
+  // Scroll to bottom of messages
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  // Open modal
+  const openModal = useCallback((type: ModalType, agent: Agent) => {
+    lastActiveElementRef.current = (document.activeElement as HTMLElement) || null;
+    setModalAgentId(agent.id);
+    setActiveModal(type);
+    setGoalInput('');
+    setMessageInput('');
+    setError(null);
+  }, []);
+
   useEffect(() => {
     const onOpenModal = (e: Event) => {
       const detail = (e as CustomEvent).detail as { type?: ModalType; agentId?: string } | undefined;
@@ -164,37 +194,6 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
       document.removeEventListener('agentos:agents:toggleBulkMode', onToggleBulkMode as any);
     };
   }, [agents, openModal]);
-
-  // onst ids = Array.from(selectedIds);
-    let deleted = 0;
-    for (const id of ids) {
-      try {
-        await deleteAgent(id);
-        removeAgent(id);
-        deleted += 1;
-      } catch (e: any) {
-        toast.error(e?.message || `Failed to delete agent ${id}`);
-      }
-    }
-
-    if (deleted > 0) toast.success(`Deleted ${deleted} agent(s)`);
-    exitBulkMode();
-  }, [bulkSelectedCount, exitBulkMode, removeAgent, selectedIds, toast]);
-
-  // Scroll to bottom of messages
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  // Open modal
-  const openModal = useCallback((type: ModalType, agent: Agent) => {
-    lastActiveElementRef.current = (document.activeElement as HTMLElement) || null;
-    setModalAgentId(agent.id);
-    setActiveModal(type);
-    setGoalInput('');
-    setMessageInput('');
-    setError(null);
-  }, []);
 
   // Close modal
   const closeModal = useCallback(() => {
