@@ -70,25 +70,39 @@ const HashSpherePage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.iframeContainer}>
-        {isLoading && (
-          <div className={styles.loadingOverlay}>
-            <div className={styles.spinner}></div>
-            <p>Loading State Physics...</p>
-            {error && <p className={styles.warning}>{error}</p>}
-          </div>
-        )}
-        
-        <iframe
-          ref={iframeRef}
-          src={HASH_SPHERE_URL}
-          className={styles.iframe}
-          onLoad={handleIframeLoad}
-          onError={handleIframeError}
-          title="State Physics Visualizer"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
-          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals allow-downloads"
-        />
+      <div className={styles.panel}>
+        <div className={styles.panelHeader}>
+          <h2 className={styles.panelTitle}>State Physics</h2>
+          <a
+            className={styles.panelLink}
+            href={HASH_SPHERE_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open Full Screen
+          </a>
+        </div>
+
+        <div className={styles.iframeContainer}>
+          {isLoading && (
+            <div className={styles.loadingOverlay}>
+              <div className={styles.spinner}></div>
+              <p>Loading State Physics...</p>
+              {error && <p className={styles.warning}>{error}</p>}
+            </div>
+          )}
+
+          <iframe
+            ref={iframeRef}
+            src={HASH_SPHERE_URL}
+            className={styles.iframe}
+            onLoad={handleIframeLoad}
+            onError={handleIframeError}
+            title="State Physics Visualizer"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals allow-downloads"
+          />
+        </div>
       </div>
     </div>
   );
