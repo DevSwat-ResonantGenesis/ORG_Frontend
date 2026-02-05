@@ -4,6 +4,7 @@ import { isAuthenticated } from '../../utils/auth-cookies';
 import styles from './HashSpherePage.module.css';
 
 import { ENV } from '../../config/env';
+import { useThemeStore } from '../../store/themeStore';
 
 const DEFAULT_HASH_SPHERE_PATH = '/api/v1/state-physics/ui';
 
@@ -40,6 +41,21 @@ const HashSpherePage: React.FC = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const theme = useThemeStore(state => state.theme);
+
+  const postThemeToIframe = (nextTheme: 'dark' | 'light') => {
+    const targetWindow = iframeRef.current?.contentWindow;
+    if (!targetWindow || typeof window === 'undefined') return;
+
+    let targetOrigin = '*';
+    try {
+      targetOrigin = new URL(HASH_SPHERE_URL, window.location.origin).origin;
+    } catch {
+      targetOrigin = '*';
+    }
+
+    targetWindow.postMessage({ type: 'RG_THEME', theme: nextTheme }, targetOrigin);
+  };
 
   // Redirect to signup if not logged in
   useEffect(() => {
@@ -61,12 +77,17 @@ const HashSpherePage: React.FC = () => {
   const handleIframeLoad = () => {
     setIsLoading(false);
     setError(null);
+    postThemeToIframe(theme);
   };
 
   const handleIframeError = () => {
     setIsLoading(false);
     setError('Failed to connect to State Physics service. Please ensure the service is running.');
   };
+
+  useEffect(() => {
+    postThemeToIframe(theme);
+  }, [theme]);
 
   return (
     <div className={styles.container}>
