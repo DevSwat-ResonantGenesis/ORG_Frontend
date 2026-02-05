@@ -1,13 +1,14 @@
-import React, { Suspense, lazy, memo, useState, useEffect } from 'react';
+import React, { Suspense, lazy, memo, useEffect, useCallback } from 'react';
 import { useUIStore, useAgentStore, useExecutionStore, useEconomyStore } from '../../stores';
 import { Sidebar } from './components/Shell';
 import { PanelErrorBoundary, PanelSkeleton, Icons } from './components/shared';
 import { Header } from '../../components/layout/Header/Header';
 import { listAgents } from '../../api/agents';
 import agentOSApi from './services/api';
-import type { SidebarSection } from '../../types';
 import type { Agent } from '../../types';
 import styles from './AgentOSv2.module.css';
+import { CommandPalette } from '../../components/IDE/CommandPalette';
+import type { Command } from '../../components/IDE/CommandPalette';
 
 // ============== LAZY LOADED PANELS ==============
 // Each panel is loaded only when needed
@@ -102,6 +103,9 @@ const AgentOSv2: React.FC = () => {
   const setAgents = useAgentStore((state) => state.setAgents);
   const setLoading = useAgentStore((state) => state.setLoading);
   const updateAgent = useAgentStore((state) => state.updateAgent);
+  const selectedAgentId = useAgentStore((state) => state.selectedAgentId);
+  const commandPaletteOpen = useUIStore((s) => s.commandPaletteOpen);
+  const setCommandPaletteOpen = useUIStore((s) => s.setCommandPaletteOpen);
 
   // Load agents from backend on mount
   useEffect(() => {
@@ -120,7 +124,7 @@ const AgentOSv2: React.FC = () => {
           status: (a.is_active ? 'active' : 'idle') as 'idle' | 'active' | 'paused' | 'archived',
           mode: 'governed' as const,
           version: String(a.version) + '.0.0',
-          capabilities: ['reasoning', 'code', 'research'],
+          capabilities: Array.isArray((a as any).tools) ? ((a as any).tools as string[]) : [],
           executions: 0,
           costToday: 0,
           walletBalance: 0,
@@ -194,6 +198,65 @@ const AgentOSv2: React.FC = () => {
     loadAgentsFromBackend();
   }, [setAgents, setLoading, updateAgent]);
 
+  // Cmd/Ctrl+K opens Agents command palette
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const isInputField =
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        (e.target as HTMLElement)?.isContentEditable;
+
+      if (isInputField) return;
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        if (typeof setCommandPaletteOpen === 'function') setCommandPaletteOpen(true);
+      }
+
+      if (e.key === 'Escape' && commandPaletteOpen) {
+        e.preventDefault();
+        if (typeof setCommandPaletteOpen === 'function') setCommandPaletteOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [commandPaletteOpen, setCommandPaletteOpen]);
+
+  const buildCommands = useCallback((): Command[] => {
+    const canRun = Boolean(selectedAgentId);
+    return [
+      { id: 'agents:create', label: 'Create Agent', category: 'Agents' },
+      { id: 'agents:run', label: canRun ? 'Run Selected Agent' : 'Run Selected Agent (select one first)', category: 'Agents' },
+      { id: 'agents:details', label: canRun ? 'Open Selected Agent Details' : 'Open Selected Agent Details (select one first)', category: 'Agents' },
+      { id: 'agents:toggle-favorites', label: 'Toggle Favorites Filter', category: 'Agents' },
+      { id: 'agents:toggle-bulk', label: 'Toggle Bulk Mode', category: 'Agents' },
+    ];
+  }, [selectedAgentId]);
+
+  const onCommandSelect = useCallback((cmd: Command) => {
+    if (cmd.id === 'agents:create') {
+      useUIStore.getState().setActiveSection('factory');
+    }
+
+    if (cmd.id === 'agents:run') {
+      if (!selectedAgentId) return;
+      document.dispatchEvent(new CustomEvent('agentos:agents:openModal', { detail: { type: 'run', agentId: selectedAgentId } }));
+    }
+
+    if (cmd.id === 'agents:details') {
+      if (!selectedAgentId) return;
+      document.dispatchEvent(new CustomEvent('agentos:agents:openModal', { detail: { type: 'detail', agentId: selectedAgentId } }));
+    }
+
+    if (cmd.id === 'agents:toggle-favorites') {
+      document.dispatchEvent(new CustomEvent('agentos:agents:toggleFavoritesFilter'));
+    }
+
+    if (cmd.id === 'agents:toggle-bulk') {
+      document.dispatchEvent(new CustomEvent('agentos:agents:toggleBulkMode'));
+    }
+  }, [selectedAgentId]);
+
   // Render the appropriate panel based on active section
   const renderPanel = () => {
     switch (activeSection) {
@@ -256,6 +319,16 @@ const AgentOSv2: React.FC = () => {
           <MetricsFooter />
         </div>
       </div>
+
+      <CommandPalette
+        open={Boolean(commandPaletteOpen)}
+        mode="command"
+        commands={buildCommands()}
+        files={[]}
+        onSelect={onCommandSelect}
+        onClose={() => typeof setCommandPaletteOpen === 'function' && setCommandPaletteOpen(false)}
+        placeholder="Search agent commands…"
+      />
     </>
   );
 };

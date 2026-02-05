@@ -136,13 +136,21 @@ const withRole = (node: React.ReactNode, roles: string[]) =>
   withShell(<RoleRoute allowed={roles}>{node}</RoleRoute>);
 
 // Plan-restricted routes - requires specific subscription plan
-const withPlanRestriction = (node: React.ReactNode, requiredPlan: 'free' | 'plus' | 'pro' | 'enterprise') => (
+const withPlanRestriction = (node: React.ReactNode, requiredPlan: 'free' | 'plus' | 'pro' | 'enterprise') => {
+  const normalizedRequiredPlan = (requiredPlan === 'free'
+    ? 'developer'
+    : requiredPlan === 'pro'
+      ? 'plus'
+      : requiredPlan) as 'developer' | 'plus' | 'enterprise';
+
+  return (
   <ProtectedRoute>
     <MainLayout>
-      <PlanRestrictedRoute requiredPlan={requiredPlan}>{node}</PlanRestrictedRoute>
+      <PlanRestrictedRoute requiredPlan={normalizedRequiredPlan}>{node}</PlanRestrictedRoute>
     </MainLayout>
   </ProtectedRoute>
-);
+  );
+};
 
 // Owner-protected routes - uses separate owner token authentication
 const withOwnerAuth = (node: React.ReactNode) => (

@@ -5,6 +5,9 @@
 
 import fastapiClient from './fastapiClient';
 
+const workflowsPath = (path: string) => `/api/v1/workflows${path}`;
+const workflowServicePath = (path: string) => `/api/v1/workflow${path}`;
+
 export interface WorkflowStep {
   name: string;
   type: string;
@@ -71,6 +74,14 @@ export interface CreateWorkflowRequest {
   steps: WorkflowStep[];
 }
 
+export interface UpdateWorkflowRequest {
+  name?: string;
+  description?: string;
+  trigger_type?: string;
+  trigger_config?: any;
+  steps?: WorkflowStep[];
+}
+
 export interface RunWorkflowRequest {
   input_data?: any;
 }
@@ -89,7 +100,7 @@ export const createWorkflow = async (
   workflow: CreateWorkflowRequest
 ): Promise<Workflow> => {
   try {
-    const response = await fastapiClient.post('/workflow/workflows', workflow);
+    const response = await fastapiClient.post(workflowsPath(''), workflow);
     return response.data;
   } catch (error: any) {
     console.error('Failed to create workflow:', error);
@@ -104,7 +115,7 @@ export const listWorkflows = async (
   userId?: string
 ): Promise<Workflow[]> => {
   try {
-    const response = await fastapiClient.get('/workflow/workflows', {
+    const response = await fastapiClient.get(workflowsPath(''), {
       params: userId ? { user_id: userId } : undefined,
     });
     return response.data;
@@ -115,13 +126,29 @@ export const listWorkflows = async (
 };
 
 /**
+ * Update a workflow
+ */
+export const updateWorkflow = async (
+  workflowId: string,
+  updates: UpdateWorkflowRequest
+): Promise<Workflow> => {
+  try {
+    const response = await fastapiClient.put(workflowsPath(`/${workflowId}`), updates);
+    return response.data;
+  } catch (error: any) {
+    console.error('Failed to update workflow:', error);
+    throw new Error(error.response?.data?.detail || 'Failed to update workflow');
+  }
+};
+
+/**
  * Get a workflow by ID
  */
 export const getWorkflow = async (
   workflowId: string
 ): Promise<Workflow> => {
   try {
-    const response = await fastapiClient.get(`/workflow/workflows/${workflowId}`);
+    const response = await fastapiClient.get(workflowsPath(`/${workflowId}`));
     return response.data;
   } catch (error: any) {
     console.error('Failed to get workflow:', error);
@@ -136,7 +163,7 @@ export const deleteWorkflow = async (
   workflowId: string
 ): Promise<void> => {
   try {
-    await fastapiClient.delete(`/workflow/workflows/${workflowId}`);
+    await fastapiClient.delete(workflowsPath(`/${workflowId}`));
   } catch (error: any) {
     console.error('Failed to delete workflow:', error);
     throw new Error(error.response?.data?.detail || 'Failed to delete workflow');
@@ -152,7 +179,7 @@ export const runWorkflow = async (
 ): Promise<WorkflowRun> => {
   try {
     const response = await fastapiClient.post(
-      `/workflow/workflows/${workflowId}/run`,
+      workflowsPath(`/${workflowId}/run`),
       request
     );
     return response.data;
@@ -171,7 +198,7 @@ export const listWorkflowRuns = async (
   limit?: number
 ): Promise<WorkflowRun[]> => {
   try {
-    const response = await fastapiClient.get('/workflow/runs', {
+    const response = await fastapiClient.get(workflowServicePath('/runs'), {
       params: {
         workflow_id: workflowId,
         status,
@@ -192,7 +219,7 @@ export const getWorkflowRun = async (
   runId: string
 ): Promise<WorkflowRun> => {
   try {
-    const response = await fastapiClient.get(`/workflow/runs/${runId}`);
+    const response = await fastapiClient.get(workflowServicePath(`/runs/${runId}`));
     return response.data;
   } catch (error: any) {
     console.error('Failed to get workflow run:', error);
@@ -207,7 +234,7 @@ export const getWorkflowRunSteps = async (
   runId: string
 ): Promise<WorkflowStepResult[]> => {
   try {
-    const response = await fastapiClient.get(`/workflow/runs/${runId}/steps`);
+    const response = await fastapiClient.get(workflowServicePath(`/runs/${runId}/steps`));
     return response.data;
   } catch (error: any) {
     console.error('Failed to get workflow run steps:', error);
@@ -222,7 +249,7 @@ export const cancelWorkflowRun = async (
   runId: string
 ): Promise<void> => {
   try {
-    await fastapiClient.post(`/workflow/runs/${runId}/cancel`);
+    await fastapiClient.post(workflowServicePath(`/runs/${runId}/cancel`));
   } catch (error: any) {
     console.error('Failed to cancel workflow run:', error);
     throw new Error(error.response?.data?.detail || 'Failed to cancel workflow run');

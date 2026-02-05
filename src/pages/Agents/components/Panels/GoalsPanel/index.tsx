@@ -42,7 +42,7 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fastapiClient.get(`/agents/goals/${selectedAgent.id}`);
+      const response = await fastapiClient.get(`/api/v1/agents/goals/${selectedAgent.id}`);
       const backendGoals = (response.data || []).map((g: any) => ({
         id: g.id,
         title: g.description?.substring(0, 50) || 'Unnamed Goal',
@@ -74,7 +74,7 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
     
     setIsLoading(true);
     try {
-      await fastapiClient.post(`/agents/goals/${selectedAgent.id}/assign`, {
+      await fastapiClient.post(`/api/v1/agents/goals/${selectedAgent.id}/assign`, {
         description: newGoalTitle,
         priority: 5
       });

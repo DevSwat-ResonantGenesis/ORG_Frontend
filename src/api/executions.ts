@@ -5,6 +5,8 @@
 
 import fastapiClient from './fastapiClient';
 
+const executionPath = (path: string) => `/api/v1/execution${path}`;
+
 export interface ExecutionStep {
   id: string;
   step_number: number;
@@ -54,6 +56,18 @@ export interface ExecutionListResponse {
   offset: number;
 }
 
+export const cancelAgentSession = async (
+  sessionId: string
+): Promise<{ status: string; id: string }> => {
+  try {
+    const response = await fastapiClient.post(`/api/v1/agents/sessions/${sessionId}/cancel`);
+    return response.data;
+  } catch (error: any) {
+    console.error('Failed to cancel session:', error);
+    throw new Error(error.response?.data?.detail || 'Failed to cancel session');
+  }
+};
+
 /**
  * Get execution history for an agent
  */
@@ -67,7 +81,7 @@ export const getAgentExecutions = async (
 ): Promise<ExecutionListResponse> => {
   try {
     const response = await fastapiClient.get(
-      `/execution/agents/${agentId}/executions`,
+      executionPath(`/agents/${agentId}/executions`),
       { params }
     );
     return response.data;
@@ -84,7 +98,7 @@ export const getExecutionDetails = async (
   executionId: string
 ): Promise<Execution> => {
   try {
-    const response = await fastapiClient.get(`/execution/executions/${executionId}`);
+    const response = await fastapiClient.get(executionPath(`/executions/${executionId}`));
     return response.data;
   } catch (error: any) {
     console.error('Failed to fetch execution details:', error);
@@ -111,7 +125,7 @@ export const executeAgentTask = async (
 }> => {
   try {
     const response = await fastapiClient.post(
-      `/execution/agents/${agentId}/execute`,
+      executionPath(`/agents/${agentId}/execute`),
       {
         task,
         context,

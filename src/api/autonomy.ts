@@ -9,6 +9,8 @@
 import fastapiClient from './fastapiClient';
 import { logger } from '../utils/logger';
 
+const AUTONOMY_BASE = '/api/v1/autonomy';
+
 // ============== TYPES ==============
 
 export interface AutonomyStatus {
@@ -138,7 +140,7 @@ export const startAutonomy = async (): Promise<{
   system_status: AutonomyStatus;
 }> => {
   try {
-    const response = await fastapiClient.post('/autonomy/start');
+    const response = await fastapiClient.post(`${AUTONOMY_BASE}/start`);
     logger.info('Full autonomy started', response.data);
     return response.data;
   } catch (error) {
@@ -152,7 +154,7 @@ export const startAutonomy = async (): Promise<{
  */
 export const stopAutonomy = async (): Promise<{ status: string }> => {
   try {
-    const response = await fastapiClient.post('/autonomy/stop');
+    const response = await fastapiClient.post(`${AUTONOMY_BASE}/stop`);
     logger.info('Full autonomy stopped');
     return response.data;
   } catch (error) {
@@ -165,7 +167,7 @@ export const stopAutonomy = async (): Promise<{ status: string }> => {
  * Get full autonomy system status.
  */
 export const getAutonomyStatus = async (): Promise<AutonomyStatus> => {
-  const response = await fastapiClient.get('/autonomy/status');
+  const response = await fastapiClient.get(`${AUTONOMY_BASE}/status`);
   return response.data;
 };
 
@@ -173,7 +175,7 @@ export const getAutonomyStatus = async (): Promise<AutonomyStatus> => {
  * Get comprehensive statistics for all autonomous systems.
  */
 export const getAutonomyStats = async (): Promise<AutonomyStats> => {
-  const response = await fastapiClient.get('/autonomy/stats');
+  const response = await fastapiClient.get(`${AUTONOMY_BASE}/stats`);
   return response.data;
 };
 
@@ -193,7 +195,7 @@ export const quickStartAutonomy = async (
   endpoints: Record<string, string>;
 }> => {
   try {
-    const response = await fastapiClient.post('/autonomy/quick-start', null, {
+    const response = await fastapiClient.post(`${AUTONOMY_BASE}/quick-start`, null, {
       params: { agent_name: agentName, goal }
     });
     logger.info('Quick start autonomy complete', response.data);
@@ -219,7 +221,7 @@ export const createAutonomousAgent = async (
   status: string;
 }> => {
   try {
-    const response = await fastapiClient.post('/autonomy/agents/create', request);
+    const response = await fastapiClient.post(`${AUTONOMY_BASE}/agents/create`, request);
     logger.info('Autonomous agent created', response.data);
     return response.data;
   } catch (error) {
@@ -234,7 +236,7 @@ export const createAutonomousAgent = async (
  * Get the agent network hierarchy.
  */
 export const getNetworkHierarchy = async (): Promise<NetworkHierarchy> => {
-  const response = await fastapiClient.get('/autonomy/network/hierarchy');
+  const response = await fastapiClient.get(`${AUTONOMY_BASE}/network/hierarchy`);
   return response.data;
 };
 
@@ -242,7 +244,7 @@ export const getNetworkHierarchy = async (): Promise<NetworkHierarchy> => {
  * Get agent network statistics.
  */
 export const getNetworkStats = async (): Promise<NetworkStats> => {
-  const response = await fastapiClient.get('/autonomy/network/stats');
+  const response = await fastapiClient.get(`${AUTONOMY_BASE}/network/stats`);
   return response.data;
 };
 
@@ -257,7 +259,7 @@ export const spawnNetworkAgent = async (
   role: string;
 }> => {
   try {
-    const response = await fastapiClient.post('/autonomy/network/spawn', request);
+    const response = await fastapiClient.post(`${AUTONOMY_BASE}/network/spawn`, request);
     logger.info('Network agent spawned', response.data);
     return response.data;
   } catch (error) {
@@ -270,7 +272,7 @@ export const spawnNetworkAgent = async (
  * Get details of a network agent.
  */
 export const getNetworkAgent = async (agentId: string): Promise<NetworkAgent> => {
-  const response = await fastapiClient.get(`/autonomy/network/agents/${agentId}`);
+  const response = await fastapiClient.get(`${AUTONOMY_BASE}/network/agents/${agentId}`);
   return response.data;
 };
 
@@ -280,7 +282,7 @@ export const getNetworkAgent = async (agentId: string): Promise<NetworkAgent> =>
  * List all active agent brains.
  */
 export const listBrains = async (): Promise<{ brains: BrainStatus[] }> => {
-  const response = await fastapiClient.get('/autonomy/brains');
+  const response = await fastapiClient.get(`${AUTONOMY_BASE}/brains`);
   return response.data;
 };
 
@@ -288,7 +290,7 @@ export const listBrains = async (): Promise<{ brains: BrainStatus[] }> => {
  * Get status of a specific agent brain.
  */
 export const getBrainStatus = async (agentId: string): Promise<BrainStatus> => {
-  const response = await fastapiClient.get(`/autonomy/brains/${agentId}`);
+  const response = await fastapiClient.get(`${AUTONOMY_BASE}/brains/${agentId}`);
   return response.data;
 };
 
@@ -300,7 +302,7 @@ export const setBrainGoal = async (
   goal: string
 ): Promise<{ agent_id: string; goal: string }> => {
   try {
-    const response = await fastapiClient.post(`/autonomy/brains/${agentId}/goal`, { goal });
+    const response = await fastapiClient.post(`${AUTONOMY_BASE}/brains/${agentId}/goal`, { goal });
     logger.info('Brain goal set', response.data);
     return response.data;
   } catch (error) {
@@ -315,7 +317,7 @@ export const setBrainGoal = async (
  * Get autonomous task queue statistics.
  */
 export const getQueueStats = async (): Promise<QueueStats> => {
-  const response = await fastapiClient.get('/autonomy/queue/stats');
+  const response = await fastapiClient.get(`${AUTONOMY_BASE}/queue/stats`);
   return response.data;
 };
 
@@ -326,7 +328,7 @@ export const listQueueTasks = async (
   status?: string,
   limit: number = 50
 ): Promise<{ tasks: QueueTask[]; total: number }> => {
-  const response = await fastapiClient.get('/autonomy/queue/tasks', {
+  const response = await fastapiClient.get(`${AUTONOMY_BASE}/queue/tasks`, {
     params: { status, limit }
   });
   return response.data;
@@ -338,7 +340,7 @@ export const listQueueTasks = async (
  * Get system watchdog status.
  */
 export const getWatchdogStatus = async (): Promise<WatchdogStatus> => {
-  const response = await fastapiClient.get('/autonomy/watchdog/status');
+  const response = await fastapiClient.get(`${AUTONOMY_BASE}/watchdog/status`);
   return response.data;
 };
 
@@ -348,7 +350,7 @@ export const getWatchdogStatus = async (): Promise<WatchdogStatus> => {
 export const getWatchdogAlerts = async (
   unacknowledgedOnly: boolean = false
 ): Promise<{ alerts: Alert[] }> => {
-  const response = await fastapiClient.get('/autonomy/watchdog/alerts', {
+  const response = await fastapiClient.get(`${AUTONOMY_BASE}/watchdog/alerts`, {
     params: { unacknowledged_only: unacknowledgedOnly }
   });
   return response.data;
@@ -360,7 +362,7 @@ export const getWatchdogAlerts = async (
 export const acknowledgeAlert = async (
   alertId: string
 ): Promise<{ acknowledged: boolean }> => {
-  const response = await fastapiClient.post(`/autonomy/watchdog/alerts/${alertId}/acknowledge`);
+  const response = await fastapiClient.post(`${AUTONOMY_BASE}/watchdog/alerts/${alertId}/acknowledge`);
   return response.data;
 };
 
@@ -375,7 +377,7 @@ export const getStartupStatus = async (): Promise<{
   restart_count: number;
   watchdog_active: boolean;
 }> => {
-  const response = await fastapiClient.get('/autonomy/startup/status');
+  const response = await fastapiClient.get(`${AUTONOMY_BASE}/startup/status`);
   return response.data;
 };
 

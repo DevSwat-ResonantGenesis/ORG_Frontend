@@ -37,6 +37,9 @@ export interface PlanLimits {
     autonomousMode: boolean;
     teams: boolean | string;
   };
+  userTeams?: {
+    enabled: boolean;
+  };
   chat: {
     conversations: number;
     messagesPerDay: number;
@@ -228,7 +231,7 @@ export const PLANS: Plan[] = [
       agents: {
         active: -1,  // Unlimited - credits-only billing
         autonomousMode: true,
-        agentTeams: true,  // Agent teams enabled (agents working together)
+        teams: true,  // Agent teams enabled (agents working together)
       },
       userTeams: {
         enabled: false,  // No user teams (single user only)

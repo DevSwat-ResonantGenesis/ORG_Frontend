@@ -25,6 +25,9 @@ client.interceptors.request.use((config) => {
   // Tokens are sent automatically via HttpOnly cookies
   // We only need to send user context headers if available
   if (sessionData) {
+    if (sessionData.userId) {
+      (config.headers as any)['x-user-id'] = sessionData.userId;
+    }
     if (sessionData.role) {
       (config.headers as any)['RG-Role'] = sessionData.role;
     }

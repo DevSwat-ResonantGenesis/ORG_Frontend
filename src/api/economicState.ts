@@ -119,6 +119,8 @@ export const getEconomicState = async (): Promise<EconomicState> => {
       credit_balance: 0,
       credit_rate: 1.0,
       hard_limits: {
+        max_agents: 1,
+        max_workflows: 2,
         max_memory_mb: 100,
         max_requests_per_day: 1000,
         max_tokens_per_day: 50000,

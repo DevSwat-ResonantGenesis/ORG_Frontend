@@ -175,17 +175,17 @@ const LiveWorkflowViewComponent: React.FC<LiveWorkflowViewProps> = ({
   };
 
   const getStepIcon = (action: string, status: string) => {
-    if (status === 'failed') return <Icons.XCircle className={styles.errorIcon} />;
-    if (status === 'completed') return <Icons.CheckCircle className={styles.successIcon} />;
-    if (status === 'running') return <Icons.Loader className={styles.loadingIcon} />;
+    if (status === 'failed') return <span className={styles.errorIcon}><Icons.XCircle /></span>;
+    if (status === 'completed') return <span className={styles.successIcon}><Icons.CheckCircle /></span>;
+    if (status === 'running') return <span className={styles.loadingIcon}><Icons.Refresh /></span>;
     
     // Action-specific icons
     switch (action?.toLowerCase()) {
-      case 'think': return <Icons.Brain className={styles.thinkIcon} />;
-      case 'write': return <Icons.FileText className={styles.writeIcon} />;
-      case 'search': return <Icons.Search className={styles.searchIcon} />;
-      case 'analyze': return <Icons.BarChart className={styles.analyzeIcon} />;
-      default: return <Icons.Cog className={styles.defaultIcon} />;
+      case 'think': return <span className={styles.thinkIcon}><Icons.Brain /></span>;
+      case 'write': return <span className={styles.writeIcon}><Icons.FileText /></span>;
+      case 'search': return <span className={styles.searchIcon}><Icons.Search /></span>;
+      case 'analyze': return <span className={styles.analyzeIcon}><Icons.BarChart /></span>;
+      default: return <span className={styles.defaultIcon}><Icons.Settings /></span>;
     }
   };
 
@@ -216,7 +216,7 @@ const LiveWorkflowViewComponent: React.FC<LiveWorkflowViewProps> = ({
       <div className={styles.workflowHeader}>
         <div className={styles.agentInfo}>
           <div className={styles.agentName}>
-            <Icons.Bot />
+            <Icons.Agents />
             {agentName}
           </div>
           <div className={styles.sessionId}>
@@ -254,7 +254,7 @@ const LiveWorkflowViewComponent: React.FC<LiveWorkflowViewProps> = ({
         <div className={styles.stepsList}>
           {steps.length === 0 ? (
             <div className={styles.emptyState}>
-              <Icons.Loader className={styles.spinner} />
+              <span className={styles.spinner}><Icons.Refresh /></span>
               <span>Waiting for agent to start...</span>
             </div>
           ) : (

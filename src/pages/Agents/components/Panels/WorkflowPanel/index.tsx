@@ -1,8 +1,9 @@
-import React, { memo, useState, useCallback } from 'react';
+import React, { memo, useState, useCallback, useEffect, useRef } from 'react';
 import { useWorkflowStore, useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import { WorkflowCanvas } from './WorkflowCanvas';
-import type { Workflow, WorkflowNode } from '../../../../../types';
+import type { Workflow as UIWorkflow, WorkflowNode } from '../../../../../types';
+import * as workflowsApi from '../../../../../api/workflows';
 import styles from './WorkflowPanel.module.css';
 
 // ============== WORKFLOW PANEL ==============
@@ -28,82 +29,132 @@ const NODE_PALETTE = [
 const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => {
   const storeWorkflows = useWorkflowStore(state => state.workflows);
   const selectedWorkflowId = useWorkflowStore(state => state.selectedWorkflowId);
-  const { addWorkflow, updateWorkflow, removeWorkflow, selectWorkflow, publishWorkflow, validateWorkflow } = useWorkflowStore();
+  const { setWorkflows, addWorkflow, updateWorkflow, removeWorkflow, selectWorkflow, publishWorkflow, validateWorkflow, setLoading, setError } = useWorkflowStore();
   const agents = useAgentStore(state => state.agents);
   
   const [activeView, setActiveView] = useState<ViewMode>('list');
   const [newWorkflowName, setNewWorkflowName] = useState('');
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const [localWorkflows, setLocalWorkflows] = useState<Workflow[]>([
-    {
-      id: 'wf-1',
-      name: 'Data Processing Pipeline',
-      description: 'Extract, transform, and load data from multiple sources',
-      version: '1.2.0',
-      status: 'published',
-      nodes: [
-        { id: 'n1', type: 'start', label: 'Start', position: { x: 100, y: 100 }, config: {} },
-        { id: 'n2', type: 'agent', label: 'Data Extractor', position: { x: 250, y: 100 }, config: { agentId: 'agent-1' } },
-        { id: 'n3', type: 'agent', label: 'Transform', position: { x: 400, y: 100 }, config: {} },
-        { id: 'n4', type: 'end', label: 'End', position: { x: 550, y: 100 }, config: {} },
-      ],
-      edges: [
-        { id: 'e1', source: 'n1', target: 'n2', label: '' },
-        { id: 'e2', source: 'n2', target: 'n3', label: '' },
-        { id: 'e3', source: 'n3', target: 'n4', label: '' },
-      ],
-      variables: [],
-      triggers: [],
-      createdAt: new Date(Date.now() - 86400000 * 7),
-      updatedAt: new Date(Date.now() - 86400000),
-      publishedAt: new Date(Date.now() - 86400000 * 2),
-    },
-    {
-      id: 'wf-2',
-      name: 'Customer Onboarding',
-      description: 'Automated customer onboarding workflow',
-      version: '2.0.0',
-      status: 'draft',
-      nodes: [
-        { id: 'n1', type: 'start', label: 'Start', position: { x: 100, y: 100 }, config: {} },
-        { id: 'n2', type: 'agent', label: 'Welcome Agent', position: { x: 250, y: 100 }, config: {} },
-        { id: 'n3', type: 'end', label: 'End', position: { x: 400, y: 100 }, config: {} },
-      ],
-      edges: [
-        { id: 'e1', source: 'n1', target: 'n2', label: '' },
-        { id: 'e2', source: 'n2', target: 'n3', label: '' },
-      ],
-      variables: [],
-      triggers: [],
-      createdAt: new Date(Date.now() - 86400000 * 3),
-      updatedAt: new Date(),
-      publishedAt: null,
-    },
-  ] as Workflow[]);
+  const workflows = Array.isArray(storeWorkflows) ? storeWorkflows : [];
+  const selectedWorkflow = Array.isArray(workflows)
+    ? workflows.find((w: any) => w.id === selectedWorkflowId) || null
+    : null;
 
-  // Use real workflows if available, otherwise use local mock data
-  const workflows = Array.isArray(storeWorkflows) && storeWorkflows.length > 0 ? storeWorkflows : localWorkflows;
-  const selectedWorkflow = Array.isArray(workflows) ? workflows.find((w: any) => w.id === selectedWorkflowId) || null : null;
+  const persistTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const apiToUiWorkflow = useCallback((api: workflowsApi.Workflow): UIWorkflow => {
+    const triggerConfig = (api.trigger_config || {}) as any;
+    const uiGraph = triggerConfig.ui_graph || {};
+    const nodes = Array.isArray(uiGraph.nodes) ? uiGraph.nodes : [];
+    const edges = Array.isArray(uiGraph.edges) ? uiGraph.edges : [];
+
+    const fallbackNodes =
+      nodes.length > 0
+        ? nodes
+        : [
+            { id: 'start', type: 'start', label: 'Start', position: { x: 100, y: 200 }, config: {} },
+            { id: 'end', type: 'end', label: 'End', position: { x: 500, y: 200 }, config: {} },
+          ];
+
+    const status = (triggerConfig.ui_status as UIWorkflow['status']) || 'draft';
+    const createdAt = api.created_at ? new Date(api.created_at) : new Date();
+    const updatedAt = api.updated_at ? new Date(api.updated_at) : createdAt;
+    const publishedAt = triggerConfig.ui_published_at ? new Date(triggerConfig.ui_published_at) : null;
+
+    return {
+      id: api.id,
+      name: api.name,
+      description: api.description || '',
+      version: String(api.version ?? '1'),
+      status,
+      nodes: fallbackNodes,
+      edges,
+      variables: [],
+      triggers: [],
+      createdAt,
+      updatedAt,
+      publishedAt,
+    };
+  }, []);
+
+  const uiToApiUpdate = useCallback((ui: UIWorkflow): workflowsApi.UpdateWorkflowRequest => {
+    return {
+      name: ui.name,
+      description: ui.description,
+      trigger_type: 'manual',
+      trigger_config: {
+        ui_graph: {
+          nodes: ui.nodes,
+          edges: ui.edges,
+        },
+        ui_status: ui.status,
+        ui_published_at: ui.publishedAt ? ui.publishedAt.toISOString() : null,
+      },
+      steps: [],
+    };
+  }, []);
+
+  const schedulePersist = useCallback(
+    (ui: UIWorkflow) => {
+      if (persistTimerRef.current) {
+        clearTimeout(persistTimerRef.current);
+      }
+
+      persistTimerRef.current = setTimeout(async () => {
+        persistTimerRef.current = null;
+        try {
+          await workflowsApi.updateWorkflow(ui.id, uiToApiUpdate(ui));
+        } catch (e: any) {
+          setError(e?.message || 'Failed to persist workflow');
+        }
+      }, 500);
+    },
+    [setError, uiToApiUpdate]
+  );
+
+  useEffect(() => {
+    let mounted = true;
+
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const apiWorkflows = await workflowsApi.listWorkflows();
+        if (!mounted) return;
+        setWorkflows(apiWorkflows.map(apiToUiWorkflow));
+      } catch (e: any) {
+        if (!mounted) return;
+        setError(e?.message || 'Failed to load workflows');
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+
+    return () => {
+      mounted = false;
+      if (persistTimerRef.current) {
+        clearTimeout(persistTimerRef.current);
+        persistTimerRef.current = null;
+      }
+    };
+  }, [apiToUiWorkflow, setError, setLoading, setWorkflows]);
 
   // Handle workflow updates
-  const handleWorkflowUpdate = useCallback((workflowId: string, updates: Partial<Workflow>) => {
-    if (storeWorkflows.length === 0) {
-      setLocalWorkflows(prev => prev.map((w: Workflow) => 
-        w.id === workflowId ? { ...w, ...updates, updatedAt: new Date() } : w
-      ));
-    } else {
-      updateWorkflow(workflowId, updates);
-    }
-  }, [storeWorkflows.length, updateWorkflow]);
+  const handleWorkflowUpdate = useCallback((workflowId: string, updates: Partial<UIWorkflow>) => {
+    const base = workflows.find((w: any) => w.id === workflowId) as UIWorkflow | undefined;
+    const next = base ? ({ ...base, ...updates, updatedAt: new Date() } as UIWorkflow) : undefined;
+    updateWorkflow(workflowId, updates);
+    if (next) schedulePersist(next);
+  }, [schedulePersist, updateWorkflow, workflows]);
 
   const handleCreateWorkflow = useCallback(() => {
     if (!newWorkflowName.trim()) return;
-    
-    const newWorkflow: Workflow = {
-      id: `wf-${Date.now()}`,
+
+    const draft: UIWorkflow = {
+      id: `local-${Date.now()}`,
       name: newWorkflowName,
       description: '',
-      version: '1.0.0',
+      version: '1',
       status: 'draft',
       nodes: [
         { id: 'start', type: 'start', label: 'Start', position: { x: 100, y: 200 }, config: {} },
@@ -115,13 +166,86 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
       createdAt: new Date(),
       updatedAt: new Date(),
       publishedAt: null,
-      };
-    
-    addWorkflow(newWorkflow);
-    setNewWorkflowName('');
-    selectWorkflow(newWorkflow.id);
-    setActiveView('builder');
-  }, [newWorkflowName, addWorkflow, selectWorkflow]);
+    };
+
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const created = await workflowsApi.createWorkflow({
+          name: draft.name,
+          description: draft.description,
+          trigger_type: 'manual',
+          trigger_config: {
+            ui_graph: { nodes: draft.nodes, edges: draft.edges },
+            ui_status: draft.status,
+            ui_published_at: null,
+          },
+          steps: [],
+        });
+
+        const uiCreated = apiToUiWorkflow(created);
+        addWorkflow(uiCreated);
+        setNewWorkflowName('');
+        selectWorkflow(uiCreated.id);
+        setActiveView('builder');
+      } catch (e: any) {
+        setError(e?.message || 'Failed to create workflow');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [addWorkflow, apiToUiWorkflow, newWorkflowName, selectWorkflow, setActiveView, setError, setLoading]);
+
+  const handleValidateWorkflow = useCallback((workflowId: string) => {
+    const ok = validateWorkflow(workflowId);
+    if (!ok) return;
+
+    const base = workflows.find((w: any) => w.id === workflowId) as UIWorkflow | undefined;
+    if (base) schedulePersist({ ...base, status: 'validated', updatedAt: new Date() });
+  }, [schedulePersist, validateWorkflow, workflows]);
+
+  const handlePublishWorkflow = useCallback((workflowId: string) => {
+    publishWorkflow(workflowId);
+    const base = workflows.find((w: any) => w.id === workflowId) as UIWorkflow | undefined;
+    if (base) {
+      schedulePersist({
+        ...base,
+        status: 'published',
+        publishedAt: new Date(),
+        updatedAt: new Date(),
+      });
+    }
+  }, [publishWorkflow, schedulePersist, workflows]);
+
+  const handleDeleteWorkflow = useCallback((workflowId: string) => {
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        await workflowsApi.deleteWorkflow(workflowId);
+        removeWorkflow(workflowId);
+      } catch (e: any) {
+        setError(e?.message || 'Failed to delete workflow');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [removeWorkflow, setError, setLoading]);
+
+  const handleRunWorkflow = useCallback((workflowId: string) => {
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        await workflowsApi.runWorkflow(workflowId, { input_data: {} });
+      } catch (e: any) {
+        setError(e?.message || 'Failed to run workflow');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [setError, setLoading]);
 
   const getTemplateIcon = (iconType: string) => {
     switch (iconType) {
@@ -228,7 +352,7 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
     );
   };
 
-  const getStatusColor = (status: Workflow['status']) => {
+  const getStatusColor = (status: UIWorkflow['status']) => {
     switch (status) {
       case 'published': return styles.published;
       case 'draft': return styles.draft;
@@ -283,7 +407,7 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
 
             <div className={styles.workflowsList}>
               <h3>Your Workflows</h3>
-              {workflows.map((workflow: Workflow) => (
+              {workflows.map((workflow: UIWorkflow) => (
                 <div 
                   key={workflow.id}
                   className={`${styles.workflowCard} ${selectedWorkflowId === workflow.id ? styles.selected : ''}`}
@@ -306,18 +430,18 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
                       <Icons.Edit /> Edit
                     </button>
                     {workflow.status === 'draft' && (
-                      <button onClick={(e) => { e.stopPropagation(); validateWorkflow(workflow.id); }}>
+                      <button onClick={(e) => { e.stopPropagation(); handleValidateWorkflow(workflow.id); }}>
                         <Icons.Check /> Validate
                       </button>
                     )}
                     {workflow.status === 'validated' && (
-                      <button onClick={(e) => { e.stopPropagation(); publishWorkflow(workflow.id); }}>
+                      <button onClick={(e) => { e.stopPropagation(); handlePublishWorkflow(workflow.id); }}>
                         <Icons.Upload /> Publish
                       </button>
                     )}
                     <button 
                       className={styles.deleteBtn}
-                      onClick={(e) => { e.stopPropagation(); removeWorkflow(workflow.id); }}
+                      onClick={(e) => { e.stopPropagation(); handleDeleteWorkflow(workflow.id); }}
                     >
                       <Icons.Trash />
                     </button>
@@ -342,10 +466,10 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
                     <button className={styles.secondaryBtn} onClick={() => handleAddNode('agent')}>
                       <Icons.Plus /> Add Node
                     </button>
-                    <button className={styles.secondaryBtn} onClick={() => validateWorkflow(selectedWorkflow.id)}>
+                    <button className={styles.secondaryBtn} onClick={() => handleValidateWorkflow(selectedWorkflow.id)}>
                       <Icons.Check /> Validate
                     </button>
-                    <button className={styles.primaryBtn}>
+                    <button className={styles.primaryBtn} onClick={() => handleRunWorkflow(selectedWorkflow.id)}>
                       <Icons.Play /> Run
                     </button>
                   </div>

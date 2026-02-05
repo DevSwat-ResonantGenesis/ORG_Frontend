@@ -349,8 +349,8 @@ export const ideWebSocket = getWebSocket(getIdeWsUrl('/ws/ide'));
 // export const chatWebSocket = getWebSocket(getWsUrl('/api/chat/ws'));
 export const chatWebSocket = {
   isConnected: false,
-  send: () => Promise.resolve(),
-  on: () => () => {},
+  send: (_type: string, _payload: unknown) => Promise.resolve(),
+  on: (_type: string, _handler: (payload: unknown) => void) => () => {},
   connect: () => Promise.resolve(),
   disconnect: () => {},
 };

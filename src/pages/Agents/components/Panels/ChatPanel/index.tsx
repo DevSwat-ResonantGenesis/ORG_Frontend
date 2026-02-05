@@ -99,7 +99,9 @@ const ChatPanelComponent: React.FC<ChatPanelProps> = ({ className }) => {
             setIsLoading(false);
           }
         } catch (e) {
-          // Ignore polling errors
+          if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+          setError('Failed to fetch agent session status. Please try again.');
+          setIsLoading(false);
         }
       }, 1500);
     } catch (err: any) {

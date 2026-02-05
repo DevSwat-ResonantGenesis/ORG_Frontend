@@ -51,15 +51,36 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
     return agents.find(a => a.id === agentId)?.name || 'Unknown Agent';
   }, [agents]);
 
-  const getStatusColor = (status: Execution['status']) => {
+  const getStatusColor = (status: executionsApi.Execution['status']) => {
     switch (status) {
       case 'running': return styles.running;
       case 'completed': return styles.completed;
       case 'failed': return styles.failed;
       case 'paused': return styles.paused;
-      case 'pending': return styles.pending;
+      case 'initializing': return styles.pending;
+      case 'waiting_approval': return styles.pending;
+      case 'cancelled': return styles.failed;
       default: return '';
     }
+  };
+
+  const getProgress = (exec: executionsApi.Execution) => {
+    const current =
+      typeof exec.currentStep === 'number'
+        ? exec.currentStep
+        : typeof exec.loop_count === 'number'
+          ? exec.loop_count
+          : 0;
+
+    const total =
+      typeof exec.totalSteps === 'number'
+        ? exec.totalSteps
+        : Array.isArray(exec.steps) && exec.steps.length > 0
+          ? exec.steps.length
+          : 0;
+
+    const pct = total > 0 ? Math.min(100, Math.max(0, (current / total) * 100)) : 0;
+    return { current, total, pct };
   };
 
   const formatDuration = (ms: number) => {
@@ -79,7 +100,28 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
         limit: 50,
         status: filter !== 'all' ? filter : undefined,
       });
-      setRealExecutions(response.executions || []);
+
+      const normalized = (response.executions || []).map((e) => {
+        const metrics = {
+          durationMs: e.metrics?.durationMs ?? e.duration_ms ?? 0,
+          tokensUsed: e.metrics?.tokensUsed ?? e.tokens_used ?? 0,
+          costUsd: e.metrics?.costUsd ?? e.metrics?.cost ?? e.cost ?? 0,
+          successRate: e.metrics?.successRate ?? 0,
+        };
+
+        const currentStep = typeof e.currentStep === 'number' ? e.currentStep : (e.loop_count ?? 0);
+        const totalSteps = typeof e.totalSteps === 'number' ? e.totalSteps : (e.steps?.length ?? 0);
+
+        return {
+          ...e,
+          agentId: e.agentId ?? e.agent_id,
+          metrics,
+          currentStep,
+          totalSteps,
+        };
+      });
+
+      setRealExecutions(normalized);
     } catch (err: any) {
       console.error('Failed to fetch executions:', err);
       setError(err.message || 'Failed to load executions');
@@ -127,6 +169,22 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
   }, [agents, selectedAgentId]);
 
   const displayExecutions = realExecutions;
+
+  const handleCancelSession = useCallback(async (sessionId: string) => {
+    if (!sessionId) return;
+
+    setIsLoading(true);
+    setError(null);
+    try {
+      await executionsApi.cancelAgentSession(sessionId);
+      cancelExecution(sessionId);
+      await fetchExecutions();
+    } catch (err: any) {
+      setError(err.message || 'Failed to cancel execution');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [cancelExecution, fetchExecutions]);
 
   return (
     <div className={`${styles.panel} ${className || ''}`}>
@@ -205,11 +263,17 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
         {activeView === 'active' && (
           <div className={styles.executionsList}>
             <h3>Active Executions</h3>
-            {displayExecutions.filter(e => e.status === 'running' || e.status === 'paused').map(exec => (
+            {displayExecutions.filter(e => e.status === 'running').map(exec => {
+              const progress = getProgress(exec);
+
+              return (
               <div 
                 key={exec.id} 
                 className={`${styles.executionCard} ${activeExecution?.id === exec.id ? styles.selected : ''}`}
-                onClick={() => setActiveExecution(exec.id)}
+                onClick={() => {
+                  setActiveExecution(exec.id);
+                  setSelectedExecution(exec);
+                }}
               >
                 <div className={styles.execHeader}>
                   <span className={`${styles.statusDot} ${getStatusColor(exec.status)}`} />
@@ -221,11 +285,13 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
                   <div className={styles.progressBar}>
                     <div 
                       className={styles.progressFill} 
-                      style={{ width: `${(exec.currentStep / exec.totalSteps) * 100}%` }}
+                      style={{ width: `${progress.pct}%` }}
                     />
                   </div>
                   <span className={styles.progressText}>
-                    Step {exec.currentStep} of {exec.totalSteps}
+                    {progress.total > 0
+                      ? `Step ${progress.current} of ${progress.total}`
+                      : `Step ${progress.current}`}
                   </span>
                 </div>
 
@@ -238,23 +304,19 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
                 <div className={styles.execActions}>
                   {exec.status === 'running' && (
                     <>
-                      <button onClick={(e) => { e.stopPropagation(); pauseExecution(exec.id); }}>
+                      <button disabled>
                         <Icons.Pause /> Pause
                       </button>
-                      <button onClick={(e) => { e.stopPropagation(); cancelExecution(exec.id); }}>
+                      <button onClick={(e) => { e.stopPropagation(); handleCancelSession(exec.id); }}>
                         <Icons.Stop /> Cancel
                       </button>
                     </>
                   )}
-                  {exec.status === 'paused' && (
-                    <button onClick={(e) => { e.stopPropagation(); resumeExecution(exec.id); }}>
-                      <Icons.Play /> Resume
-                    </button>
-                  )}
                 </div>
               </div>
-            ))}
-            {displayExecutions.filter(e => e.status === 'running' || e.status === 'paused').length === 0 && (
+              );
+            })}
+            {displayExecutions.filter(e => e.status === 'running').length === 0 && (
               <div className={styles.emptyState}>
                 <Icons.Execution />
                 <p>No active executions</p>

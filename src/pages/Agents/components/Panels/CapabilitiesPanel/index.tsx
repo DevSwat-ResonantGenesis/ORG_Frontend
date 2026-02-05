@@ -38,7 +38,6 @@ interface CapabilitiesPanelProps {
 
 const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ className }) => {
   const agents = useAgentStore(state => state.agents);
-  const updateAgent = useAgentStore(state => state.updateAgent);
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<'all' | 'core' | 'tool' | 'integration' | 'custom'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,26 +62,38 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
     costPerCall: '',
     tags: '',
   });
-  const [customCapabilities, setCustomCapabilities] = useState<capabilitiesApi.Capability[]>([]);
+  const [systemCapabilities, setSystemCapabilities] = useState<Capability[]>([]);
+  const [customCapabilities, setCustomCapabilities] = useState<Capability[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedCapabilities, setSelectedCapabilities] = useState<Set<string>>(new Set());
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingCapability, setEditingCapability] = useState<Capability | null>(null);
+  const [editCapability, setEditCapability] = useState({
+    name: '',
+    description: '',
+    requiredPermissions: '',
+    enabled: true,
+  });
   const [testingCapability, setTestingCapability] = useState<string | null>(null);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string; latency?: number } | null>(null);
 
   const selectedAgent = agents.find(a => a.id === selectedAgentId) || agents[0];
 
-  // Fetch custom capabilities from backend when agent changes
-  const fetchCustomCapabilities = useCallback(async () => {
+  // Fetch capabilities from backend when agent changes
+  const fetchCapabilities = useCallback(async () => {
     if (!selectedAgent?.id) return;
     
     setIsLoading(true);
     setError(null);
     try {
-      const caps = await capabilitiesApi.getCustomCapabilities(selectedAgent.id);
-      setCustomCapabilities(caps);
+      const [systemCaps, customCaps] = await Promise.all([
+        capabilitiesApi.getAgentCapabilities(selectedAgent.id),
+        capabilitiesApi.getCustomCapabilities(selectedAgent.id),
+      ]);
+      setSystemCapabilities(systemCaps as any);
+      setCustomCapabilities(customCaps as any);
+      setSelectedCapabilities(new Set());
     } catch (err: any) {
       console.error('Failed to fetch custom capabilities:', err);
       setError(err.message || 'Failed to load capabilities');
@@ -92,25 +103,10 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
   }, [selectedAgent?.id]);
 
   useEffect(() => {
-    fetchCustomCapabilities();
-  }, [fetchCustomCapabilities]);
+    fetchCapabilities();
+  }, [fetchCapabilities]);
 
-  const baseCapabilities: Capability[] = [
-    { id: 'c1', name: 'Web Search', description: 'Search the internet for information', category: 'tool', enabled: true, requiredPermissions: ['network'], executionMode: 'async', timeout: 30, rateLimit: 60, costPerCall: 0.001, callsToday: 145, totalCalls: 12450, successRate: 98.5, lastUsed: '2 min ago', avgLatency: 1200 },
-    { id: 'c2', name: 'Code Execution', description: 'Execute code in a sandboxed environment', category: 'tool', enabled: false, requiredPermissions: ['code', 'sandbox'], executionMode: 'sync', timeout: 60, rateLimit: 30, costPerCall: 0.005, callsToday: 0, totalCalls: 3200, successRate: 94.2, lastUsed: '1 day ago', avgLatency: 2500 },
-    { id: 'c3', name: 'File Access', description: 'Read and write files', category: 'core', enabled: true, requiredPermissions: ['filesystem'], executionMode: 'sync', timeout: 10, rateLimit: 100, costPerCall: 0, callsToday: 89, totalCalls: 8900, successRate: 99.9, lastUsed: '5 min ago', avgLatency: 50 },
-    { id: 'c4', name: 'API Calls', description: 'Make HTTP requests to external APIs', category: 'integration', enabled: true, requiredPermissions: ['network'], executionMode: 'async', timeout: 30, rateLimit: 120, costPerCall: 0.002, apiEndpoint: 'https://api.example.com', authType: 'bearer', callsToday: 234, totalCalls: 45000, successRate: 97.8, lastUsed: '1 min ago', avgLatency: 800 },
-    { id: 'c5', name: 'Database Query', description: 'Query SQL and NoSQL databases', category: 'integration', enabled: false, requiredPermissions: ['database'], executionMode: 'sync', timeout: 15, rateLimit: 50, costPerCall: 0.001, callsToday: 0, totalCalls: 5600, successRate: 99.1, lastUsed: '3 days ago', avgLatency: 150 },
-    { id: 'c6', name: 'Email Sending', description: 'Send emails via SMTP', category: 'integration', enabled: false, requiredPermissions: ['email'], executionMode: 'async', timeout: 30, rateLimit: 20, costPerCall: 0.003, callsToday: 0, totalCalls: 1200, successRate: 96.5, lastUsed: '1 week ago', avgLatency: 2000 },
-    { id: 'c7', name: 'Image Generation', description: 'Generate images using AI models', category: 'tool', enabled: true, requiredPermissions: ['ai'], executionMode: 'streaming', timeout: 120, rateLimit: 10, costPerCall: 0.02, callsToday: 12, totalCalls: 890, successRate: 92.3, lastUsed: '15 min ago', avgLatency: 8500 },
-    { id: 'c8', name: 'Text Analysis', description: 'Analyze and extract insights from text', category: 'core', enabled: true, requiredPermissions: [], executionMode: 'sync', timeout: 10, rateLimit: 200, costPerCall: 0.001, callsToday: 567, totalCalls: 78000, successRate: 99.7, lastUsed: 'Just now', avgLatency: 200 },
-    { id: 'c9', name: 'Data Visualization', description: 'Create charts and graphs', category: 'tool', enabled: true, requiredPermissions: [], executionMode: 'sync', timeout: 15, rateLimit: 50, costPerCall: 0, callsToday: 23, totalCalls: 4500, successRate: 98.9, lastUsed: '30 min ago', avgLatency: 350 },
-    { id: 'c10', name: 'Slack Integration', description: 'Send messages to Slack channels', category: 'integration', enabled: false, requiredPermissions: ['slack'], executionMode: 'async', timeout: 10, rateLimit: 60, costPerCall: 0, apiEndpoint: 'https://slack.com/api', authType: 'oauth2', callsToday: 0, totalCalls: 2300, successRate: 99.2, lastUsed: '2 weeks ago', avgLatency: 400 },
-    { id: 'c11', name: 'Custom Script', description: 'Run custom Python scripts', category: 'custom', enabled: false, requiredPermissions: ['code', 'custom'], executionMode: 'sync', timeout: 300, rateLimit: 5, costPerCall: 0.01, callsToday: 0, totalCalls: 450, successRate: 87.5, lastUsed: '5 days ago', avgLatency: 5000 },
-    { id: 'c12', name: 'Memory Management', description: 'Manage agent memory and context', category: 'core', enabled: true, requiredPermissions: [], executionMode: 'sync', timeout: 5, rateLimit: 500, costPerCall: 0, callsToday: 1200, totalCalls: 150000, successRate: 99.99, lastUsed: 'Just now', avgLatency: 25 },
-  ];
-
-  const capabilities = [...baseCapabilities, ...customCapabilities];
+  const capabilities = [...systemCapabilities, ...customCapabilities];
 
   const filteredCapabilities = capabilities.filter(cap => {
     if (activeCategory !== 'all' && cap.category !== activeCategory) return false;
@@ -145,17 +141,47 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
         setTimeout(() => setError(null), 3000);
       }
     } else {
-      // For base capabilities, just update local agent store
-      const currentCaps = selectedAgent.capabilities || [];
-      const capName = capability.name;
-      
-      if (capability.enabled) {
-        const updated = currentCaps.filter(c => c !== capName);
-        updateAgent(selectedAgent.id, { capabilities: updated });
-      } else {
-        const updated = [...currentCaps, capName];
-        updateAgent(selectedAgent.id, { capabilities: updated });
-      }
+      setError('System capabilities are managed by the platform and cannot be toggled here');
+      setTimeout(() => setError(null), 3000);
+    }
+  };
+
+  const handleUpdateCapability = async () => {
+    if (!selectedAgent?.id || !editingCapability) return;
+
+    if (!editCapability.name.trim()) {
+      setError('Please enter a capability name');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+    try {
+      const updated = await capabilitiesApi.updateCapability(selectedAgent.id, editingCapability.id, {
+        name: editCapability.name,
+        description: editCapability.description,
+        enabled: editCapability.enabled,
+        required_permissions: editCapability.requiredPermissions
+          .split(',')
+          .map(p => p.trim())
+          .filter(p => p),
+      });
+
+      setCustomCapabilities(prev =>
+        prev.map(c => (c.id === editingCapability.id ? { ...c, ...updated, category: 'custom' } : c))
+      );
+
+      setSuccessMessage(`Capability "${updated.name}" updated`);
+      setTimeout(() => setSuccessMessage(null), 3000);
+
+      setShowEditModal(false);
+      setEditingCapability(null);
+    } catch (err: any) {
+      setError(err.message || 'Failed to update capability');
+      setTimeout(() => setError(null), 3000);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -183,24 +209,54 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
 
   // Edit capability
   const handleEditCapability = (cap: Capability) => {
+    if (cap.category !== 'custom') {
+      setError('Only custom capabilities can be edited');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
     setEditingCapability(cap);
+    setEditCapability({
+      name: cap.name,
+      description: cap.description,
+      requiredPermissions: ((cap as any).requiredPermissions || cap.required_permissions || []).join(', '),
+      enabled: cap.enabled,
+    });
     setShowEditModal(true);
   };
 
   // Test capability
   const handleTestCapability = async (capId: string) => {
+    if (!selectedAgent?.id) return;
+
+    const capability = capabilities.find(c => c.id === capId);
+    if (!capability) return;
+
+    if (capability.category !== 'custom') {
+      setError('System capabilities cannot be tested here');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+
     setTestingCapability(capId);
     setTestResult(null);
-    
-    // Simulate test
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    const success = Math.random() > 0.2;
-    setTestResult({
-      success,
-      message: success ? 'Capability test passed successfully' : 'Test failed: Connection timeout',
-      latency: Math.floor(Math.random() * 2000) + 100,
-    });
+
+    const startedAt = Date.now();
+    try {
+      await capabilitiesApi.getCapabilitiesManifest(selectedAgent.id);
+      const latency = Date.now() - startedAt;
+      setTestResult({
+        success: true,
+        message: 'Capability reachable (manifest refreshed)',
+        latency,
+      });
+    } catch (err: any) {
+      const latency = Date.now() - startedAt;
+      setTestResult({
+        success: false,
+        message: err.message || 'Test failed',
+        latency,
+      });
+    }
     
     setTimeout(() => {
       setTestingCapability(null);
@@ -213,7 +269,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
     setNewCapability({
       name: `${cap.name} (Copy)`,
       description: cap.description,
-      requiredPermissions: (cap.requiredPermissions || []).join(', '),
+      requiredPermissions: (((cap as any).requiredPermissions || cap.required_permissions || []) as string[]).join(', '),
       type: 'action',
       executionMode: cap.executionMode || 'sync',
       rateLimit: cap.rateLimit?.toString() || '',
@@ -233,6 +289,8 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
 
   // Toggle selection
   const toggleSelection = (capId: string) => {
+    const cap = capabilities.find(c => c.id === capId);
+    if (!cap || cap.category !== 'custom') return;
     setSelectedCapabilities(prev => {
       const newSet = new Set(prev);
       if (newSet.has(capId)) {
@@ -246,23 +304,26 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
 
   // Select all
   const selectAll = () => {
-    if (selectedCapabilities.size === filteredCapabilities.length) {
+    const selectable = filteredCapabilities.filter(c => c.category === 'custom');
+    if (selectedCapabilities.size === selectable.length) {
       setSelectedCapabilities(new Set());
     } else {
-      setSelectedCapabilities(new Set(filteredCapabilities.map(c => c.id)));
+      setSelectedCapabilities(new Set(selectable.map(c => c.id)));
     }
   };
 
   // Bulk enable/disable
   const bulkToggle = async (enable: boolean) => {
-    for (const capId of selectedCapabilities) {
+    const idsToToggle = Array.from(selectedCapabilities);
+    for (const capId of idsToToggle) {
       const cap = capabilities.find(c => c.id === capId);
-      if (cap && cap.enabled !== enable) {
+      if (!cap || cap.category !== 'custom') continue;
+      if (cap.enabled !== enable) {
         await toggleCapability(capId);
       }
     }
     setSelectedCapabilities(new Set());
-    setSuccessMessage(`${selectedCapabilities.size} capabilities ${enable ? 'enabled' : 'disabled'}`);
+    setSuccessMessage(`${idsToToggle.length} capabilities ${enable ? 'enabled' : 'disabled'}`);
     setTimeout(() => setSuccessMessage(null), 3000);
   };
 
@@ -493,6 +554,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
                   type="checkbox" 
                   checked={selectedCapabilities.has(cap.id)}
                   onChange={() => toggleSelection(cap.id)}
+                  disabled={cap.category !== 'custom'}
                   className={styles.selectCheckbox}
                 />
               </div>
@@ -511,6 +573,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
                     type="checkbox" 
                     checked={cap.enabled}
                     onChange={() => toggleCapability(cap.id)}
+                    disabled={cap.category !== 'custom'}
                   />
                   <span className={styles.slider}></span>
                 </label>
@@ -571,7 +634,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
                 <button 
                   className={styles.actionBtn} 
                   onClick={() => handleTestCapability(cap.id)}
-                  disabled={testingCapability === cap.id}
+                  disabled={testingCapability === cap.id || cap.category !== 'custom'}
                   title="Test Capability"
                 >
                   {testingCapability === cap.id ? '⏳' : '▶️'} Test
@@ -579,6 +642,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
                 <button 
                   className={styles.actionBtn} 
                   onClick={() => handleEditCapability(cap)}
+                  disabled={cap.category !== 'custom'}
                   title="Edit"
                 >
                   ✏️ Edit
@@ -845,6 +909,89 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
               </button>
               <button className={styles.submitBtn} onClick={handleAddCapability}>
                 <Icons.Plus /> Add Capability
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Custom Capability Modal */}
+      {showEditModal && editingCapability && (
+        <div
+          className={styles.modal}
+          onClick={() => {
+            setShowEditModal(false);
+            setEditingCapability(null);
+          }}
+        >
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>Edit Custom Capability</h3>
+              <button
+                className={styles.closeBtn}
+                onClick={() => {
+                  setShowEditModal(false);
+                  setEditingCapability(null);
+                }}
+              >
+                <Icons.X />
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.formSection}>
+                <h4 className={styles.sectionTitle}>Basic Information</h4>
+                <div className={styles.formGroup}>
+                  <label>Capability Name *</label>
+                  <input
+                    type="text"
+                    value={editCapability.name}
+                    onChange={e => setEditCapability({ ...editCapability, name: e.target.value })}
+                    className={styles.input}
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Description</label>
+                  <textarea
+                    value={editCapability.description}
+                    onChange={e => setEditCapability({ ...editCapability, description: e.target.value })}
+                    className={styles.textarea}
+                    rows={2}
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Required Permissions</label>
+                  <input
+                    type="text"
+                    value={editCapability.requiredPermissions}
+                    onChange={e => setEditCapability({ ...editCapability, requiredPermissions: e.target.value })}
+                    className={styles.input}
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.toggle}>
+                    <input
+                      type="checkbox"
+                      checked={editCapability.enabled}
+                      onChange={e => setEditCapability({ ...editCapability, enabled: e.target.checked })}
+                    />
+                    <span className={styles.slider}></span>
+                    <span style={{ marginLeft: 8 }}>Enabled</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className={styles.modalFooter}>
+              <button
+                className={styles.cancelBtn}
+                onClick={() => {
+                  setShowEditModal(false);
+                  setEditingCapability(null);
+                }}
+              >
+                Cancel
+              </button>
+              <button className={styles.submitBtn} onClick={handleUpdateCapability}>
+                Save Changes
               </button>
             </div>
           </div>

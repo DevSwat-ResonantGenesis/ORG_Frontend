@@ -310,12 +310,12 @@ export default function SignupPageNew() {
       // Legacy flow: Save session data from response (if auto-login is enabled)
       if (data.user && data.org_id && data.access_token) {
         import('../../utils/auth-cookies').then(({ saveSessionData }) => {
-          saveSessionData({
-            email: data.user.email,
-            role: data.role || 'owner',
-            org: data.org_id,
-            userId: data.user.id,
-          });
+          saveSessionData(
+            data.user.email,
+            data.role || 'owner',
+            data.org_id,
+            data.user.id
+          );
         });
         setSuccess(true);
         // Only redirect to dashboard if we got tokens (auto-login)

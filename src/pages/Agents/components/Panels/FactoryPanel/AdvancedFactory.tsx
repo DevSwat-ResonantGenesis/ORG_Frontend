@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback, useEffect } from 'react';
+import React, { memo, useState, useCallback, useEffect, useMemo } from 'react';
 import { useAgentStore } from '../../../../../stores/agentStore';
 import { Icons } from '../../shared/Icons';
 import type { Agent } from '../../../../../types';
@@ -10,13 +10,11 @@ import {
   listCustomTools,
 } from '../../../../../api/agents';
 import { fetchUserApiKeys } from '../../../../../api/userApiKeys';
+import fastapiClient from '../../../../../api/fastapiClient';
 import styles from './AdvancedFactory.module.css';
 
 // ============== ADVANCED AGENT FACTORY ==============
 // Full-featured agent creation with backend integration
-
-// API Configuration
-const API_BASE = import.meta.env.VITE_API_URL || 'https://api.resonant.network';
 
 interface AdvancedConfig {
   // Basic
@@ -51,6 +49,12 @@ interface AdvancedConfig {
   canAccessNetwork: boolean;
   canExecuteCode: boolean;
   maxConcurrentTasks: number;
+
+  walletEnabled: boolean;
+  walletInitialBalance: number;
+  walletDailyLimit: number;
+  walletTransactionLimit: number;
+  walletMonthlyLimit: number;
   
   // Developer
   webhookUrl: string;
@@ -204,6 +208,12 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
     canAccessNetwork: true,
     canExecuteCode: false,
     maxConcurrentTasks: 5,
+
+    walletEnabled: true,
+    walletInitialBalance: 0,
+    walletDailyLimit: 100,
+    walletTransactionLimit: 50,
+    walletMonthlyLimit: 1000,
     webhookUrl: '',
     apiKeyEnabled: false,
     rateLimitPerMinute: 60,
@@ -225,11 +235,35 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
 
   const [providerKeyStatus, setProviderKeyStatus] = useState<Record<string, 'configured' | 'missing' | 'unknown'>>({});
 
-  const [customTools, setCustomTools] = useState<Array<{ id: string; name: string; display_name?: string | null }>>([]);
+  const [customTools, setCustomTools] = useState<Array<{ id: string; name: string; display_name?: string | null; description?: string | null; category?: string | null; parameters_schema?: Record<string, any> | null; handler_type?: string | null; handler_config?: Record<string, any> | null; risk_level?: string; requires_approval?: boolean | null; is_active?: boolean }>>([]);
+  const [availableTools, setAvailableTools] = useState<Array<{ id: string; name: string; display_name?: string | null; description?: string | null; category?: string | null; parameters_schema?: Record<string, any> | null; handler_type?: string | null; handler_config?: Record<string, any> | null; risk_level?: string; requires_approval?: boolean | null; is_active?: boolean }>>([]);
+  const [isLoadingAvailableTools, setIsLoadingAvailableTools] = useState(false);
+  const [toolSearch, setToolSearch] = useState('');
+  const [toolCategoryFilter, setToolCategoryFilter] = useState<string>('all');
+  const [toolRiskFilter, setToolRiskFilter] = useState<string>('all');
+  const [showSelectedOnly, setShowSelectedOnly] = useState(false);
+  const [toolDetails, setToolDetails] = useState<null | {
+    id: string;
+    name: string;
+    display_name?: string | null;
+    description?: string | null;
+    category?: string | null;
+    parameters_schema?: Record<string, any> | null;
+    handler_type?: string | null;
+    handler_config?: Record<string, any> | null;
+    risk_level?: string;
+    requires_approval?: boolean | null;
+    is_active?: boolean;
+  }>(null);
   const [newToolName, setNewToolName] = useState('');
   const [newToolUrl, setNewToolUrl] = useState('');
   const [newToolDescription, setNewToolDescription] = useState('');
+  const [newToolMethod, setNewToolMethod] = useState<'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'>('POST');
+  const [newToolRiskLevel, setNewToolRiskLevel] = useState<'low' | 'medium' | 'high' | 'critical'>('medium');
+  const [newToolRequiresApproval, setNewToolRequiresApproval] = useState(true);
+  const [newToolParametersSchema, setNewToolParametersSchema] = useState('');
   const [isCreatingTool, setIsCreatingTool] = useState(false);
+  const [editingToolId, setEditingToolId] = useState<string | null>(null);
 
   useEffect(() => {
     const loadProviderKeyStatus = async () => {
@@ -297,7 +331,21 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
     const loadCustomTools = async () => {
       try {
         const tools = await listCustomTools();
-        setCustomTools((tools || []).map((t: any) => ({ id: t.id, name: t.name, display_name: t.display_name })));
+        setCustomTools(
+          (tools || []).map((t: any) => ({
+            id: t.id,
+            name: t.name,
+            display_name: t.display_name,
+            description: t.description,
+            category: t.category,
+            parameters_schema: t.parameters_schema,
+            handler_type: t.handler_type,
+            handler_config: t.handler_config,
+            risk_level: t.risk_level,
+            requires_approval: t.requires_approval,
+            is_active: t.is_active,
+          }))
+        );
       } catch {
         setCustomTools([]);
       }
@@ -305,13 +353,121 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
     loadCustomTools();
   }, []);
 
+  const refreshAvailableTools = useCallback(async () => {
+    setIsLoadingAvailableTools(true);
+    try {
+      const tools = await fastapiClient.get('/api/v1/agents/tools');
+      const list = Array.isArray((tools.data as any)) ? (tools.data as any[]) : [];
+      setAvailableTools(
+        list.map((t: any) => ({
+          id: t.id,
+          name: t.name,
+          display_name: t.display_name,
+          description: t.description,
+          category: t.category,
+          parameters_schema: t.parameters_schema,
+          handler_type: t.handler_type,
+          handler_config: t.handler_config,
+          risk_level: t.risk_level,
+          requires_approval: t.requires_approval,
+          is_active: t.is_active,
+        }))
+      );
+    } catch {
+      setAvailableTools([]);
+    } finally {
+      setIsLoadingAvailableTools(false);
+    }
+  }, []);
+
+  const availableToolCategories = useMemo(() => {
+    const set = new Set<string>();
+    for (const t of availableTools) {
+      if (t.category) set.add(t.category);
+    }
+    return Array.from(set).sort();
+  }, [availableTools]);
+
+  const filteredAvailableTools = useMemo(() => {
+    const q = toolSearch.trim().toLowerCase();
+    return availableTools
+      .filter((t) => t.is_active !== false)
+      .filter((t) => {
+        if (toolCategoryFilter !== 'all' && (t.category || '') !== toolCategoryFilter) return false;
+        if (toolRiskFilter !== 'all' && (t.risk_level || '') !== toolRiskFilter) return false;
+        if (showSelectedOnly && !config.tools.includes(t.name)) return false;
+        if (!q) return true;
+        const label = (t.display_name || t.name || '').toLowerCase();
+        const desc = (t.description || '').toLowerCase();
+        return label.includes(q) || desc.includes(q);
+      });
+  }, [availableTools, config.tools, showSelectedOnly, toolCategoryFilter, toolRiskFilter, toolSearch]);
+
+  useEffect(() => {
+    refreshAvailableTools();
+  }, [refreshAvailableTools]);
+
+  useEffect(() => {
+    if (!toolDetails) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setToolDetails(null);
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [toolDetails]);
+
   const refreshCustomTools = useCallback(async () => {
     try {
       const tools = await listCustomTools();
-      setCustomTools((tools || []).map((t: any) => ({ id: t.id, name: t.name, display_name: t.display_name })));
+      setCustomTools(
+        (tools || []).map((t: any) => ({
+          id: t.id,
+          name: t.name,
+          display_name: t.display_name,
+          description: t.description,
+          category: t.category,
+          parameters_schema: t.parameters_schema,
+          handler_type: t.handler_type,
+          handler_config: t.handler_config,
+          risk_level: t.risk_level,
+          requires_approval: t.requires_approval,
+          is_active: t.is_active,
+        }))
+      );
     } catch {
       setCustomTools([]);
     }
+  }, []);
+
+  const startEditCustomTool = useCallback((t: { id: string; name: string; description?: string | null; handler_config?: Record<string, any> | null; risk_level?: string; requires_approval?: boolean | null; parameters_schema?: Record<string, any> | null }) => {
+    setEditingToolId(t.id);
+    setNewToolName(t.name);
+    setNewToolDescription(t.description || '');
+    const url = (t.handler_config as any)?.url;
+    const method = (t.handler_config as any)?.method;
+    setNewToolUrl(typeof url === 'string' ? url : '');
+    setNewToolMethod((['GET', 'POST', 'PUT', 'PATCH', 'DELETE'] as const).includes(method) ? method : 'POST');
+    setNewToolRiskLevel((['low', 'medium', 'high', 'critical'] as const).includes(t.risk_level as any) ? (t.risk_level as any) : 'medium');
+    setNewToolRequiresApproval(Boolean(t.requires_approval));
+    setNewToolParametersSchema(t.parameters_schema ? JSON.stringify(t.parameters_schema, null, 2) : '');
+    setError(null);
+  }, []);
+
+  const cancelEditCustomTool = useCallback(() => {
+    setEditingToolId(null);
+    setNewToolName('');
+    setNewToolUrl('');
+    setNewToolDescription('');
+    setNewToolParametersSchema('');
+    setNewToolMethod('POST');
+    setNewToolRiskLevel('medium');
+    setNewToolRequiresApproval(true);
+    setError(null);
   }, []);
 
   const handleCreateCustomTool = useCallback(async () => {
@@ -324,40 +480,79 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
       return;
     }
 
+    // Validate URL format
+    try {
+      // eslint-disable-next-line no-new
+      new URL(newToolUrl.trim());
+    } catch {
+      setError('Tool URL must be a valid URL');
+      return;
+    }
+
+    let parsedSchema: Record<string, any> | undefined;
+    if (newToolParametersSchema.trim()) {
+      try {
+        parsedSchema = JSON.parse(newToolParametersSchema);
+      } catch {
+        setError('Parameters schema must be valid JSON');
+        return;
+      }
+    }
+
     setIsCreatingTool(true);
     setError(null);
     try {
       await createCustomToolApi({
         name: newToolName.trim(),
         description: newToolDescription.trim() || undefined,
+        category: 'custom',
+        parameters_schema: parsedSchema,
         handler_type: 'http',
         handler_config: {
           url: newToolUrl.trim(),
-          method: 'POST',
+          method: newToolMethod,
         },
-        risk_level: 'medium',
-        requires_approval: true,
+        risk_level: newToolRiskLevel,
+        requires_approval: newToolRequiresApproval,
       });
       setNewToolName('');
       setNewToolUrl('');
       setNewToolDescription('');
+      setNewToolParametersSchema('');
+      setNewToolMethod('POST');
+      setNewToolRiskLevel('medium');
+      setNewToolRequiresApproval(true);
       await refreshCustomTools();
+      await refreshAvailableTools();
+      setSuccess(editingToolId ? 'Custom tool updated' : 'Custom tool created');
+      setEditingToolId(null);
     } catch (e: any) {
       setError(e?.message || 'Failed to create custom tool');
     } finally {
       setIsCreatingTool(false);
     }
-  }, [newToolDescription, newToolName, newToolUrl, refreshCustomTools]);
+  }, [editingToolId, newToolDescription, newToolMethod, newToolName, newToolParametersSchema, newToolRequiresApproval, newToolRiskLevel, newToolUrl, refreshAvailableTools, refreshCustomTools]);
 
   const handleDeleteCustomTool = useCallback(async (toolId: string) => {
+    const tool = customTools.find((t) => t.id === toolId);
+    const label = tool?.display_name || tool?.name || toolId;
+    const ok = window.confirm(`Delete custom tool "${label}"?`);
+    if (!ok) return;
+
+    if (editingToolId === toolId) {
+      cancelEditCustomTool();
+    }
+
     setError(null);
     try {
       await deleteCustomToolApi(toolId);
       await refreshCustomTools();
+      await refreshAvailableTools();
+      setSuccess('Custom tool deleted');
     } catch (e: any) {
       setError(e?.message || 'Failed to delete custom tool');
     }
-  }, [refreshCustomTools]);
+  }, [cancelEditCustomTool, customTools, editingToolId, refreshAvailableTools, refreshCustomTools]);
 
   const canUseProvider = useCallback((providerId: string) => {
     const status = providerKeyStatus[providerId];
@@ -437,27 +632,21 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
 
   const generateApiKey = async () => {
     try {
-      const response = await fetch(`${API_BASE}/api/v1/developer/keys`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('auth_token') || ''}`,
-        },
-        body: JSON.stringify({ name: config.name, scopes: ['agent:read', 'agent:write'] }),
+      const res = await fastapiClient.post('/api/v1/developer/keys', {
+        name: config.name || 'Agent Key',
+        scopes: ['agent:read', 'agent:write'],
       });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setApiKey(data.key);
-        return data.key;
+      const key = (res.data as any)?.key;
+      if (!key) {
+        throw new Error('API key generation returned no key');
       }
-    } catch (err) {
-      console.error('Failed to generate API key:', err);
+      setApiKey(key);
+      return key;
+    } catch (err: any) {
+      const message = err?.response?.data?.detail || err?.message || 'Failed to generate API key';
+      setError(message);
+      throw new Error(message);
     }
-    // Generate mock key for demo
-    const mockKey = `rg_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 15)}`;
-    setApiKey(mockKey);
-    return mockKey;
   };
 
   const handleCreate = useCallback(async () => {
@@ -537,6 +726,44 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
       const response = await createAgentAPI(agentData);
       setCreatedAgentId(response.id);
 
+      const postCreateErrors: string[] = [];
+
+      try {
+        await fastapiClient.post(`/api/v1/autonomy/mode/${response.id}`, {
+          mode: config.mode,
+          reason: 'factory',
+        });
+      } catch (e: any) {
+        const detail = e?.response?.data?.detail;
+        const message = typeof detail === 'string' ? detail : e?.message;
+        postCreateErrors.push(`Autonomy mode: ${message || 'failed to set mode'}`);
+      }
+
+      if (config.walletEnabled) {
+        const toNum = (v: any) => (Number.isFinite(Number(v)) ? Number(v) : NaN);
+        const initial_balance = toNum(config.walletInitialBalance);
+        const daily_limit = toNum(config.walletDailyLimit);
+        const transaction_limit = toNum(config.walletTransactionLimit);
+        const monthly_limit = toNum(config.walletMonthlyLimit);
+
+        if ([initial_balance, daily_limit, transaction_limit, monthly_limit].some((x) => !Number.isFinite(x) || x < 0)) {
+          postCreateErrors.push('Wallet limits: invalid values');
+        } else {
+          try {
+            await fastapiClient.post(`/api/v1/wallets/${response.id}`, {
+              initial_balance,
+              daily_limit,
+              transaction_limit,
+              monthly_limit,
+            });
+          } catch (e: any) {
+            const detail = e?.response?.data?.detail;
+            const message = typeof detail === 'string' ? detail : e?.message;
+            postCreateErrors.push(`Wallet: ${message || 'failed to create wallet'}`);
+          }
+        }
+      }
+
       // Add to store
       const newAgent: Agent = {
         id: response.id,
@@ -549,7 +776,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
         mode: config.mode,
         version: String(response.version) + '.0.0',
         capabilities: config.tools,
-        walletBalance: 100,
+        walletBalance: 0,
         riskLevel: 'low',
         utilityScore: 0,
         executions: 0,
@@ -557,7 +784,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
         pendingApprovals: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
-        ownerId: 'user-1',
+        ownerId: '',
         config: {
           provider: config.provider,
           model: config.model,
@@ -594,7 +821,11 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
       }
 
       setCreatedAgentId(newAgent.id);
-      setSuccess(`Agent "${config.name}" created successfully!`);
+      if (postCreateErrors.length > 0) {
+        setError(`Agent created, but setup failed: ${postCreateErrors.join(' | ')}`);
+      } else {
+        setSuccess(`Agent "${config.name}" created successfully!`);
+      }
 
     } catch (err: any) {
       setError(err?.message || 'Agent was not created on server. Fix auth/API first.');
@@ -735,7 +966,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                     </div>
 
                     <div className={styles.cardFooter}>
-                      <button className={styles.useTemplateBtn}>Use Template</button>
+                      <button className={styles.useTemplateBtn} type="button" onClick={() => applyTemplate(template)}>Use Template</button>
                     </div>
                   </div>
                 ))}
@@ -977,21 +1208,106 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                   </div>
                 )}
 
+                <div className={styles.toolsFilterRow}>
+                  <div className={styles.field}>
+                    <label>Search tools</label>
+                    <input value={toolSearch} onChange={(e) => setToolSearch(e.target.value)} placeholder="Search by name/description" />
+                  </div>
+                  <div className={styles.field}>
+                    <label>Category</label>
+                    <select value={toolCategoryFilter} onChange={(e) => setToolCategoryFilter(e.target.value)}>
+                      <option value="all">All</option>
+                      {availableToolCategories.map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className={styles.field}>
+                    <label>Risk</label>
+                    <select value={toolRiskFilter} onChange={(e) => setToolRiskFilter(e.target.value)}>
+                      <option value="all">All</option>
+                      <option value="low">low</option>
+                      <option value="medium">medium</option>
+                      <option value="high">high</option>
+                      <option value="critical">critical</option>
+                    </select>
+                  </div>
+                  <label className={styles.toggleItem}>
+                    <input type="checkbox" checked={showSelectedOnly} onChange={(e) => setShowSelectedOnly(e.target.checked)} />
+                    <span className={styles.toggleLabel}>
+                      <strong>Selected only</strong>
+                      <span>Show enabled tools</span>
+                    </span>
+                  </label>
+                </div>
+
                 <div className={styles.toolsGrid}>
-                  {TOOLS.map(tool => (
-                    <button
-                      key={tool.id}
-                      className={`${styles.toolCard} ${config.tools.includes(tool.id) ? styles.active : ''}`}
-                      onClick={() => toggleTool(tool.id)}
-                    >
-                      <div className={styles.toolIcon}>{getToolIcon(tool.icon)}</div>
-                      <div className={styles.toolInfo}>
-                        <span className={styles.toolName}>{tool.name}</span>
-                        <span className={styles.toolDesc}>{tool.description}</span>
-                      </div>
-                      {config.tools.includes(tool.id) && <Icons.CheckCircle />}
-                    </button>
-                  ))}
+                  {filteredAvailableTools.map((tool) => {
+                      const uiMeta = TOOLS.find(
+                        (m) => m.id === tool.name || m.id === tool.id || m.name === tool.display_name
+                      );
+                      const iconName = uiMeta?.icon || 'Zap';
+                      const label = tool.display_name || tool.name;
+                      const desc = tool.description || uiMeta?.description || '';
+                      const toolKey = tool.name;
+
+                      return (
+                        <div
+                          key={tool.id}
+                          className={`${styles.toolCard} ${config.tools.includes(toolKey) ? styles.active : ''}`}
+                          onClick={() => toggleTool(toolKey)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              toggleTool(toolKey);
+                            }
+                          }}
+                        >
+                          <div className={styles.toolIcon}>{getToolIcon(iconName)}</div>
+                          <div className={styles.toolInfo}>
+                            <div className={styles.toolNameRow}>
+                              <div className={styles.toolName}>{label}</div>
+                              <div className={styles.toolBadges}>
+                                {tool.risk_level && (
+                                  <span className={`${styles.badge} ${styles[`risk_${tool.risk_level}` as keyof typeof styles] || ''}`}>{tool.risk_level}</span>
+                                )}
+                                {tool.requires_approval && <span className={`${styles.badge} ${styles.badgeApproval}`}>approval</span>}
+                              </div>
+                            </div>
+                            <div className={styles.toolDesc}>{desc}</div>
+                            {(tool.category || tool.handler_type) && (
+                              <div className={styles.toolMetaRow}>
+                                {tool.category && <span className={styles.miniChip}>{tool.category}</span>}
+                                {tool.handler_type && <span className={styles.miniChip}>{tool.handler_type}</span>}
+                              </div>
+                            )}
+                          </div>
+                          <button
+                            type="button"
+                            className={styles.toolDetailsBtn}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setToolDetails(tool);
+                            }}
+                          >
+                            Details
+                          </button>
+                        </div>
+                      );
+                    })}
+
+                  {!isLoadingAvailableTools && filteredAvailableTools.length === 0 && (
+                    <div className={styles.toolsEmptyState}>
+                      No tools match your filters.
+                    </div>
+                  )}
+                  {isLoadingAvailableTools && (
+                    <div className={styles.toolsEmptyState}>
+                      Loading tools…
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1053,6 +1369,62 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                   <label>Max Concurrent Tasks: {config.maxConcurrentTasks}</label>
                   <input type="range" min="1" max="20" value={config.maxConcurrentTasks} onChange={e => updateConfig({ maxConcurrentTasks: parseInt(e.target.value) })} />
                 </div>
+
+                <div className={styles.field}>
+                  <label>Budget & Wallet Limits</label>
+                  <label className={styles.toggleItem}>
+                    <input type="checkbox" checked={config.walletEnabled} onChange={e => updateConfig({ walletEnabled: e.target.checked })} />
+                    <span className={styles.toggleLabel}>
+                      <strong>Enable wallet</strong>
+                      <span>Apply spend limits and approval gating</span>
+                    </span>
+                  </label>
+                </div>
+
+                {config.walletEnabled && (
+                  <div className={styles.formGrid}>
+                    <div className={styles.field}>
+                      <label>Initial Balance</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={1}
+                        value={config.walletInitialBalance}
+                        onChange={e => updateConfig({ walletInitialBalance: parseFloat(e.target.value || '0') })}
+                      />
+                    </div>
+                    <div className={styles.field}>
+                      <label>Daily Limit</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={1}
+                        value={config.walletDailyLimit}
+                        onChange={e => updateConfig({ walletDailyLimit: parseFloat(e.target.value || '0') })}
+                      />
+                    </div>
+                    <div className={styles.field}>
+                      <label>Transaction Limit</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={1}
+                        value={config.walletTransactionLimit}
+                        onChange={e => updateConfig({ walletTransactionLimit: parseFloat(e.target.value || '0') })}
+                      />
+                    </div>
+                    <div className={styles.field}>
+                      <label>Monthly Limit</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={1}
+                        value={config.walletMonthlyLimit}
+                        onChange={e => updateConfig({ walletMonthlyLimit: parseFloat(e.target.value || '0') })}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
             {/* Step 6: Deploy */}
@@ -1077,6 +1449,19 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                       {config.tools.map(t => <span key={t} className={styles.toolTag}>{t}</span>)}
                       {config.tools.length === 0 && <span className={styles.noTools}>No tools selected</span>}
                     </div>
+                  </div>
+
+                  <div className={styles.reviewSection}>
+                    <h4>Governance & Budget</h4>
+                    <div className={styles.reviewRow}><span>Mode:</span><strong>{config.mode}</strong></div>
+                    <div className={styles.reviewRow}><span>Wallet:</span><strong>{config.walletEnabled ? 'enabled' : 'disabled'}</strong></div>
+                    {config.walletEnabled && (
+                      <>
+                        <div className={styles.reviewRow}><span>Daily limit:</span><strong>{config.walletDailyLimit}</strong></div>
+                        <div className={styles.reviewRow}><span>Transaction limit:</span><strong>{config.walletTransactionLimit}</strong></div>
+                        <div className={styles.reviewRow}><span>Monthly limit:</span><strong>{config.walletMonthlyLimit}</strong></div>
+                      </>
+                    )}
                   </div>
                 </div>
                 <div className={styles.deployOptions}>
@@ -1220,21 +1605,62 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
               <div className={styles.formGrid}>
                 <div className={styles.field}>
                   <label>Tool Name</label>
-                  <input value={newToolName} onChange={e => setNewToolName(e.target.value)} placeholder="e.g. my-webhook-tool" />
+                  <input value={newToolName} onChange={e => setNewToolName(e.target.value)} placeholder="e.g. my-webhook-tool" disabled={Boolean(editingToolId)} />
                 </div>
                 <div className={styles.field}>
                   <label>Tool URL</label>
                   <input value={newToolUrl} onChange={e => setNewToolUrl(e.target.value)} placeholder="https://your-api.com/tool" />
                 </div>
               </div>
+              <div className={styles.formGrid}>
+                <div className={styles.field}>
+                  <label>HTTP Method</label>
+                  <select value={newToolMethod} onChange={e => setNewToolMethod(e.target.value as any)}>
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="PATCH">PATCH</option>
+                    <option value="DELETE">DELETE</option>
+                  </select>
+                </div>
+                <div className={styles.field}>
+                  <label>Risk Level</label>
+                  <select value={newToolRiskLevel} onChange={e => setNewToolRiskLevel(e.target.value as any)}>
+                    <option value="low">low</option>
+                    <option value="medium">medium</option>
+                    <option value="high">high</option>
+                    <option value="critical">critical</option>
+                  </select>
+                </div>
+              </div>
               <div className={styles.field}>
                 <label>Description</label>
                 <input value={newToolDescription} onChange={e => setNewToolDescription(e.target.value)} placeholder="What does this tool do?" />
               </div>
+              <div className={styles.field}>
+                <label>Parameters Schema (JSON, optional)</label>
+                <textarea
+                  value={newToolParametersSchema}
+                  onChange={e => setNewToolParametersSchema(e.target.value)}
+                  placeholder='{"type":"object","properties":{}}'
+                  rows={3}
+                />
+              </div>
+              <div className={styles.webhookEvents}>
+                <label>
+                  <input type="checkbox" checked={newToolRequiresApproval} onChange={e => setNewToolRequiresApproval(e.target.checked)} />
+                  requires approval
+                </label>
+              </div>
               <div className={styles.importActions}>
                 <button className={styles.importBtn} onClick={handleCreateCustomTool} disabled={isCreatingTool}>
-                  {isCreatingTool ? 'Creating…' : 'Create Tool'}
+                  {isCreatingTool ? 'Saving…' : (editingToolId ? 'Update Tool' : 'Create Tool')}
                 </button>
+                {editingToolId && (
+                  <button className={styles.exportBtn} type="button" onClick={cancelEditCustomTool}>
+                    Cancel
+                  </button>
+                )}
                 <button className={styles.exportBtn} onClick={refreshCustomTools}>
                   Refresh
                 </button>
@@ -1244,11 +1670,30 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                 <div className={styles.customToolsList}>
                   {customTools.map((t) => (
                     <div key={t.id} className={styles.customToolRow}>
-                      <div className={styles.customToolRowName}>{t.display_name || t.name}</div>
+                      <div className={styles.customToolRowBody}>
+                        <div className={styles.customToolRowName}>{t.display_name || t.name}</div>
+                        <div className={styles.customToolRowMeta}>
+                          {typeof (t.handler_config as any)?.method === 'string' && (
+                            <span className={styles.miniChip}>{String((t.handler_config as any).method).toUpperCase()}</span>
+                          )}
+                          {typeof (t.handler_config as any)?.url === 'string' && (
+                            <span className={styles.miniChip}>{String((t.handler_config as any).url)}</span>
+                          )}
+                          {t.risk_level && (
+                            <span className={`${styles.badge} ${styles[`risk_${t.risk_level}` as keyof typeof styles] || ''}`}>{t.risk_level}</span>
+                          )}
+                          {t.requires_approval && <span className={`${styles.badge} ${styles.badgeApproval}`}>approval</span>}
+                        </div>
+                      </div>
+                      <button className={styles.exportBtn} onClick={() => startEditCustomTool(t)}>Edit</button>
                       <button className={styles.backBtn} onClick={() => handleDeleteCustomTool(t.id)}>Delete</button>
                     </div>
                   ))}
                 </div>
+              )}
+
+              {customTools.length === 0 && (
+                <div className={styles.toolsEmptyState}>No custom tools yet.</div>
               )}
             </div>
 
@@ -1288,6 +1733,50 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
           </div>
         </div>
       </div>
+
+      {toolDetails && (
+        <div className={styles.modalOverlay} onClick={() => setToolDetails(null)}>
+          <div className={styles.modalCard} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Tool details">
+            <div className={styles.modalHeader}>
+              <div className={styles.modalTitle}>{toolDetails.display_name || toolDetails.name}</div>
+              <button className={styles.modalClose} type="button" onClick={() => setToolDetails(null)}>
+                <Icons.X />
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              {toolDetails.description && (
+                <div className={styles.modalSection}>
+                  <div className={styles.modalLabel}>Description</div>
+                  <div className={styles.modalValue}>{toolDetails.description}</div>
+                </div>
+              )}
+
+              <div className={styles.modalSection}>
+                <div className={styles.modalLabel}>Meta</div>
+                <div className={styles.modalChips}>
+                  {toolDetails.category && <span className={styles.miniChip}>{toolDetails.category}</span>}
+                  {toolDetails.risk_level && <span className={`${styles.badge} ${styles[`risk_${toolDetails.risk_level}` as keyof typeof styles] || ''}`}>{toolDetails.risk_level}</span>}
+                  {toolDetails.requires_approval && <span className={`${styles.badge} ${styles.badgeApproval}`}>approval</span>}
+                  {toolDetails.handler_type && <span className={styles.miniChip}>{toolDetails.handler_type}</span>}
+                </div>
+              </div>
+
+              {toolDetails.handler_config && (
+                <div className={styles.modalSection}>
+                  <div className={styles.modalLabel}>Handler</div>
+                  <pre className={styles.modalCode}>{JSON.stringify(toolDetails.handler_config, null, 2)}</pre>
+                </div>
+              )}
+              {toolDetails.parameters_schema && (
+                <div className={styles.modalSection}>
+                  <div className={styles.modalLabel}>Parameters schema</div>
+                  <pre className={styles.modalCode}>{JSON.stringify(toolDetails.parameters_schema, null, 2)}</pre>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

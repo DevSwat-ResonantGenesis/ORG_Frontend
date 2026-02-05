@@ -58,19 +58,19 @@ const NegotiationPanelComponent: React.FC<NegotiationPanelProps> = ({ className 
     setError(null);
     try {
       const [negResponse, contractsResponse] = await Promise.allSettled([
-        fastapiClient.get(`/agents/negotiations/${selectedAgent.id}`),
-        fastapiClient.get(`/agents/negotiations/${selectedAgent.id}/contracts`)
+        fastapiClient.get(`/api/v1/negotiations/${selectedAgent.id}`),
+        fastapiClient.get(`/api/v1/negotiations/${selectedAgent.id}/contracts`)
       ]);
 
       if (negResponse.status === 'fulfilled') {
         const negs = (negResponse.value.data || []).map((n: any) => ({
           id: n.id,
-          agents: [n.initiator_id, n.target_id || 'Network'].filter(Boolean),
-          topic: n.task_description || n.type || 'Negotiation',
+          agents: [n.initiator_agent_id, ...(Array.isArray(n.target_agent_ids) ? n.target_agent_ids : [])].filter(Boolean),
+          topic: n.description || n.type || 'Negotiation',
           status: n.status || 'pending',
           progress: n.status === 'completed' ? 100 : n.status === 'active' ? 50 : 0,
           type: n.type,
-          created_at: n.created_at
+          created_at: n.created_at,
         }));
         setNegotiations(negs);
       }

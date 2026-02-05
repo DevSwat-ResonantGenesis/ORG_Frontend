@@ -28,6 +28,8 @@ export interface SignUpStep {
 export interface PlanLimits {
   tokens: number;           // Monthly token limit
   agents: number;           // Max agents
+  agentTeams?: number;      // Max agent teams created
+  userTeams?: number;       // Max user teams created
   teams: number;            // Max teams created
   users: number;            // Max users
   memoryAnchors: number;    // Hash Sphere memory anchors
@@ -163,6 +165,7 @@ export const PLANS: PlanOption[] = [
       agents: -1,            // Unlimited agents (credits-only billing)
       agentTeams: -1,        // Unlimited agent teams (agents working together)
       userTeams: 0,          // No user teams (single user only)
+      teams: -1,             // Unlimited - we bill by credits only
       users: 1,              // Single user only
       memoryAnchors: -1,     // Unlimited (credits-only)
       providers: ['openai', 'gemini', 'claude', 'mistral', 'groq'],

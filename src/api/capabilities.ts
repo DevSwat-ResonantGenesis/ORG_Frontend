@@ -60,19 +60,41 @@ export interface UpdateCapabilityRequest {
   required_permissions?: string[];
 }
 
+export interface CapabilityScore {
+  trust: number;
+  requires_approval: boolean;
+  is_disabled: boolean;
+  is_revoked: boolean;
+  successes: number;
+  failures: number;
+}
+
+export interface CapabilitiesManifestResponse {
+  agent_id: string;
+  custom_capabilities?: Record<string, any>;
+  capabilities: Record<string, CapabilityScore>;
+}
+
+const raraPath = (path: string) => `/api/v1/rara${path}`;
+
+export const getCapabilitiesManifest = async (agentId: string): Promise<CapabilitiesManifestResponse> => {
+  const response = await fastapiClient.get(raraPath(`/agents/${agentId}/capabilities`));
+  return response.data as CapabilitiesManifestResponse;
+};
+
 /**
  * Get all capabilities for an agent
  */
 export const getAgentCapabilities = async (agentId: string): Promise<Capability[]> => {
   try {
-    const response = await fastapiClient.get(`/agents/${agentId}/capabilities`);
+    const response = await getCapabilitiesManifest(agentId);
     
     // Transform backend response to frontend format
     const capabilities: Capability[] = [];
     
     // Add system capabilities
-    if (response.data.capabilities) {
-      Object.entries(response.data.capabilities).forEach(([key, value]: [string, any]) => {
+    if (response.capabilities) {
+      Object.entries(response.capabilities).forEach(([key, value]: [string, any]) => {
         capabilities.push({
           id: key,
           name: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
@@ -97,15 +119,13 @@ export const getAgentCapabilities = async (agentId: string): Promise<Capability[
  */
 export const getCustomCapabilities = async (agentId: string): Promise<Capability[]> => {
   try {
-    // This will be returned from the main capabilities endpoint
-    // For now, we'll fetch from the same endpoint and filter
-    const response = await fastapiClient.get(`/agents/${agentId}/capabilities`);
+    const response = await getCapabilitiesManifest(agentId);
     
     const capabilities: Capability[] = [];
     
     // Add custom capabilities if they exist
-    if (response.data.custom_capabilities) {
-      Object.entries(response.data.custom_capabilities).forEach(([key, value]: [string, any]) => {
+    if (response.custom_capabilities) {
+      Object.entries(response.custom_capabilities).forEach(([key, value]: [string, any]) => {
         capabilities.push({
           id: key,
           name: value.name,
@@ -135,7 +155,7 @@ export const addCapability = async (
 ): Promise<Capability> => {
   try {
     const response = await fastapiClient.post(
-      `/agents/${agentId}/capabilities`,
+      raraPath(`/agents/${agentId}/capabilities`),
       {
         name: capability.name,
         description: capability.description,
@@ -191,7 +211,7 @@ export const updateCapability = async (
 ): Promise<Capability> => {
   try {
     const response = await fastapiClient.put(
-      `/agents/${agentId}/capabilities/${capabilityId}`,
+      raraPath(`/agents/${agentId}/capabilities/${capabilityId}`),
       updates
     );
     
@@ -218,7 +238,7 @@ export const deleteCapability = async (
   capabilityId: string
 ): Promise<void> => {
   try {
-    await fastapiClient.delete(`/agents/${agentId}/capabilities/${capabilityId}`);
+    await fastapiClient.delete(raraPath(`/agents/${agentId}/capabilities/${capabilityId}`));
   } catch (error: any) {
     console.error('Failed to delete capability:', error);
     throw new Error(error.response?.data?.detail || 'Failed to delete capability');

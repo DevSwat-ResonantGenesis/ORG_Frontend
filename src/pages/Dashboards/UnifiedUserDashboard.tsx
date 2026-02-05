@@ -79,30 +79,6 @@ const UnifiedUserDashboard: React.FC = () => {
     loadDashboardData();
   }, [navigate]);
 
-  useEffect(() => {
-    fetchDashboardData();
-    fetchConversations();
-
-    // Fetch user's tier pricing
-    async function loadTierPricing() {
-      const sessionData = JSON.parse(localStorage.getItem('session') || '{}');
-      const userTier = sessionData.plan || 'developer';
-
-      try {
-        const planData = await fetchPlan(userTier);
-        if (planData?.credits?.included) {
-          setStats(prev => ({
-            ...prev,
-            creditsLimit: planData.credits.included
-          }));
-        }
-      } catch (error) {
-        console.error('Failed to load tier pricing:', error);
-      }
-    }
-    loadTierPricing();
-  }, []);
-
   const loadDashboardData = async () => {
     try {
       setLoading(true);

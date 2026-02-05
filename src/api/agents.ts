@@ -19,6 +19,8 @@ export interface AgentResponse {
   version: number;
   manifest_hash?: string | null;
   dsid?: string | null;
+  personality_config?: Record<string, any> | null;
+  meta_data?: Record<string, any> | null;
 }
 
 /**
@@ -151,7 +153,11 @@ export interface ToolDefinitionResponse {
   display_name?: string | null;
   description?: string | null;
   category?: string | null;
+  parameters_schema?: Record<string, any> | null;
+  handler_type?: string | null;
+  handler_config?: Record<string, any> | null;
   risk_level: string;
+  requires_approval?: boolean | null;
   is_active: boolean;
 }
 

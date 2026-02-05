@@ -10,6 +10,7 @@ interface UIState {
   selectedAgentId: string | null;
   sidebarCollapsed: boolean;
   commandPaletteOpen: boolean;
+  pinnedAgentIds: string[];
   theme: 'dark' | 'light';
   searchQuery: string;
   filters: Record<string, unknown>;
@@ -22,6 +23,8 @@ interface UIState {
   setSidebarCollapsed: (collapsed: boolean) => void;
   toggleCommandPalette: () => void;
   setCommandPaletteOpen: (open: boolean) => void;
+  setPinnedAgentIds: (ids: string[]) => void;
+  togglePinnedAgent: (agentId: string) => void;
   setTheme: (theme: 'dark' | 'light') => void;
   toggleTheme: () => void;
   setSearchQuery: (query: string) => void;
@@ -31,11 +34,32 @@ interface UIState {
   reset: () => void;
 }
 
-const initialState: Pick<UIState, 'activeSection' | 'selectedAgentId' | 'sidebarCollapsed' | 'commandPaletteOpen' | 'theme' | 'searchQuery' | 'filters' | 'sortOrder'> = {
+const PINNED_AGENT_IDS_KEY = 'agentos:pinnedAgentIds';
+
+const loadPinnedAgentIds = (): string[] => {
+  try {
+    const raw = localStorage.getItem(PINNED_AGENT_IDS_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.filter((x) => typeof x === 'string') : [];
+  } catch {
+    return [];
+  }
+};
+
+const savePinnedAgentIds = (ids: string[]) => {
+  try {
+    localStorage.setItem(PINNED_AGENT_IDS_KEY, JSON.stringify(ids));
+  } catch {
+    // ignore
+  }
+};
+
+const initialState: Pick<UIState, 'activeSection' | 'selectedAgentId' | 'sidebarCollapsed' | 'commandPaletteOpen' | 'pinnedAgentIds' | 'theme' | 'searchQuery' | 'filters' | 'sortOrder'> = {
   activeSection: 'agents',
   selectedAgentId: null,
   sidebarCollapsed: true,
   commandPaletteOpen: false,
+  pinnedAgentIds: loadPinnedAgentIds(),
   theme: 'dark',
   searchQuery: '',
   filters: {},
@@ -58,6 +82,21 @@ export const useUIStore = create<UIState>()(
         toggleCommandPalette: () => set((state) => ({ commandPaletteOpen: !state.commandPaletteOpen })),
         
         setCommandPaletteOpen: (open: boolean) => set({ commandPaletteOpen: open }),
+
+        setPinnedAgentIds: (ids: string[]) => {
+          const clean = (Array.isArray(ids) ? ids : []).filter((x) => typeof x === 'string');
+          savePinnedAgentIds(clean);
+          set({ pinnedAgentIds: clean });
+        },
+
+        togglePinnedAgent: (agentId: string) => set((state) => {
+          const current = new Set(state.pinnedAgentIds || []);
+          if (current.has(agentId)) current.delete(agentId);
+          else current.add(agentId);
+          const next = Array.from(current);
+          savePinnedAgentIds(next);
+          return { pinnedAgentIds: next };
+        }),
         
         setTheme: (theme: 'dark' | 'light') => set({ theme }),
         
