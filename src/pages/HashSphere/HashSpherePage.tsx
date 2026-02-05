@@ -5,7 +5,7 @@ import styles from './HashSpherePage.module.css';
 
 import { ENV } from '../../config/env';
 
-const HASH_SPHERE_URL = ENV.hashSphereUrl;
+const HASH_SPHERE_URL = ENV.hashSphereUrl || '/api/v1/state-physics/ui';
 
 const HashSpherePage: React.FC = () => {
   const navigate = useNavigate();
