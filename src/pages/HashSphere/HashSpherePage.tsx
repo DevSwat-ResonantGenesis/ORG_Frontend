@@ -5,7 +5,35 @@ import styles from './HashSpherePage.module.css';
 
 import { ENV } from '../../config/env';
 
-const HASH_SPHERE_URL = ENV.hashSphereUrl || '/api/v1/state-physics/ui';
+const DEFAULT_HASH_SPHERE_PATH = '/api/v1/state-physics/ui';
+
+const resolveHashSphereUrl = (value: string): string => {
+  const trimmed = value.trim();
+  if (!trimmed) return DEFAULT_HASH_SPHERE_PATH;
+
+  const withoutTrailingSlash = trimmed.replace(/\/+$/, '');
+  if (typeof window !== 'undefined') {
+    const originWithoutTrailingSlash = window.location.origin.replace(/\/+$/, '');
+    if (withoutTrailingSlash === originWithoutTrailingSlash) {
+      return `${originWithoutTrailingSlash}${DEFAULT_HASH_SPHERE_PATH}`;
+    }
+  }
+
+  if (withoutTrailingSlash.endsWith('dev-swat.com')) {
+    try {
+      const u = new URL(withoutTrailingSlash);
+      if (!u.pathname || u.pathname === '/') {
+        return `${u.origin}${DEFAULT_HASH_SPHERE_PATH}`;
+      }
+    } catch {
+      return `${withoutTrailingSlash}${DEFAULT_HASH_SPHERE_PATH}`;
+    }
+  }
+
+  return trimmed;
+};
+
+const HASH_SPHERE_URL = resolveHashSphereUrl(ENV.hashSphereUrl);
 
 const HashSpherePage: React.FC = () => {
   const navigate = useNavigate();
