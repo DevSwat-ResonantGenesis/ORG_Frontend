@@ -177,6 +177,15 @@
   transform: scale(1);
 }
 
+.active {
+  color: var(--accent-primary);
+}
+
+.active::before {
+  opacity: 0.12;
+  transform: scale(1);
+}
+
 .quickAccessButton.active {
   color: var(--accent-primary);
 }

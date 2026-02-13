@@ -15,6 +15,7 @@ import { logout as apiLogout } from '@/api/auth';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Button } from '@/components/ui';
 import { useResonantChatMenu } from '@/context/ResonantChatMenuContext';
+import { ChatIcon } from '@/components/Icons/ResonantChatIcons';
 import styles from './Header.module.css';
 import { 
   goToHome, 
@@ -179,6 +180,30 @@ export const Header: React.FC<HeaderProps> = ({
             ResonantGenesis
           </div>
 
+          <div className={styles.quickAccess}>
+            <button
+              type="button"
+              className={`${styles.quickAccessButton} ${location.pathname.startsWith('/resonant-chat') ? styles.active : ''}`}
+              onClick={() => navigate('/resonant-chat')}
+              aria-label="Open chat"
+              title="Open chat"
+            >
+              <ChatIcon />
+            </button>
+            <button
+              type="button"
+              className={`${styles.quickAccessButton} ${location.pathname === '/ide' ? styles.active : ''}`}
+              onClick={() => navigate('/ide')}
+              aria-label="Open IDE"
+              title="Open IDE"
+            >
+              <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <rect x="2" y="2" width="12" height="12" rx="1" />
+                <path d="M5 5H11M5 8H11M5 11H8" strokeLinecap="round" />
+              </svg>
+            </button>
+          </div>
+
           {/* Main Navigation - Desktop */}
           <nav ref={navRef} className={styles.mainNav}>
             {/* Solutions Dropdown */}
@@ -199,6 +224,10 @@ export const Header: React.FC<HeaderProps> = ({
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-chat'); setActiveDropdown(null); }}>
                         <span className={styles.navDropdownItemTitle}>Resonant Chat</span>
                         <span className={styles.navDropdownItemDesc}>AI-powered conversations</span>
+                      </button>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/ide'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Resonant IDE</span>
+                        <span className={styles.navDropdownItemDesc}>Open your workspace</span>
                       </button>
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/build'); setActiveDropdown(null); }}>
                         <span className={styles.navDropdownItemTitle}>Project Builder</span>
@@ -397,6 +426,16 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Theme Toggle - Always visible */}
             <ThemeToggle />
 
+            {isLoggedIn && (
+              <button
+                type="button"
+                className={styles.upgradeButton}
+                onClick={() => navigate('/profile?tab=api-keys')}
+              >
+                BYOK
+              </button>
+            )}
+
             {/* Logged In: Show Account Menu */}
             {isLoggedIn ? (
               <div ref={accountRef} className={styles.accountWrapper}>
@@ -488,6 +527,9 @@ export const Header: React.FC<HeaderProps> = ({
               <div className={styles.mobileMenuSectionTitle}>Solutions</div>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/resonant-chat'); setIsMobileMenuOpen(false); }}>
                 Resonant Chat
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/ide'); setIsMobileMenuOpen(false); }}>
+                Resonant IDE
               </button>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/build'); setIsMobileMenuOpen(false); }}>
                 Project Builder

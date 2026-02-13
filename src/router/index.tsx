@@ -464,6 +464,10 @@ const router = createBrowserRouter([
   //   element: withShell(<IDEPage />) // IDE page - requires authentication
   // },
   {
+    path: '/ide',
+    element: withShell(<IDEPage />) // IDE page - requires authentication
+  },
+  {
     path: '/build',
     element: withShell(<BuildPage />) // Standalone Project Builder page
   },
