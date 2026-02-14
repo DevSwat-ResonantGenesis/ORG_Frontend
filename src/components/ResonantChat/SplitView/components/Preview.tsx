@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import type { PreviewConfig } from '../types';
 import { PreviewIcon } from '@/components/Icons/ResonantChatIcons';
+import { RefreshCw, ExternalLink } from 'lucide-react';
 import styles from '../EnhancedSplitView.module.css';
 
 interface PreviewProps {
@@ -220,26 +221,27 @@ export const Preview: React.FC<PreviewProps> = ({
 
   return (
     <div className={styles.previewTabContent}>
-      <div className={styles.previewToolbar}>
-        <span className={styles.previewUrl}>
-          {config.url || 'Generated Preview'}
-        </span>
-        <div className={styles.previewActions}>
-          <button
-            className={styles.previewButton}
-            onClick={handleRefresh}
-            title="Refresh preview"
-          >
-            ↻
-          </button>
-          <button
-            className={styles.previewButton}
-            onClick={handleOpenExternal}
-            title="Open in new tab"
-          >
-            ↗
-          </button>
-        </div>
+      <span className={styles.previewLiveIndicator}>
+        <span className={styles.previewLiveIcon}><PreviewIcon /></span>
+        Live Preview
+      </span>
+      <div className={styles.previewOverlayControls}>
+        <button
+          type="button"
+          className={styles.previewOverlayButton}
+          onClick={handleRefresh}
+          aria-label="Reload preview"
+        >
+          <RefreshCw size={16} />
+        </button>
+        <button
+          type="button"
+          className={styles.previewOverlayButton}
+          onClick={handleOpenExternal}
+          aria-label="Open preview in new tab"
+        >
+          <ExternalLink size={16} />
+        </button>
       </div>
       {shouldRender && (
         <iframe

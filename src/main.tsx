@@ -22,7 +22,7 @@ initSentry();
 if (typeof window !== 'undefined') {
   // Set light theme as default
   const savedTheme = localStorage.getItem('rg_theme');
-  const defaultTheme = savedTheme || 'light'; // Always default to light if no saved preference
+  const defaultTheme = savedTheme || 'dark'; // Always default to light if no saved preference
 
   // Set theme attributes only - modular CSS handles all styling (not global.css)
   document.documentElement.setAttribute('data-theme', defaultTheme);

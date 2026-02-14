@@ -195,6 +195,11 @@ export const API_KEY_PROVIDERS = [
   { id: 'openrouter', name: 'OpenRouter (100+ models)', placeholder: 'sk-or-...', helpUrl: 'https://openrouter.ai/keys', models: ['auto', 'openai/gpt-4o', 'anthropic/claude-3-opus'] },
   { id: 'perplexity', name: 'Perplexity AI', placeholder: 'pplx-...', helpUrl: 'https://www.perplexity.ai/settings/api', models: ['llama-3.1-sonar-large', 'llama-3.1-sonar-small'] },
   { id: 'fireworks', name: 'Fireworks AI (Fast)', placeholder: '...', helpUrl: 'https://fireworks.ai/api-keys', models: ['llama-v3p1-405b', 'llama-v3p1-70b'] },
+
+  { id: 'huggingface', name: 'Hugging Face', placeholder: 'hf_...', helpUrl: 'https://huggingface.co/settings/tokens', models: ['inference-endpoints', 'hf-inference-api'] },
+  { id: 'replicate', name: 'Replicate', placeholder: 'r8_...', helpUrl: 'https://replicate.com/account/api-tokens', models: ['image-models', 'video-models'] },
+  { id: 'stability', name: 'Stability AI', placeholder: 'sk-...', helpUrl: 'https://platform.stability.ai/account/keys', models: ['stable-image-ultra', 'stable-diffusion'] },
+  { id: 'elevenlabs', name: 'ElevenLabs', placeholder: '...', helpUrl: 'https://elevenlabs.io/app/settings/api-keys', models: ['tts', 'stt'] },
 ];
 
 export interface AvailableProvidersResponse {

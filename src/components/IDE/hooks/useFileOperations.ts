@@ -12,6 +12,7 @@ import {
   writeProjectFile,
 } from '@/api/code';
 import { logger } from '@/utils/logger';
+import { getSessionData } from '@/utils/auth-cookies';
 
 interface UseFileOperationsProps {
   projectId?: string;
@@ -22,6 +23,11 @@ interface UseFileOperationsProps {
 export function useFileOperations({ projectId, onSuccess, onError }: UseFileOperationsProps) {
   const { state, dispatch } = useIDE();
   const { files, openFiles, activeTabId, unsavedChanges } = state;
+
+  const session = getSessionData();
+  const userId = session?.userId || session?.email || 'guest';
+  const projectFilesStorageKey = `ide-project-files-${userId}`;
+  const projectNameStorageKey = `ide-project-name-${userId}`;
 
   // Build file tree from flat file list (with content support)
   const buildFileTree = useCallback((
@@ -66,8 +72,9 @@ export function useFileOperations({ projectId, onSuccess, onError }: UseFileOper
             const parentPath = parts.slice(0, index).join('/');
             const parent = pathMap.get(parentPath);
             if (parent) {
-              parent.children = parent.children || [];
-              parent.children.push(node);
+              const children = Array.isArray(parent.children) ? parent.children : [];
+              parent.children = children;
+              children.push(node);
             }
           }
         }
@@ -293,9 +300,10 @@ export function useFileOperations({ projectId, onSuccess, onError }: UseFileOper
     
     // FIRST: Clear localStorage immediately to prevent reload issues
     try {
-      const savedFiles = localStorage.getItem('ide-project-files');
+      const savedFiles = localStorage.getItem(projectFilesStorageKey) || localStorage.getItem('ide-project-files');
       if (savedFiles) {
         const parsedFiles = JSON.parse(savedFiles);
+        if (!Array.isArray(parsedFiles)) return;
         
         // Recursively remove from tree structure
         const removeFromTree = (nodes: any[]): any[] => {
@@ -317,10 +325,13 @@ export function useFileOperations({ projectId, onSuccess, onError }: UseFileOper
         console.log('  💾 Files remaining:', filteredFiles.length);
         
         if (filteredFiles.length === 0) {
+          localStorage.removeItem(projectFilesStorageKey);
+          localStorage.removeItem(projectNameStorageKey);
           localStorage.removeItem('ide-project-files');
+          localStorage.removeItem('ide-project-name');
           console.log('  💾 localStorage cleared');
         } else {
-          localStorage.setItem('ide-project-files', JSON.stringify(filteredFiles));
+          localStorage.setItem(projectFilesStorageKey, JSON.stringify(filteredFiles));
         }
       }
     } catch (e) {
@@ -387,6 +398,8 @@ export function useFileOperations({ projectId, onSuccess, onError }: UseFileOper
     
     // Clear from localStorage
     try {
+      localStorage.removeItem(projectFilesStorageKey);
+      localStorage.removeItem(projectNameStorageKey);
       localStorage.removeItem('ide-project-files');
       localStorage.removeItem('ide-project-name');
     } catch (e) {

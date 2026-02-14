@@ -121,7 +121,7 @@ export const CursorChatPanel: React.FC<CursorChatPanelProps> = React.memo(({
   const [isAgentDropdownOpen, setIsAgentDropdownOpen] = useState(false);
   
   // Team state
-  const [teams, setTeams] = useState<AgentTeam[]>(externalTeams || []);
+  const [teams, setTeams] = useState<AgentTeam[]>(Array.isArray(externalTeams) ? externalTeams : []);
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(externalSelectedTeamId || null);
   const [isTeamDropdownOpen, setIsTeamDropdownOpen] = useState(false);
   const [isLoadingTeams, setIsLoadingTeams] = useState(false);
@@ -212,7 +212,7 @@ export const CursorChatPanel: React.FC<CursorChatPanelProps> = React.memo(({
   // Load teams on mount
   useEffect(() => {
     const loadTeams = async () => {
-      if (externalTeams && externalTeams.length > 0) {
+      if (Array.isArray(externalTeams) && externalTeams.length > 0) {
         setTeams(externalTeams);
         return;
       }
@@ -220,7 +220,7 @@ export const CursorChatPanel: React.FC<CursorChatPanelProps> = React.memo(({
       setIsLoadingTeams(true);
       try {
         const fetchedTeams = await listAgentTeams();
-        setTeams(fetchedTeams);
+        setTeams(Array.isArray(fetchedTeams) ? fetchedTeams : []);
       } catch (error) {
         console.error('Failed to load teams:', error);
       } finally {
@@ -240,6 +240,7 @@ export const CursorChatPanel: React.FC<CursorChatPanelProps> = React.memo(({
 
   // Get selected team
   const selectedTeam = useMemo(() => {
+    if (!Array.isArray(teams)) return null;
     return teams.find(t => t.id === selectedTeamId) || null;
   }, [teams, selectedTeamId]);
 

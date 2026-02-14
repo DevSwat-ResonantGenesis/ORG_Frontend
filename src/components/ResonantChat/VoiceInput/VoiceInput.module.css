@@ -6,9 +6,9 @@
 }
 
 .voiceButton {
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
   border-radius: 50%;
   border: none;
   background: transparent;
@@ -64,10 +64,6 @@
   z-index: 1000;
 }
 
-/* Listening indicator text */
-.interimTranscript::before {
-  content: '🎤 ';
-}
 
 /* Arrow pointing to button */
 .interimTranscript::after {
@@ -107,4 +103,18 @@
 
 .interimTranscript {
   animation: transcriptPulse 1.5s ease-in-out infinite;
+}
+
+/* Mobile: larger voice icon */
+@media (max-width: 639px) {
+  .voiceButton {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+  }
+
+  .voiceButton svg {
+    width: 24px;
+    height: 24px;
+  }
 }

@@ -6,7 +6,7 @@
 import axios from 'axios';
 import { ENV } from '../config/env';
 
-const BUILD_SERVICE_URL = ENV.apiUrl;
+const BUILD_SERVICE_URL = ENV.apiUrl ? `${ENV.apiUrl}/api/v1/project-builder` : '/api/v1/project-builder';
 
 const buildClient = axios.create({
   baseURL: BUILD_SERVICE_URL,

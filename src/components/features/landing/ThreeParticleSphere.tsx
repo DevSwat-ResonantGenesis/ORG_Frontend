@@ -19,7 +19,7 @@ export const ThreeParticleSphere: React.FC = () => {
         const scene = new THREE.Scene();
 
         // Fixed canvas size for controlled sphere appearance
-        const canvasSize = 800;
+        const canvasSize = 820;
 
         // Camera - positioned for sphere to fit nicely in hero section
         // Slightly zoomed out to prevent edge clipping

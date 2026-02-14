@@ -4,7 +4,7 @@
  * Connected to real backend endpoints
  */
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { RefreshCw } from 'lucide-react';
 import { getSessionData, isAuthenticated } from '../../utils/auth-cookies';
 import { fetchDashboardData, type DashboardData } from '../../api/dashboard';
@@ -23,6 +23,7 @@ import styles from './NewUserDashboard.module.css';
 
 const NewUserDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const session = getSessionData();
   
   const [loading, setLoading] = useState(true);
@@ -42,12 +43,29 @@ const NewUserDashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    try {
+      const postLoginTarget = sessionStorage.getItem('rg-post-login-target');
+      if (postLoginTarget) {
+        sessionStorage.removeItem('rg-post-login-target');
+        navigate(postLoginTarget, { replace: true });
+        return;
+      }
+    } catch {
+      // ignore
+    }
     if (!isAuthenticated()) {
       navigate('/login');
       return;
     }
+
+    const params = new URLSearchParams(location.search);
+    if (!params.has('dashboard')) {
+      navigate('/resonant-chat', { replace: true });
+      return;
+    }
+
     loadDashboardData();
-  }, [navigate, loadDashboardData]);
+  }, [navigate, loadDashboardData, location.search]);
 
   const handleRefresh = () => {
     setRefreshing(true);

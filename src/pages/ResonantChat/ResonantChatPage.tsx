@@ -38,6 +38,7 @@ import { isAuthenticated, getSessionData } from '@/utils/auth-cookies';
 import { logger } from '@/utils/logger';
 import React, { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 // Hash Sphere visualization removed - company secret
 import { listAgentTeams, type AgentTeam } from '@/api/agentTeams';
 import { getEvidenceGraph, getChatMetrics, getMessageMetrics, type ChatMetrics, type MessageMetrics } from '@/api/resonantChat';
@@ -250,6 +251,10 @@ interface Message {
 }
 
 const ResonantChatPage: React.FC = () => {
+  useEffect(() => {
+    document.body.classList.add('resonant-chat-page');
+    return () => document.body.classList.remove('resonant-chat-page');
+  }, []);
   const navigate = useNavigate();
   const location = useLocation();
   const session = getSession();
@@ -640,6 +645,73 @@ const ResonantChatPage: React.FC = () => {
   const [previewingFile, setPreviewingFile] = useState<{ file: File; url: string; content?: string } | null>(null);
   const [uploadingFiles, setUploadingFiles] = useState<Set<string>>(new Set());
   const [uploadedFileIds, setUploadedFileIds] = useState<Map<File, string>>(new Map());
+
+  // Web Search popover (fixed portal)
+  const [webSearchPopover, setWebSearchPopover] = useState<null | {
+    messageId: string;
+    results: any[];
+    rect: DOMRect;
+  }>(null);
+
+  const webSearchPopoverRef = useRef<HTMLDivElement | null>(null);
+  const webSearchCloseTimerRef = useRef<number | null>(null);
+
+  const closeWebSearchPopover = useCallback(() => {
+    if (webSearchCloseTimerRef.current) {
+      window.clearTimeout(webSearchCloseTimerRef.current);
+      webSearchCloseTimerRef.current = null;
+    }
+    setWebSearchPopover(null);
+  }, []);
+
+  const cancelWebSearchClose = useCallback(() => {
+    if (webSearchCloseTimerRef.current) {
+      window.clearTimeout(webSearchCloseTimerRef.current);
+      webSearchCloseTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleWebSearchClose = useCallback(() => {
+    cancelWebSearchClose();
+    webSearchCloseTimerRef.current = window.setTimeout(() => {
+      setWebSearchPopover(null);
+      webSearchCloseTimerRef.current = null;
+    }, 150);
+  }, [cancelWebSearchClose]);
+
+  const openWebSearchPopover = useCallback(
+    (messageId: string, results: any[], anchorEl: HTMLElement) => {
+      cancelWebSearchClose();
+      const rect = anchorEl.getBoundingClientRect();
+      setWebSearchPopover({ messageId, results: results || [], rect });
+    },
+    [cancelWebSearchClose]
+  );
+
+  useEffect(() => {
+    if (!webSearchPopover) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeWebSearchPopover();
+    };
+
+    const onPointerDown = (e: Event) => {
+      const el = webSearchPopoverRef.current;
+      if (!el) return;
+      if (el.contains(e.target as Node)) return;
+      closeWebSearchPopover();
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('mousedown', onPointerDown);
+    document.addEventListener('touchstart', onPointerDown);
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('mousedown', onPointerDown);
+      document.removeEventListener('touchstart', onPointerDown);
+    };
+  }, [webSearchPopover, closeWebSearchPopover]);
 
   // Project Building
   const [buildMode, setBuildMode] = useState(false);
@@ -3054,6 +3126,7 @@ const ResonantChatPage: React.FC = () => {
   };
 
   return (
+    <>
     <div className={styles.chatPage}>
       {/* Enhanced Sidebar with User Info and Settings */}
       <div className={`${styles.sidebarWrapper} ${sidebarOpen ? styles.sidebarOpen : styles.hidden}`}>
@@ -3481,88 +3554,7 @@ const ResonantChatPage: React.FC = () => {
                           ))}
                         </div>
                       )}
-                      {message.role === 'assistant' && message.webSearchResults && message.webSearchResults.length > 0 && (
-                        <div style={{
-                          marginTop: '12px',
-                          padding: '12px',
-                          background: 'rgba(14, 165, 233, 0.08)',
-                          borderRadius: '12px',
-                          border: '1px solid rgba(14, 165, 233, 0.18)',
-                        }}>
-                          <div style={{
-                            width: '100%',
-                            fontSize: '12px',
-                            color: 'rgba(14, 165, 233, 0.9)',
-                            marginBottom: '8px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                          }}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <circle cx="11" cy="11" r="8" />
-                              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                            </svg>
-                            Web Search Results ({message.webSearchResults.length})
-                          </div>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                            {message.webSearchResults.map((r, idx) => (
-                              <div key={`${message.id}-ws-${idx}`} style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '6px',
-                                padding: '10px',
-                                borderRadius: '10px',
-                                background: 'rgba(0, 0, 0, 0.15)',
-                                border: '1px solid rgba(255, 255, 255, 0.06)',
-                              }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', alignItems: 'flex-start' }}>
-                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                                    <a
-                                      href={r.url}
-                                      className={styles.markdownLink}
-                                      target={r.url?.startsWith('/') ? undefined : '_blank'}
-                                      rel={r.url?.startsWith('/') ? undefined : 'noopener noreferrer'}
-                                      onClick={(e) => {
-                                        if (r.url?.startsWith('/')) {
-                                          e.preventDefault();
-                                          navigate(r.url);
-                                        }
-                                      }}
-                                      style={{ fontWeight: 600, fontSize: '13px' }}
-                                    >
-                                      {r.title || r.url}
-                                    </a>
-                                    <div style={{ fontSize: '11px', opacity: 0.7 }}>
-                                      {r.source}
-                                    </div>
-                                  </div>
-                                  {r.url && (
-                                    <button
-                                      className={styles['resonant-chat-input-button']}
-                                      onClick={() => {
-                                        if (r.url.startsWith('/')) {
-                                          navigate(r.url);
-                                        } else {
-                                          window.open(r.url, '_blank', 'noopener,noreferrer');
-                                        }
-                                      }}
-                                      style={{ padding: '6px 10px', fontSize: '12px' }}
-                                    >
-                                      <span className={styles['resonant-chat-input-label']}>Open</span>
-                                    </button>
-                                  )}
-                                </div>
-                                {r.snippet && (
-                                  <div style={{ fontSize: '12px', lineHeight: 1.4, opacity: 0.9 }}>
-                                    {r.snippet}
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      {/* Hash Sphere Module Outputs */}
+{/* Hash Sphere Module Outputs */}
                       {message.role === 'assistant' && message.modules && (
                         <ModuleOutputs modules={message.modules} collapsed={true} />
                       )}
@@ -3645,6 +3637,31 @@ const ResonantChatPage: React.FC = () => {
                                 >
                                   <span className={styles['resonant-chat-message-action-icon']}><CopyIcon /></span>
                                 </button>
+
+                                {message.webSearchResults && message.webSearchResults.length > 0 && (
+                                  <button
+                                    className={styles['resonant-chat-message-action-button']}
+                                    title={`Web Search Results (${message.webSearchResults.length})`}
+                                    type="button"
+                                    onMouseEnter={(e) => openWebSearchPopover(message.id, message.webSearchResults || [], e.currentTarget)}
+                                    onMouseLeave={scheduleWebSearchClose}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (webSearchPopover?.messageId === message.id) {
+                                        closeWebSearchPopover();
+                                      } else {
+                                        openWebSearchPopover(message.id, message.webSearchResults || [], e.currentTarget);
+                                      }
+                                    }}
+                                  >
+                                    <span className={styles['resonant-chat-message-action-icon']}>
+                                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <circle cx="11" cy="11" r="8" />
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                      </svg>
+                                    </span>
+                                  </button>
+                                )}
                                 <button
                                   className={styles['resonant-chat-message-action-button']}
                                   onClick={() => {
@@ -3855,14 +3872,15 @@ const ResonantChatPage: React.FC = () => {
           onClearChat={messages.length > 0 ? handleClearChat : undefined}
           onCancel={handleCancel}
           onBuild={() => {
-            // Navigate directly to the Build page
-            const description = input.trim() || 'New project';
-            navigate(`/build?description=${encodeURIComponent(description)}`);
+            // Open Build Module inside Split View
+            if (!splitViewEnabled) setSplitViewEnabled(true);
+            setShowBuildModule(true);
           }}
           onOpenIDE={() => navigate('/ide')}
           onAttachFile={() => fileInputRef.current?.click()}
           onToggleSplitView={() => setSplitViewEnabled(!splitViewEnabled)}
           splitViewEnabled={splitViewEnabled}
+          splitViewWidth={splitViewWidth}
           attachedFiles={attachedFiles}
           onRemoveFile={(index) => setAttachedFiles(prev => prev.filter((_, i) => i !== index))}
           memories={memories}
@@ -5289,6 +5307,83 @@ const ResonantChatPage: React.FC = () => {
         </div>
       )}
     </div>
+
+
+      {webSearchPopover &&
+        createPortal(
+          <div
+            ref={webSearchPopoverRef}
+            className={styles.webSearchPopoverFixed}
+            onMouseEnter={cancelWebSearchClose}
+            onMouseLeave={scheduleWebSearchClose}
+            style={(() => {
+              const width = Math.min(520, Math.floor(window.innerWidth * 0.8));
+              const padding = 8;
+              const left = Math.min(
+                Math.max(webSearchPopover.rect.right - width, padding),
+                window.innerWidth - padding - width
+              );
+
+              const preferBelow = window.innerHeight - webSearchPopover.rect.bottom >= 260;
+              const top = preferBelow ? webSearchPopover.rect.bottom + 8 : webSearchPopover.rect.top - 8;
+              const transform = preferBelow ? 'none' : 'translateY(-100%)';
+
+              return {
+                top,
+                left,
+                width,
+                transform,
+              } as React.CSSProperties;
+            })()}
+          >
+            <div className={styles.webSearchTitle}>
+              Web Search Results ({webSearchPopover.results.length})
+            </div>
+            <div className={styles.webSearchList}>
+              {webSearchPopover.results.map((r, idx) => (
+                <div key={`${webSearchPopover.messageId}-ws-fixed-${idx}`} className={styles.webSearchItem}>
+                  <div className={styles.webSearchItemTop}>
+                    <a
+                      href={r.url}
+                      className={styles.markdownLink}
+                      target={r.url?.startsWith('/') ? undefined : '_blank'}
+                      rel={r.url?.startsWith('/') ? undefined : 'noopener noreferrer'}
+                      onClick={(e) => {
+                        if (r.url?.startsWith('/')) {
+                          e.preventDefault();
+                          navigate(r.url);
+                        }
+                      }}
+                    >
+                      {r.title || r.url}
+                    </a>
+                    {r.url && (
+                      <button
+                        className={styles['resonant-chat-input-button']}
+                        onClick={() => {
+                          if (r.url.startsWith('/')) {
+                            navigate(r.url);
+                          } else {
+                            window.open(r.url, '_blank', 'noopener,noreferrer');
+                          }
+                        }}
+                        style={{ padding: '6px 10px', fontSize: '12px' }}
+                        type="button"
+                      >
+                        <span className={styles['resonant-chat-input-label']}>Open</span>
+                      </button>
+                    )}
+                  </div>
+                  {r.source && <div className={styles.webSearchMeta}>{r.source}</div>}
+                  {r.snippet && <div className={styles.webSearchSnippet}>{r.snippet}</div>}
+                </div>
+              ))}
+            </div>
+          </div>,
+          document.body
+        )}
+
+    </>
   );
 };
 

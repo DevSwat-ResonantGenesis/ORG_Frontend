@@ -4,6 +4,8 @@
    ============================================================ */
 
 html {
+  background: var(--bg-primary) !important;
+
   height: 100%;
   margin: 0;
   padding: 0;

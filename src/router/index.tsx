@@ -459,13 +459,9 @@ const router = createBrowserRouter([
     element: withShell(<ProtectedRoute><ResonantChatPage /></ProtectedRoute>) // Requires authentication
   },
   // IDE disabled - using Build Page instead
-  // {
-  //   path: '/ide',
-  //   element: withShell(<IDEPage />) // IDE page - requires authentication
-  // },
   {
     path: '/ide',
-    element: withShell(<IDEPage />) // IDE page - requires authentication
+    element: withShell(<ProtectedRoute><IDEPage /></ProtectedRoute>) // IDE page - requires authentication
   },
   {
     path: '/build',

@@ -12,14 +12,14 @@ interface ThemeState {
 // Default to light theme - prioritize light mode
 // IMPORTANT: Website starts with light mode by default
 const getInitialTheme = (): Theme => {
-  if (typeof window === 'undefined') return 'light';
+  if (typeof window === 'undefined') return 'dark';
   try {
     // Check for saved preference, default to light
     const saved = localStorage.getItem('rg_theme');
-    return (saved as Theme) || 'light'; // Default to light mode
+    return (saved as Theme) || 'dark'; // Default to light mode
   } catch {
     // localStorage may be blocked in iframes or private browsing
-    return 'light';
+    return 'dark';
   }
 };
 

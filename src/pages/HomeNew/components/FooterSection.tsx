@@ -14,7 +14,7 @@ export const FooterSection = () => {
         <footer style={{
             background: 'linear-gradient(180deg, #0a0f1a 0%, #0f172a 100%)',
             borderTop: '1px solid rgba(59, 130, 246, 0.1)',
-            padding: '64px 24px 32px',
+            padding: '64px 32px 32px',
         }}>
             <div style={{
                 maxWidth: '1200px',

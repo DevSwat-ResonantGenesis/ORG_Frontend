@@ -24,21 +24,22 @@ export const TerminalTabs: React.FC<TerminalTabsProps> = ({
   onCommand,
 }) => {
   const [tabs, setTabs] = useState<TerminalTab[]>(
-    initialTabs || [{ id: '1', name: 'Terminal 1', content: '> ', active: true }]
+    Array.isArray(initialTabs) ? initialTabs : [{ id: '1', name: 'Terminal 1', content: '> ', active: true }]
   );
   const [activeTabId, setActiveTabId] = useState<string>(tabs[0]?.id || '1');
   const [commandInputs, setCommandInputs] = useState<Record<string, string>>({});
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Use parent tabs if provided, otherwise use internal state
-  const displayTabs = initialTabs || tabs;
-  const displayActiveTabId = initialTabs 
-    ? (initialTabs.find(t => t.active)?.id || initialTabs[0]?.id || '1')
+  const safeInitialTabs = Array.isArray(initialTabs) ? initialTabs : undefined;
+  const displayTabs = safeInitialTabs || tabs;
+  const displayActiveTabId = safeInitialTabs
+    ? (safeInitialTabs.find(t => t.active)?.id || safeInitialTabs[0]?.id || '1')
     : activeTabId;
 
   // Sync with parent tabs if provided
   useEffect(() => {
-    if (initialTabs && initialTabs.length > 0) {
+    if (Array.isArray(initialTabs) && initialTabs.length > 0) {
       setTabs(initialTabs);
       const activeTab = initialTabs.find(t => t.active) || initialTabs[0];
       setActiveTabId(activeTab.id);

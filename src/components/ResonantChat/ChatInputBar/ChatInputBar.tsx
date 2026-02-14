@@ -1,9 +1,8 @@
-import React, { useMemo, useRef, useEffect, useState } from 'react';
+import React, { useMemo, useRef, useEffect, useState, useCallback } from 'react';
 import {
   ArchiveIcon,
   SendIcon,
-  TargetIcon,
-  DeleteIcon,
+DeleteIcon,
   PlusIcon,
   CloseIcon,
   LightbulbIcon,
@@ -13,10 +12,21 @@ import {
   MemoryIcon,
   ChevronDownIcon,
   HistoryIcon,
-  NewChatIcon,
 } from '@/components/Icons/ResonantChatIcons';
 import { VoiceInput } from '@/components/ResonantChat/VoiceInput';
 import styles from './ChatInputBar.module.css';
+
+const RobotIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="7" y="8" width="10" height="10" rx="2" />
+    <path d="M9 8V6a3 3 0 0 1 6 0v2" />
+    <path d="M12 2v2" />
+    <path d="M8 18v2" />
+    <path d="M16 18v2" />
+    <circle cx="10" cy="13" r="1" />
+    <circle cx="14" cy="13" r="1" />
+  </svg>
+);
 
 interface Memory {
   id: string;
@@ -43,9 +53,14 @@ interface ChatInputBarProps {
   sidebarOpen?: boolean;
   
   // Provider
-  selectedProvider: string;
-  onProviderChange: (provider: string) => void;
+  selectedProvider?: string;
+  onProviderChange?: (provider: string) => void;
   availableProviders?: string[];
+
+  // UI Variants
+  hideProviderSelector?: boolean;
+  voiceInInput?: boolean;
+  voiceIconSize?: number;
   providerStats?: Record<string, { health: string; latency?: number; available?: boolean }>;
   
   // Agent Mode
@@ -67,6 +82,7 @@ interface ChatInputBarProps {
   onAttachFile?: () => void;
   onToggleSplitView?: () => void;
   splitViewEnabled?: boolean;
+  splitViewWidth?: number;
   
   // Attached Files
   attachedFiles?: File[];
@@ -110,9 +126,12 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   disabled = false,
   placeholder = "Type a goal. Hit @ to pull anchors inline.",
   sidebarOpen = false,
-  selectedProvider,
-  onProviderChange,
+  selectedProvider = 'auto',
+  onProviderChange = () => {},
   availableProviders,
+  hideProviderSelector = false,
+  voiceInInput = false,
+  voiceIconSize = 18,
   providerStats = {},
   agentMode = false,
   onToggleAgentMode,
@@ -130,6 +149,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   onAttachFile,
   onToggleSplitView,
   splitViewEnabled = false,
+  splitViewWidth = 50,
   attachedFiles = [],
   onRemoveFile,
   memories = [],
@@ -151,16 +171,32 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
+  const agentPanelRef = useRef<HTMLDivElement>(null);
+  const agentButtonRef = useRef<HTMLButtonElement>(null);
   const valueRef = useRef(value); // Track current value for voice input
   const [showMentionAutocomplete, setShowMentionAutocomplete] = useState(false);
   const [mentionQuery, setMentionQuery] = useState('');
   const [showProviderDropdown, setShowProviderDropdown] = useState(false);
+  const [voiceInterimTranscript, setVoiceInterimTranscript] = useState('');
 
   const normalizeProvider = (provider: string) => {
     if (provider === 'claude') return 'anthropic';
     if (provider === 'google') return 'gemini';
     return provider;
   };
+
+  const chatInputRightInset = useMemo(() => {
+    if (!splitViewEnabled) return 24;
+    if (typeof window === 'undefined') return 24;
+
+    const leftInset = sidebarOpen ? 304 : 24;
+    const baseRight = 24;
+    const available = window.innerWidth - leftInset - baseRight;
+    const codePanelWidth = Math.max(0, available * (100 - (splitViewWidth || 50)) / 100);
+    const dividerSafety = 10;
+
+    return baseRight + codePanelWidth + dividerSafety;
+  }, [splitViewEnabled, splitViewWidth, sidebarOpen]);
 
   const providerOptions = useMemo(() => {
     const rawProviders =
@@ -288,6 +324,20 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     onToggleAgentMode?.();
   };
 
+  const handleAgentModeOutsideClick = useCallback((e: MouseEvent) => {
+    const target = e.target as Node | null;
+    if (!target) return;
+    if (agentPanelRef.current && agentPanelRef.current.contains(target)) return;
+    if (agentButtonRef.current && agentButtonRef.current.contains(target)) return;
+    onToggleAgentMode?.();
+  }, [onToggleAgentMode]);
+
+  useEffect(() => {
+    if (!agentMode) return;
+    window.addEventListener('mousedown', handleAgentModeOutsideClick);
+    return () => window.removeEventListener('mousedown', handleAgentModeOutsideClick);
+  }, [agentMode, handleAgentModeOutsideClick]);
+
   const handleAgentSelectChange = (agentHash: string | null) => {
     onSelectAgent?.(agentHash);
     if (agentHash) {
@@ -302,20 +352,32 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     }
   };
 
+  const selectedAgentName = selectedAgent
+    ? agents.find(a => a.hash === selectedAgent)?.name
+    : null;
+
+  const selectedTeamName = selectedTeamId
+    ? teams.find(t => t.id === selectedTeamId)?.name
+    : null;
+
+  const agentSelectorLabel = selectedTeamName
+    ? `Team: ${selectedTeamName}`
+    : selectedAgentName
+    ? `Agent: ${selectedAgentName}`
+    : 'Auto';
+
   return (
-    <div className={`${styles.chatInputRoot} ${sidebarOpen ? styles.withSidebar : ''}`}>
+    <div
+      className={`${styles.chatInputRoot} ${sidebarOpen ? styles.withSidebar : ''} ${splitViewEnabled ? styles.splitViewEnabled : ''}`}
+      style={splitViewEnabled ? { right: chatInputRightInset } : undefined}
+    >
       <div className={styles.inputWrapper} ref={inputWrapperRef}>
         {/* Agent Panel - Floats above */}
         {agentMode && (
-          <div className={styles.agentPanel}>
+          <div className={styles.agentPanel} ref={agentPanelRef}>
             <div className={styles.agentPanelHeader}>
               <span className={styles.agentPanelTitle}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
+                <RobotIcon />
                 Agent Configuration
               </span>
             </div>
@@ -566,6 +628,23 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
 
         {/* Input Area: Textarea + Send */}
         <div className={styles.inputArea}>
+          {voiceInInput && (
+            <VoiceInput
+              onTranscript={(text) => {
+                const currentValue = valueRef.current;
+                const newValue = currentValue + (currentValue ? ' ' : '') + text;
+                onChange(newValue);
+                textareaRef.current?.focus();
+              }}
+              onInterimTranscriptChange={setVoiceInterimTranscript}
+              renderInterimTranscript={false}
+              iconSize={voiceIconSize}
+              disabled={isLoading || disabled}
+            />
+          )}
+          {voiceInInput && voiceInterimTranscript && (
+            <div className={styles.voiceInterimOverlay}>{voiceInterimTranscript}</div>
+          )}
           <textarea
             ref={textareaRef}
             className={styles.textarea}
@@ -589,8 +668,9 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
         {/* Tools Row */}
         <div className={styles.toolsRow}>
           <div className={styles.toolsLeft}>
-            {/* Custom Provider Selector - No external styles */}
+            {!hideProviderSelector && (
             <div style={{ position: 'relative', zIndex: 10000 }}>
+              {/* Custom Provider Selector - No external styles */}
               <button
                 className={styles.providerButton}
                 onClick={(e) => {
@@ -681,14 +761,19 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 </div>
               )}
             </div>
+            )}
             
             {onToggleAgentMode && (
               <button
-                className={`${styles.toolButton} ${agentMode ? styles.active : ''}`}
+                ref={agentButtonRef}
+                className={`${styles.providerButton} ${styles.agentSelectorButton} ${agentMode ? styles.agentSelectorActive : ''}`}
                 onClick={handleAgentModeToggle}
-                title="Agent Mode"
+                title={agentSelectorLabel}
+                type="button"
               >
-                <TargetIcon />
+                <span className={styles.agentSelectorIcon}><RobotIcon /></span>
+                <span className={styles.agentSelectorLabel}>{agentSelectorLabel}</span>
+                <ChevronDownIcon />
               </button>
             )}
             
@@ -706,7 +791,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             {/* New Chat Button (icon only) */}
             {onNewChat && (
               <button className={`${styles.toolButton} ${styles.newChatButton}`} onClick={onNewChat} title="New Chat">
-                <NewChatIcon />
+                <PlusIcon />
               </button>
             )}
             
@@ -717,12 +802,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 title="Archive Chat"
               >
                 <ArchiveIcon />
-              </button>
-            )}
-            
-            {onCancel && (
-              <button className={styles.toolButton} onClick={onCancel} title="Cancel">
-                <CloseIcon />
               </button>
             )}
           </div>
@@ -759,6 +838,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             )}
             
             {/* Voice Input */}
+            {!voiceInInput && (
             <VoiceInput
               onTranscript={(text) => {
                 // Use ref to get current value to avoid stale closure
@@ -770,6 +850,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               }}
               disabled={isLoading || disabled}
             />
+            )}
             
             {/* Split View - Columns icon (icon only) */}
             {onToggleSplitView && (
@@ -841,11 +922,11 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
 
-            {isLoading && (
+            {onCancel && (
               <button
-                className={`${styles.toolButton} ${styles.danger}`}
+                className={`${styles.toolButton} ${isLoading ? styles.danger : ''}`}
                 onClick={onCancel}
-                title="Stop"
+                title={isLoading ? 'Stop' : 'Cancel'}
               >
                 <CloseIcon />
               </button>

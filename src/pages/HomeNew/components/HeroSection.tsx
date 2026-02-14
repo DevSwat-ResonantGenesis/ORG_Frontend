@@ -27,12 +27,19 @@ export const HeroSection = () => {
             </div>
 
             <div className={styles.heroContent}>
+                <button
+                    type="button"
+                    className={styles.byokHeroAlert}
+                    onClick={() => navigate(isLoggedIn ? '/profile?tab=api-keys' : '/signup')}
+                >
+                    <span className={styles.byokHeroText}>Bring Your Own Keys to unlock functions</span>
+                    <span className={styles.byokHeroArrow}>→</span>
+                </button>
                 <h1 className={heroTitleStyles.heroTitle}>
-                    AI That Works.<br />
-                    Governance That Proves It.
+                    Own Your Intelligence.
                 </h1>
                 <p className={heroTitleStyles.heroSubtitle}>
-                    Build and deploy autonomous AI agents with cryptographic verification, real-time governance, and enterprise-grade compliance. Give your AI its own identity — encrypted, sovereign, and fully under your control. No black boxes.
+                    The first sovereign AI ecosystem with somatic-magnetic memory. Encrypted, autonomous, and fully self-hosted. No black boxes—just pure control.
                 </p>
                 
                 {/* Hero CTAs - Conditional based on login state */}
@@ -64,8 +71,9 @@ export const HeroSection = () => {
                                 navigate('/resonant-chat');
                             }
                         }}
-                        selectedProvider="auto"
-                        onProviderChange={() => {}}
+                        hideProviderSelector={true}
+                        voiceInInput={true}
+                        voiceIconSize={22}
                         placeholder="Start typing..."
                         isLoading={false}
                         disabled={false}

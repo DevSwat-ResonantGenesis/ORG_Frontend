@@ -5,7 +5,7 @@ import { clearSession } from '../../utils/auth';
 import fastapiClient from '../../api/fastapiClient';
 import { validateEmail } from '../../utils/signupLogic';
 import { logger } from '../../utils/logger';
-import { goToDashboard, goToSignup } from '../../utils/navigation';
+import { goToResonantChat, goToSignup } from '../../utils/navigation';
 import { SSOButtons } from '@/components/auth/SSOButtons';
 import layoutStyles from '../../components/layout/PageLayout-2025.module.css';
 import buttonStyles from '../../components/ui/Button-2025.module.css';
@@ -75,7 +75,7 @@ const LoginPage = () => {
       
       // Pass user.id from backend response for proper user identification
       saveSessionData(email.trim(), data.role, data.org_id, data.user?.id);
-      goToDashboard(navigate);
+      goToResonantChat(navigate);
     } catch (err: any) {
       logger.error('Login error', err);
       let message = 'Unable to sign in. Please check your credentials and try again.';

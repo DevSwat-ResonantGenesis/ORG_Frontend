@@ -3,25 +3,25 @@
    ============================================================ */
 
 .scroll-reveal {
-  opacity: 0;
-  transition: opacity var(--reveal-duration, 0.6s) ease-out,
-              transform var(--reveal-duration, 0.6s) ease-out;
+  opacity: 1;
+  transform: none;
 }
 
+
 .scroll-reveal-up {
-  transform: translateY(var(--reveal-distance, 50px));
+  transform: none;
 }
 
 .scroll-reveal-down {
-  transform: translateY(calc(-1 * var(--reveal-distance, 50px)));
+  transform: none;
 }
 
 .scroll-reveal-left {
-  transform: translateX(var(--reveal-distance, 50px));
+  transform: none;
 }
 
 .scroll-reveal-right {
-  transform: translateX(calc(-1 * var(--reveal-distance, 50px)));
+  transform: none;
 }
 
 .scroll-reveal-fade {
@@ -38,10 +38,10 @@
    ============================================================ */
 
 .scroll-reveal-stagger > * {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  opacity: 1;
+  transform: none;
 }
+
 
 .scroll-reveal-stagger.visible > *:nth-child(1) {
   transition-delay: 0.1s;

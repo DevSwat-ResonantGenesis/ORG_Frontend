@@ -34,8 +34,8 @@
 .header::after {
   content: '';
   position: absolute;
-  left: 20%;
-  right: 20%;
+  left: 0;
+  right: 0;
   bottom: 0;
   height: 1px;
   background: linear-gradient(
@@ -45,6 +45,8 @@
     rgba(96, 165, 250, 0.5),
     transparent
   );
+  background-size: 200% 100%;
+  animation: headerNeedleMove 10s linear infinite;
   pointer-events: none;
 }
 
@@ -177,15 +179,6 @@
   transform: scale(1);
 }
 
-.active {
-  color: var(--accent-primary);
-}
-
-.active::before {
-  opacity: 0.12;
-  transform: scale(1);
-}
-
 .quickAccessButton.active {
   color: var(--accent-primary);
 }
@@ -213,9 +206,102 @@
   opacity: 1;
 }
 
+
+.byokCta {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  line-height: 1;
+  white-space: nowrap;
+  position: relative;
+  color: rgba(251, 191, 36, 0.95);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  transition: transform 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.byokCta::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(251, 191, 36, 0.0), rgba(251, 191, 36, 0.95), rgba(245, 158, 11, 0.85), rgba(251, 191, 36, 0.0));
+  opacity: 0.55;
+  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.45));
+  transition: opacity 0.15s ease, filter 0.15s ease;
+}
+
+.byokCta:hover {
+  transform: translateY(-1px);
+  color: rgba(251, 191, 36, 1);
+}
+
+.byokCta:hover::after {
+  opacity: 0.95;
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.6));
+}
+
+.byokCta:active {
+  transform: translateY(0);
+}
+
+.byokArrow {
+  font-weight: 800;
+  opacity: 0.95;
+}
+
+[data-theme='light'] .byokCta {
+  color: rgba(180, 83, 9, 0.95);
+}
+
+[data-theme='light'] .byokCta::after {
+  background: linear-gradient(90deg, rgba(180, 83, 9, 0.0), rgba(180, 83, 9, 0.9), rgba(217, 119, 6, 0.85), rgba(180, 83, 9, 0.0));
+  filter: drop-shadow(0 0 8px rgba(217, 119, 6, 0.35));
+}
+
+[data-theme='light'] .byokCta:hover {
+  color: rgba(180, 83, 9, 1);
+}
+
+[data-theme='light'] .byokCta:hover::after {
+  filter: drop-shadow(0 0 10px rgba(217, 119, 6, 0.45));
+}
 /* ============================================
    HEADER ACTIONS
    ============================================ */
+
+.chatWidgetButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.chatWidgetButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.10);
+}
+
+[data-theme='light'] .chatWidgetButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.06);
+}
 .actions {
   display: flex;
   align-items: center;
@@ -327,6 +413,8 @@
 
 .burgerMenu svg {
   transition: transform 0.2s ease;
+  width: 22px;
+  height: 22px;
 }
 
 .burgerMenu:hover svg {
@@ -625,6 +713,11 @@
   animation: accountMenuFadeIn 0.15s ease;
 }
 
+@keyframes headerNeedleMove {
+  from { background-position: 0% 0; }
+  to { background-position: 200% 0; }
+}
+
 @keyframes accountMenuFadeIn {
   from {
     opacity: 0;
@@ -845,8 +938,10 @@
   left: 0;
   min-width: 280px;
   /* SOLID NON-TRANSPARENT BACKGROUND - CHANGED */
-  background: #1a1f2e !important;
-  border: 2px solid #3b82f6 !important;
+  background: rgba(10, 10, 15, 0.65) !important;
+  backdrop-filter: blur(18px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+  border: 1px solid rgba(59, 130, 246, 0.35) !important;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
   z-index: 10002;
@@ -868,8 +963,10 @@
 
 /* Light mode - Solid non-transparent */
 [data-theme='light'] .navDropdown {
-  background: #ffffff !important;
-  border: 2px solid #3b82f6 !important;
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(16px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+  border: 1px solid rgba(37, 99, 235, 0.25) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -915,13 +1012,18 @@
   align-items: flex-start;
   gap: 2px;
   padding: 10px 12px;
-  background: transparent;
-  border: none;
+  background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(59, 130, 246, 0.28);
   border-radius: 10px;
   cursor: pointer;
   text-align: left;
   transition: all 0.15s ease;
   width: 100%;
+
+  position: relative;
+  overflow: hidden;
+
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
 }
 
 .navDropdownItem:hover {
@@ -1073,9 +1175,9 @@
   display: none;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  padding: 8px;
+  width: 48px;
+  height: 48px;
+  padding: 10px;
   background: transparent;
   border: none;
   border-radius: 8px;
@@ -1089,9 +1191,40 @@
   background: var(--bg-secondary);
 }
 
+.burgerMenu svg {
+  width: 26px;
+  height: 26px;
+}
+
 @media (max-width: 1024px) {
   .burgerMenu {
     display: flex;
   }
+}
+
+:global([data-theme='dark'] body.resonant-chat-page) .header {
+  background: #32312E !important;
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: #f8fafc !important;
+}
+
+:global([data-theme='light'] body.resonant-chat-page) .header {
+  background: #f0f4f9 !important;
+  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: #0f172a !important;
+}
+
+:global([data-theme='dark'] body.resonant-chat-page) .headerScrolled {
+  background: #32312E !important;
+  box-shadow: none !important;
+}
+
+:global([data-theme='light'] body.resonant-chat-page) .headerScrolled {
+  background: #f0f4f9 !important;
+  box-shadow: none !important;
 }
 

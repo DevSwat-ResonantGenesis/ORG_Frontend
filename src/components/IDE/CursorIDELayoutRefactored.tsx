@@ -46,6 +46,7 @@ import { initializeDSIDP, trackLLMUsage } from '@/api/dsidpAccelerator';
 import { useToastContext } from '@/context/ToastContext';
 import { useThemeStore } from '@/store/themeStore';
 import { logger } from '@/utils/logger';
+import { getSessionData } from '@/utils/auth-cookies';
 
 // Initialize DSID-P Accelerator on module load
 initializeDSIDP();
@@ -78,6 +79,12 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
   const navigate = useNavigate();
   const { state, dispatch } = useIDE();
   const initialFilesLoadedRef = useRef(false);
+  const hasLoadedAnyFilesRef = useRef(false);
+
+  const session = getSessionData();
+  const userId = session?.userId || session?.email || 'guest';
+  const projectFilesStorageKey = `ide-project-files-${userId}`;
+  const projectNameStorageKey = `ide-project-name-${userId}`;
   const { success, error: showError } = useToastContext();
   const { theme, toggleTheme } = useThemeStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -182,8 +189,8 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
       
       // Save to localStorage for persistence
       try {
-        localStorage.setItem('ide-project-files', JSON.stringify(ideFiles));
-        localStorage.setItem('ide-project-name', initialProjectName || 'Untitled Project');
+        localStorage.setItem(projectFilesStorageKey, JSON.stringify(ideFiles));
+        localStorage.setItem(projectNameStorageKey, initialProjectName || 'Untitled Project');
       } catch (e) {
         console.error('Failed to save project to localStorage:', e);
       }
@@ -205,7 +212,8 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
       const pathMap = new Map<string, any>();
       
       // Sort by path to ensure parents are processed before children
-      const sorted = [...flatFiles].sort((a, b) => a.path.localeCompare(b.path));
+      const normalized = Array.isArray(flatFiles) ? flatFiles.filter((f) => f && typeof f.path === 'string') : [];
+      const sorted = [...normalized].sort((a, b) => a.path.localeCompare(b.path));
       
       sorted.forEach((file) => {
         const parts = file.path.split('/');
@@ -230,9 +238,10 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
               const parentPath = parts.slice(0, index).join('/');
               const parent = pathMap.get(parentPath);
               if (parent) {
-                parent.children = parent.children || [];
-                if (!parent.children.find((c: any) => c.path === currentPath)) {
-                  parent.children.push(node);
+                const children = Array.isArray(parent.children) ? parent.children : [];
+                parent.children = children;
+                if (!children.some((c: any) => c.path === currentPath)) {
+                  children.push(node);
                 }
               }
             }
@@ -247,16 +256,51 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
     // localStorage is only used as fallback for offline/no projectId scenarios
     if (projectId) {
       console.log('📂 Loading from backend (source of truth)...');
-      loadProjectFiles();
+      (async () => {
+        const loadedCount = await loadProjectFiles();
+        if (loadedCount > 0) {
+          return;
+        }
+
+        try {
+          const perUserSavedFiles = localStorage.getItem(projectFilesStorageKey);
+          const legacySavedFiles = localStorage.getItem('ide-project-files');
+          const savedFiles = perUserSavedFiles || legacySavedFiles;
+          if (savedFiles) {
+            const parsedFiles = JSON.parse(savedFiles);
+            if (Array.isArray(parsedFiles) && parsedFiles.length > 0) {
+              const fileTree = buildTreeFromFlat(parsedFiles);
+              dispatch({ type: 'SET_FILES', payload: fileTree });
+
+              const firstFile = parsedFiles.find((f: any) => f.type === 'file');
+              if (firstFile && firstFile.content) {
+                dispatch({ type: 'OPEN_FILE', payload: { path: firstFile.path, content: firstFile.content } });
+              }
+
+              initialFilesLoadedRef.current = true;
+              console.log('📂 Backend empty; loaded from localStorage fallback:', parsedFiles.length, 'files');
+
+              if (!perUserSavedFiles && legacySavedFiles) {
+                localStorage.setItem(projectFilesStorageKey, legacySavedFiles);
+                localStorage.removeItem('ide-project-files');
+              }
+            }
+          }
+        } catch (e) {
+          console.error('Failed to load project from localStorage fallback:', e);
+        }
+      })();
       return;
     }
     
     // Fallback: Try to load from localStorage only if no projectId
     try {
-      const savedFiles = localStorage.getItem('ide-project-files');
+      const perUserSavedFiles = localStorage.getItem(projectFilesStorageKey);
+      const legacySavedFiles = localStorage.getItem('ide-project-files');
+      const savedFiles = perUserSavedFiles || legacySavedFiles;
       if (savedFiles) {
         const parsedFiles = JSON.parse(savedFiles);
-        if (parsedFiles && parsedFiles.length > 0) {
+        if (Array.isArray(parsedFiles) && parsedFiles.length > 0) {
           // Rebuild tree structure from flat files
           const fileTree = buildTreeFromFlat(parsedFiles);
           dispatch({ type: 'SET_FILES', payload: fileTree });
@@ -269,6 +313,11 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
           
           initialFilesLoadedRef.current = true;
           console.log('📂 Loaded from localStorage (fallback):', parsedFiles.length, 'files');
+
+          if (!perUserSavedFiles && legacySavedFiles) {
+            localStorage.setItem(projectFilesStorageKey, legacySavedFiles);
+            localStorage.removeItem('ide-project-files');
+          }
           return;
         }
       }
@@ -296,6 +345,7 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
     };
     
     if (files.length > 0) {
+      hasLoadedAnyFilesRef.current = true;
       const timer = setTimeout(() => {
         try {
           // Flatten and include content from openFiles
@@ -305,7 +355,7 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
             return content !== undefined ? { ...f, content } : f;
           });
           console.log('💾 Saving to localStorage:', filesWithContent.length, 'files');
-          localStorage.setItem('ide-project-files', JSON.stringify(filesWithContent));
+          localStorage.setItem(projectFilesStorageKey, JSON.stringify(filesWithContent));
         } catch (e) {
           console.error('Failed to save project to localStorage:', e);
         }
@@ -314,7 +364,12 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
     } else {
       // Clear localStorage when no files
       console.log('💾 Clearing localStorage - no files');
-      localStorage.removeItem('ide-project-files');
+      if (hasLoadedAnyFilesRef.current) {
+        localStorage.removeItem(projectFilesStorageKey);
+        localStorage.removeItem(projectNameStorageKey);
+        localStorage.removeItem('ide-project-files');
+        localStorage.removeItem('ide-project-name');
+      }
     }
   }, [files, openFiles]);
 

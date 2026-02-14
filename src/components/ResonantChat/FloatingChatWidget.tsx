@@ -86,6 +86,9 @@ interface Message {
 
 interface FloatingChatWidgetProps {
   className?: string;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  hideLauncher?: boolean;
 }
 
 // Use same storage key as ResonantChatPage for sync
@@ -95,14 +98,29 @@ const messagesStorageKey = 'resonant-chat-live-messages'; // For live sync betwe
 const getChatIdFromResponse = (response: any): string | null =>
   response?.id || response?.chatId || response?.chat_id || response?.chat?.id || null;
 
-const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) => {
+const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className, isOpen: controlledOpen, onOpenChange, hideLauncher = false }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const isResonantChatPage = location.pathname === '/resonant-chat' || location.pathname.startsWith('/resonant-chat');
   const session = getSession();
   const isLoggedIn = isAuthenticated() && !!session;
   const { success, error: showError } = useToastContext();
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isOpen = controlledOpen ?? internalOpen;
+  const setIsOpen = (open: boolean) => {
+    setInternalOpen(open);
+    onOpenChange?.(open);
+  };
   // Messages are loaded ONLY from backend - no localStorage backup
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -146,7 +164,7 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
     }
     // Default: bottom-left corner (24px from left, 24px from bottom)
     // Store as top-based Y coordinate
-    return { x: 24, y: window.innerHeight - 64 - 24 }; // 24px from bottom + 64px button height
+    return { x: window.innerWidth - 64 - 24, y: Math.max(24, Math.floor(window.innerHeight / 2) - 32) }; // 24px from right, vertically centered
   });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -389,8 +407,8 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
     const newYFromBottom = window.innerHeight - newYFromTop - widgetHeight;
 
     // Constrain to viewport - account for mobile
-    const isMobile = window.innerWidth <= 768;
-    const widgetWidth = isMobile ? (isOpen ? window.innerWidth - 32 : 56) : (isOpen ? 420 : 64);
+    const isNarrowViewport = window.innerWidth <= 768;
+    const widgetWidth = isNarrowViewport ? (isOpen ? window.innerWidth - 32 : 56) : (isOpen ? 420 : 64);
     
     const maxX = window.innerWidth - widgetWidth;
     const minYFromBottom = 24;
@@ -419,8 +437,8 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
     const newYFromBottom = window.innerHeight - newYFromTop - widgetHeight;
 
     // Constrain to viewport - account for mobile
-    const isMobile = window.innerWidth <= 768;
-    const widgetWidth = isMobile ? (isOpen ? window.innerWidth - 32 : 56) : (isOpen ? 420 : 64);
+    const isNarrowViewport = window.innerWidth <= 768;
+    const widgetWidth = isNarrowViewport ? (isOpen ? window.innerWidth - 32 : 56) : (isOpen ? 420 : 64);
     
     const maxX = window.innerWidth - widgetWidth;
     const minYFromBottom = 24; // Minimum 24px from bottom
@@ -710,20 +728,29 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
     setIsOpen(false);
   };
 
+  if (isMobile && isResonantChatPage) return null;
+
+  if (hideLauncher && !isOpen) return null;
+
   return (
     <div 
       className={`${styles.floatingWidget} ${className || ''} ${isDragging ? styles.dragging : ''} ${isResizing ? styles.resizing : ''}`}
-      style={{ 
-        left: `${position.x}px`, 
-        bottom: `${window.innerHeight - position.y - (isOpen ? panelHeight : 64)}px`,
+      style={{
+        left: isMobile ? '16px' : `${position.x}px`,
+        bottom: isMobile ? '16px' : `${window.innerHeight - position.y - (isOpen ? panelHeight : 64)}px`,
         top: 'auto'
       }}
     >
       {/* Floating Button */}
+      {!hideLauncher && (
       <button
         ref={buttonRef}
         className={styles.floatingButton}
         onTouchStart={(e) => {
+          if (isMobile) {
+            handleOpenFullChat();
+            return;
+          }
           // Touch drag for mobile
           const touch = e.touches[0];
           if (!touch) return;
@@ -777,6 +804,10 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
           }
         }}
         onMouseDown={(e) => {
+          if (isMobile) {
+            handleOpenFullChat();
+            return;
+          }
           // Only start drag if not clicking on badge
           const target = e.target as HTMLElement;
           if (!target.closest(`.${styles.messageBadge}`)) {
@@ -829,7 +860,7 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
         }}
         aria-label={isOpen ? "Close Resonant Chat" : "Open Resonant Chat"}
         title={isOpen ? "Close chat (Click to close, drag to move)" : "Open Resonant Chat (Click to open, drag to move)"}
-        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+        style={{ cursor: isMobile ? 'pointer' : isDragging ? 'grabbing' : 'grab' }}
       >
         {isOpen ? (
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -846,13 +877,18 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
             onMouseDown={(e) => e.stopPropagation()}
             onClick={(e) => {
               e.stopPropagation();
-              setIsOpen(true);
+              if (isMobile) {
+                handleOpenFullChat();
+              } else {
+                setIsOpen(true);
+              }
             }}
           >
             {messages.length}
           </span>
         )}
       </button>
+      )}
 
       {/* Chat Panel */}
       {isOpen && (
@@ -865,7 +901,7 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className }) =>
             {/* Header */}
             <div 
               className={styles.panelHeader}
-              onMouseDown={handleDragStart}
+              onMouseDown={isMobile ? undefined : handleDragStart}
               style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
             >
             <div className={styles.headerLeft} onMouseDown={(e) => e.stopPropagation()}>
