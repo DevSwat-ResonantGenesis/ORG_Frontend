@@ -1,6 +1,6 @@
 # Runbook: Frontend Zero-Downtime Deployment
 
-**Last Updated:** 2026-01-22  
+**Last Updated:** 2026-02-15  
 **Owner:** DevOps Team  
 **Severity:** Normal Operations
 
@@ -20,6 +20,11 @@ Deploy frontend changes to production using zero-downtime nginx reload.
 - [ ] Build successful locally
 - [ ] No console errors
 - [ ] GitHub Actions workflow ready
+- [ ] Repo variable `DEPLOY_ENABLED` set to `true`
+- [ ] Repo secrets set:
+  - `DROPLET_HOST` (e.g. `134.199.221.149`)
+  - `DROPLET_USER` (e.g. `deploy`)
+  - `DROPLET_SSH_KEY` (OpenSSH private key)
 - [ ] Team notified
 
 ---
@@ -47,15 +52,15 @@ git push origin main
 **Expected duration:** ~3-5 minutes
 
 **Watch for:**
-- ✅ Checkout repository
-- ✅ Setup Node.js
-- ✅ Install dependencies (npm ci)
-- ✅ Build production bundle (npm run build)
-- ✅ Upload to droplet (SCP)
-- ✅ Backup current frontend
-- ✅ Sync new files
-- ✅ Reload nginx (zero downtime!)
-- ✅ Verify deployment
+- Checkout repository
+- Setup Node.js
+- Install dependencies (npm ci)
+- Build production bundle (npm run build)
+- Upload to droplet (SCP)
+- Backup current frontend
+- Sync new files
+- Reload nginx (zero downtime!)
+- Verify deployment
 
 ---
 
@@ -112,13 +117,13 @@ sudo -n journalctl -u nginx -n 50 --no-pager
 
 ## Success Criteria
 
-- ✅ GitHub Actions shows green checkmark
-- ✅ Frontend accessible at https://resonantgenesis.xyz
-- ✅ No console errors
-- ✅ All critical paths working
-- ✅ Mobile view functional
-- ✅ Nginx reload successful
-- ✅ Backup created
+- GitHub Actions shows green checkmark
+- Frontend accessible at https://resonantgenesis.xyz
+- No console errors
+- All critical paths working
+- Mobile view functional
+- Nginx reload successful
+- Backup created
 
 ---
 
@@ -128,7 +133,7 @@ sudo -n journalctl -u nginx -n 50 --no-pager
 
 **Every deployment creates backup:**
 ```
-/var/backups/frontend/frontend_YYYYMMDD_HHMMSS.tar.gz
+/var/backups/frontend/frontend_YYYYMMDD_HHMMSS.tgz
 ```
 
 ### Manual Rollback
@@ -143,7 +148,7 @@ ssh deploy@dev-swat.com
 ls -lh /var/backups/frontend/
 
 # Identify latest good backup
-# Example: frontend_20260122_193000.tar.gz
+# Example: frontend_20260215_122815.tgz
 
 # Stop nginx temporarily (optional, for safety)
 # sudo -n systemctl stop nginx
@@ -151,7 +156,7 @@ ls -lh /var/backups/frontend/
 # Restore backup
 cd /var/www/frontend
 rm -rf *
-tar -xzf /var/backups/frontend/frontend_20260122_193000.tar.gz
+tar -xzf /var/backups/frontend/frontend_20260215_122815.tgz
 
 # Reload nginx
 sudo -n nginx -t
@@ -383,3 +388,4 @@ sudo -n systemctl reload nginx
 ## Changelog
 
 - **2026-01-22:** Initial frontend deployment runbook created
+- **2026-02-15:** Added GitHub Actions prerequisites (DEPLOY_ENABLED + secrets) and corrected backup extension to .tgz
