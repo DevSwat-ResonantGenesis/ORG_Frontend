@@ -48,6 +48,8 @@ interface ChatInputBarProps {
   isLoading?: boolean;
   disabled?: boolean;
   placeholder?: string;
+
+  embedded?: boolean;
   
   // Sidebar
   sidebarOpen?: boolean;
@@ -125,6 +127,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   isLoading = false,
   disabled = false,
   placeholder = "Type a goal. Hit @ to pull anchors inline.",
+  embedded = false,
   sidebarOpen = false,
   selectedProvider = 'auto',
   onProviderChange = () => {},
@@ -368,8 +371,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
 
   return (
     <div
-      className={`${styles.chatInputRoot} ${sidebarOpen ? styles.withSidebar : ''} ${splitViewEnabled ? styles.splitViewEnabled : ''}`}
-      style={splitViewEnabled ? { right: chatInputRightInset } : undefined}
+      className={`${styles.chatInputRoot} ${embedded ? styles.embedded : ''} ${sidebarOpen && !embedded ? styles.withSidebar : ''} ${splitViewEnabled && !embedded ? styles.splitViewEnabled : ''}`}
+      style={splitViewEnabled && !embedded ? { right: chatInputRightInset } : undefined}
     >
       <div className={styles.inputWrapper} ref={inputWrapperRef}>
         {/* Agent Panel - Floats above */}

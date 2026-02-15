@@ -147,6 +147,7 @@ export const HeroSection = () => {
                         value={chatInput}
                         onChange={setChatInput}
                         onSend={handleSend}
+                        embedded={true}
                         hideProviderSelector={true}
                         voiceInInput={true}
                         voiceIconSize={22}

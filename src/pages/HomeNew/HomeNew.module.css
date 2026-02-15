@@ -215,7 +215,7 @@
   width: 100%;
   transform-origin: left center;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   /* Critical: allow parallax to render fully */
 }
 

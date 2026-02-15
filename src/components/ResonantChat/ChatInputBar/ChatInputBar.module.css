@@ -14,6 +14,14 @@
   pointer-events: auto;
 }
 
+.embedded {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  z-index: auto;
+}
+
 .chatInputRoot.withSidebar {
   left: 304px;
 }
@@ -32,6 +40,11 @@
   border-radius: 16px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
   z-index: 10001;
+}
+
+.embedded .inputWrapper {
+  max-width: none;
+  margin: 0;
 }
 
 [data-theme='light'] .inputWrapper {

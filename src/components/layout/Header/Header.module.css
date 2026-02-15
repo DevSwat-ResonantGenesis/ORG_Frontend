@@ -14,7 +14,7 @@
   z-index: 99999 !important;
   box-sizing: border-box !important;
   padding: 12px 32px !important;
-  height: 60px;
+  min-height: 60px;
   /* Transparent glass effect - very transparent */
   background: rgba(10, 10, 15, 0.3) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
@@ -35,6 +35,9 @@
   border-bottom-color: rgba(255, 255, 255, 0.03) !important;
   backdrop-filter: blur(10px) saturate(160%) !important;
   -webkit-backdrop-filter: blur(10px) saturate(160%) !important;
+  min-height: 48px !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
 }
 
 [data-theme='light'] .landingHoverOnly {
@@ -43,27 +46,51 @@
 }
 
 .hoverOnly {
-  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.landingHoverOnly .hoverOnly {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-4px);
+
+.landingHoverOnly .burgerMenu.hoverOnly {
+  display: none;
 }
 
-.landingHoverOnly:hover .hoverOnly,
-.landingHoverOnly:focus-within .hoverOnly {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
+.landingHoverOnly .mainNav.hoverOnly {
+  display: none;
+}
+
+.landingHoverOnly .actions .hoverOnly {
+  display: none;
+}
+
+.landingHoverOnly:hover .burgerMenu.hoverOnly,
+.landingHoverOnly:focus-within .burgerMenu.hoverOnly {
+  display: flex;
+}
+
+.landingHoverOnly:hover .mainNav.hoverOnly,
+.landingHoverOnly:focus-within .mainNav.hoverOnly {
+  display: flex;
+}
+
+.landingHoverOnly:hover .actions .hoverOnly,
+.landingHoverOnly:focus-within .actions .hoverOnly {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 @media (hover: none), (pointer: coarse) {
-  .landingHoverOnly .hoverOnly {
-    opacity: 1;
-    pointer-events: auto;
-    transform: none;
+  .landingHoverOnly .burgerMenu.hoverOnly {
+    display: flex;
+  }
+
+  .landingHoverOnly .mainNav.hoverOnly {
+    display: flex;
+  }
+
+  .landingHoverOnly .actions .hoverOnly {
+    display: flex;
+    align-items: center;
+    gap: 16px;
   }
 }
 
