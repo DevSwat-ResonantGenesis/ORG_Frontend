@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import styles from './VoiceInput.module.css';
 
 // Custom SVG Icons
-const MicrophoneIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+const MicrophoneIcon = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
     <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
     <line x1="12" y1="19" x2="12" y2="23" />
@@ -11,8 +11,8 @@ const MicrophoneIcon = () => (
   </svg>
 );
 
-const MicrophoneOffIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+const MicrophoneOffIcon = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="1" y1="1" x2="23" y2="23" />
     <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6" />
     <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23" />
@@ -21,8 +21,8 @@ const MicrophoneOffIcon = () => (
   </svg>
 );
 
-const RecordingIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+const RecordingIcon = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
     <circle cx="12" cy="12" r="6" />
   </svg>
 );
@@ -30,12 +30,18 @@ const RecordingIcon = () => (
 interface VoiceInputProps {
   onTranscript: (text: string) => void;
   onListeningChange?: (isListening: boolean) => void;
+  onInterimTranscriptChange?: (text: string) => void;
+  renderInterimTranscript?: boolean;
+  iconSize?: number;
   disabled?: boolean;
 }
 
 export const VoiceInput: React.FC<VoiceInputProps> = ({
   onTranscript,
   onListeningChange,
+  onInterimTranscriptChange,
+  renderInterimTranscript = true,
+  iconSize = 18,
   disabled = false,
 }) => {
   const [isListening, setIsListening] = useState(false);
@@ -47,6 +53,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
   // Store callbacks in refs to avoid stale closures
   const onTranscriptRef = useRef(onTranscript);
   const onListeningChangeRef = useRef(onListeningChange);
+  const onInterimTranscriptChangeRef = useRef(onInterimTranscriptChange);
   
   // Keep refs in sync
   useEffect(() => {
@@ -56,6 +63,10 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
   useEffect(() => {
     onListeningChangeRef.current = onListeningChange;
   }, [onListeningChange]);
+  
+  useEffect(() => {
+    onInterimTranscriptChangeRef.current = onInterimTranscriptChange;
+  }, [onInterimTranscriptChange]);
   
   useEffect(() => {
     isListeningRef.current = isListening;
@@ -93,12 +104,15 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
 
       console.log('🎤 Speech result - interim:', interim, 'final:', final);
       setInterimTranscript(interim);
+      onInterimTranscriptChangeRef.current?.(interim);
       
       if (final) {
         console.log('🎤 Final transcript received:', final);
         // Use ref to get latest callback
         onTranscriptRef.current(final);
         setInterimTranscript('');
+      onInterimTranscriptChangeRef.current?.('');
+            onInterimTranscriptChangeRef.current?.('');
       }
     };
 
@@ -160,11 +174,13 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
           }
           console.log('🎤 Speech result - interim:', interim, 'final:', final);
           setInterimTranscript(interim);
+      onInterimTranscriptChangeRef.current?.(interim);
           if (final) {
             console.log('🎤 Final transcript received:', final);
             onTranscriptRef.current(final);
-            setInterimTranscript('');
-          }
+        setInterimTranscript('');
+        onInterimTranscriptChangeRef.current?.('');
+      }
         };
         
         recognition.onerror = (event: any) => {
@@ -204,6 +220,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
       isListeningRef.current = false;
       onListeningChangeRef.current?.(false);
       setInterimTranscript('');
+            onInterimTranscriptChangeRef.current?.('');
     } else {
       try {
         // Request microphone permission first
@@ -250,7 +267,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
         disabled
         title="Voice input not supported in this browser"
       >
-        <MicrophoneOffIcon />
+        <MicrophoneOffIcon size={iconSize} />
       </button>
     );
   }
@@ -263,9 +280,9 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
         disabled={disabled}
         title={isListening ? 'Stop listening' : 'Start voice input'}
       >
-        {isListening ? <RecordingIcon /> : <MicrophoneIcon />}
+        {isListening ? <RecordingIcon size={iconSize} /> : <MicrophoneIcon size={iconSize} />}
       </button>
-      {interimTranscript && (
+      {renderInterimTranscript && interimTranscript && (
         <div className={styles.interimTranscript}>
           {interimTranscript}
         </div>

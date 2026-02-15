@@ -14,7 +14,7 @@ import {
 import { saveSessionData, clearSessionData, type UserRole } from '../../utils/auth-cookies';
 import { clearSession } from '../../utils/auth';
 import fastapiClient from '../../api/fastapiClient';
-import { goToDashboard } from '../../utils/navigation';
+import { goToResonantChat } from '../../utils/navigation';
 import { useThemeStore } from '../../store/themeStore';
 import { initiateSSO } from '../../api/sso';
 
@@ -228,7 +228,16 @@ export default function LoginPageNew() {
       });
       
       saveSessionData(email.trim(), data.role, data.org_id, data.user?.id);
-      goToDashboard(navigate);
+      try {
+        sessionStorage.setItem(
+          'rg-post-login-target',
+          JSON.stringify({ path: '/resonant-chat', ts: Date.now(), remaining: 5 })
+        );
+        document.cookie = `rg_post_login_target=${encodeURIComponent('/resonant-chat')}; Max-Age=60; Path=/`;
+      } catch {
+        // ignore
+      }
+      goToResonantChat(navigate);
     } catch (err: any) {
       let message = 'Unable to sign in. Please check your credentials.';
       if (err?.response?.status === 401) {

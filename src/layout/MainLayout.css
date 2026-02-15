@@ -87,10 +87,29 @@
   overflow: hidden !important;
 }
 
+
+.page-wrapper > .page {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.main-content:has(.page) {
+  height: auto !important;
+  overflow-y: visible !important;
+  padding-top: 0 !important;
+}
+
 /* Ensure main content area grows to push footer down */
 .main-content-area {
   flex: 1 0 auto;
 }
+
+.main-content-area.landing-page {
+  overflow-x: hidden;
+}
+
 
 /* EXCLUDE IDE PAGE - IDE has its own layout */
 @media (min-width: 1024px) {
@@ -122,6 +141,18 @@
     margin-left: 0 !important;
     width: 100% !important;
   }
+}
+
+
+.main-content.landing-page-content {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: var(--color-bg-root);
+
+  height: auto !important;
+  overflow-y: visible !important;
+  padding-top: calc(var(--header-height, 60px) + env(safe-area-inset-top)) !important;
 }
 
 /* EXCLUDE IDE PAGE - IDE has its own layout */
@@ -350,5 +381,38 @@
 
   to {
     transform: translateX(0);
+  }
+}
+
+.mobileChatSticky {
+  position: fixed !important;
+  top: auto !important;
+  right: auto !important;
+  left: max(16px, env(safe-area-inset-left)) !important;
+  bottom: max(16px, env(safe-area-inset-bottom)) !important;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: rgba(10, 10, 15, 0.65);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10010;
+  margin: 0 !important;
+  transform: translateZ(0);
+}
+
+.mobileChatSticky:active {
+  transform: scale(0.98);
+}
+
+@media (min-width: 1024px) {
+  .mobileChatSticky {
+    display: none;
   }
 }

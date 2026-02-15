@@ -39,6 +39,13 @@
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
 }
 
+
+
+
+
+
+
+
 /* Agent Panel - Modern redesign matching provider dropdown */
 .agentPanel {
   position: absolute;
@@ -57,6 +64,70 @@
   backdrop-filter: blur(20px);
   overflow: hidden;
 }
+
+:global([data-theme='dark'] body.resonant-chat-page) .agentPanel {
+  background: #32312E;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+}
+
+:global([data-theme='dark'] body.resonant-chat-page) .agentPanelHeader {
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+:global([data-theme='dark'] body.resonant-chat-page) .agentSelect option {
+  background: #32312E;
+  color: #f8fafc;
+}
+
+
+
+:global([data-theme='dark'] body.resonant-chat-page) .inputWrapper {
+  background: #32312E !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='dark'] body.resonant-chat-page) .textarea {
+  color: #f8fafc !important;
+}
+
+:global([data-theme='dark'] body.resonant-chat-page) .textarea::placeholder {
+  color: rgba(248, 250, 252, 0.55) !important;
+  opacity: 1;
+}
+
+:global([data-theme='dark'] body.resonant-chat-page) .chatInputRoot {
+  background: #32312E;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+:global([data-theme='light'] body.resonant-chat-page) .inputWrapper {
+  background: #f0f4f9 !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light'] body.resonant-chat-page) .textarea {
+  color: #0f172a !important;
+}
+
+:global([data-theme='light'] body.resonant-chat-page) .textarea::placeholder {
+  color: rgba(15, 23, 42, 0.55) !important;
+  opacity: 1;
+}
+
+:global([data-theme='light'] body.resonant-chat-page) .chatInputRoot {
+  background: #f0f4f9;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+
+:global(body.resonant-chat-page) .chatInputRoot {
+  background: #32312E;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 
 [data-theme='light'] .agentPanel {
   background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
@@ -200,6 +271,7 @@
 
 /* Input Area - Textarea + Send Button - Compact */
 .inputArea {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -278,6 +350,20 @@
   height: 20px;
 }
 
+/* Mobile: larger send and voice icons */
+@media (max-width: 639px) {
+  .sendButton {
+    width: 44px;
+    height: 44px;
+  }
+
+  .sendButton svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+
 /* Tools Row - Compact and scrollable on mobile */
 .toolsRow {
   display: flex;
@@ -308,6 +394,17 @@
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.splitViewEnabled .toolsRow {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.splitViewEnabled .toolsLeft,
+.splitViewEnabled .toolsRight {
+  flex-shrink: 0;
 }
 
 /* Tool Button - 50% transparent */
@@ -526,6 +623,32 @@
 .providerButton svg {
   width: 12px;
   height: 12px;
+}
+
+.agentSelectorButton {
+  max-width: 260px;
+}
+
+.agentSelectorIcon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.agentSelectorIcon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.agentSelectorLabel {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agentSelectorActive {
+  color: #0ea5e9;
+  opacity: 1;
 }
 
 /* Provider Dropdown - Modern redesign */
@@ -938,9 +1061,9 @@
   .textarea {
     min-height: 32px;
     padding: 6px 8px;
-    font-size: 14px;
+    font-size: 16px;
   }
-  
+
   .sendButton {
     width: 32px;
     height: 32px;
@@ -982,4 +1105,25 @@
   .agentPanel {
     padding: 10px;
   }
+}
+
+
+.voiceInterimOverlay {
+  position: absolute;
+  left: 56px;
+  right: 56px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-theme='light'] .voiceInterimOverlay {
+  color: rgba(15, 23, 42, 0.75);
 }

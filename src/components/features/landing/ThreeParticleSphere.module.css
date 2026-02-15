@@ -14,8 +14,8 @@
 
 .container canvas {
     display: block;
-    width: 760px !important;
-    height: 760px !important;
+    width: 820px !important;
+    height: 820px !important;
     max-width: none !important;
     max-height: none !important;
     overflow: visible !important;

@@ -4,7 +4,6 @@ import styles from './HomeNew.module.css';
 
 // Import sub-components
 import { HeroSection } from './components/HeroSection';
-import { TrustSignalsSection } from './components/TrustSignalsSection';
 import { DifferentiatorsSection } from './components/DifferentiatorsSection';
 import { GovernedExecutionSection } from './components/GovernedExecutionSection';
 import { InterfacesSection } from './components/InterfacesSection';
@@ -68,9 +67,6 @@ const HomeNew = () => {
         <ScrollReveal direction="fade" duration={0.8}>
           <HeroSection />
         </ScrollReveal>
-
-        {/* 2. Trust Signals - Enterprise badges */}
-        <TrustSignalsSection />
 
         {/* 3. How It Works - Simple explanation */}
         <ScrollReveal direction="up">

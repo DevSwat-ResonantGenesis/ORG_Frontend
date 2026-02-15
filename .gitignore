@@ -1,9 +1,13 @@
 node_modules/
 dist/
+dist_agent_panel_fix2/
+dist_agent_selector_btn/
+dist_*/
 .env
 .env.local
 .DS_Store
 *.log
+*.bak_*
 .vite/
 coverage/
 .cache/

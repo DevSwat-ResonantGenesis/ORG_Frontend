@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   User, Bell, Settings, BarChart3, Zap, CreditCard, History, Key, 
   Rocket, Share2, Gift, LogOut, Copy, Check, ExternalLink, Trash2
@@ -65,8 +65,32 @@ interface ConversationShare {
 const ProfilePage = () => {
   const session = getSession();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState<TabId>('profile');
+
+  const isTabId = (value: string): value is TabId => {
+    return [
+      'profile',
+      'notifications',
+      'settings',
+      'usage',
+      'auto-refill',
+      'manage-plan',
+      'credit-history',
+      'api-keys',
+      'platform-keys',
+      'deploys',
+      'shares',
+      'referrals',
+    ].includes(value as TabId);
+  };
+
+  useEffect(() => {
+    const tabParam = new URLSearchParams(location.search).get('tab');
+    if (tabParam && isTabId(tabParam) && tabParam !== activeTab) {
+      setActiveTab(tabParam);
+    }
+  }, [location.search]);
   const [loading, setLoading] = useState(true);
   
   // User data
@@ -129,28 +153,6 @@ const ProfilePage = () => {
   // Messages
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    const tabParam = searchParams.get('tab');
-    if (!tabParam) return;
-    const allowedTabs: TabId[] = [
-      'profile',
-      'notifications',
-      'settings',
-      'usage',
-      'auto-refill',
-      'manage-plan',
-      'credit-history',
-      'api-keys',
-      'platform-keys',
-      'deploys',
-      'shares',
-      'referrals',
-    ];
-    if (allowedTabs.includes(tabParam as TabId)) {
-      setActiveTab(tabParam as TabId);
-    }
-  }, [searchParams]);
 
   // Load user data
   useEffect(() => {

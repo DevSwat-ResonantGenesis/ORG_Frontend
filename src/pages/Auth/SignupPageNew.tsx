@@ -310,16 +310,24 @@ export default function SignupPageNew() {
       // Legacy flow: Save session data from response (if auto-login is enabled)
       if (data.user && data.org_id && data.access_token) {
         import('../../utils/auth-cookies').then(({ saveSessionData }) => {
-          saveSessionData(
-            data.user.email,
-            data.role || 'owner',
-            data.org_id,
-            data.user.id
-          );
+          saveSessionData({
+            email: data.user.email,
+            role: data.role || 'owner',
+            org: data.org_id,
+            userId: data.user.id,
+          });
         });
         setSuccess(true);
         // Only redirect to dashboard if we got tokens (auto-login)
-        setTimeout(() => navigate('/dashboard'), 1000);
+        try {
+          sessionStorage.setItem(
+            'rg-post-login-target',
+            JSON.stringify({ path: '/resonant-chat', ts: Date.now(), remaining: 5 })
+          );
+          document.cookie = `rg_post_login_target=${encodeURIComponent('/resonant-chat')}; Max-Age=60; Path=/`;
+        } catch {
+        }
+        setTimeout(() => navigate('/resonant-chat'), 1000);
       } else {
         // No tokens = email verification required
         setSuccess(true);

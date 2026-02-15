@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { handleOAuthCallback, handleSAMLCallback, type SSOCallbackRequest } from '@/api/sso';
 import { saveSessionData } from '@/utils/auth-cookies';
 import { logger } from '@/utils/logger';
+import { goToResonantChat } from '@/utils/navigation';
 import { Button } from '@/components/ui/Button';
 import pageStyles from '../../components/ui/Page.module.css';
 import containerStyles from '../../components/ui/Container.module.css';
@@ -62,7 +63,16 @@ const OAuthCallbackPage: React.FC = () => {
           response.user.org_id || ''
         );
 
-        navigate('/dashboard', { replace: true });
+        try {
+          sessionStorage.setItem(
+            'rg-post-login-target',
+            JSON.stringify({ path: '/resonant-chat', ts: Date.now(), remaining: 5 })
+          );
+          document.cookie = `rg_post_login_target=${encodeURIComponent('/resonant-chat')}; Max-Age=60; Path=/`;
+        } catch {
+        }
+
+        goToResonantChat(navigate);
       } catch (error: any) {
         logger.error('OAuth callback error', error, { component: 'OAuthCallback' });
         setError(error.message || 'Authentication failed');

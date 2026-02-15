@@ -228,7 +228,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 8px 15px 40px;
+  padding: 8px var(--space-8) 40px;
   margin: 0;
   background: transparent;
   position: relative;
@@ -245,8 +245,8 @@
     justify-content: flex-start;
     padding-top: 16px;
     padding-bottom: 24px;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
     margin-top: 0;
     overflow: hidden;
   }
@@ -255,7 +255,7 @@
 /* Tablet and up */
 @media (min-width: 640px) {
   .hero {
-    padding: 8px 15px 48px;
+    padding: 8px var(--space-8) 48px;
   }
 }
 
@@ -263,7 +263,7 @@
 @media (min-width: 1024px) {
   .hero {
     min-height: 100dvh;
-    padding: 8px 15px;
+    padding: 8px var(--space-8);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -316,7 +316,7 @@
   width: 100%;
   text-align: left;
   margin: 0;
-  margin-top: -100px;
+  margin-top: 0;
   position: relative;
   z-index: 10;
   padding: 0;
@@ -349,6 +349,7 @@
 @media (min-width: 1024px) {
   .heroContent {
     padding: 0;
+    margin-top: -48px;
     margin-left: 0;
     margin-right: auto;
     max-width: 1100px;
@@ -357,12 +358,12 @@
 
 .heroParallax {
   position: absolute;
-  top: 45%;
+  top: 50%;
   right: -20%;
   left: auto;
   transform: translateY(-50%);
-  width: 100%;
-  height: 100%;
+  width: calc(100% + 64px);
+  height: calc(100% + 64px);
   z-index: 0;
   pointer-events: none;
   overflow: visible;
@@ -1025,7 +1026,7 @@
   max-width: 1200px;
   margin: 0 auto;
   /* Mobile: Compact padding - proper 8px grid alignment */
-  padding: var(--space-12) var(--space-4);
+  padding: var(--space-12) var(--space-8);
   /* 48px vertical, 16px horizontal */
   position: relative;
   z-index: 1;
@@ -1035,7 +1036,7 @@
 /* Tablet: Medium padding */
 @media (min-width: 640px) {
   .sectionContent {
-    padding: var(--space-16) var(--space-6);
+    padding: var(--space-16) var(--space-8);
     /* 64px vertical, 24px horizontal */
   }
 }
@@ -3917,16 +3918,16 @@
 /* Section Header - Mobile First, Enhanced 2025 */
 /* Section Header - Mobile First, Enhanced 2025 */
 .sectionHeader {
-  text-align: center;
+  text-align: left;
   /* Mobile: Compact spacing */
   margin-bottom: var(--space-10);
   margin-top: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
   width: 100%;
-  padding: 0 var(--space-4);
+  padding: 0;
 }
 
 /* Tablet: Medium spacing */
@@ -3991,7 +3992,7 @@
 .sectionDescription {
   font-size: 17px;
   color: var(--color-text-secondary, #6b7280);
-  text-align: center;
+  text-align: left;
   /* As per report - text-align: center */
   margin-bottom: var(--space-xl);
   /* As per report - margin-bottom: var(--space-xl) (48px) */
@@ -6072,7 +6073,19 @@
 .ctaSectionContent {
   max-width: 700px;
   margin: 0 auto;
-  padding: 0 var(--space-6);
+  padding: 0 var(--space-8);
+}
+
+@media (min-width: 640px) {
+  .ctaSectionContent {
+    padding: 0 var(--space-8);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ctaSectionContent {
+    padding: 0 var(--space-8);
+  }
 }
 
 .ctaTitle {
@@ -6202,11 +6215,23 @@
 .trustSignalsContent {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 0 var(--space-6);
+  padding: 0 var(--space-8);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
+}
+
+@media (min-width: 640px) {
+  .trustSignalsContent {
+    padding: 0 var(--space-8);
+  }
+}
+
+@media (min-width: 1024px) {
+  .trustSignalsContent {
+    padding: 0 var(--space-8);
+  }
 }
 
 .trustStats {
@@ -6846,7 +6871,7 @@
    Technology Section - Code Visualizer & State Physics
    ============================================================ */
 .technologySection {
-  padding: 80px 24px;
+  padding: 80px 0;
   background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
 }
 
@@ -7049,13 +7074,14 @@
    Hash Sphere Memory Showcase Section
    ============================================================ */
 .hashSphereShowcase {
-  padding: 80px 24px;
+  padding: 80px 0;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
 .hashSphereContent {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 var(--space-8);
   display: grid;
   grid-template-columns: 1fr;
   gap: 48px;

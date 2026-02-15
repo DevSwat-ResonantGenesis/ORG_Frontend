@@ -7,12 +7,15 @@ This repository contains comprehensive GitHub Actions workflows for the Genesis2
 ## 🔄 Available Workflows
 
 ### 1. 🌐 Frontend Production Deployment
-**File**: `.github/workflows/frontend-production-deploy.yml`
+**File**: `.github/workflows/deploy.yml`
 
 **Triggers**:
 - Push to `main` branch (frontend changes)
 - Pull requests to `main`
 - Manual dispatch
+
+**Safety gate**:
+- Production deploy only runs when repo variable `DEPLOY_ENABLED` is set to `true`.
 
 **Features**:
 - Node.js build and test
@@ -23,11 +26,17 @@ This repository contains comprehensive GitHub Actions workflows for the Genesis2
 
 ## 🔧 Required Secrets
 
-### 1. **DROPLET_SSH_KEY**
-SSH private key for droplet access (same as backend)
+### 1. **DROPLET_HOST**
+Droplet IP or hostname (e.g. `134.199.221.149`)
 
-### 2. **SLACK_WEBHOOK**
-Slack webhook for notifications (same as backend)
+### 2. **DROPLET_USER**
+SSH username (recommended: `deploy`)
+
+### 3. **DROPLET_SSH_KEY**
+SSH private key for droplet access
+
+### 4. **SLACK_WEBHOOK** (optional)
+Slack webhook for notifications
 
 ### 3. **Optional Frontend Secrets**
 - **VITE_APP_API_KEY**: API key for external services

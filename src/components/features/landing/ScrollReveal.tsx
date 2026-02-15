@@ -22,10 +22,24 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    const el = elementRef.current;
+    if (!el) return;
+    const scrollRoot = (el.closest('.main-content') as Element) || null;
+
+    let didReveal = false;
+
+    const failSafe = window.setTimeout(() => {
+      if (!didReveal) {
+        setIsVisible(true);
+      }
+    }, Math.max(1200, 1200 + delay));
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            didReveal = true;
+            window.clearTimeout(failSafe);
             setTimeout(() => {
               setIsVisible(true);
             }, delay);
@@ -35,15 +49,17 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
       },
       {
         threshold: 0.1,
+        root: scrollRoot,
         rootMargin: '0px 0px -50px 0px',
       }
     );
 
-    if (elementRef.current) {
-      observer.observe(elementRef.current);
-    }
+    observer.observe(el);
 
-    return () => observer.disconnect();
+    return () => {
+      window.clearTimeout(failSafe);
+      observer.disconnect();
+    };
   }, [delay]);
 
   const getTransform = () => {

@@ -77,7 +77,6 @@ const FeedbackButtons: React.FC<FeedbackButtonsProps> = ({
 
   return (
     <div className={styles.container}>
-      <span className={styles.label}>Was this helpful?</span>
       <button
         className={`${styles.button} ${styles.positive}`}
         onClick={() => submitFeedback(true)}

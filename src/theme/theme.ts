@@ -19,7 +19,7 @@ export const initTheme = () => {
     return;
   }
   // Default to light mode (main theme)
-  document.documentElement.setAttribute('data-theme', 'light');
+  document.documentElement.setAttribute('data-theme', 'dark');
 };
 
 export default theme;

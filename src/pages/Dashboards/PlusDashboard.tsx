@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getSessionData, isAuthenticated } from '../../utils/auth-cookies';
 import { fetchPlan } from '../../api/pricing';
 import styles from './PlusDashboard.module.css';
@@ -79,6 +79,7 @@ type TabType = 'overview' | 'team' | 'usage' | 'agents' | 'settings';
 
 const PlusDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const session = getSessionData();
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [stats, setStats] = useState<OrgStats>({
@@ -91,10 +92,26 @@ const PlusDashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    try {
+      const postLoginTarget = sessionStorage.getItem('rg-post-login-target');
+      if (postLoginTarget) {
+        sessionStorage.removeItem('rg-post-login-target');
+        navigate(postLoginTarget, { replace: true });
+        return;
+      }
+    } catch {
+    }
     if (!isAuthenticated()) {
       navigate('/login');
       return;
     }
+
+    const params = new URLSearchParams(location.search);
+    if (!params.has('dashboard')) {
+      navigate('/resonant-chat', { replace: true });
+      return;
+    }
+
     // Check if user has Plus plan
     if (session?.plan !== 'plus') {
       navigate('/dashboard');
@@ -117,7 +134,7 @@ const PlusDashboard: React.FC = () => {
       }
     }
     loadPlusPricing();
-  }, [navigate, session]);
+  }, [navigate, session, location.search]);
 
   const fetchStats = async () => {
     try {

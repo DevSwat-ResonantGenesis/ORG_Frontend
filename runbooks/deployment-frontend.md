@@ -36,7 +36,7 @@ git push origin main
 **What happens:**
 - GitHub Actions workflow starts automatically
 - Builds production bundle
-- Deploys to droplet with zero downtime
+- If `DEPLOY_ENABLED=true` in repo variables, deploys to droplet with zero downtime
 
 ---
 
@@ -63,28 +63,28 @@ git push origin main
 
 **Check frontend accessibility:**
 ```bash
-curl -I https://dev-swat.com
+curl -I https://resonantgenesis.xyz
 # Expected: HTTP/2 200
 ```
 
 **Check in browser:**
-- Open: https://dev-swat.com
+- Open: https://resonantgenesis.xyz
 - Hard refresh: Cmd+Shift+R (Mac) or Ctrl+Shift+R (Windows)
 - Check console for errors (F12)
 - Test critical user paths
 
 **Check deployment on server:**
 ```bash
-ssh root@dev-swat.com
+ssh deploy@dev-swat.com
 
 # Check nginx status
-docker ps | grep nginx
+sudo -n systemctl status nginx --no-pager
 
 # Check frontend files
 ls -lh /var/www/frontend/
 
 # Check nginx logs
-docker logs genesis_nginx --tail 50
+sudo -n journalctl -u nginx -n 50 --no-pager
 ```
 
 ---
@@ -113,7 +113,7 @@ docker logs genesis_nginx --tail 50
 ## Success Criteria
 
 - ✅ GitHub Actions shows green checkmark
-- ✅ Frontend accessible at https://dev-swat.com
+- ✅ Frontend accessible at https://resonantgenesis.xyz
 - ✅ No console errors
 - ✅ All critical paths working
 - ✅ Mobile view functional
@@ -137,7 +137,7 @@ docker logs genesis_nginx --tail 50
 
 ```bash
 # SSH to droplet
-ssh root@dev-swat.com
+ssh deploy@dev-swat.com
 
 # List available backups
 ls -lh /var/backups/frontend/
@@ -146,7 +146,7 @@ ls -lh /var/backups/frontend/
 # Example: frontend_20260122_193000.tar.gz
 
 # Stop nginx temporarily (optional, for safety)
-# docker exec genesis_nginx nginx -s stop
+# sudo -n systemctl stop nginx
 
 # Restore backup
 cd /var/www/frontend
@@ -154,10 +154,11 @@ rm -rf *
 tar -xzf /var/backups/frontend/frontend_20260122_193000.tar.gz
 
 # Reload nginx
-docker exec genesis_nginx nginx -s reload
+sudo -n nginx -t
+sudo -n systemctl reload nginx
 
 # Verify
-curl -I https://dev-swat.com
+curl -I https://resonantgenesis.xyz
 ```
 
 **Rollback time:** ~30 seconds
@@ -198,10 +199,10 @@ curl -I https://dev-swat.com
 **Diagnosis:**
 ```bash
 # Check if files actually updated
-ssh root@dev-swat.com "ls -lh /var/www/frontend/"
+ssh deploy@dev-swat.com "ls -lh /var/www/frontend/"
 
-# Check nginx cache
-ssh root@dev-swat.com "docker exec genesis_nginx nginx -V"
+# Check nginx version
+ssh deploy@dev-swat.com "nginx -V"
 ```
 
 **Solution:**
@@ -209,11 +210,12 @@ ssh root@dev-swat.com "docker exec genesis_nginx nginx -V"
 # Hard refresh browser (Cmd+Shift+R)
 
 # Or clear nginx cache
-ssh root@dev-swat.com
-docker exec genesis_nginx nginx -s reload
+ssh deploy@dev-swat.com
+sudo -n nginx -t
+sudo -n systemctl reload nginx
 
 # Or restart nginx
-docker restart genesis_nginx
+sudo -n systemctl restart nginx
 ```
 
 ---
@@ -227,7 +229,7 @@ docker restart genesis_nginx
 **Diagnosis:**
 ```bash
 # Check nginx SPA configuration
-ssh root@dev-swat.com "docker exec genesis_nginx cat /etc/nginx/conf.d/default.conf"
+ssh deploy@dev-swat.com "sudo -n grep -R 'try_files' /etc/nginx | head"
 ```
 
 **Solution:**
@@ -236,7 +238,8 @@ ssh root@dev-swat.com "docker exec genesis_nginx cat /etc/nginx/conf.d/default.c
 # Should have: try_files $uri $uri/ /index.html;
 
 # If missing, update nginx config and reload
-docker exec genesis_nginx nginx -s reload
+sudo -n nginx -t
+sudo -n systemctl reload nginx
 ```
 
 ---
@@ -250,21 +253,22 @@ docker exec genesis_nginx nginx -s reload
 **Diagnosis:**
 ```bash
 # Check asset paths
-curl https://dev-swat.com/assets/
+curl https://resonantgenesis.xyz/assets/
 
 # Check file permissions
-ssh root@dev-swat.com "ls -lh /var/www/frontend/assets/"
+ssh deploy@dev-swat.com "ls -lh /var/www/frontend/assets/"
 ```
 
 **Solution:**
 ```bash
 # Fix permissions if needed
-ssh root@dev-swat.com
+ssh deploy@dev-swat.com
 chmod -R 755 /var/www/frontend/
-chown -R root:root /var/www/frontend/
+sudo -n chown -R www-data:www-data /var/www/frontend/
 
 # Reload nginx
-docker exec genesis_nginx nginx -s reload
+sudo -n nginx -t
+sudo -n systemctl reload nginx
 ```
 
 ---

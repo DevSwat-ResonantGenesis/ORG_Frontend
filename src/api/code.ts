@@ -4,9 +4,10 @@ import axios from 'axios';
 
 // Direct client for Code Execution microservice (bypasses Gateway auth)
 const codeExecutionClient = axios.create({
-  baseURL: 'http://localhost:8002',
+  baseURL: '/api/v1',
   headers: { 'Content-Type': 'application/json' },
   timeout: 60000,
+  withCredentials: true,
 });
 
 // Direct client for IDE Service (bypasses Gateway auth for Git operations)
@@ -140,7 +141,11 @@ export const completeCode = async (
 ): Promise<CodeCompletionResponse> => {
   try {
     const response = await fastapiClient.post('/code/complete', request);
-    return response.data;
+    const data = response.data;
+    if (data?.port) {
+      data.preview_url = `/preview/proxy/${data.port}`;
+    }
+    return data;
   } catch (error) {
     logger.error('Code completion error', error);
     throw error;
@@ -1345,7 +1350,11 @@ export const startProjectPreview = async (
       port,
       command
     });
-    return response.data;
+    const data = response.data;
+    if (data?.port) {
+      data.preview_url = `/preview/proxy/${data.port}`;
+    }
+    return data;
   } catch (error) {
     logger.error('Start preview error', error);
     throw error;
