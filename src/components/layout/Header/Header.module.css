@@ -1234,38 +1234,6 @@
   opacity: 0.9;
 }
 
-/* Burger menu - hidden on desktop, shown on mobile */
-.burgerMenu {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  padding: 10px;
-  background: transparent;
-  border: none;
-  border-radius: 8px;
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: background 0.15s ease;
-  flex-shrink: 0;
-}
-
-.burgerMenu:hover {
-  background: var(--bg-secondary);
-}
-
-.burgerMenu svg {
-  width: 26px;
-  height: 26px;
-}
-
-@media (max-width: 1024px) {
-  .burgerMenu {
-    display: flex;
-  }
-}
-
 :global([data-theme='dark'] body.resonant-chat-page) .header {
   background: #32312E !important;
   border-bottom-color: rgba(255, 255, 255, 0.06) !important;
