@@ -30,6 +30,55 @@
   isolation: isolate;
 }
 
+.landingHoverOnly {
+  background: rgba(10, 10, 15, 0.08) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(10px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(160%) !important;
+}
+
+[data-theme='light'] .landingHoverOnly {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+.hoverOnly {
+}
+
+@media (min-width: 1025px) {
+  .landingHoverOnly .mainNav.hoverOnly {
+    display: none;
+  }
+
+  .landingHoverOnly .actions .hoverOnly {
+    display: none;
+  }
+
+  .landingHoverOnly:hover .mainNav.hoverOnly,
+  .landingHoverOnly:focus-within .mainNav.hoverOnly {
+    display: flex;
+  }
+
+  .landingHoverOnly:hover .actions .hoverOnly,
+  .landingHoverOnly:focus-within .actions .hoverOnly {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .landingHoverOnly .mainNav.hoverOnly {
+    display: flex;
+  }
+
+  .landingHoverOnly .actions .hoverOnly {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+}
+
 
 
 /* Subtle glow effect at bottom */

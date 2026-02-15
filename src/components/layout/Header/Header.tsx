@@ -166,7 +166,7 @@ export const Header: React.FC<HeaderProps> = ({
   
   return (
     <>
-      <header className={`${styles.header} ${isScrolled ? styles.headerScrolled : ''}`}>
+      <header className={`${styles.header} ${isScrolled ? styles.headerScrolled : ''} ${isLandingPage ? styles.landingHoverOnly : ''}`}>
         <div className={styles.content}>
           {/* Mobile Burger Menu Button */}
           {isMobileViewport && (
@@ -198,7 +198,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Main Navigation - Desktop */}
-          <nav ref={navRef} className={styles.mainNav}>
+          <nav ref={navRef} className={`${styles.mainNav} ${isLandingPage ? styles.hoverOnly : ''}`}>
             {/* Solutions Dropdown */}
             <div className={styles.navItem}>
               <button 
@@ -416,7 +416,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* AgentOS minimal header - search moved to page */}
           
           <div className={styles.actions}>
-            <div>
+            <div className={isLandingPage ? styles.hoverOnly : ''}>
               {isLoggedIn && (
                 <button
                   type="button"
