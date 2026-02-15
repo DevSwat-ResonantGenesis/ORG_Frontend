@@ -350,6 +350,48 @@
   border: none;
 }
 
+.byokHeroAlert {
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0 0 8px 0;
+  cursor: pointer;
+  line-height: 1;
+  white-space: nowrap;
+  position: relative;
+  color: rgba(251, 191, 36, 0.95);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  transition: transform 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.byokHeroAlert:hover {
+  transform: translateY(-1px);
+  color: rgba(251, 191, 36, 1);
+}
+
+[data-theme='light'] .byokHeroAlert {
+  color: rgba(180, 83, 9, 0.95);
+}
+
+[data-theme='light'] .byokHeroAlert:hover {
+  color: rgba(180, 83, 9, 1);
+}
+
+.byokHeroText {
+  line-height: 1;
+}
+
+.byokHeroArrow {
+  font-weight: 800;
+  opacity: 0.95;
+}
+
 /* Mobile: Center and compact spacing */
 @media (max-width: 639px) {
   .heroContent {
