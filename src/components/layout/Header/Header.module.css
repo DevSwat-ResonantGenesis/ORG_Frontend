@@ -30,6 +30,43 @@
   isolation: isolate;
 }
 
+.landingHoverOnly {
+  background: rgba(10, 10, 15, 0.08) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(10px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(160%) !important;
+}
+
+[data-theme='light'] .landingHoverOnly {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+.hoverOnly {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.landingHoverOnly .hoverOnly {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+}
+
+.landingHoverOnly:hover .hoverOnly,
+.landingHoverOnly:focus-within .hoverOnly {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+@media (hover: none), (pointer: coarse) {
+  .landingHoverOnly .hoverOnly {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+  }
+}
+
 /* Subtle glow effect at bottom */
 .header::after {
   content: '';

@@ -1,9 +1,10 @@
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import heroTitleStyles from '@/components/ui/HeroTitle.module.css';
 import styles from '../HomeNew.module.css';
 import { isAuthenticated } from '@/utils/auth-cookies';
 import ChatInputBar from '@/components/ResonantChat/ChatInputBar/ChatInputBar';
+import { sendResonantMessage } from '@/api/resonantChat';
 
 // Lazy load Vision Pro aesthetic particle sphere
 const ThreeParticleSphere = React.lazy(() => import('@/components/features/landing/ThreeParticleSphere'));
@@ -12,19 +13,86 @@ export const HeroSection = () => {
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [chatInput, setChatInput] = useState('');
+    const [isChatFocused, setIsChatFocused] = useState(false);
+    const [isSending, setIsSending] = useState(false);
+    const [chatId, setChatId] = useState<string | null>(null);
+    const [messages, setMessages] = useState<Array<{ id: string; role: 'user' | 'assistant'; content: string; timestamp: Date }>>([]);
     
     useEffect(() => {
         setIsLoggedIn(isAuthenticated());
     }, []);
 
+    const isChatActive = useMemo(() => isChatFocused || messages.length > 0, [isChatFocused, messages.length]);
+
+    const handleSend = useCallback(async () => {
+        const trimmed = chatInput.trim();
+        if (!trimmed || isSending) return;
+
+        const userMessage = {
+            id: (globalThis.crypto?.randomUUID?.() || `msg-${Date.now()}-${Math.random()}`),
+            role: 'user' as const,
+            content: trimmed,
+            timestamp: new Date(),
+        };
+
+        setMessages(prev => [...prev, userMessage]);
+        setChatInput('');
+        setIsSending(true);
+
+        try {
+            const response = await sendResonantMessage({
+                message: trimmed,
+                chatId: chatId || undefined,
+                context: {
+                    previousMessages: messages.slice(-15).map(m => ({
+                        id: m.id,
+                        role: m.role,
+                        content: m.content,
+                        timestamp: m.timestamp.toISOString(),
+                    })),
+                },
+            });
+
+            if (response.chatId && !chatId) {
+                setChatId(response.chatId);
+            }
+
+            const responseContent =
+                typeof (response as any)?.message === 'string'
+                    ? (response as any).message
+                    : (response as any)?.message?.content || '';
+
+            const assistantMessage = {
+                id: (response as any)?.message?.id || (globalThis.crypto?.randomUUID?.() || `msg-${Date.now()}-${Math.random()}`),
+                role: 'assistant' as const,
+                content: responseContent || 'No response received.',
+                timestamp: new Date(),
+            };
+
+            setMessages(prev => [...prev, assistantMessage]);
+        } catch (err: any) {
+            const assistantMessage = {
+                id: (globalThis.crypto?.randomUUID?.() || `msg-${Date.now()}-${Math.random()}`),
+                role: 'assistant' as const,
+                content: err?.message || 'Failed to send message.',
+                timestamp: new Date(),
+            };
+            setMessages(prev => [...prev, assistantMessage]);
+        } finally {
+            setIsSending(false);
+        }
+    }, [chatInput, isSending, chatId, messages]);
+
     return (
-        <section className={styles.hero}>
+        <section className={`${styles.hero} ${isChatActive ? styles.heroChatActive : ''}`}>
             {/* Parallax Background - Behind Content */}
             <div className={styles.heroParallax} aria-hidden="true">
                 <Suspense fallback={<div className={styles.parallaxPlaceholder} />}>
                     <ThreeParticleSphere />
                 </Suspense>
             </div>
+
+            {isChatActive && <div className={styles.heroGlassOverlay} aria-hidden="true" />}
 
             <div className={styles.heroContent}>
                 <button
@@ -58,24 +126,32 @@ export const HeroSection = () => {
                 </div>
 
                 {/* Resonant Chat Input Bar */}
-                <div className={styles.heroChatWrapper}>
+                <div
+                    className={styles.heroChatWrapper}
+                    onFocusCapture={() => setIsChatFocused(true)}
+                    onBlurCapture={() => setIsChatFocused(false)}
+                >
+                    {messages.length > 0 && (
+                        <div className={styles.heroChatMessages}>
+                            {messages.map((m) => (
+                                <div
+                                    key={m.id}
+                                    className={`${styles.heroChatMessage} ${m.role === 'user' ? styles.heroChatMessageUser : styles.heroChatMessageAssistant}`}
+                                >
+                                    {m.content}
+                                </div>
+                            ))}
+                        </div>
+                    )}
                     <ChatInputBar
                         value={chatInput}
                         onChange={setChatInput}
-                        onSend={() => {
-                            if (chatInput.trim()) {
-                                // Store pending message in localStorage for ResonantChatPage to pick up
-                                localStorage.setItem('resonant-chat-pending-message', chatInput.trim());
-                                // Set flag to use existing chat instead of creating new one
-                                localStorage.setItem('resonant-chat-use-existing', 'true');
-                                navigate('/resonant-chat');
-                            }
-                        }}
+                        onSend={handleSend}
                         hideProviderSelector={true}
                         voiceInInput={true}
                         voiceIconSize={22}
                         placeholder="Start typing..."
-                        isLoading={false}
+                        isLoading={isSending}
                         disabled={false}
                     />
                 </div>

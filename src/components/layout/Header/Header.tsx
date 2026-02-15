@@ -51,6 +51,8 @@ export const Header: React.FC<HeaderProps> = ({
   
   // Check if we're on Resonant Chat page
   const isResonantChatPage = location.pathname === '/resonant-chat' || location.pathname.startsWith('/resonant-chat');
+
+  const isLandingPage = location.pathname === '/';
   
   // Get Resonant Chat menu items (hook returns empty array if not in provider)
   const { menuItems: resonantChatMenuItems } = useResonantChatMenu();
@@ -156,11 +158,11 @@ export const Header: React.FC<HeaderProps> = ({
   
   return (
     <>
-      <header className={`${styles.header} ${isScrolled ? styles.headerScrolled : ''}`}>
+      <header className={`${styles.header} ${isScrolled ? styles.headerScrolled : ''} ${isLandingPage ? styles.landingHoverOnly : ''}`}>
         <div className={styles.content}>
           {/* Mobile Burger Menu Button - Before Logo */}
           <button
-            className={styles.burgerMenu}
+            className={`${styles.burgerMenu} ${isLandingPage ? styles.hoverOnly : ''}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -180,13 +182,13 @@ export const Header: React.FC<HeaderProps> = ({
 
           <div 
             className={styles.logo}
-            onClick={() => goToHome(navigate)}
+            onClick={() => (isLandingPage ? navigate('/resonant-chat') : goToHome(navigate))}
           >
-            ResonantGenesis
+            {isLandingPage ? 'Resonant Chat' : 'ResonantGenesis'}
           </div>
 
           {/* Main Navigation - Desktop */}
-          <nav ref={navRef} className={styles.mainNav}>
+          <nav ref={navRef} className={`${styles.mainNav} ${isLandingPage ? styles.hoverOnly : ''}`}>
             {/* Solutions Dropdown */}
             <div className={styles.navItem}>
               <button 
@@ -404,33 +406,34 @@ export const Header: React.FC<HeaderProps> = ({
           {/* AgentOS minimal header - search moved to page */}
           
           <div className={styles.actions}>
-                        {isLoggedIn && (
-              <button
-                type="button"
-                className={styles.byokCta}
-                onClick={() => navigate('/profile?tab=api-keys')}
-              >
-                Add API key
-                <span className={styles.byokArrow} aria-hidden="true">→</span>
-              </button>
-            )}
+            <div className={isLandingPage ? styles.hoverOnly : ''}>
+              {isLoggedIn && (
+                <button
+                  type="button"
+                  className={styles.byokCta}
+                  onClick={() => navigate('/profile?tab=api-keys')}
+                >
+                  Add API key
+                  <span className={styles.byokArrow} aria-hidden="true">→</span>
+                </button>
+              )}
 
-{showChatWidgetButton && onToggleChatWidget && !isResonantChatPage && (
-              <button
-                type="button"
-                className={styles.chatWidgetButton}
-                onClick={onToggleChatWidget}
-                aria-label="Resonant Chat"
-                title={chatWidgetOpen ? 'Close Resonant Chat' : 'Open Resonant Chat'}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                </svg>
-              </button>
-            )}
+              {showChatWidgetButton && onToggleChatWidget && !isResonantChatPage && (
+                <button
+                  type="button"
+                  className={styles.chatWidgetButton}
+                  onClick={onToggleChatWidget}
+                  aria-label="Resonant Chat"
+                  title={chatWidgetOpen ? 'Close Resonant Chat' : 'Open Resonant Chat'}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                  </svg>
+                </button>
+              )}
 
-            {/* Theme Toggle - Always visible */}
-            <ThemeToggle />
+              <ThemeToggle />
+            </div>
 
             {/* Logged In: Show Account Menu */}
             {isLoggedIn ? (
