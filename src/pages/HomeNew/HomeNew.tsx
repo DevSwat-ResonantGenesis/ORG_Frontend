@@ -13,7 +13,7 @@ const HomeNew = () => {
   }, []);
 
   return (
-    <div className={`${styles.page} page`}>
+    <div className={styles.page}>
       {/* SEO meta tags */}
       <Helmet>
         <title>ResonantGenesis – AI Governance Platform</title>
@@ -53,7 +53,7 @@ const HomeNew = () => {
       </Helmet>
 
       {/* Main Content - Streamlined for conversion */}
-      <main className={`${styles.main} main`}>
+      <main className={styles.main}>
         <HeroSection />
       </main>
     </div>

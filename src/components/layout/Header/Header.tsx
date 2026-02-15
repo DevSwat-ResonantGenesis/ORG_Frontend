@@ -42,6 +42,7 @@ export const Header: React.FC<HeaderProps> = ({
     const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
   const accountRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
   
@@ -94,6 +95,13 @@ export const Header: React.FC<HeaderProps> = ({
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', updateHeaderHeight);
     };
+  }, []);
+
+  useEffect(() => {
+    const update = () => setIsMobileViewport(window.innerWidth <= 1024);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
   }, []);
 
   // Close menus when route changes
@@ -158,27 +166,29 @@ export const Header: React.FC<HeaderProps> = ({
   
   return (
     <>
-      <header className={`${styles.header} ${isScrolled ? styles.headerScrolled : ''} ${isLandingPage ? styles.landingHoverOnly : ''}`}>
+      <header className={`${styles.header} ${isScrolled ? styles.headerScrolled : ''}`}>
         <div className={styles.content}>
-          {/* Mobile Burger Menu Button - Before Logo */}
-          <button
-            className={`${styles.burgerMenu} ${isLandingPage ? styles.hoverOnly : ''}`}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            ) : (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
-            )}
-          </button>
+          {/* Mobile Burger Menu Button */}
+          {isMobileViewport && (
+            <button
+              className={styles.burgerMenu}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              ) : (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <line x1="3" y1="12" x2="21" y2="12" />
+                  <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+              )}
+            </button>
+          )}
 
           <div 
             className={styles.logo}
@@ -188,7 +198,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Main Navigation - Desktop */}
-          <nav ref={navRef} className={`${styles.mainNav} ${isLandingPage ? styles.hoverOnly : ''}`}>
+          <nav ref={navRef} className={styles.mainNav}>
             {/* Solutions Dropdown */}
             <div className={styles.navItem}>
               <button 
@@ -406,7 +416,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* AgentOS minimal header - search moved to page */}
           
           <div className={styles.actions}>
-            <div className={isLandingPage ? styles.hoverOnly : ''}>
+            <div>
               {isLoggedIn && (
                 <button
                   type="button"
@@ -440,19 +450,27 @@ export const Header: React.FC<HeaderProps> = ({
               <div ref={accountRef} className={styles.accountWrapper}>
                 <button 
                   className={styles.accountButton}
-                  onClick={() => setShowAccountMenu(!showAccountMenu)}
+                  onClick={() => {
+                    if (isMobileViewport) {
+                      navigate('/profile');
+                      return;
+                    }
+                    setShowAccountMenu(!showAccountMenu);
+                  }}
                   title={typeof sessionData?.email === 'string' ? sessionData.email : 'Account'}
                 >
                   <div className={styles.accountAvatar}>
                     {getUserInitials()}
                   </div>
-                  <svg className={styles.accountChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
+                  {!isMobileViewport && (
+                    <svg className={styles.accountChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
                 </button>
 
                 {/* Account Dropdown Menu */}
-                {showAccountMenu && (
+                {showAccountMenu && !isMobileViewport && (
                   <div className={styles.accountMenu}>
                     <div className={styles.accountMenuHeader}>
                       <div className={styles.accountMenuAvatar}>{getUserInitials()}</div>

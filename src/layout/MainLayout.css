@@ -95,7 +95,7 @@
   padding: 0 !important;
 }
 
-.main-content:has(.page) {
+.main-content:not(.landing-page-content):has(.page) {
   height: auto !important;
   overflow-y: visible !important;
   padding-top: 0 !important;
@@ -150,13 +150,14 @@
   overflow-x: hidden;
   background: var(--color-bg-root);
 
-  height: 100dvh !important;
-  overflow-y: hidden !important;
+  min-height: 100dvh !important;
+  height: auto !important;
+  overflow-y: auto !important;
   padding-top: calc(var(--header-height, 60px) + env(safe-area-inset-top)) !important;
 }
 
 /* EXCLUDE IDE PAGE - IDE has its own layout */
-.main-content:not(:has(.idePageContainer)) {
+.main-content:not(.landing-page-content):not(:has(.idePageContainer)) {
   padding: 0;
   background: var(--color-bg-root);
   flex: 1;
@@ -173,7 +174,7 @@
 
 /* Mobile: Reduce top padding for tighter layout */
 @media (max-width: 768px) {
-  .main-content:not(:has(.idePageContainer)) {
+  .main-content:not(.landing-page-content):not(:has(.idePageContainer)) {
     padding-top: 44px;
   }
 }

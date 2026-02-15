@@ -30,69 +30,7 @@
   isolation: isolate;
 }
 
-.landingHoverOnly {
-  background: rgba(10, 10, 15, 0.08) !important;
-  border-bottom-color: rgba(255, 255, 255, 0.03) !important;
-  backdrop-filter: blur(10px) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(10px) saturate(160%) !important;
-  min-height: 44px !important;
-  padding-top: 4px !important;
-  padding-bottom: 4px !important;
-}
 
-[data-theme='light'] .landingHoverOnly {
-  background: rgba(255, 255, 255, 0.12) !important;
-  border-bottom-color: rgba(0, 0, 0, 0.04) !important;
-}
-
-.hoverOnly {
-}
-
-
-.landingHoverOnly .burgerMenu.hoverOnly {
-  display: none;
-}
-
-.landingHoverOnly .mainNav.hoverOnly {
-  display: none;
-}
-
-.landingHoverOnly .actions .hoverOnly {
-  display: none;
-}
-
-.landingHoverOnly:hover .burgerMenu.hoverOnly,
-.landingHoverOnly:focus-within .burgerMenu.hoverOnly {
-  display: flex;
-}
-
-.landingHoverOnly:hover .mainNav.hoverOnly,
-.landingHoverOnly:focus-within .mainNav.hoverOnly {
-  display: flex;
-}
-
-.landingHoverOnly:hover .actions .hoverOnly,
-.landingHoverOnly:focus-within .actions .hoverOnly {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-@media (hover: none), (pointer: coarse) {
-  .landingHoverOnly .burgerMenu.hoverOnly {
-    display: flex;
-  }
-
-  .landingHoverOnly .mainNav.hoverOnly {
-    display: flex;
-  }
-
-  .landingHoverOnly .actions .hoverOnly {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-}
 
 /* Subtle glow effect at bottom */
 .header::after {
@@ -463,6 +401,12 @@
   position: relative;
   z-index: 10001;
   touch-action: manipulation;
+}
+
+@media (min-width: 1025px) {
+  .burgerMenu {
+    display: none;
+  }
 }
 
 .burgerMenu:hover {
@@ -934,13 +878,6 @@
 /* ============================================
    MAIN NAVIGATION
    ============================================ */
-.mainNav {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-left: 32px;
-}
-
 .navItem {
   position: relative;
 }
