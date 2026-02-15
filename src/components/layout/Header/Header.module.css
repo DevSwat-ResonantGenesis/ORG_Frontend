@@ -878,6 +878,15 @@
 /* ============================================
    MAIN NAVIGATION
    ============================================ */
+.mainNav {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
 .navItem {
   position: relative;
 }
