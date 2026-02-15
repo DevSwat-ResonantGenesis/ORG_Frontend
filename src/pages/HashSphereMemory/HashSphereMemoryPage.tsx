@@ -90,6 +90,7 @@ const HashSphereMemoryPage: React.FC = () => {
   const linesRef = useRef<THREE.Line[]>([]);
   const animationFrameRef = useRef<number | null>(null);
   const isDisposedRef = useRef<boolean>(false);
+  const hasAutoFittedRef = useRef<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [anchors, setAnchors] = useState<MemoryAnchor[]>([]);
@@ -233,7 +234,34 @@ const HashSphereMemoryPage: React.FC = () => {
         }
         
         // Process both memories and anchors
-        const allAnchors: MemoryAnchor[] = [];
+        const toFiniteNumber = (value: unknown, fallback: number): number => {
+          if (value === null || value === undefined || value === '') return fallback;
+          const n = typeof value === 'number' ? value : Number(value);
+          return Number.isFinite(n) ? n : fallback;
+        };
+
+        const normalizeAnchors = (items: MemoryAnchor[]): MemoryAnchor[] => {
+          if (items.length === 0) return items;
+          const box = new THREE.Box3();
+          for (const a of items) {
+            box.expandByPoint(new THREE.Vector3(a.xyz_x, a.xyz_y, a.xyz_z));
+          }
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+          const maxDim = Math.max(size.x, size.y, size.z);
+          const desired = 250;
+          const scale = maxDim > 0 ? desired / maxDim : 1;
+
+          return items.map(a => ({
+            ...a,
+            xyz_x: (a.xyz_x - center.x) * scale,
+            xyz_y: (a.xyz_y - center.y) * scale,
+            xyz_z: (a.xyz_z - center.z) * scale,
+          }));
+        };
+
+        let memoryAnchors: MemoryAnchor[] = [];
+        let apiAnchors: MemoryAnchor[] = [];
         
         // First, try to get memories
         if (searchResponse.ok) {
@@ -242,7 +270,7 @@ const HashSphereMemoryPage: React.FC = () => {
           console.log(`Fetched ${rawMemories.length} memories from API`);
           
           // Transform memories to anchor format for 3D visualization
-          const memoryAnchors: MemoryAnchor[] = rawMemories.map((mem: any, idx: number) => ({
+          memoryAnchors = rawMemories.map((mem: any, idx: number) => ({
             id: mem.id || `mem-${idx}`,
             anchor_text: mem.content?.slice(0, 100) || 'Memory content',
             anchor_hash: mem.id ? `${mem.id}`.substring(0, 16) : `hash-${idx}`,
@@ -255,7 +283,6 @@ const HashSphereMemoryPage: React.FC = () => {
             resonance_score: 0.5 + Math.random() * 0.5,
             created_at: mem.created_at || new Date().toISOString(),
           }));
-          allAnchors.push(...memoryAnchors);
         }
         
         // Then, get actual anchors
@@ -263,41 +290,49 @@ const HashSphereMemoryPage: React.FC = () => {
           const anchorData = await anchorsResponse.json();
           const rawAnchors = Array.isArray(anchorData) ? anchorData : [];
           console.log(`Fetched ${rawAnchors.length} anchors from API`);
-          
+
           if (rawAnchors.length > 0) {
-            const transformedAnchors: MemoryAnchor[] = rawAnchors.map((anchor: any) => ({
-              id: anchor.id,
-              anchor_text: anchor.anchor_text,
-              anchor_hash: anchor.anchor_hash,
-              context: anchor.context || '',
-              importance_score: anchor.importance_score || 0.5,
-              xyz_x: anchor.xyz_x || (Math.random() - 0.5) * 300,
-              xyz_y: anchor.xyz_y || (Math.random() - 0.5) * 300,
-              xyz_z: anchor.xyz_z || (Math.random() - 0.5) * 300,
-              anchor_type: anchor.anchor_type || 'chat',
-              resonance_score: anchor.resonance_score || 0.5,
-              created_at: anchor.created_at || new Date().toISOString(),
-            }));
-            allAnchors.push(...transformedAnchors);
+            apiAnchors = rawAnchors.map((anchor: any, idx: number) => {
+              const fallbackX = (Math.random() - 0.5) * 300;
+              const fallbackY = (Math.random() - 0.5) * 300;
+              const fallbackZ = (Math.random() - 0.5) * 300;
+
+              return {
+                id: anchor.id ?? `anchor-${idx}`,
+                anchor_text: anchor.anchor_text ?? 'Anchor',
+                anchor_hash: anchor.anchor_hash ?? `hash-${idx}`,
+                context: anchor.context ?? '',
+                importance_score: toFiniteNumber(anchor.importance_score, 0.5),
+                xyz_x: toFiniteNumber(anchor.xyz_x, fallbackX),
+                xyz_y: toFiniteNumber(anchor.xyz_y, fallbackY),
+                xyz_z: toFiniteNumber(anchor.xyz_z, fallbackZ),
+                anchor_type: anchor.anchor_type ?? 'chat',
+                resonance_score: toFiniteNumber(anchor.resonance_score, 0.5),
+                created_at: anchor.created_at ?? new Date().toISOString(),
+              };
+            });
           }
         }
-        
+
+        const chosenAnchors = apiAnchors.length > 0 ? apiAnchors : memoryAnchors;
+        const normalizedAnchors = normalizeAnchors(chosenAnchors);
+
         // No fallback data - only show real data
-        if (allAnchors.length === 0) {
+        if (normalizedAnchors.length === 0) {
           console.log('No memories found in database');
           setAnchors([]);
           setMetrics(prev => prev ? { ...prev, total_memories: 0, total_clusters: 0, avg_cluster_size: 0 } : null);
           setError('No memories found. Start chatting to create memory anchors.');
         } else {
-            setAnchors(allAnchors);
-            setMetrics(prev => prev ? {
-              ...prev,
-              total_memories: allAnchors.length,
-              total_clusters: 5,
-              avg_cluster_size: Math.round(allAnchors.length / 5),
-            } : null);
+          setAnchors(normalizedAnchors);
+          setMetrics(prev => prev ? {
+            ...prev,
+            total_memories: normalizedAnchors.length,
+            total_clusters: 5,
+            avg_cluster_size: Math.round(normalizedAnchors.length / 5),
+          } : null);
         }
-        
+
         // Handle API errors
         if (!searchResponse.ok) {
           console.error('Search API error:', searchResponse.status);
@@ -305,7 +340,7 @@ const HashSphereMemoryPage: React.FC = () => {
         if (!anchorsResponse.ok) {
           console.error('Anchors API error:', anchorsResponse.status);
         }
-        
+
         setIsLoading(false);
       } catch (err) {
         console.error('Error fetching memory data:', err);
@@ -316,6 +351,10 @@ const HashSphereMemoryPage: React.FC = () => {
     
     fetchMemoryData();
   }, [sessionData?.userId]);
+
+  useEffect(() => {
+    hasAutoFittedRef.current = false;
+  }, [anchors]);
 
   // Get color based on anchor type
   const getAnchorColor = (type: string): string => {
@@ -434,8 +473,8 @@ const HashSphereMemoryPage: React.FC = () => {
 
     // Handle resize
     const handleResize = () => {
-      const newWidth = container.clientWidth;
-      const newHeight = container.clientHeight;
+      const newWidth = container.clientWidth || window.innerWidth;
+      const newHeight = container.clientHeight || (window.innerHeight - 60);
       camera.aspect = newWidth / newHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(newWidth, newHeight);
@@ -662,6 +701,31 @@ const HashSphereMemoryPage: React.FC = () => {
     });
     
     console.log(`Total meshes in scene: ${meshesRef.current.size}`);
+
+    if (!hasAutoFittedRef.current && cameraRef.current && controlsRef.current && meshesRef.current.size > 0) {
+      const box = new THREE.Box3();
+      meshesRef.current.forEach(mesh => {
+        box.expandByPoint(mesh.position);
+      });
+
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const dist = maxDim > 0 ? maxDim * 1.8 : 600;
+
+      const dir = new THREE.Vector3(1, 0.8, 1).normalize();
+      cameraRef.current.position.copy(center.clone().add(dir.multiplyScalar(dist)));
+      cameraRef.current.near = Math.max(0.1, dist / 100);
+      cameraRef.current.far = dist * 20;
+      cameraRef.current.updateProjectionMatrix();
+
+      controlsRef.current.target.copy(center);
+      controlsRef.current.minDistance = Math.max(10, maxDim * 0.2);
+      controlsRef.current.maxDistance = Math.max(controlsRef.current.minDistance + 10, maxDim * 6);
+      controlsRef.current.update();
+
+      hasAutoFittedRef.current = true;
+    }
   }, [filteredAnchors, clusters, selectedAnchor, selectedCluster, showClusters, showConnections, showAnchors, showEnergyAura]);
   // Handle click and hover on 3D objects
   useEffect(() => {
