@@ -270,7 +270,7 @@ export const formatCategory = (category: string): string => {
     'core': 'Core',
     'tool': 'Tool',
     'integration': 'Integration',
-    'custom': 'Custom',
+    'custom': 'custom',
   };
   return categoryMap[category] || category;
 };
