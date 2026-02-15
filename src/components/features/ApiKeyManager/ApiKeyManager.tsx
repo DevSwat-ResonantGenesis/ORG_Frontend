@@ -34,6 +34,7 @@ export const ApiKeyManager: React.FC<ApiKeyManagerProps> = ({
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState('openai');
+  const [providerSearch, setProviderSearch] = useState('');
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [keyName, setKeyName] = useState('');
   const [validating, setValidating] = useState(false);
@@ -137,6 +138,14 @@ export const ApiKeyManager: React.FC<ApiKeyManagerProps> = ({
     }
   };
 
+  const normalizedProviderSearch = providerSearch.trim().toLowerCase();
+  const filteredProviders = normalizedProviderSearch
+    ? API_KEY_PROVIDERS.filter((p) => {
+        const hay = `${p.id} ${p.name} ${(p.models || []).join(' ')}`.toLowerCase();
+        return hay.includes(normalizedProviderSearch);
+      })
+    : API_KEY_PROVIDERS;
+
   const selectedProviderInfo = API_KEY_PROVIDERS.find(p => p.id === selectedProvider);
 
   if (loading) {
@@ -203,6 +212,35 @@ export const ApiKeyManager: React.FC<ApiKeyManagerProps> = ({
         <div className={styles.addForm}>
           <div className={styles.formGroup}>
             <label>Provider</label>
+            <input
+              type="text"
+              value={providerSearch}
+              onChange={(e) => setProviderSearch(e.target.value)}
+              placeholder="Search providers..."
+              className={styles.providerSearch}
+            />
+
+            {filteredProviders.length === 0 && (
+              <div className={styles.noProviders}>No providers found.</div>
+            )}
+
+            <div className={styles.providerGrid}>
+              {filteredProviders.map((provider) => (
+                <button
+                  key={provider.id}
+                  type="button"
+                  className={`${styles.providerCard} ${provider.id === selectedProvider ? styles.providerCardActive : ''}`}
+                  onClick={() => {
+                    setSelectedProvider(provider.id);
+                    setValidationResult(null);
+                    setError('');
+                  }}
+                >
+                  <div className={styles.providerCardName}>{provider.name}</div>
+                  <div className={styles.providerCardMeta}>{provider.id}</div>
+                </button>
+              ))}
+            </div>
             <select
               value={selectedProvider}
               onChange={(e) => {
@@ -210,9 +248,10 @@ export const ApiKeyManager: React.FC<ApiKeyManagerProps> = ({
                 setValidationResult(null);
                 setError('');
               }}
+              disabled={filteredProviders.length === 0}
               className={styles.select}
             >
-              {API_KEY_PROVIDERS.map((provider) => (
+              {filteredProviders.map((provider) => (
                 <option key={provider.id} value={provider.id}>
                   {provider.name}
                 </option>
