@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { Suspense, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import heroTitleStyles from '@/components/ui/HeroTitle.module.css';
 import styles from '../HomeNew.module.css';
@@ -17,12 +17,19 @@ export const HeroSection = () => {
     const [isSending, setIsSending] = useState(false);
     const [chatId, setChatId] = useState<string | null>(null);
     const [messages, setMessages] = useState<Array<{ id: string; role: 'user' | 'assistant'; content: string; timestamp: Date }>>([]);
+    const messagesRef = useRef<HTMLDivElement | null>(null);
     
     useEffect(() => {
         setIsLoggedIn(isAuthenticated());
     }, []);
 
     const isChatActive = useMemo(() => isChatFocused || messages.length > 0, [isChatFocused, messages.length]);
+
+    useEffect(() => {
+        const el = messagesRef.current;
+        if (!el) return;
+        el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+    }, [messages.length]);
 
     useEffect(() => {
         document.body.classList.toggle('landing-chat-active', isChatActive);
@@ -143,13 +150,17 @@ export const HeroSection = () => {
                     onBlurCapture={() => setIsChatFocused(false)}
                 >
                     {messages.length > 0 && (
-                        <div className={styles.heroChatMessages}>
+                        <div className={styles.heroChatMessages} ref={messagesRef}>
                             {messages.map((m) => (
                                 <div
                                     key={m.id}
-                                    className={`${styles.heroChatMessage} ${m.role === 'user' ? styles.heroChatMessageUser : styles.heroChatMessageAssistant}`}
+                                    className={`${styles.heroChatMessageRow} ${m.role === 'user' ? styles.heroChatMessageRowUser : styles.heroChatMessageRowAssistant}`}
                                 >
-                                    {m.content}
+                                    <div
+                                        className={`${styles.heroChatMessage} ${m.role === 'user' ? styles.heroChatMessageUser : styles.heroChatMessageAssistant}`}
+                                    >
+                                        {m.content}
+                                    </div>
                                 </div>
                             ))}
                         </div>

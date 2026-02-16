@@ -635,13 +635,37 @@
   overflow: hidden;
 }
 
+.heroChatActive .heroChatWrapper {
+  height: min(640px, 70vh);
+  min-height: 320px;
+}
+
 .heroChatMessages {
   width: 100%;
   flex: 1;
   min-height: 0;
   max-height: none;
   overflow-y: auto;
-  padding-right: 6px;
+  padding: 6px 6px 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+.heroChatMessageRow {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.heroChatMessageRowUser {
+  justify-content: flex-end;
+}
+
+.heroChatMessageRowAssistant {
+  justify-content: flex-start;
 }
 
 .heroChatMessage {
@@ -650,12 +674,20 @@
   line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-word;
-  padding: 6px 0;
-  background: transparent;
+  padding: 10px 12px;
+  border-radius: 14px;
+  max-width: min(520px, 80%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  animation: heroChatMessageIn 180ms ease-out;
 }
 
 .heroChatMessageUser {
   color: rgba(15, 23, 42, 0.95);
+  border-radius: 14px 14px 4px 14px;
+  border-color: rgba(248, 250, 252, 0.14);
 }
 
 [data-theme='dark'] .heroChatMessageUser {
@@ -663,11 +695,32 @@
 }
 
 .heroChatMessageAssistant {
-  color: rgba(15, 23, 42, 0.82);
+  color: rgba(15, 23, 42, 0.88);
+  border-radius: 14px 14px 14px 4px;
 }
 
 [data-theme='dark'] .heroChatMessageAssistant {
   color: rgba(241, 245, 249, 0.82);
+}
+
+[data-theme='dark'] .heroChatMessage {
+  background: rgba(15, 23, 42, 0.35);
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
+[data-theme='dark'] .heroChatMessageUser {
+  background: rgba(2, 6, 23, 0.48);
+}
+
+@keyframes heroChatMessageIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .heroChatWrapper > div > div {
@@ -693,6 +746,11 @@
     margin-top: 0;
     height: min(360px, 50vh);
     min-height: 180px;
+  }
+
+  .heroChatActive .heroChatWrapper {
+    height: min(520px, 64vh);
+    min-height: 240px;
   }
 }
 
