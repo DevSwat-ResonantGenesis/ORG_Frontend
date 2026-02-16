@@ -5,6 +5,7 @@ import ProtectedRoute from './ProtectedRoute';
 import RoleRoute from './RoleRoute';
 import OwnerProtectedRoute from './OwnerProtectedRoute';
 import PlanRestrictedRoute from './PlanRestrictedRoute';
+import { isAuthenticated } from '@/utils/auth-cookies';
 
 // CANONICAL PAGES - Dashboard handles all billing features
 const AccountPage = lazy(() => import('../pages/Account/AccountPage'));
@@ -132,6 +133,13 @@ const withPublicShell = (node: React.ReactNode) => (
   <MainLayout>{node}</MainLayout>
 );
 
+const HomeGate = () => {
+  if (isAuthenticated()) {
+    return <Navigate to="/resonant-chat" replace />;
+  }
+  return <HomeNew />;
+};
+
 const withRole = (node: React.ReactNode, roles: string[]) =>
   withShell(<RoleRoute allowed={roles}>{node}</RoleRoute>);
 
@@ -162,7 +170,7 @@ const withOwnerAuth = (node: React.ReactNode) => (
 const router = createBrowserRouter([
   {
     path: '/',
-    element: withPublicShell(<HomeNew />)
+    element: withPublicShell(<HomeGate />)
   },
   {
     path: '/signup',

@@ -23,13 +23,45 @@
 /* ============================================================
    Page Layout
    ============================================================ */
+.chatParallax {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.chatParallax > * {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.chatParallaxPlaceholder {
+  position: absolute;
+  inset: 0;
+}
+
+.chatGlassOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(1200px 600px at 10% 20%, rgba(99, 102, 241, 0.14), transparent 55%),
+    radial-gradient(900px 500px at 80% 60%, rgba(59, 130, 246, 0.12), transparent 60%),
+    rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(18px) saturate(1.35);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  pointer-events: none;
+}
+
 .chatPage {
   display: flex;
   flex-direction: row;
   height: 100vh;
   max-height: 100vh;
   width: 100%;
-  background: #32312E;
+  background: transparent;
   color: #f8fafc;
   position: fixed;
   top: 0;
@@ -39,6 +71,7 @@
   padding-top: var(--header-height, 60px);
   box-sizing: border-box;
   overflow: hidden;
+  z-index: 2;
 }
 
 
@@ -51,13 +84,13 @@
 
 /* Light theme */
 [data-theme='light'] .chatPage {
-  background: #f0f4f9;
+  background: transparent;
   color: #0f172a;
 }
 
 /* Dark theme */
 [data-theme='dark'] .chatPage {
-  background: #32312E;
+  background: transparent;
   color: #f8fafc;
 }
 

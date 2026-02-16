@@ -52,16 +52,22 @@ import { TeamSelector } from '@/components/ResonantChat/TeamSelector';
 import { ENV } from '@/config/env';
 import { FloatingHome } from '@/components/ResonantChat/FloatingHome';
 import type { ProjectFile } from '@/components/ResonantChat/SplitView';
-
-// Lazy load SplitView to prevent blocking main thread
-const SplitViewModule = React.lazy(() => 
-  import('@/components/ResonantChat/SplitView').then(module => ({ default: module.SplitViewModule }))
-);
 import { SSEClient } from '@/utils/sseClient';
 import type { WebSocketMessage } from '@/utils/websocketClient';
 import { WebSocketClient } from '@/utils/websocketClient';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { detectProjectIntent } from '@/utils/semanticIntentDetector';
+// @ts-ignore - react-syntax-highlighter types
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+// @ts-ignore
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import styles from './ResonantChatPage-2025.module.css';
+// Lazy load SplitView to prevent blocking main thread
+const SplitViewModule = React.lazy(() => 
+  import('@/components/ResonantChat/SplitView').then(module => ({ default: module.SplitViewModule }))
+);
+const ThreeParticleSphere = React.lazy(() => import('@/components/features/landing/ThreeParticleSphere'));
 // Lazy load ProjectBuilder to avoid blocking if jszip isn't installed
 const ProjectBuilder = React.lazy(() =>
   import('@/components/ResonantChat/ProjectBuilder').then(module => ({ default: module.ProjectBuilder }))
@@ -76,14 +82,6 @@ const ProjectBuilder = React.lazy(() =>
       )
     }))
 );
-// Semantic intent detection using Hash Sphere anchors & clusters
-import { detectProjectIntent } from '@/utils/semanticIntentDetector';
-// @ts-ignore - react-syntax-highlighter types
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-// @ts-ignore
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import styles from './ResonantChatPage-2025.module.css';
-
 interface ModuleOutputs {
   word_representation?: {
     words: string[];
@@ -3127,6 +3125,12 @@ const ResonantChatPage: React.FC = () => {
 
   return (
     <>
+    <div className={styles.chatParallax} aria-hidden="true">
+      <Suspense fallback={<div className={styles.chatParallaxPlaceholder} />}>
+        <ThreeParticleSphere />
+      </Suspense>
+    </div>
+    <div className={styles.chatGlassOverlay} aria-hidden="true" />
     <div className={styles.chatPage}>
       {/* Enhanced Sidebar with User Info and Settings */}
       <div className={`${styles.sidebarWrapper} ${sidebarOpen ? styles.sidebarOpen : styles.hidden}`}>
