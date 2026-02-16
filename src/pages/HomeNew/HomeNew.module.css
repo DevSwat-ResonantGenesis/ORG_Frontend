@@ -632,7 +632,7 @@
   z-index: 20;
   height: min(420px, 46vh);
   min-height: 220px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .heroChatActive .heroChatWrapper {

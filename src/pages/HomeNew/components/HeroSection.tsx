@@ -5,6 +5,8 @@ import styles from '../HomeNew.module.css';
 import { isAuthenticated } from '@/utils/auth-cookies';
 import ChatInputBar from '@/components/ResonantChat/ChatInputBar/ChatInputBar';
 import { sendResonantMessage } from '@/api/resonantChat';
+import { getChatHistory } from '@/api/resonantChat';
+import { listMemories, uploadFile, type MemoryResponse } from '@/api/rag';
 
 // Lazy load Vision Pro aesthetic particle sphere
 const ThreeParticleSphere = React.lazy(() => import('@/components/features/landing/ThreeParticleSphere'));
@@ -18,10 +20,125 @@ export const HeroSection = () => {
     const [chatId, setChatId] = useState<string | null>(null);
     const [messages, setMessages] = useState<Array<{ id: string; role: 'user' | 'assistant'; content: string; timestamp: Date }>>([]);
     const messagesRef = useRef<HTMLDivElement | null>(null);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
+    const [uploadedFileIds, setUploadedFileIds] = useState<Map<File, string>>(new Map());
+    const [showMemoryLibrary, setShowMemoryLibrary] = useState(false);
+    const [memories, setMemories] = useState<Array<{ id: string; name?: string; content?: string }>>([]);
+    const [showConversations, setShowConversations] = useState(false);
+    const [conversations, setConversations] = useState<Array<{ id: string; title?: string; created_at?: string }>>([]);
     
     useEffect(() => {
         setIsLoggedIn(isAuthenticated());
     }, []);
+
+    const loadMemories = useCallback(async () => {
+        if (!isLoggedIn) {
+            setMemories([]);
+            return;
+        }
+        try {
+            const apiMemories: MemoryResponse[] = await listMemories(50);
+            const formatted = (apiMemories || []).map((m: any) => ({
+                id: m.id,
+                name: m.name || (typeof m.content === 'string' ? m.content.substring(0, 30) : 'Memory'),
+                content: m.content,
+            }));
+            setMemories(formatted);
+        } catch {
+            setMemories([]);
+        }
+    }, [isLoggedIn]);
+
+    const loadConversations = useCallback(async () => {
+        if (!isLoggedIn) {
+            setConversations([]);
+            return;
+        }
+        try {
+            const data = await getChatHistory();
+            const chatList = Array.isArray(data) ? data : [];
+            const formatted = chatList.map((chat: any) => {
+                if (typeof chat === 'string') return { id: chat, title: 'Untitled Chat' };
+                return {
+                    id: chat.id,
+                    title: chat.title || 'Untitled Chat',
+                    created_at: chat.created_at,
+                };
+            });
+            setConversations(formatted);
+        } catch {
+            setConversations([]);
+        }
+    }, [isLoggedIn]);
+
+    const handleLoadConversation = useCallback(async (conversationId: string) => {
+        try {
+            const data = await getChatHistory(conversationId);
+            let messagesArray: any[] = [];
+            if (Array.isArray(data)) {
+                messagesArray = data;
+            } else if ((data as any)?.messages && Array.isArray((data as any).messages)) {
+                messagesArray = (data as any).messages;
+            }
+
+            const conversationMessages = messagesArray
+                .filter((msg: any) => msg?.role === 'user' || msg?.role === 'assistant')
+                .map((msg: any) => ({
+                    id: msg.id || (globalThis.crypto?.randomUUID?.() || `msg-${Date.now()}-${Math.random()}`),
+                    role: msg.role as 'user' | 'assistant',
+                    content: msg.content || '',
+                    timestamp: msg.timestamp ? new Date(msg.timestamp) : new Date(),
+                }));
+
+            setMessages(conversationMessages);
+            setChatId(conversationId);
+        } catch {
+            // ignore
+        }
+    }, []);
+
+    const handleNewChat = useCallback(() => {
+        setMessages([]);
+        setChatId(null);
+        setChatInput('');
+        setAttachedFiles([]);
+        setUploadedFileIds(new Map());
+    }, []);
+
+    const readTextFile = (file: File) =>
+        new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result || ''));
+            reader.onerror = () => reject(new Error('Failed to read file'));
+            reader.readAsText(file);
+        });
+
+    const handleFileSelect = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
+
+        setAttachedFiles(prev => [...prev, ...files]);
+
+        if (isLoggedIn) {
+            for (const file of files) {
+                try {
+                    const result = await uploadFile(file);
+                    if (result?.id) {
+                        setUploadedFileIds(prev => {
+                            const next = new Map(prev);
+                            next.set(file, result.id);
+                            return next;
+                        });
+                    }
+                } catch {
+                    // ignore
+                }
+            }
+        }
+
+        if (fileInputRef.current) fileInputRef.current.value = '';
+    }, [isLoggedIn]);
 
     const isChatActive = useMemo(() => isChatFocused || messages.length > 0, [isChatFocused, messages.length]);
 
@@ -56,8 +173,31 @@ export const HeroSection = () => {
         setIsSending(true);
 
         try {
+            let fileContext = '';
+            if (attachedFiles.length > 0) {
+                const fileContents = await Promise.all(
+                    attachedFiles.map(async (file) => {
+                        try {
+                            if (file.type.startsWith('text/') || file.name.match(/\.(txt|md|json|js|ts|py|java|cpp|c|cs)$/i)) {
+                                const content = await readTextFile(file);
+                                return `\n\n[File: ${file.name}]\n${content}`;
+                            }
+                            const fileId = uploadedFileIds.get(file);
+                            return `\n\n[File: ${file.name}${fileId ? ` (ID: ${fileId})` : ''}]`;
+                        } catch {
+                            return `\n\n[File: ${file.name} - Error reading content]`;
+                        }
+                    })
+                );
+                fileContext = fileContents.join('\n');
+            }
+
+            const attachedFilePaths = attachedFiles
+                .map(file => uploadedFileIds.get(file) || (file.name.match(/\.(js|jsx|ts|tsx|py|java|cpp|c|cs|go|rs|rb|php)$/i) ? file.name : undefined))
+                .filter((p): p is string => !!p);
+
             const response = await sendResonantMessage({
-                message: trimmed,
+                message: trimmed + fileContext,
                 chatId: chatId || undefined,
                 context: {
                     previousMessages: messages.slice(-15).map(m => ({
@@ -67,6 +207,7 @@ export const HeroSection = () => {
                         timestamp: m.timestamp.toISOString(),
                     })),
                 },
+                attached_files: attachedFilePaths.length > 0 ? attachedFilePaths : undefined,
             });
 
             if (response.chatId && !chatId) {
@@ -86,6 +227,8 @@ export const HeroSection = () => {
             };
 
             setMessages(prev => [...prev, assistantMessage]);
+            setAttachedFiles([]);
+            setUploadedFileIds(new Map());
         } catch (err: any) {
             const assistantMessage = {
                 id: (globalThis.crypto?.randomUUID?.() || `msg-${Date.now()}-${Math.random()}`),
@@ -97,7 +240,7 @@ export const HeroSection = () => {
         } finally {
             setIsSending(false);
         }
-    }, [chatInput, isSending, chatId, messages]);
+    }, [chatInput, isSending, chatId, messages, attachedFiles, uploadedFileIds]);
 
     return (
         <section className={`${styles.hero} ${isChatActive ? styles.heroChatActive : ''}`}>
@@ -176,6 +319,42 @@ export const HeroSection = () => {
                         placeholder="Start typing..."
                         isLoading={isSending}
                         disabled={false}
+                        onNewChat={handleNewChat}
+                        onAttachFile={() => fileInputRef.current?.click()}
+                        attachedFiles={attachedFiles}
+                        onRemoveFile={(index) => setAttachedFiles(prev => prev.filter((_, i) => i !== index))}
+                        memories={memories}
+                        onShowMemoryLibrary={async () => {
+                            await loadMemories();
+                            setShowMemoryLibrary(true);
+                            setShowConversations(false);
+                        }}
+                        showMemoryLibrary={showMemoryLibrary}
+                        onCloseMemoryLibrary={() => setShowMemoryLibrary(false)}
+                        onMemoryClick={(memory) => {
+                            setChatInput(prev => prev + ` @${memory.name || memory.content?.substring(0, 20)} `);
+                            setShowMemoryLibrary(false);
+                        }}
+                        conversations={conversations}
+                        onShowConversations={async () => {
+                            await loadConversations();
+                            setShowConversations(true);
+                            setShowMemoryLibrary(false);
+                        }}
+                        showConversations={showConversations}
+                        onCloseConversations={() => setShowConversations(false)}
+                        onConversationClick={(conv) => {
+                            handleLoadConversation(conv.id);
+                            setShowConversations(false);
+                        }}
+                        currentConversationId={chatId}
+                    />
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        multiple
+                        style={{ display: 'none' }}
+                        onChange={handleFileSelect}
                     />
                 </div>
 

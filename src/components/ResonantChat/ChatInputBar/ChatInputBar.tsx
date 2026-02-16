@@ -181,6 +181,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const [mentionQuery, setMentionQuery] = useState('');
   const [showProviderDropdown, setShowProviderDropdown] = useState(false);
   const [voiceInterimTranscript, setVoiceInterimTranscript] = useState('');
+  const [showEmbeddedTools, setShowEmbeddedTools] = useState(false);
 
   const normalizeProvider = (provider: string) => {
     if (provider === 'claude') return 'anthropic';
@@ -304,6 +305,12 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
       onCloseConversations();
     }
   };
+
+  useEffect(() => {
+    if (!embedded) return;
+    if (showEmbeddedTools) return;
+    closeAllPopups();
+  }, [embedded, showEmbeddedTools]);
 
   // Close other panels when opening a new one
   const handleShowMemoryLibrary = () => {
@@ -632,18 +639,35 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
         {/* Input Area: Textarea + Send */}
         <div className={styles.inputArea}>
           {voiceInInput && (
-            <VoiceInput
-              onTranscript={(text) => {
-                const currentValue = valueRef.current;
-                const newValue = currentValue + (currentValue ? ' ' : '') + text;
-                onChange(newValue);
-                textareaRef.current?.focus();
-              }}
-              onInterimTranscriptChange={setVoiceInterimTranscript}
-              renderInterimTranscript={false}
-              iconSize={voiceIconSize}
-              disabled={isLoading || disabled}
-            />
+            <div className={styles.voiceStack}>
+              <VoiceInput
+                onTranscript={(text) => {
+                  const currentValue = valueRef.current;
+                  const newValue = currentValue + (currentValue ? ' ' : '') + text;
+                  onChange(newValue);
+                  textareaRef.current?.focus();
+                }}
+                onInterimTranscriptChange={setVoiceInterimTranscript}
+                renderInterimTranscript={false}
+                iconSize={voiceIconSize}
+                disabled={isLoading || disabled}
+              />
+              {embedded && (
+                <button
+                  type="button"
+                  className={`${styles.toolButton} ${styles.embeddedToolsToggle} ${showEmbeddedTools ? styles.active : ''}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setShowEmbeddedTools(v => !v);
+                  }}
+                  title={showEmbeddedTools ? 'Hide tools' : 'Show tools'}
+                  aria-expanded={showEmbeddedTools}
+                >
+                  <ChevronDownIcon />
+                </button>
+              )}
+            </div>
           )}
           {voiceInInput && voiceInterimTranscript && (
             <div className={styles.voiceInterimOverlay}>{voiceInterimTranscript}</div>
@@ -669,7 +693,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
         </div>
 
         {/* Tools Row */}
-        <div className={styles.toolsRow}>
+        {(!embedded || showEmbeddedTools) && (
+        <div className={`${styles.toolsRow} ${embedded ? styles.embeddedToolsRow : ''}`}>
           <div className={styles.toolsLeft}>
             {!hideProviderSelector && (
             <div style={{ position: 'relative', zIndex: 10000 }}>
@@ -936,6 +961,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             )}
           </div>
         </div>
+        )}
       </div>
     </div>
   );
