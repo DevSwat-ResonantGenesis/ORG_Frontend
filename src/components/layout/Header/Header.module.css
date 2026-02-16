@@ -936,6 +936,12 @@
   flex-wrap: nowrap;
 }
 
+@media (min-width: 1025px) {
+  .mainNav {
+    margin-left: 28px;
+  }
+}
+
 .navItem {
   position: relative;
 }
