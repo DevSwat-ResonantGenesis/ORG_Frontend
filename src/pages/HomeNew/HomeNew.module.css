@@ -398,17 +398,49 @@
   transition: transform 0.15s ease, color 0.15s ease, opacity 0.15s ease;
 }
 
+.byokHeroAlert::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(251, 191, 36, 0.0), rgba(251, 191, 36, 0.95), rgba(245, 158, 11, 0.85), rgba(251, 191, 36, 0.0));
+  opacity: 0.55;
+  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.45));
+  transition: opacity 0.15s ease, filter 0.15s ease;
+}
+
 .byokHeroAlert:hover {
   transform: translateY(-1px);
   color: rgba(251, 191, 36, 1);
+}
+
+.byokHeroAlert:hover::after {
+  opacity: 0.95;
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.6));
+}
+
+.byokHeroAlert:active {
+  transform: translateY(0);
 }
 
 [data-theme='light'] .byokHeroAlert {
   color: rgba(180, 83, 9, 0.95);
 }
 
+[data-theme='light'] .byokHeroAlert::after {
+  background: linear-gradient(90deg, rgba(180, 83, 9, 0.0), rgba(180, 83, 9, 0.9), rgba(217, 119, 6, 0.85), rgba(180, 83, 9, 0.0));
+  filter: drop-shadow(0 0 8px rgba(217, 119, 6, 0.35));
+}
+
 [data-theme='light'] .byokHeroAlert:hover {
   color: rgba(180, 83, 9, 1);
+}
+
+[data-theme='light'] .byokHeroAlert:hover::after {
+  filter: drop-shadow(0 0 10px rgba(217, 119, 6, 0.45));
 }
 
 .byokHeroText {
