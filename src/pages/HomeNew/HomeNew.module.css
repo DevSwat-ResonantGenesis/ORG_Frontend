@@ -249,7 +249,7 @@
 .heroGlassOverlay {
   position: absolute;
   inset: 0;
-  z-index: 12;
+  z-index: 1;
   background: radial-gradient(1200px 600px at 10% 20%, rgba(99, 102, 241, 0.14), transparent 55%),
     radial-gradient(900px 500px at 80% 60%, rgba(59, 130, 246, 0.12), transparent 60%),
     rgba(255, 255, 255, 0.03);
@@ -341,7 +341,7 @@
   margin: 0;
   margin-top: 0;
   position: relative;
-  z-index: auto;
+  z-index: 2;
   padding: 0;
   background: transparent !important;
   display: flex;
@@ -361,6 +361,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding-top: clamp(20px, 5vh, 84px);
 }
 
 .byokHeroAlert {
@@ -434,7 +435,7 @@
 .heroParallax {
   position: absolute;
   top: 50%;
-  right: -20%;
+  right: calc(-20% - 10mm);
   left: auto;
   transform: translateY(-50%);
   width: calc(100% + 64px);
