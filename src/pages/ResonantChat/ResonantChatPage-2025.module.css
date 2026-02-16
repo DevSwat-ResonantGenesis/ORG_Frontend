@@ -219,14 +219,15 @@
   display: flex;
   flex-direction: column;
   padding: var(--chat-spacing-lg);
-  padding-bottom: 120px;
+  padding-bottom: calc(120px + env(safe-area-inset-bottom));
   overflow-y: auto;
   overflow-x: hidden;
   max-width: 900px;
   width: 100%;
   margin: 0 auto;
   height: 100%;
-  max-height: calc(100vh - var(--header-height, 60px) - 100px);
+  min-height: 0;
+  max-height: none;
 }
 
 /* ============================================================
@@ -1851,6 +1852,13 @@
   transition: margin-left var(--chat-transition);
 }
 
+ .chatContainer > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+ }
+
 .chatContainer.sidebarOpen {
   margin-left: var(--chat-sidebar-width);
 }
@@ -1864,6 +1872,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  min-height: 0;
 }
 
 .mainChatArea.noSidebar {

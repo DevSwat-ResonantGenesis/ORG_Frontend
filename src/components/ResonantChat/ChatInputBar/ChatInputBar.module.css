@@ -30,7 +30,7 @@
 .inputWrapper {
   max-width: 800px;
   margin: 0 auto;
-  background: rgba(10, 10, 10, 0.95);
+  background: transparent;
   padding: 8px 12px;
   display: flex;
   flex-direction: column;
@@ -38,7 +38,8 @@
   pointer-events: auto;
   position: relative;
   border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.10);
   z-index: 10001;
 }
 
@@ -85,16 +86,10 @@
 }
 
 [data-theme='light'] .inputWrapper {
-  background: var(--bg-primary, #fafafa);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  background: transparent;
+  box-shadow: none;
+  border: 1px solid rgba(0, 0, 0, 0.10);
 }
-
-
-
-
-
-
-
 
 /* Agent Panel - Modern redesign matching provider dropdown */
 .agentPanel {
@@ -141,8 +136,9 @@
 
 
 :global([data-theme='dark'] body.resonant-chat-page) .inputWrapper {
-  background: #32312E !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
 :global([data-theme='dark'] body.resonant-chat-page) .textarea {
@@ -155,13 +151,17 @@
 }
 
 :global([data-theme='dark'] body.resonant-chat-page) .chatInputRoot {
-  background: #32312E;
-  padding-bottom: env(safe-area-inset-bottom);
+  background: transparent;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 24px env(safe-area-inset-bottom);
 }
 
 :global([data-theme='light'] body.resonant-chat-page) .inputWrapper {
-  background: #f0f4f9 !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.10);
 }
 
 :global([data-theme='light'] body.resonant-chat-page) .textarea {
@@ -174,14 +174,20 @@
 }
 
 :global([data-theme='light'] body.resonant-chat-page) .chatInputRoot {
-  background: #f0f4f9;
-  padding-bottom: env(safe-area-inset-bottom);
+  background: transparent;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 24px env(safe-area-inset-bottom);
 }
 
 
 :global(body.resonant-chat-page) .chatInputRoot {
-  background: #32312E;
-  padding-bottom: env(safe-area-inset-bottom);
+  background: transparent;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 24px env(safe-area-inset-bottom);
 }
 
 
