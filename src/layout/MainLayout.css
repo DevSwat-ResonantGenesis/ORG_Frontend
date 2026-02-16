@@ -153,9 +153,9 @@
   box-sizing: border-box;
 
   min-height: 100dvh !important;
-  height: auto !important;
-  overflow-y: auto !important;
-  padding-top: calc(var(--header-height, 60px) + env(safe-area-inset-top)) !important;
+  height: 100dvh !important;
+  overflow-y: hidden !important;
+  padding-top: 0 !important;
 }
 
 /* EXCLUDE IDE PAGE - IDE has its own layout */
@@ -168,7 +168,6 @@
   width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
-  padding-bottom: 0;
   padding-top: calc(var(--header-height, 60px) + env(safe-area-inset-top));
   margin-top: 0;
   position: relative;

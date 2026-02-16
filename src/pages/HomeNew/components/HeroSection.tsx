@@ -95,34 +95,36 @@ export const HeroSection = () => {
             {isChatActive && <div className={styles.heroGlassOverlay} aria-hidden="true" />}
 
             <div className={styles.heroContent}>
-                <button
-                    type="button"
-                    className={styles.byokHeroAlert}
-                    onClick={() => navigate(isLoggedIn ? '/profile?tab=api-keys' : '/signup')}
-                >
-                    <span className={styles.byokHeroText}>Bring Your Own Keys to unlock functions</span>
-                    <span className={styles.byokHeroArrow}>→</span>
-                </button>
-                <h1 className={heroTitleStyles.heroTitle}>
-                    Own Your Intelligence.
-                </h1>
-                <p className={heroTitleStyles.heroSubtitle}>
-                    The first sovereign AI ecosystem with somatic-magnetic memory. Encrypted, autonomous, and fully self-hosted. No black boxes—just pure control.
-                </p>
-                
-                {/* Hero CTAs - Conditional based on login state */}
-                <div className={styles.heroNavLinks}>
-                    {!isLoggedIn && (
-                        /* Non-logged-in users: Get Started Free */
-                        <div className={styles.heroNavRow}>
-                            <button className={`${styles.heroNavItem} ${styles.heroNavItemPrimary}`} onClick={() => navigate('/signup')}>
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                                </svg>
-                                <span>Get Started Free</span>
-                            </button>
-                        </div>
-                    )}
+                <div className={styles.heroIntro}>
+                    <button
+                        type="button"
+                        className={styles.byokHeroAlert}
+                        onClick={() => navigate(isLoggedIn ? '/profile?tab=api-keys' : '/signup')}
+                    >
+                        <span className={styles.byokHeroText}>Bring Your Own Keys to unlock functions</span>
+                        <span className={styles.byokHeroArrow}>→</span>
+                    </button>
+                    <h1 className={heroTitleStyles.heroTitle}>
+                        Own Your Intelligence.
+                    </h1>
+                    <p className={heroTitleStyles.heroSubtitle}>
+                        The first sovereign AI ecosystem with somatic-magnetic memory. Encrypted, autonomous, and fully self-hosted. No black boxes—just pure control.
+                    </p>
+                    
+                    {/* Hero CTAs - Conditional based on login state */}
+                    <div className={styles.heroNavLinks}>
+                        {!isLoggedIn && (
+                            /* Non-logged-in users: Get Started Free */
+                            <div className={styles.heroNavRow}>
+                                <button className={`${styles.heroNavItem} ${styles.heroNavItemPrimary}`} onClick={() => navigate('/signup')}>
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                                    </svg>
+                                    <span>Get Started Free</span>
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* Resonant Chat Input Bar */}
