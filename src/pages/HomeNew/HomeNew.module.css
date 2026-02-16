@@ -732,23 +732,71 @@
 
 /* Primary CTA - Same style as other nav items, no special button styling */
 .heroNavItemPrimary {
-  background: transparent;
   border: none;
-  box-shadow: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  line-height: 1;
+  white-space: nowrap;
+  position: relative;
+  color: rgba(251, 191, 36, 0.95);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  transition: transform 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.heroNavItemPrimary::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(251, 191, 36, 0.0), rgba(251, 191, 36, 0.95), rgba(245, 158, 11, 0.85), rgba(251, 191, 36, 0.0));
+  opacity: 0.55;
+  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.45));
+  transition: opacity 0.15s ease, filter 0.15s ease;
 }
 
 .heroNavItemPrimary:hover {
-  background: rgba(0, 0, 0, 0.05);
-  transform: none;
-  box-shadow: none;
+  transform: translateY(-1px);
+  color: rgba(251, 191, 36, 1);
+}
+
+.heroNavItemPrimary:hover::after {
+  opacity: 0.95;
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.6));
 }
 
 [data-theme='dark'] .heroNavItemPrimary {
-  background: transparent;
+  color: rgba(251, 191, 36, 0.95);
 }
 
 [data-theme='dark'] .heroNavItemPrimary:hover {
-  background: rgba(255, 255, 255, 0.08);
+  color: rgba(251, 191, 36, 1);
+}
+
+[data-theme='light'] .heroNavItemPrimary {
+  color: rgba(180, 83, 9, 0.95);
+}
+
+[data-theme='light'] .heroNavItemPrimary::after {
+  background: linear-gradient(90deg, rgba(180, 83, 9, 0.0), rgba(180, 83, 9, 0.9), rgba(217, 119, 6, 0.85), rgba(180, 83, 9, 0.0));
+  filter: drop-shadow(0 0 8px rgba(217, 119, 6, 0.35));
+}
+
+[data-theme='light'] .heroNavItemPrimary:hover {
+  color: rgba(180, 83, 9, 1);
+}
+
+[data-theme='light'] .heroNavItemPrimary:hover::after {
+  filter: drop-shadow(0 0 10px rgba(217, 119, 6, 0.45));
 }
 
 /* Mobile: Stack and smaller */
