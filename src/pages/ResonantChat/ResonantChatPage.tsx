@@ -339,6 +339,38 @@ const ResonantChatPage: React.FC = () => {
   const [isLoadingEvidenceGraph, setIsLoadingEvidenceGraph] = useState(false);
   const [chatMetrics, setChatMetrics] = useState<ChatMetrics | null>(null);
   const [messageMetrics, setMessageMetrics] = useState<MessageMetrics | null>(null);
+  const [activeMessageId, setActiveMessageId] = useState<string | null>(null);
+
+  // Mobile: tap message to reveal tools/metrics; tap outside to hide
+  useEffect(() => {
+    const isCoarsePointer = () => {
+      try {
+        return window.matchMedia?.('(hover: none) and (pointer: coarse)')?.matches ?? false;
+      } catch {
+        return false;
+      }
+    };
+
+    if (!activeMessageId || !isCoarsePointer()) return;
+
+    const onPointerDown = (e: MouseEvent | TouchEvent) => {
+      const el = document.querySelector(`[data-message-id="${activeMessageId}"]`);
+      if (!el) {
+        setActiveMessageId(null);
+        return;
+      }
+      const target = e.target;
+      if (target instanceof Node && el.contains(target)) return;
+      setActiveMessageId(null);
+    };
+
+    document.addEventListener('mousedown', onPointerDown);
+    document.addEventListener('touchstart', onPointerDown);
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown);
+      document.removeEventListener('touchstart', onPointerDown);
+    };
+  }, [activeMessageId]);
 
   // Real-time updates (WebSocket/SSE)
   const [wsClient, setWsClient] = useState<WebSocketClient | null>(null);
@@ -3324,8 +3356,21 @@ const ResonantChatPage: React.FC = () => {
                   {messages.map((message) => (
                     <div 
                       key={message.id} 
-                      className={`${styles.message} ${styles[message.role]} ${alignUserMessagesRight && message.role === 'user' ? styles.alignRight : ''} ${selectedCodeMessage === message.id ? styles.selected : ''}`}
+                      data-message-id={message.id}
+                      className={`${styles.message} ${styles[message.role]} ${alignUserMessagesRight && message.role === 'user' ? styles.alignRight : ''} ${selectedCodeMessage === message.id ? styles.selected : ''} ${activeMessageId === message.id ? styles.messageRevealed : ''}`}
                       onClick={() => {
+                        const isCoarsePointer = () => {
+                          try {
+                            return window.matchMedia?.('(hover: none) and (pointer: coarse)')?.matches ?? false;
+                          } catch {
+                            return false;
+                          }
+                        };
+
+                        if (isCoarsePointer()) {
+                          setActiveMessageId(prev => (prev === message.id ? null : message.id));
+                        }
+
                         // Select message for split view code display
                         const hasCode = message.content.match(/```[\s\S]*?```/g);
                         if (hasCode && hasCode.length > 0) {
