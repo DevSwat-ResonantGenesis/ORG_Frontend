@@ -58,12 +58,6 @@ const NewUserDashboard: React.FC = () => {
       return;
     }
 
-    const params = new URLSearchParams(location.search);
-    if (!params.has('dashboard')) {
-      navigate('/resonant-chat', { replace: true });
-      return;
-    }
-
     loadDashboardData();
   }, [navigate, loadDashboardData, location.search]);
 

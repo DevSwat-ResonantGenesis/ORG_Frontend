@@ -106,12 +106,6 @@ const PlusDashboard: React.FC = () => {
       return;
     }
 
-    const params = new URLSearchParams(location.search);
-    if (!params.has('dashboard')) {
-      navigate('/resonant-chat', { replace: true });
-      return;
-    }
-
     // Check if user has Plus plan
     if (session?.plan !== 'plus') {
       navigate('/dashboard');

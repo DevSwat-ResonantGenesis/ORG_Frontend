@@ -151,12 +151,6 @@ const EnterpriseDashboard: React.FC = () => {
       return;
     }
 
-    const params = new URLSearchParams(location.search);
-    if (!params.has('dashboard')) {
-      navigate('/resonant-chat', { replace: true });
-      return;
-    }
-
     if (session?.plan !== 'enterprise') {
       navigate('/dashboard');
       return;
