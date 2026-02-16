@@ -329,7 +329,7 @@ export const HeroSection = () => {
                             onClick={() => navigate('/signup')}
                         >
                             <span className={styles.byokHeroText}>Bring Your Own Keys to unlock functions</span>
-                            <span className={styles.byokHeroArrow}>→</span>
+                            <span className={styles.byokHeroArrow}>→ Create or Bring your AI Agents</span>
                         </button>
 
                         <h1 className={heroTitleStyles.heroTitle}>
