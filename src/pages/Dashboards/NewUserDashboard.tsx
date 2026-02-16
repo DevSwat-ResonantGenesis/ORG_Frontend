@@ -4,9 +4,9 @@
  * Connected to real backend endpoints
  */
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { RefreshCw } from 'lucide-react';
-import { getSessionData, isAuthenticated } from '../../utils/auth-cookies';
+import { isAuthenticated } from '../../utils/auth-cookies';
 import { fetchDashboardData, type DashboardData } from '../../api/dashboard';
 import { logger } from '../../utils/logger';
 import { Button } from '../../components/ui';
@@ -23,8 +23,6 @@ import styles from './NewUserDashboard.module.css';
 
 const NewUserDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const session = getSessionData();
   
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -43,23 +41,13 @@ const NewUserDashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    try {
-      const postLoginTarget = sessionStorage.getItem('rg-post-login-target');
-      if (postLoginTarget) {
-        sessionStorage.removeItem('rg-post-login-target');
-        navigate(postLoginTarget, { replace: true });
-        return;
-      }
-    } catch {
-      // ignore
-    }
     if (!isAuthenticated()) {
       navigate('/login');
       return;
     }
 
     loadDashboardData();
-  }, [navigate, loadDashboardData, location.search]);
+  }, [navigate, loadDashboardData]);
 
   const handleRefresh = () => {
     setRefreshing(true);

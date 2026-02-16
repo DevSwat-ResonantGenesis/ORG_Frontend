@@ -137,15 +137,6 @@ const EnterpriseDashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const postLoginTarget = sessionStorage.getItem('rg-post-login-target');
-      if (postLoginTarget) {
-        sessionStorage.removeItem('rg-post-login-target');
-        navigate(postLoginTarget, { replace: true });
-        return;
-      }
-    } catch {
-    }
     if (!isAuthenticated()) {
       navigate('/login');
       return;
