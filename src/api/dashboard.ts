@@ -29,6 +29,68 @@ export interface DashboardData {
   error?: string;
 }
 
+const normalizeUsageTrend = (
+  history: any,
+  days: number
+): { date: string; tokens: number }[] => {
+  const arr: Array<{ date: string; tokens: number }> = Array.isArray(history) ? history : [];
+  const map = new Map<string, number>();
+  for (const item of arr) {
+    if (item && typeof item.date === 'string') {
+      map.set(item.date, typeof item.tokens === 'number' ? item.tokens : 0);
+    }
+  }
+
+  const result: { date: string; tokens: number }[] = [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  for (let i = days - 1; i >= 0; i -= 1) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    result.push({ date: key, tokens: map.get(key) ?? 0 });
+  }
+
+  return result;
+};
+
+const normalizeBreakdown = (
+  breakdown: any,
+  dashboard: any
+): { service: string; credits: number; percentage: number }[] => {
+  if (Array.isArray(breakdown) && breakdown.length > 0) {
+    return breakdown;
+  }
+
+  const byService = breakdown?.breakdown;
+  const total = typeof breakdown?.total === 'number' ? breakdown.total : null;
+  if (byService && typeof byService === 'object') {
+    const totalCredits = total !== null ? total : Object.values(byService).reduce((sum: number, v: any) => sum + (typeof v === 'number' ? v : 0), 0);
+    return Object.entries(byService)
+      .map(([service, credits]) => {
+        const c = typeof credits === 'number' ? credits : 0;
+        const pct = totalCredits > 0 ? (c / totalCredits) * 100 : 0;
+        return {
+          service,
+          credits: c,
+          percentage: Math.round(pct * 10) / 10,
+        };
+      })
+      .sort((a, b) => b.credits - a.credits);
+  }
+
+  if (dashboard?.usage_by_service && Array.isArray(dashboard.usage_by_service) && dashboard.usage_by_service.length > 0) {
+    return dashboard.usage_by_service.map((s: any) => ({
+      service: s.service,
+      credits: s.credits,
+      percentage: s.percentage,
+    }));
+  }
+
+  return [];
+};
+
 /**
  * Fetch complete dashboard data from billing service
  * Returns ONLY real data - no fallbacks
@@ -45,6 +107,7 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     breakdownRes,
     historyRes,
     analyticsRes,
+    usageMetricsRes,
   ] = await Promise.all([
     fastapiClient.get('/billing/dashboard/me').catch((e) => { errors.push('dashboard'); return { data: null }; }),
     fastapiClient.get('/billing/credits').catch((e) => { errors.push('credits'); return { data: null }; }),
@@ -52,6 +115,7 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     fastapiClient.get('/billing/dashboard/me/breakdown').catch((e) => { errors.push('breakdown'); return { data: null }; }),
     fastapiClient.get('/billing/usage/tokens/history?days=30').catch((e) => { errors.push('history'); return { data: null }; }),
     fastapiClient.get('/resonant-chat/analytics').catch((e) => { errors.push('analytics'); return { data: null }; }),
+    fastapiClient.get('/usage/metrics').catch((e) => { errors.push('usage_metrics'); return { data: null }; }),
   ]);
 
   // Extract REAL data only - no fallbacks
@@ -61,6 +125,7 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
   const breakdown = breakdownRes.data;
   const history = historyRes.data;
   const analytics = analyticsRes.data;
+  const usageMetrics = usageMetricsRes.data;
 
   // Determine tier from REAL subscription data only
   const plan = subscription?.plan?.toLowerCase();
@@ -69,10 +134,22 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
   else if (plan === 'plus' || plan === 'professional') tier = 'plus';
   else if (plan === 'enterprise') tier = 'enterprise';
 
-  // Get REAL credits data - no fallbacks
-  const balance = dashboard?.current_balance ?? credits?.balance ?? null;
-  const creditLimit = dashboard?.tier_credits ?? null;
-  const usedThisMonth = dashboard?.usage_this_period ?? null;
+  // Get REAL credits data
+  const balance = dashboard?.current_balance ?? credits?.balance ?? usageMetrics?.credits?.balance ?? null;
+  let creditLimit = dashboard?.tier_credits ?? usageMetrics?.credits?.limit ?? null;
+  if (creditLimit === 0 && usageMetrics?.credits?.limit) creditLimit = usageMetrics.credits.limit;
+
+  const usedThisMonthFromBackend = dashboard?.usage_this_period ?? null;
+  const derivedUsedThisMonth = creditLimit !== null && balance !== null && creditLimit > 0
+    ? Math.max(0, creditLimit - balance)
+    : null;
+
+  const usedThisMonth = derivedUsedThisMonth !== null && (
+    usedThisMonthFromBackend === null ||
+    (typeof usedThisMonthFromBackend === 'number' && Math.abs(derivedUsedThisMonth - usedThisMonthFromBackend) > Math.max(5, creditLimit * 0.05))
+  )
+    ? derivedUsedThisMonth
+    : usedThisMonthFromBackend;
 
   // Days remaining from REAL data only
   const daysRemaining = dashboard?.days_remaining ?? null;
@@ -80,18 +157,8 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
   // Burn rate from backend (or calculate if not provided)
   const burnRate = dashboard?.burn_rate ?? null;
 
-  // Build usage breakdown from REAL data only - no estimates
-  let usageBreakdown: { service: string; credits: number; percentage: number }[] = [];
-  if (breakdown && Array.isArray(breakdown) && breakdown.length > 0) {
-    usageBreakdown = breakdown;
-  } else if (dashboard?.usage_by_service && dashboard.usage_by_service.length > 0) {
-    usageBreakdown = dashboard.usage_by_service.map((s: any) => ({
-      service: s.service,
-      credits: s.credits,
-      percentage: s.percentage,
-    }));
-  }
-  // NO ESTIMATED BREAKDOWN - only real data
+  // Build usage breakdown from backend response (supports both legacy and new shapes)
+  const usageBreakdown: { service: string; credits: number; percentage: number }[] = normalizeBreakdown(breakdown, dashboard);
 
   // Build alerts from REAL data
   const alerts: DashboardData['alerts'] = dashboard?.alerts || [];
@@ -118,10 +185,10 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
 
   // Get activity metrics from REAL data only - no fallbacks
   const messages = analytics?.usage?.total_messages ?? dashboard?.messages ?? null;
-  const memories = analytics?.usage?.total_memories ?? dashboard?.memories ?? null;
-  const agents = dashboard?.agents ?? null;
-  const sessions = dashboard?.sessions ?? analytics?.usage?.total_conversations ?? null;
-  const agentsLimit = dashboard?.agents_limit ?? null;
+  const memories = usageMetrics?.memory?.anchorsUsed ?? analytics?.usage?.total_memories ?? dashboard?.memories ?? null;
+  const agents = usageMetrics?.agents?.active ?? dashboard?.agents ?? null;
+  const sessions = usageMetrics?.conversations?.count ?? dashboard?.sessions ?? analytics?.usage?.total_conversations ?? null;
+  const agentsLimit = usageMetrics?.agents?.limit ?? dashboard?.agents_limit ?? null;
 
   // Build recent activity from REAL transactions
   const recentActivity: DashboardData['recentActivity'] = [];
@@ -146,7 +213,7 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     },
     tier,
     usageBreakdown,
-    usageTrend: history || [],
+    usageTrend: normalizeUsageTrend(history || [], 30),
     activity: {
       messages,
       agents,

@@ -109,7 +109,8 @@
 
 .legendCredits {
   font-size: 12px;
-  color: var(--color-text-tertiary, #707080);
+  color: var(--color-text-secondary, #a0a0b0);
+  font-weight: 600;
   min-width: 60px;
   text-align: right;
 }
