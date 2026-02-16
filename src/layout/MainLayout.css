@@ -161,12 +161,13 @@
   padding: 0;
   background: var(--color-bg-root);
   flex: 1;
-  height: calc(100vh - 48px);
+  height: auto;
+  min-height: 100dvh;
   width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   padding-bottom: 0;
-  padding-top: 48px;
+  padding-top: calc(var(--header-height, 60px) + env(safe-area-inset-top));
   margin-top: 0;
   position: relative;
   z-index: 1;
@@ -175,25 +176,25 @@
 /* Mobile: Reduce top padding for tighter layout */
 @media (max-width: 768px) {
   .main-content:not(.landing-page-content):not(:has(.idePageContainer)) {
-    padding-top: 44px;
+    padding-top: calc(var(--header-height, 60px) + env(safe-area-inset-top));
   }
 }
 
 /* Auth pages (login/signup) - proper spacing below header */
 .main-content.auth-page-content {
-  padding-top: 48px !important;
+  padding-top: calc(var(--header-height, 60px) + env(safe-area-inset-top)) !important;
   margin-top: 0 !important;
-  min-height: calc(100vh - 48px) !important;
+  min-height: 100dvh !important;
 }
 
 /* Network pages - ultra compact */
 .main-content:not(:has(.idePageContainer)):not(:has(.buildPage)) > .page-wrapper {
-  padding-top: 5px !important;
+  padding-top: 0 !important;
 }
 
 /* Build Page - flush with header, no padding */
 .main-content:has(.buildPage) {
-  padding-top: 48px !important;
+  padding-top: calc(var(--header-height, 60px) + env(safe-area-inset-top)) !important;
   padding-bottom: 0 !important;
 }
 
@@ -231,7 +232,7 @@
 @media (min-width: 1024px) {
   .main-content {
     padding-bottom: 0;
-    min-height: calc(100vh - 56px);
+    min-height: calc(100dvh - var(--header-height, 60px));
     /* Account for 56px header */
   }
 
