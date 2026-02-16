@@ -635,6 +635,10 @@
   overflow: visible;
 }
 
+.heroChatWrapperSplit {
+  max-width: min(1200px, 96vw);
+}
+
 .heroChatActive .heroChatWrapper {
   height: min(640px, 70vh);
   min-height: 320px;

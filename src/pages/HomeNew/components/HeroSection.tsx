@@ -4,6 +4,7 @@ import heroTitleStyles from '@/components/ui/HeroTitle.module.css';
 import styles from '../HomeNew.module.css';
 import { isAuthenticated } from '@/utils/auth-cookies';
 import ChatInputBar from '@/components/ResonantChat/ChatInputBar/ChatInputBar';
+import { SplitViewModule } from '@/components/ResonantChat/SplitView/SplitViewModule';
 import { sendResonantMessage } from '@/api/resonantChat';
 import { getChatHistory } from '@/api/resonantChat';
 import { listMemories, uploadFile, type MemoryResponse } from '@/api/rag';
@@ -27,6 +28,11 @@ export const HeroSection = () => {
     const [memories, setMemories] = useState<Array<{ id: string; name?: string; content?: string }>>([]);
     const [showConversations, setShowConversations] = useState(false);
     const [conversations, setConversations] = useState<Array<{ id: string; title?: string; created_at?: string }>>([]);
+    const [splitViewEnabled, setSplitViewEnabled] = useState(false);
+    const [splitViewWidth, setSplitViewWidth] = useState(55);
+    const [selectedCodeMessage, setSelectedCodeMessage] = useState<string | null>(null);
+    const [autoOpenRequest, setAutoOpenRequest] = useState<{ requestId: number; tab: 'code' | 'preview' | 'terminal'; previewUrl?: string | null } | null>(null);
+    const autoOpenRequestIdRef = useRef(0);
     
     useEffect(() => {
         setIsLoggedIn(isAuthenticated());
@@ -93,6 +99,18 @@ export const HeroSection = () => {
 
             setMessages(conversationMessages);
             setChatId(conversationId);
+
+            const firstWithPreview = conversationMessages.find(m => m.role === 'assistant' && (messageWantsPreview(m.content).hasCode || messageWantsPreview(m.content).hasHtml || messageWantsPreview(m.content).hasImage));
+            if (firstWithPreview) {
+                const { hasCode, hasHtml, hasImage } = messageWantsPreview(firstWithPreview.content);
+                if (hasCode) setSelectedCodeMessage(firstWithPreview.id);
+                setSplitViewEnabled(true);
+                autoOpenRequestIdRef.current += 1;
+                const imageUrl = hasImage ? extractFirstImageUrl(firstWithPreview.content) : null;
+                const html = hasHtml && !hasCode ? extractHtmlDocument(firstWithPreview.content) : null;
+                const previewUrl = imageUrl || (html ? toDataHtmlUrl(html) : null);
+                setAutoOpenRequest({ requestId: autoOpenRequestIdRef.current, tab: 'preview', previewUrl });
+            }
         } catch {
             // ignore
         }
@@ -104,7 +122,41 @@ export const HeroSection = () => {
         setChatInput('');
         setAttachedFiles([]);
         setUploadedFileIds(new Map());
+        setSplitViewEnabled(false);
+        setSelectedCodeMessage(null);
+        setAutoOpenRequest(null);
     }, []);
+
+    const extractFirstImageUrl = (content: string): string | null => {
+        const md = content.match(/!\[[^\]]*\]\((https?:\/\/[^\s)]+)\)/i);
+        if (md?.[1]) return md[1];
+        const url = content.match(/(https?:\/\/[^\s]+\.(png|jpg|jpeg|gif|webp))(\?[^\s]+)?/i);
+        if (url?.[1]) return url[1] + (url[3] || '');
+        const dataImg = content.match(/data:image\/[a-zA-Z]+;base64,[a-zA-Z0-9+/=]+/);
+        if (dataImg?.[0]) return dataImg[0];
+        return null;
+    };
+
+    const extractHtmlDocument = (content: string): string | null => {
+        const idx = content.search(/<!doctype\s+html|<html\b/i);
+        if (idx === -1) return null;
+        return content.slice(idx).trim();
+    };
+
+    const toDataHtmlUrl = (html: string) => {
+        try {
+            return `data:text/html;charset=utf-8,${encodeURIComponent(html)}`;
+        } catch {
+            return null;
+        }
+    };
+
+    const messageWantsPreview = (content: string) => {
+        const hasCode = /```[\s\S]*?```/g.test(content);
+        const hasHtml = /<!doctype\s+html|<html\b|<body\b|<style\b|<script\b/i.test(content);
+        const hasImage = !!extractFirstImageUrl(content) || /<img\b/i.test(content);
+        return { hasCode, hasHtml, hasImage };
+    };
 
     const readTextFile = (file: File) =>
         new Promise<string>((resolve, reject) => {
@@ -227,6 +279,18 @@ export const HeroSection = () => {
             };
 
             setMessages(prev => [...prev, assistantMessage]);
+
+            const { hasCode, hasHtml, hasImage } = messageWantsPreview(responseContent || '');
+            if (hasCode || hasHtml || hasImage) {
+                if (hasCode) setSelectedCodeMessage(assistantMessage.id);
+                setSplitViewEnabled(true);
+                autoOpenRequestIdRef.current += 1;
+                const imageUrl = hasImage ? extractFirstImageUrl(responseContent || '') : null;
+                const html = hasHtml && !hasCode ? extractHtmlDocument(responseContent || '') : null;
+                const previewUrl = imageUrl || (html ? toDataHtmlUrl(html) : null);
+                setAutoOpenRequest({ requestId: autoOpenRequestIdRef.current, tab: 'preview', previewUrl });
+            }
+
             setAttachedFiles([]);
             setUploadedFileIds(new Map());
         } catch (err: any) {
@@ -288,74 +352,103 @@ export const HeroSection = () => {
 
                 {/* Resonant Chat Input Bar */}
                 <div
-                    className={styles.heroChatWrapper}
+                    className={`${styles.heroChatWrapper} ${splitViewEnabled ? styles.heroChatWrapperSplit : ''}`}
                     onFocusCapture={() => setIsChatFocused(true)}
                     onBlurCapture={() => setIsChatFocused(false)}
                 >
-                    {messages.length > 0 && (
-                        <div className={styles.heroChatMessages} ref={messagesRef}>
-                            {messages.map((m) => (
-                                <div
-                                    key={m.id}
-                                    className={`${styles.heroChatMessageRow} ${m.role === 'user' ? styles.heroChatMessageRowUser : styles.heroChatMessageRowAssistant}`}
-                                >
-                                    <div
-                                        className={`${styles.heroChatMessage} ${m.role === 'user' ? styles.heroChatMessageUser : styles.heroChatMessageAssistant}`}
-                                    >
-                                        {m.content}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                    <ChatInputBar
-                        value={chatInput}
-                        onChange={setChatInput}
-                        onSend={handleSend}
+                    <SplitViewModule
+                        enabled={splitViewEnabled && messages.length > 0}
+                        onClose={() => setSplitViewEnabled(false)}
+                        selectedMessageId={selectedCodeMessage}
+                        messages={messages as any}
+                        onCopyCode={(code) => {
+                            try {
+                                navigator.clipboard.writeText(code);
+                            } catch {
+                                // ignore
+                            }
+                        }}
+                        initialWidth={splitViewWidth}
+                        onWidthChange={setSplitViewWidth}
                         embedded={true}
-                        hideProviderSelector={true}
-                        voiceInInput={true}
-                        voiceIconSize={22}
-                        placeholder="Start typing..."
-                        isLoading={isSending}
-                        disabled={false}
-                        onNewChat={handleNewChat}
-                        onAttachFile={() => fileInputRef.current?.click()}
-                        attachedFiles={attachedFiles}
-                        onRemoveFile={(index) => setAttachedFiles(prev => prev.filter((_, i) => i !== index))}
-                        memories={memories}
-                        onShowMemoryLibrary={async () => {
-                            await loadMemories();
-                            setShowMemoryLibrary(true);
-                            setShowConversations(false);
-                        }}
-                        showMemoryLibrary={showMemoryLibrary}
-                        onCloseMemoryLibrary={() => setShowMemoryLibrary(false)}
-                        onMemoryClick={(memory) => {
-                            setChatInput(prev => prev + ` @${memory.name || memory.content?.substring(0, 20)} `);
-                            setShowMemoryLibrary(false);
-                        }}
-                        conversations={conversations}
-                        onShowConversations={async () => {
-                            await loadConversations();
-                            setShowConversations(true);
-                            setShowMemoryLibrary(false);
-                        }}
-                        showConversations={showConversations}
-                        onCloseConversations={() => setShowConversations(false)}
-                        onConversationClick={(conv) => {
-                            handleLoadConversation(conv.id);
-                            setShowConversations(false);
-                        }}
-                        currentConversationId={chatId}
-                    />
-                    <input
-                        ref={fileInputRef}
-                        type="file"
-                        multiple
-                        style={{ display: 'none' }}
-                        onChange={handleFileSelect}
-                    />
+                        autoOpenRequest={autoOpenRequest || undefined}
+                    >
+                        <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
+                            {messages.length > 0 && (
+                                <div className={styles.heroChatMessages} ref={messagesRef}>
+                                    {messages.map((m) => (
+                                        <div
+                                            key={m.id}
+                                            className={`${styles.heroChatMessageRow} ${m.role === 'user' ? styles.heroChatMessageRowUser : styles.heroChatMessageRowAssistant}`}
+                                            onClick={() => {
+                                                if (m.role !== 'assistant') return;
+                                                if (/```[\s\S]*?```/g.test(m.content)) {
+                                                    setSelectedCodeMessage(m.id);
+                                                }
+                                            }}
+                                        >
+                                            <div
+                                                className={`${styles.heroChatMessage} ${m.role === 'user' ? styles.heroChatMessageUser : styles.heroChatMessageAssistant}`}
+                                            >
+                                                {m.content}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            <ChatInputBar
+                                value={chatInput}
+                                onChange={setChatInput}
+                                onSend={handleSend}
+                                embedded={true}
+                                hideProviderSelector={true}
+                                voiceInInput={true}
+                                voiceIconSize={22}
+                                placeholder="Start typing..."
+                                isLoading={isSending}
+                                disabled={false}
+                                onNewChat={handleNewChat}
+                                onAttachFile={() => fileInputRef.current?.click()}
+                                onToggleSplitView={() => setSplitViewEnabled(v => !v)}
+                                splitViewEnabled={splitViewEnabled}
+                                splitViewWidth={splitViewWidth}
+                                attachedFiles={attachedFiles}
+                                onRemoveFile={(index) => setAttachedFiles(prev => prev.filter((_, i) => i !== index))}
+                                memories={memories}
+                                onShowMemoryLibrary={async () => {
+                                    await loadMemories();
+                                    setShowMemoryLibrary(true);
+                                    setShowConversations(false);
+                                }}
+                                showMemoryLibrary={showMemoryLibrary}
+                                onCloseMemoryLibrary={() => setShowMemoryLibrary(false)}
+                                onMemoryClick={(memory) => {
+                                    setChatInput(prev => prev + ` @${memory.name || memory.content?.substring(0, 20)} `);
+                                    setShowMemoryLibrary(false);
+                                }}
+                                conversations={conversations}
+                                onShowConversations={async () => {
+                                    await loadConversations();
+                                    setShowConversations(true);
+                                    setShowMemoryLibrary(false);
+                                }}
+                                showConversations={showConversations}
+                                onCloseConversations={() => setShowConversations(false)}
+                                onConversationClick={(conv) => {
+                                    handleLoadConversation(conv.id);
+                                    setShowConversations(false);
+                                }}
+                                currentConversationId={chatId}
+                            />
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                multiple
+                                style={{ display: 'none' }}
+                                onChange={handleFileSelect}
+                            />
+                        </div>
+                    </SplitViewModule>
                 </div>
 
             </div>

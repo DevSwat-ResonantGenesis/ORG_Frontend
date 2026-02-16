@@ -18,7 +18,7 @@ const BuildModule = React.lazy(() =>
 );
 
 // Types
-import type { ProjectFile } from './types';
+import type { ProjectFile, TabType } from './types';
 
 // Hooks
 import { useSplitViewState, useFileTree, useCodeBlocks, useResizable } from './hooks';
@@ -64,6 +64,12 @@ export interface SplitViewModuleProps {
   onCopyCode: (code: string) => void;
   initialWidth?: number;
   onWidthChange?: (width: number) => void;
+  embedded?: boolean;
+  autoOpenRequest?: {
+    requestId: number;
+    tab: TabType;
+    previewUrl?: string | null;
+  };
   // Project mode props
   projectMode?: boolean;
   projectFiles?: ProjectFile[];
@@ -82,6 +88,8 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
   onCopyCode,
   initialWidth = DEFAULT_SPLIT_WIDTH,
   onWidthChange,
+  embedded = false,
+  autoOpenRequest,
   projectMode = false,
   projectFiles: initialProjectFiles = [],
   projectId,
@@ -121,6 +129,20 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
 
   // Code blocks from messages
   const { codeBlocks } = useCodeBlocks(messages, selectedMessageId);
+
+  const lastAutoOpenRequestIdRef = React.useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!enabled) return;
+    if (!autoOpenRequest) return;
+    if (lastAutoOpenRequestIdRef.current === autoOpenRequest.requestId) return;
+
+    lastAutoOpenRequestIdRef.current = autoOpenRequest.requestId;
+    if (autoOpenRequest.previewUrl) {
+      actions.setPreviewConfig({ url: autoOpenRequest.previewUrl });
+    }
+    actions.setActiveTab(autoOpenRequest.tab);
+  }, [enabled, autoOpenRequest, actions]);
 
   // Auto-select first file when project files change
   useEffect(() => {
@@ -268,9 +290,13 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
   }
 
   return (
-    <div className={styles.splitViewContainer} ref={containerRef}>
+    <div
+      className={styles.splitViewContainer}
+      ref={containerRef}
+      style={embedded ? { height: '100%', overflow: 'visible' } : undefined}
+    >
       {/* Chat Panel */}
-      <div className={styles.chatPanel} style={{ width: `${width}%` }}>
+      <div className={styles.chatPanel} style={{ width: `${width}%`, overflow: embedded ? 'visible' : undefined }}>
         {children}
       </div>
 
