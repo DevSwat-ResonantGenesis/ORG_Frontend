@@ -370,7 +370,7 @@
 
 @media (min-width: 1024px) {
   .heroIntro {
-    padding-top: clamp(44px, 7vh, 120px);
+    padding-top: clamp(140px, 14vh, 240px);
   }
 
   .heroIntro h1 {
