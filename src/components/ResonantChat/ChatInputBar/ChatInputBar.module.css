@@ -20,6 +20,7 @@
   left: auto;
   right: auto;
   z-index: auto;
+  margin-top: auto;
 }
 
 .chatInputRoot.withSidebar {
