@@ -24,6 +24,15 @@ export const HeroSection = () => {
 
     const isChatActive = useMemo(() => isChatFocused || messages.length > 0, [isChatFocused, messages.length]);
 
+    useEffect(() => {
+        document.body.classList.toggle('landing-chat-active', isChatActive);
+        window.dispatchEvent(new CustomEvent('rg:landing-chat-active', { detail: isChatActive }));
+        return () => {
+            document.body.classList.remove('landing-chat-active');
+            window.dispatchEvent(new CustomEvent('rg:landing-chat-active', { detail: false }));
+        };
+    }, [isChatActive]);
+
     const handleSend = useCallback(async () => {
         const trimmed = chatInput.trim();
         if (!trimmed || isSending) return;

@@ -43,6 +43,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [landingChatActive, setLandingChatActive] = useState(false);
   const accountRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
   
@@ -54,6 +55,23 @@ export const Header: React.FC<HeaderProps> = ({
   const isResonantChatPage = location.pathname === '/resonant-chat' || location.pathname.startsWith('/resonant-chat');
 
   const isLandingPage = location.pathname === '/';
+
+  useEffect(() => {
+    if (!isLandingPage) {
+      setLandingChatActive(false);
+      return;
+    }
+
+    setLandingChatActive(document.body.classList.contains('landing-chat-active'));
+
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<boolean>).detail;
+      setLandingChatActive(!!detail);
+    };
+
+    window.addEventListener('rg:landing-chat-active', handler as EventListener);
+    return () => window.removeEventListener('rg:landing-chat-active', handler as EventListener);
+  }, [isLandingPage]);
   
   // Get Resonant Chat menu items (hook returns empty array if not in provider)
   const { menuItems: resonantChatMenuItems } = useResonantChatMenu();
@@ -192,9 +210,9 @@ export const Header: React.FC<HeaderProps> = ({
 
           <div 
             className={styles.logo}
-            onClick={() => (isLandingPage ? navigate('/resonant-chat') : goToHome(navigate))}
+            onClick={() => (isLandingPage && landingChatActive ? navigate('/resonant-chat') : goToHome(navigate))}
           >
-            {isLandingPage ? 'Resonant Chat' : 'ResonantGenesis'}
+            {isLandingPage ? (landingChatActive ? 'Resonant Chat' : 'ResonantGenesis') : 'ResonantGenesis'}
           </div>
 
           {/* Main Navigation - Desktop */}
