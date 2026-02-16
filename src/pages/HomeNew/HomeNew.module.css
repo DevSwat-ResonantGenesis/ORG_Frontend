@@ -246,6 +246,10 @@
   opacity: 0.9;
 }
 
+.heroChatActive .heroIntro {
+  display: none;
+}
+
 .heroGlassOverlay {
   position: absolute;
   inset: 0;
