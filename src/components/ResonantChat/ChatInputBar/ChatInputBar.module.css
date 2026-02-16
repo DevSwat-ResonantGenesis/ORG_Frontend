@@ -56,6 +56,12 @@
   flex-shrink: 0;
 }
 
+.embeddedVoiceStack {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
 .embeddedToolsToggle {
   min-width: 26px;
   height: 20px;
@@ -67,18 +73,36 @@
 .embeddedToolsToggle svg {
   width: 14px;
   height: 14px;
+  transform: rotate(-90deg);
+  transition: transform 0.15s ease;
 }
 
 .embeddedToolsToggle.active svg {
-  transform: rotate(180deg);
+  transform: rotate(90deg);
 }
 
-.embeddedToolsRow {
+.toolsRow.embeddedToolsRow {
+  position: absolute;
+  left: 64px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10002;
+  justify-content: flex-start;
+  align-items: center;
+  width: max-content;
+  max-width: calc(100% - 80px);
+  pointer-events: auto;
+  gap: 8px;
+  padding: 0 6px;
+  flex-wrap: nowrap;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  flex-wrap: nowrap;
+}
+
+.toolsRow.embeddedToolsRow .toolsRight {
+  margin-left: 8px;
 }
 
 .embeddedToolsRow::-webkit-scrollbar {

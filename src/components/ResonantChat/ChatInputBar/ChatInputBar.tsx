@@ -382,7 +382,13 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
       className={`${styles.chatInputRoot} ${embedded ? styles.embedded : ''} ${sidebarOpen && !embedded ? styles.withSidebar : ''} ${splitViewEnabled && !embedded ? styles.splitViewEnabled : ''}`}
       style={splitViewEnabled && !embedded ? { right: chatInputRightInset } : undefined}
     >
-      <div className={styles.inputWrapper} ref={inputWrapperRef}>
+      <div
+        className={styles.inputWrapper}
+        ref={inputWrapperRef}
+        onMouseLeave={() => {
+          if (embedded) setShowEmbeddedTools(false);
+        }}
+      >
         {/* Agent Panel - Floats above */}
         {agentMode && (
           <div className={styles.agentPanel} ref={agentPanelRef}>
@@ -640,7 +646,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
         {/* Input Area: Textarea + Send */}
         <div className={styles.inputArea}>
           {voiceInInput && (
-            <div className={styles.voiceStack}>
+            <div className={`${styles.voiceStack} ${embedded ? styles.embeddedVoiceStack : ''}`}>
               <VoiceInput
                 onTranscript={(text) => {
                   const currentValue = valueRef.current;
@@ -657,6 +663,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 <button
                   type="button"
                   className={`${styles.toolButton} ${styles.embeddedToolsToggle} ${showEmbeddedTools ? styles.active : ''}`}
+                  onMouseEnter={() => setShowEmbeddedTools(true)}
+                  onFocus={() => setShowEmbeddedTools(true)}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -695,7 +703,15 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
 
         {/* Tools Row */}
         {(!embedded || showEmbeddedTools) && (
-        <div className={`${styles.toolsRow} ${embedded ? styles.embeddedToolsRow : ''}`}>
+        <div
+          className={`${styles.toolsRow} ${embedded ? styles.embeddedToolsRow : ''}`}
+          onMouseEnter={() => {
+            if (embedded) setShowEmbeddedTools(true);
+          }}
+          onMouseLeave={() => {
+            if (embedded) setShowEmbeddedTools(false);
+          }}
+        >
           <div className={styles.toolsLeft}>
             {!hideProviderSelector && (
             <div style={{ position: 'relative', zIndex: 10000 }}>
