@@ -30,6 +30,20 @@
   isolation: isolate;
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .header:hover,
+  .header:focus-within {
+    background: rgba(255, 255, 255, 0.06) !important;
+    backdrop-filter: blur(10px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
+  }
+
+  :global([data-theme='dark']) .header:hover,
+  :global([data-theme='dark']) .header:focus-within {
+    background: rgba(10, 10, 15, 0.10) !important;
+  }
+}
+
 .landingHoverOnly {
   background: transparent !important;
   border-bottom-color: transparent !important;
@@ -1242,29 +1256,5 @@
   opacity: 0.9;
 }
 
-:global([data-theme='dark'] body.resonant-chat-page) .header {
-  background: #32312E !important;
-  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  color: #f8fafc !important;
-}
 
-:global([data-theme='light'] body.resonant-chat-page) .header {
-  background: #f0f4f9 !important;
-  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  color: #0f172a !important;
-}
-
-:global([data-theme='dark'] body.resonant-chat-page) .headerScrolled {
-  background: #32312E !important;
-  box-shadow: none !important;
-}
-
-:global([data-theme='light'] body.resonant-chat-page) .headerScrolled {
-  background: #f0f4f9 !important;
-  box-shadow: none !important;
-}
 

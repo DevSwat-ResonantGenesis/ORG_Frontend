@@ -101,12 +101,7 @@ html[data-theme="dark"] {
   color: #f9fafb !important;
 }
 
-[data-theme='dark'] header {
-  /* Very transparent glass effect for dark mode */
-  background: rgba(10, 10, 15, 0.15) !important;
-  backdrop-filter: blur(12px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(150%) !important;
-}
+
 
 [data-theme='dark'] body,
 [data-theme='dark'] html {
@@ -246,14 +241,4 @@ html[data-theme="light"] {
 [data-theme="light"] .text-h5,
 [data-theme="light"] .text-h6 {
   color: #111827 !important;
-}
-
-[data-theme="light"] header {
-  /* Very transparent glass effect for light mode */
-  background: rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(12px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(150%) !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
-  box-shadow: none !important;
-  padding: 12px 32px !important;
 }
