@@ -416,7 +416,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* AgentOS minimal header - search moved to page */}
           
           <div className={styles.actions}>
-            <div className={isLandingPage ? styles.hoverOnly : ''}>
+            <div className={`${styles.actionsRow} ${isLandingPage ? styles.hoverOnly : ''}`}>
               {isLoggedIn && (
                 <button
                   type="button"

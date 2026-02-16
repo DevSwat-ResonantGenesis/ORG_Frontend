@@ -360,6 +360,13 @@
   margin-left: auto;
 }
 
+.actionsRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+}
+
 /* ============================================
    USER EMAIL BADGE
    ============================================ */

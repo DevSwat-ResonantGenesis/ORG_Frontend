@@ -150,6 +150,8 @@
   overflow-x: hidden;
   background: var(--color-bg-root);
 
+  box-sizing: border-box;
+
   min-height: 100dvh !important;
   height: auto !important;
   overflow-y: auto !important;
