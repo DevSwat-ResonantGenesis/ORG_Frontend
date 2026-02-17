@@ -128,6 +128,8 @@ export const pricingService = {
     try {
       const token = localStorage.getItem('owner_token') || localStorage.getItem('token');
       const endpoints = [
+        `/api/billing/pricing`,
+        `${API_BASE}/api/billing/pricing`,
         `${API_BASE}/owner/auth/pricing`,
       ];
 
@@ -173,6 +175,87 @@ export const pricingService = {
    * Transform backend pricing format to our format
    */
   transformBackendPricing(data: any): PricingConfig {
+    // billing_service format (preferred)
+    // { credit_rate: {value, ...}, plans: {developer:{...}, plus:{...}}, credit_packs:[...], credit_costs:{...} }
+    if (data && typeof data === 'object' && data.plans && data.credit_rate) {
+      const creditRate = Number(data.credit_rate?.value ?? data.credit_rate ?? 0.001);
+      const plans: PricingConfig['plans'] = {};
+
+      const toLimits = (limits: any): PlanLimits => {
+        const storageMb = Number(limits?.storage_mb ?? limits?.storageMb ?? 100);
+        const agents = Number(limits?.agents ?? limits?.agentsAllowed ?? 3);
+        const computeHours = Number(limits?.compute_hours ?? limits?.computeHours ?? 10);
+
+        return {
+          agents: {
+            active: Number.isFinite(agents) ? agents : 3,
+            autonomousMode: Boolean(limits?.autonomous_mode ?? false),
+            teams: Boolean(limits?.teams ?? false),
+          },
+          chat: {
+            conversations: Number(limits?.conversations ?? -1),
+            messagesPerDay: Number(limits?.messages_per_day ?? -1),
+            messagesPerConversation: -1,
+          },
+          compute: {
+            hours: Number.isFinite(computeHours) ? computeHours : 10,
+            aiAssistance: 'Basic',
+          },
+          storage: {
+            mb: Number.isFinite(storageMb) ? storageMb : 100,
+            ragDocuments: 0,
+          },
+          governance: {
+            killSwitch: 'Manual',
+            invariants: 0,
+            snapshots: 0,
+          },
+        };
+      };
+
+      for (const [planId, plan] of Object.entries<any>(data.plans || {})) {
+        const monthly = Number(plan?.price?.monthly ?? 0);
+        const yearly = Number(plan?.price?.yearly ?? 0);
+        const includedCredits = Number(plan?.credits?.included ?? 0);
+        plans[planId] = {
+          id: String(plan?.id ?? planId),
+          name: String(plan?.name ?? planId),
+          price: { monthly, yearly },
+          credits: {
+            included: includedCredits,
+            rollover: Boolean(plan?.credits?.rollover ?? false),
+            rolloverLimit: plan?.credits?.rollover_limit ?? plan?.credits?.rolloverLimit,
+            topups: Boolean(plan?.credits?.topups ?? false),
+            topupPrice: plan?.credits?.topup_price ?? plan?.credits?.topupPrice,
+            topupAmount: plan?.credits?.topup_amount ?? plan?.credits?.topupAmount,
+          },
+          limits: toLimits(plan?.limits),
+        };
+      }
+
+      const topupPrice = Number(
+        data?.plans?.plus?.credits?.topup_price ??
+          data?.plans?.plus?.credits?.topupPrice ??
+          data?.topup?.price ??
+          DEFAULT_PRICING.topup.price
+      );
+      const topupAmount = Number(
+        data?.plans?.plus?.credits?.topup_amount ??
+          data?.plans?.plus?.credits?.topupAmount ??
+          data?.topup?.amount ??
+          DEFAULT_PRICING.topup.amount
+      );
+
+      return {
+        creditRate,
+        plans,
+        topup: {
+          price: Number.isFinite(topupPrice) ? topupPrice : DEFAULT_PRICING.topup.price,
+          amount: Number.isFinite(topupAmount) ? topupAmount : DEFAULT_PRICING.topup.amount,
+        },
+      };
+    }
+
     // If data already has our structure with plans object, return it
     if (data.plans && typeof data.plans === 'object') {
       return data as PricingConfig;

@@ -36,6 +36,7 @@ fastapiClient.interceptors.request.use((config) => {
       (config.headers as any)['RG-Org-ID'] = sessionData.org;
     }
   }
+
   
   // Ensure credentials are always sent
   config.withCredentials = true;

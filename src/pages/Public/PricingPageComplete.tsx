@@ -11,11 +11,9 @@ import {
   Shield, Lock, Network, Store, Check, X, Zap, Atom
 } from 'lucide-react';
 import {
-  PLANS,
   CORE_FEATURES,
   HASH_SPHERE_FEATURES,
   FAQ,
-  CREDIT_RATE,
   STATE_PHYSICS_API_PLANS,
   HASH_SPHERE_MEMORY_API_PLANS,
   type Plan,
@@ -23,7 +21,8 @@ import {
   type StatePhysicsAPIPlan,
   type HashSphereMemoryAPIPlan,
 } from '../../config/pricing';
-import { CREDIT_PACKS, type CreditPack } from '../../config/pricingConfig';
+import { pricingService } from '../../services/pricingService';
+import type { CreditPack } from '../../config/pricingConfig';
 import styles from './PricingPage.module.css';
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -46,6 +45,9 @@ const PricingPage: React.FC = () => {
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [apiCheckoutLoading, setApiCheckoutLoading] = useState<string | null>(null);
   const [creditPackLoading, setCreditPackLoading] = useState<string | null>(null);
+  const [creditRateDescription, setCreditRateDescription] = useState<string>('1 credit ≈ $0.001');
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [creditPacks, setCreditPacks] = useState<CreditPack[]>([]);
 
   // Get user's current plan to determine credit pack access
   const sessionData = getSessionData();
@@ -60,6 +62,128 @@ const PricingPage: React.FC = () => {
       }, 1000);
     }
   }, [location.search]);
+
+  useEffect(() => {
+    const loadPricing = async () => {
+      try {
+        const pricing = await pricingService.getPricing(true);
+        const rateValue = pricing?.creditRate ?? 0.001;
+        setCreditRateDescription(`1 credit ≈ $${rateValue}`);
+
+        const buildPlan = (planId: string, name: string): Plan => {
+          const cfg = pricing?.plans?.[planId];
+          const monthly = Number(cfg?.price?.monthly ?? 0);
+          const yearly = Number(cfg?.price?.yearly ?? 0);
+          const included = Number(cfg?.credits?.included ?? 0);
+          const isEnterprise = planId === 'enterprise';
+          const isPlus = planId === 'plus';
+
+          return {
+            id: planId,
+            name,
+            badge: isEnterprise ? 'Custom' : isPlus ? 'Professional' : 'Free Forever',
+            price: {
+              monthly,
+              yearly,
+              display: isEnterprise ? 'Custom' : `$${monthly}`,
+              period: isEnterprise ? '' : '/month',
+            },
+            description:
+              planId === 'developer'
+                ? 'For solo builders exploring ResonantGenesis. Get started with essential features and limited credits to test the platform.'
+                : planId === 'plus'
+                ? 'For serious builders, teams, and power users. Unlock autonomous agents, full AI assistance, and advanced features.'
+                : 'For organizations running AI as critical infrastructure. SLA guarantees, dedicated support, and custom deployments.',
+            credits: {
+              included,
+              display: included === -1 ? 'Custom' : `${included.toLocaleString()} / month`,
+              rollover: Boolean(cfg?.credits?.rollover ?? false),
+              rolloverLimit: cfg?.credits?.rolloverLimit,
+              topups: Boolean(cfg?.credits?.topups ?? false),
+              topupPrice: cfg?.credits?.topupPrice,
+              topupAmount: cfg?.credits?.topupAmount,
+              note: isEnterprise ? 'Tailored to your needs' : isPlus ? 'Rollover + Top-ups' : 'Top-ups available',
+            },
+            recommended: planId === 'plus',
+            contactSales: isEnterprise,
+            cta: {
+              text: isEnterprise ? 'Contact Sales' : planId === 'plus' ? 'Start Plus Plan' : 'Get Started Free',
+              style: planId === 'plus' ? 'primary' : 'secondary',
+            },
+            limits: {
+              agents: {
+                active: planId === 'enterprise' ? -1 : -1,
+                autonomousMode: planId !== 'developer',
+                teams: planId !== 'developer',
+              },
+              userTeams: {
+                enabled: false,
+              },
+              chat: {
+                conversations: -1,
+                messagesPerDay: -1,
+                evidenceGraph: planId !== 'developer',
+              },
+              hashSphereMemory: {
+                standaloneService: planId !== 'developer',
+                universeAccess: planId === 'enterprise' ? 'Multi Universe' : planId === 'plus' ? '1 Universe' : false,
+                multiLayer: planId === 'enterprise',
+              },
+              ideCompute: {
+                computeHours: cfg?.limits?.compute?.hours ?? (planId === 'enterprise' ? -1 : planId === 'plus' ? 100 : 10),
+                previewTime: planId === 'developer' ? '1 hr/day' : 'Unlimited',
+                aiAssistance: planId === 'enterprise' ? 'Full + Custom' : planId === 'plus' ? 'Full' : 'Basic',
+                customRuntimes: planId === 'enterprise',
+              },
+              governance: {
+                killSwitch: planId === 'enterprise' ? 'SLA-backed' : planId === 'plus' ? 'Automated' : 'Manual',
+                invariants: planId === 'enterprise' ? 'Custom' : planId === 'plus' ? 15 : 5,
+                snapshots: planId === 'enterprise' ? -1 : planId === 'plus' ? 10 : false,
+              },
+              codeVisualizer: {
+                codebaseGraphs: planId !== 'developer',
+                dependencyAnalysis: planId !== 'developer',
+                ciIntegration: planId === 'enterprise',
+              },
+            },
+            features: [],
+          };
+        };
+
+        const nextPlans: Plan[] = [
+          buildPlan('developer', 'Developer'),
+          buildPlan('plus', 'Plus'),
+          buildPlan('enterprise', 'Enterprise'),
+        ];
+        setPlans(nextPlans);
+      } catch {
+        setPlans([]);
+      }
+
+      try {
+        const res = await fetch('/api/billing/pricing', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          const packs = Array.isArray(data?.credit_packs) ? data.credit_packs : [];
+          const mapped: CreditPack[] = packs.map((p: any) => ({
+            id: String(p.id),
+            name: String(p.name),
+            credits: Number(p.credits ?? 0),
+            price: Number(p.price ?? 0),
+            pricePerK: Number(p.price_per_1k ?? p.pricePerK ?? 0),
+            savings: p.savings_percent ? `${p.savings_percent}%` : undefined,
+            description: String(p.description ?? ''),
+            recommended: Boolean(p.recommended ?? false),
+          }));
+          setCreditPacks(mapped);
+        }
+      } catch {
+        setCreditPacks([]);
+      }
+    };
+
+    loadPricing();
+  }, []);
 
   // Handle credit pack purchase
   const handleCreditPackPurchase = async (pack: CreditPack) => {
@@ -275,14 +399,14 @@ const PricingPage: React.FC = () => {
           <h1 className={styles.sectionTitle}>Simple, Transparent Pricing</h1>
           <p className={styles.sectionDescription}>
             Start free, scale as you grow. All plans include governance, memory, and multi-provider AI.
-            Usage is metered via Resonant Credits ({CREDIT_RATE.description}).
+            Usage is metered via Resonant Credits ({creditRateDescription}).
           </p>
           
         </div>
 
         {/* Plans Grid */}
         <div className={styles.plansGrid}>
-          {PLANS.map(renderPlanCard)}
+          {plans.map(renderPlanCard)}
         </div>
 
         {/* Credit Calculator */}
@@ -292,7 +416,7 @@ const PricingPage: React.FC = () => {
             Pay only for what you use. Credits cover AI model calls, compute time, storage, and agent execution.
           </p>
           <div className={styles.creditRate}>
-            <div className={styles.creditRateValue}>{CREDIT_RATE.description}</div>
+            <div className={styles.creditRateValue}>{creditRateDescription}</div>
             <div className={styles.creditRateLabel}>
               Real-time cost estimation before each action
             </div>
@@ -313,7 +437,7 @@ const PricingPage: React.FC = () => {
           </div>
           
           <div className={styles.creditPacksGrid}>
-            {CREDIT_PACKS.map((pack) => (
+            {creditPacks.map((pack) => (
               <div 
                 key={pack.id}
                 className={`${styles.creditPackCard} ${pack.recommended ? styles.creditPackRecommended : ''}`}
@@ -478,7 +602,7 @@ const PricingPage: React.FC = () => {
           </div>
           
           <div className={styles.limitsGrid}>
-            {PLANS.map((plan) => (
+            {plans.map((plan) => (
               <div key={plan.id} className={styles.limitCard}>
                 <h3 className={styles.limitCardTitle}>{plan.name}</h3>
                 
