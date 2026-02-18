@@ -297,7 +297,7 @@
   .hero {
     min-height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
     height: auto;
-    padding: calc(var(--header-height, 56px) + env(safe-area-inset-top) + 8px) var(--space-8) 48px;
+    padding: calc(var(--header-height, 56px) + env(safe-area-inset-top) + 20px) var(--space-8) 48px;
   }
 }
 
@@ -306,7 +306,7 @@
   .hero {
     min-height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
     height: auto;
-    padding: calc(var(--header-height, 56px) + env(safe-area-inset-top) + 8px) var(--space-8);
+    padding: calc(var(--header-height, 56px) + env(safe-area-inset-top) + 20px) var(--space-8);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
