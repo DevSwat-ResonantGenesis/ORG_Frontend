@@ -97,6 +97,18 @@
 @media (hover: none), (pointer: coarse) {
   .hoverReveal .mainNav.hoverOnly,
   .landingHoverOnly .mainNav.hoverOnly {
+    display: none;
+  }
+
+  .hoverReveal .actions .hoverOnly,
+  .landingHoverOnly .actions .hoverOnly {
+    display: none;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) and (min-width: 1025px) {
+  .hoverReveal .mainNav.hoverOnly,
+  .landingHoverOnly .mainNav.hoverOnly {
     display: flex;
   }
 
@@ -636,6 +648,14 @@
   
   .userEmail {
     max-width: 150px;
+  }
+
+  .mainNav.hoverOnly {
+    display: none !important;
+  }
+
+  .actionsRow.hoverOnly {
+    display: none !important;
   }
 }
 
