@@ -13,7 +13,12 @@ export const ThreeParticleSphere: React.FC = () => {
     useEffect(() => {
         if (!mountRef.current) return;
 
-        const isMobile = deviceIsMobile();
+        const getIsMobileLayout = () => {
+            if (typeof window === 'undefined') return false;
+            return deviceIsMobile() || window.matchMedia('(max-width: 768px)').matches;
+        };
+
+        let isMobileLayout = getIsMobileLayout();
 
         // Scene
         const scene = new THREE.Scene();
@@ -47,7 +52,7 @@ export const ThreeParticleSphere: React.FC = () => {
         };
 
         const applySize = () => {
-            if (!isMobile) {
+            if (!isMobileLayout) {
                 renderer.setSize(canvasSize, canvasSize, false);
                 return;
             }
@@ -64,7 +69,7 @@ export const ThreeParticleSphere: React.FC = () => {
         renderer.domElement.style.display = 'block';
         renderer.domElement.style.margin = '0 auto';
 
-        if (!isMobile) {
+        if (!isMobileLayout) {
             renderer.domElement.style.width = `${canvasSize}px`;
             renderer.domElement.style.height = `${canvasSize}px`;
         } else {
@@ -296,12 +301,23 @@ export const ThreeParticleSphere: React.FC = () => {
         // Only pulsation effect, no mouse tracking
 
         const handleResize = () => {
+            const nextIsMobileLayout = getIsMobileLayout();
+            if (nextIsMobileLayout !== isMobileLayout) {
+                isMobileLayout = nextIsMobileLayout;
+                if (!isMobileLayout) {
+                    renderer.domElement.style.width = `${canvasSize}px`;
+                    renderer.domElement.style.height = `${canvasSize}px`;
+                } else {
+                    renderer.domElement.style.width = '100%';
+                    renderer.domElement.style.height = '100%';
+                }
+            }
             applySize();
         };
 
         window.addEventListener('resize', handleResize);
         let ro: ResizeObserver | null = null;
-        if (isMobile) {
+        if (isMobileLayout) {
             ro = new ResizeObserver(() => {
                 applySize();
             });
