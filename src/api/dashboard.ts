@@ -59,33 +59,58 @@ const normalizeBreakdown = (
   breakdown: any,
   dashboard: any
 ): { service: string; credits: number; percentage: number }[] => {
+  const normalizeKey = (k: any): string => String(k || '').trim().toLowerCase();
+
+  const mergeAndSort = (items: { service: string; credits: number }[], total: number | null) => {
+    const merged = new Map<string, number>();
+    for (const it of items) {
+      const key = normalizeKey(it.service);
+      if (!key) continue;
+      merged.set(key, (merged.get(key) || 0) + (typeof it.credits === 'number' ? it.credits : 0));
+    }
+    const totalCredits = typeof total === 'number'
+      ? total
+      : Array.from(merged.values()).reduce((sum, v) => sum + (typeof v === 'number' ? v : 0), 0);
+
+    return Array.from(merged.entries())
+      .map(([service, credits]) => {
+        const pct = totalCredits > 0 ? (credits / totalCredits) * 100 : 0;
+        return {
+          service,
+          credits,
+          percentage: Math.round(pct * 10) / 10,
+        };
+      })
+      .sort((a, b) => b.credits - a.credits);
+  };
+
   if (Array.isArray(breakdown) && breakdown.length > 0) {
-    return breakdown;
+    return mergeAndSort(
+      breakdown.map((it: any) => ({ service: it?.service, credits: it?.credits })),
+      null
+    );
   }
 
   const byService = breakdown?.breakdown;
   const total = typeof breakdown?.total === 'number' ? breakdown.total : null;
   if (byService && typeof byService === 'object') {
-    const totalCredits = total !== null ? total : Object.values(byService).reduce((sum: number, v: any) => sum + (typeof v === 'number' ? v : 0), 0);
-    return Object.entries(byService)
-      .map(([service, credits]) => {
-        const c = typeof credits === 'number' ? credits : 0;
-        const pct = totalCredits > 0 ? (c / totalCredits) * 100 : 0;
-        return {
-          service,
-          credits: c,
-          percentage: Math.round(pct * 10) / 10,
-        };
-      })
-      .sort((a, b) => b.credits - a.credits);
+    return mergeAndSort(
+      Object.entries(byService).map(([service, credits]) => ({
+        service,
+        credits: typeof credits === 'number' ? credits : 0,
+      })),
+      total
+    );
   }
 
   if (dashboard?.usage_by_service && Array.isArray(dashboard.usage_by_service) && dashboard.usage_by_service.length > 0) {
-    return dashboard.usage_by_service.map((s: any) => ({
-      service: s.service,
-      credits: s.credits,
-      percentage: s.percentage,
-    }));
+    return mergeAndSort(
+      dashboard.usage_by_service.map((s: any) => ({
+        service: s?.service,
+        credits: typeof s?.credits === 'number' ? s.credits : 0,
+      })),
+      null
+    );
   }
 
   return [];
