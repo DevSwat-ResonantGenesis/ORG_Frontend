@@ -507,6 +507,17 @@
   touch-action: manipulation;
 }
 
+@media (max-width: 1024px) {
+  .burgerMenu {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    min-height: 52px;
+    padding: 10px;
+    border-radius: 14px;
+  }
+}
+
 @media (min-width: 1025px) {
   .burgerMenu {
     display: none;
@@ -527,6 +538,13 @@
   transition: transform 0.2s ease;
   width: 22px;
   height: 22px;
+}
+
+@media (max-width: 1024px) {
+  .burgerMenu svg {
+    width: 28px;
+    height: 28px;
+  }
 }
 
 .burgerMenu:hover svg {

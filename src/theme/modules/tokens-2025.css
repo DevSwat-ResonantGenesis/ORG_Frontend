@@ -105,6 +105,9 @@
     --bg-tertiary: #111111;
     /* Resonant Chat hover - dark gray */
 
+    --bg: #0a0a0a;
+    --color-bg-root: #0a0a0a;
+
     --surface: #0a0a0a;
     /* Resonant Chat surface */
     --surface-elevated: #111111;
