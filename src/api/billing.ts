@@ -207,6 +207,7 @@ export interface UsageBreakdown {
   compute: number;
   workflows: number;
   storage: number;
+  code_visualizer: number;
   other: number;
   total: number;
 }
@@ -231,6 +232,7 @@ export const getUsageBreakdown = async (): Promise<UsageBreakdown> => {
       compute: 0,
       workflows: 0,
       storage: 0,
+      code_visualizer: 0,
       other: 0,
       total: 0,
     };

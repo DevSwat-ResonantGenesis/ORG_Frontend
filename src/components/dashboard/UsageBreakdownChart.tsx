@@ -24,6 +24,7 @@ const SERVICE_ICONS: Record<string, React.ReactNode> = {
   ide: <Code size={14} />,
   workflows: <Cpu size={14} />,
   memory: <Database size={14} />,
+  code_visualizer: <Code size={14} />,
 };
 
 const SERVICE_COLORS: Record<string, string> = {
@@ -32,7 +33,12 @@ const SERVICE_COLORS: Record<string, string> = {
   ide: '#22c55e',
   workflows: '#f59e0b',
   memory: '#ec4899',
+  code_visualizer: '#06b6d4',
   other: '#6b7280',
+};
+
+const SERVICE_LABELS: Record<string, string> = {
+  code_visualizer: 'Code Visualizer',
 };
 
 export const UsageBreakdownChart: React.FC<UsageBreakdownChartProps> = ({
@@ -120,7 +126,7 @@ export const UsageBreakdownChart: React.FC<UsageBreakdownChartProps> = ({
             <div className={styles.legendIcon}>
               {SERVICE_ICONS[item.service] || <PieChart size={14} />}
             </div>
-            <span className={styles.legendLabel}>{item.service}</span>
+            <span className={styles.legendLabel}>{SERVICE_LABELS[item.service] || item.service}</span>
             <span className={styles.legendValue}>{item.percentage}%</span>
             <span className={styles.legendCredits}>{formatNumber(item.credits)}</span>
           </div>
