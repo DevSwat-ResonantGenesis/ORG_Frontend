@@ -571,8 +571,8 @@
     right: auto;
     top: 60%;
     transform: translate(-50%, -50%);
-    width: min(56vw, 240px);
-    height: min(56vw, 240px);
+    width: min(66vw, 300px);
+    height: min(66vw, 300px);
     justify-content: center;
     opacity: 0.75;
   }
