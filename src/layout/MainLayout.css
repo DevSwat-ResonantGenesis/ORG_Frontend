@@ -1,5 +1,22 @@
 /* Main Layout Responsive Styles */
 
+@media (max-width: 1023px) {
+  html.landingPageNoScroll,
+  body.landingPageNoScroll {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+    background: var(--color-bg-root);
+  }
+
+  body.landingPageNoScroll {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100%;
+  }
+}
+
 .main-layout-wrapper {
   display: flex;
   flex-direction: column;
