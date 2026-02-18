@@ -18,9 +18,6 @@ export const ThreeParticleSphere: React.FC = () => {
         // Scene
         const scene = new THREE.Scene();
 
-        // Fixed canvas size for controlled sphere appearance
-        const canvasSize = 820;
-
         // Camera - positioned for sphere to fit nicely in hero section
         // Slightly zoomed out to prevent edge clipping
         const camera = new THREE.PerspectiveCamera(
@@ -38,14 +35,28 @@ export const ThreeParticleSphere: React.FC = () => {
             powerPreference: 'high-performance',
         });
 
-        // Set fixed size for controlled sphere appearance
-        renderer.setSize(canvasSize, canvasSize);
+        const getNextSize = () => {
+            const el = mountRef.current;
+            if (!el) return 300;
+            const rect = el.getBoundingClientRect();
+            const size = Math.floor(Math.min(rect.width, rect.height));
+            return Math.max(1, size || 300);
+        };
+
+        const applySize = () => {
+            const nextSize = getNextSize();
+            renderer.setSize(nextSize, nextSize, false);
+        };
+
+        applySize();
         // Maximum quality - no mobile compromise for sharpness
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 3));
         
         // Style canvas to stay centered and not move
         renderer.domElement.style.display = 'block';
         renderer.domElement.style.margin = '0 auto';
+        renderer.domElement.style.width = '100%';
+        renderer.domElement.style.height = '100%';
         
         mountRef.current.appendChild(renderer.domElement);
 
@@ -270,11 +281,15 @@ export const ThreeParticleSphere: React.FC = () => {
         // Mouse parallax disabled - keep sphere in fixed position
         // Only pulsation effect, no mouse tracking
 
-        // Resize handler - fixed size, no resize needed
         const handleResize = () => {
-            // Fixed 800px canvas, no resize needed
+            applySize();
         };
+
         window.addEventListener('resize', handleResize);
+        const ro = new ResizeObserver(() => {
+            applySize();
+        });
+        ro.observe(mountRef.current);
 
         let animationFrameId: number;
 
@@ -333,6 +348,7 @@ export const ThreeParticleSphere: React.FC = () => {
         return () => {
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             window.removeEventListener('resize', handleResize);
+            ro.disconnect();
 
             // Dispose all geometries and materials
             geometry.dispose();
