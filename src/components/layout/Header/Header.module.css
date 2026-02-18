@@ -30,6 +30,13 @@
   isolation: isolate;
 }
 
+:global(body.usmMenuOpen) .header {
+  z-index: 9990 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .header:hover,
   .header:focus-within {

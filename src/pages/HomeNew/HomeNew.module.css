@@ -227,8 +227,8 @@
 /* Hero Section - Mobile First, Enhanced 2025 */
 .hero {
   /* Mobile: App-like compact layout */
-  min-height: 100%;
-  height: 100%;
+  min-height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
+  height: auto;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -237,15 +237,15 @@
   background: transparent;
   position: relative;
   z-index: 1;
-  overflow: hidden;
+  overflow: visible;
   box-sizing: border-box;
 }
 
 /* Mobile: Content at top, natural height */
 @media (max-width: 639px) {
   .hero {
-    min-height: 100%;
-    height: 100%;
+    min-height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
+    height: auto;
     align-items: flex-start;
     justify-content: flex-start;
     padding-top: calc(var(--header-height, 56px) + env(safe-area-inset-top) + 16px);
@@ -253,7 +253,7 @@
     padding-left: var(--space-8);
     padding-right: var(--space-8);
     margin-top: 0;
-    overflow: hidden;
+    overflow: visible;
   }
 }
 
@@ -331,11 +331,11 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  height: 100%;
+  height: auto;
   min-height: 0;
   box-shadow: none;
   border: none;
-  flex: 1 1 auto;
+  flex: 0 0 auto;
 }
 
 .heroIntro {
@@ -345,6 +345,12 @@
   flex-direction: column;
   justify-content: center;
   padding-top: clamp(20px, 5vh, 84px);
+}
+
+@media (max-width: 639px) {
+  .heroIntro {
+    padding-top: 16px;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -367,6 +373,7 @@
   padding: 0;
   margin: 0 0 8px 0;
   cursor: pointer;
+  font-family: inherit;
   line-height: 1;
   white-space: nowrap;
   position: relative;
@@ -491,6 +498,13 @@
 /* Mobile: Full opacity for clean colors */
 @media (max-width: 768px) {
   .heroParallax {
+    left: 50%;
+    right: auto;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(82vw, 380px);
+    height: min(82vw, 380px);
+    justify-content: center;
     opacity: 0.85;
   }
 }
@@ -671,6 +685,8 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  line-height: 1.2;
   white-space: nowrap;
 }
 
@@ -707,14 +723,15 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  line-height: 1;
+  line-height: 1.2;
   white-space: nowrap;
   position: relative;
   color: rgba(251, 191, 36, 0.95);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 650;
   letter-spacing: 0.01em;
   transition: transform 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 .heroNavItemPrimary::after {
@@ -779,6 +796,10 @@
   
   .heroNavItem {
     padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .heroNavItemPrimary {
     font-size: 12px;
   }
   
