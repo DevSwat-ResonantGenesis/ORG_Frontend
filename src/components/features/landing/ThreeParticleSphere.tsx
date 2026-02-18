@@ -184,7 +184,7 @@ export const ThreeParticleSphere: React.FC = () => {
         // ============================================================
         // LAYER 3: Main Particle Cloud (Gold → White)
         // ============================================================
-        const particleCount = isMobile ? 1800 : 4000; // Increased for desktop
+        const particleCount = isMobileLayout ? 1800 : 4000; // Increased for desktop
         const radius = 1.1;
 
         const positions = new Float32Array(particleCount * 3);
@@ -230,7 +230,7 @@ export const ThreeParticleSphere: React.FC = () => {
         geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
         const material = new THREE.PointsMaterial({
-            size: isMobile ? 0.015 : 0.025,
+            size: isMobileLayout ? 0.015 : 0.025,
             vertexColors: true,
             transparent: true,
             opacity: 0.95,
@@ -244,7 +244,7 @@ export const ThreeParticleSphere: React.FC = () => {
         // LAYER 4: Nebula Orbital Rings (Multi-Axis "Niuba" Style)
         // ============================================================
         const createNebulaRing = (radius: number, axisTilt: number) => {
-            const rCount = isMobile ? 300 : 800;
+            const rCount = isMobileLayout ? 300 : 800;
             const rPos = new Float32Array(rCount * 3);
             const rCol = new Float32Array(rCount * 3);
             const rBase = new THREE.Color('#3b82f6'); // Blue
@@ -275,7 +275,7 @@ export const ThreeParticleSphere: React.FC = () => {
             geo.setAttribute('position', new THREE.BufferAttribute(rPos, 3));
             geo.setAttribute('color', new THREE.BufferAttribute(rCol, 3));
             const mat = new THREE.PointsMaterial({
-                size: isMobile ? 0.012 : 0.015,
+                size: isMobileLayout ? 0.012 : 0.015,
                 vertexColors: true,
                 transparent: true,
                 opacity: 0.8,
