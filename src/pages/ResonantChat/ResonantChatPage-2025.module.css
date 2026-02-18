@@ -68,7 +68,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  padding-top: var(--header-height, 60px);
+  padding-top: calc(var(--header-height, 60px) + env(safe-area-inset-top));
   box-sizing: border-box;
   overflow: hidden;
   z-index: 2;
@@ -202,9 +202,9 @@
 .sidebarWrapper {
   position: fixed;
   left: 0;
-  top: var(--header-height, 60px);
+  top: calc(var(--header-height, 60px) + env(safe-area-inset-top));
   width: var(--chat-sidebar-width);
-  height: calc(100vh - var(--header-height, 60px));
+  height: calc(100dvh - (var(--header-height, 60px) + env(safe-area-inset-top)));
   background: var(--surface-primary, rgba(18, 18, 18, 0.98));
   border-right: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.06));
   z-index: 900;
@@ -1596,6 +1596,15 @@
   
   .messagesContainer {
     padding: var(--chat-spacing-md);
+    max-width: none;
+    margin: 0;
+  }
+
+  .resonant-chat-usage-bar {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: var(--chat-spacing-sm);
+    font-size: 11px;
   }
   
   /* Mobile Split View - Swipeable horizontal scroll */
@@ -1646,6 +1655,10 @@
   
   .message {
     padding: var(--chat-spacing-sm);
+  }
+
+  .message.user {
+    max-width: 92%;
   }
   
   /* Context Memory responsive */

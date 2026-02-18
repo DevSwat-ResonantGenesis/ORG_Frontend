@@ -175,14 +175,6 @@
   opacity: 1;
 }
 
-:global([data-theme='dark'] body.resonant-chat-page) .chatInputRoot {
-  background: transparent;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 0 24px env(safe-area-inset-bottom);
-}
-
 :global([data-theme='light'] body.resonant-chat-page) .inputWrapper {
   background: transparent !important;
   box-shadow: none !important;
@@ -198,21 +190,8 @@
   opacity: 1;
 }
 
-:global([data-theme='light'] body.resonant-chat-page) .chatInputRoot {
-  background: transparent;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 0 24px env(safe-area-inset-bottom);
-}
-
-
 :global(body.resonant-chat-page) .chatInputRoot {
   background: transparent;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 0 24px env(safe-area-inset-bottom);
 }
 
 
@@ -1146,13 +1125,13 @@
 /* Responsive - Mobile */
 @media (max-width: 768px) {
   .chatInputRoot {
-    left: 8px;
-    right: 8px;
-    bottom: 8px;
+    left: max(8px, env(safe-area-inset-left));
+    right: max(8px, env(safe-area-inset-right));
+    bottom: max(8px, env(safe-area-inset-bottom));
   }
   
   .chatInputRoot.withSidebar {
-    left: 8px;
+    left: max(8px, env(safe-area-inset-left));
   }
   
   .inputWrapper {
