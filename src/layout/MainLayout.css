@@ -12,6 +12,15 @@
   pointer-events: auto;
 }
 
+@media (max-width: 768px) {
+  .main-layout-wrapper:has(.landing-page-content) {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+}
+
 /* Ensure wrapper doesn't block interactions - but allow children to override */
 .main-layout-wrapper a,
 .main-layout-wrapper button,
@@ -110,6 +119,16 @@
   overflow-x: hidden;
 }
 
+@media (max-width: 768px) {
+  .main-content-area.landing-page {
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    background: var(--color-bg-root);
+  }
+}
+
 
 /* EXCLUDE IDE PAGE - IDE has its own layout */
 @media (min-width: 1024px) {
@@ -156,6 +175,17 @@
   height: auto !important;
   overflow-y: auto !important;
   padding-top: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .main-content.landing-page-content {
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+    overscroll-behavior: none;
+    background: var(--color-bg-root);
+  }
 }
 
 /* EXCLUDE IDE PAGE - IDE has its own layout */

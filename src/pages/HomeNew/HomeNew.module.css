@@ -44,6 +44,13 @@
   color: #f1f5f9;
 }
 
+@media (max-width: 768px) {
+  [data-theme='dark'] .page,
+  [data-theme='light'] .page {
+    background: var(--color-bg-root, var(--bg-primary)) !important;
+  }
+}
+
 /* ============================================================
    Floating Header
    ============================================================ */
@@ -260,6 +267,14 @@
   box-sizing: border-box;
 }
 
+@media (max-width: 768px) {
+  .hero {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
 /* Mobile: Content at top, natural height */
 @media (max-width: 639px) {
   .hero {
@@ -369,7 +384,7 @@
 
 @media (max-width: 639px) {
   .heroIntro {
-    padding-top: 16px;
+    padding-top: 8px;
   }
 }
 
@@ -402,6 +417,24 @@
   font-weight: 650;
   letter-spacing: 0.01em;
   transition: transform 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+@media (max-width: 639px) {
+  .byokHeroAlert {
+    width: 100%;
+    white-space: normal;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
+    line-height: 1.2;
+  }
+
+  .byokHeroText,
+  .byokHeroArrow {
+    white-space: normal;
+    text-align: center;
+  }
 }
 
 .byokHeroAlert::after {
@@ -462,8 +495,16 @@
 @media (max-width: 639px) {
   .heroContent {
     gap: 8px;
-    align-items: flex-start;
-    text-align: left;
+    align-items: center;
+    text-align: center;
+  }
+
+  .heroIntro h1 {
+    text-align: center;
+  }
+
+  .heroIntro p {
+    text-align: center;
   }
 }
 
@@ -520,12 +561,25 @@
   .heroParallax {
     left: 50%;
     right: auto;
-    top: 50%;
+    top: 58%;
     transform: translate(-50%, -50%);
-    width: min(82vw, 380px);
-    height: min(82vw, 380px);
+    width: min(68vw, 300px);
+    height: min(68vw, 300px);
     justify-content: center;
-    opacity: 0.85;
+    opacity: 0.75;
+  }
+
+  .heroParallax > * {
+    overflow: hidden !important;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .heroParallax canvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
   }
 }
 
@@ -808,10 +862,14 @@
   .heroNavLinks {
     gap: 4px;
     margin-top: 16px;
+    width: 100%;
+    align-items: center;
   }
   
   .heroNavRow {
     gap: 4px;
+    width: 100%;
+    justify-content: center;
   }
   
   .heroNavItem {
