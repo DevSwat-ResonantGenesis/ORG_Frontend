@@ -29,6 +29,16 @@
   margin: 0;
 }
 
+@media (max-width: 768px) {
+  .page {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    overscroll-behavior: none;
+    background: var(--color-bg-root, var(--bg-primary));
+  }
+}
+
 [data-theme='dark'] .page {
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   color: #f1f5f9;
@@ -218,6 +228,14 @@
   overflow-x: hidden;
   overflow-y: visible;
   /* Critical: allow parallax to render fully */
+}
+
+@media (max-width: 768px) {
+  .main {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
 }
 
 /* Main content width management removed - side menu is now global in Header */
@@ -2541,6 +2559,7 @@
     min-height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
     padding: calc(var(--header-height, 56px) + env(safe-area-inset-top) + 24px) 16px 44px;
     overflow-x: hidden;
+    overflow: hidden;
   }
 
   .heroContent {
