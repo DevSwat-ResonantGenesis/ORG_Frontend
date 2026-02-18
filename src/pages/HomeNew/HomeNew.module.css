@@ -537,7 +537,7 @@
 
 .heroParallax {
   position: absolute;
-  top: calc(50% + 18px);
+  top: calc(50% + 26px);
   right: calc(-20% - 10mm);
   left: auto;
   transform: translateY(-50%);
@@ -571,10 +571,10 @@
   .heroParallax {
     left: 50%;
     right: auto;
-    top: 60%;
+    top: 52%;
     transform: translate(-50%, -50%);
-    width: min(92vw, 420px);
-    height: min(92vw, 420px);
+    width: 110vmax;
+    height: 110vmax;
     justify-content: center;
     opacity: 0.85;
   }
