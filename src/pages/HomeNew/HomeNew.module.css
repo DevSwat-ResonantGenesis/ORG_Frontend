@@ -571,10 +571,10 @@
     right: auto;
     top: 60%;
     transform: translate(-50%, -50%);
-    width: min(66vw, 300px);
-    height: min(66vw, 300px);
+    width: min(82vw, 380px);
+    height: min(82vw, 380px);
     justify-content: center;
-    opacity: 0.75;
+    opacity: 0.85;
   }
 
   .heroParallax > * {
