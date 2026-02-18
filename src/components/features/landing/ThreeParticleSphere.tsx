@@ -35,6 +35,9 @@ export const ThreeParticleSphere: React.FC = () => {
             powerPreference: 'high-performance',
         });
 
+        // Desktop/laptop should match the previous fixed hero sphere sizing.
+        const canvasSize = 820;
+
         const getNextSize = () => {
             const el = mountRef.current;
             if (!el) return 300;
@@ -44,6 +47,11 @@ export const ThreeParticleSphere: React.FC = () => {
         };
 
         const applySize = () => {
+            if (!isMobile) {
+                renderer.setSize(canvasSize, canvasSize, false);
+                return;
+            }
+
             const nextSize = getNextSize();
             renderer.setSize(nextSize, nextSize, false);
         };
@@ -55,8 +63,14 @@ export const ThreeParticleSphere: React.FC = () => {
         // Style canvas to stay centered and not move
         renderer.domElement.style.display = 'block';
         renderer.domElement.style.margin = '0 auto';
-        renderer.domElement.style.width = '100%';
-        renderer.domElement.style.height = '100%';
+
+        if (!isMobile) {
+            renderer.domElement.style.width = `${canvasSize}px`;
+            renderer.domElement.style.height = `${canvasSize}px`;
+        } else {
+            renderer.domElement.style.width = '100%';
+            renderer.domElement.style.height = '100%';
+        }
         
         mountRef.current.appendChild(renderer.domElement);
 
@@ -286,10 +300,13 @@ export const ThreeParticleSphere: React.FC = () => {
         };
 
         window.addEventListener('resize', handleResize);
-        const ro = new ResizeObserver(() => {
-            applySize();
-        });
-        ro.observe(mountRef.current);
+        let ro: ResizeObserver | null = null;
+        if (isMobile) {
+            ro = new ResizeObserver(() => {
+                applySize();
+            });
+            ro.observe(mountRef.current);
+        }
 
         let animationFrameId: number;
 
@@ -348,7 +365,7 @@ export const ThreeParticleSphere: React.FC = () => {
         return () => {
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             window.removeEventListener('resize', handleResize);
-            ro.disconnect();
+            ro?.disconnect();
 
             // Dispose all geometries and materials
             geometry.dispose();
