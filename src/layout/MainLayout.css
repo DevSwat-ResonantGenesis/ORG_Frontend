@@ -1,6 +1,6 @@
 /* Main Layout Responsive Styles */
 
-@media (max-width: 1023px) {
+@media (max-width: 768px) {
   html.landingPageNoScroll,
   body.landingPageNoScroll {
     height: 100%;

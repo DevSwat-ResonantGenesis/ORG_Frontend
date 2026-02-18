@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Header } from '@/components/layout/Header/Header';
 import FloatingChatWidget from '@/components/ResonantChat/FloatingChatWidget';
 import { useGlobalKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
+import { deviceIsMobile } from '@/utils/deviceCheck';
 import './MainLayout.css';
 import './clickability-fix.css';
 
@@ -12,6 +13,7 @@ type Props = {
 
 const MainLayout = ({ children }: Props) => {
   const [isMobile, setIsMobile] = useState(false);
+  const [isLandingScrollLockViewport, setIsLandingScrollLockViewport] = useState(false);
   const [chatWidgetOpen, setChatWidgetOpen] = useState(false);
   const location = useLocation();
 
@@ -26,6 +28,7 @@ const MainLayout = ({ children }: Props) => {
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 1024);
+      setIsLandingScrollLockViewport(deviceIsMobile() || window.matchMedia('(max-width: 768px)').matches);
     };
 
     checkMobile();
@@ -38,7 +41,7 @@ const MainLayout = ({ children }: Props) => {
     const el = document.documentElement;
     const body = document.body;
 
-    if (!isLandingPage || !isMobile) {
+    if (!isLandingPage || !isLandingScrollLockViewport) {
       const previousScrollY = body.style.top ? Math.abs(parseInt(body.style.top, 10)) : 0;
       el.classList.remove(className);
       body.classList.remove(className);
@@ -59,7 +62,7 @@ const MainLayout = ({ children }: Props) => {
       document.body.style.top = '';
       if (restoreScrollY) window.scrollTo(0, restoreScrollY);
     };
-  }, [isLandingPage, isMobile]);
+  }, [isLandingPage, isLandingScrollLockViewport]);
 
   return (
     <div className="main-layout-wrapper">
