@@ -933,7 +933,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                   type="button"
                 >
                   <LLMSelectorIcon />
-                  {selectedProvider || 'auto'}
+                  {(selectedProvider || 'auto') === 'auto' ? 'smart' : (selectedProvider || 'auto')}
                   <ChevronDownIcon />
                 </button>
                 {showProviderDropdown && providerDropdownStyle && typeof document !== 'undefined' && createPortal(

@@ -138,22 +138,10 @@
   overflow: hidden;
 }
 
-:global([data-theme='dark'] body.resonant-chat-page) .agentPanel {
-  background: #32312E;
-  border-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(20px);
-}
-
 .embedded .agentPanel {
   left: auto;
   right: 0;
   width: min(420px, 92vw);
-}
-
-:global([data-theme='dark'] body.resonant-chat-page) .agentPanelHeader {
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
 :global([data-theme='dark'] body.resonant-chat-page) .agentSelect option {
@@ -208,20 +196,22 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.02);
+  padding: 8px 12px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
 }
 
 [data-theme='light'] .agentPanelHeader {
-  border-bottom-color: rgba(0, 0, 0, 0.08);
-  background: rgba(0, 0, 0, 0.02);
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+  background: transparent;
 }
 
 .agentPanelTitle {
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 600;
-  color: #fff;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -234,7 +224,7 @@
 }
 
 [data-theme='light'] .agentPanelTitle {
-  color: #111;
+  color: #888;
 }
 
 .agentPanelContent {
