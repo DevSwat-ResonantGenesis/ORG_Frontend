@@ -1632,6 +1632,7 @@
   
   .messagesContainer {
     padding: var(--chat-spacing-md);
+    padding-bottom: calc(160px + env(safe-area-inset-bottom));
     max-width: none;
     margin: 0;
   }
