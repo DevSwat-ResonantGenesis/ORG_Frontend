@@ -32,14 +32,17 @@ export const ThreeParticleSphere: React.FC = () => {
             100
         );
         camera.position.z = 4.2; // Slightly back to prevent edge clipping
+        camera.position.y = 0;
 
         const applyCameraSettings = () => {
             if (isMobileLayout) {
                 camera.fov = 52;
                 camera.position.z = 2.75;
+                camera.position.y = 0.55;
             } else {
                 camera.fov = 52;
                 camera.position.z = 4.2;
+                camera.position.y = 0;
             }
             camera.updateProjectionMatrix();
         };
