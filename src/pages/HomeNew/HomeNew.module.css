@@ -400,7 +400,7 @@
 
 @media (min-width: 1024px) {
   .heroIntro {
-    padding-top: clamp(140px, 14vh, 240px);
+    padding-top: clamp(170px, 16vh, 270px);
   }
 
   .heroIntro h1 {
@@ -537,8 +537,8 @@
 
 .heroParallax {
   position: absolute;
-  top: calc(50% + 26px);
-  right: calc(-20% - 10mm);
+  top: calc(50% + 34px);
+  right: calc(-20% - 12mm);
   left: auto;
   transform: translateY(-50%);
   width: calc(100% + 64px);
