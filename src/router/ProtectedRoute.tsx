@@ -47,7 +47,46 @@ const ProtectedRoute = ({ children }: Props) => {
       }
     }
 
-    const raw = sessionStorage.getItem('rg-post-login-target');
+    const storages: Storage[] = [];
+    try {
+      storages.push(sessionStorage);
+    } catch {
+    }
+    try {
+      storages.push(localStorage);
+    } catch {
+    }
+
+    const getRawTarget = () => {
+      for (const s of storages) {
+        try {
+          const v = s.getItem('rg-post-login-target');
+          if (v) return v;
+        } catch {
+        }
+      }
+      return null;
+    };
+
+    const clearRawTarget = () => {
+      for (const s of storages) {
+        try {
+          s.removeItem('rg-post-login-target');
+        } catch {
+        }
+      }
+    };
+
+    const setRawTarget = (v: string) => {
+      for (const s of storages) {
+        try {
+          s.setItem('rg-post-login-target', v);
+        } catch {
+        }
+      }
+    };
+
+    const raw = getRawTarget();
     if (raw && isAuthenticated()) {
       let targetPath: string | null = null;
       let createdAt = 0;
@@ -71,15 +110,15 @@ const ProtectedRoute = ({ children }: Props) => {
       const ttlMs = 60_000;
       const isExpired = !createdAt || Date.now() - createdAt > ttlMs;
       if (!targetPath || isExpired || remaining <= 0) {
-        sessionStorage.removeItem('rg-post-login-target');
+        clearRawTarget();
       } else if (location.pathname === targetPath) {
         // Target reached: consume the post-login redirect so it doesn't keep forcing navigation
         clearCookie('rg_post_login_target');
-        sessionStorage.removeItem('rg-post-login-target');
+        clearRawTarget();
       } else {
         clearCookie('rg_post_login_target');
         const next = JSON.stringify({ path: targetPath, ts: createdAt, remaining: remaining - 1 });
-        sessionStorage.setItem('rg-post-login-target', next);
+        setRawTarget(next);
         return <Navigate to={targetPath} replace />;
       }
     }

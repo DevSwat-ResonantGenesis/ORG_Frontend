@@ -149,6 +149,10 @@ export const initiateSSO = async (providerId: string, redirectUri?: string): Pro
 
     // Store state in sessionStorage for verification
     sessionStorage.setItem(`sso_state_${providerId}`, response.state);
+    try {
+      localStorage.setItem(`sso_state_${providerId}`, response.state);
+    } catch {
+    }
 
     return response.authorization_url;
   } catch (error: any) {

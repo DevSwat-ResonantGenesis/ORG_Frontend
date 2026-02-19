@@ -364,7 +364,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if (value.trim() && !isLoading && !disabled) {
+      if ((value.trim() || (attachedFiles?.length ?? 0) > 0) && !isLoading && !disabled) {
         onSend();
       }
     }

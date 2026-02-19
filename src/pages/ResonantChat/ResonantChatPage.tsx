@@ -1676,19 +1676,29 @@ const ResonantChatPage: React.FC = () => {
 
   // Handle send message with improved error handling
   const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+    if (isLoading) return;
+
+    const trimmedInput = input.trim();
+    const hasAttachments = attachedFiles.length > 0;
+    if (!trimmedInput && !hasAttachments) {
+      showError('Type a message or attach a file to send.');
+      return;
+    }
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
       role: 'user',
-      content: input.trim(),
+      content: trimmedInput || (hasAttachments
+        ? attachedFiles.map((f) => `[Attachment: ${f.name}]`).join(' ')
+        : ''
+      ),
       timestamp: new Date(),
     };
 
     const userMsg = userMessage;
     const isFirstMessage = messages.length === 0;
     setMessages(prev => [...prev, userMsg]);
-    const currentInput = input.trim();
+    const currentInput = trimmedInput || (hasAttachments ? 'Please analyze the attached image(s) and describe what you see.' : '');
     setInput('');
     setIsLoading(true);
 

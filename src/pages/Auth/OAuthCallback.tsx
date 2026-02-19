@@ -37,17 +37,40 @@ const OAuthCallbackPage: React.FC = () => {
           throw new Error('Missing required parameters (code or state)');
         }
 
+        const storages: Storage[] = [];
+        try {
+          storages.push(sessionStorage);
+        } catch {
+        }
+        try {
+          storages.push(localStorage);
+        } catch {
+        }
+
+        const getStoredState = (p: string) => {
+          for (const s of storages) {
+            try {
+              const v = s.getItem(`sso_state_${p}`);
+              if (v) return v;
+            } catch {
+            }
+          }
+          return null;
+        };
+
         const providerCandidates = new Set<string>([provider]);
-        if (sessionStorage.getItem(`sso_state_${provider}`) !== state) {
+        if (getStoredState(provider) !== state) {
           let matchedProvider: string | null = null;
-          for (let i = 0; i < sessionStorage.length; i++) {
-            const key = sessionStorage.key(i);
-            if (!key || !key.startsWith('sso_state_')) continue;
-            const candidateProvider = key.replace('sso_state_', '');
-            providerCandidates.add(candidateProvider);
-            const candidateState = sessionStorage.getItem(key);
-            if (candidateState === state) {
-              matchedProvider = candidateProvider;
+          for (const s of storages) {
+            for (let i = 0; i < s.length; i++) {
+              const key = s.key(i);
+              if (!key || !key.startsWith('sso_state_')) continue;
+              const candidateProvider = key.replace('sso_state_', '');
+              providerCandidates.add(candidateProvider);
+              const candidateState = s.getItem(key);
+              if (candidateState === state) {
+                matchedProvider = candidateProvider;
+              }
             }
           }
 
@@ -91,7 +114,12 @@ const OAuthCallbackPage: React.FC = () => {
           throw lastError || new Error('Authentication failed');
         }
 
-        sessionStorage.removeItem(`sso_state_${successfulProvider}`);
+        for (const s of storages) {
+          try {
+            s.removeItem(`sso_state_${successfulProvider}`);
+          } catch {
+          }
+        }
 
         if (!response.user.email || !response.user.role) {
           throw new Error('Invalid response: missing user data');
