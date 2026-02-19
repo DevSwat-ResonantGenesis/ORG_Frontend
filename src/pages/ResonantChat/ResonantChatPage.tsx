@@ -1743,6 +1743,7 @@ const ResonantChatPage: React.FC = () => {
             try {
               // Handle images - convert to base64 for vision models
               if (file.type.startsWith('image/')) {
+                if (file.type === 'image/heic' || file.type === 'image/heif') throw new Error('HEIC/HEIF images are not supported. Please upload JPG or PNG.');
                 const base64 = await new Promise<string>((resolve, reject) => {
                   const reader = new FileReader();
                   reader.onload = () => resolve(reader.result as string);
