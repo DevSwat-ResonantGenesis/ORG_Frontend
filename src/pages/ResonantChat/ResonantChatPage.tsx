@@ -2365,6 +2365,7 @@ const ResonantChatPage: React.FC = () => {
 
   // File validation constants
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  const MAX_ATTACHMENTS = 10;
   const ALLOWED_FILE_TYPES = [
     'image/*',
     'audio/*',
@@ -2459,31 +2460,41 @@ const ResonantChatPage: React.FC = () => {
 
     // Add valid files and upload to backend if logged in
     if (validFiles.length > 0) {
-      setAttachedFiles(prev => [...prev, ...validFiles]);
-      setShowFiles(true); // Auto-expand file list when files are added
+      const remainingSlots = Math.max(0, MAX_ATTACHMENTS - attachedFiles.length);
+      if (remainingSlots === 0) {
+        warning('You can attach up to 10 files.');
+      } else {
+        const filesToAdd = validFiles.slice(0, remainingSlots);
+        if (filesToAdd.length < validFiles.length) {
+          warning('You can attach up to 10 files. Extra files were not added.');
+        }
 
-      // Upload files to backend if logged in
-      if (isLoggedIn) {
-        validFiles.forEach(async (file) => {
-          try {
-            setUploadingFiles(prev => new Set(prev).add(file.name));
-            const result = await uploadFile(file);
-            setUploadedFileIds(prev => new Map(prev).set(file, result.id));
-            success(`Uploaded ${file.name}`);
-          } catch (error: unknown) {
-            logger.error('Failed to upload file', error);
-            // Continue even if upload fails - file is still attached
-          } finally {
-            setUploadingFiles(prev => {
-              const next = new Set(prev);
-              next.delete(file.name);
-              return next;
-            });
-          }
-        });
+        setAttachedFiles(prev => [...prev, ...filesToAdd]);
+        setShowFiles(true); // Auto-expand file list when files are added
+
+        // Upload files to backend if logged in
+        if (isLoggedIn) {
+          filesToAdd.forEach(async (file) => {
+            try {
+              setUploadingFiles(prev => new Set(prev).add(file.name));
+              const result = await uploadFile(file);
+              setUploadedFileIds(prev => new Map(prev).set(file, result.id));
+              success(`Uploaded ${file.name}`);
+            } catch (error: unknown) {
+              logger.error('Failed to upload file', error);
+              // Continue even if upload fails - file is still attached
+            } finally {
+              setUploadingFiles(prev => {
+                const next = new Set(prev);
+                next.delete(file.name);
+                return next;
+              });
+            }
+          });
+        }
+
+        success(`Added ${filesToAdd.length} file(s)`);
       }
-
-      success(`Added ${validFiles.length} file(s)`);
     }
 
     // Reset input

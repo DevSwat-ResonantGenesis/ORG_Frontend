@@ -212,6 +212,36 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const [voiceInterimTranscript, setVoiceInterimTranscript] = useState('');
   const [showEmbeddedTools, setShowEmbeddedTools] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [attachmentsExpanded, setAttachmentsExpanded] = useState(false);
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<Record<string, string>>({});
+  const imagePreviewUrlsRef = useRef<Record<string, string>>({});
+
+  const getFileKey = useCallback((file: File) => `${file.name}-${file.size}-${file.lastModified}`, []);
+
+  useEffect(() => {
+    const prev = imagePreviewUrlsRef.current;
+    const next: Record<string, string> = {};
+
+    attachedFiles.forEach((file) => {
+      if (!file.type?.startsWith('image/')) return;
+      const key = getFileKey(file);
+      next[key] = prev[key] || URL.createObjectURL(file);
+    });
+
+    Object.keys(prev).forEach((key) => {
+      if (!next[key]) URL.revokeObjectURL(prev[key]);
+    });
+
+    imagePreviewUrlsRef.current = next;
+    setImagePreviewUrls(next);
+  }, [attachedFiles, getFileKey]);
+
+  useEffect(() => {
+    return () => {
+      Object.values(imagePreviewUrlsRef.current).forEach((url) => URL.revokeObjectURL(url));
+      imagePreviewUrlsRef.current = {};
+    };
+  }, []);
 
   const normalizeProvider = (provider: string) => {
     if (provider === 'claude') return 'anthropic';
@@ -733,51 +763,71 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
 
         {/* Attached Files - Minimal inline display */}
         {attachedFiles.length > 0 && (
-          <div style={{
+          <div
+            onMouseEnter={() => setAttachmentsExpanded(true)}
+            onMouseLeave={() => setAttachmentsExpanded(false)}
+            style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
-            padding: '6px 12px',
+            gap: '6px',
+            padding: '6px 8px',
             fontSize: '12px',
-            color: '#888',
-            borderBottom: '1px solid rgba(255,255,255,0.05)',
-            flexWrap: 'wrap',
-          }}>
+            color: '#cbd5e1',
+            flexWrap: attachmentsExpanded ? 'wrap' : 'nowrap',
+            position: 'absolute',
+            left: 12,
+            bottom: 56,
+            background: 'rgba(0,0,0,0.35)',
+            border: '1px solid rgba(255,255,255,0.10)',
+            borderRadius: '14px',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            maxWidth: 'calc(100% - 24px)',
+            overflow: 'hidden',
+          }}
+          >
             <span>📎</span>
-            {attachedFiles.map((file, index) => (
+            {attachedFiles.slice(0, attachmentsExpanded ? attachedFiles.length : 3).map((file, index) => (
               <span 
                 key={index} 
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '4px',
+                  gap: attachmentsExpanded ? '6px' : '0px',
                   background: 'rgba(255,255,255,0.08)',
-                  padding: '2px 8px',
-                  borderRadius: '4px',
+                  padding: attachmentsExpanded ? '2px 8px' : '6px',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255,255,255,0.10)',
+                  marginLeft: !attachmentsExpanded && index > 0 ? -10 : 0,
                 }}
               >
-                {file.name.length > 20 ? file.name.substring(0, 17) + '...' : file.name}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onRemoveFile?.(index);
-                  }}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#ef4444',
-                    cursor: 'pointer',
-                    padding: '0 2px',
-                    fontSize: '14px',
-                    lineHeight: 1,
-                  }}
-                >
-                  ×
-                </button>
+                {attachmentsExpanded ? (file.name.length > 24 ? file.name.substring(0, 21) + '...' : file.name) : ''}
+                {attachmentsExpanded && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onRemoveFile?.(index);
+                    }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#ef4444',
+                      cursor: 'pointer',
+                      padding: '0 2px',
+                      fontSize: '14px',
+                      lineHeight: 1,
+                    }}
+                  >
+                    ×
+                  </button>
+                )}
               </span>
             ))}
+            {!attachmentsExpanded && attachedFiles.length > 3 && (
+              <span style={{ opacity: 0.85, padding: '0 4px' }}>+{attachedFiles.length - 3}</span>
+            )}
           </div>
         )}
 
