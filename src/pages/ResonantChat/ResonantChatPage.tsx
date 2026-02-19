@@ -1674,6 +1674,84 @@ const ResonantChatPage: React.FC = () => {
     };
   };
 
+  const readBlobAsDataURL = (blob: Blob) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+
+  const loadImageFromBlob = (blob: Blob) =>
+    new Promise<HTMLImageElement>((resolve, reject) => {
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        resolve(img);
+      };
+      img.onerror = (e) => {
+        URL.revokeObjectURL(url);
+        reject(e);
+      };
+      img.src = url;
+    });
+
+  const convertImageFileToJpegDataUrl = async (file: File) => {
+    if (typeof document === 'undefined') {
+      throw new Error('Image conversion unavailable');
+    }
+
+    const maxDimension = 1536;
+    const quality = 0.85;
+
+    let sourceWidth = 0;
+    let sourceHeight = 0;
+    let drawSource: CanvasImageSource;
+
+    try {
+      const bitmap = await createImageBitmap(file);
+      sourceWidth = bitmap.width;
+      sourceHeight = bitmap.height;
+      drawSource = bitmap;
+    } catch {
+      const img = await loadImageFromBlob(file);
+      sourceWidth = img.naturalWidth || img.width;
+      sourceHeight = img.naturalHeight || img.height;
+      drawSource = img;
+    }
+
+    if (!sourceWidth || !sourceHeight) {
+      throw new Error('Could not read image dimensions');
+    }
+
+    const scale = Math.min(1, maxDimension / Math.max(sourceWidth, sourceHeight));
+    const targetWidth = Math.max(1, Math.round(sourceWidth * scale));
+    const targetHeight = Math.max(1, Math.round(sourceHeight * scale));
+
+    const canvas = document.createElement('canvas');
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Canvas not available');
+    ctx.drawImage(drawSource, 0, 0, targetWidth, targetHeight);
+
+    const jpegBlob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (b) => (b ? resolve(b) : reject(new Error('Image conversion failed'))),
+        'image/jpeg',
+        quality
+      );
+    });
+
+    const dataUrl = await readBlobAsDataURL(jpegBlob);
+
+    const baseName = file.name.replace(/\.[^/.]+$/, '') || 'image';
+    const name = `${baseName}.jpg`;
+
+    return { dataUrl, name, type: 'image/jpeg' as const };
+  };
+
   // Handle send message with improved error handling
   const handleSend = async () => {
     if (isLoading) return;
@@ -1743,17 +1821,11 @@ const ResonantChatPage: React.FC = () => {
             try {
               // Handle images - convert to base64 for vision models
               if (file.type.startsWith('image/')) {
-                if (file.type === 'image/heic' || file.type === 'image/heif') throw new Error('HEIC/HEIF images are not supported. Please upload JPG or PNG.');
-                const base64 = await new Promise<string>((resolve, reject) => {
-                  const reader = new FileReader();
-                  reader.onload = () => resolve(reader.result as string);
-                  reader.onerror = reject;
-                  reader.readAsDataURL(file);
-                });
+                const converted = await convertImageFileToJpegDataUrl(file);
                 imageAttachments.push({
-                  type: file.type,
-                  data: base64,
-                  name: file.name,
+                  type: converted.type,
+                  data: converted.dataUrl,
+                  name: converted.name,
                 });
                 return `\n\n[Image: ${file.name}]`;
               }
