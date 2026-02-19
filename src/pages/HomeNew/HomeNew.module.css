@@ -580,7 +580,7 @@
     top: auto;
     transform: none;
     width: 100%;
-    height: 66dvh;
+    height: 80dvh;
     margin-top: 12px;
     z-index: 1;
     justify-content: center;
@@ -589,15 +589,15 @@
 
   .heroParallax > * {
     overflow: visible !important;
-    width: min(100%, 66dvh);
-    height: min(100%, 66dvh);
+    width: min(100%, 80dvh);
+    height: min(100%, 80dvh);
     max-width: 100%;
     max-height: 100%;
   }
 
   .heroParallax canvas {
-    width: min(100%, 66dvh) !important;
-    height: min(100%, 66dvh) !important;
+    width: min(100%, 80dvh) !important;
+    height: min(100%, 80dvh) !important;
     max-width: 100% !important;
     max-height: 100% !important;
   }
@@ -605,7 +605,7 @@
 
 @media (max-width: 639px) {
   .heroParallax {
-    height: 66dvh;
+    height: 80dvh;
     margin-top: 10px;
   }
 }
@@ -2711,7 +2711,7 @@
     right: auto;
     transform: none;
     width: 100%;
-    height: 66dvh;
+    height: 80dvh;
     min-width: 0;
     min-height: 0;
     margin-top: 12px;
@@ -2726,8 +2726,8 @@
 
   .heroParallax>* {
     transform: scale(1);
-    width: min(100%, 66dvh);
-    height: min(100%, 66dvh);
+    width: min(100%, 80dvh);
+    height: min(100%, 80dvh);
     aspect-ratio: 1 / 1;
     position: relative;
   }
