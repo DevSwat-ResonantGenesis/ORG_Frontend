@@ -38,6 +38,19 @@
   height: 100%;
 }
 
+@media (max-width: 768px) {
+  .chatParallax > * {
+    inset: auto;
+    top: auto;
+    right: auto;
+    bottom: 0;
+    left: 50%;
+    width: min(100vw, 80dvh);
+    height: min(100vw, 80dvh);
+    transform: translateX(-50%);
+  }
+}
+
 @media (min-width: 769px) {
   .chatParallax > * {
     inset: auto;
