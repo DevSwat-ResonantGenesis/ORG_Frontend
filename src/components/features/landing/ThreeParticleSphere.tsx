@@ -37,8 +37,8 @@ export const ThreeParticleSphere: React.FC = () => {
         const applyCameraSettings = () => {
             if (isMobileLayout) {
                 camera.fov = 52;
-                camera.position.z = 3.9;
-                camera.position.y = -0.35;
+                camera.position.z = 3.25;
+                camera.position.y = 0;
             } else {
                 camera.fov = 52;
                 camera.position.z = 4.2;

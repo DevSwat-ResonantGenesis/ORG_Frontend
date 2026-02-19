@@ -460,7 +460,7 @@ class ThemeService {
       metaTheme.setAttribute('name', 'theme-color');
       document.head.appendChild(metaTheme);
     }
-    metaTheme.setAttribute('content', this.activeTheme.colors['titleBar.activeBackground']);
+    metaTheme.setAttribute('content', this.activeTheme.colors['editor.background'] || this.activeTheme.colors['titleBar.activeBackground']);
   }
 
   private loadSavedTheme(): void {

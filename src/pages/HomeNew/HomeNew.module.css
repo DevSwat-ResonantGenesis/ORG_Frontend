@@ -2737,29 +2737,30 @@
     left: auto;
     right: auto;
     transform: none;
-    width: 100%;
+    width: calc(100% + var(--space-8) + var(--space-8));
+    margin-left: calc(-1 * var(--space-8));
+    margin-right: calc(-1 * var(--space-8));
     flex: 1 1 auto;
     min-height: 0;
     height: auto;
-    max-height: 80dvh;
+    max-height: none;
     min-width: 0;
     min-height: 0;
-    margin-top: 12px;
+    margin-top: 0;
     z-index: 1;
     pointer-events: none;
-    overflow: visible;
+    overflow: hidden;
     opacity: 0.85;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
   }
 
-  .heroParallax>* {
-    transform: scale(1);
-    height: 100%;
-    width: auto;
-    aspect-ratio: 1 / 1;
-    position: relative;
+  .heroParallaxInner {
+    width: min(100vw, 100%);
+    height: min(100vw, 100%);
+    margin-left: auto;
+    margin-right: auto;
   }
 
   /* Section/CTA title responsive styles removed - using Title.module.css from components/ui */
