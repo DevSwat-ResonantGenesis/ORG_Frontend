@@ -573,7 +573,7 @@
   .heroParallax {
     left: 50%;
     right: auto;
-    top: 62%;
+    top: 68%;
     transform: translate(-50%, -50%);
     width: 100vw;
     height: 100vh;
@@ -592,6 +592,12 @@
     height: 100% !important;
     max-width: 100% !important;
     max-height: 100% !important;
+  }
+}
+
+@media (max-width: 639px) {
+  .heroParallax {
+    top: 72%;
   }
 }
 
