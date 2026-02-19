@@ -3902,6 +3902,12 @@ const ResonantChatPage: React.FC = () => {
           onSend={handleSend}
           isLoading={isLoading}
           sidebarOpen={sidebarOpen}
+          ttsText={
+            messages
+              .slice()
+              .reverse()
+              .find((m) => m.role === 'assistant')?.content || ''
+          }
           selectedProvider={selectedProvider}
           onProviderChange={(provider: string) => {
             setSelectedProvider(provider as Provider);

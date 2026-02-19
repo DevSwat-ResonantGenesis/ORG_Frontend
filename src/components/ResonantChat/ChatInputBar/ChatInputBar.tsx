@@ -2,14 +2,13 @@ import React, { useMemo, useRef, useEffect, useState, useCallback } from 'react'
 import {
   ArchiveIcon,
   SendIcon,
-DeleteIcon,
+ DeleteIcon,
   PlusIcon,
   CloseIcon,
   LightbulbIcon,
   PenIcon,
   FileIcon,
   SearchIcon,
-  MemoryIcon,
   ChevronDownIcon,
   HistoryIcon,
   PreviewIcon,
@@ -17,16 +16,39 @@ DeleteIcon,
 import { VoiceInput } from '@/components/ResonantChat/VoiceInput';
 import styles from './ChatInputBar.module.css';
 
-const RobotIcon = () => (
+const TeamIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="7" y="8" width="10" height="10" rx="2" />
-    <path d="M9 8V6a3 3 0 0 1 6 0v2" />
-    <path d="M12 2v2" />
-    <path d="M8 18v2" />
-    <path d="M16 18v2" />
-    <circle cx="10" cy="13" r="1" />
-    <circle cx="14" cy="13" r="1" />
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
   </svg>
+);
+
+const MemoryLibraryIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.54" />
+    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.54" />
+  </svg>
+);
+
+const SpeakerIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M11 5L6 9H2v6h4l5 4V5z" />
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+  </svg>
+);
+
+const LLMSelectorIcon = () => (
+  <span className={styles.llmSelectorIcon} aria-hidden="true">
+    <span className={styles.llmSelectorHalfLeft}>
+      <MemoryLibraryIcon />
+    </span>
+    <span className={styles.llmSelectorHalfRight}>
+      <TeamIcon />
+    </span>
+  </span>
 );
 
 interface Memory {
@@ -119,6 +141,8 @@ interface ChatInputBarProps {
   // Share/Copy Chat
   onShareChat?: () => void;
   onCopyChat?: () => void;
+
+  ttsText?: string;
 }
 
 const ChatInputBar: React.FC<ChatInputBarProps> = ({
@@ -172,6 +196,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   showSettings = false,
   onShareChat,
   onCopyChat,
+  ttsText,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
@@ -183,6 +208,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const [showProviderDropdown, setShowProviderDropdown] = useState(false);
   const [voiceInterimTranscript, setVoiceInterimTranscript] = useState('');
   const [showEmbeddedTools, setShowEmbeddedTools] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   const normalizeProvider = (provider: string) => {
     if (provider === 'claude') return 'anthropic';
@@ -313,6 +339,32 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     closeAllPopups();
   }, [embedded, showEmbeddedTools]);
 
+  useEffect(() => {
+    return () => {
+      if (typeof window === 'undefined') return;
+      window.speechSynthesis?.cancel();
+    };
+  }, []);
+
+  const handleTextToVoice = () => {
+    if (!ttsText?.trim()) return;
+    if (typeof window === 'undefined') return;
+    if (!window.speechSynthesis) return;
+
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(ttsText);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    setIsSpeaking(true);
+    window.speechSynthesis.speak(utterance);
+  };
+
   // Close other panels when opening a new one
   const handleShowMemoryLibrary = () => {
     closeAllPopups('memory');
@@ -394,7 +446,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           <div className={styles.agentPanel} ref={agentPanelRef}>
             <div className={styles.agentPanelHeader}>
               <span className={styles.agentPanelTitle}>
-                <RobotIcon />
+                <TeamIcon />
                 Agent Configuration
               </span>
             </div>
@@ -725,6 +777,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 }}
                 type="button"
               >
+                <LLMSelectorIcon />
                 {selectedProvider || 'auto'}
                 <ChevronDownIcon />
               </button>
@@ -816,7 +869,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 title={agentSelectorLabel}
                 type="button"
               >
-                <span className={styles.agentSelectorIcon}><RobotIcon /></span>
+                <span className={styles.agentSelectorIcon}><TeamIcon /></span>
                 <span className={styles.agentSelectorLabel}>{agentSelectorLabel}</span>
                 <ChevronDownIcon />
               </button>
@@ -840,39 +893,14 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
             
-            {onClearChat && (
-              <button
-                className={`${styles.toolButton} ${styles.danger}`}
-                onClick={onClearChat}
-                title="Archive Chat"
-              >
-                <ArchiveIcon />
-              </button>
-            )}
-          </div>
-
-          <div className={styles.toolsRight}>
-            {/* Build Project - Rocket icon (icon only) */}
-            {onBuild && (
-              <button className={`${styles.toolButton} ${styles.animatedIcon}`} onClick={onBuild} title="Build Project">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.rocketIcon}>
-                  <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
-                  <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
-                  <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
-                  <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
-                </svg>
-              </button>
-            )}
-            
-            {/* Attach File - Paperclip icon (icon only) */}
             {onAttachFile && (
-              <button 
+              <button
                 className={`${styles.toolButton} ${styles.animatedIcon}`}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  onAttachFile();
-                }} 
+                  onAttachFile?.();
+                }}
                 title="Attach File"
                 type="button"
               >
@@ -881,7 +909,9 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 </svg>
               </button>
             )}
-            
+          </div>
+
+          <div className={styles.toolsRight}>
             {/* Voice Input */}
             {!voiceInInput && (
             <VoiceInput
@@ -894,7 +924,19 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 textareaRef.current?.focus();
               }}
               disabled={isLoading || disabled}
+              iconSize={20}
             />
+            )}
+
+            {onBuild && (
+              <button className={`${styles.toolButton} ${styles.animatedIcon}`} onClick={onBuild} title="Build Project">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.rocketIcon}>
+                  <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+                  <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+                  <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+                  <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+                </svg>
+              </button>
             )}
             
             {/* Split View - Columns icon (icon only) */}
@@ -922,7 +964,33 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 onClick={showMemoryLibrary ? onCloseMemoryLibrary : handleShowMemoryLibrary}
                 title="Memory Library"
               >
-                <MemoryIcon />
+                <MemoryLibraryIcon />
+              </button>
+            )}
+
+            <button
+              className={`${styles.toolButton} ${isSpeaking ? styles.active : ''}`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleTextToVoice();
+              }}
+              title="Text to Voice"
+              type="button"
+              disabled={!ttsText?.trim()}
+            >
+              <SpeakerIcon />
+            </button>
+
+            <div className={styles.iconSpacer} aria-hidden="true" />
+
+            {onClearChat && (
+              <button
+                className={`${styles.toolButton} ${styles.danger}`}
+                onClick={onClearChat}
+                title="Archive Chat"
+              >
+                <ArchiveIcon />
               </button>
             )}
 

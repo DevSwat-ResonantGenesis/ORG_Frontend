@@ -45,9 +45,19 @@
     right: auto;
     bottom: 0;
     left: 50%;
-    width: min(100vw, 80dvh);
-    height: min(100vw, 80dvh);
+    width: min(100vw, 80vh) !important;
+    height: min(100vw, 80vh) !important;
+    aspect-ratio: 1 / 1;
     transform: translateX(-50%);
+  }
+}
+
+@supports (height: 100dvh) {
+  @media (max-width: 768px) {
+    .chatParallax > * {
+      width: min(100vw, 80dvh) !important;
+      height: min(100vw, 80dvh) !important;
+    }
   }
 }
 

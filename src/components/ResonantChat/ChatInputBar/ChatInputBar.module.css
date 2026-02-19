@@ -680,6 +680,40 @@
   opacity: 0.5;  /* 50% transparent */
 }
 
+.llmSelectorIcon {
+  position: relative;
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.llmSelectorHalfLeft,
+.llmSelectorHalfRight {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.llmSelectorHalfLeft svg {
+  clip-path: inset(0 50% 0 0);
+}
+
+.llmSelectorHalfRight svg {
+  clip-path: inset(0 0 0 50%);
+}
+
+.iconSpacer {
+  width: 1px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 0 4px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
 .providerButton:hover {
   color: #fff;
   opacity: 1;  /* Full opacity on hover */
