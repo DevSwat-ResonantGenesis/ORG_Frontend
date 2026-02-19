@@ -613,7 +613,7 @@
     width: min(100vw, 80dvh);
     height: min(100vw, 80dvh);
     aspect-ratio: 1 / 1;
-    transform: translateY(12px);
+    transform: translateY(13px);
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -2763,7 +2763,7 @@
     width: min(100vw, 80dvh);
     height: min(100vw, 80dvh);
     aspect-ratio: 1 / 1;
-    transform: translateY(12px);
+    transform: translateY(13px);
     margin-left: auto;
     margin-right: auto;
   }
