@@ -55,6 +55,8 @@ interface MessageType {
   [key: string]: any; // Allow additional properties
 }
 
+type SplitViewPane = 'chat' | 'split';
+
 export interface SplitViewModuleProps {
   children: React.ReactNode;
   enabled: boolean;
@@ -65,6 +67,8 @@ export interface SplitViewModuleProps {
   initialWidth?: number;
   onWidthChange?: (width: number) => void;
   embedded?: boolean;
+  mobileSinglePane?: boolean;
+  mobilePane?: SplitViewPane;
   autoOpenRequest?: {
     requestId: number;
     tab: TabType;
@@ -89,6 +93,8 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
   initialWidth = DEFAULT_SPLIT_WIDTH,
   onWidthChange,
   embedded = false,
+  mobileSinglePane = false,
+  mobilePane = 'chat',
   autoOpenRequest,
   projectMode = false,
   projectFiles: initialProjectFiles = [],
@@ -287,6 +293,195 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
   // If not enabled, just render children
   if (!enabled) {
     return <>{children}</>;
+  }
+
+  if (mobileSinglePane) {
+    return (
+      <div
+        className={styles.splitViewContainer}
+        ref={containerRef}
+        style={embedded ? { height: '100%', overflow: 'visible' } : undefined}
+      >
+        {mobilePane === 'chat' ? (
+          <div className={styles.chatPanel} style={{ width: '100%', overflow: embedded ? 'visible' : undefined }}>
+            {children}
+          </div>
+        ) : (
+          <div className={styles.codePanel} style={{ width: '100%' }}>
+            {/* Header with Tabs */}
+            <div className={styles.codePanelHeader}>
+              <div className={styles.tabs}>
+                <button
+                  className={`${styles.tab} ${state.activeTab === 'code' ? styles.activeTab : ''}`}
+                  onClick={() => actions.setActiveTab('code')}
+                >
+                  <span className={styles.tabIcon}><CodeIcon /></span>
+                  Code
+                </button>
+                <button
+                  className={`${styles.tab} ${state.activeTab === 'preview' ? styles.activeTab : ''}`}
+                  onClick={() => actions.setActiveTab('preview')}
+                >
+                  <span className={styles.tabIcon}><PreviewIcon /></span>
+                  Preview
+                </button>
+                <button
+                  className={`${styles.tab} ${state.activeTab === 'terminal' ? styles.activeTab : ''}`}
+                  onClick={() => actions.setActiveTab('terminal')}
+                >
+                  <span className={styles.tabIcon}><TerminalIcon /></span>
+                  Terminal
+                </button>
+              </div>
+              <div className={styles.headerActions}>
+                {codeBlocks && codeBlocks.length > 0 && (
+                  <button
+                    className={styles.buildButton}
+                    onClick={() => setShowBuildModule(true)}
+                    title="Build project from code"
+                  >
+                    <BuildIcon /> Build
+                  </button>
+                )}
+                {state.activeTab === 'code' && codeBlocks && codeBlocks.length > 0 && (
+                  <button
+                    className={styles.runButton}
+                    onClick={handleRunCode}
+                    disabled={state.isRunning}
+                    title="Run code"
+                  >
+                    {state.isRunning ? <LoadingIcon /> : <PlayIcon />} Run
+                  </button>
+                )}
+                {state.activeTab === 'preview' && (
+                  <button
+                    className={styles.runButton}
+                    onClick={handleStartPreview}
+                    title="Start preview"
+                  >
+                    <RocketIcon /> Start Preview
+                  </button>
+                )}
+                <button
+                  className={styles.codePanelClose}
+                  onClick={onClose}
+                  title="Close split view"
+                >
+                  <CloseIcon />
+                </button>
+              </div>
+
+            </div>
+            {/* Tab Content */}
+            <div className={styles.codePanelContent}>
+              {/* Code Tab */}
+              {state.activeTab === 'code' && (
+                <div className={styles.codeTabContent}>
+                  {projectMode && projectFiles.length > 0 ? (
+                    <div className={styles.projectView}>
+                      {/* File Tree Sidebar */}
+                      <div className={styles.fileTreeSidebar}>
+                        <div className={styles.fileTreeHeader}>
+                          <span>Files</span>
+                          <div className={styles.fileTreeActions}>
+                            <span className={styles.fileCount}>{projectFiles.length}</span>
+                            <button
+                              className={styles.newFileButton}
+                              onClick={() => actions.setShowNewFileDialog(true)}
+                              title="New file"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                        <div className={styles.fileTree}>
+                          <FileTree
+                            nodes={fileTree}
+                            selectedFile={state.selectedFile}
+                            expandedFolders={state.expandedFolders}
+                            onSelectFile={actions.setSelectedFile}
+                            onToggleFolder={actions.toggleFolder}
+                            onDeleteFile={(path) => actions.setShowDeleteConfirm(path)}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Editor */}
+                      <div className={styles.editorArea}>
+                        <CodeEditor
+                          file={state.selectedFile}
+                          onFileChange={handleFileChange}
+                          onCopyCode={onCopyCode}
+                        />
+                      </div>
+                    </div>
+                  ) : codeBlocks ? (
+                    <CodeBlockList codeBlocks={codeBlocks} onCopyCode={onCopyCode} />
+                  ) : (
+                    <div className={styles.codePanelEmpty}>
+                      {selectedMessageId
+                        ? 'No code blocks in this message'
+                        : 'Click on a message with code to view it here'}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Preview Tab - only render iframe when active to save CPU */}
+              {state.activeTab === 'preview' && (
+                <Preview 
+                  config={state.previewConfig} 
+                  codeBlocks={codeBlocks || undefined} 
+                  isActive={state.activeTab === 'preview'}
+                />
+              )}
+
+              {/* Terminal Tab */}
+              {state.activeTab === 'terminal' && (
+                <Terminal
+                  output={state.terminalOutput}
+                  input={state.terminalInput}
+                  isRunning={state.isRunning}
+                  onInputChange={actions.setTerminalInput}
+                  onSubmit={handleTerminalSubmit}
+                  onClear={actions.clearTerminal}
+                  disabled={false}
+                />
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Dialogs */}
+        <NewFileDialog
+          isOpen={state.showNewFileDialog}
+          fileName={state.newFileName}
+          language={state.newFileLanguage}
+          onFileNameChange={actions.setNewFileName}
+          onLanguageChange={actions.setNewFileLanguage}
+          onSubmit={handleCreateFile}
+          onClose={() => actions.setShowNewFileDialog(false)}
+        />
+
+        <DeleteConfirmDialog
+          filePath={state.showDeleteConfirm}
+          onConfirm={handleDeleteFile}
+          onCancel={() => actions.setShowDeleteConfirm(null)}
+        />
+
+        {/* Build Module Modal */}
+        {showBuildModule && codeBlocks && (
+          <div className={styles.buildModuleOverlay}>
+            <Suspense fallback={<div className={styles.buildModuleLoading}>Loading Build Module...</div>}>
+              <BuildModule
+                codeBlocks={codeBlocks}
+                onClose={() => setShowBuildModule(false)}
+              />
+            </Suspense>
+          </div>
+        )}
+      </div>
+    );
   }
 
   return (

@@ -794,6 +794,9 @@ const ResonantChatPage: React.FC = () => {
   });
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
 
+  type SplitViewPane = 'chat' | 'split';
+  const [splitViewPane, setSplitViewPane] = useState<SplitViewPane>('chat');
+
   // Handle window resize for mobile detection and responsive sidebar
   useEffect(() => {
     const handleResize = () => {
@@ -878,6 +881,43 @@ const ResonantChatPage: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('resonant-chat-split-view', String(splitViewEnabled));
   }, [splitViewEnabled]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const pane: SplitViewPane = splitViewEnabled ? (isMobile ? splitViewPane : 'split') : 'chat';
+    window.dispatchEvent(
+      new CustomEvent('rg:split-view-state', {
+        detail: { enabled: splitViewEnabled, pane },
+      })
+    );
+  }, [splitViewEnabled, splitViewPane, isMobile]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ enabled?: boolean; pane?: SplitViewPane; togglePane?: boolean }>).detail;
+      if (!detail) return;
+
+      if (typeof detail.enabled === 'boolean') {
+        setSplitViewEnabled(detail.enabled);
+        if (detail.enabled) {
+          setSplitViewPane(detail.pane ?? 'split');
+        } else {
+          setSplitViewPane('chat');
+        }
+      }
+
+      if (detail.togglePane) {
+        setSplitViewPane((prev) => (prev === 'chat' ? 'split' : 'chat'));
+      } else if (detail.pane) {
+        setSplitViewPane(detail.pane);
+      }
+    };
+
+    window.addEventListener('rg:split-view-command', handler as EventListener);
+    return () => window.removeEventListener('rg:split-view-command', handler as EventListener);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('resonant-chat-split-width', String(splitViewWidth));
@@ -3295,15 +3335,22 @@ const ResonantChatPage: React.FC = () => {
             <div className={`${styles.mainChatArea} ${!sidebarOpen ? styles.noSidebar : ''} ${splitViewEnabled ? styles.splitViewEnabled : ''}`}>
               <Suspense fallback={<div style={{ flex: 1 }} />}>
                 <SplitViewModule
-                  enabled={splitViewEnabled && messages.length > 0}
-                  onClose={() => setSplitViewEnabled(false)}
+                  enabled={splitViewEnabled}
+                  onClose={() => {
+                    setSplitViewEnabled(false);
+                    setSplitViewPane('chat');
+                  }}
                   selectedMessageId={selectedCodeMessage}
                   messages={messages}
                   onCopyCode={copyMessage}
                   initialWidth={splitViewWidth}
                   onWidthChange={setSplitViewWidth}
+                  mobileSinglePane={isMobile}
+                  mobilePane={isMobile ? splitViewPane : undefined}
+                  embedded={false}
                   projectMode={projectMode}
                   projectFiles={projectFiles}
+                  projectId={projectId || undefined}
                   showBuildModule={showBuildModule}
                   onCloseBuildModule={() => setShowBuildModule(false)}
                 >
@@ -3928,11 +3975,11 @@ const ResonantChatPage: React.FC = () => {
           onBuild={() => {
             // Open Build Module inside Split View
             if (!splitViewEnabled) setSplitViewEnabled(true);
+            setSplitViewPane('split');
             setShowBuildModule(true);
           }}
           onOpenIDE={() => navigate('/ide')}
           onAttachFile={() => fileInputRef.current?.click()}
-          onToggleSplitView={() => setSplitViewEnabled(!splitViewEnabled)}
           splitViewEnabled={splitViewEnabled}
           splitViewWidth={splitViewWidth}
           attachedFiles={attachedFiles}

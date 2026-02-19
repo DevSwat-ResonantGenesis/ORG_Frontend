@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useEffect, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import {
   ArchiveIcon,
  DeleteIcon,
@@ -8,9 +9,8 @@ import {
   FileIcon,
   SearchIcon,
   ChevronDownIcon,
-  PreviewIcon,
   ConversationIcon,
-  NewChatIcon,
+  PlusIcon,
 } from '@/components/Icons/ResonantChatIcons';
 import { VoiceInput } from '@/components/ResonantChat/VoiceInput';
 import styles from './ChatInputBar.module.css';
@@ -103,7 +103,6 @@ interface ChatInputBarProps {
   onBuild?: () => void;
   onOpenIDE?: () => void;
   onAttachFile?: () => void;
-  onToggleSplitView?: () => void;
   splitViewEnabled?: boolean;
   splitViewWidth?: number;
   
@@ -172,7 +171,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   onBuild,
   onOpenIDE,
   onAttachFile,
-  onToggleSplitView,
   splitViewEnabled = false,
   splitViewWidth = 50,
   attachedFiles = [],
@@ -199,10 +197,13 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const inputWrapperRef = useRef<HTMLDivElement>(null);
   const agentPanelRef = useRef<HTMLDivElement>(null);
   const agentButtonRef = useRef<HTMLButtonElement>(null);
+  const providerButtonRef = useRef<HTMLButtonElement>(null);
+  const providerDropdownRef = useRef<HTMLDivElement>(null);
   const valueRef = useRef(value); // Track current value for voice input
   const [showMentionAutocomplete, setShowMentionAutocomplete] = useState(false);
   const [mentionQuery, setMentionQuery] = useState('');
   const [showProviderDropdown, setShowProviderDropdown] = useState(false);
+  const [providerDropdownStyle, setProviderDropdownStyle] = useState<React.CSSProperties | null>(null);
   const [voiceInterimTranscript, setVoiceInterimTranscript] = useState('');
   const [showEmbeddedTools, setShowEmbeddedTools] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -257,9 +258,13 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   // Close all dropdowns/panels when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
+      if (providerDropdownRef.current && providerDropdownRef.current.contains(e.target as Node)) {
+        return;
+      }
       if (inputWrapperRef.current && !inputWrapperRef.current.contains(e.target as Node)) {
         // Close all panels when clicking outside the input bar
         setShowProviderDropdown(false);
+        setProviderDropdownStyle(null);
         setShowMentionAutocomplete(false);
         if (showMemoryLibrary && onCloseMemoryLibrary) {
           onCloseMemoryLibrary();
@@ -273,6 +278,37 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showMemoryLibrary, showConversations, onCloseMemoryLibrary, onCloseConversations]);
+
+  const computeProviderDropdownStyle = useCallback((): React.CSSProperties | null => {
+    if (typeof window === 'undefined') return null;
+    const btn = providerButtonRef.current;
+    if (!btn) return null;
+    const rect = btn.getBoundingClientRect();
+    const dropdownWidth = 260;
+    const left = Math.min(
+      Math.max(8, rect.left),
+      Math.max(8, window.innerWidth - dropdownWidth - 8)
+    );
+
+    return {
+      position: 'fixed',
+      left,
+      bottom: window.innerHeight - rect.top + 12,
+      zIndex: 99999,
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!showProviderDropdown) return;
+    const update = () => setProviderDropdownStyle(computeProviderDropdownStyle());
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('scroll', update, true);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('scroll', update, true);
+    };
+  }, [showProviderDropdown, computeProviderDropdownStyle]);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -375,7 +411,11 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
 
   const handleProviderDropdownToggle = () => {
     closeAllPopups('provider');
-    setShowProviderDropdown(!showProviderDropdown);
+    setShowProviderDropdown((prev) => {
+      const next = !prev;
+      setProviderDropdownStyle(next ? computeProviderDropdownStyle() : null);
+      return next;
+    });
   };
 
   // Handle agent mode toggle - close other panels
@@ -747,7 +787,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             disabled={disabled}
             title="New Chat"
           >
-            <NewChatIcon />
+            <PlusIcon />
           </button>
         </div>
 
@@ -767,6 +807,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             <div style={{ position: 'relative', zIndex: 10000 }}>
               {/* Custom Provider Selector - No external styles */}
               <button
+                ref={providerButtonRef}
                 className={styles.providerButton}
                 onClick={(e) => {
                   e.preventDefault();
@@ -779,8 +820,14 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 {selectedProvider || 'auto'}
                 <ChevronDownIcon />
               </button>
-              {showProviderDropdown && (
-                <div className={styles.providerDropdown}>
+              {showProviderDropdown && providerDropdownStyle && typeof document !== 'undefined' && createPortal(
+                <div
+                  ref={providerDropdownRef}
+                  className={styles.providerDropdown}
+                  style={providerDropdownStyle}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onTouchStart={(e) => e.stopPropagation()}
+                >
                   <div className={styles.providerDropdownHeader}>Select Provider</div>
                   {providerOptions.map((provider) => (
                     <button
@@ -854,7 +901,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                       )}
                     </button>
                   ))}
-                </div>
+                </div>,
+                document.body
               )}
             </div>
             )}
@@ -883,26 +931,31 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 <ConversationIcon />
               </button>
             )}
-            
-            {onAttachFile && (
+
+            {onClearChat && (
               <button
-                className={`${styles.toolButton} ${styles.animatedIcon}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onAttachFile?.();
-                }}
-                title="Attach File"
-                type="button"
+                className={`${styles.toolButton} ${styles.danger}`}
+                onClick={onClearChat}
+                title="Archive Chat"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.attachIcon}>
-                  <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-                </svg>
+                <ArchiveIcon />
               </button>
             )}
+            
           </div>
 
           <div className={styles.toolsRight}>
+            {onBuild && (
+              <button className={`${styles.toolButton} ${styles.animatedIcon}`} onClick={onBuild} title="Build Project">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.rocketIcon}>
+                  <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+                  <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+                  <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+                  <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+                </svg>
+              </button>
+            )}
+
             {/* Voice Input */}
             {!voiceInInput && (
             <VoiceInput
@@ -920,25 +973,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             )}
 
             <div className={styles.iconSpacer} aria-hidden="true" />
-            
-            {/* Split View - Columns icon (icon only) */}
-            {onToggleSplitView && (
-              <button
-                className={`${styles.toolButton} ${styles.animatedIcon} ${splitViewEnabled ? styles.active : ""}`}
-                onClick={onToggleSplitView}
-                title={embedded ? (splitViewEnabled ? "Close Preview" : "Open Preview") : (splitViewEnabled ? "Close Split View" : "Open Split View")}
-              >
-                {embedded ? (
-                  <PreviewIcon />
-                ) : (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.splitIcon}>
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                    <line x1="12" y1="3" x2="12" y2="21" />
-                  </svg>
-                )}
-              </button>
-            )}
-
             
             {onShowMemoryLibrary && (
               <button
@@ -963,27 +997,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             >
               <SpeakerIcon />
             </button>
-
-            {onBuild && (
-              <button className={`${styles.toolButton} ${styles.animatedIcon}`} onClick={onBuild} title="Build Project">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.rocketIcon}>
-                  <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
-                  <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
-                  <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
-                  <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
-                </svg>
-              </button>
-            )}
-
-            {onClearChat && (
-              <button
-                className={`${styles.toolButton} ${styles.danger}`}
-                onClick={onClearChat}
-                title="Archive Chat"
-              >
-                <ArchiveIcon />
-              </button>
-            )}
 
             {onShowSettings && (
               <button

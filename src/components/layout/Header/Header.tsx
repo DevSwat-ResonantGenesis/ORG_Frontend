@@ -22,6 +22,31 @@ import {
   goToPricing
 } from '@/utils/navigation';
 
+type SplitViewPane = 'chat' | 'split';
+type SplitViewCommandDetail = {
+  enabled?: boolean;
+  pane?: SplitViewPane;
+  togglePane?: boolean;
+};
+
+const SplitViewGlyph = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+    <line x1="12" y1="3" x2="12" y2="21" />
+  </svg>
+);
+
+const SplitViewToggleIcon: React.FC<{ enabled: boolean }> = ({ enabled }) => (
+  <span className={styles.splitViewToggleIcon} aria-hidden="true">
+    <span className={styles.splitViewToggleHalfLeft}>
+      <SplitViewGlyph />
+    </span>
+    <span className={`${styles.splitViewToggleHalfRight} ${enabled ? styles.splitViewToggleHalfRightActive : ''}`}>
+      <SplitViewGlyph />
+    </span>
+  </span>
+);
+
 interface HeaderProps {
   showLogout?: boolean;
   showChatWidgetButton?: boolean;
@@ -55,6 +80,9 @@ export const Header: React.FC<HeaderProps> = ({
   const isResonantChatPage = location.pathname === '/resonant-chat' || location.pathname.startsWith('/resonant-chat');
 
   const isLandingPage = location.pathname === '/';
+
+  const [splitViewEnabled, setSplitViewEnabled] = useState(false);
+  const [splitViewPane, setSplitViewPane] = useState<SplitViewPane>('chat');
 
   useEffect(() => {
     if (!isLandingPage) {
@@ -121,6 +149,53 @@ export const Header: React.FC<HeaderProps> = ({
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
   }, []);
+
+  useEffect(() => {
+    if (!isResonantChatPage) return;
+    try {
+      setSplitViewEnabled(localStorage.getItem('resonant-chat-split-view') === 'true');
+    } catch {
+      setSplitViewEnabled(false);
+    }
+  }, [isResonantChatPage]);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ enabled: boolean; pane?: SplitViewPane }>).detail;
+      if (!detail) return;
+      setSplitViewEnabled(!!detail.enabled);
+      if (detail.pane) setSplitViewPane(detail.pane);
+    };
+    window.addEventListener('rg:split-view-state', handler as EventListener);
+    return () => window.removeEventListener('rg:split-view-state', handler as EventListener);
+  }, []);
+
+  const dispatchSplitViewCommand = (detail: SplitViewCommandDetail) => {
+    window.dispatchEvent(new CustomEvent('rg:split-view-command', { detail }));
+  };
+
+  const handleSplitViewToggleClick = () => {
+    if (!isResonantChatPage) return;
+
+    if (isMobileViewport) {
+      if (!splitViewEnabled) {
+        setSplitViewEnabled(true);
+        setSplitViewPane('split');
+        dispatchSplitViewCommand({ enabled: true, pane: 'split' });
+        return;
+      }
+
+      const nextPane: SplitViewPane = splitViewPane === 'chat' ? 'split' : 'chat';
+      setSplitViewPane(nextPane);
+      dispatchSplitViewCommand({ togglePane: true });
+      return;
+    }
+
+    const nextEnabled = !splitViewEnabled;
+    setSplitViewEnabled(nextEnabled);
+    setSplitViewPane(nextEnabled ? 'split' : 'chat');
+    dispatchSplitViewCommand({ enabled: nextEnabled, pane: nextEnabled ? 'split' : 'chat' });
+  };
 
   // Close menus when route changes
   useEffect(() => {
@@ -456,6 +531,18 @@ export const Header: React.FC<HeaderProps> = ({
 
               <ThemeToggle />
             </div>
+
+            {isResonantChatPage && (
+              <button
+                type="button"
+                className={`${styles.splitViewToggleButton} ${splitViewEnabled ? styles.splitViewToggleButtonActive : ''} ${splitViewEnabled && splitViewPane === 'split' ? styles.splitViewToggleButtonPulse : ''}`}
+                onClick={handleSplitViewToggleClick}
+                aria-label="Split View"
+                title={splitViewEnabled ? (isMobileViewport ? 'Toggle Split View pane' : 'Close Split View') : 'Open Split View'}
+              >
+                <SplitViewToggleIcon enabled={splitViewEnabled} />
+              </button>
+            )}
 
             {/* Logged In: Show Account Menu */}
             {isLoggedIn ? (
