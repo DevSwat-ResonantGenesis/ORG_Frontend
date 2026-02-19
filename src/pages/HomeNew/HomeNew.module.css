@@ -2703,19 +2703,20 @@
 
   /* Hero Parallax - Mobile: Square aspect ratio based on width */
   .heroParallax {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    /* Square based on viewport width */
-    width: min(88vw, 420px);
-    height: min(88vw, 420px);
-    min-width: min(88vw, 420px);
-    min-height: min(88vw, 420px);
-    z-index: 0;
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    transform: none;
+    width: 100%;
+    height: clamp(260px, 58vw, 360px);
+    min-width: 0;
+    min-height: 0;
+    margin-top: 16px;
+    z-index: 1;
     pointer-events: none;
     overflow: visible;
-    opacity: 0.4;
+    opacity: 0.85;
     display: flex;
     align-items: center;
     justify-content: center;
