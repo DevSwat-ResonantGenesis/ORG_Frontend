@@ -41,7 +41,7 @@ export const HeroSection = () => {
                         </span>
                     </h1>
                     <p className={heroTitleStyles.heroSubtitle}>
-                        The first sovereign AI ecosystem with somatic-magnetic memory. Encrypted, autonomous, and fully self-hosted. No black boxes—just pure control.
+                        The first sovereign AI ecosystem with Resonant memory. Encrypted, autonomous, and fully self-hosted. No black boxes—just pure governed enforced control with decentralized logging.
                     </p>
                     
                     {/* Hero CTAs - Conditional based on login state */}
