@@ -414,12 +414,6 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Enterprise Link */}
-            <button 
-              className={styles.navButton}
-              onClick={() => navigate('/enterprise')}
-            >
-              Enterprise
-            </button>
 
             {/* Pricing Link */}
             <button 
@@ -642,9 +636,6 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Other Links */}
             <div className={styles.mobileMenuSection}>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/enterprise'); setIsMobileMenuOpen(false); }}>
-                Enterprise
-              </button>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/pricing'); setIsMobileMenuOpen(false); }}>
                 Pricing
               </button>

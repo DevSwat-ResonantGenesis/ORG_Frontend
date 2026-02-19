@@ -1084,12 +1084,12 @@
   left: 0;
   min-width: 280px;
   /* SOLID NON-TRANSPARENT BACKGROUND - CHANGED */
-  background: rgba(10, 10, 15, 0.65) !important;
+  background: rgba(10, 10, 15, 0.78) !important;
   backdrop-filter: blur(18px) saturate(160%) !important;
   -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
-  border: 1px solid rgba(59, 130, 246, 0.35) !important;
+  border: 1px solid rgba(59, 130, 246, 0.42) !important;
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.3);
   z-index: 10002;
   overflow: hidden;
   animation: navDropdownFadeIn 0.15s ease;
@@ -1109,11 +1109,11 @@
 
 /* Light mode - Solid non-transparent */
 [data-theme='light'] .navDropdown {
-  background: rgba(255, 255, 255, 0.75) !important;
+  background: rgba(255, 255, 255, 0.9) !important;
   backdrop-filter: blur(16px) saturate(160%) !important;
   -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
   border: 1px solid rgba(37, 99, 235, 0.25) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.18), 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .navDropdownGrid {
@@ -1158,8 +1158,8 @@
   align-items: flex-start;
   gap: 2px;
   padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(59, 130, 246, 0.28);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(59, 130, 246, 0.32);
   border-radius: 10px;
   cursor: pointer;
   text-align: left;
@@ -1169,7 +1169,7 @@
   position: relative;
   overflow: hidden;
 
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
 }
 
 .navDropdownItem:hover {
