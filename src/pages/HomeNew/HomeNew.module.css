@@ -586,7 +586,7 @@
     min-height: 0;
     height: auto;
     max-height: 80dvh;
-    margin-top: 12px;
+    margin-top: 0;
     z-index: 1;
     justify-content: center;
     opacity: 0.85;
@@ -604,7 +604,8 @@
 
   .heroParallax canvas {
     width: 100% !important;
-    height: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
     max-width: 100% !important;
     max-height: 100% !important;
   }
@@ -612,7 +613,7 @@
 
 @media (max-width: 639px) {
   .heroParallax {
-    margin-top: 10px;
+    margin-top: 0;
   }
 }
 
@@ -894,7 +895,7 @@
 @media (max-width: 640px) {
   .heroNavLinks {
     gap: 4px;
-    margin-top: 16px;
+    margin-top: 0;
     width: 100%;
     align-items: center;
   }
