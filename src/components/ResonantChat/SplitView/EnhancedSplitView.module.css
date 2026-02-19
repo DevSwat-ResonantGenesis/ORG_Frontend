@@ -542,7 +542,7 @@
   .chatPanel,
   .codePanel {
     width: 100% !important;
-    height: 50%;
+    height: 100%;
   }
   
   .resizeHandle {

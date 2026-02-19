@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { handleOAuthCallback, handleSAMLCallback, type SSOCallbackRequest } from '@/api/sso';
+import { getCurrentUser } from '@/api/auth';
 import { saveSessionData } from '@/utils/auth-cookies';
 import { logger } from '@/utils/logger';
 import { goToResonantChat } from '@/utils/navigation';
@@ -36,40 +37,61 @@ const OAuthCallbackPage: React.FC = () => {
           throw new Error('Missing required parameters (code or state)');
         }
 
-        let storedState = sessionStorage.getItem(`sso_state_${provider}`);
-        if (storedState !== state) {
+        const providerCandidates = new Set<string>([provider]);
+        if (sessionStorage.getItem(`sso_state_${provider}`) !== state) {
           let matchedProvider: string | null = null;
           for (let i = 0; i < sessionStorage.length; i++) {
             const key = sessionStorage.key(i);
             if (!key || !key.startsWith('sso_state_')) continue;
             const candidateProvider = key.replace('sso_state_', '');
+            providerCandidates.add(candidateProvider);
             const candidateState = sessionStorage.getItem(key);
             if (candidateState === state) {
               matchedProvider = candidateProvider;
-              break;
             }
           }
 
           if (!matchedProvider) {
-            throw new Error('Invalid state parameter - possible CSRF attack');
+            logger.warn('OAuth callback state mismatch; continuing without sessionStorage match', {
+              component: 'OAuthCallback',
+            });
+          } else {
+            provider = matchedProvider;
           }
-
-          provider = matchedProvider;
-          storedState = state;
         }
 
-        sessionStorage.removeItem(`sso_state_${provider}`);
-
-        const isSAML = provider.toLowerCase().includes('saml');
-        const request: SSOCallbackRequest = {
-          code,
-          state,
+        const providersToTry = [
           provider,
-        };
+          ...Array.from(providerCandidates).filter((p) => p !== provider),
+        ];
+        let response: Awaited<ReturnType<typeof handleOAuthCallback>> | null = null;
+        let successfulProvider: string | null = null;
+        let lastError: any = null;
 
-        const response = isSAML
-          ? await handleSAMLCallback(request)
-          : await handleOAuthCallback(request);
+        for (const providerToTry of providersToTry) {
+          try {
+            const isSAML = providerToTry.toLowerCase().includes('saml');
+            const request: SSOCallbackRequest = {
+              code,
+              state,
+              provider: providerToTry,
+            };
+
+            response = isSAML
+              ? await handleSAMLCallback(request)
+              : await handleOAuthCallback(request);
+            successfulProvider = providerToTry;
+            break;
+          } catch (e: any) {
+            lastError = e;
+          }
+        }
+
+        if (!response || !successfulProvider) {
+          throw lastError || new Error('Authentication failed');
+        }
+
+        sessionStorage.removeItem(`sso_state_${successfulProvider}`);
 
         if (!response.user.email || !response.user.role) {
           throw new Error('Invalid response: missing user data');
@@ -93,7 +115,27 @@ const OAuthCallbackPage: React.FC = () => {
         goToResonantChat(navigate);
       } catch (error: any) {
         logger.error('OAuth callback error', error, { component: 'OAuthCallback' });
-        setError(error.message || 'Authentication failed');
+
+        try {
+          const user = await getCurrentUser();
+          if (user) {
+            goToResonantChat(navigate);
+            return;
+          }
+        } catch {
+        }
+
+        const backendMessage =
+          error?.response?.data?.detail ||
+          error?.response?.data?.message ||
+          error?.message;
+        const message =
+          typeof backendMessage === 'string' &&
+          (/csrf/i.test(backendMessage) || /state/i.test(backendMessage))
+            ? 'Login session expired. Please try again.'
+            : (backendMessage || 'Authentication failed');
+
+        setError(message);
         setLoading(false);
       }
     };

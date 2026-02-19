@@ -507,7 +507,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     ? `Team: ${selectedTeamName}`
     : selectedAgentName
     ? `Agent: ${selectedAgentName}`
-    : 'Auto';
+    : 'Smart';
 
   return (
     <div
@@ -550,7 +550,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                   value={selectedAgent || ''}
                   onChange={(e) => handleAgentSelectChange(e.target.value || null)}
                 >
-                  <option value="">Auto</option>
+                  <option value="">Smart</option>
                   {agents.map(agent => (
                     <option key={agent.hash} value={agent.hash}>{agent.name}</option>
                   ))}
@@ -784,39 +784,37 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
 
         {/* Input Area: Textarea + Send */}
         <div className={styles.inputArea}>
-          {voiceInInput && (
-            <div className={`${styles.voiceStack} ${embedded ? styles.embeddedVoiceStack : ''}`}>
-              <VoiceInput
-                onTranscript={(text) => {
-                  const currentValue = valueRef.current;
-                  const newValue = currentValue + (currentValue ? ' ' : '') + text;
-                  onChange(newValue);
-                  textareaRef.current?.focus();
+          <div className={`${styles.voiceStack} ${embedded ? styles.embeddedVoiceStack : ''}`}>
+            <VoiceInput
+              onTranscript={(text) => {
+                const currentValue = valueRef.current;
+                const newValue = currentValue + (currentValue ? ' ' : '') + text;
+                onChange(newValue);
+                textareaRef.current?.focus();
+              }}
+              onInterimTranscriptChange={setVoiceInterimTranscript}
+              renderInterimTranscript={false}
+              iconSize={voiceIconSize}
+              disabled={isLoading || disabled}
+            />
+            {embedded && (
+              <button
+                type="button"
+                className={`${styles.toolButton} ${styles.embeddedToolsToggle} ${showEmbeddedTools ? styles.active : ''}`}
+                onMouseEnter={() => setShowEmbeddedTools(true)}
+                onFocus={() => setShowEmbeddedTools(true)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowEmbeddedTools(v => !v);
                 }}
-                onInterimTranscriptChange={setVoiceInterimTranscript}
-                renderInterimTranscript={false}
-                iconSize={voiceIconSize}
-                disabled={isLoading || disabled}
-              />
-              {embedded && (
-                <button
-                  type="button"
-                  className={`${styles.toolButton} ${styles.embeddedToolsToggle} ${showEmbeddedTools ? styles.active : ''}`}
-                  onMouseEnter={() => setShowEmbeddedTools(true)}
-                  onFocus={() => setShowEmbeddedTools(true)}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setShowEmbeddedTools(v => !v);
-                  }}
-                  title={showEmbeddedTools ? 'Hide tools' : 'Show tools'}
-                  aria-expanded={showEmbeddedTools}
-                >
-                  <ChevronDownIcon />
-                </button>
-              )}
-            </div>
-          )}
+                title={showEmbeddedTools ? 'Hide tools' : 'Show tools'}
+                aria-expanded={showEmbeddedTools}
+              >
+                <ChevronDownIcon />
+              </button>
+            )}
+          </div>
           {voiceInInput && voiceInterimTranscript && (
             <div className={styles.voiceInterimOverlay}>{voiceInterimTranscript}</div>
           )}
@@ -853,56 +851,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           }}
         >
           <div className={styles.toolsLeft}>
-            {onToggleAgentMode && (
-              <button
-                ref={agentButtonRef}
-                className={`${styles.providerButton} ${styles.agentSelectorButton} ${agentMode ? styles.agentSelectorActive : ''}`}
-                onClick={handleAgentModeToggle}
-                title={agentSelectorLabel}
-                type="button"
-              >
-                <span className={styles.agentSelectorIcon}><TeamIcon /></span>
-                <span className={styles.agentSelectorLabel}>{agentSelectorLabel}</span>
-                <ChevronDownIcon />
-              </button>
-            )}
-            {onShowConversations && (
-              <button
-                className={`${styles.toolButton} ${showConversations ? styles.active : ''}`}
-                onClick={showConversations ? onCloseConversations : handleShowConversations}
-                title="Chat History"
-              >
-                <ConversationIcon />
-              </button>
-            )}
-            {!voiceInInput && (
-              <VoiceInput
-                onTranscript={(text) => {
-                  const currentValue = valueRef.current;
-                  const newValue = currentValue + (currentValue ? ' ' : '') + text;
-                  onChange(newValue);
-                  textareaRef.current?.focus();
-                }}
-                disabled={isLoading || disabled}
-                iconSize={voiceIconSize}
-              />
-            )}
-            {onShareChat && (
-              <button
-                className={styles.toolButton}
-                onClick={onShareChat}
-                title="Share Entire Chat"
-                type="button"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="18" cy="5" r="3" />
-                  <circle cx="6" cy="12" r="3" />
-                  <circle cx="18" cy="19" r="3" />
-                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                </svg>
-              </button>
-            )}
             {onVoiceConversation && (
               <button
                 className={`${styles.toolButton} ${voiceInInput ? styles.active : ''}`}
@@ -1022,9 +970,50 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 )}
               </div>
             )}
+
+            {onToggleAgentMode && (
+              <button
+                ref={agentButtonRef}
+                className={`${styles.providerButton} ${styles.agentSelectorButton} ${agentMode ? styles.agentSelectorActive : ''}`}
+                onClick={handleAgentModeToggle}
+                title={agentSelectorLabel}
+                type="button"
+              >
+                <span className={styles.agentSelectorIcon}><TeamIcon /></span>
+                <span className={styles.agentSelectorLabel}>{agentSelectorLabel}</span>
+                <ChevronDownIcon />
+              </button>
+            )}
           </div>
 
           <div className={styles.toolsRight}>
+            {onShowConversations && (
+              <button
+                className={`${styles.toolButton} ${showConversations ? styles.active : ''}`}
+                onClick={showConversations ? onCloseConversations : handleShowConversations}
+                title="Chat History"
+              >
+                <ConversationIcon />
+              </button>
+            )}
+
+            {onShareChat && (
+              <button
+                className={styles.toolButton}
+                onClick={onShareChat}
+                title="Share Entire Chat"
+                type="button"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>
+              </button>
+            )}
+
             {onAttachFile && (
               <button
                 className={`${styles.toolButton} ${styles.animatedIcon}`}
