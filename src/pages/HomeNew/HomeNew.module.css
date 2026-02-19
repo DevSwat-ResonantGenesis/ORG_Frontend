@@ -269,9 +269,9 @@
 
 @media (max-width: 768px) {
   .hero {
-    height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
-    min-height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
-    max-height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: 100dvh;
     overflow: hidden;
     justify-content: flex-start;
     flex-direction: column;
@@ -282,9 +282,9 @@
 /* Mobile: Content at top, natural height */
 @media (max-width: 639px) {
   .hero {
-    min-height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
-    height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
-    max-height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
+    min-height: 100dvh;
+    height: 100dvh;
+    max-height: 100dvh;
     align-items: flex-start;
     justify-content: flex-start;
     padding-top: calc(var(--header-height, 56px) + env(safe-area-inset-top) + 8px);
@@ -2727,9 +2727,9 @@
 
 @media (max-width: 767px) {
   .hero {
-    height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
-    min-height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
-    max-height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: 100dvh;
   }
 
   /* Hero Parallax - Mobile: Square aspect ratio based on width */
