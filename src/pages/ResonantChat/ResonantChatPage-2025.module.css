@@ -1989,7 +1989,7 @@
 
 .mainChatArea.splitViewEnabled {
   flex-direction: row;
-  height: calc(100vh - var(--header-height, 60px));
+  height: 100%;
   overflow: hidden;
 }
 

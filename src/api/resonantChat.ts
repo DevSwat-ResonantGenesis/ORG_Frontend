@@ -816,3 +816,25 @@ export const archiveConversation = async (conversationId: string) => {
     throw error;
   }
 };
+
+export const deleteResonantConversation = async (conversationId: string) => {
+  try {
+    const response = await fastapiClient.delete(`/resonant-chat/conversations/${conversationId}`);
+    return response.data;
+  } catch (error: any) {
+    logger.error('Failed to delete conversation:', error);
+    throw error;
+  }
+};
+
+export const deleteResonantMessage = async (conversationId: string, messageId: string) => {
+  try {
+    const response = await fastapiClient.delete(
+      `/resonant-chat/conversations/${conversationId}/messages/${messageId}`
+    );
+    return response.data;
+  } catch (error: any) {
+    logger.error('Failed to delete message:', error);
+    throw error;
+  }
+};

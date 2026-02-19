@@ -1,5 +1,5 @@
 import { createMemory, deleteConversation, deleteMemory, listConversations, listMemories, updateConversation, updateMemory, uploadFile, type MemoryResponse } from '@/api/rag';
-import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, getProviderStats, getUserAnalytics, archiveConversation, type UserAnalytics } from '@/api/resonantChat';
+import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, getProviderStats, getUserAnalytics, archiveConversation, deleteResonantConversation, deleteResonantMessage, type UserAnalytics } from '@/api/resonantChat';
 import { triggerChatSync } from '@/context/ChatContext';
 import { fetchAvailableProviders } from '@/api/userApiKeys';
 import { fetchUsageSummary } from '@/api/usage';
@@ -2611,8 +2611,17 @@ const ResonantChatPage: React.FC = () => {
   };
 
   // Handle delete message
-  const handleDeleteMessage = (messageId: string) => {
-    setMessages(prev => prev.filter(m => m.id !== messageId));
+  const handleDeleteMessage = async (messageId: string) => {
+    try {
+      if (isLoggedIn && currentConversationId) {
+        await deleteResonantMessage(currentConversationId, messageId);
+      }
+      setMessages(prev => prev.filter(m => m.id !== messageId));
+      success('Message deleted');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete message';
+      showError(errorMessage);
+    }
   };
 
   // Handle delete conversation (supports both logged-in and guest users)
@@ -2622,12 +2631,7 @@ const ResonantChatPage: React.FC = () => {
       setIsDeletingConversation(conversationId);
 
       if (isLoggedIn) {
-        try {
-          await archiveConversation(conversationId);
-        } catch (error: unknown) {
-          // If API fails, still remove from UI (graceful degradation)
-          logger.error('Failed to archive conversation from backend', error);
-        }
+        await deleteResonantConversation(conversationId);
       } else {
         // Delete from sessionStorage for guests
         const guestConversations = JSON.parse(sessionStorage.getItem('guest-conversations') || '[]');
@@ -2645,7 +2649,7 @@ const ResonantChatPage: React.FC = () => {
 
       success('Conversation deleted');
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to archive conversation';
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete conversation';
       showError(errorMessage);
     } finally {
       setIsDeletingConversation(null);
