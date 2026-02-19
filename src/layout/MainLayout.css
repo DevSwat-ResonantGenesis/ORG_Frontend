@@ -1,6 +1,12 @@
 /* Main Layout Responsive Styles */
 
 @media (max-width: 768px) {
+  html,
+  body {
+    background-color: var(--color-bg-root, var(--bg-primary)) !important;
+    background: var(--color-bg-root, var(--bg-primary)) !important;
+  }
+
   html.landingPageNoScroll,
   body.landingPageNoScroll {
     height: 100%;
