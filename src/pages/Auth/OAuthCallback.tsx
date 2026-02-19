@@ -25,7 +25,8 @@ const OAuthCallbackPage: React.FC = () => {
         const code = searchParams.get('code');
         const state = searchParams.get('state');
         const errorParam = searchParams.get('error');
-        const provider = searchParams.get('provider') || 'oauth';
+        const providerParam = searchParams.get('provider');
+        let provider = providerParam || 'oauth';
 
         if (errorParam) {
           throw new Error(`OAuth error: ${errorParam}`);
@@ -35,9 +36,26 @@ const OAuthCallbackPage: React.FC = () => {
           throw new Error('Missing required parameters (code or state)');
         }
 
-        const storedState = sessionStorage.getItem(`sso_state_${provider}`);
+        let storedState = sessionStorage.getItem(`sso_state_${provider}`);
         if (storedState !== state) {
-          throw new Error('Invalid state parameter - possible CSRF attack');
+          let matchedProvider: string | null = null;
+          for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i);
+            if (!key || !key.startsWith('sso_state_')) continue;
+            const candidateProvider = key.replace('sso_state_', '');
+            const candidateState = sessionStorage.getItem(key);
+            if (candidateState === state) {
+              matchedProvider = candidateProvider;
+              break;
+            }
+          }
+
+          if (!matchedProvider) {
+            throw new Error('Invalid state parameter - possible CSRF attack');
+          }
+
+          provider = matchedProvider;
+          storedState = state;
         }
 
         sessionStorage.removeItem(`sso_state_${provider}`);
