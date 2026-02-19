@@ -1958,7 +1958,7 @@
   transition: margin-left var(--chat-transition);
 }
 
- .chatContainer > div {
+ .chatContainer > div:first-child {
   flex: 1;
   display: flex;
   flex-direction: column;
