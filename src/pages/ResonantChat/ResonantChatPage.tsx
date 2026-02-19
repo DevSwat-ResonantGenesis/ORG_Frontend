@@ -838,6 +838,15 @@ const ResonantChatPage: React.FC = () => {
     };
   }, [isMobile]);
 
+  useEffect(() => {
+    if (!isMobile) {
+      document.body.style.overflow = '';
+      return;
+    }
+
+    document.body.style.overflow = sidebarOpen ? 'hidden' : '';
+  }, [isMobile, sidebarOpen]);
+
   // Ensure body scroll is restored on component mount/unmount
   useEffect(() => {
     // Restore body scroll on mount (in case it was stuck from previous session)
