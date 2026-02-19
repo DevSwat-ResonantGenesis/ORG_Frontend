@@ -863,6 +863,8 @@ const ResonantChatPage: React.FC = () => {
   // Keyboard Shortcuts Panel
   const [showShortcutsPanel, setShowShortcutsPanel] = useState(false);
 
+  const [voiceInInput, setVoiceInInput] = useState(false);
+
   // Split View for Code Generation (state only - logic moved to SplitViewModule)
   const [splitViewEnabled, setSplitViewEnabled] = useState(() => {
     return localStorage.getItem('resonant-chat-split-view') === 'true';
@@ -4015,6 +4017,8 @@ const ResonantChatPage: React.FC = () => {
           }}
           onShowSettings={() => setShowSettingsSticker(!showSettingsSticker)}
           showSettings={showSettingsSticker}
+          voiceInInput={voiceInInput}
+          onVoiceConversation={() => setVoiceInInput((v) => !v)}
           onCopyChat={() => {
             if (messages.length === 0) {
               warning('No messages to copy');

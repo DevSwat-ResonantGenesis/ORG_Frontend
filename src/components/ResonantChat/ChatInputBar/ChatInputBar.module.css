@@ -712,6 +712,24 @@
   clip-path: inset(0 0 0 50%);
 }
 
+.voiceConversationIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voiceConversationIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 768px) {
+  .voiceConversationIcon svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
 .iconSpacer {
   width: 1px;
   height: 16px;

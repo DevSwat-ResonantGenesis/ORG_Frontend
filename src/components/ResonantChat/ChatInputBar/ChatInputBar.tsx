@@ -13,6 +13,7 @@ import {
   PlusIcon,
 } from '@/components/Icons/ResonantChatIcons';
 import { VoiceInput } from '@/components/ResonantChat/VoiceInput';
+import { HashSphereIcon } from '@/components/Icons/ServiceIcons';
 import styles from './ChatInputBar.module.css';
 
 const TeamIcon = () => (
@@ -139,6 +140,8 @@ interface ChatInputBarProps {
   onShareChat?: () => void;
   onCopyChat?: () => void;
 
+  onVoiceConversation?: () => void;
+
   ttsText?: string;
 }
 
@@ -191,6 +194,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   showSettings = false,
   onShareChat,
   onCopyChat,
+  onVoiceConversation,
   ttsText,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -803,108 +807,173 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           }}
         >
           <div className={styles.toolsLeft}>
-            {!hideProviderSelector && (
-            <div style={{ position: 'relative', zIndex: 10000 }}>
-              {/* Custom Provider Selector - No external styles */}
+            {onShowConversations && (
               <button
-                ref={providerButtonRef}
-                className={styles.providerButton}
+                className={`${styles.toolButton} ${showConversations ? styles.active : ''}`}
+                onClick={showConversations ? onCloseConversations : handleShowConversations}
+                title="Chat History"
+              >
+                <ConversationIcon />
+              </button>
+            )}
+
+            {!voiceInInput && (
+              <VoiceInput
+                onTranscript={(text) => {
+                  const currentValue = valueRef.current;
+                  const newValue = currentValue + (currentValue ? ' ' : '') + text;
+                  onChange(newValue);
+                  textareaRef.current?.focus();
+                }}
+                disabled={isLoading || disabled}
+                iconSize={voiceIconSize}
+              />
+            )}
+            {onShareChat && (
+              <button
+                className={styles.toolButton}
+                onClick={onShareChat}
+                title="Share Entire Chat"
+                type="button"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>
+              </button>
+            )}
+
+            {onClearChat && (
+              <button
+                className={`${styles.toolButton} ${styles.danger}`}
+                onClick={onClearChat}
+                title="Archive Chat"
+                type="button"
+              >
+                <ArchiveIcon />
+              </button>
+            )}
+            {onVoiceConversation && (
+              <button
+                className={`${styles.toolButton} ${voiceInInput ? styles.active : ''}`}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  handleProviderDropdownToggle();
+                  onVoiceConversation?.();
                 }}
+                title="Voice Conversation"
                 type="button"
               >
-                <LLMSelectorIcon />
-                {selectedProvider || 'auto'}
-                <ChevronDownIcon />
+                <span className={styles.voiceConversationIcon}>
+                  <HashSphereIcon />
+                </span>
               </button>
-              {showProviderDropdown && providerDropdownStyle && typeof document !== 'undefined' && createPortal(
-                <div
-                  ref={providerDropdownRef}
-                  className={styles.providerDropdown}
-                  style={providerDropdownStyle}
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onTouchStart={(e) => e.stopPropagation()}
+            )}
+            {!hideProviderSelector && (
+              <div style={{ position: 'relative', zIndex: 10000 }}>
+                {/* Custom Provider Selector - No external styles */}
+                <button
+                  ref={providerButtonRef}
+                  className={styles.providerButton}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleProviderDropdownToggle();
+                  }}
+                  type="button"
                 >
-                  <div className={styles.providerDropdownHeader}>Select Provider</div>
-                  {providerOptions.map((provider) => (
-                    <button
-                      key={provider}
-                      type="button"
-                      className={`${styles.providerOption} ${selectedProvider === provider ? styles.selected : ''}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        onProviderChange(normalizeProvider(provider));
-                        setShowProviderDropdown(false);
-                      }}
-                    >
-                      <span className={styles.providerIcon}>
-                        {provider === 'auto' && (
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                          </svg>
-                        )}
-                        {provider === 'openai' && (
-                          <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z" />
-                          </svg>
-                        )}
-                        {provider === 'gemini' && (
-                          <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                          </svg>
-                        )}
-                        {provider === 'anthropic' && (
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="M12 6v6l4 2" />
-                          </svg>
-                        )}
-                        {provider === 'groq' && (
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                          </svg>
-                        )}
-                      </span>
-                      <span className={styles.providerName}>
-                        {provider.charAt(0).toUpperCase() + provider.slice(1)}
-                      </span>
-                      {provider === 'auto' && <span className={styles.providerBadge}>Smart</span>}
-                      {/* Provider Health Stats */}
-                      {provider !== 'auto' && providerStats[provider] && (
-                        <span style={{ 
-                          marginLeft: 'auto', 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          gap: '6px',
-                          fontSize: '10px',
-                        }}>
-                          {/* Health indicator */}
-                          <span style={{
-                            width: '6px',
-                            height: '6px',
-                            borderRadius: '50%',
-                            background: providerStats[provider].health === 'healthy' ? '#22c55e' 
-                              : providerStats[provider].health === 'degraded' ? '#f59e0b' 
-                              : '#ef4444',
-                          }} title={`Health: ${providerStats[provider].health}`} />
-                          {/* Latency */}
-                          {providerStats[provider].latency && (
-                            <span style={{ color: '#888' }}>
-                              {providerStats[provider].latency}ms
-                            </span>
+                  <LLMSelectorIcon />
+                  {selectedProvider || 'auto'}
+                  <ChevronDownIcon />
+                </button>
+                {showProviderDropdown && providerDropdownStyle && typeof document !== 'undefined' && createPortal(
+                  <div
+                    ref={providerDropdownRef}
+                    className={styles.providerDropdown}
+                    style={providerDropdownStyle}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onTouchStart={(e) => e.stopPropagation()}
+                  >
+                    <div className={styles.providerDropdownHeader}>Select Provider</div>
+                    {providerOptions.map((provider) => (
+                      <button
+                        key={provider}
+                        type="button"
+                        className={`${styles.providerOption} ${selectedProvider === provider ? styles.selected : ''}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onProviderChange(normalizeProvider(provider));
+                          setShowProviderDropdown(false);
+                        }}
+                      >
+                        <span className={styles.providerIcon}>
+                          {provider === 'auto' && (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2.34 7.92l2.83 2.83M19.07 4.93l-2.83 2.83M2.34 16.07l2.83-2.83M19.07 19.07l-2.83-2.83" />
+                            </svg>
+                          )}
+                          {provider === 'openai' && (
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z" />
+                            </svg>
+                          )}
+                          {provider === 'gemini' && (
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5" />
+                            </svg>
+                          )}
+                          {provider === 'anthropic' && (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <circle cx="12" cy="12" r="10" />
+                              <path d="M12 6v6l4 2" />
+                            </svg>
+                          )}
+                          {provider === 'groq' && (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                            </svg>
                           )}
                         </span>
-                      )}
-                    </button>
-                  ))}
-                </div>,
-                document.body
-              )}
-            </div>
+                        <span className={styles.providerName}>
+                          {provider.charAt(0).toUpperCase() + provider.slice(1)}
+                        </span>
+                        {provider === 'auto' && <span className={styles.providerBadge}>Smart</span>}
+                        {/* Provider Health Stats */}
+                        {provider !== 'auto' && providerStats[provider] && (
+                          <span style={{ 
+                            marginLeft: 'auto', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '6px',
+                            fontSize: '10px',
+                          }}>
+                            {/* Health indicator */}
+                            <span style={{
+                              width: '6px',
+                              height: '6px',
+                              borderRadius: '50%',
+                              background: providerStats[provider].health === 'healthy' ? '#22c55e' 
+                                : providerStats[provider].health === 'degraded' ? '#f59e0b' 
+                                : '#ef4444',
+                            }} title={`Health: ${providerStats[provider].health}`} />
+                            {/* Latency */}
+                            {providerStats[provider].latency && (
+                              <span style={{ color: '#888' }}>
+                                {providerStats[provider].latency}ms
+                              </span>
+                            )}
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>,
+                  document.body
+                )}
+              </div>
             )}
             
             {onToggleAgentMode && (
@@ -920,28 +989,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 <ChevronDownIcon />
               </button>
             )}
-            
-            {/* History Button - Shows chat history list (icon only) */}
-            {onShowConversations && (
-              <button
-                className={`${styles.toolButton} ${styles.historyButton} ${showConversations ? styles.active : ''}`}
-                onClick={showConversations ? onCloseConversations : handleShowConversations}
-                title="Chat History"
-              >
-                <ConversationIcon />
-              </button>
-            )}
-
-            {onClearChat && (
-              <button
-                className={`${styles.toolButton} ${styles.danger}`}
-                onClick={onClearChat}
-                title="Archive Chat"
-              >
-                <ArchiveIcon />
-              </button>
-            )}
-            
           </div>
 
           <div className={styles.toolsRight}>
@@ -954,22 +1001,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                   <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
                 </svg>
               </button>
-            )}
-
-            {/* Voice Input */}
-            {!voiceInInput && (
-            <VoiceInput
-              onTranscript={(text) => {
-                // Use ref to get current value to avoid stale closure
-                const currentValue = valueRef.current;
-                const newValue = currentValue + (currentValue ? ' ' : '') + text;
-                onChange(newValue);
-                // Focus the textarea after voice input
-                textareaRef.current?.focus();
-              }}
-              disabled={isLoading || disabled}
-              iconSize={voiceIconSize}
-            />
             )}
 
             <div className={styles.iconSpacer} aria-hidden="true" />
@@ -998,6 +1029,23 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               <SpeakerIcon />
             </button>
 
+            {onAttachFile && (
+              <button
+                className={`${styles.toolButton} ${styles.animatedIcon}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onAttachFile?.();
+                }}
+                title="Attach File"
+                type="button"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.attachIcon}>
+                  <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                </svg>
+              </button>
+            )}
+
             {onShowSettings && (
               <button
                 className={`${styles.toolButton} ${showSettings ? styles.active : ''}`}
@@ -1022,23 +1070,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                   <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </svg>
-              </button>
-            )}
-
-            {/* Share Entire Chat */}
-            {onShareChat && (
-              <button
-                className={styles.toolButton}
-                onClick={onShareChat}
-                title="Share Entire Chat"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="18" cy="5" r="3" />
-                  <circle cx="6" cy="12" r="3" />
-                  <circle cx="18" cy="19" r="3" />
-                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
                 </svg>
               </button>
             )}
