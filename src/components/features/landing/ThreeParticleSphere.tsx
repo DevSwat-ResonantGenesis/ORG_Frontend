@@ -33,6 +33,19 @@ export const ThreeParticleSphere: React.FC = () => {
         );
         camera.position.z = 4.2; // Slightly back to prevent edge clipping
 
+        const applyCameraSettings = () => {
+            if (isMobileLayout) {
+                camera.fov = 52;
+                camera.position.z = 3.15;
+            } else {
+                camera.fov = 52;
+                camera.position.z = 4.2;
+            }
+            camera.updateProjectionMatrix();
+        };
+
+        applyCameraSettings();
+
         // Renderer - Ultra High Quality
         const renderer = new THREE.WebGLRenderer({
             antialias: true,
@@ -311,6 +324,8 @@ export const ThreeParticleSphere: React.FC = () => {
                     renderer.domElement.style.width = '100%';
                     renderer.domElement.style.height = '100%';
                 }
+
+                applyCameraSettings();
             }
             applySize();
         };

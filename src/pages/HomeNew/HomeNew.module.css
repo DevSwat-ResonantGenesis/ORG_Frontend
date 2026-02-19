@@ -573,8 +573,8 @@
     right: auto;
     top: 52%;
     transform: translate(-50%, -50%);
-    width: 110vmax;
-    height: 110vmax;
+    width: 100vw;
+    height: 100vh;
     justify-content: center;
     opacity: 0.85;
   }
