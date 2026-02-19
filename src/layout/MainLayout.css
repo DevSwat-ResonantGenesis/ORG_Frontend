@@ -7,6 +7,18 @@
     background: var(--color-bg-root, var(--bg-primary)) !important;
   }
 
+  html[data-theme='dark'],
+  body[data-theme='dark'] {
+    background-color: #0a0a0a !important;
+    background: #0a0a0a !important;
+  }
+
+  html[data-theme='light'],
+  body[data-theme='light'] {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+  }
+
   html.landingPageNoScroll,
   body.landingPageNoScroll {
     height: 100%;

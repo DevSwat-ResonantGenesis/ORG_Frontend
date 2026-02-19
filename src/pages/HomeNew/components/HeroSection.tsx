@@ -17,7 +17,9 @@ export const HeroSection = () => {
             {/* Parallax Background - Behind Content */}
             <div className={styles.heroParallax} aria-hidden="true">
                 <Suspense fallback={<div className={styles.parallaxPlaceholder} />}>
-                    <ThreeParticleSphere />
+                    <div className={styles.heroParallaxInner}>
+                        <ThreeParticleSphere />
+                    </div>
                 </Suspense>
             </div>
 
