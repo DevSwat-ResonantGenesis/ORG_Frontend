@@ -14,7 +14,7 @@ import {
   PlusIcon,
 } from '@/components/Icons/ResonantChatIcons';
 import { VoiceInput } from '@/components/ResonantChat/VoiceInput';
-import { HashSphereIcon } from '@/components/Icons/ServiceIcons';
+import { AnimatedHashSphereIcon } from '@/components/Icons/ServiceIcons';
 import styles from './ChatInputBar.module.css';
 
 const TeamIcon = () => (
@@ -853,6 +853,19 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           }}
         >
           <div className={styles.toolsLeft}>
+            {onToggleAgentMode && (
+              <button
+                ref={agentButtonRef}
+                className={`${styles.providerButton} ${styles.agentSelectorButton} ${agentMode ? styles.agentSelectorActive : ''}`}
+                onClick={handleAgentModeToggle}
+                title={agentSelectorLabel}
+                type="button"
+              >
+                <span className={styles.agentSelectorIcon}><TeamIcon /></span>
+                <span className={styles.agentSelectorLabel}>{agentSelectorLabel}</span>
+                <ChevronDownIcon />
+              </button>
+            )}
             {onShowConversations && (
               <button
                 className={`${styles.toolButton} ${showConversations ? styles.active : ''}`}
@@ -862,7 +875,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 <ConversationIcon />
               </button>
             )}
-
             {!voiceInInput && (
               <VoiceInput
                 onTranscript={(text) => {
@@ -891,17 +903,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 </svg>
               </button>
             )}
-
-            {onClearChat && (
-              <button
-                className={`${styles.toolButton} ${styles.danger}`}
-                onClick={onClearChat}
-                title="Archive Chat"
-                type="button"
-              >
-                <ArchiveIcon />
-              </button>
-            )}
             {onVoiceConversation && (
               <button
                 className={`${styles.toolButton} ${voiceInInput ? styles.active : ''}`}
@@ -914,7 +915,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 type="button"
               >
                 <span className={styles.voiceConversationIcon}>
-                  <HashSphereIcon />
+                  <AnimatedHashSphereIcon />
                 </span>
               </button>
             )}
@@ -1021,60 +1022,9 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 )}
               </div>
             )}
-            
-            {onToggleAgentMode && (
-              <button
-                ref={agentButtonRef}
-                className={`${styles.providerButton} ${styles.agentSelectorButton} ${agentMode ? styles.agentSelectorActive : ''}`}
-                onClick={handleAgentModeToggle}
-                title={agentSelectorLabel}
-                type="button"
-              >
-                <span className={styles.agentSelectorIcon}><TeamIcon /></span>
-                <span className={styles.agentSelectorLabel}>{agentSelectorLabel}</span>
-                <ChevronDownIcon />
-              </button>
-            )}
           </div>
 
           <div className={styles.toolsRight}>
-            {onBuild && (
-              <button className={`${styles.toolButton} ${styles.animatedIcon}`} onClick={onBuild} title="Build Project">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.rocketIcon}>
-                  <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
-                  <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
-                  <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
-                  <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
-                </svg>
-              </button>
-            )}
-
-            <div className={styles.iconSpacer} aria-hidden="true" />
-            
-            {onShowMemoryLibrary && (
-              <button
-                className={`${styles.toolButton} ${showMemoryLibrary ? styles.active : ''}`}
-                onClick={showMemoryLibrary ? onCloseMemoryLibrary : handleShowMemoryLibrary}
-                title="Memory Library"
-              >
-                <MemoryLibraryIcon />
-              </button>
-            )}
-
-            <button
-              className={`${styles.toolButton} ${isSpeaking ? styles.active : ''}`}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleTextToVoice();
-              }}
-              title="Text to Voice"
-              type="button"
-              disabled={!ttsText?.trim()}
-            >
-              <SpeakerIcon />
-            </button>
-
             {onAttachFile && (
               <button
                 className={`${styles.toolButton} ${styles.animatedIcon}`}
@@ -1092,21 +1042,30 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
 
-            {onShowSettings && (
+            <button
+              className={`${styles.toolButton} ${isSpeaking ? styles.active : ''}`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleTextToVoice();
+              }}
+              title="Text to Voice"
+              type="button"
+              disabled={!ttsText?.trim()}
+            >
+              <SpeakerIcon />
+            </button>
+
+            {onShowMemoryLibrary && (
               <button
-                className={`${styles.toolButton} ${showSettings ? styles.active : ''}`}
-                onClick={onShowSettings}
-                title="Settings"
+                className={`${styles.toolButton} ${showMemoryLibrary ? styles.active : ''}`}
+                onClick={showMemoryLibrary ? onCloseMemoryLibrary : handleShowMemoryLibrary}
+                title="Memory Library"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="12" cy="12" r="3" />
-                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                </svg>
+                <MemoryLibraryIcon />
               </button>
             )}
-            
 
-            {/* Copy Entire Chat */}
             {onCopyChat && (
               <button
                 className={styles.toolButton}
@@ -1116,6 +1075,41 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                   <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              </button>
+            )}
+
+            {onClearChat && (
+              <button
+                className={`${styles.toolButton} ${styles.danger}`}
+                onClick={onClearChat}
+                title="Archive Chat"
+                type="button"
+              >
+                <ArchiveIcon />
+              </button>
+            )}
+
+            {onBuild && (
+              <button className={`${styles.toolButton} ${styles.animatedIcon}`} onClick={onBuild} title="Build Project">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.rocketIcon}>
+                  <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+                  <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+                  <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+                  <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+                </svg>
+              </button>
+            )}
+
+            {onShowSettings && (
+              <button
+                className={`${styles.toolButton} ${showSettings ? styles.active : ''}`}
+                onClick={onShowSettings}
+                title="Settings"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                 </svg>
               </button>
             )}
