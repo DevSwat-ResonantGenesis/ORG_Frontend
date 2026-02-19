@@ -208,6 +208,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const [mentionQuery, setMentionQuery] = useState('');
   const [showProviderDropdown, setShowProviderDropdown] = useState(false);
   const [providerDropdownStyle, setProviderDropdownStyle] = useState<React.CSSProperties | null>(null);
+  const [agentPanelStyle, setAgentPanelStyle] = useState<React.CSSProperties | null>(null);
   const [voiceInterimTranscript, setVoiceInterimTranscript] = useState('');
   const [showEmbeddedTools, setShowEmbeddedTools] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -265,6 +266,9 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
       if (providerDropdownRef.current && providerDropdownRef.current.contains(e.target as Node)) {
         return;
       }
+      if (agentPanelRef.current && agentPanelRef.current.contains(e.target as Node)) {
+        return;
+      }
       if (inputWrapperRef.current && !inputWrapperRef.current.contains(e.target as Node)) {
         // Close all panels when clicking outside the input bar
         setShowProviderDropdown(false);
@@ -302,6 +306,28 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     };
   }, []);
 
+  const computeAgentPanelStyle = useCallback((): React.CSSProperties | null => {
+    if (typeof window === 'undefined') return null;
+    const btn = agentButtonRef.current;
+    if (!btn) return null;
+    const rect = btn.getBoundingClientRect();
+    const dropdownWidth = 320;
+    const left = Math.min(
+      Math.max(8, rect.left),
+      Math.max(8, window.innerWidth - dropdownWidth - 8)
+    );
+
+    return {
+      position: 'fixed',
+      left,
+      right: 'auto',
+      bottom: window.innerHeight - rect.top + 12,
+      zIndex: 99999,
+      width: dropdownWidth,
+      maxWidth: 'calc(100vw - 16px)',
+    };
+  }, []);
+
   useEffect(() => {
     if (!showProviderDropdown) return;
     const update = () => setProviderDropdownStyle(computeProviderDropdownStyle());
@@ -313,6 +339,18 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
       window.removeEventListener('scroll', update, true);
     };
   }, [showProviderDropdown, computeProviderDropdownStyle]);
+
+  useEffect(() => {
+    if (!agentMode) return;
+    const update = () => setAgentPanelStyle(computeAgentPanelStyle());
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('scroll', update, true);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('scroll', update, true);
+    };
+  }, [agentMode, computeAgentPanelStyle]);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -483,8 +521,14 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
         }}
       >
         {/* Agent Panel - Floats above */}
-        {agentMode && (
-          <div className={styles.agentPanel} ref={agentPanelRef}>
+        {agentMode && typeof document !== 'undefined' && createPortal(
+          <div
+            className={styles.agentPanel}
+            ref={agentPanelRef}
+            style={agentPanelStyle || computeAgentPanelStyle() || undefined}
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+          >
             <div className={styles.agentPanelHeader}>
               <span className={styles.agentPanelTitle}>
                 <TeamIcon />
@@ -533,7 +577,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 </select>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
 
         {/* Memory Library Panel */}
