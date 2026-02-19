@@ -3925,7 +3925,6 @@ const ResonantChatPage: React.FC = () => {
           teams={Array.isArray(teams) ? teams.map((t: AgentTeam) => ({ id: t.id, name: t.name })) : []}
           onNewChat={handleNewChat}
           onClearChat={messages.length > 0 ? handleClearChat : undefined}
-          onCancel={handleCancel}
           onBuild={() => {
             // Open Build Module inside Split View
             if (!splitViewEnabled) setSplitViewEnabled(true);

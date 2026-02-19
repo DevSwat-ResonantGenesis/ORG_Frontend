@@ -70,11 +70,15 @@ export const ThreeParticleSphere: React.FC = () => {
         const applySize = () => {
             if (!isMobileLayout) {
                 renderer.setSize(canvasSize, canvasSize, false);
+                camera.aspect = 1;
+                camera.updateProjectionMatrix();
                 return;
             }
 
             const nextSize = getNextSize();
             renderer.setSize(nextSize, nextSize, false);
+            camera.aspect = 1;
+            camera.updateProjectionMatrix();
         };
 
         applySize();
