@@ -708,14 +708,33 @@
   justify-content: center;
 }
 
-.voiceConversationIcon svg {
+.voiceConversationOrb {
   width: 22px;
   height: 22px;
-  filter: drop-shadow(0 0 10px rgba(14, 165, 233, 0.25));
+  border-radius: 999px;
+  background:
+    radial-gradient(10px 10px at 30% 30%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 60%),
+    radial-gradient(16px 16px at 60% 65%, rgba(14, 165, 233, 0.65), rgba(14, 165, 233, 0) 65%),
+    radial-gradient(18px 18px at 70% 30%, rgba(139, 92, 246, 0.45), rgba(139, 92, 246, 0) 60%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.14) inset,
+    0 0 12px rgba(14, 165, 233, 0.20);
+  animation: voiceOrbFloat 2.4s ease-in-out infinite;
+}
+
+.voiceConversationIconActive .voiceConversationOrb {
+  box-shadow:
+    0 0 0 1px rgba(14, 165, 233, 0.35) inset,
+    0 0 18px rgba(14, 165, 233, 0.35);
+}
+
+@keyframes voiceOrbFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1px); }
 }
 
 @media (max-width: 768px) {
-  .voiceConversationIcon svg {
+  .voiceConversationOrb {
     width: 26px;
     height: 26px;
   }

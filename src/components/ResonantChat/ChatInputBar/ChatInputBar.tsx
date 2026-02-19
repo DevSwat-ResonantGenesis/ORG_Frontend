@@ -14,7 +14,6 @@ import {
   PlusIcon,
 } from '@/components/Icons/ResonantChatIcons';
 import { VoiceInput } from '@/components/ResonantChat/VoiceInput';
-import { AnimatedHashSphereIcon } from '@/components/Icons/ServiceIcons';
 import styles from './ChatInputBar.module.css';
 
 const TeamIcon = () => (
@@ -862,8 +861,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 title="Voice Conversation"
                 type="button"
               >
-                <span className={styles.voiceConversationIcon}>
-                  <AnimatedHashSphereIcon />
+                <span className={`${styles.voiceConversationIcon} ${voiceInInput ? styles.voiceConversationIconActive : ''}`}>
+                  <span className={styles.voiceConversationOrb} aria-hidden="true" />
                 </span>
               </button>
             )}
