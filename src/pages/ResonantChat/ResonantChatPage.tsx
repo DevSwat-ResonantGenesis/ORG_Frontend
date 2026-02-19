@@ -3350,7 +3350,6 @@ const ResonantChatPage: React.FC = () => {
                   embedded={false}
                   projectMode={projectMode}
                   projectFiles={projectFiles}
-                  projectId={projectId || undefined}
                   showBuildModule={showBuildModule}
                   onCloseBuildModule={() => setShowBuildModule(false)}
                 >
