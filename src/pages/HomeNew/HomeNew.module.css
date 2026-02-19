@@ -281,8 +281,8 @@
   .hero {
     min-height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
     height: 100%;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-start;
     padding-top: calc(var(--header-height, 56px) + env(safe-area-inset-top) + 8px);
     padding-bottom: max(16px, env(safe-area-inset-bottom));
     padding-left: var(--space-8);
@@ -395,6 +395,8 @@
 @media (max-width: 639px) {
   .heroIntro {
     padding-top: 0;
+    justify-content: flex-start;
+    flex: 0 0 auto;
   }
 }
 
