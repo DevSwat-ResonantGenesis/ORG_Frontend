@@ -273,6 +273,7 @@
     min-height: 0;
     overflow: hidden;
     justify-content: flex-start;
+    flex-direction: column;
   }
 }
 
@@ -377,8 +378,9 @@
 
 @media (max-width: 768px) {
   .heroContent {
-    flex: 1 1 auto;
-    height: 100%;
+    order: 1;
+    flex: 0 0 auto;
+    height: auto;
     justify-content: flex-start;
   }
 }
@@ -571,12 +573,16 @@
 /* Mobile: Full opacity for clean colors */
 @media (max-width: 768px) {
   .heroParallax {
-    left: 50%;
+    order: 2;
+    position: relative;
+    left: auto;
     right: auto;
-    top: 68%;
-    transform: translate(-50%, -50%);
-    width: 100vw;
-    height: 100vh;
+    top: auto;
+    transform: none;
+    width: 100%;
+    height: clamp(260px, 58vw, 360px);
+    margin-top: 16px;
+    z-index: 1;
     justify-content: center;
     opacity: 0.85;
   }
@@ -597,7 +603,8 @@
 
 @media (max-width: 639px) {
   .heroParallax {
-    top: 72%;
+    height: clamp(240px, 72vw, 340px);
+    margin-top: 12px;
   }
 }
 
