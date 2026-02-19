@@ -605,7 +605,6 @@
     z-index: 0;
     align-items: flex-end;
     justify-content: center;
-    padding-bottom: env(safe-area-inset-bottom);
     opacity: 0.85;
     overflow: hidden;
   }
@@ -2757,7 +2756,6 @@
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    padding-bottom: env(safe-area-inset-bottom);
   }
 
   .heroParallaxInner {
