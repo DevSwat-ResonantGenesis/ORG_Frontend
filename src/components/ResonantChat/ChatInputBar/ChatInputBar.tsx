@@ -10,6 +10,7 @@ import {
   SearchIcon,
   ChevronDownIcon,
   ConversationIcon,
+  HistoryIcon,
   PlusIcon,
 } from '@/components/Icons/ResonantChatIcons';
 import { VoiceInput } from '@/components/ResonantChat/VoiceInput';
