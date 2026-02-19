@@ -603,8 +603,9 @@
     margin-right: 0;
     margin-top: 0;
     z-index: 0;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
+    padding-bottom: env(safe-area-inset-bottom);
     opacity: 0.85;
     overflow: hidden;
   }
@@ -2754,8 +2755,9 @@
     overflow: hidden;
     opacity: 0.85;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   .heroParallaxInner {
