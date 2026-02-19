@@ -60,6 +60,17 @@ h1.heroTitle {
   opacity: 0.8;
 }
 
+.heroTitleTagline {
+  display: block;
+  margin-top: 10px;
+  font-size: clamp(20px, 4.2vw, 34px);
+  font-weight: 520;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: inherit;
+  opacity: 0.92;
+}
+
 /* Hide underline on mobile for cleaner look */
 @media (max-width: 639px) {
   .heroTitle::after {

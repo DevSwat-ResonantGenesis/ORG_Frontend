@@ -37,7 +37,9 @@ export const HeroSection = () => {
                     <h1 className={heroTitleStyles.heroTitle}>
                         Own Your Intelligence.
                         <br />
-                        Your AI that you can trust now !
+                        <span className={heroTitleStyles.heroTitleTagline}>
+                            Your AI that you can trust now !
+                        </span>
                     </h1>
                     <p className={heroTitleStyles.heroSubtitle}>
                         The first sovereign AI ecosystem with somatic-magnetic memory. Encrypted, autonomous, and fully self-hosted. No black boxes—just pure control.
