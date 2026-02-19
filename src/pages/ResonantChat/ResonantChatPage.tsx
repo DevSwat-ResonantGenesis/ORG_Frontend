@@ -958,6 +958,12 @@ const ResonantChatPage: React.FC = () => {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, []);
+
+  const scrollToBottomInstant = useCallback(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'auto' });
+    }
+  }, []);
   
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -966,6 +972,17 @@ const ResonantChatPage: React.FC = () => {
       setTimeout(scrollToBottom, 100);
     }
   }, [messages.length, scrollToBottom]);
+
+  useEffect(() => {
+    if (isMobile) return;
+    if (messages.length === 0) return;
+
+    const t = window.setTimeout(() => {
+      scrollToBottomInstant();
+    }, 150);
+
+    return () => window.clearTimeout(t);
+  }, [splitViewEnabled, splitViewPane, isMobile, messages.length, scrollToBottomInstant]);
 
   // HYBRID SYNC: Save messages to localStorage for live sync with FloatingChatWidget
   // Backend is still source of truth, but localStorage enables real-time widget sync
