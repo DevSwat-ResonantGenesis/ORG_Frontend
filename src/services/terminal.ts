@@ -2,6 +2,7 @@
 // Terminal management with PTY support and multiple sessions
 
 import { getWebSocket } from '../utils/websocketManager';
+import { ENV } from '../config/env';
 
 // ============== TYPES ==============
 export interface TerminalSession {
@@ -36,7 +37,7 @@ type StatusHandler = (session: TerminalSession) => void;
 
 // ============== TERMINAL SERVICE ==============
 class TerminalService {
-  private ws = getWebSocket(`${import.meta.env.VITE_WS_URL}/ws/terminal`);
+  private ws = getWebSocket(`${ENV.wsUrl}/ws/terminal`);
   private sessions = new Map<string, TerminalSession>();
   private outputHandlers = new Map<string, Set<OutputHandler>>();
   private statusHandlers = new Set<StatusHandler>();

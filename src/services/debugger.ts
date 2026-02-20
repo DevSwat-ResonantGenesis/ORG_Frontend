@@ -2,6 +2,7 @@
 // Debug session management with breakpoints, stepping, and variable inspection
 
 import { getWebSocket } from '../utils/websocketManager';
+import { ENV } from '../config/env';
 
 // ============== TYPES ==============
 export interface Breakpoint {
@@ -79,7 +80,7 @@ export interface DebugEvent {
 
 // ============== DEBUGGER SERVICE ==============
 class DebuggerService {
-  private ws = getWebSocket(`${import.meta.env.VITE_WS_URL}/ws/debug`);
+  private ws = getWebSocket(`${ENV.wsUrl}/ws/debug`);
   private sessions = new Map<string, DebugSession>();
   private breakpoints = new Map<string, Breakpoint[]>();
   private watchExpressions: WatchExpression[] = [];
