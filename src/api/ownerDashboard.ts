@@ -1,17 +1,14 @@
 /**
  * Owner Dashboard API Client
  * Connects to REAL backend endpoints - NO fake data, NO localStorage
+ * SECURITY FIX: Owner tokens now in HttpOnly cookies (not localStorage)
  */
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
-const getOwnerToken = (): string => {
-  return localStorage.getItem('owner_token') || '';
-};
-
+// SECURITY FIX: Authorization header no longer needed - cookies sent automatically
 const getHeaders = () => ({
   'Content-Type': 'application/json',
-  'Authorization': `Bearer ${getOwnerToken()}`,
 });
 
 // ============== PLATFORM STATS ==============

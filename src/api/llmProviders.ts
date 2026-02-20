@@ -44,13 +44,10 @@ export interface TestResult {
   provider_id: string;
 }
 
-const getOwnerToken = (): string => {
-  return localStorage.getItem('owner_token') || '';
-};
-
+// SECURITY FIX: Owner tokens now in HttpOnly cookies (not localStorage)
+// Authorization header no longer needed - cookies sent automatically
 const getHeaders = () => ({
   'Content-Type': 'application/json',
-  'Authorization': `Bearer ${getOwnerToken()}`,
 });
 
 /**

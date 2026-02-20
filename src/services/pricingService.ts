@@ -131,7 +131,7 @@ export const pricingService = {
 
     // Try to fetch from backend
     try {
-      const token = localStorage.getItem('owner_token') || localStorage.getItem('token');
+      // SECURITY FIX: Tokens now in HttpOnly cookies - no localStorage needed
       const endpoints = [
         `/api/billing/pricing`,
         `${API_BASE}/api/billing/pricing`,
@@ -141,7 +141,8 @@ export const pricingService = {
       for (const endpoint of endpoints) {
         try {
           const res = await fetch(endpoint, {
-            headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+            credentials: 'include',  // Send cookies automatically
+            headers: { 'Content-Type': 'application/json' }
           });
           if (res.ok) {
             const data = await res.json();

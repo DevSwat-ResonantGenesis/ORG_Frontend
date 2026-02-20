@@ -240,9 +240,9 @@ const OwnerLoginPage: React.FC = () => {
 
       const data = await response.json();
 
-      // Store owner token separately from regular user tokens
-      localStorage.setItem('owner_token', data.access_token);
-      localStorage.setItem('owner_token_expires', String(Date.now() + data.expires_in * 1000));
+      // SECURITY FIX: Tokens are now HttpOnly cookies (set by backend)
+      // No longer storing tokens in localStorage (XSS vulnerability)
+      // Store email for UI purposes only
       localStorage.setItem('owner_email', email);
 
       // Redirect to owner dashboard

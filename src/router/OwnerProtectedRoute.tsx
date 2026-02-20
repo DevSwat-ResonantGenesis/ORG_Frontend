@@ -8,7 +8,8 @@ interface OwnerProtectedRouteProps {
 
 /**
  * Protected route that requires Owner authentication.
- * Uses separate owner token stored in localStorage.
+ * SECURITY FIX: Now uses HttpOnly cookies for tokens (no localStorage)
+ * Validates via cookie-based API call to prevent XSS token theft.
  * Redirects to /owner-login if not authenticated.
  */
 const OwnerProtectedRoute: React.FC<OwnerProtectedRouteProps> = ({ children }) => {
@@ -18,35 +19,25 @@ const OwnerProtectedRoute: React.FC<OwnerProtectedRouteProps> = ({ children }) =
 
   useEffect(() => {
     const validateOwnerToken = async () => {
-      const token = localStorage.getItem('owner_token');
-      const expiresAt = localStorage.getItem('owner_token_expires');
-
-      // Check if token exists and not expired
-      if (!token || !expiresAt) {
-        setIsAuthenticated(false);
-        setIsValidating(false);
-        return;
-      }
-
-      // Check if token is expired locally
-      if (Date.now() > parseInt(expiresAt)) {
-        localStorage.removeItem('owner_token');
-        localStorage.removeItem('owner_token_expires');
-        setIsAuthenticated(false);
-        setIsValidating(false);
-        return;
-      }
-
-      // Validate token with server
+      // SECURITY FIX: Tokens are now in HttpOnly cookies
+      // No longer reading from localStorage (XSS vulnerable)
+      // Backend will validate the rg_access_token cookie
+      
       try {
-        await fastapiClient.get('/owner/auth/validate', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        // Call validation endpoint - cookies sent automatically
+        const response = await fastapiClient.get('/owner/auth/validate', {
+          credentials: 'include',  // Ensure cookies are sent
         });
-        setIsAuthenticated(true);
+        
+        // Check if response indicates owner role
+        if (response.data && response.data.role === 'owner') {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
       } catch (error) {
         console.error('Owner token validation failed:', error);
+        // Clean up any legacy localStorage tokens
         localStorage.removeItem('owner_token');
         localStorage.removeItem('owner_token_expires');
         setIsAuthenticated(false);
