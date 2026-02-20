@@ -18,12 +18,12 @@ const HomeNew = () => {
       <Helmet>
         <title>ResonantGenesis – AI Governance Platform</title>
         <meta name="description" content="AI governance platform that harmonizes meaning across multiple AI models, providing intelligent processing, privacy, security, and enterprise‑grade APIs." />
-        <link rel="canonical" href="https://yourdomain.com/" />
+        <link rel="canonical" href="https://resonantgenesis.xyz/" />
         <meta property="og:title" content="ResonantGenesis – AI Governance Platform" />
         <meta property="og:description" content="Intelligent AI governance for multi‑AI operations, privacy‑first, production‑ready." />
-        <meta property="og:url" content="https://yourdomain.com/" />
+        <meta property="og:url" content="https://resonantgenesis.xyz/" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://yourdomain.com/og-image.png" />
+        <meta property="og:image" content="https://resonantgenesis.xyz/images/showcase/step5-homepage.png" />
         <script type="application/ld+json">
           {`
             {
@@ -32,17 +32,17 @@ const HomeNew = () => {
                 {
                   "@type": "Organization",
                   "name": "ResonantGenesis",
-                  "url": "https://yourdomain.com",
-                  "logo": "https://yourdomain.com/logo.png",
+                  "url": "https://resonantgenesis.xyz",
+                  "logo": "https://resonantgenesis.xyz/favicon.svg",
                   "description": "AI governance platform that harmonizes meaning across multiple AI models."
                 },
                 {
                   "@type": "WebSite",
                   "name": "ResonantGenesis",
-                  "url": "https://yourdomain.com",
+                  "url": "https://resonantgenesis.xyz",
                   "potentialAction": {
                     "@type": "SearchAction",
-                    "target": "https://yourdomain.com/search?q={search_term_string}",
+                    "target": "https://resonantgenesis.xyz/search?q={search_term_string}",
                     "query-input": "required name=search_term_string"
                   }
                 }

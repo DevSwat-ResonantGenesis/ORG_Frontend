@@ -8,6 +8,7 @@
     "dev": "vite",
     "dev:electron": "node scripts/dev-electron.js",
     "build": "vite build",
+    "build:ssg": "vite build && react-snap",
     "build:check": "tsc && vite build",
     "preview": "vite preview",
     "electron:build": "tsc -p electron/tsconfig.json",
@@ -26,6 +27,31 @@
     "test:e2e:open": "cypress open",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
+  },
+  "reactSnap": {
+    "source": "dist",
+    "crawl": false,
+    "skipThirdPartyRequests": true,
+    "puppeteer": {
+      "cache": false
+    },
+    "puppeteerExecutablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "puppeteerIgnoreHTTPSErrors": true,
+    "include": [
+      "/",
+      "/pricing",
+      "/enterprise",
+      "/api/docs",
+      "/community",
+      "/about",
+      "/contact",
+      "/dsid-p"
+    ],
+    "puppeteerArgs": [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-gpu"
+    ]
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
@@ -94,6 +120,7 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "eslint-plugin-storybook": "^10.0.8",
     "jsdom": "^27.2.0",
+    "react-snap": "^1.23.0",
     "rollup-plugin-visualizer": "^6.0.5",
     "storybook": "^10.0.8",
     "terser": "^5.44.1",

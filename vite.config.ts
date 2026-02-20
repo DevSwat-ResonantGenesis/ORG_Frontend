@@ -15,6 +15,7 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    target: 'es2019',
     sourcemap: false,
     rollupOptions: {
       output: {

@@ -161,6 +161,10 @@ const PricingPage: React.FC = () => {
       }
 
       try {
+        if (typeof navigator !== 'undefined' && navigator.userAgent === 'ReactSnap') {
+          setCreditPacks([]);
+          return;
+        }
         const res = await fetch('/api/billing/pricing', { credentials: 'include' });
         if (res.ok) {
           const data = await res.json();

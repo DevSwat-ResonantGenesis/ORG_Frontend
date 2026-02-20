@@ -530,23 +530,28 @@ class ReliabilityService {
 export const reliabilityService = new ReliabilityService();
 
 // Initialize default health checks
-reliabilityService.registerHealthCheck('gateway', async () => {
-  try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/health`);
-    return response.ok;
-  } catch {
-    return false;
-  }
-}, 30000);
+const baseUrl = import.meta.env.VITE_API_URL || '';
+const isReactSnap = typeof navigator !== 'undefined' && navigator.userAgent === 'ReactSnap';
 
-reliabilityService.registerHealthCheck('ide-service', async () => {
-  try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/ide/health`);
-    return response.ok;
-  } catch {
-    return false;
-  }
-}, 30000);
+if (!isReactSnap) {
+  reliabilityService.registerHealthCheck('gateway', async () => {
+    try {
+      const response = await fetch(`${baseUrl}/health`);
+      return response.ok;
+    } catch {
+      return false;
+    }
+  }, 30000);
+
+  reliabilityService.registerHealthCheck('ide-service', async () => {
+    try {
+      const response = await fetch(`${baseUrl}/api/ide/health`);
+      return response.ok;
+    } catch {
+      return false;
+    }
+  }, 30000);
+}
 
 // ============== REACT HOOKS ==============
 import { useState, useEffect, useCallback } from 'react';

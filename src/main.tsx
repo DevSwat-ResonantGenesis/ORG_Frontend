@@ -1,5 +1,7 @@
+import './polyfills';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { hydrateRoot } from 'react-dom/client';
 import App from './App';
 import { HelmetProvider } from 'react-helmet-async';
 // Initialize Sentry before app renders
@@ -37,10 +39,17 @@ if (typeof window !== 'undefined') {
 
 
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+const rootElement = document.getElementById('root') as HTMLElement;
+const app = (
   <React.Fragment>
     <HelmetProvider>
       <App />
     </HelmetProvider>
   </React.Fragment>
 );
+
+if (rootElement.hasChildNodes()) {
+  hydrateRoot(rootElement, app);
+} else {
+  ReactDOM.createRoot(rootElement).render(app);
+}

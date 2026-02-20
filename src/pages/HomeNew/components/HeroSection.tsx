@@ -12,13 +12,15 @@ export const HeroSection = () => {
     const isLoggedIn = isAuthenticated();
     if (isLoggedIn) return null;
 
+    const isReactSnap = typeof navigator !== 'undefined' && navigator.userAgent === 'ReactSnap';
+
     return (
         <section className={styles.hero}>
             {/* Parallax Background - Behind Content */}
             <div className={styles.heroParallax} aria-hidden="true">
                 <Suspense fallback={<div className={styles.parallaxPlaceholder} />}>
                     <div className={styles.heroParallaxInner}>
-                        <ThreeParticleSphere />
+                        {isReactSnap ? <div className={styles.parallaxPlaceholder} /> : <ThreeParticleSphere />}
                     </div>
                 </Suspense>
             </div>

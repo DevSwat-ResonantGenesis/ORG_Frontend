@@ -100,6 +100,9 @@ export interface PricingConfig {
   tier_mappings: Record<string, string>;
 }
 
+const isReactSnap =
+  typeof navigator !== 'undefined' && navigator.userAgent === 'ReactSnap';
+
 // Cache for pricing data
 let pricingCache: PricingConfig | null = null;
 let cacheTimestamp: number = 0;
@@ -109,6 +112,9 @@ const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
  * Fetch complete pricing configuration from backend
  */
 export async function fetchPricingConfig(): Promise<PricingConfig | null> {
+  if (isReactSnap) {
+    return null;
+  }
   // Return cached data if still valid
   if (pricingCache && Date.now() - cacheTimestamp < CACHE_TTL) {
     return pricingCache;

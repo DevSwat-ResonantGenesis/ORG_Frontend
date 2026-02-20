@@ -117,6 +117,11 @@ export const pricingService = {
    * Get current pricing config (from cache or fetch)
    */
   async getPricing(forceRefresh = false): Promise<PricingConfig> {
+    if (typeof navigator !== 'undefined' && navigator.userAgent === 'ReactSnap') {
+      cachedPricing = DEFAULT_PRICING;
+      lastFetch = Date.now();
+      return cachedPricing;
+    }
     const now = Date.now();
     
     // Return cached if valid
