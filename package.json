@@ -8,7 +8,7 @@
     "dev": "vite",
     "dev:electron": "node scripts/dev-electron.js",
     "build": "vite build",
-    "build:ssg": "vite build && react-snap",
+    "build:ssg": "vite build && node scripts/react-snap.mjs",
     "build:check": "tsc && vite build",
     "preview": "vite preview",
     "electron:build": "tsc -p electron/tsconfig.json",
@@ -35,7 +35,6 @@
     "puppeteer": {
       "cache": false
     },
-    "puppeteerExecutablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
     "puppeteerIgnoreHTTPSErrors": true,
     "include": [
       "/",
