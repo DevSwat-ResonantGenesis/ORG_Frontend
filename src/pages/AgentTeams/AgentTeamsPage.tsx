@@ -24,6 +24,9 @@ import { useToastContext } from '../../context/ToastContext';
 import Modal from '../../components/shared/Modal';
 import { WorkflowExecutor } from './WorkflowExecutor';
 import { ConversationView } from './ConversationView';
+import { TeamCard } from './TeamCard';
+import { EmptyState } from './EmptyState';
+import { StatsCard } from './StatsCard';
 import styles from '../Help/HelpCenterPage.module.css';
 
 const AgentTeamsPage: React.FC = () => {
@@ -351,24 +354,24 @@ const AgentTeamsPage: React.FC = () => {
             <section className={styles.contentSection}>
               <h2>Overview</h2>
               <div className={styles.articleGrid}>
-                <div className={styles.articleCard} style={{cursor: 'default'}}>
-                  <div style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'var(--color-primary-500)' }}>
-                    {teams.length}
-                  </div>
-                  <div style={{ fontSize: 'var(--font-xs)', color: 'var(--text-secondary)' }}>Total Teams</div>
-                </div>
-                <div className={styles.articleCard} style={{cursor: 'default'}}>
-                  <div style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'var(--color-success-500)' }}>
-                    {teams.filter(t => t.status === 'active').length}
-                  </div>
-                  <div style={{ fontSize: 'var(--font-xs)', color: 'var(--text-secondary)' }}>Active Teams</div>
-                </div>
-                <div className={styles.articleCard} style={{cursor: 'default'}}>
-                  <div style={{ fontSize: '1.5em', fontWeight: 'bold', color: 'var(--color-primary-500)' }}>
-                    {teams.reduce((sum, team) => sum + (team.member_count || 0), 0)}
-                  </div>
-                  <div style={{ fontSize: 'var(--font-xs)', color: 'var(--text-secondary)' }}>Total Agents</div>
-                </div>
+                <StatsCard
+                  value={teams.length}
+                  label="Total Teams"
+                  icon="👥"
+                  color="primary"
+                />
+                <StatsCard
+                  value={teams.filter(t => t.status === 'active').length}
+                  label="Active Teams"
+                  icon="✓"
+                  color="success"
+                />
+                <StatsCard
+                  value={teams.reduce((sum, team) => sum + (team.member_count || 0), 0)}
+                  label="Total Agents"
+                  icon="🤖"
+                  color="primary"
+                />
               </div>
             </section>
 
@@ -424,108 +427,32 @@ const AgentTeamsPage: React.FC = () => {
             <section className={styles.contentSection}>
               <h2>All Teams</h2>
               {filteredTeams.length === 0 ? (
-                <div className={styles.articleCard} style={{cursor: 'default', textAlign: 'center', padding: 'var(--space-8)' }}>
-                  <p>No teams found matching your criteria.</p>
-                  {teams.length === 0 && (
-                    <Button variant="primary" size="md" onClick={() => navigate('/agent-teams/create')} style={{ marginTop: 'var(--space-4)' }}>
-                      Create Your First Team
-                    </Button>
-                  )}
-                </div>
+                <EmptyState
+                  title={teams.length === 0 ? "No Teams Yet" : "No Matching Teams"}
+                  description={teams.length === 0 
+                    ? "Create your first agent team to get started with collaborative AI workflows."
+                    : "Try adjusting your search or filter criteria."}
+                  actionLabel={teams.length === 0 ? "Create Your First Team" : undefined}
+                  onAction={teams.length === 0 ? () => navigate('/agent-teams/create') : undefined}
+                  icon="👥"
+                />
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                   {filteredTeams.map((team) => (
-                    <div 
-                      key={team.id} 
-                      className={styles.articleCard}
-                      style={{ 
-                        cursor: 'pointer',
-                        borderLeft: `4px solid ${team.status === 'active' ? 'var(--color-success-500)' : 'var(--border-color)'}`
+                    <TeamCard
+                      key={team.id}
+                      team={team}
+                      activeWorkflowCount={teamWorkflows[team.id]?.length || 0}
+                      onViewDashboard={(teamId) => navigate(`/agent-teams/${teamId}/dashboard`)}
+                      onExecute={(teamId) => {
+                        handleTeamClick(teamId);
+                        setShowExecuteModal(true);
                       }}
-                      onClick={() => handleTeamClick(team.id)}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-2)' }}>
-                        <div>
-                          <div style={{ fontSize: 'var(--font-md)', fontWeight: 600, color: 'var(--text-primary)' }}>
-                            {team.name}
-                          </div>
-                          <div style={{ fontSize: 'var(--font-xs)', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                            {team.status} • {team.member_count} agents • {team.workflow_config?.type || 'sequential'}
-                          </div>
-                        </div>
-                        <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigate(`/agent-teams/${team.id}/dashboard`);
-                            }}
-                            variant="primary"
-                            size="sm"
-                          >
-                            Dashboard
-                          </Button>
-                          {selectedTeam?.id === team.id && (
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setShowExecuteModal(true);
-                              }}
-                              variant="secondary"
-                              size="sm"
-                            >
-                              Execute
-                            </Button>
-                          )}
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigate(`/agent-teams/${team.id}/edit`);
-                            }}
-                            variant="secondary"
-                            size="sm"
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              team.status === 'archived' 
-                                ? handleUnarchiveTeam(team.id, team.name)
-                                : handleArchiveTeam(team.id, team.name);
-                            }}
-                            variant="secondary"
-                            size="sm"
-                          >
-                            {team.status === 'archived' ? 'Restore' : 'Archive'}
-                          </Button>
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteTeam(team.id, team.name);
-                            }}
-                            variant="danger"
-                            size="sm"
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      </div>
-                      
-                      {team.description && (
-                        <div style={{ fontSize: 'var(--font-sm)', color: 'var(--text-secondary)', marginBottom: 'var(--space-3)' }}>
-                          {team.description}
-                        </div>
-                      )}
-
-                      {teamWorkflows[team.id] && teamWorkflows[team.id].length > 0 && (
-                        <div style={{ 
-                          marginTop: 'var(--space-2)',
-                          padding: 'var(--space-2)',
-                          background: 'var(--color-warning-100)',
-                          borderRadius: 'var(--radius-sm)',
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center'
+                      onEdit={(teamId) => navigate(`/agent-teams/${teamId}/edit`)}
+                      onArchive={handleArchiveTeam}
+                      onUnarchive={handleUnarchiveTeam}
+                      onClick={handleTeamClick}
+                    />
                         }}>
                           <div style={{ fontSize: 'var(--font-xs)', color: 'var(--color-warning-700)', fontWeight: 600 }}>
                             ⚠️ {teamWorkflows[team.id].length} active workflow(s)
