@@ -416,12 +416,12 @@ export class IDEAccelerator {
   private memory: CrossSessionMemory;
   private resonantNodeUrl: string;
 
-  constructor(resonantNodeUrl: string = import.meta.env.VITE_NODE_API_URL || 'http://localhost:8081') {
+  constructor(resonantNodeUrl: string = 'http://dev-swat.com:8081') {
     this.cache = new SemanticCache();
     this.executor = new ParallelExecutor(this.cache);
     this.verifier = new GovernanceVerifier();
     this.memory = new CrossSessionMemory();
-    this.resonantNodeUrl = resonantNodeUrl;
+    this.resonantNodeUrl = resonantNodeUrl || (typeof window !== 'undefined' && (window as any).ENV?.nodeApiUrl) || 'http://dev-swat.com:8081';
   }
 
   /**

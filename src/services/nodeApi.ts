@@ -4,7 +4,9 @@
  * Supports node discovery, agent publishing, cross-node execution.
  */
 
-export const NODE_API_BASE = import.meta.env.VITE_NODE_API_URL;
+import { ENV } from '../config/env';
+
+export const NODE_API_BASE = ENV.nodeApiUrl;
 
 // ============== TYPES ==============
 
