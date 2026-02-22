@@ -49,6 +49,23 @@ interface AgentWizardProps {
   onCancel?: () => void;
 }
 
+// Validation helpers
+const validateName = (value: string): string | null => {
+  const trimmed = value.trim();
+  if (!trimmed) return 'Agent name is required';
+  if (trimmed.length < 2) return 'Name must be at least 2 characters';
+  if (trimmed.length > 50) return 'Name must be less than 50 characters';
+  if (!/^[a-zA-Z0-9][a-zA-Z0-9\s\-_]*$/.test(trimmed)) {
+    return 'Name must start with a letter or number and contain only letters, numbers, spaces, hyphens, or underscores';
+  }
+  return null;
+};
+
+const validateDescription = (value: string): string | null => {
+  if (value.length > 500) return 'Description must be less than 500 characters';
+  return null;
+};
+
 const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplete, onCancel }) => {
   const { addAgent } = useAgentStore();
   
@@ -56,6 +73,10 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [createdAgentId, setCreatedAgentId] = useState<string | null>(null);
+  
+  // Field validation state
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string | null>>({});
   
   // Form state
   const [name, setName] = useState('');
@@ -71,10 +92,44 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
   const isLastStep = currentStep === WIZARD_STEPS.length - 1;
   const isReviewStep = currentStepData.id === 'review';
 
+  // Handle field blur for validation
+  const handleFieldBlur = useCallback((field: string) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    
+    let error: string | null = null;
+    switch (field) {
+      case 'name':
+        error = validateName(name);
+        break;
+      case 'description':
+        error = validateDescription(description);
+        break;
+    }
+    setFieldErrors(prev => ({ ...prev, [field]: error }));
+  }, [name, description]);
+
+  // Handle name change with real-time validation
+  const handleNameChange = useCallback((value: string) => {
+    setName(value);
+    if (touched.name) {
+      setFieldErrors(prev => ({ ...prev, name: validateName(value) }));
+    }
+  }, [touched.name]);
+
+  // Handle description change with real-time validation
+  const handleDescriptionChange = useCallback((value: string) => {
+    setDescription(value);
+    if (touched.description) {
+      setFieldErrors(prev => ({ ...prev, description: validateDescription(value) }));
+    }
+  }, [touched.description]);
+
   const canProceed = useCallback(() => {
     switch (currentStepData.id) {
       case 'basics':
-        return name.trim().length >= 2;
+        const nameError = validateName(name);
+        const descError = validateDescription(description);
+        return !nameError && !descError;
       case 'type':
         return !!agentType;
       case 'model':
@@ -86,13 +141,23 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
       default:
         return false;
     }
-  }, [currentStepData.id, name, agentType, provider, model]);
+  }, [currentStepData.id, name, description, agentType, provider, model]);
 
   const handleNext = useCallback(() => {
+    // Validate current step before proceeding
+    if (currentStepData.id === 'basics') {
+      const nameError = validateName(name);
+      const descError = validateDescription(description);
+      setFieldErrors({ name: nameError, description: descError });
+      setTouched({ name: true, description: true });
+      if (nameError || descError) return;
+    }
+    
     if (currentStep < WIZARD_STEPS.length - 1) {
       setCurrentStep(currentStep + 1);
+      setError(null); // Clear any previous errors
     }
-  }, [currentStep]);
+  }, [currentStep, currentStepData.id, name, description]);
 
   const handleBack = useCallback(() => {
     if (currentStep > 0) {
@@ -165,27 +230,46 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
       case 'basics':
         return (
           <div className={styles.stepContent}>
-            <div className={styles.inputGroup}>
+            <div className={`${styles.inputGroup} ${touched.name && fieldErrors.name ? styles.hasError : ''}`}>
               <label htmlFor="agent-name">Agent Name *</label>
               <input
                 id="agent-name"
                 type="text"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => handleNameChange(e.target.value)}
+                onBlur={() => handleFieldBlur('name')}
                 placeholder="e.g., Research Assistant, Code Helper"
                 autoFocus
+                className={touched.name && fieldErrors.name ? styles.inputError : ''}
+                aria-invalid={touched.name && !!fieldErrors.name}
+                aria-describedby={fieldErrors.name ? 'name-error' : 'name-hint'}
               />
-              <span className={styles.hint}>Choose a descriptive name (min 2 characters)</span>
+              {touched.name && fieldErrors.name ? (
+                <span id="name-error" className={styles.errorText}>{fieldErrors.name}</span>
+              ) : (
+                <span id="name-hint" className={styles.hint}>Choose a descriptive name (2-50 characters)</span>
+              )}
+              <div className={styles.charCount}>{name.length}/50</div>
             </div>
-            <div className={styles.inputGroup}>
+            <div className={`${styles.inputGroup} ${touched.description && fieldErrors.description ? styles.hasError : ''}`}>
               <label htmlFor="agent-description">Description (optional)</label>
               <textarea
                 id="agent-description"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) => handleDescriptionChange(e.target.value)}
+                onBlur={() => handleFieldBlur('description')}
                 placeholder="What does this agent do?"
                 rows={3}
+                className={touched.description && fieldErrors.description ? styles.inputError : ''}
+                aria-invalid={touched.description && !!fieldErrors.description}
+                aria-describedby={fieldErrors.description ? 'desc-error' : 'desc-hint'}
               />
+              {touched.description && fieldErrors.description ? (
+                <span id="desc-error" className={styles.errorText}>{fieldErrors.description}</span>
+              ) : (
+                <span id="desc-hint" className={styles.hint}>Describe what your agent does</span>
+              )}
+              <div className={styles.charCount}>{description.length}/500</div>
             </div>
           </div>
         );
