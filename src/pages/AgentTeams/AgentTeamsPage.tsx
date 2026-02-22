@@ -317,7 +317,7 @@ const AgentTeamsPage: React.FC = () => {
     }
   };
 
-  const filteredTeams = teams.filter(team => {
+  const filteredTeams = (teams || []).filter(team => {
     const matchesStatus = statusFilter === 'all' || team.status === statusFilter;
     const matchesSearch = searchQuery === '' || 
       team.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
