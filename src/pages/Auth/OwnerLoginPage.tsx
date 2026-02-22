@@ -215,7 +215,6 @@ const OwnerLoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Login button clicked! Check console for details.');
     console.log('🔐 Owner login form submitted');
     setError('');
 
@@ -253,10 +252,14 @@ const OwnerLoginPage: React.FC = () => {
       const data = await response.json();
       console.log('✅ Login successful!', { token_type: data.token_type, expires_in: data.expires_in });
 
-      // SECURITY FIX: Tokens are now HttpOnly cookies (set by backend)
-      // No longer storing tokens in localStorage (XSS vulnerability)
-      // Store email for UI purposes only
-      localStorage.setItem('owner_email', email);
+      // Store owner token for dashboard access
+      // Note: For production, consider using HttpOnly cookies set by backend
+      if (data.access_token) {
+        localStorage.setItem('owner_token', data.access_token);
+        localStorage.setItem('owner_token_expires', String(Date.now() + data.expires_in * 1000));
+        localStorage.setItem('owner_email', email);
+        console.log('💾 Token stored in localStorage');
+      }
 
       console.log('🔄 Redirecting to /owner-dashboard...');
       // Redirect to owner dashboard

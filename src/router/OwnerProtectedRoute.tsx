@@ -19,14 +19,35 @@ const OwnerProtectedRoute: React.FC<OwnerProtectedRouteProps> = ({ children }) =
 
   useEffect(() => {
     const validateOwnerToken = async () => {
-      // SECURITY FIX: Tokens are now in HttpOnly cookies
-      // No longer reading from localStorage (XSS vulnerable)
-      // Backend will validate the rg_access_token cookie
+      // Check for owner token in localStorage
+      const token = localStorage.getItem('owner_token');
+      const tokenExpires = localStorage.getItem('owner_token_expires');
+      
+      // Check if token exists and is not expired
+      if (!token) {
+        console.log('No owner token found');
+        setIsAuthenticated(false);
+        setIsValidating(false);
+        return;
+      }
+      
+      // Check expiration
+      if (tokenExpires && Date.now() > parseInt(tokenExpires, 10)) {
+        console.log('Owner token expired');
+        localStorage.removeItem('owner_token');
+        localStorage.removeItem('owner_token_expires');
+        localStorage.removeItem('owner_email');
+        setIsAuthenticated(false);
+        setIsValidating(false);
+        return;
+      }
       
       try {
-        // Call validation endpoint - cookies sent automatically
+        // Call validation endpoint with Bearer token
         const response = await fastapiClient.get('/owner/auth/validate', {
-          credentials: 'include',  // Ensure cookies are sent
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
         });
         
         // Check if response indicates owner role
@@ -37,9 +58,10 @@ const OwnerProtectedRoute: React.FC<OwnerProtectedRouteProps> = ({ children }) =
         }
       } catch (error) {
         console.error('Owner token validation failed:', error);
-        // Clean up any legacy localStorage tokens
+        // Clean up invalid tokens
         localStorage.removeItem('owner_token');
         localStorage.removeItem('owner_token_expires');
+        localStorage.removeItem('owner_email');
         setIsAuthenticated(false);
       } finally {
         setIsValidating(false);
