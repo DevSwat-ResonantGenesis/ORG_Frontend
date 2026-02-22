@@ -389,6 +389,15 @@ const styles: Record<string, React.CSSProperties> = {
   },
 };
 
+type SortOption = 'newest' | 'popular' | 'rating' | 'name';
+
+const SORT_OPTIONS: { id: SortOption; label: string }[] = [
+  { id: 'newest', label: 'Newest' },
+  { id: 'popular', label: 'Most Popular' },
+  { id: 'rating', label: 'Highest Rated' },
+  { id: 'name', label: 'Name A-Z' },
+];
+
 export default function AgentMarketplacePage() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<NodeStatus | null>(null);
@@ -401,6 +410,8 @@ export default function AgentMarketplacePage() {
   const [executionInput, setExecutionInput] = useState('{"message": "hello"}');
   const [executionResult, setExecutionResult] = useState<ExecuteResponse | null>(null);
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
 
   // Redirect to signup if not logged in
   useEffect(() => {
@@ -503,7 +514,34 @@ export default function AgentMarketplacePage() {
     }
   }
 
-  const featuredAgents = agents?.slice(0, 2) || [];
+  // Sort agents based on selected sort option
+  const sortedAgents = [...(agents || [])].sort((a, b) => {
+    switch (sortBy) {
+      case 'newest':
+        return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+      case 'popular':
+        return (b.execution_count || 0) - (a.execution_count || 0);
+      case 'rating':
+        return (b.rating || 0) - (a.rating || 0);
+      case 'name':
+        return (a.name || '').localeCompare(b.name || '');
+      default:
+        return 0;
+    }
+  });
+
+  // Filter by search query
+  const filteredAgents = sortedAgents.filter(agent => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      agent.name?.toLowerCase().includes(query) ||
+      agent.description?.toLowerCase().includes(query) ||
+      agent.tags?.some(tag => tag.toLowerCase().includes(query))
+    );
+  });
+
+  const featuredAgents = filteredAgents?.slice(0, 2) || [];
 
   return (
     <div style={styles.container}>
@@ -559,18 +597,82 @@ export default function AgentMarketplacePage() {
             <div>{categoryCounts.all || 0} verified agents</div>
           </div>
 
-          {/* Search */}
+          {/* Search and Sort */}
           <div style={styles.searchBar}>
             <div style={styles.searchInput}>
               <Search size={18} color="#666" />
               <input
                 type="text"
-                placeholder="Search agents by name..."
-                style={styles.input}
+                placeholder="Search agents..."
+                style={{ ...styles.input, width: '180px' }}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
+            
+            {/* Sort Dropdown */}
+            <div style={{ position: 'relative' as const }}>
+              <button
+                onClick={() => setShowSortDropdown(!showSortDropdown)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  padding: '0.4rem 0.75rem',
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '6px',
+                  color: '#888',
+                  fontSize: '0.75rem',
+                  cursor: 'pointer',
+                }}
+              >
+                <Filter size={14} />
+                {SORT_OPTIONS.find(s => s.id === sortBy)?.label}
+                <ChevronRight size={14} style={{ transform: showSortDropdown ? 'rotate(90deg)' : 'rotate(0)', transition: 'transform 0.2s' }} />
+              </button>
+              
+              {showSortDropdown && (
+                <div
+                  style={{
+                    position: 'absolute' as const,
+                    top: '100%',
+                    right: 0,
+                    marginTop: '4px',
+                    background: '#1a1a24',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '8px',
+                    padding: '0.5rem 0',
+                    minWidth: '140px',
+                    zIndex: 100,
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                  }}
+                >
+                  {SORT_OPTIONS.map(option => (
+                    <div
+                      key={option.id}
+                      onClick={() => {
+                        setSortBy(option.id);
+                        setShowSortDropdown(false);
+                      }}
+                      style={{
+                        padding: '0.5rem 1rem',
+                        fontSize: '0.75rem',
+                        color: sortBy === option.id ? '#6366f1' : '#aaa',
+                        cursor: 'pointer',
+                        background: sortBy === option.id ? 'rgba(99,102,241,0.1)' : 'transparent',
+                      }}
+                    >
+                      {option.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            <span style={{ fontSize: '0.7rem', color: '#666' }}>
+              {filteredAgents.length} result{filteredAgents.length !== 1 ? 's' : ''}
+            </span>
           </div>
         </div>
 
@@ -614,13 +716,16 @@ export default function AgentMarketplacePage() {
 
           {loading ? (
             <div style={styles.emptyState}>Loading agents...</div>
-          ) : agents.length === 0 ? (
+          ) : filteredAgents.length === 0 ? (
             <div style={styles.emptyState}>
-              No agents found. Try a different search or category.
+              <p style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>No agents found</p>
+              <p style={{ fontSize: '0.8rem' }}>
+                {searchQuery ? `No results for "${searchQuery}"` : 'Try a different category'}
+              </p>
             </div>
           ) : (
             <div style={styles.agentGrid}>
-              {agents.map(agent => (
+              {filteredAgents.map(agent => (
                 <div
                   key={agent.manifest_hash}
                   style={styles.agentCard}
