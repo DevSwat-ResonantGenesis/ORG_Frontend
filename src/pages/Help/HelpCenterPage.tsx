@@ -149,6 +149,15 @@ const articles: Article[] = [
     path: '/help/platform/audit-logs',
     tags: ['audit', 'logs', 'compliance']
   },
+  {
+    id: '10a',
+    title: 'Hash Sphere Memory System',
+    description: 'Revolutionary 9-layer semantic memory architecture with 3D spatial coordinates, resonance scoring, spin vectors, anchor energy, magnetic pull, and multi-method retrieval (RAG + Vector + Hash Sphere + Hybrid).',
+    category: 'Using the Platform',
+    path: '/help/platform/hash-sphere-memory',
+    tags: ['memory', 'hash-sphere', 'visualization', '3d', 'resonance', 'semantic'],
+    readingTime: 15
+  },
   // Organization Management
   {
     id: '11',

@@ -66,6 +66,191 @@ To get started with ResonantGenesis:
 
 For more details, see our [Account Creation Guide](/help/getting-started/account-creation).
   `,
+  'hash-sphere-memory': `
+# 🧠 Hash Sphere Memory System
+
+## Overview
+
+The **Hash Sphere Memory System** is ResonantGenesis's revolutionary 9-layer architecture for semantic memory storage, retrieval, and visualization. Unlike traditional vector databases, Hash Sphere Memory combines cryptographic hashing, 3D spatial coordinates, physics-based resonance scoring, and multi-method retrieval.
+
+## 🏗️ 9-Layer Architecture
+
+### Layer 1: Input Processing
+Text normalization, tokenization, and context extraction prepare memories for storage.
+
+### Layer 2: Hash Generation
+Multiple hash types capture different semantic properties:
+- **Meaning Hash**: SHA-256 hash of semantic content (20 chars)
+- **Energy Hash**: Emotional/intensity indicators (8 chars)
+- **Spin Hash**: Sentiment/direction (8 chars)
+- **Universe ID**: 256-bit unique identifier
+
+### Layer 3: Universe ID
+Each memory gets a cryptographically secure 256-bit identifier with nanosecond-precision timestamps.
+
+### Layer 4: Embedding Generation
+1536-dimensional semantic vectors with task-specific prefixes and intelligent caching.
+
+### Layer 5: Coordinate Calculation
+
+**Cartesian Coordinates (x, y, z)**:
+- Derived from embeddings using PCA
+- Similar meanings cluster in 3D space
+- Normalized for visualization
+
+**Hyperspherical Coordinates (r, φ, θ)**:
+- r: Radius (typically 1.0 for unit sphere)
+- φ: Latitude (-π/2 to π/2)
+- θ: Longitude (-π to π)
+
+### Layer 6: Resonance Scoring
+
+**Resonance Function**: \`R(h) = sin(a·x) + cos(b·y) + tan(c·z)\`
+
+Where a = π/4, b = e/3, c = φ/2 (golden ratio)
+
+**Anchor Energy**: \`E_j(s) = exp(-β·||s - A_j||²)\`
+Measures attraction to nearest anchor point.
+
+### Layer 7: Evidence Aggregation
+Combines multiple memory positions into single evidence vector: \`E* = Σ w_i · s_i\`
+
+### Layer 8: Multi-LLM Routing
+Optimal model selection, load balancing, and automatic failover.
+
+### Layer 9: Output Correction
+\`o_corrected = λ·o_k* + (1-λ)·Ê*\`
+
+Blends LLM output (80%) with evidence (20%) to reduce hallucination.
+
+## 🎯 Advanced Features
+
+### Spin Vectors
+3D vectors representing semantic "direction":
+- **X-axis**: Topic/domain (technical ↔ creative)
+- **Y-axis**: Emotional valence (positive ↔ negative)
+- **Z-axis**: Complexity/abstraction level
+
+### Semantic Components
+- **Meaning Score**: Content richness (0-1)
+- **Intensity Score**: Emotional/urgency indicators (0-1)
+- **Sentiment Score**: Positive/negative sentiment (0-1)
+
+### Magnetic Pull System (HS-MPS)
+Non-linear boost: \`magnetic = min((resonance² × 1.5), 1.0)\`
+
+Amplifies strong memories while weakening low-resonance ones.
+
+### Drift & Decay
+\`s_{t+1} = s_t + γ(A_{j*} - s_t)\`
+
+Memories gradually move toward anchor points, simulating consolidation.
+
+## 🔄 Multi-Method Retrieval
+
+1. **RAG**: Vector similarity with cosine distance
+2. **Vector Embeddings**: pgvector with HNSW indexing
+3. **Hash Sphere Proximity**: 3D Euclidean distance
+4. **Resonance Filtering**: Hash similarity + energy ranking
+5. **Hybrid Ranking**: Weighted combination of all methods
+
+## 📊 Visualization
+
+Access the visualization at [/resonant-memory](/resonant-memory).
+
+### 3D Sphere View
+- **Memory Nodes**: Colored spheres by xyz coordinates
+- **Size**: Scaled by importance
+- **Color**: By type (chat, code, function)
+- **Connections**: Lines between related memories
+
+### Spin Vector Arrows
+Shows semantic rotation direction and magnitude.
+
+### Cluster Regions
+Semi-transparent spheres around cluster centroids with unique colors.
+
+### Energy Fields
+Gradient visualization showing anchor attraction with pulsing animation.
+
+### Semantic Overlays
+**Color Modes**:
+- **Type**: Color by memory type (default)
+- **Meaning**: Gradient by meaning score
+- **Intensity**: Heat map of emotional intensity
+- **Sentiment**: Red → Yellow → Green
+
+### Hyperspherical View
+Alternative coordinate system with latitude/longitude grid overlay.
+
+## 🔐 Security
+
+- **AES-256-GCM Encryption**: All memories encrypted at rest
+- **Per-User Keys**: Unique encryption key per user
+- **User Universes**: Isolated memory spaces
+- **Org Scoping**: Organization-level sharing
+
+## 📈 Performance
+
+- **Retrieval Time**: < 100ms for typical queries
+- **Storage**: ~2KB per memory (including embeddings)
+- **Throughput**: 1000+ memories/second ingestion
+- **Cache Hit Rate**: 60-80% for repeated queries
+
+## 🎓 Use Cases
+
+### Personal Knowledge Base
+Store conversations, notes, documents with semantic retrieval.
+
+### Code Memory
+Remember code snippets, functions, patterns for reuse.
+
+### Research Assistant
+Store papers, articles, research notes with knowledge graphs.
+
+### Customer Support
+Remember customer interactions for personalized responses.
+
+## 🚀 Getting Started
+
+1. Navigate to [Resonant Memory](/resonant-memory)
+2. Your chat conversations are automatically stored as memories
+3. Use the 3D visualization to explore your memory space
+4. Toggle advanced features (spin vectors, clusters, energy fields)
+5. Search memories semantically or by filters
+
+## 📚 API Endpoints
+
+**Ingest Memory**:
+\`\`\`http
+POST /api/v1/memory/ingest
+{
+  "content": "Memory text",
+  "source": "chat"
+}
+\`\`\`
+
+**Search Memories**:
+\`\`\`http
+POST /api/v1/memory/search
+{
+  "query": "Search query",
+  "limit": 10
+}
+\`\`\`
+
+**Hash Sphere Extract**:
+\`\`\`http
+POST /api/v1/memory/hash-sphere/extract
+{
+  "query": "Query text",
+  "use_anchors": true,
+  "apply_magnetic_pull": true
+}
+\`\`\`
+
+For complete documentation, see our [GitHub repository](https://github.com/louienemesh/ResonantGenesis/blob/main/docs/HASH_SPHERE_MEMORY.md).
+  `,
   'account-creation': `
 # Account Creation
 
