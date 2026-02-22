@@ -573,6 +573,405 @@ def generate_response(message: str, history: List[Dict]) -> str:
     return f"I understand you're asking about: {message}. In production, this would be handled by an LLM."
 `,
   },
+  {
+    id: 'research-assistant',
+    name: 'Research Assistant',
+    description: 'AI-powered research agent that searches, summarizes, and synthesizes information from multiple sources.',
+    category: 'ai',
+    icon: <Search size={24} />,
+    difficulty: 'intermediate',
+    tags: ['research', 'search', 'summary', 'ai'],
+    downloads: 1450,
+    rating: 4.9,
+    manifest: {
+      "$schema": "https://resonantgenesis.io/schemas/agent-manifest-v1.json",
+      "version": "1.0.0",
+      "agent": {
+        "name": "Research Assistant",
+        "version": "1.0.0",
+        "description": "AI-powered research and summarization agent",
+        "tags": ["research", "ai"]
+      },
+      "code": { "runtime": "python", "entrypoint": "main.py" },
+      "capabilities": { "tools": ["web.search", "memory.read", "memory.write", "llm.complete"] },
+      "governance": { "category": "research" },
+      "trust": { "tier": 2 }
+    },
+    code: `"""
+Research Assistant Agent
+AI-powered research, search, and summarization.
+"""
+from typing import Dict, List, Any
+from datetime import datetime
+
+def handle(input_data: dict, context) -> dict:
+    """Research a topic and provide summarized findings."""
+    
+    query = input_data.get("query", "")
+    depth = input_data.get("depth", "standard")  # quick, standard, deep
+    
+    if not query:
+        return {"error": "Missing 'query' field", "success": False}
+    
+    # Perform research
+    findings = research_topic(query, depth, context)
+    
+    # Generate summary
+    summary = synthesize_findings(findings)
+    
+    return {
+        "success": True,
+        "query": query,
+        "summary": summary,
+        "sources": findings.get("sources", []),
+        "key_points": findings.get("key_points", []),
+        "metadata": {
+            "depth": depth,
+            "source_count": len(findings.get("sources", [])),
+            "timestamp": datetime.utcnow().isoformat()
+        }
+    }
+
+def research_topic(query: str, depth: str, context) -> Dict[str, Any]:
+    """Research a topic using available tools."""
+    
+    # Simulate web search results
+    sources = [
+        {"title": f"Source 1 for {query}", "url": "https://example.com/1", "relevance": 0.95},
+        {"title": f"Source 2 for {query}", "url": "https://example.com/2", "relevance": 0.87},
+        {"title": f"Source 3 for {query}", "url": "https://example.com/3", "relevance": 0.82},
+    ]
+    
+    key_points = [
+        f"Key finding 1 about {query}",
+        f"Key finding 2 about {query}",
+        f"Important consideration regarding {query}",
+    ]
+    
+    return {
+        "sources": sources,
+        "key_points": key_points,
+        "raw_data": f"Research data for: {query}"
+    }
+
+def synthesize_findings(findings: Dict[str, Any]) -> str:
+    """Synthesize research findings into a summary."""
+    
+    key_points = findings.get("key_points", [])
+    source_count = len(findings.get("sources", []))
+    
+    summary = f"Based on analysis of {source_count} sources:\\n\\n"
+    for i, point in enumerate(key_points, 1):
+        summary += f"{i}. {point}\\n"
+    
+    return summary
+`,
+  },
+  {
+    id: 'code-helper',
+    name: 'Code Helper',
+    description: 'Development assistant that helps write, review, and debug code across multiple languages.',
+    category: 'development',
+    icon: <Code size={24} />,
+    difficulty: 'intermediate',
+    tags: ['code', 'development', 'debugging', 'review'],
+    downloads: 2100,
+    rating: 4.8,
+    manifest: {
+      "$schema": "https://resonantgenesis.io/schemas/agent-manifest-v1.json",
+      "version": "1.0.0",
+      "agent": {
+        "name": "Code Helper",
+        "version": "1.0.0",
+        "description": "Development assistant for coding tasks",
+        "tags": ["code", "development"]
+      },
+      "code": { "runtime": "python", "entrypoint": "main.py" },
+      "capabilities": { "tools": ["code.execute", "memory.read", "memory.write", "llm.complete"] },
+      "governance": { "category": "development" },
+      "trust": { "tier": 2 }
+    },
+    code: `"""
+Code Helper Agent
+Development assistant for coding tasks.
+"""
+from typing import Dict, Any, Optional
+import re
+
+def handle(input_data: dict, context) -> dict:
+    """Handle coding assistance requests."""
+    
+    action = input_data.get("action", "help")
+    code = input_data.get("code", "")
+    language = input_data.get("language", "python")
+    description = input_data.get("description", "")
+    
+    if action == "review":
+        return review_code(code, language)
+    elif action == "debug":
+        error = input_data.get("error", "")
+        return debug_code(code, error, language)
+    elif action == "generate":
+        return generate_code(description, language)
+    elif action == "explain":
+        return explain_code(code, language)
+    else:
+        return {
+            "success": True,
+            "message": "Available actions: review, debug, generate, explain",
+            "usage": {
+                "review": "Review code for issues and improvements",
+                "debug": "Help debug code with an error",
+                "generate": "Generate code from description",
+                "explain": "Explain what code does"
+            }
+        }
+
+def review_code(code: str, language: str) -> Dict[str, Any]:
+    """Review code for issues and improvements."""
+    
+    issues = []
+    suggestions = []
+    
+    # Basic checks
+    if len(code) > 500:
+        suggestions.append("Consider breaking this into smaller functions")
+    
+    if "TODO" in code or "FIXME" in code:
+        issues.append("Contains TODO/FIXME comments that need attention")
+    
+    # Language-specific checks
+    if language == "python":
+        if "import *" in code:
+            issues.append("Avoid wildcard imports")
+        if not code.strip().startswith('"""') and "def " in code:
+            suggestions.append("Add docstrings to functions")
+    
+    return {
+        "success": True,
+        "action": "review",
+        "issues": issues,
+        "suggestions": suggestions,
+        "score": max(0, 100 - len(issues) * 10 - len(suggestions) * 5)
+    }
+
+def debug_code(code: str, error: str, language: str) -> Dict[str, Any]:
+    """Help debug code with an error."""
+    
+    suggestions = []
+    
+    if "NameError" in error:
+        suggestions.append("Check if the variable is defined before use")
+    elif "TypeError" in error:
+        suggestions.append("Check the types of your variables")
+    elif "SyntaxError" in error:
+        suggestions.append("Check for missing brackets, quotes, or colons")
+    elif "IndentationError" in error:
+        suggestions.append("Check your indentation - use consistent spaces or tabs")
+    else:
+        suggestions.append("Review the error message and stack trace carefully")
+    
+    return {
+        "success": True,
+        "action": "debug",
+        "error_type": error.split(":")[0] if ":" in error else "Unknown",
+        "suggestions": suggestions,
+        "next_steps": ["Add print statements to trace execution", "Check variable values"]
+    }
+
+def generate_code(description: str, language: str) -> Dict[str, Any]:
+    """Generate code from description."""
+    
+    # Placeholder - in production, use LLM
+    template = f'''# Generated code for: {description}
+# Language: {language}
+
+def main():
+    """Main function."""
+    # TODO: Implement {description}
+    pass
+
+if __name__ == "__main__":
+    main()
+'''
+    
+    return {
+        "success": True,
+        "action": "generate",
+        "code": template,
+        "language": language,
+        "note": "This is a template. Implement the TODO section."
+    }
+
+def explain_code(code: str, language: str) -> Dict[str, Any]:
+    """Explain what code does."""
+    
+    # Basic analysis
+    lines = code.strip().split("\\n")
+    functions = [l for l in lines if l.strip().startswith("def ")]
+    classes = [l for l in lines if l.strip().startswith("class ")]
+    imports = [l for l in lines if l.strip().startswith("import ") or l.strip().startswith("from ")]
+    
+    return {
+        "success": True,
+        "action": "explain",
+        "summary": f"Code with {len(lines)} lines, {len(functions)} functions, {len(classes)} classes",
+        "structure": {
+            "total_lines": len(lines),
+            "functions": len(functions),
+            "classes": len(classes),
+            "imports": len(imports)
+        },
+        "explanation": "In production, this would provide a detailed explanation using an LLM."
+    }
+`,
+  },
+  {
+    id: 'data-analyst',
+    name: 'Data Analyst',
+    description: 'Analyzes datasets, generates insights, and creates visualizations from structured data.',
+    category: 'data',
+    icon: <Database size={24} />,
+    difficulty: 'advanced',
+    tags: ['data', 'analytics', 'visualization', 'insights'],
+    downloads: 980,
+    rating: 4.7,
+    manifest: {
+      "$schema": "https://resonantgenesis.io/schemas/agent-manifest-v1.json",
+      "version": "1.0.0",
+      "agent": {
+        "name": "Data Analyst",
+        "version": "1.0.0",
+        "description": "Data analysis and insights generation",
+        "tags": ["data", "analytics"]
+      },
+      "code": { "runtime": "python", "entrypoint": "main.py" },
+      "capabilities": { "tools": ["data.query", "memory.read", "memory.write"] },
+      "governance": { "category": "analytics" },
+      "trust": { "tier": 2 }
+    },
+    code: `"""
+Data Analyst Agent
+Analyzes data and generates insights.
+"""
+from typing import Dict, List, Any, Optional
+from datetime import datetime
+import statistics
+
+def handle(input_data: dict, context) -> dict:
+    """Analyze data and generate insights."""
+    
+    data = input_data.get("data", [])
+    analysis_type = input_data.get("analysis", "summary")
+    
+    if not data:
+        return {"error": "Missing 'data' field", "success": False}
+    
+    if analysis_type == "summary":
+        result = generate_summary(data)
+    elif analysis_type == "trends":
+        result = analyze_trends(data)
+    elif analysis_type == "outliers":
+        result = detect_outliers(data)
+    elif analysis_type == "correlation":
+        result = analyze_correlation(data)
+    else:
+        result = generate_summary(data)
+    
+    return {
+        "success": True,
+        "analysis_type": analysis_type,
+        "results": result,
+        "metadata": {
+            "record_count": len(data),
+            "timestamp": datetime.utcnow().isoformat()
+        }
+    }
+
+def generate_summary(data: List[Any]) -> Dict[str, Any]:
+    """Generate statistical summary of data."""
+    
+    if not data:
+        return {"error": "No data provided"}
+    
+    # Handle numeric data
+    if all(isinstance(x, (int, float)) for x in data):
+        return {
+            "count": len(data),
+            "sum": sum(data),
+            "mean": statistics.mean(data),
+            "median": statistics.median(data),
+            "min": min(data),
+            "max": max(data),
+            "std_dev": statistics.stdev(data) if len(data) > 1 else 0
+        }
+    
+    # Handle mixed data
+    return {
+        "count": len(data),
+        "types": list(set(type(x).__name__ for x in data)),
+        "unique_values": len(set(str(x) for x in data))
+    }
+
+def analyze_trends(data: List[Any]) -> Dict[str, Any]:
+    """Analyze trends in sequential data."""
+    
+    if len(data) < 2:
+        return {"trend": "insufficient_data"}
+    
+    if all(isinstance(x, (int, float)) for x in data):
+        first_half = statistics.mean(data[:len(data)//2])
+        second_half = statistics.mean(data[len(data)//2:])
+        
+        if second_half > first_half * 1.05:
+            trend = "increasing"
+        elif second_half < first_half * 0.95:
+            trend = "decreasing"
+        else:
+            trend = "stable"
+        
+        return {
+            "trend": trend,
+            "change_percent": ((second_half - first_half) / first_half) * 100 if first_half else 0
+        }
+    
+    return {"trend": "non_numeric_data"}
+
+def detect_outliers(data: List[Any]) -> Dict[str, Any]:
+    """Detect outliers using IQR method."""
+    
+    if not all(isinstance(x, (int, float)) for x in data):
+        return {"error": "Outlier detection requires numeric data"}
+    
+    sorted_data = sorted(data)
+    q1 = sorted_data[len(sorted_data)//4]
+    q3 = sorted_data[3*len(sorted_data)//4]
+    iqr = q3 - q1
+    
+    lower_bound = q1 - 1.5 * iqr
+    upper_bound = q3 + 1.5 * iqr
+    
+    outliers = [x for x in data if x < lower_bound or x > upper_bound]
+    
+    return {
+        "outliers": outliers,
+        "outlier_count": len(outliers),
+        "bounds": {"lower": lower_bound, "upper": upper_bound}
+    }
+
+def analyze_correlation(data: List[Dict]) -> Dict[str, Any]:
+    """Analyze correlation between fields."""
+    
+    if not data or not isinstance(data[0], dict):
+        return {"error": "Correlation requires list of dictionaries"}
+    
+    # Placeholder for correlation analysis
+    return {
+        "note": "Correlation analysis requires paired numeric fields",
+        "fields_found": list(data[0].keys()) if data else []
+    }
+`,
+  },
 ];
 
 const CATEGORIES = [
