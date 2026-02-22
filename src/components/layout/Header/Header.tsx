@@ -339,13 +339,13 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            {/* Control Plane Dropdown */}
+            {/* Control Center Dropdown */}
             <div className={styles.navItem}>
               <button 
                 className={`${styles.navButton} ${activeDropdown === 'control' ? styles.navButtonActive : ''}`}
                 onClick={() => setActiveDropdown(activeDropdown === 'control' ? null : 'control')}
               >
-                Control Plane
+                Control Center
                 <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -501,7 +501,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
               {activeDropdown === 'resources' && (
                 <div className={styles.navDropdown}>
-                  <div className={styles.navDropdownGrid}>
+                  <div className={styles.navDropdownGridWide}>
                     <div className={styles.navDropdownColumn}>
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/help'); setActiveDropdown(null); }}>
                         <span className={styles.navDropdownItemTitle}>Help Center</span>
@@ -511,15 +511,37 @@ export const Header: React.FC<HeaderProps> = ({
                         <span className={styles.navDropdownItemTitle}>API Reference</span>
                         <span className={styles.navDropdownItemDesc}>Technical documentation</span>
                       </button>
-                    </div>
-                    <div className={styles.navDropdownColumn}>
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/help/getting-started/first-prediction'); setActiveDropdown(null); }}>
                         <span className={styles.navDropdownItemTitle}>Tutorials</span>
                         <span className={styles.navDropdownItemDesc}>Step-by-step guides</span>
                       </button>
+                    </div>
+                    <div className={styles.navDropdownColumn}>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/help/agents/creating-agents'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Agent Guide</span>
+                        <span className={styles.navDropdownItemDesc}>Build AI agents</span>
+                      </button>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/help/security/best-practices'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Security Guide</span>
+                        <span className={styles.navDropdownItemDesc}>Best practices</span>
+                      </button>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/contact'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Contact Support</span>
+                        <span className={styles.navDropdownItemDesc}>Get help from our team</span>
+                      </button>
+                    </div>
+                    <div className={styles.navDropdownColumn}>
                       <button className={styles.navDropdownItem} onClick={() => { window.open('https://github.com/louienemesh/ResonantGenesis', '_blank'); setActiveDropdown(null); }}>
                         <span className={styles.navDropdownItemTitle}>GitHub</span>
                         <span className={styles.navDropdownItemDesc}>Open source & community</span>
+                      </button>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/about'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>About Us</span>
+                        <span className={styles.navDropdownItemDesc}>Our mission & team</span>
+                      </button>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/careers'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Careers</span>
+                        <span className={styles.navDropdownItemDesc}>Join our team</span>
                       </button>
                     </div>
                   </div>
@@ -698,9 +720,9 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
-            {/* Control Plane */}
+            {/* Control Center */}
             <div className={styles.mobileMenuSection}>
-              <div className={styles.mobileMenuSectionTitle}>Control Plane</div>
+              <div className={styles.mobileMenuSectionTitle}>Control Center</div>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane'); setIsMobileMenuOpen(false); }}>
                 Overview
               </button>
