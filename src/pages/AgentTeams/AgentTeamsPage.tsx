@@ -453,41 +453,6 @@ const AgentTeamsPage: React.FC = () => {
                       onUnarchive={handleUnarchiveTeam}
                       onClick={handleTeamClick}
                     />
-                        }}>
-                          <div style={{ fontSize: 'var(--font-xs)', color: 'var(--color-warning-700)', fontWeight: 600 }}>
-                            ⚠️ {teamWorkflows[team.id].length} active workflow(s)
-                          </div>
-                          <Button
-                            onClick={async (e) => {
-                              e.stopPropagation();
-                              const workflowList = teamWorkflows[team.id]
-                                .map(wf => `  • Workflow ${wf.id.slice(0, 8)}... (${wf.status})`)
-                                .join('\n');
-                              if (window.confirm(
-                                `Cancel ${teamWorkflows[team.id].length} active workflow(s) for "${team.name}"?\n\n${workflowList}\n\nThis will stop all running workflows.`
-                              )) {
-                                try {
-                                  await Promise.all(
-                                    teamWorkflows[team.id].map(wf => cancelWorkflow(wf.id))
-                                  );
-                                  toast.success(`Cancelled ${teamWorkflows[team.id].length} workflow(s)`);
-                                  loadTeamWorkflows(team.id);
-                                  loadTeams();
-                                } catch (err) {
-                                  logger.error('Failed to cancel workflows:', err);
-                                  toast.error('Failed to cancel some workflows');
-                                }
-                              }
-                            }}
-                            variant="secondary"
-                            size="sm"
-                            style={{ padding: '2px 8px', height: 'auto', fontSize: '11px' }}
-                          >
-                            Cancel All
-                          </Button>
-                        </div>
-                      )}
-                    </div>
                   ))}
                 </div>
               )}
