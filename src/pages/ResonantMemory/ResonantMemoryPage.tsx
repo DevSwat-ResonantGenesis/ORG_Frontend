@@ -220,7 +220,7 @@ const ResonantMemoryPage: React.FC = () => {
         setIsLoggedIn(true);
         
         // Fetch memories using search endpoint - get ALL user memories
-        const searchResponse = await fetch(`${API_URL}/memory/search`, {
+        const searchResponse = await fetch(`${API_URL}/api/v1/memory/search`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -232,13 +232,13 @@ const ResonantMemoryPage: React.FC = () => {
         });
 
         // Fetch memory stats through gateway
-        const statsResponse = await fetch(`${API_URL}/memory/stats`, {
+        const statsResponse = await fetch(`${API_URL}/api/v1/memory/stats`, {
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
         });
         
         // Fetch anchors from hash-sphere endpoint
-        const anchorsResponse = await fetch(`${API_URL}/memory/hash-sphere/anchors?user_id=${sessionData.userId}&limit=10000`, {
+        const anchorsResponse = await fetch(`${API_URL}/api/v1/memory/hash-sphere/anchors?user_id=${sessionData.userId}&limit=10000`, {
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
         });
