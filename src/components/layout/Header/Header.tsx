@@ -316,8 +316,8 @@ export const Header: React.FC<HeaderProps> = ({
                         <span className={styles.navDropdownItemDesc}>AI project generation</span>
                       </button>
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/agents'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Agents</span>
-                        <span className={styles.navDropdownItemDesc}>Agent Console</span>
+                        <span className={styles.navDropdownItemTitle}>Agent Studio</span>
+                        <span className={styles.navDropdownItemDesc}>Create & manage agents</span>
                       </button>
                     </div>
                     <div className={styles.navDropdownColumn}>
@@ -445,13 +445,13 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            {/* Decentralized Network Dropdown - Visible to all, pages redirect to signup if not logged in */}
+            {/* Network Dropdown - Visible to all, pages redirect to signup if not logged in */}
             <div className={styles.navItem}>
               <button 
                 className={`${styles.navButton} ${activeDropdown === 'network' ? styles.navButtonActive : ''}`}
                 onClick={() => setActiveDropdown(activeDropdown === 'network' ? null : 'network')}
               >
-                Decentralized
+                Network
                 <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -685,7 +685,7 @@ export const Header: React.FC<HeaderProps> = ({
                 Project Builder
               </button>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/agents'); setIsMobileMenuOpen(false); }}>
-                Agents
+                Agent Studio
               </button>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/agent-teams'); setIsMobileMenuOpen(false); }}>
                 Agent Teams
@@ -744,9 +744,9 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
-            {/* Decentralized */}
+            {/* Network */}
             <div className={styles.mobileMenuSection}>
-              <div className={styles.mobileMenuSectionTitle}>Decentralized</div>
+              <div className={styles.mobileMenuSectionTitle}>Network</div>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/network/marketplace'); setIsMobileMenuOpen(false); }}>
                 DSID Marketplace
               </button>

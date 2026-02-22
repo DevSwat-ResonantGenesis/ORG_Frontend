@@ -200,7 +200,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <path d="M3 14C3 11 5.5 9 8 9C10.5 9 13 11 13 14" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Agents</span>
+              <span className={styles.usmLabel}>Agent Studio</span>
               {location.pathname === '/agents' && <span className={styles.usmActiveIndicator} />}
             </button>
 
@@ -223,9 +223,9 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
 
           <div className={styles.usmDivider} />
 
-          {/* Decentralized Network Section */}
+          {/* Network Section */}
           <div className={styles.usmSection}>
-            <div className={styles.usmSectionTitle}>Decentralized Network</div>
+            <div className={styles.usmSectionTitle}>Network</div>
             
             <button
               className={`${styles.usmItem} ${location.pathname === '/network/marketplace' ? styles.usmActive : ''}`}
