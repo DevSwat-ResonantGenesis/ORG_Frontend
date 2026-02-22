@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import styles from './HashSphereMemoryPage.module.css';
+import styles from './ResonantMemoryPage.module.css';
 
 import { ENV } from '../../config/env';
 
@@ -79,7 +79,7 @@ interface MemoryMetrics {
   last_sync: string;
 }
 
-const HashSphereMemoryPage: React.FC = () => {
+const ResonantMemoryPage: React.FC = () => {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -1064,4 +1064,4 @@ const HashSphereMemoryPage: React.FC = () => {
   );
 };
 
-export default HashSphereMemoryPage;
+export default ResonantMemoryPage;

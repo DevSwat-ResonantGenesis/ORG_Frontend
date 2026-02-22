@@ -25,6 +25,10 @@
     "test:ui": "vitest --ui",
     "test:e2e": "cypress run",
     "test:e2e:open": "cypress open",
+    "test:playwright": "playwright test",
+    "test:playwright:ui": "playwright test --ui",
+    "test:playwright:headed": "playwright test --headed",
+    "test:playwright:debug": "playwright test --debug",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
