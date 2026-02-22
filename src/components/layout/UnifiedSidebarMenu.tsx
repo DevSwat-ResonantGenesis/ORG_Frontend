@@ -609,6 +609,34 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             </button>
 
             <button
+              className={`${styles.usmItem} ${location.pathname === '/help/developers/api-reference' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/help/developers/api-reference'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="2" y="2" width="12" height="12" rx="1" />
+                  <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>API Reference</span>
+              {location.pathname === '/help/developers/api-reference' && <span className={styles.usmActiveIndicator} />}
+            </button>
+
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/about' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/about'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <circle cx="8" cy="8" r="6" />
+                  <path d="M8 5V5.5M8 7V11" strokeLinecap="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>About Us</span>
+              {location.pathname === '/about' && <span className={styles.usmActiveIndicator} />}
+            </button>
+
+            <button
               className={styles.usmItem}
               onClick={() => { window.open('https://github.com/louienemesh/ResonantGenesis', '_blank'); onClose(); }}
             >
