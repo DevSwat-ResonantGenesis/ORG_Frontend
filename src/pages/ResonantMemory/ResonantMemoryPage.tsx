@@ -401,7 +401,10 @@ const ResonantMemoryPage: React.FC = () => {
 
   // Initialize Three.js scene
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current) {
+      console.error('Container ref is null - cannot initialize Three.js');
+      return;
+    }
 
     const container = containerRef.current;
     // Use window dimensions as fallback if container dimensions are 0
@@ -409,6 +412,8 @@ const ResonantMemoryPage: React.FC = () => {
     const height = container.clientHeight || (window.innerHeight - 60);
     
     console.log(`Initializing Three.js with dimensions: ${width}x${height}`);
+    console.log(`Container element:`, container);
+    console.log(`Anchors count:`, anchors.length);
 
     // Scene
     const scene = new THREE.Scene();
