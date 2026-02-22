@@ -638,14 +638,23 @@ export const Header: React.FC<HeaderProps> = ({
                       </div>
                     </div>
                     <div className={styles.accountMenuDivider} />
-                    <button className={styles.accountMenuItem} onClick={() => { navigate('/dashboard'); setShowAccountMenu(false); }}>
+                    <button className={styles.accountMenuItem} onClick={() => { 
+                      // Redirect to owner dashboard for platform owners/superusers
+                      const role = String(sessionData?.role || '');
+                      const isOwner = role === 'platform_owner' || role === 'owner' || (sessionData as any)?.is_superuser;
+                      navigate(isOwner ? '/owner-dashboard' : '/dashboard'); 
+                      setShowAccountMenu(false); 
+                    }}>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <rect x="2" y="2" width="5" height="5" rx="1" />
                         <rect x="9" y="2" width="5" height="5" rx="1" />
                         <rect x="2" y="9" width="5" height="5" rx="1" />
                         <rect x="9" y="9" width="5" height="5" rx="1" />
                       </svg>
-                      Dashboard
+                      {(() => {
+                        const role = String(sessionData?.role || '');
+                        return role === 'platform_owner' || role === 'owner' || (sessionData as any)?.is_superuser ? 'Owner Dashboard' : 'Dashboard';
+                      })()}
                     </button>
                     <button className={styles.accountMenuItem} onClick={() => { navigate('/profile'); setShowAccountMenu(false); }}>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
