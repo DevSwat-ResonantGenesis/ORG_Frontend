@@ -172,7 +172,7 @@ export const browseMarketplaceItems = async (
 ): Promise<MarketplaceItem[]> => {
   try {
     const response = await fastapiClient.get<any[]>('/marketplace/listings', { params });
-    return response.data.map(mapListingToItem);
+    return (response.data || []).map(mapListingToItem);
   } catch (error) {
     logger.apiError('/marketplace/listings', error);
     throw error;
@@ -186,7 +186,7 @@ export const browseMarketplaceItems = async (
 export const getFeaturedItems = async (limit: number = 10): Promise<MarketplaceItem[]> => {
   try {
     const response = await fastapiClient.get<any[]>('/marketplace/listings/featured', { params: { limit } });
-    return response.data.map(mapListingToItem);
+    return (response.data || []).map(mapListingToItem);
   } catch (error) {
     logger.apiError('/marketplace/listings/featured', error);
     return [];
