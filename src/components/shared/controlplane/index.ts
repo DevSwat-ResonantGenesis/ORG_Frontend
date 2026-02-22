@@ -5,7 +5,7 @@
  * These components provide full administrative control over users, agents, billing,
  * settings, security, and system operations.
  * 
- * Total: 25 components, ~15,000 lines of TypeScript/React code
+ * Total: 30 components, ~20,000 lines of TypeScript/React code
  */
 
 // Core Dashboard
@@ -25,6 +25,7 @@ export { WebhookManagement } from '../WebhookManagement';
 export { IntegrationManagement } from '../IntegrationManagement';
 export { FeatureFlagManagement } from '../FeatureFlagManagement';
 export { EnvironmentConfig } from '../EnvironmentConfig';
+export { RateLimitConfig } from '../RateLimitConfig';
 
 // Business & Billing
 export { BillingManagement } from '../BillingManagement';
@@ -36,13 +37,19 @@ export { AnalyticsDashboard } from '../AnalyticsDashboard';
 export { SystemLogs } from '../SystemLogs';
 export { SecurityAudit } from '../SecurityAudit';
 export { ServiceStatus } from '../ServiceStatus';
+export { DatabaseMonitor } from '../DatabaseMonitor';
 
 // Operations
 export { NotificationCenter } from '../NotificationCenter';
 export { MaintenanceMode } from '../MaintenanceMode';
 export { BackupManagement } from '../BackupManagement';
+export { CacheManagement } from '../CacheManagement';
+export { QueueManagement } from '../QueueManagement';
 
 // Data & Reports
 export { EmailTemplates } from '../EmailTemplates';
 export { ReportGenerator } from '../ReportGenerator';
 export { DataExport } from '../DataExport';
+
+// Documentation
+export { ApiDocumentation } from '../ApiDocumentation';
