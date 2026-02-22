@@ -425,8 +425,8 @@ export const Header: React.FC<HeaderProps> = ({
                         <span className={styles.navDropdownItemTitle}>State Physics</span>
                         <span className={styles.navDropdownItemDesc}>Invariant enforcement API</span>
                       </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/hash-sphere-memory'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Hash Sphere Memory</span>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-memory'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Resonant Memory</span>
                         <span className={styles.navDropdownItemDesc}>AI memory infrastructure</span>
                       </button>
                     </div>
@@ -755,8 +755,8 @@ export const Header: React.FC<HeaderProps> = ({
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/state-physics'); setIsMobileMenuOpen(false); }}>
                 State Physics
               </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/hash-sphere-memory'); setIsMobileMenuOpen(false); }}>
-                Hash Sphere Memory
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/resonant-memory'); setIsMobileMenuOpen(false); }}>
+                Resonant Memory
               </button>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/code-visualizer'); setIsMobileMenuOpen(false); }}>
                 Code Visualizer

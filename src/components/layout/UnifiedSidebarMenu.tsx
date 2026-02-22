@@ -488,8 +488,8 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             </button>
 
             <button
-              className={`${styles.usmItem} ${location.pathname === '/hash-sphere-memory' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/hash-sphere-memory'); onClose(); }}
+              className={`${styles.usmItem} ${location.pathname === '/resonant-memory' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/resonant-memory'); onClose(); }}
             >
               <span className={styles.usmIcon}>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -501,8 +501,8 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <path d="M8 8L5 5M8 8L11 6M8 8L6 11M8 8L10 10" strokeWidth="0.5" opacity="0.5" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Hash Sphere Memory</span>
-              {location.pathname === '/hash-sphere-memory' && <span className={styles.usmActiveIndicator} />}
+              <span className={styles.usmLabel}>Resonant Memory</span>
+              {location.pathname === '/resonant-memory' && <span className={styles.usmActiveIndicator} />}
             </button>
           </div>
 
