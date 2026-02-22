@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback } from 'react';
+import React, { memo, useState, useCallback, useEffect } from 'react';
 import { useAgentStore } from '../../../../../stores/agentStore';
 import { Icons } from '../../shared/Icons';
 import { createAgent as createAgentApi } from '../../../../../api/agents';
@@ -180,6 +180,47 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
         : [...prev, toolId]
     );
   }, []);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't interfere with input fields
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        // Allow Enter to proceed on basics step if valid
+        if (e.key === 'Enter' && !e.shiftKey && currentStepData.id === 'basics') {
+          e.preventDefault();
+          if (canProceed()) handleNext();
+        }
+        return;
+      }
+      
+      switch (e.key) {
+        case 'ArrowRight':
+        case 'Enter':
+          if (canProceed() && !isLastStep && !createdAgentId) {
+            e.preventDefault();
+            handleNext();
+          }
+          break;
+        case 'ArrowLeft':
+        case 'Backspace':
+          if (!isFirstStep && !createdAgentId) {
+            e.preventDefault();
+            handleBack();
+          }
+          break;
+        case 'Escape':
+          if (onCancel) {
+            e.preventDefault();
+            onCancel();
+          }
+          break;
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentStep, currentStepData.id, canProceed, handleNext, handleBack, isLastStep, isFirstStep, createdAgentId, onCancel]);
 
   const handleCreate = useCallback(async () => {
     setIsCreating(true);
@@ -494,20 +535,32 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
       {/* Navigation */}
       {!createdAgentId && (
         <div className={styles.navigation}>
-          <button
-            className={styles.backBtn}
-            onClick={isFirstStep ? onCancel : handleBack}
-          >
-            {isFirstStep ? 'Cancel' : 'Back'}
-          </button>
+          <div className={styles.navLeft}>
+            <button
+              className={styles.backBtn}
+              onClick={isFirstStep ? onCancel : handleBack}
+            >
+              {isFirstStep ? 'Cancel' : '← Back'}
+            </button>
+            <span className={styles.keyboardHint}>
+              Use ← → or Enter to navigate • Esc to cancel
+            </span>
+          </div>
           
           {isReviewStep ? (
             <button
-              className={styles.createBtn}
+              className={`${styles.createBtn} ${isCreating ? styles.loading : ''}`}
               onClick={handleCreate}
               disabled={isCreating}
             >
-              {isCreating ? 'Creating...' : 'Create Agent'}
+              {isCreating ? (
+                <>
+                  <span className={styles.spinner}></span>
+                  Creating...
+                </>
+              ) : (
+                'Create Agent'
+              )}
             </button>
           ) : (
             <button
@@ -515,7 +568,7 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
               onClick={handleNext}
               disabled={!canProceed()}
             >
-              Next
+              Next →
             </button>
           )}
         </div>
