@@ -1411,5 +1411,15 @@
   opacity: 0.9;
 }
 
+/* Owner-Only Menu Item - Special styling for admin/owner features */
+.accountMenuItemOwner {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 217, 61, 0.1)) !important;
+  border-left: 2px solid #ffd93d;
+}
+
+.accountMenuItemOwner:hover {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 217, 61, 0.2)) !important;
+}
+
 
 

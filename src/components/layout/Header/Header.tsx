@@ -654,6 +654,17 @@ export const Header: React.FC<HeaderProps> = ({
                       </svg>
                       Profile
                     </button>
+                    {/* Owner-Only: ML Training Console - Only visible to admin role */}
+                    {sessionData?.role === 'admin' && (
+                      <button className={`${styles.accountMenuItem} ${styles.accountMenuItemOwner}`} onClick={() => { navigate('/owner/ml-training'); setShowAccountMenu(false); }}>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <path d="M8 2L2 5L8 8L14 5L8 2Z" />
+                          <path d="M2 8L8 11L14 8" />
+                          <path d="M2 11L8 14L14 11" />
+                        </svg>
+                        🔒 ML Training
+                      </button>
+                    )}
                     <div className={styles.accountMenuDivider} />
                     <button className={`${styles.accountMenuItem} ${styles.accountMenuItemDanger}`} onClick={handleLogout}>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">

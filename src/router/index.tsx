@@ -89,6 +89,9 @@ const EditTeamPage = lazy(() => import('../pages/AgentTeams/EditTeamPage'));
 const AutonomousAgentDashboard = lazy(() => import('../pages/Dashboards/AutonomousAgentDashboard'));
 const NotFoundPage = lazy(() => import('../pages/NotFound/NotFoundPage'));
 
+// Owner-Only ML Training Page
+const MLTrainingPage = lazy(() => import('../pages/Owner/MLTraining'));
+
 // DSID-P Protocol Dashboard Pages
 const ProtocolDashboard = lazy(() => import('../pages/Protocol/ProtocolDashboard'));
 const SemanticExplorer = lazy(() => import('../pages/Protocol/SemanticExplorer'));
@@ -219,6 +222,11 @@ const router = createBrowserRouter([
   {
     path: '/owner-login',
     element: <Navigate to="/login" replace />
+  },
+  // Owner-Only ML Training Console - PROTECTED: Platform owner only
+  {
+    path: '/owner/ml-training',
+    element: withOwnerAuth(<MLTrainingPage />)
   },
   {
     path: '/hash-sphere-test',

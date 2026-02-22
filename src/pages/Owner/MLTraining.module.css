@@ -1,0 +1,365 @@
+/* Owner-Only ML Training Page Styles */
+
+.container {
+  min-height: 100vh;
+  background: var(--bg-primary, #0a0a0f);
+  color: var(--text-primary, #ffffff);
+  padding: 2rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+  margin: 0;
+}
+
+.loading,
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  font-size: 1.1rem;
+}
+
+.error {
+  color: #ff6b6b;
+}
+
+.message {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.success {
+  background: rgba(46, 213, 115, 0.15);
+  border: 1px solid rgba(46, 213, 115, 0.3);
+  color: #2ed573;
+}
+
+.error {
+  background: rgba(255, 107, 107, 0.15);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  color: #ff6b6b;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary, #ffffff);
+}
+
+.tabActive {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 217, 61, 0.2));
+  color: #ffd93d;
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Overview Stats */
+.overview {
+  padding: 1rem 0;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+
+.statCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.statCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 217, 61, 0.3);
+}
+
+.statValue {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffd93d;
+  margin-bottom: 0.5rem;
+}
+
+.statLabel {
+  font-size: 0.85rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+/* Section Styles */
+.section {
+  padding: 1rem 0;
+}
+
+.section h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  color: var(--text-primary, #ffffff);
+}
+
+.section h3 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 1.5rem 0 1rem 0;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.8));
+}
+
+.warning {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  color: #ffc107;
+}
+
+/* Form Styles */
+.formGroup {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+  margin-bottom: 0.5rem;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text-primary, #ffffff);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: rgba(255, 217, 61, 0.5);
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.button,
+.buttonPrimary,
+.buttonDanger,
+.buttonSmallDanger {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.button {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary, #ffffff);
+}
+
+.button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.buttonPrimary {
+  background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+  color: #000;
+}
+
+.buttonPrimary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(255, 217, 61, 0.3);
+}
+
+.buttonDanger {
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.buttonDanger:hover:not(:disabled) {
+  background: rgba(255, 107, 107, 0.3);
+}
+
+.buttonSmallDanger {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff6b6b;
+}
+
+.buttonSmallDanger:hover:not(:disabled) {
+  background: rgba(255, 107, 107, 0.25);
+}
+
+.button:disabled,
+.buttonPrimary:disabled,
+.buttonDanger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Word Lists */
+.wordLists {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .wordLists {
+    grid-template-columns: 1fr;
+  }
+}
+
+.wordList {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.wordTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.wordTag,
+.wordTagForbidden {
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.wordTag {
+  background: rgba(46, 213, 115, 0.15);
+  color: #2ed573;
+}
+
+.wordTagForbidden {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff6b6b;
+}
+
+.wordMore {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.5));
+}
+
+/* Anchor List */
+.anchorList,
+.datasetList {
+  margin-top: 1.5rem;
+}
+
+.anchorCard,
+.datasetCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.anchorHash {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #ffd93d;
+  margin-bottom: 0.5rem;
+  word-break: break-all;
+}
+
+.anchorWords {
+  font-size: 0.9rem;
+  color: var(--text-primary, #ffffff);
+  margin-bottom: 0.5rem;
+}
+
+.anchorMeta {
+  font-size: 0.8rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.5));
+  margin-bottom: 0.75rem;
+}
+
+.datasetName {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-primary, #ffffff);
+  margin-bottom: 0.25rem;
+}
+
+.datasetMeta {
+  font-size: 0.85rem;
+  color: var(--text-secondary, rgba(255, 255, 255, 0.5));
+}
