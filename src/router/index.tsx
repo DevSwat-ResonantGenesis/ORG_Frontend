@@ -87,6 +87,7 @@ const AgentsPage = lazy(() => import('../pages/Agents/AgentOSv2'));
 const AgentDashboard = lazy(() => import('../pages/Agents/AgentOSv2'));
 const CreateTeamPage = lazy(() => import('../pages/AgentTeams/CreateTeamPage'));
 const EditTeamPage = lazy(() => import('../pages/AgentTeams/EditTeamPage'));
+const AutonomousAgentDashboard = lazy(() => import('../pages/Dashboards/AutonomousAgentDashboard'));
 const NotFoundPage = lazy(() => import('../pages/NotFound/NotFoundPage'));
 
 // DSID-P Protocol Dashboard Pages
@@ -117,6 +118,7 @@ const CommunityPage = lazy(() => import('../pages/Community/CommunityPage'));
 
 // Developer Tools Pages
 const HashSpherePage = lazy(() => import('../pages/HashSphere/HashSpherePage'));
+const HashSphereMemoryPage = lazy(() => import('../pages/HashSphereMemory/HashSphereMemoryPage'));
 const ResonantMemoryPage = lazy(() => import('../pages/ResonantMemory/ResonantMemoryPage'));
 const CodeVisualizerPage = lazy(() => import('../pages/CodeVisualizer/CodeVisualizerPage'));
 const StatePhysicsAPI = lazy(() => import('../pages/StatePhysicsAPI/StatePhysicsAPI'));
@@ -215,10 +217,10 @@ const router = createBrowserRouter([
     path: '/owner',
     element: <Navigate to="/owner-dashboard" replace />
   },
-  // Owner Login - Separate authentication for platform owner
+  // Owner Login - Redirect to regular login (now handles platform_owner role)
   {
     path: '/owner-login',
-    element: withPublicShell(<OwnerLoginPage />)
+    element: <Navigate to="/login" replace />
   },
   {
     path: '/hash-sphere-test',
@@ -300,6 +302,10 @@ const router = createBrowserRouter([
   {
     path: '/ml/worker',
     element: withShell(<RoleRoute category="ml_ops"><WorkerMonitorPage /></RoleRoute>)
+  },
+  {
+    path: '/autonomous-agents',
+    element: withShell(<AutonomousAgentDashboard />)
   },
   {
     path: '/finance/invoices',
