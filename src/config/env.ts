@@ -53,7 +53,7 @@ export const ENV: EnvironmentConfig = {
   agentEngineUrl: getRequiredEnv('AGENT_ENGINE_URL', 'VITE_AGENT_ENGINE_URL'),
   raraUrl: getRequiredEnv('RARA_URL', 'VITE_RARA_URL'),
   hashSphereUrl: getRequiredEnv('HASH_SPHERE_URL', 'VITE_HASH_SPHERE_URL'),
-  nodeApiUrl: getRequiredEnv('NODE_API_URL', 'VITE_NODE_API_URL', 'http://dev-swat.com:8081'),
+  nodeApiUrl: getRequiredEnv('NODE_API_URL', 'VITE_NODE_API_URL', '/api/v1/node'),
 };
 
 // Log configuration on startup (non-sensitive info only)
