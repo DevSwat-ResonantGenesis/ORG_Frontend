@@ -5,7 +5,7 @@
  * These components provide full administrative control over users, agents, billing,
  * settings, security, and system operations.
  * 
- * Total: 68 components, ~73,000 lines of TypeScript/React code
+ * Total: 70 components, ~75,000 lines of TypeScript/React code
  */
 
 // Core Dashboard
@@ -103,3 +103,7 @@ export { OnboardingFlowManager } from '../OnboardingFlowManager';
 export { LocalizationManager } from '../LocalizationManager';
 export { AnnouncementManager } from '../AnnouncementManager';
 export { SupportTicketManager } from '../SupportTicketManager';
+
+// Licensing & System Health
+export { LicenseManager } from '../LicenseManager';
+export { SystemHealthDashboard } from '../SystemHealthDashboard';
