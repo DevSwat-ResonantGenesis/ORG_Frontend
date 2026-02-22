@@ -111,7 +111,154 @@ For programmatic access:
 - [Learn about Roles & Permissions](/help/getting-started/roles-permissions)
 - [Run Your First Prediction](/help/getting-started/first-prediction)
   `,
-  // Add more article content as needed
+  'creating-agents': `
+# Creating AI Agents
+
+Learn how to create, configure, and deploy AI agents in ResonantGenesis Agent Studio.
+
+## What Are Agents?
+
+Agents are autonomous AI entities that can perform tasks, make decisions, and interact with other systems. In ResonantGenesis, agents are:
+- **Governed**: Every action is traced and auditable
+- **Secure**: Built-in trust verification and compliance
+- **Scalable**: Deploy across your organization
+
+## Creating Your First Agent
+
+### Step 1: Open Agent Studio
+Navigate to Agent Studio from the main menu or go to \`/agents\`.
+
+### Step 2: Click "Create Agent"
+You'll see options for:
+- **Blank Agent**: Start from scratch
+- **Template**: Use a pre-built template
+- **Import**: Import an existing agent configuration
+
+### Step 3: Configure Agent Settings
+
+#### Basic Settings
+- **Name**: A descriptive name for your agent
+- **Description**: What the agent does
+- **Category**: Classification for organization
+
+#### Capabilities
+- **Tools**: What tools the agent can use
+- **Permissions**: What actions it can perform
+- **Limits**: Rate limits and resource constraints
+
+### Step 4: Define Agent Behavior
+Use the visual workflow builder or code editor to define:
+- Input processing
+- Decision logic
+- Output formatting
+- Error handling
+
+### Step 5: Test Your Agent
+Use the built-in testing environment to:
+- Run test cases
+- Verify outputs
+- Check compliance
+
+### Step 6: Deploy
+Once tested, deploy your agent to production with:
+- Staging deployment for final verification
+- Production deployment with monitoring
+- Rollback capability if issues arise
+
+## Best Practices
+
+- **Start Simple**: Begin with basic functionality and iterate
+- **Test Thoroughly**: Use comprehensive test cases
+- **Monitor Performance**: Watch metrics after deployment
+- **Document Behavior**: Keep agent documentation updated
+
+## Next Steps
+
+- [Agent Templates](/help/agents/agent-templates)
+- [Agent Monitoring](/help/agents/monitoring)
+- [Team Collaboration](/help/agents/teams)
+  `,
+  'best-practices': `
+# Security Best Practices
+
+Essential security guidelines for using ResonantGenesis safely and effectively.
+
+## Authentication & Access
+
+### Strong Passwords
+- Use passwords with at least 12 characters
+- Include uppercase, lowercase, numbers, and symbols
+- Never reuse passwords across services
+- Consider using a password manager
+
+### API Key Security
+- **Never commit API keys to version control**
+- Store keys in environment variables or secure vaults
+- Rotate keys regularly (every 90 days recommended)
+- Use separate keys for development and production
+- Revoke unused keys immediately
+
+### Multi-Factor Authentication
+- Enable MFA for all user accounts
+- Use authenticator apps over SMS when possible
+- Keep backup codes in a secure location
+
+## Data Protection
+
+### Encryption
+- All data is encrypted in transit (TLS 1.3)
+- Data at rest is encrypted with AES-256
+- Use client-side encryption for sensitive payloads
+
+### Data Minimization
+- Only send data that is necessary
+- Avoid including PII in prediction requests
+- Use data masking for sensitive fields
+
+### Audit Logging
+- All actions are logged with timestamps
+- Logs are immutable and tamper-evident
+- Regular log reviews are recommended
+
+## Network Security
+
+### IP Allowlisting
+- Restrict API access to known IP ranges
+- Use VPN for administrative access
+- Monitor for unauthorized access attempts
+
+### Rate Limiting
+- Implement client-side rate limiting
+- Handle rate limit responses gracefully
+- Use exponential backoff for retries
+
+## Compliance
+
+### Regular Audits
+- Review access permissions quarterly
+- Audit API key usage monthly
+- Check compliance reports weekly
+
+### Incident Response
+- Have an incident response plan ready
+- Know how to revoke access quickly
+- Document and report security incidents
+
+## Security Checklist
+
+- [ ] MFA enabled for all users
+- [ ] API keys stored securely
+- [ ] IP allowlisting configured
+- [ ] Regular key rotation scheduled
+- [ ] Audit logs reviewed regularly
+- [ ] Incident response plan documented
+
+## Next Steps
+
+- [API Security Guide](/help/security/api-security)
+- [Compliance Overview](/help/security/compliance)
+- [Contact Security Team](/contact)
+  `,
 };
 
 const HelpArticlePage = () => {
