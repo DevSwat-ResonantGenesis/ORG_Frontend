@@ -218,10 +218,10 @@ const router = createBrowserRouter([
     path: '/owner',
     element: <Navigate to="/owner-dashboard" replace />
   },
-  // Owner Login - Redirect to regular login (now handles platform_owner role)
+  // Owner Login - Separate login page for platform owner
   {
     path: '/owner-login',
-    element: <Navigate to="/login" replace />
+    element: withPublicShell(<OwnerLoginPage />)
   },
   // Owner-Only ML Training Console - PROTECTED: Platform owner only
   {
