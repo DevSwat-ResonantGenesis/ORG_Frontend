@@ -49,7 +49,6 @@ const FeatureFlagsPage = lazy(() => import('../pages/Admin/FeatureFlagsPage'));
 const ProfilePage = lazy(() => import('../pages/Profile/ProfilePage'));
 const HelpCenterPage = lazy(() => import('../pages/Help/HelpCenterPage'));
 const HelpArticlePage = lazy(() => import('../pages/Help/HelpArticlePage'));
-const AboutPage = lazy(() => import('../pages/Public/AboutPage-2025'));
 const ContactPage = lazy(() => import('../pages/Public/ContactPageSimple'));
 // Legal pages removed - not needed for MVP
 const ValidationToolPage = lazy(() => import('../pages/Public/ValidationToolPageFull'));
@@ -359,8 +358,6 @@ const router = createBrowserRouter([
     element: withPublicShell(<CommunityPage />)
   },
   {
-    path: '/about',
-    element: withPublicShell(<AboutPage />)
   },
   {
     path: '/contact',
