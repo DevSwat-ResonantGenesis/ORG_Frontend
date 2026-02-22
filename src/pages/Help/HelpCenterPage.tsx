@@ -1,7 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../components/ui';
-import { SearchIcon } from '../../components/Icons/DashboardIcons';
+import { 
+  SearchIcon, 
+  PlayIcon, 
+  ChartIcon, 
+  UsersIcon, 
+  BotIcon, 
+  SettingsIcon, 
+  KeyIcon,
+  FileTextIcon 
+} from '../../components/Icons/DashboardIcons';
 import { goToContact } from '../../utils/navigation';
 
 import styles from './HelpCenterPage.module.css';
@@ -13,7 +22,45 @@ interface Article {
   category: string;
   path: string;
   tags?: string[];
+  readingTime?: number;
 }
+
+interface FAQ {
+  question: string;
+  answer: string;
+}
+
+const categoryIcons: Record<string, React.ReactNode> = {
+  'Getting Started': <PlayIcon size={20} />,
+  'Using the Platform': <ChartIcon size={20} />,
+  'Organization Management': <UsersIcon size={20} />,
+  'ML Engineer Guide': <BotIcon size={20} />,
+  'Platform Administrator Guide': <SettingsIcon size={20} />,
+  'Developers': <KeyIcon size={20} />,
+};
+
+const faqs: FAQ[] = [
+  {
+    question: 'How do I get started with ResonantGenesis?',
+    answer: 'Create an account, set up your organization, and follow our Quick Start guide to submit your first prediction. The onboarding wizard will guide you through the initial setup.'
+  },
+  {
+    question: 'What blockchain networks does ResonantGenesis support?',
+    answer: 'ResonantGenesis currently supports Ethereum mainnet and Base L2. Agent identities are registered on-chain with full transparency and auditability.'
+  },
+  {
+    question: 'How do I connect my AI agents to the platform?',
+    answer: 'Use our SDK (Python or JavaScript) or REST API to connect your agents. Each agent receives a unique blockchain identity for tracking and governance.'
+  },
+  {
+    question: 'Is my data secure on ResonantGenesis?',
+    answer: 'Yes. We use enterprise-grade encryption, isolated multi-tenant architecture, and are SOC2 aligned. All agent actions are logged immutably on-chain.'
+  },
+  {
+    question: 'How do I contact support?',
+    answer: 'Use the Contact Support button in the sidebar, or email support@resonantgenesis.xyz. Enterprise customers have access to dedicated support channels.'
+  }
+];
 
 const articles: Article[] = [
   // Getting Started
@@ -23,7 +70,8 @@ const articles: Article[] = [
     description: 'Overview of ResonantGenesis\'s governance platform, prediction tracing, evidence graphs, and policy enforcement.',
     category: 'Getting Started',
     path: '/help/getting-started/what-is-resonantgraph',
-    tags: ['overview', 'introduction']
+    tags: ['overview', 'introduction'],
+    readingTime: 5
   },
   {
     id: '2',
@@ -31,7 +79,8 @@ const articles: Article[] = [
     description: 'Create an account, set up an organization, invite users, and configure access.',
     category: 'Getting Started',
     path: '/help/getting-started/account-creation',
-    tags: ['signup', 'onboarding']
+    tags: ['signup', 'onboarding'],
+    readingTime: 3
   },
   {
     id: '3',
@@ -39,7 +88,8 @@ const articles: Article[] = [
     description: 'User roles, permissions, and access levels for Org Admin, Compliance, Finance, ML Engineer, and Platform Dev.',
     category: 'Getting Started',
     path: '/help/getting-started/roles-permissions',
-    tags: ['roles', 'permissions', 'rbac']
+    tags: ['roles', 'permissions', 'rbac'],
+    readingTime: 4
   },
   {
     id: '4',
@@ -47,7 +97,8 @@ const articles: Article[] = [
     description: 'Submit your first AI prediction, review outputs, validate compliance, and analyze results.',
     category: 'Getting Started',
     path: '/help/getting-started/first-prediction',
-    tags: ['tutorial', 'quickstart']
+    tags: ['tutorial', 'quickstart'],
+    readingTime: 6
   },
   // Using the Platform
   {
@@ -244,8 +295,31 @@ const HelpCenterPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const categories = Array.from(new Set(articles.map(a => a.category)));
+
+  // Keyboard shortcut for search (Cmd/Ctrl + K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+      if (e.key === 'Escape') {
+        searchInputRef.current?.blur();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const toggleFaq = (index: number) => {
+    setExpandedFaq(expandedFaq === index ? null : index);
+  };
+
+  const suggestedSearches = ['getting started', 'API', 'blockchain', 'agents', 'compliance'];
 
   const filteredArticles = articles.filter(article => {
     const matchesSearch = searchQuery === '' || 
@@ -283,12 +357,14 @@ const HelpCenterPage: React.FC = () => {
               <div className={styles.searchInputWrapper}>
                 <SearchIcon size={20} />
                 <input
+                  ref={searchInputRef}
                   type="text"
-                  placeholder="Search help articles..."
+                  placeholder="Search help articles... (⌘K)"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className={styles.searchInput}
                 />
+                <span className={styles.searchShortcut}>⌘K</span>
               </div>
             </div>
 
@@ -306,6 +382,7 @@ const HelpCenterPage: React.FC = () => {
                   className={`${styles.categoryFilter} ${selectedCategory === category ? styles.active : ''}`}
                   onClick={() => setSelectedCategory(category)}
                 >
+                  <span className={styles.categoryIcon}>{categoryIcons[category]}</span>
                   {category}
                 </button>
               ))}
@@ -324,13 +401,20 @@ const HelpCenterPage: React.FC = () => {
                     >
                       <h3>{article.title}</h3>
                       <p>{article.description}</p>
-                      {article.tags && article.tags.length > 0 && (
-                        <div className={styles.articleTags}>
-                          {article.tags.map(tag => (
-                            <span key={tag} className={styles.articleTag}>{tag}</span>
-                          ))}
-                        </div>
-                      )}
+                      <div className={styles.articleMeta}>
+                        {article.readingTime && (
+                          <span className={styles.readingTime}>
+                            <FileTextIcon size={14} /> {article.readingTime} min read
+                          </span>
+                        )}
+                        {article.tags && article.tags.length > 0 && (
+                          <div className={styles.articleTags}>
+                            {article.tags.map(tag => (
+                              <span key={tag} className={styles.articleTag}>{tag}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -339,12 +423,54 @@ const HelpCenterPage: React.FC = () => {
 
             {filteredArticles.length === 0 && (
               <div className={styles.noResults}>
-                <p>No articles found matching your search.</p>
+                <SearchIcon size={48} className={styles.noResultsIcon} />
+                <h3>No articles found</h3>
+                <p>We couldn't find any articles matching "{searchQuery}"</p>
+                <div className={styles.suggestedSearches}>
+                  <span>Try searching for:</span>
+                  <div className={styles.suggestionTags}>
+                    {suggestedSearches.map(term => (
+                      <button
+                        key={term}
+                        className={styles.suggestionTag}
+                        onClick={() => setSearchQuery(term)}
+                      >
+                        {term}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <Button variant="secondary" onClick={() => { setSearchQuery(''); setSelectedCategory(null); }}>
                   Clear Filters
                 </Button>
               </div>
             )}
+
+            {/* FAQ Section */}
+            <section className={styles.faqSection}>
+              <h2>Frequently Asked Questions</h2>
+              <div className={styles.faqList}>
+                {faqs.map((faq, index) => (
+                  <div 
+                    key={index} 
+                    className={`${styles.faqItem} ${expandedFaq === index ? styles.expanded : ''}`}
+                  >
+                    <button 
+                      className={styles.faqQuestion}
+                      onClick={() => toggleFaq(index)}
+                    >
+                      <span>{faq.question}</span>
+                      <span className={styles.faqToggle}>{expandedFaq === index ? '−' : '+'}</span>
+                    </button>
+                    {expandedFaq === index && (
+                      <div className={styles.faqAnswer}>
+                        <p>{faq.answer}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
           </div>
 
           <div className={styles.contentSidebar}>
