@@ -491,15 +491,15 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Resources Dropdown */}
             <div className={styles.navItem}>
               <button 
-                className={`${styles.navButton} ${activeDropdown === 'resources' ? styles.navButtonActive : ''}`}
-                onClick={() => setActiveDropdown(activeDropdown === 'resources' ? null : 'resources')}
+                className={`${styles.navButton} ${false ? styles.navButtonActive : ''}`}
+                onClick={() => setActiveDropdown(false ? null : 'resources')}
               >
                 Resources
                 <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              {activeDropdown === 'resources' && (
+              {false && (
                 <div className={styles.navDropdown}>
                   <div className={styles.navDropdownGridWide}>
                     <div className={styles.navDropdownColumn}>
