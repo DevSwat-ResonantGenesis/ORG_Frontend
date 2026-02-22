@@ -205,6 +205,7 @@ const OwnerDashboard: React.FC = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [userSearch, setUserSearch] = useState('');
 
   const [serviceHealth, setServiceHealth] = useState<ServiceHealth[]>([
     { name: 'Gateway', status: 'healthy', latency: 45, uptime: '99.99%', lastCheck: 'Just now' },
@@ -444,6 +445,80 @@ const OwnerDashboard: React.FC = () => {
     }
   };
 
+  const handleBlockUser = async (userId: string, userEmail: string, isCurrentlyBlocked: boolean) => {
+    const token = localStorage.getItem('owner_token');
+    if (!token) {
+      navigate('/owner-login');
+      return;
+    }
+
+    const action = isCurrentlyBlocked ? 'unblock' : 'block';
+    if (!confirm(`Are you sure you want to ${action} ${userEmail}?`)) {
+      return;
+    }
+
+    try {
+      const endpoint = isCurrentlyBlocked ? 'unblock-user' : 'block-user';
+      const response = await fetch(`${API_BASE}/owner/auth/admin/${endpoint}/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(data.message);
+        // Refresh users list
+        handleRefresh();
+      } else {
+        const error = await response.json();
+        alert(`Failed to ${action} user: ${error.detail || 'Unknown error'}`);
+      }
+    } catch (err: any) {
+      console.error(`Failed to ${action} user:`, err);
+      alert(`Failed to ${action} user: ${err.message}`);
+    }
+  };
+
+  const handleDeleteUser = async (userId: string, userEmail: string) => {
+    const token = localStorage.getItem('owner_token');
+    if (!token) {
+      navigate('/owner-login');
+      return;
+    }
+
+    if (!confirm(`⚠️ DANGER: Are you sure you want to PERMANENTLY DELETE ${userEmail}? This cannot be undone!`)) {
+      return;
+    }
+
+    if (!confirm(`⚠️ FINAL WARNING: Type 'DELETE' to confirm permanent deletion of ${userEmail}`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/owner/auth/admin/delete-user/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(data.message);
+        // Refresh users list
+        handleRefresh();
+      } else {
+        const error = await response.json();
+        alert(`Failed to delete user: ${error.detail || 'Unknown error'}`);
+      }
+    } catch (err: any) {
+      console.error('Failed to delete user:', err);
+      alert(`Failed to delete user: ${err.message}`);
+    }
+  };
+
   const getBadgeClass = (plan: string) => {
     const map: Record<string, string> = {
       developer: styles.badgeDeveloper,
@@ -639,12 +714,43 @@ const OwnerDashboard: React.FC = () => {
     </>
   );
 
-  const renderUsers = () => (
+  const renderUsers = () => {
+    const filteredUsers = users.filter(user => {
+      if (!userSearch) return true;
+      const search = userSearch.toLowerCase();
+      return (
+        user.email.toLowerCase().includes(search) ||
+        (user.name || '').toLowerCase().includes(search) ||
+        ((user as any).username || '').toLowerCase().includes(search)
+      );
+    });
+
+    return (
     <div className={styles.section}>
       <div className={styles.sectionHeader}>
         <h2 className={styles.sectionTitle}><UsersIcon /> All Users ({users.length} total)</h2>
       </div>
       <div className={styles.card}>
+        <div style={{ marginBottom: '16px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <input
+            type="text"
+            placeholder="Search by email, name, or username..."
+            value={userSearch}
+            onChange={(e) => setUserSearch(e.target.value)}
+            style={{
+              flex: 1,
+              padding: '10px 14px',
+              background: '#0f172a',
+              border: '1px solid #334155',
+              borderRadius: '8px',
+              color: '#e2e8f0',
+              fontSize: '14px',
+            }}
+          />
+          <span style={{ color: '#64748b', fontSize: '13px' }}>
+            Showing {filteredUsers.length} of {users.length} users
+          </span>
+        </div>
         <div className={styles.tableWrapper} style={{ maxHeight: '600px', overflowY: 'auto' }}>
           <table className={styles.table}>
             <thead style={{ position: 'sticky', top: 0, background: '#1e293b', zIndex: 10 }}>
@@ -661,7 +767,7 @@ const OwnerDashboard: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {users.map(user => (
+              {filteredUsers.map(user => (
                 <tr key={user.id}>
                   <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>{user.email}</td>
                   <td>{(user as any).username || '-'}</td>
@@ -691,20 +797,50 @@ const OwnerDashboard: React.FC = () => {
                   </td>
                   <td style={{ fontSize: '11px', color: '#94a3b8' }}>{user.signupDate}</td>
                   <td>
-                    <button
-                      onClick={() => handleResetPassword(user.id, user.email)}
-                      style={{
-                        padding: '4px 8px',
-                        fontSize: '11px',
-                        background: '#3b82f6',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      Reset Password
-                    </button>
+                    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                      <button
+                        onClick={() => handleResetPassword(user.id, user.email)}
+                        style={{
+                          padding: '4px 8px',
+                          fontSize: '10px',
+                          background: '#3b82f6',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Reset PW
+                      </button>
+                      <button
+                        onClick={() => handleBlockUser(user.id, user.email, user.status === 'blocked')}
+                        style={{
+                          padding: '4px 8px',
+                          fontSize: '10px',
+                          background: user.status === 'blocked' ? '#10b981' : '#f59e0b',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {user.status === 'blocked' ? 'Unblock' : 'Block'}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteUser(user.id, user.email)}
+                        style={{
+                          padding: '4px 8px',
+                          fontSize: '10px',
+                          background: '#ef4444',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -714,6 +850,7 @@ const OwnerDashboard: React.FC = () => {
       </div>
     </div>
   );
+  };
 
   const renderRevenue = () => (
     <>
