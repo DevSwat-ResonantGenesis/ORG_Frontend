@@ -277,13 +277,17 @@ const OwnerDashboard: React.FC = () => {
           id: u.id,
           name: u.full_name || u.email.split('@')[0],
           email: u.email,
+          username: u.username || '',
           plan: 'developer' as const,
-          status: u.is_active ? 'active' as const : 'inactive' as const,
+          status: (u.status || (u.is_active ? 'active' : 'inactive')) as 'active' | 'inactive' | 'warning',
           creditsUsed: 0,
           creditsTotal: 1000,
           revenue: 0,
-          lastActive: 'N/A',
+          lastActive: u.last_login_at || 'Never',
           signupDate: u.created_at ? u.created_at.split('T')[0] : 'N/A',
+          mfaEnabled: u.mfa_enabled || false,
+          emailVerified: u.email_verified || false,
+          lastLoginAt: u.last_login_at ? u.last_login_at.split('T')[0] : null,
         }));
         setUsers(mappedUsers);
       }
@@ -605,20 +609,54 @@ const OwnerDashboard: React.FC = () => {
 
   const renderUsers = () => (
     <div className={styles.section}>
-      <div className={styles.sectionHeader}><h2 className={styles.sectionTitle}><UsersIcon /> All Users</h2></div>
+      <div className={styles.sectionHeader}>
+        <h2 className={styles.sectionTitle}><UsersIcon /> All Users ({users.length} total)</h2>
+      </div>
       <div className={styles.card}>
-        <div className={styles.tableWrapper}>
+        <div className={styles.tableWrapper} style={{ maxHeight: '600px', overflowY: 'auto' }}>
           <table className={styles.table}>
-            <thead><tr><th>User</th><th>Plan</th><th>Credits</th><th>Revenue</th><th>Status</th><th>Signup</th></tr></thead>
+            <thead style={{ position: 'sticky', top: 0, background: '#1e293b', zIndex: 10 }}>
+              <tr>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Full Name</th>
+                <th>Status</th>
+                <th>MFA</th>
+                <th>Email Verified</th>
+                <th>Last Login</th>
+                <th>Signup Date</th>
+              </tr>
+            </thead>
             <tbody>
               {users.map(user => (
                 <tr key={user.id}>
-                  <td><div className={styles.userCell}><div className={styles.userAvatar}>{user.name.charAt(0).toUpperCase()}</div><div><div className={styles.userName}>{user.name}</div><div className={styles.userEmail}>{user.email}</div></div></div></td>
-                  <td><span className={`${styles.badge} ${getBadgeClass(user.plan)}`}>{user.plan}</span></td>
-                  <td>{user.creditsUsed} / {user.creditsTotal}</td>
-                  <td>${user.revenue}/mo</td>
-                  <td><span className={`${styles.statusDot} ${getStatusClass(user.status)}`} />{user.status}</td>
-                  <td>{user.signupDate}</td>
+                  <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>{user.email}</td>
+                  <td>{(user as any).username || '-'}</td>
+                  <td>{user.name || '-'}</td>
+                  <td>
+                    <span className={`${styles.statusDot} ${getStatusClass(user.status)}`} />
+                    {user.status}
+                  </td>
+                  <td>
+                    <span style={{ 
+                      color: (user as any).mfaEnabled ? '#10b981' : '#64748b',
+                      fontWeight: (user as any).mfaEnabled ? 'bold' : 'normal'
+                    }}>
+                      {(user as any).mfaEnabled ? '✓ Yes' : 'No'}
+                    </span>
+                  </td>
+                  <td>
+                    <span style={{ 
+                      color: (user as any).emailVerified ? '#10b981' : '#f59e0b',
+                      fontWeight: (user as any).emailVerified ? 'bold' : 'normal'
+                    }}>
+                      {(user as any).emailVerified ? '✓ Yes' : 'Pending'}
+                    </span>
+                  </td>
+                  <td style={{ fontSize: '11px', color: '#94a3b8' }}>
+                    {(user as any).lastLoginAt || 'Never'}
+                  </td>
+                  <td style={{ fontSize: '11px', color: '#94a3b8' }}>{user.signupDate}</td>
                 </tr>
               ))}
             </tbody>
