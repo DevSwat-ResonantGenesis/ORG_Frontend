@@ -72,7 +72,7 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
     name: 'Auto',
     icon: <AutoIcon />,
     available: true,
-    description: 'Loading providers...',
+    description: 'Smart routing - automatically selects best provider',
   }]);
   const [loading, setLoading] = useState(true);
   const [wsConnected, setWsConnected] = useState(false);
