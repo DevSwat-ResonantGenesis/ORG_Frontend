@@ -638,23 +638,14 @@ export const Header: React.FC<HeaderProps> = ({
                       </div>
                     </div>
                     <div className={styles.accountMenuDivider} />
-                    <button className={styles.accountMenuItem} onClick={() => { 
-                      // Redirect to owner dashboard for platform owners/superusers
-                      const role = String(sessionData?.role || '');
-                      const isOwner = role === 'platform_owner' || role === 'owner' || (sessionData as any)?.is_superuser;
-                      navigate(isOwner ? '/owner-dashboard' : '/dashboard'); 
-                      setShowAccountMenu(false); 
-                    }}>
+                    <button className={styles.accountMenuItem} onClick={() => { navigate('/dashboard'); setShowAccountMenu(false); }}>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <rect x="2" y="2" width="5" height="5" rx="1" />
                         <rect x="9" y="2" width="5" height="5" rx="1" />
                         <rect x="2" y="9" width="5" height="5" rx="1" />
                         <rect x="9" y="9" width="5" height="5" rx="1" />
                       </svg>
-                      {(() => {
-                        const role = String(sessionData?.role || '');
-                        return role === 'platform_owner' || role === 'owner' || (sessionData as any)?.is_superuser ? 'Owner Dashboard' : 'Dashboard';
-                      })()}
+                      Dashboard
                     </button>
                     <button className={styles.accountMenuItem} onClick={() => { navigate('/profile'); setShowAccountMenu(false); }}>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -663,32 +654,6 @@ export const Header: React.FC<HeaderProps> = ({
                       </svg>
                       Profile
                     </button>
-                    {/* Owner-Only: ML Training Console - Only visible to admin role */}
-                    {sessionData?.role === 'admin' && (
-                      <button className={`${styles.accountMenuItem} ${styles.accountMenuItemOwner}`} onClick={() => { navigate('/owner/ml-training'); setShowAccountMenu(false); }}>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                          <path d="M8 2L2 5L8 8L14 5L8 2Z" />
-                          <path d="M2 8L8 11L14 8" />
-                          <path d="M2 11L8 14L14 11" />
-                        </svg>
-                        🔒 ML Training
-                      </button>
-                    )}
-                    {/* Owner-Only: V8 HashSphere - Only visible to platform owners */}
-                    {(() => {
-                      const role = String(sessionData?.role || '');
-                      const isOwner = role === 'platform_owner' || role === 'owner' || (sessionData as any)?.is_superuser;
-                      return isOwner ? (
-                        <button className={`${styles.accountMenuItem} ${styles.accountMenuItemOwner}`} onClick={() => { navigate('/v8'); setShowAccountMenu(false); }}>
-                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <circle cx="8" cy="8" r="6" />
-                            <path d="M8 4V8L10.5 10.5" />
-                            <circle cx="8" cy="8" r="2" />
-                          </svg>
-                          🔒 V8 HashSphere
-                        </button>
-                      ) : null;
-                    })()}
                     <div className={styles.accountMenuDivider} />
                     <button className={`${styles.accountMenuItem} ${styles.accountMenuItemDanger}`} onClick={handleLogout}>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
