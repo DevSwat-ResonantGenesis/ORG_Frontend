@@ -165,10 +165,9 @@ const withPlanRestriction = (node: React.ReactNode, requiredPlan: 'free' | 'plus
 };
 
 // Owner-protected routes - uses separate owner token authentication
+// Note: No MainLayout wrapper - owner dashboard has its own header
 const withOwnerAuth = (node: React.ReactNode) => (
-  <MainLayout>
-    <OwnerProtectedRoute>{node}</OwnerProtectedRoute>
-  </MainLayout>
+  <OwnerProtectedRoute>{node}</OwnerProtectedRoute>
 );
 
 const router = createBrowserRouter([
