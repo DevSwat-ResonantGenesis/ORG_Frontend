@@ -17,6 +17,7 @@ const UserDashboard = lazy(() => import('../pages/Dashboards/NewUserDashboard'))
 const PlusDashboard = lazy(() => import('../pages/Dashboards/PlusDashboard'));
 const EnterpriseDashboard = lazy(() => import('../pages/Dashboards/EnterpriseDashboard'));
 const OwnerDashboard = lazy(() => import('../pages/Dashboards/OwnerDashboard'));
+const V8Page = lazy(() => import('../pages/V8/V8Page'));
 const PredictionsPage = lazy(() =>
   import('../pages/Predictions/PredictionsPage-2025')
 );
@@ -227,6 +228,11 @@ const router = createBrowserRouter([
   {
     path: '/owner/ml-training',
     element: withOwnerAuth(<MLTrainingPage />)
+  },
+  // V8 HashSphere - Owner only with platform header
+  {
+    path: '/v8',
+    element: withOwnerAuth(<V8Page />)
   },
   {
     path: '/hash-sphere-test',
