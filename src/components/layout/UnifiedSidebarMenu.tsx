@@ -318,9 +318,9 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
 
           <div className={styles.usmDivider} />
 
-          {/* Control Plane Section - Operator Console */}
+          {/* Control Center Section - Operator Console */}
           <div className={styles.usmSection}>
-            <div className={styles.usmSectionTitle}>Control Plane</div>
+            <div className={styles.usmSectionTitle}>Control Center</div>
             
             <button
               className={`${styles.usmItem} ${location.pathname === '/control-plane' ? styles.usmActive : ''}`}
@@ -589,10 +589,37 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
 
           <div className={styles.usmDivider} />
 
-          {/* Company Section */}
+          {/* Resources Section */}
           <div className={styles.usmSection}>
-            <div className={styles.usmSectionTitle}>Company</div>
+            <div className={styles.usmSectionTitle}>Resources</div>
             
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/help' || location.pathname.startsWith('/help/') ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/help'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <circle cx="8" cy="8" r="6" />
+                  <path d="M6 6C6 5 7 4 8 4C9 4 10 5 10 6C10 7 9 7.5 8 8V9" strokeLinecap="round" />
+                  <circle cx="8" cy="11" r="0.5" fill="currentColor" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>Help Center</span>
+              {(location.pathname === '/help' || location.pathname.startsWith('/help/')) && <span className={styles.usmActiveIndicator} />}
+            </button>
+
+            <button
+              className={styles.usmItem}
+              onClick={() => { window.open('https://github.com/louienemesh/ResonantGenesis', '_blank'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M8 1C4.13 1 1 4.13 1 8C1 11.09 3.01 13.71 5.78 14.67C6.13 14.73 6.25 14.52 6.25 14.34V13.03C4.29 13.47 3.88 12.15 3.88 12.15C3.56 11.37 3.1 11.16 3.1 11.16C2.47 10.73 3.15 10.74 3.15 10.74C3.85 10.79 4.22 11.46 4.22 11.46C4.84 12.54 5.87 12.22 6.27 12.05C6.33 11.6 6.51 11.28 6.71 11.1C5.15 10.91 3.51 10.31 3.51 7.55C3.51 6.81 3.78 6.21 4.23 5.73C4.16 5.54 3.93 4.85 4.29 3.92C4.29 3.92 4.87 3.72 6.24 4.59C6.79 4.43 7.4 4.35 8 4.35C8.6 4.35 9.21 4.43 9.76 4.59C11.13 3.72 11.71 3.92 11.71 3.92C12.07 4.85 11.84 5.54 11.77 5.73C12.22 6.21 12.49 6.81 12.49 7.55C12.49 10.32 10.84 10.91 9.28 11.09C9.53 11.31 9.75 11.74 9.75 12.4V14.34C9.75 14.52 9.87 14.74 10.23 14.67C12.99 13.71 15 11.09 15 8C15 4.13 11.87 1 8 1Z" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>GitHub</span>
+            </button>
+
             <button
               className={styles.usmItem}
               onClick={() => { goToContact(navigate, onClose); }}
