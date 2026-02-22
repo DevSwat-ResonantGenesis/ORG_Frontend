@@ -412,6 +412,38 @@ const OwnerDashboard: React.FC = () => {
     }
   };
 
+  const handleResetPassword = async (userId: string, userEmail: string) => {
+    const token = localStorage.getItem('owner_token');
+    if (!token) {
+      navigate('/owner-login');
+      return;
+    }
+
+    if (!confirm(`Send password reset email to ${userEmail}?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/owner/auth/admin/reset-password/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`Password reset email sent to ${data.user_email}`);
+      } else {
+        const error = await response.json();
+        alert(`Failed to send reset email: ${error.detail || 'Unknown error'}`);
+      }
+    } catch (err: any) {
+      console.error('Failed to send reset email:', err);
+      alert(`Failed to send reset email: ${err.message}`);
+    }
+  };
+
   const getBadgeClass = (plan: string) => {
     const map: Record<string, string> = {
       developer: styles.badgeDeveloper,
@@ -625,6 +657,7 @@ const OwnerDashboard: React.FC = () => {
                 <th>Email Verified</th>
                 <th>Last Login</th>
                 <th>Signup Date</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -657,6 +690,22 @@ const OwnerDashboard: React.FC = () => {
                     {(user as any).lastLoginAt || 'Never'}
                   </td>
                   <td style={{ fontSize: '11px', color: '#94a3b8' }}>{user.signupDate}</td>
+                  <td>
+                    <button
+                      onClick={() => handleResetPassword(user.id, user.email)}
+                      style={{
+                        padding: '4px 8px',
+                        fontSize: '11px',
+                        background: '#3b82f6',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Reset Password
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
