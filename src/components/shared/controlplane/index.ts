@@ -5,7 +5,7 @@
  * These components provide full administrative control over users, agents, billing,
  * settings, security, and system operations.
  * 
- * Total: 35 components, ~25,000 lines of TypeScript/React code
+ * Total: 40 components, ~30,000 lines of TypeScript/React code
  */
 
 // Core Dashboard
@@ -32,6 +32,7 @@ export { RateLimitConfig } from '../RateLimitConfig';
 export { BillingManagement } from '../BillingManagement';
 export { TierManagement } from '../TierManagement';
 export { QuotaManagement } from '../QuotaManagement';
+export { CostAnalytics } from '../CostAnalytics';
 
 // Analytics & Monitoring
 export { AnalyticsDashboard } from '../AnalyticsDashboard';
@@ -41,6 +42,8 @@ export { ServiceStatus } from '../ServiceStatus';
 export { DatabaseMonitor } from '../DatabaseMonitor';
 export { NetworkMonitor } from '../NetworkMonitor';
 export { AuditTrail } from '../AuditTrail';
+export { UsageMetrics } from '../UsageMetrics';
+export { SLAMonitor } from '../SLAMonitor';
 
 // Operations
 export { NotificationCenter } from '../NotificationCenter';
@@ -50,11 +53,15 @@ export { CacheManagement } from '../CacheManagement';
 export { QueueManagement } from '../QueueManagement';
 export { ScheduledTasks } from '../ScheduledTasks';
 export { StorageManagement } from '../StorageManagement';
+export { IncidentManagement } from '../IncidentManagement';
 
 // Data & Reports
 export { EmailTemplates } from '../EmailTemplates';
 export { ReportGenerator } from '../ReportGenerator';
 export { DataExport } from '../DataExport';
+
+// Compliance & Security
+export { ComplianceCenter } from '../ComplianceCenter';
 
 // Documentation
 export { ApiDocumentation } from '../ApiDocumentation';
