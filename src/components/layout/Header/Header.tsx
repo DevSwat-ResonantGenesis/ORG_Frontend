@@ -674,6 +674,21 @@ export const Header: React.FC<HeaderProps> = ({
                         🔒 ML Training
                       </button>
                     )}
+                    {/* Owner-Only: V8 HashSphere - Only visible to platform owners */}
+                    {(() => {
+                      const role = String(sessionData?.role || '');
+                      const isOwner = role === 'platform_owner' || role === 'owner' || (sessionData as any)?.is_superuser;
+                      return isOwner ? (
+                        <button className={`${styles.accountMenuItem} ${styles.accountMenuItemOwner}`} onClick={() => { navigate('/v8'); setShowAccountMenu(false); }}>
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <circle cx="8" cy="8" r="6" />
+                            <path d="M8 4V8L10.5 10.5" />
+                            <circle cx="8" cy="8" r="2" />
+                          </svg>
+                          🔒 V8 HashSphere
+                        </button>
+                      ) : null;
+                    })()}
                     <div className={styles.accountMenuDivider} />
                     <button className={`${styles.accountMenuItem} ${styles.accountMenuItemDanger}`} onClick={handleLogout}>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
