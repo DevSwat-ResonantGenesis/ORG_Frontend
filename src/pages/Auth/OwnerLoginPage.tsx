@@ -215,6 +215,7 @@ const OwnerLoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    alert('Login button clicked! Check console for details.');
     console.log('🔐 Owner login form submitted');
     setError('');
 
