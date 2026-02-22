@@ -48,6 +48,24 @@ interface MemoryAnchor {
   anchor_type: string;
   resonance_score: number;
   created_at: string;
+  // Full Hash Sphere fields
+  cluster_name?: string;
+  meaning_hash?: string;
+  energy_hash?: string;
+  spin_hash?: string;
+  universe_id?: string;
+  sphere_r?: number;
+  sphere_phi?: number;
+  sphere_theta?: number;
+  normalized_resonance?: number;
+  anchor_energy?: number;
+  spin_x?: number;
+  spin_y?: number;
+  spin_z?: number;
+  spin_magnitude?: number;
+  meaning_score?: number;
+  intensity_score?: number;
+  sentiment_score?: number;
 }
 
 interface ResonanceCluster {
@@ -121,6 +139,13 @@ const ResonantMemoryPage: React.FC = () => {
   const [hoveredAnchor, setHoveredAnchor] = useState<MemoryAnchor | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const [autoRotate, setAutoRotate] = useState(false);
+  
+  // Hash Sphere advanced visualization state
+  const [showSpinVectors, setShowSpinVectors] = useState(false);
+  const [showClusterRegions, setShowClusterRegions] = useState(false);
+  const [showAnchorEnergy, setShowAnchorEnergy] = useState(false);
+  const [colorMode, setColorMode] = useState<'type' | 'meaning' | 'intensity' | 'sentiment'>('type');
+  const [showHyperspherical, setShowHyperspherical] = useState(false);
 
   // Filter anchors based on search and filters
   const filteredAnchors = useMemo(() => {
@@ -309,6 +334,24 @@ const ResonantMemoryPage: React.FC = () => {
                 anchor_type: anchor.anchor_type ?? 'chat',
                 resonance_score: toFiniteNumber(anchor.resonance_score, 0.5),
                 created_at: anchor.created_at ?? new Date().toISOString(),
+                // Full Hash Sphere fields
+                cluster_name: anchor.cluster_name,
+                meaning_hash: anchor.meaning_hash,
+                energy_hash: anchor.energy_hash,
+                spin_hash: anchor.spin_hash,
+                universe_id: anchor.universe_id,
+                sphere_r: toFiniteNumber(anchor.sphere_r, 1.0),
+                sphere_phi: toFiniteNumber(anchor.sphere_phi, 0),
+                sphere_theta: toFiniteNumber(anchor.sphere_theta, 0),
+                normalized_resonance: toFiniteNumber(anchor.normalized_resonance, 0.5),
+                anchor_energy: toFiniteNumber(anchor.anchor_energy, 0),
+                spin_x: toFiniteNumber(anchor.spin_x, 0),
+                spin_y: toFiniteNumber(anchor.spin_y, 0),
+                spin_z: toFiniteNumber(anchor.spin_z, 0),
+                spin_magnitude: toFiniteNumber(anchor.spin_magnitude, 0),
+                meaning_score: toFiniteNumber(anchor.meaning_score, 0),
+                intensity_score: toFiniteNumber(anchor.intensity_score, 0),
+                sentiment_score: toFiniteNumber(anchor.sentiment_score, 0.5),
               };
             });
           }
