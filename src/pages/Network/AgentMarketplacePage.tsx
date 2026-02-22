@@ -394,6 +394,54 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '4rem 2rem',
     color: '#666',
   },
+  skeletonCard: {
+    background: 'rgba(255,255,255,0.03)',
+    border: '1px solid rgba(255,255,255,0.1)',
+    borderRadius: '12px',
+    padding: '1.25rem',
+    animation: 'pulse 1.5s ease-in-out infinite',
+  },
+  skeletonLine: {
+    background: 'linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 100%)',
+    borderRadius: '4px',
+    animation: 'shimmer 1.5s ease-in-out infinite',
+  },
+  skeletonTitle: {
+    height: '20px',
+    width: '60%',
+    marginBottom: '8px',
+  },
+  skeletonText: {
+    height: '14px',
+    width: '40%',
+    marginBottom: '12px',
+  },
+  skeletonDescription: {
+    height: '40px',
+    width: '100%',
+    marginBottom: '12px',
+  },
+  skeletonTag: {
+    height: '24px',
+    width: '80px',
+    marginBottom: '12px',
+  },
+  skeletonFooter: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: '12px',
+    borderTop: '1px solid rgba(255,255,255,0.05)',
+  },
+  skeletonStats: {
+    height: '16px',
+    width: '100px',
+  },
+  skeletonButton: {
+    height: '32px',
+    width: '70px',
+    borderRadius: '6px',
+  },
 };
 
 type SortOption = 'newest' | 'popular' | 'rating' | 'name';
@@ -723,7 +771,25 @@ export default function AgentMarketplacePage() {
           </div>
 
           {loading ? (
-            <div style={styles.emptyState}>Loading agents...</div>
+            <div style={styles.agentGrid}>
+              {[1, 2, 3, 4, 5, 6].map(i => (
+                <div key={i} style={styles.skeletonCard}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <div>
+                      <div style={{ ...styles.skeletonLine, ...styles.skeletonTitle }} />
+                      <div style={{ ...styles.skeletonLine, ...styles.skeletonText }} />
+                    </div>
+                    <div style={{ ...styles.skeletonLine, height: '24px', width: '50px', borderRadius: '4px' }} />
+                  </div>
+                  <div style={{ ...styles.skeletonLine, ...styles.skeletonDescription }} />
+                  <div style={{ ...styles.skeletonLine, ...styles.skeletonTag }} />
+                  <div style={styles.skeletonFooter}>
+                    <div style={{ ...styles.skeletonLine, ...styles.skeletonStats }} />
+                    <div style={{ ...styles.skeletonLine, ...styles.skeletonButton }} />
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : filteredAgents.length === 0 ? (
             <div style={styles.emptyState}>
               <p style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>No agents found</p>
