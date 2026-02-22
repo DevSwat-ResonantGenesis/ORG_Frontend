@@ -445,6 +445,25 @@ const HelpCenterPage: React.FC = () => {
                 </Button>
               </div>
             )}
+            {/* API Reference Section */}
+            <section className={styles.contentSection}>
+              <h2>API Reference & Developer Resources</h2>
+              <div className={styles.articleGrid}>
+                <div className={styles.articleCard} onClick={() => navigate("/help/developers/api-reference")}>
+                  <h3>REST API Documentation</h3>
+                  <p>Complete API reference for integrating with ResonantGenesis platform.</p>
+                </div>
+                <div className={styles.articleCard} onClick={() => window.open("https://github.com/louienemesh/ResonantGenesis", "_blank")}>
+                  <h3>GitHub Repository</h3>
+                  <p>Explore our open-source codebase and join the community.</p>
+                </div>
+                <div className={styles.articleCard} onClick={() => goToContact(navigate)}>
+                  <h3>Contact Support</h3>
+                  <p>Get help from our support team via email or contact form.</p>
+                </div>
+              </div>
+            </section>
+
 
             {/* FAQ Section */}
             <section className={styles.faqSection}>

@@ -118,7 +118,6 @@ const CommunityPage = lazy(() => import('../pages/Community/CommunityPage'));
 
 // Developer Tools Pages
 const HashSpherePage = lazy(() => import('../pages/HashSphere/HashSpherePage'));
-const HashSphereMemoryPage = lazy(() => import('../pages/HashSphereMemory/HashSphereMemoryPage'));
 const ResonantMemoryPage = lazy(() => import('../pages/ResonantMemory/ResonantMemoryPage'));
 const CodeVisualizerPage = lazy(() => import('../pages/CodeVisualizer/CodeVisualizerPage'));
 const StatePhysicsAPI = lazy(() => import('../pages/StatePhysicsAPI/StatePhysicsAPI'));
