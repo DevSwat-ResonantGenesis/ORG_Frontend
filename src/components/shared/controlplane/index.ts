@@ -5,7 +5,7 @@
  * These components provide full administrative control over users, agents, billing,
  * settings, security, and system operations.
  * 
- * Total: 54 components, ~50,000 lines of TypeScript/React code
+ * Total: 58 components, ~55,000 lines of TypeScript/React code
  */
 
 // Core Dashboard
@@ -81,3 +81,9 @@ export { VectorStoreManager } from '../VectorStoreManager';
 // Documentation & Testing
 export { ApiDocumentation } from '../ApiDocumentation';
 export { APIPlayground } from '../APIPlayground';
+
+// Extensibility & Customization
+export { PluginMarketplace } from '../PluginMarketplace';
+export { CustomDashboardBuilder } from '../CustomDashboardBuilder';
+export { AlertRulesManager } from '../AlertRulesManager';
+export { DataPipelineManager } from '../DataPipelineManager';
