@@ -215,16 +215,23 @@ const OwnerLoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🔐 Owner login form submitted');
     setError('');
 
     if (!email || !password) {
+      console.log('❌ Validation failed: missing email or password');
       setError('Please enter both email and password');
       return;
     }
 
+    console.log('📧 Email:', email);
+    console.log('🌐 API_BASE:', API_BASE);
+    console.log('🔗 Login URL:', `${API_BASE}/owner/auth/login`);
+    
     setLoading(true);
 
     try {
+      console.log('📡 Sending login request...');
       const response = await fetch(`${API_BASE}/owner/auth/login`, {
         method: 'POST',
         headers: {
@@ -233,21 +240,28 @@ const OwnerLoginPage: React.FC = () => {
         body: JSON.stringify({ email, password }),
       });
 
+      console.log('📥 Response status:', response.status);
+      console.log('📥 Response ok:', response.ok);
+
       if (!response.ok) {
         const data = await response.json();
+        console.log('❌ Login failed:', data);
         throw new Error(data.detail || 'Authentication failed');
       }
 
       const data = await response.json();
+      console.log('✅ Login successful!', { token_type: data.token_type, expires_in: data.expires_in });
 
       // SECURITY FIX: Tokens are now HttpOnly cookies (set by backend)
       // No longer storing tokens in localStorage (XSS vulnerability)
       // Store email for UI purposes only
       localStorage.setItem('owner_email', email);
 
+      console.log('🔄 Redirecting to /owner-dashboard...');
       // Redirect to owner dashboard
       navigate('/owner-dashboard');
     } catch (err: any) {
+      console.error('❌ Login error:', err);
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
