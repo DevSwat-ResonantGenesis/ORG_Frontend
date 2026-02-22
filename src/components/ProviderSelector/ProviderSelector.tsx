@@ -8,6 +8,8 @@ import {
   ChevronDownIcon,
   CheckmarkIcon
 } from '@/components/Icons/ProviderIcons';
+import { fetchLiveProviders, formatLatency, type LiveProvider } from '@/api/providers';
+import { logger } from '@/utils/logger';
 import styles from './ProviderSelector.module.css';
 
 export interface LLMProvider {
@@ -16,45 +18,41 @@ export interface LLMProvider {
   icon: React.ReactNode;
   available: boolean;
   description: string;
+  capabilities?: string[];
+  latency?: number;
+  model?: string;
+  has_user_key?: boolean;
+  uses_credits?: boolean;
 }
 
-const providers: LLMProvider[] = [
-  {
-    id: 'auto',
-    name: 'Auto Recommended',
-    icon: <AutoIcon />,
-    available: true,
-    description: 'System selects best provider',
-  },
-  {
-    id: 'openai',
-    name: 'ChatGPT',
-    icon: <ChatGPTIcon />,
-    available: false,
-    description: 'Best for coding and technical queries',
-  },
-  {
-    id: 'gemini',
-    name: 'Gemini',
-    icon: <GeminiIcon />,
-    available: false,
-    description: 'Best for analysis and memory integration',
-  },
-  {
-    id: 'claude',
-    name: 'Claude',
-    icon: <ClaudeIcon />,
-    available: false,
-    description: 'Best for creative writing and reasoning',
-  },
-  {
-    id: 'mistral',
-    name: 'Mistral',
-    icon: <MistralIcon />,
-    available: false,
-    description: 'Best for multilingual and general tasks',
-  },
-];
+const getProviderIcon = (providerId: string): React.ReactNode => {
+  const iconMap: Record<string, React.ReactNode> = {
+    'auto': <AutoIcon />,
+    'openai': <ChatGPTIcon />,
+    'chatgpt': <ChatGPTIcon />,
+    'gemini': <GeminiIcon />,
+    'google': <GeminiIcon />,
+    'anthropic': <ClaudeIcon />,
+    'claude': <ClaudeIcon />,
+    'groq': <MistralIcon />,
+    'mistral': <MistralIcon />
+  };
+  return iconMap[providerId.toLowerCase()] || <AutoIcon />;
+};
+
+const getCapabilityLabel = (capability: string): string => {
+  const labels: Record<string, string> = {
+    'chat': '💬 Chat',
+    'coding': '💻 Coding',
+    'vision': '👁️ Vision',
+    'image': '🎨 Images',
+    'music': '🎵 Music',
+    'video': '🎬 Video',
+    'reasoning': '🧠 Reasoning',
+    'creative': '✨ Creative'
+  };
+  return labels[capability] || capability;
+};
 
 interface ProviderSelectorProps {
   selectedProvider: string;
@@ -68,7 +66,60 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
   autoReason,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [providers, setProviders] = useState<LLMProvider[]>([{
+    id: 'auto',
+    name: 'Auto',
+    icon: <AutoIcon />,
+    available: true,
+    description: 'Loading providers...',
+  }]);
+  const [loading, setLoading] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Fetch live provider data on mount
+  useEffect(() => {
+    const loadProviders = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchLiveProviders();
+        
+        const liveProviders: LLMProvider[] = [
+          {
+            id: 'auto',
+            name: 'Auto',
+            icon: <AutoIcon />,
+            available: true,
+            description: 'Smart routing - automatically selects best provider',
+          },
+          ...data.providers.map((p: LiveProvider) => ({
+            id: p.id,
+            name: p.name,
+            icon: getProviderIcon(p.id),
+            available: p.available,
+            description: p.description,
+            capabilities: p.capabilities,
+            latency: p.latency,
+            model: p.model,
+            has_user_key: p.has_user_key,
+            uses_credits: p.uses_credits,
+          }))
+        ];
+        
+        setProviders(liveProviders);
+        logger.info('Loaded live providers:', liveProviders.length);
+      } catch (error) {
+        logger.error('Failed to load providers:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProviders();
+    
+    // Refresh provider data every 30 seconds
+    const interval = setInterval(loadProviders, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -132,20 +183,45 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
                   <div className={styles.providerOptionContent}>
                     <div className={styles.providerOptionName}>
                       {provider.name}
+                      {provider.latency && (
+                        <span className={styles.latency}>
+                          {formatLatency(provider.latency)}
+                        </span>
+                      )}
                     </div>
                     {provider.description && (
                       <div className={styles.providerOptionDescription}>
                         {provider.description}
                       </div>
                     )}
+                    {provider.capabilities && provider.capabilities.length > 0 && (
+                      <div className={styles.capabilities}>
+                        {provider.capabilities.slice(0, 3).map(cap => (
+                          <span key={cap} className={styles.capability}>
+                            {getCapabilityLabel(cap)}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {provider.model && (
+                      <div className={styles.model}>
+                        {provider.model}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className={styles.providerOptionRight}>
+                  {provider.has_user_key && (
+                    <span className={styles.badge} title="Using your API key">🔑</span>
+                  )}
+                  {provider.uses_credits && (
+                    <span className={styles.badge} title="Using platform credits">💳</span>
+                  )}
                   {isSelected && (
                     <CheckmarkIcon className={styles.checkmark} />
                   )}
                   {!isAvailable && (
-                    <span className={styles.comingSoon}>COMING SOON</span>
+                    <span className={styles.comingSoon}>UNAVAILABLE</span>
                   )}
                 </div>
               </button>
@@ -158,4 +234,3 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
 };
 
 export default ProviderSelector;
-export { providers };
