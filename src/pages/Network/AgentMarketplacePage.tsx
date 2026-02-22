@@ -183,7 +183,14 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '12px',
     padding: '1.25rem',
     cursor: 'pointer',
-    transition: 'all 0.2s',
+    transition: 'all 0.2s ease',
+    position: 'relative' as const,
+  },
+  agentCardHover: {
+    background: 'rgba(255,255,255,0.06)',
+    borderColor: 'rgba(99,102,241,0.3)',
+    transform: 'translateY(-2px)',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
   },
   agentHeader: {
     display: 'flex',
@@ -412,6 +419,7 @@ export default function AgentMarketplacePage() {
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [showSortDropdown, setShowSortDropdown] = useState(false);
+  const [hoveredAgent, setHoveredAgent] = useState<string | null>(null);
 
   // Redirect to signup if not logged in
   useEffect(() => {
@@ -728,8 +736,13 @@ export default function AgentMarketplacePage() {
               {filteredAgents.map(agent => (
                 <div
                   key={agent.manifest_hash}
-                  style={styles.agentCard}
+                  style={{
+                    ...styles.agentCard,
+                    ...(hoveredAgent === agent.manifest_hash ? styles.agentCardHover : {}),
+                  }}
                   onClick={() => setSelectedAgent(agent)}
+                  onMouseEnter={() => setHoveredAgent(agent.manifest_hash)}
+                  onMouseLeave={() => setHoveredAgent(null)}
                 >
                   <div style={styles.agentHeader}>
                     <div>
@@ -747,9 +760,17 @@ export default function AgentMarketplacePage() {
                   </div>
                   <div style={styles.agentFooter}>
                     <div style={styles.agentStats}>
-                      <div style={styles.statItem}>
+                      <div style={styles.statItem} title="Executions">
                         <Play size={12} />
-                        {agent.execution_count}
+                        {agent.execution_count || 0}
+                      </div>
+                      <div style={styles.statItem} title="Rating">
+                        <Star size={12} />
+                        {agent.rating?.toFixed(1) || '—'}
+                      </div>
+                      <div style={styles.statItem} title="Trust Tier">
+                        <Shield size={12} />
+                        T{agent.trust_tier}
                       </div>
                     </div>
                     <button
