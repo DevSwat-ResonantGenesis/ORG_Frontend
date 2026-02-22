@@ -228,16 +228,22 @@ export default function LoginPageNew() {
       });
       
       saveSessionData(email.trim(), data.role, data.org_id, data.user?.id);
-      try {
-        sessionStorage.setItem(
-          'rg-post-login-target',
-          JSON.stringify({ path: '/resonant-chat', ts: Date.now(), remaining: 5 })
-        );
-        document.cookie = `rg_post_login_target=${encodeURIComponent('/resonant-chat')}; Max-Age=60; Path=/`;
-      } catch {
-        // ignore
+      
+      // Platform owners go to owner dashboard, regular users to resonant-chat
+      if (data.role === 'platform_owner') {
+        navigate('/owner/dashboard');
+      } else {
+        try {
+          sessionStorage.setItem(
+            'rg-post-login-target',
+            JSON.stringify({ path: '/resonant-chat', ts: Date.now(), remaining: 5 })
+          );
+          document.cookie = `rg_post_login_target=${encodeURIComponent('/resonant-chat')}; Max-Age=60; Path=/`;
+        } catch {
+          // ignore
+        }
+        goToResonantChat(navigate);
       }
-      goToResonantChat(navigate);
     } catch (err: any) {
       let message = 'Unable to sign in. Please check your credentials.';
       if (err?.response?.status === 401) {
