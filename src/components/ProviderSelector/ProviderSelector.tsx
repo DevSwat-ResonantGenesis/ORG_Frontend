@@ -238,31 +238,7 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
                   <div className={styles.providerOptionContent}>
                     <div className={styles.providerOptionName}>
                       {provider.name}
-                      {provider.latency && (
-                        <span className={styles.latency}>
-                          {formatLatency(provider.latency)}
-                        </span>
-                      )}
                     </div>
-                    {provider.description && (
-                      <div className={styles.providerOptionDescription}>
-                        {provider.description}
-                      </div>
-                    )}
-                    {provider.capabilities && provider.capabilities.length > 0 && (
-                      <div className={styles.capabilities}>
-                        {provider.capabilities.slice(0, 3).map(cap => (
-                          <span key={cap} className={styles.capability}>
-                            {getCapabilityLabel(cap)}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    {provider.model && (
-                      <div className={styles.model}>
-                        {provider.model}
-                      </div>
-                    )}
                   </div>
                 </div>
                 <div className={styles.providerOptionRight}>
