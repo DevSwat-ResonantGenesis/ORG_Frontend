@@ -239,6 +239,11 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
                     <div className={styles.providerOptionName}>
                       {provider.name}
                     </div>
+                    {provider.model && (
+                      <div className={styles.providerOptionModel}>
+                        {provider.model}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className={styles.providerOptionRight}>
