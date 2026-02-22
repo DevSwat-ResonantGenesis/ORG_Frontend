@@ -488,13 +488,13 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            {/* Resources Dropdown */}
+            {/* Help Center Dropdown */}
             <div className={styles.navItem}>
               <button 
                 className={`${styles.navButton} ${false ? styles.navButtonActive : ''}`}
                 onClick={() => setActiveDropdown(false ? null : 'resources')}
               >
-                Resources
+                Help Center
                 <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
