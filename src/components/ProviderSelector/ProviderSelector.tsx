@@ -10,6 +10,7 @@ import {
 } from '@/components/Icons/ProviderIcons';
 import { fetchLiveProviders, formatLatency, type LiveProvider } from '@/api/providers';
 import { logger } from '@/utils/logger';
+import { ENV } from '@/config/env';
 import styles from './ProviderSelector.module.css';
 
 export interface LLMProvider {
@@ -74,51 +75,102 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
     description: 'Loading providers...',
   }]);
   const [loading, setLoading] = useState(true);
+  const [wsConnected, setWsConnected] = useState(false);
+  const wsRef = useRef<WebSocket | null>(null);
+  const reconnectTimeoutRef = useRef<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Fetch live provider data on mount
+  // WebSocket connection for LIVE provider status updates
   useEffect(() => {
-    const loadProviders = async () => {
+    const connectWebSocket = () => {
       try {
-        setLoading(true);
-        const data = await fetchLiveProviders();
+        // Get WebSocket URL from environment
+        const wsUrl = ENV.wsUrl || 'wss://resonantgenesis.xyz';
+        const wsEndpoint = `${wsUrl}/ws/provider-status`;
         
-        const liveProviders: LLMProvider[] = [
-          {
-            id: 'auto',
-            name: 'Auto',
-            icon: <AutoIcon />,
-            available: true,
-            description: 'Smart routing - automatically selects best provider',
-          },
-          ...data.providers.map((p: LiveProvider) => ({
-            id: p.id,
-            name: p.name,
-            icon: getProviderIcon(p.id),
-            available: p.available,
-            description: p.description,
-            capabilities: p.capabilities,
-            latency: p.latency,
-            model: p.model,
-            has_user_key: p.has_user_key,
-            uses_credits: p.uses_credits,
-          }))
-        ];
+        logger.info('Connecting to provider status WebSocket:', wsEndpoint);
         
-        setProviders(liveProviders);
-        logger.info('Loaded live providers:', liveProviders.length);
+        const ws = new WebSocket(wsEndpoint);
+        wsRef.current = ws;
+        
+        ws.onopen = () => {
+          logger.info('✅ Provider status WebSocket connected');
+          setWsConnected(true);
+          setLoading(false);
+        };
+        
+        ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            
+            if (data.type === 'provider_status') {
+              // Update providers with live data
+              const liveProviders: LLMProvider[] = [
+                {
+                  id: 'auto',
+                  name: 'Auto',
+                  icon: <AutoIcon />,
+                  available: true,
+                  description: 'Smart routing - automatically selects best provider',
+                },
+                ...data.providers.map((p: any) => ({
+                  id: p.id,
+                  name: p.name,
+                  icon: getProviderIcon(p.id),
+                  available: p.available,
+                  description: `${p.model} - ${p.status}`,
+                  capabilities: p.capabilities,
+                  latency: p.latency,
+                  model: p.model,
+                  has_user_key: false,
+                  uses_credits: p.available,
+                }))
+              ];
+              
+              setProviders(liveProviders);
+              logger.info('🔄 Live provider status updated:', data.providers.length);
+            } else if (data.type === 'keepalive' || data.type === 'pong') {
+              // Connection is alive
+            }
+          } catch (error) {
+            logger.error('Failed to parse WebSocket message:', error);
+          }
+        };
+        
+        ws.onerror = (error) => {
+          logger.error('Provider status WebSocket error:', error);
+          setWsConnected(false);
+        };
+        
+        ws.onclose = () => {
+          logger.warn('Provider status WebSocket closed, reconnecting in 5s...');
+          setWsConnected(false);
+          wsRef.current = null;
+          
+          // Reconnect after 5 seconds
+          reconnectTimeoutRef.current = setTimeout(() => {
+            connectWebSocket();
+          }, 5000);
+        };
       } catch (error) {
-        logger.error('Failed to load providers:', error);
-      } finally {
+        logger.error('Failed to connect WebSocket:', error);
         setLoading(false);
       }
     };
-
-    loadProviders();
     
-    // Refresh provider data every 30 seconds
-    const interval = setInterval(loadProviders, 30000);
-    return () => clearInterval(interval);
+    // Initial connection
+    connectWebSocket();
+    
+    // Cleanup on unmount
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
+    };
   }, []);
 
   // Close dropdown when clicking outside
@@ -158,7 +210,10 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
       >
         <ChevronDownIcon className={styles.chevronIcon} />
         <span className={styles.providerIcon}>{selectedProviderData.icon}</span>
-        <span className={styles.providerName}>{selectedProviderData.name}</span>
+        <span className={styles.providerName}>
+          {selectedProviderData.name}
+          {wsConnected && <span className={styles.liveIndicator} title="Live updates">●</span>}
+        </span>
       </button>
 
       {showDropdown && (

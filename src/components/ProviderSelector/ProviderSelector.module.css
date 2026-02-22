@@ -291,6 +291,23 @@
   opacity: 0.8;
 }
 
+.liveIndicator {
+  display: inline-block;
+  margin-left: 6px;
+  color: #10b981;
+  font-size: 8px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .providerButton {
