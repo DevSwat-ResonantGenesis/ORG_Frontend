@@ -488,7 +488,44 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            {/* Enterprise Link */}
+            {/* Resources Dropdown */}
+            <div className={styles.navItem}>
+              <button 
+                className={`${styles.navButton} ${activeDropdown === 'resources' ? styles.navButtonActive : ''}`}
+                onClick={() => setActiveDropdown(activeDropdown === 'resources' ? null : 'resources')}
+              >
+                Resources
+                <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              {activeDropdown === 'resources' && (
+                <div className={styles.navDropdown}>
+                  <div className={styles.navDropdownGrid}>
+                    <div className={styles.navDropdownColumn}>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/help'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Help Center</span>
+                        <span className={styles.navDropdownItemDesc}>Documentation & guides</span>
+                      </button>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/help/developers/api-reference'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>API Reference</span>
+                        <span className={styles.navDropdownItemDesc}>Technical documentation</span>
+                      </button>
+                    </div>
+                    <div className={styles.navDropdownColumn}>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/help/getting-started/first-prediction'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Tutorials</span>
+                        <span className={styles.navDropdownItemDesc}>Step-by-step guides</span>
+                      </button>
+                      <button className={styles.navDropdownItem} onClick={() => { window.open('https://github.com/louienemesh/ResonantGenesis', '_blank'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>GitHub</span>
+                        <span className={styles.navDropdownItemDesc}>Open source & community</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Pricing Link */}
             <button 
