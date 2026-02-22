@@ -5,7 +5,7 @@
  * These components provide full administrative control over users, agents, billing,
  * settings, security, and system operations.
  * 
- * Total: 60 components, ~60,000 lines of TypeScript/React code
+ * Total: 63 components, ~65,000 lines of TypeScript/React code
  */
 
 // Core Dashboard
@@ -91,3 +91,8 @@ export { DataPipelineManager } from '../DataPipelineManager';
 // Authentication & Security
 export { AccessTokenManager } from '../AccessTokenManager';
 export { SSOConfiguration } from '../SSOConfiguration';
+
+// Geographic & Content
+export { GeoLocationManager } from '../GeoLocationManager';
+export { ContentModerationDashboard } from '../ContentModerationDashboard';
+export { ABTestingManager } from '../ABTestingManager';
