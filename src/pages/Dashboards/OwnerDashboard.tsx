@@ -169,7 +169,7 @@ const defaultAgents: RARAAgent[] = [
   { id: '3', name: 'DeployBot-Prime', type: 'Deployment', status: 'idle', tasksCompleted: 0, uptime: '98.5%', cpu: 0, memory: 0, lastTask: 'Waiting...' },
 ];
 
-type TabType = 'overview' | 'users' | 'revenue' | 'agents' | 'monitoring' | 'settings' | 'state-physics';
+type TabType = 'overview' | 'users' | 'revenue' | 'agents' | 'monitoring' | 'settings' | 'state-physics' | 'system';
 
 interface ServiceHealth {
   name: string;
@@ -1063,6 +1063,140 @@ const OwnerDashboard: React.FC = () => {
     </>
   );
 
+  const renderSystemControl = () => (
+    <>
+      <div className={styles.statsGrid}>
+        <div className={styles.statCard}>
+          <div className={styles.statHeader}>
+            <div className={`${styles.statIcon} ${styles.statIconGreen}`}><ServerIcon /></div>
+          </div>
+          <div className={styles.statValue}>12</div>
+          <div className={styles.statLabel}>Active Services</div>
+        </div>
+        <div className={styles.statCard}>
+          <div className={styles.statHeader}>
+            <div className={`${styles.statIcon} ${styles.statIconBlue}`}><DatabaseIcon /></div>
+          </div>
+          <div className={styles.statValue}>3</div>
+          <div className={styles.statLabel}>Database Nodes</div>
+        </div>
+        <div className={styles.statCard}>
+          <div className={styles.statHeader}>
+            <div className={`${styles.statIcon} ${styles.statIconPurple}`}><CpuIcon /></div>
+          </div>
+          <div className={styles.statValue}>24%</div>
+          <div className={styles.statLabel}>CPU Usage</div>
+        </div>
+        <div className={styles.statCard}>
+          <div className={styles.statHeader}>
+            <div className={`${styles.statIcon} ${styles.statIconOrange}`}><ActivityIcon /></div>
+          </div>
+          <div className={styles.statValue}>4.2GB</div>
+          <div className={styles.statLabel}>Memory Used</div>
+        </div>
+      </div>
+
+      <div className={styles.cardsGrid}>
+        <div className={styles.card}>
+          <h3 className={styles.cardTitle}><ServerIcon /> Service Health (Owner Only)</h3>
+          <div className={styles.revenueBreakdown}>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Gateway Service</span>
+              <span style={{ color: '#10b981' }}>Healthy - 12ms</span>
+            </div>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Auth Service</span>
+              <span style={{ color: '#10b981' }}>Healthy - 8ms</span>
+            </div>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Chat Service</span>
+              <span style={{ color: '#10b981' }}>Healthy - 15ms</span>
+            </div>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Billing Service</span>
+              <span style={{ color: '#10b981' }}>Healthy - 10ms</span>
+            </div>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />V8 API Service</span>
+              <span style={{ color: '#10b981' }}>Healthy - 22ms</span>
+            </div>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#f59e0b' }} />ML Service</span>
+              <span style={{ color: '#f59e0b' }}>Degraded - 145ms</span>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.card}>
+          <h3 className={styles.cardTitle}><DatabaseIcon /> Database Control (Owner Only)</h3>
+          <div className={styles.settingsForm}>
+            <div className={styles.revenueBreakdown}>
+              <div className={styles.revenueItem}>
+                <span className={styles.revenueItemLabel}>PostgreSQL Primary</span>
+                <span style={{ color: '#10b981' }}>Connected</span>
+              </div>
+              <div className={styles.revenueItem}>
+                <span className={styles.revenueItemLabel}>Redis Cache</span>
+                <span style={{ color: '#10b981' }}>Connected</span>
+              </div>
+              <div className={styles.revenueItem}>
+                <span className={styles.revenueItemLabel}>Connection Pool</span>
+                <span>42/100 active</span>
+              </div>
+            </div>
+            <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
+              <button className={styles.saveBtn} style={{ background: '#f59e0b' }}>Clear Cache</button>
+              <button className={styles.saveBtn} style={{ background: '#6366f1' }}>Run Migrations</button>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.card}>
+          <h3 className={styles.cardTitle}><CpuIcon /> Deployment Control (Owner Only)</h3>
+          <div className={styles.revenueBreakdown}>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}>Current Deployment</span>
+              <span style={{ fontFamily: 'monospace', fontSize: '11px' }}>green</span>
+            </div>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}>Last Deploy</span>
+              <span style={{ fontSize: '11px' }}>2 hours ago</span>
+            </div>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}>Git Commit</span>
+              <span style={{ fontFamily: 'monospace', fontSize: '11px' }}>b914dc4</span>
+            </div>
+          </div>
+          <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
+            <button className={styles.saveBtn} style={{ background: '#10b981' }}>Deploy Latest</button>
+            <button className={styles.saveBtn} style={{ background: '#ef4444' }}>Rollback</button>
+          </div>
+        </div>
+
+        <div className={styles.card}>
+          <h3 className={styles.cardTitle}><SettingsIcon /> Platform Source Access (Owner Only)</h3>
+          <div className={styles.revenueBreakdown}>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}>Frontend Repo</span>
+              <span style={{ fontFamily: 'monospace', fontSize: '10px' }}>genesis2026_frontend</span>
+            </div>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}>Backend Repo</span>
+              <span style={{ fontFamily: 'monospace', fontSize: '10px' }}>genesis2026_backend</span>
+            </div>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}>Access Level</span>
+              <span style={{ color: '#8b5cf6', fontWeight: 'bold' }}>OWNER FULL ACCESS</span>
+            </div>
+          </div>
+          <div style={{ marginTop: '12px', padding: '12px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '8px', fontSize: '12px', color: '#a78bfa' }}>
+            🔒 This control plane is isolated from regular users. Only platform owners can access source code, deployments, and system controls.
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
   const renderSettings = () => (
     <div className={styles.cardsGrid}>
       <div className={styles.card}>
@@ -1136,8 +1270,10 @@ const OwnerDashboard: React.FC = () => {
           <button className={`${styles.navTab} ${activeTab === 'revenue' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('revenue')}>Revenue</button>
           <button className={`${styles.navTab} ${activeTab === 'agents' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('agents')}>RARA Agents</button>
           <button className={`${styles.navTab} ${activeTab === 'monitoring' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('monitoring')}>Monitoring</button>
+          <button className={`${styles.navTab} ${activeTab === 'system' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('system')}>🔧 System Control</button>
           <button className={`${styles.navTab} ${activeTab === 'settings' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('settings')}>Settings</button>
           <button className={`${styles.navTab} ${activeTab === 'state-physics' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('state-physics')}>🌌 State Physics</button>
+          <button className={styles.navTab} onClick={() => window.location.href = '/v8/'}>🔮 V8 HashSphere</button>
         </nav>
 
         {activeTab === 'overview' && renderOverview()}
@@ -1145,6 +1281,7 @@ const OwnerDashboard: React.FC = () => {
         {activeTab === 'revenue' && renderRevenue()}
         {activeTab === 'agents' && renderAgents()}
         {activeTab === 'monitoring' && renderMonitoring()}
+        {activeTab === 'system' && renderSystemControl()}
         {activeTab === 'settings' && renderSettings()}
         {activeTab === 'state-physics' && renderStatePhysics()}
       </div>
