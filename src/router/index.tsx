@@ -495,6 +495,10 @@ const router = createBrowserRouter([
     element: withShell(<AgentBrowserPage />)
   },
   {
+    path: "/network/node",
+    element: withShell(<AgentMarketplacePage />)
+  },
+  {
     path: '/network/publish',
     element: withShell(<AgentPublishPage />)
   },
