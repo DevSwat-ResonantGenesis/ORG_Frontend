@@ -406,6 +406,19 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
+            {/* Resonant Private - Superusers only */}
+            {sessionData?.is_superuser && (
+              <div className={styles.navItem}>
+                <button 
+                  className={styles.navButton}
+                  onClick={() => navigate('/resonant-genesis-private')}
+                  style={{ color: '#f59e0b' }}
+                >
+                  ⭐ Genesis Private
+                </button>
+              </div>
+            )}
+
             {/* Developer Tools Dropdown */}
             <div className={styles.navItem}>
               <button 

@@ -26,6 +26,13 @@ const getUserPlan = (): PlanLevel => {
   if (!isAuthenticated()) return 'guest';
   
   const sessionData = getSessionData();
+  
+  // Superusers always have enterprise access
+  if (sessionData?.is_superuser) {
+    console.log('[PlanRestrictedRoute] Superuser detected - granting enterprise access');
+    return 'enterprise';
+  }
+  
   const plan = sessionData?.plan || sessionData?.subscription_tier || 'developer';
   
   // Debug logging
