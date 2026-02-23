@@ -262,8 +262,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     return baseRight + codePanelWidth + dividerSafety;
   }, [splitViewEnabled, splitViewWidth, sidebarOpen]);
 
-  // Provider data with status
-  const [providerData, setProviderData] = useState<Array<{id: string; name: string; available: boolean; has_user_key?: boolean; uses_credits?: boolean}>>([]);
+  // Provider data with status and model info
+  const [providerData, setProviderData] = useState<Array<{id: string; name: string; model?: string; available: boolean; has_user_key?: boolean; uses_credits?: boolean}>>([]);
   const [providerSearch, setProviderSearch] = useState('');
 
   // Fetch live providers from API
@@ -273,6 +273,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
         const response = await fetch("/resonant-chat/providers");
         if (response.ok) {
           const data = await response.json();
+          console.log('[ProviderDropdown] API response:', data);
           if (data.providers && data.providers.length > 0) {
             setProviderData(data.providers);
           }
@@ -287,33 +288,33 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   }, []);
 
   const providerOptions = useMemo(() => {
+    // Always include all providers from API
     const providers = providerData.length > 0 
       ? providerData.map(p => p.id)
-      : ["openai", "gemini", "anthropic", "groq"];
+      : ["groq", "openai", "gemini", "anthropic", "local", "codellama"];
     
-    const normalized = ["auto", ...providers].map(normalizeProvider);
-    const seen = new Set<string>();
-    const unique: string[] = [];
-    for (const p of normalized) {
-      if (!seen.has(p)) {
-        seen.add(p);
-        unique.push(p);
-      }
-    }
-    return unique;
+    const result = ["auto", ...providers];
+    // Remove duplicates while preserving order
+    return [...new Set(result)];
   }, [providerData]);
 
   const filteredProviders = useMemo(() => {
     if (!providerSearch.trim()) return providerOptions;
     const search = providerSearch.toLowerCase();
-    return providerOptions.filter(p => p.toLowerCase().includes(search));
-  }, [providerOptions, providerSearch]);
+    return providerOptions.filter(p => {
+      const provider = providerData.find(pd => pd.id === p);
+      const name = provider?.name || p;
+      const model = provider?.model || '';
+      return p.toLowerCase().includes(search) || name.toLowerCase().includes(search) || model.toLowerCase().includes(search);
+    });
+  }, [providerOptions, providerSearch, providerData]);
 
-  const getProviderStatus = (providerId: string) => {
-    if (providerId === 'auto') return { available: true, has_user_key: false, uses_credits: false };
-    const provider = providerData.find(p => normalizeProvider(p.id) === normalizeProvider(providerId));
-    return provider || { available: false, has_user_key: false, uses_credits: false };
+  const getProviderInfo = (providerId: string) => {
+    if (providerId === 'auto') return { name: 'Auto (Smart)', model: 'Best available', available: true, has_user_key: false, uses_credits: false };
+    const provider = providerData.find(p => p.id === providerId);
+    return provider || { name: providerId, model: '', available: false, has_user_key: false, uses_credits: false };
   };
+
   // Keep valueRef in sync with value prop
   useEffect(() => {
     valueRef.current = value;
@@ -987,17 +988,17 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                     </div>
                     {/* Provider list */}
                     {filteredProviders.map((provider) => {
-                      const status = getProviderStatus(provider);
+                      const info = getProviderInfo(provider);
                       return (
                         <button
                           key={provider}
                           type="button"
                           className={`${styles.providerOption} ${selectedProvider === provider ? styles.selected : ''}`}
-                          style={{ opacity: status.available ? 1 : 0.5 }}
+                          style={{ opacity: info.available ? 1 : 0.5 }}
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            if (status.available || provider === 'auto') {
+                            if (info.available || provider === 'auto') {
                               onProviderChange(normalizeProvider(provider));
                               setShowProviderDropdown(false);
                               setProviderSearch('');
@@ -1006,31 +1007,38 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                         >
                           <span className={styles.providerIcon}>
                             {provider === 'auto' && <span style={{fontSize: '16px'}}>✨</span>}
-                            {provider === 'openai' && <span style={{fontSize: '16px'}}>��</span>}
+                            {(provider === 'openai' || provider === 'chatgpt') && <span style={{fontSize: '16px'}}>��</span>}
                             {provider === 'gemini' && <span style={{fontSize: '16px'}}>💎</span>}
                             {provider === 'anthropic' && <span style={{fontSize: '16px'}}>🧠</span>}
                             {provider === 'groq' && <span style={{fontSize: '16px'}}>⚡</span>}
                             {provider === 'local' && <span style={{fontSize: '16px'}}>🏠</span>}
                             {provider === 'codellama' && <span style={{fontSize: '16px'}}>💻</span>}
                           </span>
-                          <span className={styles.providerName} style={{ flex: 1 }}>
-                            {provider === 'auto' ? 'Auto (Smart)' : provider === 'openai' ? 'ChatGPT' : provider === 'local' ? 'Local LLM' : provider === 'codellama' ? 'CodeLlama' : provider.charAt(0).toUpperCase() + provider.slice(1)}
-                          </span>
+                          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
+                            <span className={styles.providerName}>
+                              {info.name || provider.charAt(0).toUpperCase() + provider.slice(1)}
+                            </span>
+                            {info.model && (
+                              <span style={{ fontSize: '10px', color: '#888', fontWeight: 'normal' }}>
+                                {info.model}
+                              </span>
+                            )}
+                          </div>
                           {/* Status indicator */}
                           <span style={{ 
                             display: 'flex', 
                             alignItems: 'center', 
                             gap: '4px',
                             fontSize: '11px',
-                            color: status.available ? '#4ade80' : '#f87171'
+                            color: info.available ? '#4ade80' : '#f87171'
                           }}>
-                            {status.has_user_key && <span title="Your API Key" style={{color: '#60a5fa'}}>🔑</span>}
-                            {status.uses_credits && <span title="Uses Credits" style={{color: '#fbbf24'}}>💰</span>}
+                            {info.has_user_key && <span title="Your API Key" style={{color: '#60a5fa'}}>🔑</span>}
+                            {info.uses_credits && <span title="Uses Credits" style={{color: '#fbbf24'}}>💰</span>}
                             <span style={{
                               width: '8px',
                               height: '8px',
                               borderRadius: '50%',
-                              background: status.available ? '#4ade80' : '#f87171',
+                              background: info.available ? '#4ade80' : '#f87171',
                             }} />
                           </span>
                         </button>
@@ -1049,7 +1057,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                           e.stopPropagation();
                           setShowProviderDropdown(false);
                           // Navigate to settings/API keys
-                          window.location.href = '/settings?tab=api-keys';
+                          window.location.href = '/profile?tab=byok';
                         }}
                         style={{
                           width: '100%',
