@@ -221,12 +221,12 @@ const router = createBrowserRouter([
   // V8 Engine Page - For superusers only
   {
     path: '/v8',
-    element: withShell(<V8Page />)
+    element: withShell(<ProtectedRoute><V8Page /></ProtectedRoute>)
   },
   // ResonantGenesisPrivate - For superusers only
   {
     path: '/resonant-genesis-private',
-    element: withShell(<V8Page />)
+    element: withShell(<ProtectedRoute><V8Page /></ProtectedRoute>)
   },
   {
     path: '/hash-sphere-test',

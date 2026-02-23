@@ -12,7 +12,7 @@ const V8Page: React.FC = () => {
       <Header />
       <div style={{ paddingTop: '60px', height: 'calc(100vh - 60px)' }}>
         <iframe
-          src="/v8/?embedded=true"
+          src="/v8-app/?embedded=true"
           style={{
             width: '100%',
             height: '100%',
