@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchPlan } from '../../api/pricing';
 import styles from './OwnerDashboard.module.css';
 import V8ControlPanel from '../../components/owner/V8ControlPanel';
+import PlatformStatePhysics from '../../components/owner/PlatformStatePhysics';
 
 // Icons
 const CrownIcon = () => (
@@ -1423,7 +1424,7 @@ const OwnerDashboard: React.FC = () => {
         {activeTab === 'monitoring' && renderMonitoring()}
         {activeTab === 'system' && renderSystemControl()}
         {activeTab === 'settings' && renderSettings()}
-        {activeTab === 'state-physics' && renderStatePhysics()}
+        {activeTab === "state-physics" && <PlatformStatePhysics />}
         {activeTab === 'v8' && <V8ControlPanel />}
         {activeTab === 'control' && <div style={{ padding: '1.5rem' }}><h2>Platform Control Center</h2><p>Internal agents and daemons monitoring - Coming soon</p></div>}
       </div>
