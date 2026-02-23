@@ -1,9 +1,10 @@
 /**
  * V8 Admin Panel - Platform Owner Only
  * Compact control panel for V8 API management
+ * NO localStorage - all data fetched live from backend
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { getSessionData } from "../../utils/auth-cookies";
 import {
   Settings,
@@ -16,6 +17,8 @@ import {
   AlertCircle,
   CheckCircle,
   Loader2,
+  List,
+  X,
 } from "lucide-react";
 
 interface V8Status {
@@ -34,22 +37,36 @@ interface ApiResponse {
 
 const V8AdminPanel: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showForbiddenList, setShowForbiddenList] = useState(false);
   const [status, setStatus] = useState<V8Status | null>(null);
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   
-  // Form states
+  // Form states - NO localStorage, just React state
   const [newForbiddenWord, setNewForbiddenWord] = useState("");
   const [newAnchorWords, setNewAnchorWords] = useState("");
   const [newAnchorHash, setNewAnchorHash] = useState("");
   const [forbiddenWords, setForbiddenWords] = useState<string[]>([]);
+  const [forbiddenLoading, setForbiddenLoading] = useState(false);
 
-  // Check if user is platform owner
+  // Check if user is platform owner - check multiple conditions
   const session = getSessionData();
-  const isOwner = session?.role === "platform_owner" || session?.role === "owner" || session?.is_superuser === true;
+  const isOwner = 
+    session?.role === "platform_owner" || 
+    session?.role === "owner" || 
+    session?.role === "admin" ||
+    session?.is_superuser === true;
 
-  const apiCall = async (endpoint: string, method: string = "GET", body?: any): Promise<ApiResponse> => {
+  // Debug: Log session data to help trace login issues
+  useEffect(() => {
+    if (isExpanded) {
+      console.log("[V8AdminPanel] Session data:", session);
+      console.log("[V8AdminPanel] isOwner:", isOwner);
+    }
+  }, [isExpanded, session, isOwner]);
+
+  const apiCall = useCallback(async (endpoint: string, method: string = "GET", body?: any): Promise<ApiResponse> => {
     try {
       const response = await fetch(`/api/v1/v8/api/admin/${endpoint}`, {
         method,
@@ -70,9 +87,9 @@ const V8AdminPanel: React.FC = () => {
     } catch (error: any) {
       return { success: false, error: error.message || "Network error" };
     }
-  };
+  }, []);
 
-  const loadStatus = async () => {
+  const loadStatus = useCallback(async () => {
     setLoading(true);
     const result = await apiCall("status");
     if (result.success) {
@@ -81,21 +98,27 @@ const V8AdminPanel: React.FC = () => {
       setMessage({ type: "error", text: result.error || "Failed to load status" });
     }
     setLoading(false);
-  };
+  }, [apiCall]);
 
-  const loadForbidden = async () => {
+  const loadForbiddenWords = useCallback(async () => {
+    setForbiddenLoading(true);
     const result = await apiCall("forbidden");
     if (result.success) {
-      setForbiddenWords(result.data.words || result.data.forbidden || []);
+      // Handle different response formats
+      const words = result.data.words || result.data.forbidden || result.data || [];
+      setForbiddenWords(Array.isArray(words) ? words : []);
+    } else {
+      setMessage({ type: "error", text: result.error || "Failed to load forbidden words" });
     }
-  };
+    setForbiddenLoading(false);
+  }, [apiCall]);
 
   useEffect(() => {
     if (isExpanded && isOwner) {
       loadStatus();
-      loadForbidden();
+      loadForbiddenWords();
     }
-  }, [isExpanded, isOwner]);
+  }, [isExpanded, isOwner, loadStatus, loadForbiddenWords]);
 
   const handleRetrain = async () => {
     setActionLoading("retrain");
@@ -117,7 +140,7 @@ const V8AdminPanel: React.FC = () => {
     if (result.success) {
       setMessage({ type: "success", text: `Added "${newForbiddenWord}" to forbidden words` });
       setNewForbiddenWord("");
-      loadForbidden();
+      loadForbiddenWords(); // Refresh list from backend
       loadStatus();
     } else {
       setMessage({ type: "error", text: result.error || "Failed to add forbidden word" });
@@ -145,8 +168,39 @@ const V8AdminPanel: React.FC = () => {
     setActionLoading(null);
   };
 
+  // Always show panel for debugging - but with different content based on owner status
   if (!isOwner) {
-    return null;
+    return (
+      <div style={{ position: "fixed", bottom: "20px", right: "20px", zIndex: 1000, fontFamily: "system-ui, -apple-system, sans-serif" }}>
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          style={{
+            display: "flex", alignItems: "center", gap: "8px", padding: "8px 12px",
+            background: "rgba(100, 100, 100, 0.8)",
+            border: "none", borderRadius: "8px",
+            color: "white", cursor: "pointer", fontSize: "12px",
+          }}
+        >
+          <Settings size={14} /> V8 Debug
+        </button>
+        {isExpanded && (
+          <div style={{
+            position: "absolute", bottom: "40px", right: "0", width: "300px",
+            background: "rgba(30, 30, 40, 0.95)", padding: "12px", borderRadius: "8px",
+            border: "1px solid rgba(255,255,255,0.1)", fontSize: "11px", color: "#aaa"
+          }}>
+            <div><strong>Session Debug:</strong></div>
+            <div>Role: {session?.role || "none"}</div>
+            <div>Email: {session?.email || "none"}</div>
+            <div>is_superuser: {String(session?.is_superuser)}</div>
+            <div>isOwner check: {String(isOwner)}</div>
+            <div style={{marginTop: "8px", color: "#f87171"}}>
+              Not recognized as owner. Please re-login.
+            </div>
+          </div>
+        )}
+      </div>
+    );
   }
 
   return (
@@ -159,7 +213,7 @@ const V8AdminPanel: React.FC = () => {
           border: "none", borderRadius: isExpanded ? "12px 12px 0 0" : "12px",
           color: "white", cursor: "pointer", fontSize: "14px", fontWeight: 600,
           boxShadow: "0 4px 12px rgba(99, 102, 241, 0.4)",
-          width: isExpanded ? "360px" : "auto", justifyContent: isExpanded ? "space-between" : "center",
+          width: isExpanded ? "380px" : "auto", justifyContent: isExpanded ? "space-between" : "center",
         }}
       >
         <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -170,9 +224,9 @@ const V8AdminPanel: React.FC = () => {
 
       {isExpanded && (
         <div style={{
-          width: "360px", background: "rgba(15, 15, 25, 0.95)", backdropFilter: "blur(12px)",
+          width: "380px", background: "rgba(15, 15, 25, 0.95)", backdropFilter: "blur(12px)",
           border: "1px solid rgba(99, 102, 241, 0.3)", borderTop: "none", borderRadius: "0 0 12px 12px",
-          padding: "16px", maxHeight: "500px", overflowY: "auto",
+          padding: "16px", maxHeight: "600px", overflowY: "auto",
         }}>
           {message && (
             <div style={{
@@ -187,6 +241,7 @@ const V8AdminPanel: React.FC = () => {
             </div>
           )}
 
+          {/* Status Section */}
           <div style={{ marginBottom: "16px" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
               <span style={{ color: "#a1a1aa", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.5px" }}>System Status</span>
@@ -220,6 +275,7 @@ const V8AdminPanel: React.FC = () => {
             )}
           </div>
 
+          {/* Retrain Button */}
           <button onClick={handleRetrain} disabled={actionLoading === "retrain"} style={{
             width: "100%", padding: "12px", marginBottom: "16px",
             background: "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
@@ -231,10 +287,50 @@ const V8AdminPanel: React.FC = () => {
             Retrain Model
           </button>
 
+          {/* Forbidden Words Section */}
           <div style={{ marginBottom: "16px" }}>
-            <label style={{ color: "#a1a1aa", fontSize: "12px", display: "block", marginBottom: "6px" }}>
-              <Ban size={12} style={{ display: "inline", marginRight: "4px" }} /> Add Forbidden Word
-            </label>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
+              <label style={{ color: "#a1a1aa", fontSize: "12px", display: "flex", alignItems: "center", gap: "4px" }}>
+                <Ban size={12} /> Forbidden Words
+              </label>
+              <button 
+                onClick={() => { setShowForbiddenList(!showForbiddenList); if (!showForbiddenList) loadForbiddenWords(); }}
+                style={{ background: "transparent", border: "none", color: "#6366f1", cursor: "pointer", fontSize: "11px", display: "flex", alignItems: "center", gap: "4px" }}
+              >
+                <List size={12} /> {showForbiddenList ? "Hide" : "Show"} List
+              </button>
+            </div>
+            
+            {/* Forbidden Words List - Fetched Live */}
+            {showForbiddenList && (
+              <div style={{
+                background: "rgba(0,0,0,0.3)", borderRadius: "8px", padding: "10px", marginBottom: "10px",
+                maxHeight: "150px", overflowY: "auto", border: "1px solid rgba(255,255,255,0.1)"
+              }}>
+                {forbiddenLoading ? (
+                  <div style={{ textAlign: "center", color: "#71717a" }}><Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} /></div>
+                ) : forbiddenWords.length > 0 ? (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    {forbiddenWords.map((word, idx) => (
+                      <span key={idx} style={{
+                        background: "rgba(236, 72, 153, 0.2)", color: "#ec4899", padding: "4px 8px",
+                        borderRadius: "4px", fontSize: "11px", border: "1px solid rgba(236, 72, 153, 0.3)"
+                      }}>{word}</span>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ color: "#71717a", fontSize: "12px", textAlign: "center" }}>No forbidden words</div>
+                )}
+                <button onClick={loadForbiddenWords} style={{
+                  marginTop: "8px", width: "100%", padding: "6px", background: "rgba(99, 102, 241, 0.2)",
+                  border: "1px solid rgba(99, 102, 241, 0.3)", borderRadius: "4px", color: "#6366f1",
+                  cursor: "pointer", fontSize: "11px", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px"
+                }}>
+                  <RefreshCw size={12} /> Refresh from Backend
+                </button>
+              </div>
+            )}
+
             <div style={{ display: "flex", gap: "8px" }}>
               <input type="text" value={newForbiddenWord} onChange={(e) => setNewForbiddenWord(e.target.value)} placeholder="Enter word..."
                 style={{ flex: 1, padding: "10px 12px", background: "rgba(255, 255, 255, 0.05)", border: "1px solid rgba(255, 255, 255, 0.1)", borderRadius: "8px", color: "white", fontSize: "13px" }} />
@@ -245,6 +341,7 @@ const V8AdminPanel: React.FC = () => {
             </div>
           </div>
 
+          {/* Anchor Section */}
           <div style={{ marginBottom: "16px" }}>
             <label style={{ color: "#a1a1aa", fontSize: "12px", display: "block", marginBottom: "6px" }}>
               <Anchor size={12} style={{ display: "inline", marginRight: "4px" }} /> Add Anchor (12 words + hash)
@@ -261,9 +358,10 @@ const V8AdminPanel: React.FC = () => {
             </div>
           </div>
 
-          <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)", paddingTop: "12px" }}>
-            <div style={{ color: "#71717a", fontSize: "11px", textAlign: "center" }}>
-              Forbidden: {forbiddenWords.slice(0, 5).join(", ")}{forbiddenWords.length > 5 ? "..." : ""}
+          {/* Session Debug Info */}
+          <div style={{ borderTop: "1px solid rgba(255, 255, 255, 0.1)", paddingTop: "12px", marginTop: "8px" }}>
+            <div style={{ color: "#52525b", fontSize: "10px", textAlign: "center" }}>
+              Logged in as: {session?.email} | Role: {session?.role}
             </div>
           </div>
         </div>
