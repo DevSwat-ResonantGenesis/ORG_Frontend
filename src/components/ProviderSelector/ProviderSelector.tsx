@@ -38,6 +38,7 @@ const getProviderIcon = (providerId: string): React.ReactNode => {
     'groq': <MistralIcon />,
     'mistral': <MistralIcon />,
     'local': <span style={{ fontSize: '18px' }}>🖥️</span>,
+    'codellama': <span style={{ fontSize: '18px' }}>💻</span>,
   };
   return iconMap[providerId.toLowerCase()] || <AutoIcon />;
 };
