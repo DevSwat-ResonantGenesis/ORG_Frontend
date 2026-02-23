@@ -406,16 +406,16 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            {/* Resonant Private - Superusers only */}
+            {/* V8 HashSphere - Superusers only */}
             {sessionData?.is_superuser && (
               <div className={styles.navItem}>
-                <button 
+                <a 
                   className={styles.navButton}
-                  onClick={() => navigate('/resonant-genesis-private')}
-                  style={{ color: '#f59e0b' }}
+                  href="/v8/"
+                  style={{ color: '#f59e0b', textDecoration: 'none' }}
                 >
-                  ⭐ Genesis Private
-                </button>
+                  ⭐ V8 HashSphere
+                </a>
               </div>
             )}
 
