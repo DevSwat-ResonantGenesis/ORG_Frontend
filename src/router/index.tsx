@@ -343,6 +343,10 @@ const router = createBrowserRouter([
     element: withPublicShell(<LoginPage />)
   },
   {
+    path: '/owner-login',
+    element: withPublicShell(<OwnerLoginPage />)
+  },
+  {
     path: '/auth/oauth/callback',
     element: <OAuthCallbackPage />
   },
