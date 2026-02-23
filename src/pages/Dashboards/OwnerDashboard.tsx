@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getSessionData } from '../../utils/auth-cookies';
 import { fetchPlan } from '../../api/pricing';
 import styles from './OwnerDashboard.module.css';
 import V8ControlPanel from '../../components/owner/V8ControlPanel';
@@ -247,8 +248,12 @@ const OwnerDashboard: React.FC = () => {
   });
 
   const fetchDashboardData = async () => {
+    const sessionData = getSessionData();
     const token = localStorage.getItem('owner_token');
-    if (!token) {
+    const isSuperuser = sessionData?.is_superuser || sessionData?.role === 'platform_owner';
+    
+    // Allow access if superuser OR has owner_token
+    if (!token && !isSuperuser) {
       navigate('/dashboard');
       return;
     }
