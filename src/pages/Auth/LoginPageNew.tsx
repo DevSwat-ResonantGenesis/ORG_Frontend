@@ -231,7 +231,7 @@ export default function LoginPageNew() {
       
       // Platform owners go to owner dashboard, regular users to resonant-chat
       if (data.role === 'platform_owner') {
-        navigate('/owner/dashboard');
+        navigate('/owner-dashboard');
       } else {
         try {
           sessionStorage.setItem(
