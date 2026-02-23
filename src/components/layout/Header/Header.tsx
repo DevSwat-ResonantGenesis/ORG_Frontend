@@ -651,25 +651,84 @@ export const Header: React.FC<HeaderProps> = ({
                       </div>
                     </div>
                     <div className={styles.accountMenuDivider} />
-                    {/* Superusers see Owner Dashboard, regular users see regular Dashboard */}
-                    <button className={styles.accountMenuItem} onClick={() => { navigate(sessionData?.is_superuser ? '/owner-dashboard' : '/dashboard'); setShowAccountMenu(false); }}>
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <rect x="2" y="2" width="5" height="5" rx="1" />
-                        <rect x="9" y="2" width="5" height="5" rx="1" />
-                        <rect x="2" y="9" width="5" height="5" rx="1" />
-                        <rect x="9" y="9" width="5" height="5" rx="1" />
-                      </svg>
-                      {sessionData?.is_superuser ? 'Owner Dashboard' : 'Dashboard'}
-                    </button>
-                    {/* ResonantGenesisPrivate - Only for superusers/platform owner */}
-                    {sessionData?.is_superuser && (
-                      <button className={styles.accountMenuItem} onClick={() => { navigate('/resonant-genesis-private'); setShowAccountMenu(false); }}>
+                    
+                    {/* Dashboard Section - Superusers see all 4 dashboards */}
+                    <div className={styles.accountMenuSection}>
+                      <span className={styles.accountMenuSectionTitle}>Dashboards</span>
+                      
+                      {/* 1. Free Developer Dashboard - Everyone sees this */}
+                      <button className={styles.accountMenuItem} onClick={() => { navigate('/dashboard'); setShowAccountMenu(false); }}>
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                          <path d="M8 1L10 5H14L11 8L12 13L8 10L4 13L5 8L2 5H6L8 1Z" />
+                          <rect x="2" y="2" width="5" height="5" rx="1" />
+                          <rect x="9" y="2" width="5" height="5" rx="1" />
+                          <rect x="2" y="9" width="5" height="5" rx="1" />
+                          <rect x="9" y="9" width="5" height="5" rx="1" />
                         </svg>
-                        Genesis Private
+                        Developer Dashboard
                       </button>
+                      
+                      {/* 2. Plus User Dashboard - Superusers and Plus users */}
+                      {(sessionData?.is_superuser || sessionData?.plan === 'plus' || sessionData?.plan === 'enterprise') && (
+                        <button className={styles.accountMenuItem} onClick={() => { navigate('/plus-dashboard'); setShowAccountMenu(false); }}>
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <circle cx="8" cy="8" r="6" />
+                            <path d="M8 5V11M5 8H11" />
+                          </svg>
+                          Plus Dashboard
+                        </button>
+                      )}
+                      
+                      {/* 3. Enterprise/Org Dashboard - Superusers and Enterprise users */}
+                      {(sessionData?.is_superuser || sessionData?.plan === 'enterprise' || sessionData?.role === 'org_admin') && (
+                        <button className={styles.accountMenuItem} onClick={() => { navigate('/enterprise-dashboard'); setShowAccountMenu(false); }}>
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <rect x="3" y="6" width="10" height="8" rx="1" />
+                            <path d="M5 6V4C5 2.9 5.9 2 7 2H9C10.1 2 11 2.9 11 4V6" />
+                          </svg>
+                          Enterprise Dashboard
+                        </button>
+                      )}
+                      
+                      {/* 4. Owner Platform Dashboard - Superusers only */}
+                      {sessionData?.is_superuser && (
+                        <button className={styles.accountMenuItem} onClick={() => { navigate('/owner-dashboard'); setShowAccountMenu(false); }}>
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <path d="M8 1L10 5H14L11 8L12 13L8 10L4 13L5 8L2 5H6L8 1Z" />
+                          </svg>
+                          Owner Dashboard
+                        </button>
+                      )}
+                    </div>
+                    
+                    <div className={styles.accountMenuDivider} />
+                    
+                    {/* V8 Page - Only for superusers/platform owner */}
+                    {sessionData?.is_superuser && (
+                      <>
+                        <button className={styles.accountMenuItem} onClick={() => { navigate('/v8'); setShowAccountMenu(false); }}>
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <path d="M2 4L8 12L14 4" strokeLinecap="round" strokeLinejoin="round" />
+                            <text x="9" y="7" fontSize="6" fill="currentColor" stroke="none">8</text>
+                          </svg>
+                          V8 Engine
+                        </button>
+                        <button className={styles.accountMenuItem} onClick={() => { navigate('/resonant-genesis-private'); setShowAccountMenu(false); }}>
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <path d="M8 1L10 5H14L11 8L12 13L8 10L4 13L5 8L2 5H6L8 1Z" />
+                          </svg>
+                          Genesis Private
+                        </button>
+                        <button className={styles.accountMenuItem} onClick={() => { navigate('/control-plane'); setShowAccountMenu(false); }}>
+                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <circle cx="8" cy="8" r="2" />
+                            <path d="M8 2V4M8 12V14M2 8H4M12 8H14M3.5 3.5L5 5M11 11L12.5 12.5M3.5 12.5L5 11M11 5L12.5 3.5" />
+                          </svg>
+                          Control Center
+                        </button>
+                        <div className={styles.accountMenuDivider} />
+                      </>
                     )}
+                    
                     <button className={styles.accountMenuItem} onClick={() => { navigate('/profile'); setShowAccountMenu(false); }}>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <circle cx="8" cy="5" r="3" />

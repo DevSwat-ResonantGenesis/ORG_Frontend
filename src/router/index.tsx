@@ -218,7 +218,12 @@ const router = createBrowserRouter([
     path: '/owner',
     element: <Navigate to="/owner-dashboard" replace />
   },
-  // ResonantGenesisPrivate - For superusers only (regular auth)
+  // V8 Engine Page - For superusers only
+  {
+    path: '/v8',
+    element: withShell(<V8Page />)
+  },
+  // ResonantGenesisPrivate - For superusers only
   {
     path: '/resonant-genesis-private',
     element: withShell(<V8Page />)
