@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchPlan } from '../../api/pricing';
 import styles from './OwnerDashboard.module.css';
+import V8ControlPanel from '../../components/owner/V8ControlPanel';
 
 // Icons
 const CrownIcon = () => (
@@ -169,7 +170,7 @@ const defaultAgents: RARAAgent[] = [
   { id: '3', name: 'DeployBot-Prime', type: 'Deployment', status: 'idle', tasksCompleted: 0, uptime: '98.5%', cpu: 0, memory: 0, lastTask: 'Waiting...' },
 ];
 
-type TabType = 'overview' | 'users' | 'revenue' | 'agents' | 'monitoring' | 'settings' | 'state-physics' | 'system';
+type TabType = 'overview' | 'users' | 'revenue' | 'agents' | 'monitoring' | 'settings' | 'state-physics' | 'system' | 'v8' | 'control';
 
 interface ServiceHealth {
   name: string;
@@ -1410,6 +1411,8 @@ const OwnerDashboard: React.FC = () => {
           <button className={`${styles.navTab} ${activeTab === 'system' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('system')}>🔧 System Control</button>
           <button className={`${styles.navTab} ${activeTab === 'settings' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('settings')}>Settings</button>
           <button className={`${styles.navTab} ${activeTab === 'state-physics' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('state-physics')}>🌌 State Physics</button>
+          <button className={`${styles.navTab} ${activeTab === 'v8' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('v8')}>⚡ V8 Engine</button>
+          <button className={`${styles.navTab} ${activeTab === 'control' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('control')}>🎛️ Platform Control</button>
           <button className={styles.navTab} onClick={() => window.location.href = '/v8/'}>🔮 V8 HashSphere</button>
         </nav>
 
@@ -1421,6 +1424,8 @@ const OwnerDashboard: React.FC = () => {
         {activeTab === 'system' && renderSystemControl()}
         {activeTab === 'settings' && renderSettings()}
         {activeTab === 'state-physics' && renderStatePhysics()}
+        {activeTab === 'v8' && <V8ControlPanel />}
+        {activeTab === 'control' && <div style={{ padding: '1.5rem' }}><h2>Platform Control Center</h2><p>Internal agents and daemons monitoring - Coming soon</p></div>}
       </div>
     </div>
   );
