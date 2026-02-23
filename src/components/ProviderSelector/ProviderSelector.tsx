@@ -36,7 +36,8 @@ const getProviderIcon = (providerId: string): React.ReactNode => {
     'anthropic': <ClaudeIcon />,
     'claude': <ClaudeIcon />,
     'groq': <MistralIcon />,
-    'mistral': <MistralIcon />
+    'mistral': <MistralIcon />,
+    'local': <span style={{ fontSize: '18px' }}>🖥️</span>,
   };
   return iconMap[providerId.toLowerCase()] || <AutoIcon />;
 };
