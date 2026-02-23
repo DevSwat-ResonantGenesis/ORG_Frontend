@@ -249,18 +249,20 @@ const OwnerDashboard: React.FC = () => {
 
   const fetchDashboardData = async () => {
     const sessionData = getSessionData();
-    const token = localStorage.getItem('owner_token');
+    const ownerToken = localStorage.getItem('owner_token');
+    const sessionToken = localStorage.getItem('access_token');
+    const authToken = ownerToken || sessionToken;
     const isSuperuser = sessionData?.is_superuser || sessionData?.role === 'platform_owner';
     
     // Allow access if superuser OR has owner_token
-    if (!token && !isSuperuser) {
+    if (!authToken && !isSuperuser) {
       navigate('/dashboard');
       return;
     }
 
     try {
       const statsRes = await fetch(`${API_BASE}/owner/auth/dashboard/stats`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization': `Bearer ${authToken}` }
       });
       if (statsRes.ok) {
         const statsData = await statsRes.json();
@@ -277,7 +279,7 @@ const OwnerDashboard: React.FC = () => {
       }
 
       const usersRes = await fetch(`${API_BASE}/owner/auth/dashboard/users`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization': `Bearer ${authToken}` }
       });
       if (usersRes.ok) {
         const usersData = await usersRes.json();
@@ -302,7 +304,7 @@ const OwnerDashboard: React.FC = () => {
 
       // Fetch settings
       const settingsRes = await fetch(`${API_BASE}/owner/auth/settings`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization': `Bearer ${authToken}` }
       });
       if (settingsRes.ok) {
         const settingsData = await settingsRes.json();
@@ -321,7 +323,7 @@ const OwnerDashboard: React.FC = () => {
       // Fetch billing metrics from billing service
       try {
         const billingRes = await fetch(`${API_BASE}/api/v1/billing/metrics`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { 'Authorization': `Bearer ${authToken}` }
         });
         if (billingRes.ok) {
           const billingData = await billingRes.json();
@@ -341,7 +343,7 @@ const OwnerDashboard: React.FC = () => {
       // Fetch auth metrics
       try {
         const authMetricsRes = await fetch(`${API_BASE}/api/v1/auth/metrics`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { 'Authorization': `Bearer ${authToken}` }
         });
         if (authMetricsRes.ok) {
           const authData = await authMetricsRes.json();
@@ -383,7 +385,9 @@ const OwnerDashboard: React.FC = () => {
   };
 
   const handleSaveSettings = async () => {
-    const token = localStorage.getItem('owner_token');
+    const ownerToken = localStorage.getItem('owner_token');
+    const sessionToken = localStorage.getItem('access_token');
+    const authToken = ownerToken || sessionToken;
     if (!token) {
       navigate('/dashboard');
       return;
@@ -393,7 +397,7 @@ const OwnerDashboard: React.FC = () => {
       const response = await fetch(`${API_BASE}/owner/auth/settings`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -421,7 +425,9 @@ const OwnerDashboard: React.FC = () => {
   };
 
   const handleResetPassword = async (userId: string, userEmail: string) => {
-    const token = localStorage.getItem('owner_token');
+    const ownerToken = localStorage.getItem('owner_token');
+    const sessionToken = localStorage.getItem('access_token');
+    const authToken = ownerToken || sessionToken;
     if (!token) {
       navigate('/dashboard');
       return;
@@ -435,7 +441,7 @@ const OwnerDashboard: React.FC = () => {
       const response = await fetch(`${API_BASE}/owner/auth/admin/reset-password/${userId}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
         },
       });
 
@@ -453,7 +459,9 @@ const OwnerDashboard: React.FC = () => {
   };
 
   const handleBlockUser = async (userId: string, userEmail: string, isCurrentlyBlocked: boolean) => {
-    const token = localStorage.getItem('owner_token');
+    const ownerToken = localStorage.getItem('owner_token');
+    const sessionToken = localStorage.getItem('access_token');
+    const authToken = ownerToken || sessionToken;
     if (!token) {
       navigate('/dashboard');
       return;
@@ -469,7 +477,7 @@ const OwnerDashboard: React.FC = () => {
       const response = await fetch(`${API_BASE}/owner/auth/admin/${endpoint}/${userId}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
         },
       });
 
@@ -489,7 +497,9 @@ const OwnerDashboard: React.FC = () => {
   };
 
   const handleDeleteUser = async (userId: string, userEmail: string) => {
-    const token = localStorage.getItem('owner_token');
+    const ownerToken = localStorage.getItem('owner_token');
+    const sessionToken = localStorage.getItem('access_token');
+    const authToken = ownerToken || sessionToken;
     if (!token) {
       navigate('/dashboard');
       return;
@@ -507,7 +517,7 @@ const OwnerDashboard: React.FC = () => {
       const response = await fetch(`${API_BASE}/owner/auth/admin/delete-user/${userId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
         },
       });
 
