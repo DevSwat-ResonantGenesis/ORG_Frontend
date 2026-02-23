@@ -287,7 +287,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
 
   const providerOptions = useMemo(() => {
     const rawProviders =
-      availableProviders && availableProviders.length > 0
+      false
         ? availableProviders
         : liveProviders;
 
