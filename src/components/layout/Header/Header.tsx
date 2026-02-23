@@ -407,7 +407,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* V8 HashSphere - Superusers only */}
-            {sessionData?.is_superuser && (
+            {(sessionData?.is_superuser || sessionData?.role === 'platform_owner') && (
               <div className={styles.navItem}>
                 <a 
                   className={styles.navButton}
@@ -668,7 +668,7 @@ export const Header: React.FC<HeaderProps> = ({
                       </button>
                       
                       {/* 2. Plus User Dashboard - Superusers and Plus users */}
-                      {(sessionData?.is_superuser || sessionData?.plan === 'plus' || sessionData?.plan === 'enterprise') && (
+                      {((sessionData?.is_superuser || sessionData?.role === 'platform_owner') || sessionData?.plan === 'plus' || sessionData?.plan === 'enterprise') && (
                         <button className={styles.accountMenuItem} onClick={() => { navigate('/plus-dashboard'); setShowAccountMenu(false); }}>
                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                             <circle cx="8" cy="8" r="6" />
@@ -679,7 +679,7 @@ export const Header: React.FC<HeaderProps> = ({
                       )}
                       
                       {/* 3. Enterprise/Org Dashboard - Superusers and Enterprise users */}
-                      {(sessionData?.is_superuser || sessionData?.plan === 'enterprise' || sessionData?.role === 'org_admin') && (
+                      {((sessionData?.is_superuser || sessionData?.role === 'platform_owner') || sessionData?.plan === 'enterprise' || sessionData?.role === 'org_admin') && (
                         <button className={styles.accountMenuItem} onClick={() => { navigate('/enterprise-dashboard'); setShowAccountMenu(false); }}>
                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                             <rect x="3" y="6" width="10" height="8" rx="1" />
@@ -690,7 +690,7 @@ export const Header: React.FC<HeaderProps> = ({
                       )}
                       
                       {/* 4. Owner Platform Dashboard - Superusers only */}
-                      {sessionData?.is_superuser && (
+                      {(sessionData?.is_superuser || sessionData?.role === 'platform_owner') && (
                         <button className={styles.accountMenuItem} onClick={() => { navigate('/owner-dashboard'); setShowAccountMenu(false); }}>
                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                             <path d="M8 1L10 5H14L11 8L12 13L8 10L4 13L5 8L2 5H6L8 1Z" />
@@ -703,7 +703,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <div className={styles.accountMenuDivider} />
                     
                     {/* V8 Page - Only for superusers/platform owner */}
-                    {sessionData?.is_superuser && (
+                    {(sessionData?.is_superuser || sessionData?.role === 'platform_owner') && (
                       <>
                         <button className={styles.accountMenuItem} onClick={() => { navigate('/v8'); setShowAccountMenu(false); }}>
                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">

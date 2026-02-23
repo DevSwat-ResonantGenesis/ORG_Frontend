@@ -247,7 +247,7 @@ const OwnerDashboard: React.FC = () => {
   const fetchDashboardData = async () => {
     const token = localStorage.getItem('owner_token');
     if (!token) {
-      navigate('/owner-login');
+      navigate('/dashboard');
       return;
     }
 
@@ -372,13 +372,13 @@ const OwnerDashboard: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem('owner_token');
     localStorage.removeItem('owner_token_expires');
-    navigate('/owner-login');
+    navigate('/dashboard');
   };
 
   const handleSaveSettings = async () => {
     const token = localStorage.getItem('owner_token');
     if (!token) {
-      navigate('/owner-login');
+      navigate('/dashboard');
       return;
     }
 
@@ -416,7 +416,7 @@ const OwnerDashboard: React.FC = () => {
   const handleResetPassword = async (userId: string, userEmail: string) => {
     const token = localStorage.getItem('owner_token');
     if (!token) {
-      navigate('/owner-login');
+      navigate('/dashboard');
       return;
     }
 
@@ -448,7 +448,7 @@ const OwnerDashboard: React.FC = () => {
   const handleBlockUser = async (userId: string, userEmail: string, isCurrentlyBlocked: boolean) => {
     const token = localStorage.getItem('owner_token');
     if (!token) {
-      navigate('/owner-login');
+      navigate('/dashboard');
       return;
     }
 
@@ -484,7 +484,7 @@ const OwnerDashboard: React.FC = () => {
   const handleDeleteUser = async (userId: string, userEmail: string) => {
     const token = localStorage.getItem('owner_token');
     if (!token) {
-      navigate('/owner-login');
+      navigate('/dashboard');
       return;
     }
 
@@ -1382,7 +1382,7 @@ const OwnerDashboard: React.FC = () => {
   }
 
   if (error) {
-    return (<div className={styles.ownerDashboard}><div className={styles.container}><div className={styles.errorState}><div style={{ fontSize: '24px', marginBottom: '16px' }}>⚠️</div><div>{error}</div><button className={styles.logoutBtn} onClick={() => navigate('/owner-login')} style={{ marginTop: '16px' }}>Return to Login</button></div></div></div>);
+    return (<div className={styles.ownerDashboard}><div className={styles.container}><div className={styles.errorState}><div style={{ fontSize: '24px', marginBottom: '16px' }}>⚠️</div><div>{error}</div><button className={styles.logoutBtn} onClick={() => navigate('/dashboard')} style={{ marginTop: '16px' }}>Return to Login</button></div></div></div>);
   }
 
   return (

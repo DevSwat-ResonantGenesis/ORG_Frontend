@@ -91,7 +91,7 @@ const MLTraining: React.FC = () => {
       console.error('Failed to load ML training data:', err);
       if (err.response?.status === 401 || err.response?.status === 403) {
         setError('Access denied. Owner authentication required.');
-        setTimeout(() => navigate('/owner-login'), 2000);
+        setTimeout(() => navigate('/dashboard'), 2000);
       } else {
         setError('Failed to load data. Please try again.');
       }
