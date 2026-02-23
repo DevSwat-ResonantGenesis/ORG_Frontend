@@ -22,6 +22,7 @@ export interface SessionData {
   subscription_tier?: string;
   organization?: string;
   user?: string;
+  is_superuser?: boolean;
 }
 
 const SESSION_COOKIE_NAME = 'rg_session';
@@ -85,12 +86,13 @@ const deleteCookie = (name: string) => {
  * Save session data in secure cookie (user info only, not tokens)
  * Tokens are stored in HttpOnly cookies by the backend
  */
-export const saveSessionData = (email: string, role: UserRole, orgId: string, userId?: string) => {
+export const saveSessionData = (email: string, role: UserRole, orgId: string, userId?: string, is_superuser?: boolean) => {
   const sessionData: SessionData = {
     email,
     role,
     org: orgId,
     userId: userId || email,
+    is_superuser: is_superuser || false,
   };
   // Store in secure cookie instead of localStorage
   setSecureCookie(SESSION_COOKIE_NAME, JSON.stringify(sessionData));

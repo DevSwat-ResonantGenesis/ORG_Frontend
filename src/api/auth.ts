@@ -33,7 +33,8 @@ export const login = async (email: string, password: string) => {
     // Tokens are in secure HttpOnly cookies set by backend
     import('@/utils/auth-cookies').then(({ saveSessionData }) => {
       // Pass user_id if available, otherwise email is used as fallback identifier
-      saveSessionData(email, res.data.role, res.data.org_id, res.data.user_id || res.data.id);
+      // Pass is_superuser for owner/superuser features
+      saveSessionData(email, res.data.role, res.data.org_id, res.data.user_id || res.data.id, res.data.is_superuser);
     });
   }
 

@@ -638,15 +638,25 @@ export const Header: React.FC<HeaderProps> = ({
                       </div>
                     </div>
                     <div className={styles.accountMenuDivider} />
-                    <button className={styles.accountMenuItem} onClick={() => { navigate('/dashboard'); setShowAccountMenu(false); }}>
+                    {/* Superusers see Owner Dashboard, regular users see regular Dashboard */}
+                    <button className={styles.accountMenuItem} onClick={() => { navigate(sessionData?.is_superuser ? '/owner-dashboard' : '/dashboard'); setShowAccountMenu(false); }}>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <rect x="2" y="2" width="5" height="5" rx="1" />
                         <rect x="9" y="2" width="5" height="5" rx="1" />
                         <rect x="2" y="9" width="5" height="5" rx="1" />
                         <rect x="9" y="9" width="5" height="5" rx="1" />
                       </svg>
-                      Dashboard
+                      {sessionData?.is_superuser ? 'Owner Dashboard' : 'Dashboard'}
                     </button>
+                    {/* ResonantGenesisPrivate - Only for superusers/platform owner */}
+                    {sessionData?.is_superuser && (
+                      <button className={styles.accountMenuItem} onClick={() => { navigate('/resonant-genesis-private'); setShowAccountMenu(false); }}>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <path d="M8 1L10 5H14L11 8L12 13L8 10L4 13L5 8L2 5H6L8 1Z" />
+                        </svg>
+                        Genesis Private
+                      </button>
+                    )}
                     <button className={styles.accountMenuItem} onClick={() => { navigate('/profile'); setShowAccountMenu(false); }}>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <circle cx="8" cy="5" r="3" />

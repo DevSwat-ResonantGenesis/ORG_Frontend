@@ -208,30 +208,20 @@ const router = createBrowserRouter([
     path: '/enterprise-dashboard',
     element: withShell(<EnterpriseDashboard />)
   },
-  // Owner Dashboard - Platform owner only (uses separate owner token auth)
+  // Owner Dashboard - For superusers only (regular auth, superuser check in component)
   {
     path: '/owner-dashboard',
-    element: withOwnerAuth(<OwnerDashboard />)
+    element: withShell(<OwnerDashboard />)
   },
   // Legacy owner route redirect
   {
     path: '/owner',
     element: <Navigate to="/owner-dashboard" replace />
   },
-  // Owner Login - Separate login page for platform owner (no layout wrapper - has own design)
+  // ResonantGenesisPrivate - For superusers only (regular auth)
   {
-    path: '/owner-login',
-    element: <OwnerLoginPage />
-  },
-  // Owner-Only ML Training Console - PROTECTED: Platform owner only
-  {
-    path: '/owner/ml-training',
-    element: withOwnerAuth(<MLTrainingPage />)
-  },
-  // V8 HashSphere - Owner only with platform header
-  {
-    path: '/v8',
-    element: withOwnerAuth(<V8Page />)
+    path: '/resonant-genesis-private',
+    element: withShell(<V8Page />)
   },
   {
     path: '/hash-sphere-test',
