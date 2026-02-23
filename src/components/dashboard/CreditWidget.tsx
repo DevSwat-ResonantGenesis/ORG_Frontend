@@ -14,6 +14,7 @@ interface CreditWidgetProps {
   daysRemaining: number | null;
   burnRate: number | null;
   tier: string | null;
+  unlimited?: boolean;
   onUpgrade?: () => void;
 }
 
@@ -24,6 +25,7 @@ export const CreditWidget: React.FC<CreditWidgetProps> = ({
   daysRemaining,
   burnRate,
   tier,
+  unlimited = false,
   onUpgrade,
 }) => {
   // Check if we have real data
@@ -80,8 +82,8 @@ export const CreditWidget: React.FC<CreditWidgetProps> = ({
 
       <div className={styles.balanceSection}>
         <div className={styles.balanceMain}>
-          <span className={styles.balanceValue}>{formatNumber(balance)}</span>
-          <span className={styles.balanceLabel}>remaining</span>
+          <span className={styles.balanceValue}>{unlimited ? '∞' : formatNumber(balance)}</span>
+          <span className={styles.balanceLabel}>{unlimited ? 'unlimited' : 'remaining'}</span>
         </div>
         <div className={styles.balanceSecondary}>
           of {formatNumber(limit)} monthly

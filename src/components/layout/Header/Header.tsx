@@ -702,7 +702,7 @@ export const Header: React.FC<HeaderProps> = ({
                     
                     <div className={styles.accountMenuDivider} />
                     
-                    {/* V8 Page - Only for superusers/platform owner */}
+                    {/* Superuser/Platform Owner Tools */}
                     {(sessionData?.is_superuser || sessionData?.role === 'platform_owner') && (
                       <>
                         <button className={styles.accountMenuItem} onClick={() => { navigate('/v8'); setShowAccountMenu(false); }}>
@@ -712,18 +712,12 @@ export const Header: React.FC<HeaderProps> = ({
                           </svg>
                           V8 Engine
                         </button>
-                        <button className={styles.accountMenuItem} onClick={() => { navigate('/resonant-genesis-private'); setShowAccountMenu(false); }}>
-                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <path d="M8 1L10 5H14L11 8L12 13L8 10L4 13L5 8L2 5H6L8 1Z" />
-                          </svg>
-                          Genesis Private
-                        </button>
-                        <button className={styles.accountMenuItem} onClick={() => { navigate('/control-plane'); setShowAccountMenu(false); }}>
+                        <button className={styles.accountMenuItem} onClick={() => { navigate('/owner-dashboard?tab=control'); setShowAccountMenu(false); }}>
                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                             <circle cx="8" cy="8" r="2" />
                             <path d="M8 2V4M8 12V14M2 8H4M12 8H14M3.5 3.5L5 5M11 11L12.5 12.5M3.5 12.5L5 11M11 5L12.5 3.5" />
                           </svg>
-                          Control Center
+                          Platform Control
                         </button>
                         <div className={styles.accountMenuDivider} />
                       </>

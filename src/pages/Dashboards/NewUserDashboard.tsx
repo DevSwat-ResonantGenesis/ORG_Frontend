@@ -101,6 +101,7 @@ const NewUserDashboard: React.FC = () => {
           daysRemaining={data.credits.daysRemaining}
           burnRate={data.credits.burnRate}
           tier={data.tier}
+          unlimited={data.credits.unlimited}
           onUpgrade={handleUpgrade}
         />
         <UsageBreakdownChart

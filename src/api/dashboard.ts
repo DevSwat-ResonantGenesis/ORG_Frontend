@@ -12,6 +12,7 @@ export interface DashboardData {
     usedThisMonth: number | null;
     burnRate: number | null;
     daysRemaining: number | null;
+    unlimited?: boolean;
   };
   tier: string | null;
   usageBreakdown: { service: string; credits: number; percentage: number }[];
@@ -235,6 +236,7 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
       usedThisMonth,
       burnRate,
       daysRemaining,
+      unlimited: credits?.unlimited || subscription?.unlimited_credits || false,
     },
     tier,
     usageBreakdown,
