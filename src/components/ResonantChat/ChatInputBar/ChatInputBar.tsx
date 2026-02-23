@@ -958,7 +958,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                     onMouseDown={(e) => e.stopPropagation()}
                     onTouchStart={(e) => e.stopPropagation()}
                   >
-                    <div className={styles.providerDropdownHeader}>Select Provider</div>
+                    <div className={styles.providerDropdownHeader}>SELECT_PROVIDER_V2_LIVE</div>
                     {providerOptions.map((provider) => (
                       <button
                         key={provider}
