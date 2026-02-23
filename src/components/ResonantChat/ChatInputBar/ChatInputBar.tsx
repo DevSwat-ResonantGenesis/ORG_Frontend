@@ -262,7 +262,9 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     return baseRight + codePanelWidth + dividerSafety;
   }, [splitViewEnabled, splitViewWidth, sidebarOpen]);
 
-  const [liveProviders, setLiveProviders] = useState<string[]>(["auto", "openai", "gemini", "anthropic", "groq"]);
+  // Provider data with status
+  const [providerData, setProviderData] = useState<Array<{id: string; name: string; available: boolean; has_user_key?: boolean; uses_credits?: boolean}>>([]);
+  const [providerSearch, setProviderSearch] = useState('');
 
   // Fetch live providers from API
   useEffect(() => {
@@ -272,8 +274,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
         if (response.ok) {
           const data = await response.json();
           if (data.providers && data.providers.length > 0) {
-            const providerIds = ["auto", ...data.providers.map((p: any) => p.id)];
-            setLiveProviders(providerIds);
+            setProviderData(data.providers);
           }
         }
       } catch (error) {
@@ -286,13 +287,11 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   }, []);
 
   const providerOptions = useMemo(() => {
-    const rawProviders =
-      false
-        ? availableProviders
-        : liveProviders;
-
-    const normalized = rawProviders.map(normalizeProvider);
-
+    const providers = providerData.length > 0 
+      ? providerData.map(p => p.id)
+      : ["openai", "gemini", "anthropic", "groq"];
+    
+    const normalized = ["auto", ...providers].map(normalizeProvider);
     const seen = new Set<string>();
     const unique: string[] = [];
     for (const p of normalized) {
@@ -301,13 +300,20 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
         unique.push(p);
       }
     }
-
-    if (!seen.has("auto")) {
-      unique.unshift("auto");
-    }
     return unique;
-  }, [availableProviders, liveProviders]);
-  
+  }, [providerData]);
+
+  const filteredProviders = useMemo(() => {
+    if (!providerSearch.trim()) return providerOptions;
+    const search = providerSearch.toLowerCase();
+    return providerOptions.filter(p => p.toLowerCase().includes(search));
+  }, [providerOptions, providerSearch]);
+
+  const getProviderStatus = (providerId: string) => {
+    if (providerId === 'auto') return { available: true, has_user_key: false, uses_credits: false };
+    const provider = providerData.find(p => normalizeProvider(p.id) === normalizeProvider(providerId));
+    return provider || { available: false, has_user_key: false, uses_credits: false };
+  };
   // Keep valueRef in sync with value prop
   useEffect(() => {
     valueRef.current = value;
@@ -954,83 +960,116 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                   <div
                     ref={providerDropdownRef}
                     className={styles.providerDropdown}
-                    style={providerDropdownStyle}
+                    style={{...providerDropdownStyle, maxHeight: '400px', overflowY: 'auto'}}
                     onMouseDown={(e) => e.stopPropagation()}
                     onTouchStart={(e) => e.stopPropagation()}
                   >
-                    <div className={styles.providerDropdownHeader}>SELECT_PROVIDER_V2_LIVE</div>
-                    {providerOptions.map((provider) => (
+                    <div className={styles.providerDropdownHeader}>Select Provider</div>
+                    {/* Search input */}
+                    <div style={{ padding: '8px 12px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                      <input
+                        type="text"
+                        placeholder="Search providers..."
+                        value={providerSearch}
+                        onChange={(e) => setProviderSearch(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '8px 12px',
+                          background: 'rgba(255,255,255,0.05)',
+                          border: '1px solid rgba(255,255,255,0.1)',
+                          borderRadius: '6px',
+                          color: '#fff',
+                          fontSize: '13px',
+                          outline: 'none',
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </div>
+                    {/* Provider list */}
+                    {filteredProviders.map((provider) => {
+                      const status = getProviderStatus(provider);
+                      return (
+                        <button
+                          key={provider}
+                          type="button"
+                          className={`${styles.providerOption} ${selectedProvider === provider ? styles.selected : ''}`}
+                          style={{ opacity: status.available ? 1 : 0.5 }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (status.available || provider === 'auto') {
+                              onProviderChange(normalizeProvider(provider));
+                              setShowProviderDropdown(false);
+                              setProviderSearch('');
+                            }
+                          }}
+                        >
+                          <span className={styles.providerIcon}>
+                            {provider === 'auto' && <span style={{fontSize: '16px'}}>✨</span>}
+                            {provider === 'openai' && <span style={{fontSize: '16px'}}>��</span>}
+                            {provider === 'gemini' && <span style={{fontSize: '16px'}}>💎</span>}
+                            {provider === 'anthropic' && <span style={{fontSize: '16px'}}>🧠</span>}
+                            {provider === 'groq' && <span style={{fontSize: '16px'}}>⚡</span>}
+                            {provider === 'local' && <span style={{fontSize: '16px'}}>🏠</span>}
+                            {provider === 'codellama' && <span style={{fontSize: '16px'}}>💻</span>}
+                          </span>
+                          <span className={styles.providerName} style={{ flex: 1 }}>
+                            {provider === 'auto' ? 'Auto (Smart)' : provider === 'openai' ? 'ChatGPT' : provider === 'local' ? 'Local LLM' : provider === 'codellama' ? 'CodeLlama' : provider.charAt(0).toUpperCase() + provider.slice(1)}
+                          </span>
+                          {/* Status indicator */}
+                          <span style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '4px',
+                            fontSize: '11px',
+                            color: status.available ? '#4ade80' : '#f87171'
+                          }}>
+                            {status.has_user_key && <span title="Your API Key" style={{color: '#60a5fa'}}>🔑</span>}
+                            {status.uses_credits && <span title="Uses Credits" style={{color: '#fbbf24'}}>💰</span>}
+                            <span style={{
+                              width: '8px',
+                              height: '8px',
+                              borderRadius: '50%',
+                              background: status.available ? '#4ade80' : '#f87171',
+                            }} />
+                          </span>
+                        </button>
+                      );
+                    })}
+                    {/* BYOK Button */}
+                    <div style={{ 
+                      padding: '12px', 
+                      borderTop: '1px solid rgba(255,255,255,0.1)',
+                      marginTop: '8px'
+                    }}>
                       <button
-                        key={provider}
                         type="button"
-                        className={`${styles.providerOption} ${selectedProvider === provider ? styles.selected : ''}`}
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          onProviderChange(normalizeProvider(provider));
                           setShowProviderDropdown(false);
+                          // Navigate to settings/API keys
+                          window.location.href = '/settings?tab=api-keys';
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '10px 16px',
+                          background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                          border: 'none',
+                          borderRadius: '8px',
+                          color: '#fff',
+                          fontSize: '13px',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
                         }}
                       >
-                        <span className={styles.providerIcon}>
-                          {provider === 'auto' && (
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2.34 7.92l2.83 2.83M19.07 4.93l-2.83 2.83M2.34 16.07l2.83-2.83M19.07 19.07l-2.83-2.83" />
-                            </svg>
-                          )}
-                          {provider === 'openai' && (
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z" />
-                            </svg>
-                          )}
-                          {provider === 'gemini' && (
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5" />
-                            </svg>
-                          )}
-                          {provider === 'anthropic' && (
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <circle cx="12" cy="12" r="10" />
-                              <path d="M12 6v6l4 2" />
-                            </svg>
-                          )}
-                          {provider === 'groq' && (
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                            </svg>
-                          )}
-                        </span>
-                        <span className={styles.providerName}>
-                          {provider.charAt(0).toUpperCase() + provider.slice(1)}
-                        </span>
-                        {provider === 'auto' && <span className={styles.providerBadge}>Smart</span>}
-                        {/* Provider Health Stats */}
-                        {provider !== 'auto' && providerStats[provider] && (
-                          <span style={{ 
-                            marginLeft: 'auto', 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            gap: '6px',
-                            fontSize: '10px',
-                          }}>
-                            {/* Health indicator */}
-                            <span style={{
-                              width: '6px',
-                              height: '6px',
-                              borderRadius: '50%',
-                              background: providerStats[provider].health === 'healthy' ? '#22c55e' 
-                                : providerStats[provider].health === 'degraded' ? '#f59e0b' 
-                                : '#ef4444',
-                            }} title={`Health: ${providerStats[provider].health}`} />
-                            {/* Latency */}
-                            {providerStats[provider].latency && (
-                              <span style={{ color: '#888' }}>
-                                {providerStats[provider].latency}ms
-                              </span>
-                            )}
-                          </span>
-                        )}
+                        <span>🔑</span> Add Your API Key (BYOK)
                       </button>
-                    ))}
+                    </div>
                   </div>,
                   document.body
                 )}
