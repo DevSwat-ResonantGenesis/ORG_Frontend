@@ -262,11 +262,34 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     return baseRight + codePanelWidth + dividerSafety;
   }, [splitViewEnabled, splitViewWidth, sidebarOpen]);
 
+  const [liveProviders, setLiveProviders] = useState<string[]>(["auto", "openai", "gemini", "anthropic", "groq"]);
+
+  // Fetch live providers from API
+  useEffect(() => {
+    const fetchProviders = async () => {
+      try {
+        const response = await fetch("/resonant-chat/providers");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.providers && data.providers.length > 0) {
+            const providerIds = ["auto", ...data.providers.map((p: any) => p.id)];
+            setLiveProviders(providerIds);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch providers:", error);
+      }
+    };
+    fetchProviders();
+    const interval = setInterval(fetchProviders, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   const providerOptions = useMemo(() => {
     const rawProviders =
       availableProviders && availableProviders.length > 0
         ? availableProviders
-        : ['auto', 'openai', 'gemini', 'anthropic', 'groq'];
+        : liveProviders;
 
     const normalized = rawProviders.map(normalizeProvider);
 
@@ -279,11 +302,11 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
       }
     }
 
-    if (!seen.has('auto')) {
-      unique.unshift('auto');
+    if (!seen.has("auto")) {
+      unique.unshift("auto");
     }
     return unique;
-  }, [availableProviders]);
+  }, [availableProviders, liveProviders]);
   
   // Keep valueRef in sync with value prop
   useEffect(() => {
