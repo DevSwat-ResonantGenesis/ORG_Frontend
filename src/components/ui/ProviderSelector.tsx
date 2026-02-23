@@ -33,7 +33,7 @@ interface ProviderOption {
   uses_credits?: boolean;
 }
 
-interface ProviderSelectorProps {
+export interface ProviderSelectorProps {
   selectedProvider: Provider;
   onProviderChange: (provider: Provider) => void;
   autoReason?: string;
