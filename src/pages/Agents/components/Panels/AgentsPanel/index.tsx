@@ -451,6 +451,46 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
         <h2><Icons.Agents /> Agent Management</h2>
+        
+        <div className={styles.headerControls}>
+          <div className={styles.searchBox}>
+            <Icons.Search />
+            <input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search agents"
+            />
+            {searchQuery && (
+              <button className={styles.clearBtn} type="button" onClick={() => setSearchQuery('')} title="Clear">
+                <Icons.X />
+              </button>
+            )}
+          </div>
+
+          <select className={styles.filterSelect} value={filter} onChange={(e) => setFilter(e.target.value)}>
+            <option value="all">All</option>
+            <option value="favorites">Favorites</option>
+            <option value="active">Active</option>
+            <option value="idle">Idle</option>
+            <option value="paused">Paused</option>
+            <option value="archived">Archived</option>
+          </select>
+
+          <select className={styles.filterSelect} value={`${sortKey}:${sortDir}`} onChange={(e) => {
+            const [k, d] = String(e.target.value).split(':');
+            setSortKey(k as any);
+            setSortDir(d as any);
+          }}>
+            <option value="name:asc">Name (A→Z)</option>
+            <option value="name:desc">Name (Z→A)</option>
+            <option value="status:asc">Status</option>
+            <option value="executions:desc">Executions (high→low)</option>
+            <option value="executions:asc">Executions (low→high)</option>
+            <option value="costToday:desc">Cost (high→low)</option>
+            <option value="costToday:asc">Cost (low→high)</option>
+          </select>
+        </div>
+
         <div className={styles.headerMeta}>
           <span className={styles.countPill}>{filteredAgents.length}</span>
           <button className={styles.toolbarBtn} type="button" onClick={() => setActiveSection('factory')} title="Create agent">
@@ -467,45 +507,8 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
         </div>
       </div>
 
-      <div className={styles.panelToolbar}>
-        <div className={styles.searchBox}>
-          <Icons.Search />
-          <input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search agents by name"
-          />
-          {searchQuery && (
-            <button className={styles.clearBtn} type="button" onClick={() => setSearchQuery('')} title="Clear">
-              <Icons.X />
-            </button>
-          )}
-        </div>
-
-        <select className={styles.filterSelect} value={filter} onChange={(e) => setFilter(e.target.value)}>
-          <option value="all">All</option>
-          <option value="favorites">Favorites</option>
-          <option value="active">Active</option>
-          <option value="idle">Idle</option>
-          <option value="paused">Paused</option>
-          <option value="archived">Archived</option>
-        </select>
-
-        <select className={styles.filterSelect} value={`${sortKey}:${sortDir}`} onChange={(e) => {
-          const [k, d] = String(e.target.value).split(':');
-          setSortKey(k as any);
-          setSortDir(d as any);
-        }}>
-          <option value="name:asc">Name (A→Z)</option>
-          <option value="name:desc">Name (Z→A)</option>
-          <option value="status:asc">Status</option>
-          <option value="executions:desc">Executions (high→low)</option>
-          <option value="executions:asc">Executions (low→high)</option>
-          <option value="costToday:desc">Cost (high→low)</option>
-          <option value="costToday:asc">Cost (low→high)</option>
-        </select>
-
-        {bulkMode && (
+      {bulkMode && (
+        <div className={styles.panelToolbar}>
           <div className={styles.bulkBar}>
             <span className={styles.bulkCount}>{bulkSelectedCount} selected</span>
             <button className={styles.bulkBtn} type="button" onClick={bulkSelectAll}>Select all</button>
@@ -513,8 +516,8 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
             <button className={styles.bulkBtn} type="button" onClick={bulkArchive} disabled={bulkSelectedCount === 0}>Archive</button>
             <button className={styles.bulkDangerBtn} type="button" onClick={bulkDelete} disabled={bulkSelectedCount === 0}>Delete</button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className={styles.panelContent}>
         <div className={styles.agentsGrid}>

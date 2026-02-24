@@ -5,8 +5,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getSessionData } from '../../utils/auth-cookies';
 import { fetchPlan } from '../../api/pricing';
 import styles from './OwnerDashboard.module.css';
+import V8ControlPanel from '../../components/owner/V8ControlPanel';
+import PlatformStatePhysics from '../../components/owner/PlatformStatePhysics';
 
 // Icons
 const CrownIcon = () => (
@@ -169,7 +172,7 @@ const defaultAgents: RARAAgent[] = [
   { id: '3', name: 'DeployBot-Prime', type: 'Deployment', status: 'idle', tasksCompleted: 0, uptime: '98.5%', cpu: 0, memory: 0, lastTask: 'Waiting...' },
 ];
 
-type TabType = 'overview' | 'users' | 'revenue' | 'agents' | 'monitoring' | 'settings' | 'state-physics' | 'system';
+type TabType = 'overview' | 'users' | 'revenue' | 'agents' | 'monitoring' | 'settings' | 'state-physics' | 'system' | 'v8' | 'control';
 
 interface ServiceHealth {
   name: string;
@@ -245,15 +248,21 @@ const OwnerDashboard: React.FC = () => {
   });
 
   const fetchDashboardData = async () => {
-    const token = localStorage.getItem('owner_token');
-    if (!token) {
-      navigate('/owner-login');
+    const sessionData = getSessionData();
+    const ownerToken = localStorage.getItem('owner_token');
+    const sessionToken = localStorage.getItem('access_token');
+    const authToken = ownerToken || sessionToken;
+    const isSuperuser = sessionData?.is_superuser || sessionData?.role === 'platform_owner';
+    
+    // Allow access if superuser OR has owner_token
+    if (!authToken && !isSuperuser) {
+      navigate('/dashboard');
       return;
     }
 
     try {
       const statsRes = await fetch(`${API_BASE}/owner/auth/dashboard/stats`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization': `Bearer ${authToken}` }
       });
       if (statsRes.ok) {
         const statsData = await statsRes.json();
@@ -270,7 +279,7 @@ const OwnerDashboard: React.FC = () => {
       }
 
       const usersRes = await fetch(`${API_BASE}/owner/auth/dashboard/users`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization': `Bearer ${authToken}` }
       });
       if (usersRes.ok) {
         const usersData = await usersRes.json();
@@ -295,7 +304,7 @@ const OwnerDashboard: React.FC = () => {
 
       // Fetch settings
       const settingsRes = await fetch(`${API_BASE}/owner/auth/settings`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization': `Bearer ${authToken}` }
       });
       if (settingsRes.ok) {
         const settingsData = await settingsRes.json();
@@ -314,7 +323,7 @@ const OwnerDashboard: React.FC = () => {
       // Fetch billing metrics from billing service
       try {
         const billingRes = await fetch(`${API_BASE}/api/v1/billing/metrics`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { 'Authorization': `Bearer ${authToken}` }
         });
         if (billingRes.ok) {
           const billingData = await billingRes.json();
@@ -334,7 +343,7 @@ const OwnerDashboard: React.FC = () => {
       // Fetch auth metrics
       try {
         const authMetricsRes = await fetch(`${API_BASE}/api/v1/auth/metrics`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { 'Authorization': `Bearer ${authToken}` }
         });
         if (authMetricsRes.ok) {
           const authData = await authMetricsRes.json();
@@ -372,13 +381,15 @@ const OwnerDashboard: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem('owner_token');
     localStorage.removeItem('owner_token_expires');
-    navigate('/owner-login');
+    navigate('/dashboard');
   };
 
   const handleSaveSettings = async () => {
-    const token = localStorage.getItem('owner_token');
+    const ownerToken = localStorage.getItem('owner_token');
+    const sessionToken = localStorage.getItem('access_token');
+    const authToken = ownerToken || sessionToken;
     if (!token) {
-      navigate('/owner-login');
+      navigate('/dashboard');
       return;
     }
 
@@ -386,7 +397,7 @@ const OwnerDashboard: React.FC = () => {
       const response = await fetch(`${API_BASE}/owner/auth/settings`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -414,9 +425,11 @@ const OwnerDashboard: React.FC = () => {
   };
 
   const handleResetPassword = async (userId: string, userEmail: string) => {
-    const token = localStorage.getItem('owner_token');
+    const ownerToken = localStorage.getItem('owner_token');
+    const sessionToken = localStorage.getItem('access_token');
+    const authToken = ownerToken || sessionToken;
     if (!token) {
-      navigate('/owner-login');
+      navigate('/dashboard');
       return;
     }
 
@@ -428,7 +441,7 @@ const OwnerDashboard: React.FC = () => {
       const response = await fetch(`${API_BASE}/owner/auth/admin/reset-password/${userId}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
         },
       });
 
@@ -446,9 +459,11 @@ const OwnerDashboard: React.FC = () => {
   };
 
   const handleBlockUser = async (userId: string, userEmail: string, isCurrentlyBlocked: boolean) => {
-    const token = localStorage.getItem('owner_token');
+    const ownerToken = localStorage.getItem('owner_token');
+    const sessionToken = localStorage.getItem('access_token');
+    const authToken = ownerToken || sessionToken;
     if (!token) {
-      navigate('/owner-login');
+      navigate('/dashboard');
       return;
     }
 
@@ -462,7 +477,7 @@ const OwnerDashboard: React.FC = () => {
       const response = await fetch(`${API_BASE}/owner/auth/admin/${endpoint}/${userId}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
         },
       });
 
@@ -482,9 +497,11 @@ const OwnerDashboard: React.FC = () => {
   };
 
   const handleDeleteUser = async (userId: string, userEmail: string) => {
-    const token = localStorage.getItem('owner_token');
+    const ownerToken = localStorage.getItem('owner_token');
+    const sessionToken = localStorage.getItem('access_token');
+    const authToken = ownerToken || sessionToken;
     if (!token) {
-      navigate('/owner-login');
+      navigate('/dashboard');
       return;
     }
 
@@ -500,7 +517,7 @@ const OwnerDashboard: React.FC = () => {
       const response = await fetch(`${API_BASE}/owner/auth/admin/delete-user/${userId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
         },
       });
 
@@ -1382,7 +1399,7 @@ const OwnerDashboard: React.FC = () => {
   }
 
   if (error) {
-    return (<div className={styles.ownerDashboard}><div className={styles.container}><div className={styles.errorState}><div style={{ fontSize: '24px', marginBottom: '16px' }}>⚠️</div><div>{error}</div><button className={styles.logoutBtn} onClick={() => navigate('/owner-login')} style={{ marginTop: '16px' }}>Return to Login</button></div></div></div>);
+    return (<div className={styles.ownerDashboard}><div className={styles.container}><div className={styles.errorState}><div style={{ fontSize: '24px', marginBottom: '16px' }}>⚠️</div><div>{error}</div><button className={styles.logoutBtn} onClick={() => navigate('/dashboard')} style={{ marginTop: '16px' }}>Return to Login</button></div></div></div>);
   }
 
   return (
@@ -1410,6 +1427,8 @@ const OwnerDashboard: React.FC = () => {
           <button className={`${styles.navTab} ${activeTab === 'system' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('system')}>🔧 System Control</button>
           <button className={`${styles.navTab} ${activeTab === 'settings' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('settings')}>Settings</button>
           <button className={`${styles.navTab} ${activeTab === 'state-physics' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('state-physics')}>🌌 State Physics</button>
+          <button className={`${styles.navTab} ${activeTab === 'v8' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('v8')}>⚡ V8 Engine</button>
+          <button className={`${styles.navTab} ${activeTab === 'control' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('control')}>🎛️ Platform Control</button>
           <button className={styles.navTab} onClick={() => window.location.href = '/v8/'}>🔮 V8 HashSphere</button>
         </nav>
 
@@ -1420,7 +1439,9 @@ const OwnerDashboard: React.FC = () => {
         {activeTab === 'monitoring' && renderMonitoring()}
         {activeTab === 'system' && renderSystemControl()}
         {activeTab === 'settings' && renderSettings()}
-        {activeTab === 'state-physics' && renderStatePhysics()}
+        {activeTab === "state-physics" && <PlatformStatePhysics />}
+        {activeTab === 'v8' && <V8ControlPanel />}
+        {activeTab === 'control' && <div style={{ padding: '1.5rem' }}><h2>Platform Control Center</h2><p>Internal agents and daemons monitoring - Coming soon</p></div>}
       </div>
     </div>
   );

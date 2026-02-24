@@ -227,7 +227,7 @@ export default function LoginPageNew() {
         timeout: 15000,
       });
       
-      saveSessionData(email.trim(), data.role, data.org_id, data.user?.id);
+      saveSessionData(email.trim(), data.role, data.org_id, data.user?.id, data.is_superuser || data.role === 'platform_owner');
       
       // Platform owners go to owner dashboard, regular users to resonant-chat
       if (data.role === 'platform_owner') {

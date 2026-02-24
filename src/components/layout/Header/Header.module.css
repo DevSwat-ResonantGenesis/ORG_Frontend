@@ -1423,3 +1423,25 @@
 
 
 
+
+/* Account Menu Section for Dashboard grouping */
+.accountMenuSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 0;
+}
+
+.accountMenuSectionTitle {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 12px 6px;
+  margin: 0;
+}
+
+[data-theme='dark'] .accountMenuSectionTitle {
+  color: #666;
+}

@@ -12,6 +12,7 @@ export interface DashboardData {
     usedThisMonth: number | null;
     burnRate: number | null;
     daysRemaining: number | null;
+    unlimited?: boolean;
   };
   tier: string | null;
   usageBreakdown: { service: string; credits: number; percentage: number }[];
@@ -139,7 +140,7 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     fastapiClient.get('/billing/subscription').catch((e) => { errors.push('subscription'); return { data: null }; }),
     fastapiClient.get('/billing/dashboard/me/breakdown').catch((e) => { errors.push('breakdown'); return { data: null }; }),
     fastapiClient.get('/billing/usage/tokens/history?days=30').catch((e) => { errors.push('history'); return { data: null }; }),
-    fastapiClient.get('/resonant-chat/analytics').catch((e) => { errors.push('analytics'); return { data: null }; }),
+    fastapiClient.get('/analytics').catch((e) => { errors.push('analytics'); return { data: null }; }),
     fastapiClient.get('/usage/metrics').catch((e) => { errors.push('usage_metrics'); return { data: null }; }),
   ]);
 
@@ -235,6 +236,7 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
       usedThisMonth,
       burnRate,
       daysRemaining,
+      unlimited: credits?.unlimited || subscription?.unlimited_credits || false,
     },
     tier,
     usageBreakdown,

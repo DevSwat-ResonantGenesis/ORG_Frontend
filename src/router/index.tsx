@@ -218,10 +218,15 @@ const router = createBrowserRouter([
     path: '/owner',
     element: <Navigate to="/owner-dashboard" replace />
   },
-  // ResonantGenesisPrivate - For superusers only (regular auth)
+  // V8 Engine Page - For superusers only
+  {
+    path: '/v8',
+    element: withShell(<ProtectedRoute><V8Page /></ProtectedRoute>)
+  },
+  // ResonantGenesisPrivate - For superusers only
   {
     path: '/resonant-genesis-private',
-    element: withShell(<V8Page />)
+    element: withShell(<ProtectedRoute><V8Page /></ProtectedRoute>)
   },
   {
     path: '/hash-sphere-test',
@@ -336,6 +341,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: withPublicShell(<LoginPage />)
+  },
+  {
+    path: '/owner-login',
+    element: withPublicShell(<OwnerLoginPage />)
   },
   {
     path: '/auth/oauth/callback',

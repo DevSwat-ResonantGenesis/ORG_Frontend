@@ -325,7 +325,7 @@ const OwnerDashboardComplete: React.FC = () => {
   const fetchData = useCallback(async () => {
     const token = localStorage.getItem('owner_token');
     if (!token) {
-      navigate('/owner-login');
+      navigate('/dashboard');
       return;
     }
 
@@ -576,7 +576,7 @@ const OwnerDashboardComplete: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem('owner_token');
     localStorage.removeItem('owner_token_expires');
-    navigate('/owner-login');
+    navigate('/dashboard');
   };
 
   // RARA Controls - USING REAL BACKEND API

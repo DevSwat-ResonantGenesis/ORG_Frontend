@@ -10,7 +10,6 @@ import {
 } from '@/components/Icons/ProviderIcons';
 import { fetchLiveProviders, formatLatency, type LiveProvider } from '@/api/providers';
 import { logger } from '@/utils/logger';
-import { ENV } from '@/config/env';
 import styles from './ProviderSelector.module.css';
 
 export interface LLMProvider {
@@ -43,20 +42,6 @@ const getProviderIcon = (providerId: string): React.ReactNode => {
   return iconMap[providerId.toLowerCase()] || <AutoIcon />;
 };
 
-const getCapabilityLabel = (capability: string): string => {
-  const labels: Record<string, string> = {
-    'chat': '💬 Chat',
-    'coding': '💻 Coding',
-    'vision': '👁️ Vision',
-    'image': '🎨 Images',
-    'music': '🎵 Music',
-    'video': '🎬 Video',
-    'reasoning': '🧠 Reasoning',
-    'creative': '✨ Creative'
-  };
-  return labels[capability] || capability;
-};
-
 interface ProviderSelectorProps {
   selectedProvider: string;
   onProviderChange: (providerId: string) => void;
@@ -77,100 +62,55 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
     description: 'Smart routing - automatically selects best provider',
   }]);
   const [loading, setLoading] = useState(true);
-  const [wsConnected, setWsConnected] = useState(false);
-  const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const pollIntervalRef = useRef<number | null>(null);
 
-  // WebSocket connection for LIVE provider status updates
+  // Fetch providers via REST API (more reliable than WebSocket through Cloudflare)
+  const loadProviders = async () => {
+    try {
+      const data = await fetchLiveProviders();
+      if (data.providers && data.providers.length > 0) {
+        const liveProviders: LLMProvider[] = [
+          {
+            id: 'auto',
+            name: 'Auto',
+            icon: <AutoIcon />,
+            available: true,
+            description: 'Smart routing - automatically selects best provider',
+          },
+          ...data.providers.map((p: LiveProvider) => ({
+            id: p.id,
+            name: p.name,
+            icon: getProviderIcon(p.id),
+            available: p.available,
+            description: p.model ? `${p.model}` : p.description,
+            capabilities: p.capabilities,
+            latency: p.latency,
+            model: p.model,
+            has_user_key: p.has_user_key,
+            uses_credits: p.uses_credits,
+          }))
+        ];
+        setProviders(liveProviders);
+        logger.info('🔄 Providers loaded:', data.providers.length);
+      }
+    } catch (error) {
+      logger.error('Failed to load providers:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const connectWebSocket = () => {
-      try {
-        // Get WebSocket URL from environment
-        const wsUrl = ENV.wsUrl || 'wss://resonantgenesis.xyz';
-        const wsEndpoint = `${wsUrl}/ws/provider-status`;
-        
-        logger.info('Connecting to provider status WebSocket:', wsEndpoint);
-        
-        const ws = new WebSocket(wsEndpoint);
-        wsRef.current = ws;
-        
-        ws.onopen = () => {
-          logger.info('✅ Provider status WebSocket connected');
-          setWsConnected(true);
-          setLoading(false);
-        };
-        
-        ws.onmessage = (event) => {
-          try {
-            const data = JSON.parse(event.data);
-            
-            if (data.type === 'provider_status') {
-              // Update providers with live data
-              const liveProviders: LLMProvider[] = [
-                {
-                  id: 'auto',
-                  name: 'Auto',
-                  icon: <AutoIcon />,
-                  available: true,
-                  description: 'Smart routing - automatically selects best provider',
-                },
-                ...data.providers.map((p: any) => ({
-                  id: p.id,
-                  name: p.name,
-                  icon: getProviderIcon(p.id),
-                  available: p.available,
-                  description: `${p.model} - ${p.status}`,
-                  capabilities: p.capabilities,
-                  latency: p.latency,
-                  model: p.model,
-                  has_user_key: false,
-                  uses_credits: p.available,
-                }))
-              ];
-              
-              setProviders(liveProviders);
-              logger.info('🔄 Live provider status updated:', data.providers.length);
-            } else if (data.type === 'keepalive' || data.type === 'pong') {
-              // Connection is alive
-            }
-          } catch (error) {
-            logger.error('Failed to parse WebSocket message:', error);
-          }
-        };
-        
-        ws.onerror = (error) => {
-          logger.error('Provider status WebSocket error:', error);
-          setWsConnected(false);
-        };
-        
-        ws.onclose = () => {
-          logger.warn('Provider status WebSocket closed, reconnecting in 5s...');
-          setWsConnected(false);
-          wsRef.current = null;
-          
-          // Reconnect after 5 seconds
-          reconnectTimeoutRef.current = setTimeout(() => {
-            connectWebSocket();
-          }, 5000);
-        };
-      } catch (error) {
-        logger.error('Failed to connect WebSocket:', error);
-        setLoading(false);
-      }
-    };
+    // Initial load
+    loadProviders();
     
-    // Initial connection
-    connectWebSocket();
+    // Poll every 10 seconds for live status
+    pollIntervalRef.current = window.setInterval(loadProviders, 10000);
     
-    // Cleanup on unmount
     return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-        wsRef.current = null;
-      }
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
       }
     };
   }, []);
@@ -203,68 +143,60 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
   };
 
   return (
-    <div className={styles.providerSelector} ref={dropdownRef}>
+    <div className={styles.container} ref={dropdownRef}>
       <button
-        className={`${styles.providerButton} ${showDropdown ? styles.active : ''}`}
+        className={styles.selector}
         onClick={() => setShowDropdown(!showDropdown)}
-        aria-label={`Select LLM provider: ${selectedProviderData.name}`}
-        title={selectedProvider === 'auto' && autoReason ? autoReason : selectedProviderData.description}
+        aria-expanded={showDropdown}
+        aria-haspopup="listbox"
       >
-        <ChevronDownIcon className={styles.chevronIcon} />
-        <span className={styles.providerIcon}>{selectedProviderData.icon}</span>
-        <span className={styles.providerName}>
-          {selectedProviderData.name}
-          {wsConnected && <span className={styles.liveIndicator} title="Live updates">●</span>}
-        </span>
+        <span className={styles.icon}>{selectedProviderData.icon}</span>
+        <span className={styles.name}>{selectedProviderData.name}</span>
+        {selectedProvider === 'auto' && autoReason && (
+          <span className={styles.badge}>SMART</span>
+        )}
+        {selectedProviderData.latency && (
+          <span className={styles.latency}>• {formatLatency(selectedProviderData.latency)}</span>
+        )}
+        <ChevronDownIcon className={styles.chevron} />
       </button>
 
       {showDropdown && (
-        <div className={styles.providerDropdown}>
-          {providers.map((provider) => {
-            const isSelected = selectedProvider === provider.id;
-            const isAvailable = provider.available || provider.id === 'auto';
-
-            return (
+        <div className={styles.dropdown} role="listbox">
+          <div className={styles.dropdownHeader}>SELECT PROVIDER</div>
+          {loading ? (
+            <div className={styles.loading}>Loading providers...</div>
+          ) : (
+            providers.map((provider) => (
               <button
                 key={provider.id}
-                className={`${styles.providerOption} ${
-                  isSelected ? styles.selected : ''
-                } ${!isAvailable ? styles.disabled : ''}`}
+                className={`${styles.option} ${selectedProvider === provider.id ? styles.selected : ''} ${!provider.available && provider.id !== 'auto' ? styles.disabled : ''}`}
                 onClick={() => handleProviderSelect(provider.id)}
-                disabled={!isAvailable}
-                title={provider.description}
+                disabled={!provider.available && provider.id !== 'auto'}
+                role="option"
+                aria-selected={selectedProvider === provider.id}
               >
-                <div className={styles.providerOptionLeft}>
-                  <ChevronDownIcon className={styles.optionChevron} />
-                  <span className={styles.providerOptionIcon}>{provider.icon}</span>
-                  <div className={styles.providerOptionContent}>
-                    <div className={styles.providerOptionName}>
-                      {provider.name}
-                    </div>
-                    {provider.model && (
-                      <div className={styles.providerOptionModel}>
-                        {provider.model}
-                      </div>
-                    )}
-                  </div>
+                <span className={styles.optionIcon}>{provider.icon}</span>
+                <div className={styles.optionContent}>
+                  <span className={styles.optionName}>{provider.name}</span>
+                  {provider.model && (
+                    <span className={styles.optionModel}>{provider.model}</span>
+                  )}
                 </div>
-                <div className={styles.providerOptionRight}>
-                  {provider.has_user_key && (
-                    <span className={styles.badge} title="Using your API key">🔑</span>
+                <div className={styles.optionMeta}>
+                  {provider.id === 'auto' && <span className={styles.badge}>SMART</span>}
+                  {provider.latency && (
+                    <span className={styles.latency}>• {formatLatency(provider.latency)}</span>
                   )}
-                  {provider.uses_credits && (
-                    <span className={styles.badge} title="Using platform credits">💳</span>
+                  {provider.has_user_key && <span className={styles.byokBadge}>BYOK</span>}
+                  {!provider.uses_credits && provider.id !== 'auto' && (
+                    <span className={styles.freeBadge}>FREE</span>
                   )}
-                  {isSelected && (
-                    <CheckmarkIcon className={styles.checkmark} />
-                  )}
-                  {!isAvailable && (
-                    <span className={styles.comingSoon}>UNAVAILABLE</span>
-                  )}
+                  {selectedProvider === provider.id && <CheckmarkIcon className={styles.checkmark} />}
                 </div>
               </button>
-            );
-          })}
+            ))
+          )}
         </div>
       )}
     </div>
@@ -272,3 +204,4 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
 };
 
 export default ProviderSelector;
+// Cache bust: 1771830595
