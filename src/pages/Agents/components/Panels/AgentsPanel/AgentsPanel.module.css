@@ -13,37 +13,37 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 16px;
+  padding: 6px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .headerMeta {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .countPill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 22px;
-  height: 22px;
-  padding: 0 8px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(0, 0, 0, 0.25);
   color: rgba(255, 255, 255, 0.8);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .panelHeader h2 {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -77,9 +77,10 @@
 .panelToolbar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: 8px;
+  padding: 8px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-wrap: wrap;
 }
 
 .bulkBar {
@@ -128,12 +129,13 @@
 .searchBox {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex: 1;
-  padding: 6px 10px;
+  min-width: 200px;
+  padding: 4px 8px;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .clearBtn {
@@ -162,13 +164,13 @@
 .toolbarBtn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border-radius: 8px;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
   border: 1px solid rgba(14, 165, 233, 0.3);
   background: rgba(14, 165, 233, 0.12);
   color: #0ea5e9;
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
 }
 
@@ -178,8 +180,8 @@
 }
 
 .toolbarBtn svg {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
 }
 
 .searchBox input {
@@ -196,14 +198,15 @@
 }
 
 .filterSelect {
-  padding: 4px 8px;
+  padding: 4px 6px;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  border-radius: 6px;
   color: #fff;
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
-  min-width: 100px;
+  min-width: auto;
+  height: 28px;
 }
 
 .panelContent {
@@ -215,9 +218,9 @@
 /* Agent Grid */
 .agentsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 10px;
-  padding: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  padding: 10px;
 }
 
 .agentCard {
@@ -225,13 +228,12 @@
   display: flex;
   flex-direction: column;
   padding: 0;
-  margin-bottom: 4px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .agentCard:hover {
@@ -273,25 +275,25 @@
 /* Card header */
 .cardHeader {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px 10px;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 10px 6px;
 }
 
 .cardTopActions {
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .pinBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.04);
   color: rgba(255, 255, 255, 0.75);
@@ -319,17 +321,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  min-width: 28px;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
   background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(168, 85, 247, 0.2));
-  border-radius: 8px;
+  border-radius: 6px;
   color: #0ea5e9;
 }
 
 .agentIcon svg {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
 }
 
 .agentInfo {
@@ -340,27 +342,28 @@
 
 .agentInfo h3 {
   margin: 0;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 80px;
 }
 
 /* Card stats */
 .cardStats {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 0 10px 6px;
+  gap: 8px;
+  padding: 0 10px 4px;
 }
 
 .stat {
   display: flex;
   align-items: center;
   gap: 2px;
-  font-size: 9px;
-  color: #777;
+  font-size: 10px;
+  color: #888;
 }
 
 .stat svg {
@@ -373,27 +376,23 @@
 .cardActions {
   display: flex;
   justify-content: center;
-  gap: 4px;
-  padding: 8px;
+  gap: 3px;
+  padding: 6px;
   background: rgba(0, 0, 0, 0.2);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 0 0 12px 12px;
-  flex-wrap: nowrap;
-  overflow: visible;
-  position: relative;
-  z-index: 1;
+  border-radius: 0 0 10px 10px;
 }
 
 .actionBtn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  min-width: 24px;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
+  border-radius: 4px;
   color: #888;
   cursor: pointer;
   transition: all 0.15s;
@@ -407,8 +406,8 @@
 }
 
 .actionBtn svg {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
 }
 
 /* Legacy styles kept for compatibility */
@@ -460,13 +459,13 @@
 
 .typeBadge {
   display: inline-block;
-  padding: 1px 5px;
+  padding: 1px 4px;
   background: rgba(168, 85, 247, 0.15);
   border-radius: 3px;
   font-size: 8px;
   color: #a855f7;
   text-transform: uppercase;
-  margin-top: 2px;
+  letter-spacing: 0.3px;
 }
 
 .agentMeta {
@@ -487,16 +486,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   background: rgba(34, 197, 94, 0.15);
   border-radius: 4px;
   color: #22c55e;
 }
 
 .modeBadge svg {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
 }
 
 .modeBadge.unbounded {
