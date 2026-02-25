@@ -33,6 +33,7 @@ const MonitorPanelComponent: React.FC<MonitorPanelProps> = ({ className }) => {
   const [autonomyStatus, setAutonomyStatus] = useState<AutonomyStatus | null>(null);
   const [autonomyStats, setAutonomyStats] = useState<AutonomyStats | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [platformHealth, setPlatformHealth] = useState<any>(null);
   const [systemMetrics, setSystemMetrics] = useState<SystemMetrics>({
     cpu: 0, memory: 0, network: 0, disk: 0,
     uptime: 'Loading...', lastRestart: new Date(),
