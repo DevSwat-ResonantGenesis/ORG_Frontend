@@ -11,7 +11,7 @@ import styles from './OwnerDashboard.module.css';
 import V8ControlPanel from '../../components/owner/V8ControlPanel';
 import PlatformStatePhysics from '../../components/owner/PlatformStatePhysics';
 import DaemonControlPanel from '../../components/owner/DaemonControlPanel';
-import { getSystemMetrics, getServiceHealth, getDatabaseStats, getRaraAgents, getSystemOverview, SystemMetrics, ServiceHealthResponse, DatabaseStats, RaraData } from '../../api/system';
+import { getSystemMetrics, getServiceHealth, getDatabaseStats, getRaraAgents, getSystemOverview, getPlatformUsers, getPlatformAnalytics, getRecentActivity, getV8Data, SystemMetrics, ServiceHealthResponse, DatabaseStats, RaraData, PlatformAnalytics, ActivityResponse, V8Data } from '../../api/system';
 
 // Icons
 const CrownIcon = () => (
@@ -219,6 +219,9 @@ const OwnerDashboard: React.FC = () => {
   const [realServices, setRealServices] = useState<ServiceHealthResponse | null>(null);
   const [realDbStats, setRealDbStats] = useState<DatabaseStats | null>(null);
   const [realRara, setRealRara] = useState<RaraData | null>(null);
+  const [realAnalytics, setRealAnalytics] = useState<PlatformAnalytics | null>(null);
+  const [realActivity, setRealActivity] = useState<ActivityResponse | null>(null);
+  const [realV8, setRealV8] = useState<V8Data | null>(null);
 
   const [authMetrics, setAuthMetrics] = useState<AuthMetrics>({
     loginSuccess: 0,
@@ -362,16 +365,18 @@ const OwnerDashboard: React.FC = () => {
 
       // Fetch real system metrics from backend
       try {
-        const [metricsData, servicesData, dbData, raraData] = await Promise.all([
+        const [metricsData, servicesData, dbData, raraData, analyticsData, activityData, v8DataRes] = await Promise.all([
           getSystemMetrics().catch(() => null),
           getServiceHealth().catch(() => null),
           getDatabaseStats().catch(() => null),
           getRaraAgents().catch(() => null),
+          getPlatformAnalytics().catch(() => null),
+          getRecentActivity().catch(() => null),
+          getV8Data().catch(() => null),
         ]);
         if (metricsData) setRealMetrics(metricsData);
         if (servicesData) {
           setRealServices(servicesData);
-          // Also update the legacy serviceHealth state for monitoring tab
           setServiceHealth(servicesData.services.map(s => ({
             name: s.name,
             status: s.status as 'healthy' | 'degraded' | 'down',
@@ -381,9 +386,22 @@ const OwnerDashboard: React.FC = () => {
           })));
         }
         if (dbData) setRealDbStats(dbData);
+        if (analyticsData) {
+          setRealAnalytics(analyticsData);
+          // Update stats with real analytics data
+          setStats(prev => ({
+            ...prev,
+            totalUsers: analyticsData.total_users || prev.totalUsers,
+            activeUsers: analyticsData.active_users_24h || prev.activeUsers,
+            creditsConsumed: analyticsData.credits_consumed || prev.creditsConsumed,
+            apiCalls: analyticsData.api_calls_30d || prev.apiCalls,
+            conversionRate: analyticsData.conversion_rate || prev.conversionRate,
+          }));
+        }
+        if (activityData) setRealActivity(activityData);
+        if (v8DataRes) setRealV8(v8DataRes);
         if (raraData) {
           setRealRara(raraData);
-          // Update agents from real RARA data
           if (raraData.agents && raraData.agents.length > 0) {
             setAgents(raraData.agents.map((a: any, i: number) => ({
               id: a.id || String(i),
@@ -392,8 +410,8 @@ const OwnerDashboard: React.FC = () => {
               status: (a.status === 'active' || a.is_active) ? 'active' as const : 'idle' as const,
               tasksCompleted: a.tasks_completed || a.stats?.tasks_completed || 0,
               uptime: a.uptime || 'N/A',
-              cpu: a.cpu || 0,
-              memory: a.memory || 0,
+              cpu: a.cpu_usage || a.cpu || 0,
+              memory: a.memory_usage || a.memory || 0,
               lastTask: a.last_task || a.last_action || 'N/A',
             })));
           }
@@ -716,27 +734,29 @@ const OwnerDashboard: React.FC = () => {
         <div className={styles.card}>
           <h3 className={styles.cardTitle}><ActivityIcon /> Recent Activity</h3>
           <div className={styles.activityLog}>
-            <div className={styles.activityItem}>
-              <div className={`${styles.activityIcon} ${styles.statIconGreen}`}><UsersIcon /></div>
-              <div className={styles.activityContent}>
-                <div className={styles.activityText}>New enterprise signup: TechCorp Inc.</div>
-                <div className={styles.activityTime}>2 minutes ago</div>
-              </div>
-            </div>
-            <div className={styles.activityItem}>
-              <div className={`${styles.activityIcon} ${styles.statIconBlue}`}><DollarIcon /></div>
-              <div className={styles.activityContent}>
-                <div className={styles.activityText}>Credit top-up: $80 from sarah@startup.io</div>
-                <div className={styles.activityTime}>15 minutes ago</div>
-              </div>
-            </div>
-            <div className={styles.activityItem}>
-              <div className={`${styles.activityIcon} ${styles.statIconPurple}`}><BotIcon /></div>
-              <div className={styles.activityContent}>
-                <div className={styles.activityText}>RARA Agent completed 50 tasks</div>
-                <div className={styles.activityTime}>2 hours ago</div>
-              </div>
-            </div>
+            {realActivity && realActivity.activities.length > 0 ? (
+              realActivity.activities.map((activity, idx) => (
+                <div key={idx} className={styles.activityItem}>
+                  <div className={`${styles.activityIcon} ${
+                    activity.category === 'agents' ? styles.statIconPurple :
+                    activity.category === 'v8' ? styles.statIconOrange :
+                    activity.category === 'system' ? styles.statIconGreen :
+                    styles.statIconBlue
+                  }`}>
+                    {activity.category === 'agents' ? <BotIcon /> :
+                     activity.category === 'v8' ? <CpuIcon /> :
+                     activity.category === 'system' ? <ServerIcon /> :
+                     <ActivityIcon />}
+                  </div>
+                  <div className={styles.activityContent}>
+                    <div className={styles.activityText}>{activity.message}</div>
+                    <div className={styles.activityTime}>{new Date(activity.timestamp).toLocaleString()}</div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div style={{ color: '#64748b', textAlign: 'center', padding: '20px' }}>Loading activity...</div>
+            )}
           </div>
         </div>
       </div>
@@ -1493,4 +1513,3 @@ const OwnerDashboard: React.FC = () => {
 };
 
 export default OwnerDashboard;
-

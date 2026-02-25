@@ -45,46 +45,149 @@ export interface DatabaseStats {
 }
 
 export interface RaraData {
-  agents: any[];
-  agent_count: number;
+  agents: RaraAgent[];
+  total_agents: number;
   governance: any;
-  kill_switch: any;
+  kill_switch_active: boolean;
   health: any;
   timestamp: string;
 }
 
+export interface RaraAgent {
+  id: string;
+  name: string;
+  type: string;
+  status: string;
+  tasks_completed: number;
+  uptime: string;
+  cpu_usage: number;
+  memory_usage: number;
+  last_task: string;
+  capabilities: number;
+  trust_score: number;
+}
+
 export interface SystemOverview {
-  system?: { cpu_percent: number; memory_percent: number; memory_used_gb: number };
-  services?: { total: number; online: number; healthy: number };
+  system?: { cpu_percent: number; memory_percent: number; disk_percent: number };
+  services?: { total: number; healthy: number; offline: number };
+  agents?: { total: number; active: number };
+  users?: { total: number; active_24h?: number };
   timestamp: string;
 }
 
+export interface PlatformUser {
+  id: string;
+  email: string;
+  username: string;
+  full_name: string;
+  status: string;
+  is_active: boolean;
+  is_superuser: boolean;
+  mfa_enabled: boolean;
+  email_verified: boolean;
+  last_login_at: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface UsersResponse {
+  users: PlatformUser[];
+  total: number;
+  error?: string;
+}
+
+export interface PlatformAnalytics {
+  credits_consumed: number;
+  api_calls_30d: number;
+  api_calls_24h: number;
+  conversion_rate: number;
+  total_users: number;
+  active_users_24h: number;
+  paid_users: number;
+  revenue_30d: number;
+  avg_response_time_ms: number;
+  error_rate_24h: number;
+  active_connections: number;
+  timestamp: string;
+}
+
+export interface ActivityItem {
+  type: string;
+  message: string;
+  timestamp: string;
+  category: string;
+}
+
+export interface ActivityResponse {
+  activities: ActivityItem[];
+  total: number;
+  timestamp: string;
+}
+
+export interface V8Data {
+  status: { version?: string; trained?: boolean; vocab_size?: number; max_vocab_size?: number; forbidden_count?: number; anchors_count?: number; pending_vocab?: number; status?: string };
+  formula: { resonance_scale?: number; spin_factor?: number; energy_decay?: number; cluster_threshold?: number };
+  forbidden: string[];
+  corpus: any;
+  timestamp: string;
+}
+
+function authHeaders(): Record<string, string> {
+  const token = localStorage.getItem('owner_token');
+  if (token) return { 'Authorization': `Bearer ${token}` };
+  return {};
+}
+
 export async function getSystemMetrics(): Promise<SystemMetrics> {
-  const res = await fetch(`${API_BASE}/owner/dashboard/system/metrics`);
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/metrics`, { headers: authHeaders() });
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }
 
 export async function getServiceHealth(): Promise<ServiceHealthResponse> {
-  const res = await fetch(`${API_BASE}/owner/dashboard/system/services`);
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/services`, { headers: authHeaders() });
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }
 
 export async function getDatabaseStats(): Promise<DatabaseStats> {
-  const res = await fetch(`${API_BASE}/owner/dashboard/system/database`);
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/database`, { headers: authHeaders() });
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }
 
 export async function getRaraAgents(): Promise<RaraData> {
-  const res = await fetch(`${API_BASE}/owner/dashboard/system/rara`);
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/rara`, { headers: authHeaders() });
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }
 
 export async function getSystemOverview(): Promise<SystemOverview> {
-  const res = await fetch(`${API_BASE}/owner/dashboard/system/overview`);
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/overview`, { headers: authHeaders() });
+  if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
+  return res.json();
+}
+
+export async function getPlatformUsers(): Promise<UsersResponse> {
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/users`, { headers: authHeaders() });
+  if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
+  return res.json();
+}
+
+export async function getPlatformAnalytics(): Promise<PlatformAnalytics> {
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/analytics`, { headers: authHeaders() });
+  if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
+  return res.json();
+}
+
+export async function getRecentActivity(): Promise<ActivityResponse> {
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/activity`, { headers: authHeaders() });
+  if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
+  return res.json();
+}
+
+export async function getV8Data(): Promise<V8Data> {
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/v8`, { headers: authHeaders() });
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }

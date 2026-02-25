@@ -461,7 +461,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     } catch (err: any) {
       toast.error(err.message || 'Failed to clone agent');
     }
-  }, [toast, setAgents]);
+  }, [toast, addAgent]);
 
   const copyAgentHash = useCallback((agent: Agent) => {
     const hash = agent.hash || agent.id;

@@ -19,13 +19,11 @@ interface V8Status {
 }
 
 interface FormulaParams {
-  spin_weights: number[];
-  energy_multiplier: number;
-  energy_min: number;
-  energy_max: number;
-  radius_base: number;
-  radius_scale: number;
-  cluster_thresholds: Record<string, unknown>;
+  resonance_scale: number;
+  spin_factor: number;
+  energy_decay: number;
+  cluster_threshold: number;
+  [key: string]: unknown;
 }
 
 interface CorpusFile {
@@ -180,14 +178,13 @@ const V8ControlPanel: React.FC = () => {
 
       {activeTab === 'formula' && formula && (
         <div style={{ display: 'grid', gap: '1rem' }}>
-          <FormulaRow title="Spin Weights" value={(formula.spin_weights || []).join(', ') || 'N/A'} />
-          <FormulaRow title="Energy Multiplier" value={String(formula.energy_multiplier)} />
-          <FormulaRow title="Energy Range" value={formula.energy_min + ' - ' + formula.energy_max} />
-          <FormulaRow title="Radius Base" value={String(formula.radius_base)} />
-          <FormulaRow title="Radius Scale" value={String(formula.radius_scale)} />
+          <FormulaRow title="Resonance Scale" value={String(formula.resonance_scale ?? 'N/A')} description="Controls the overall resonance field magnitude" />
+          <FormulaRow title="Spin Factor" value={String(formula.spin_factor ?? 'N/A')} description="Weight applied to spin vector calculations" />
+          <FormulaRow title="Energy Decay" value={String(formula.energy_decay ?? 'N/A')} description="Rate of energy dissipation per cycle" />
+          <FormulaRow title="Cluster Threshold" value={String(formula.cluster_threshold ?? 'N/A')} description="Minimum distance for cluster boundary detection" />
           <div style={{ padding: '1rem', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-            <h4 style={{ margin: '0 0 0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Cluster Thresholds</h4>
-            <pre style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-primary)', whiteSpace: 'pre-wrap' }}>{JSON.stringify(formula.cluster_thresholds, null, 2)}</pre>
+            <h4 style={{ margin: '0 0 0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Raw Formula JSON</h4>
+            <pre style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-primary)', whiteSpace: 'pre-wrap' }}>{JSON.stringify(formula, null, 2)}</pre>
           </div>
         </div>
       )}
@@ -202,10 +199,13 @@ const StatCard: React.FC<{ label: string; value: string; color?: string }> = ({ 
   </div>
 );
 
-const FormulaRow: React.FC<{ title: string; value: string }> = ({ title, value }) => (
+const FormulaRow: React.FC<{ title: string; value: string; description?: string }> = ({ title, value, description }) => (
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-    <span style={{ color: 'var(--text-secondary)' }}>{title}</span>
-    <span style={{ fontFamily: 'monospace', color: '#6366f1' }}>{value}</span>
+    <div>
+      <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{title}</span>
+      {description && <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: '2px' }}>{description}</div>}
+    </div>
+    <span style={{ fontFamily: 'monospace', color: '#6366f1', fontSize: '1.1rem', fontWeight: 600 }}>{value}</span>
   </div>
 );
 
