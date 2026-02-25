@@ -158,6 +158,13 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
         </button>
       </div>
 
+      <div className={styles.statsBar}>
+        <span><strong>{sessions.length}</strong> Total</span>
+        <span><strong>{sessions.filter(s => s.status === 'running').length}</strong> Running</span>
+        <span><strong>{sessions.filter(s => s.status === 'completed').length}</strong> Completed</span>
+        <span><strong>{sessions.reduce((sum, s) => sum + (s.total_tokens_used || 0), 0).toLocaleString()}</strong> Tokens</span>
+      </div>
+
       {error && (
         <div className={styles.errorBanner}>
           <Icons.AlertTriangle /> {error}
