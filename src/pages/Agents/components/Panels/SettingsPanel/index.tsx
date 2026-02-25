@@ -602,7 +602,11 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
 
             {/* Save Button */}
             <div className={styles.saveSection}>
-              <button className={styles.saveBtn}>
+              <button className={styles.saveBtn} onClick={() => {
+                localStorage.setItem('agentOS_settings', JSON.stringify(settings));
+                const btn = document.activeElement as HTMLButtonElement;
+                if (btn) { btn.textContent = '✓ Saved!'; setTimeout(() => { btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Save Changes'; }, 1500); }
+              }}>
                 <Icons.Check /> Save Changes
               </button>
             </div>
