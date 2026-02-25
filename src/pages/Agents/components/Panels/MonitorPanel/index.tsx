@@ -34,6 +34,17 @@ const MonitorPanelComponent: React.FC<MonitorPanelProps> = ({ className }) => {
   const [autonomyStats, setAutonomyStats] = useState<AutonomyStats | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [platformHealth, setPlatformHealth] = useState<any>(null);
+
+  const handleExportMetrics = () => {
+    const exportData = { exported_at: new Date().toISOString(), systemMetrics, platformHealth };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'system-metrics-' + new Date().toISOString().split('T')[0] + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
   const [systemMetrics, setSystemMetrics] = useState<SystemMetrics>({
     cpu: 0, memory: 0, network: 0, disk: 0,
     uptime: 'Loading...', lastRestart: new Date(),
@@ -151,6 +162,9 @@ const MonitorPanelComponent: React.FC<MonitorPanelProps> = ({ className }) => {
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
         <h2><Icons.Activity /> System Monitor</h2>
+        <button onClick={handleExportMetrics} style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#94a3b8', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <Icons.Download /> Export
+        </button>
         <div className={styles.headerRight}>
           <span className={styles.liveIndicator}>
             <span className={styles.liveDot}></span>
