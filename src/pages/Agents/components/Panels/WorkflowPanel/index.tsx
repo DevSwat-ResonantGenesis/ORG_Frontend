@@ -399,6 +399,15 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
         {/* List View */}
         {activeView === 'list' && (
           <>
+            {workflowStats && (
+              <div className={styles.statsBar}>
+                <span><strong>{workflowStats.total_workflows}</strong> Total</span>
+                <span><strong>{workflowStats.published}</strong> Published</span>
+                <span><strong>{workflowStats.draft}</strong> Draft</span>
+                <span><strong>{workflowStats.success_rate}%</strong> Success</span>
+                <span><strong>{workflowStats.total_executions}</strong> Runs</span>
+              </div>
+            )}
             <div className={styles.createSection}>
               <input
                 type="text"
