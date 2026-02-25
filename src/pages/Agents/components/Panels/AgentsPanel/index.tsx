@@ -29,7 +29,7 @@ interface AgentMessage {
 const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const agents = useAgentStore(selectAgents);
   const selectedAgent = useAgentStore(selectSelectedAgent);
-  const { selectAgent, startAgent, stopAgent, pauseAgent, archiveAgent, updateAgent, removeAgent } = useAgentStore();
+  const { selectAgent, startAgent, stopAgent, pauseAgent, archiveAgent, updateAgent, removeAgent, addAgent } = useAgentStore();
   const isLoadingAgents = useAgentStore((s) => s.loading);
   const setActiveSection = useUIStore((s) => s.setActiveSection);
   const pinnedAgentIds = useUIStore((s) => s.pinnedAgentIds);
@@ -421,7 +421,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
         toast.error('Failed to copy');
       }
     })();
-  }, [toast]);
+  }, [toast, addAgent]);
 
   // Clone agent
   const handleCloneAgent = useCallback(async (agent: Agent) => {
@@ -437,8 +437,27 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
         tools: agent.capabilities || [],
       });
       toast.success('Agent cloned: ' + cloned.name);
-      // Trigger a reload by refreshing the page agents
-      window.dispatchEvent(new CustomEvent('agents-refresh'));
+      // Add the cloned agent to the store
+      addAgent({
+        id: cloned.id,
+        hash: '0x' + cloned.id.replace(/-/g, '').slice(0, 40),
+        persisted: true,
+        name: cloned.name,
+        type: 'executor',
+        status: 'idle' as const,
+        mode: 'governed' as const,
+        version: String(cloned.version || 1) + '.0.0',
+        capabilities: [],
+        executions: 0, costToday: 0, walletBalance: 0, pendingApprovals: 0,
+        riskLevel: 'low' as const, utilityScore: 0.5, ownerId: '',
+        config: {
+          provider: 'openai', model: cloned.model || 'gpt-4-turbo-preview',
+          systemPrompt: '', temperature: 0.7, maxTokens: 4096, tools: [],
+          memoryConfig: { shortTermLimit: 10, longTermEnabled: false, vectorStoreEnabled: false, contextWindow: 4096 },
+          autonomyConfig: { canSpawnSubAgents: false, canModifySelf: false, canAccessNetwork: false, canExecuteCode: false, maxConcurrentTasks: 5 },
+        },
+        createdAt: new Date(), updatedAt: new Date(),
+      });
     } catch (err: any) {
       toast.error(err.message || 'Failed to clone agent');
     }
