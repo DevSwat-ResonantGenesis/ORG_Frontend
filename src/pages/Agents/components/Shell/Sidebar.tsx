@@ -6,6 +6,7 @@ import styles from './Sidebar.module.css';
 
 const SIDEBAR_SECTIONS: { id: SidebarSection; label: string; icon: React.ReactNode }[] = [
   { id: 'agents', label: 'Agents', icon: <Icons.Agents /> },
+  { id: 'sessions', label: 'Sessions', icon: <Icons.Execution /> },
   { id: 'factory', label: 'Factory', icon: <Icons.Factory /> },
   { id: 'capabilities', label: 'Capabilities', icon: <Icons.Capabilities /> },
   { id: 'utility', label: 'Utility', icon: <Icons.Execution /> },
