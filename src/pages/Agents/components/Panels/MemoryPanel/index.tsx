@@ -130,6 +130,62 @@ const MemoryPanelComponent: React.FC<MemoryPanelProps> = ({ className }) => {
     }
   };
 
+  // Clear short-term memories
+  const handleClearShortTerm = async () => {
+    if (!selectedAgentId || !confirm('Clear all short-term memories for this agent?')) return;
+    setIsLoading(true);
+    try {
+      // Delete all current short-term memories
+      for (const mem of memories) {
+        try { await memoryApi.deleteMemory(mem.id); } catch {}
+      }
+      await fetchMemories();
+    } catch (err: any) {
+      setError(err.message || 'Failed to clear memories');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Export all memories as JSON
+  const handleExportAll = () => {
+    const exportData = {
+      agent_id: selectedAgentId,
+      exported_at: new Date().toISOString(),
+      memories: memories.map(m => ({ id: m.id, content: m.content, created_at: m.created_at })),
+      anchors: anchors.map(a => ({ id: a.id, content: a.content, anchor_type: a.anchor_type })),
+      stats,
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `agent-memory-${selectedAgentId}-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Sync vector store
+  const handleSyncVectorStore = async () => {
+    if (!selectedAgentId) return;
+    setIsLoading(true);
+    try {
+      // Re-fetch with vector search enabled to trigger re-indexing
+      await memoryApi.retrieveMemories({
+        user_id: selectedAgentId,
+        query: '',
+        limit: 100,
+        use_vector_search: true,
+      });
+      await fetchStats();
+      await fetchAnchors();
+    } catch (err: any) {
+      setError(err.message || 'Failed to sync vector store');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
@@ -248,13 +304,13 @@ const MemoryPanelComponent: React.FC<MemoryPanelProps> = ({ className }) => {
 
         {/* Actions */}
         <div className={styles.actionsBar}>
-          <button className={styles.clearBtn}>
+          <button className={styles.clearBtn} onClick={handleClearShortTerm} disabled={!selectedAgentId || isLoading}>
             <Icons.Trash /> Clear Short-Term
           </button>
-          <button className={styles.exportBtn}>
+          <button className={styles.exportBtn} onClick={handleExportAll} disabled={!selectedAgentId || memories.length === 0}>
             <Icons.Download /> Export All
           </button>
-          <button className={styles.syncBtn}>
+          <button className={styles.syncBtn} onClick={handleSyncVectorStore} disabled={!selectedAgentId || isLoading}>
             <Icons.Refresh /> Sync Vector Store
           </button>
         </div>
