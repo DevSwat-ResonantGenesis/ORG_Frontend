@@ -2,6 +2,7 @@ import React, { memo, useState, useEffect, useCallback } from 'react';
 import { useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import * as executionsApi from '../../../../../api/executions';
+import fastapiClient from '../../../../../api/fastapiClient';
 import styles from './DebugPanel.module.css';
 
 // ============== DEBUG PANEL ==============
@@ -63,8 +64,26 @@ const DebugPanelComponent: React.FC<DebugPanelProps> = ({ className }) => {
   const [logFilter, setLogFilter] = useState<'all' | 'debug' | 'info' | 'warn' | 'error'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Real logs from console capture (empty initially, populated by observability system)
+  // Real logs from backend + console capture
   const [logs, setLogs] = useState<LogEntry[]>([]);
+
+  // Fetch real agent logs from backend
+  useEffect(() => {
+    if (!selectedAgentId) return;
+    fastapiClient.get('/api/v1/agents/' + selectedAgentId + '/logs?limit=30')
+      .then(res => {
+        if (res.data && Array.isArray(res.data)) {
+          setLogs(res.data.map((l: any) => ({
+            id: l.id,
+            timestamp: new Date(l.timestamp),
+            level: l.level as any,
+            source: l.source || 'agent',
+            message: l.message,
+          })));
+        }
+      })
+      .catch(() => {});
+  }, [selectedAgentId]);
   const [networkRequests, setNetworkRequests] = useState<Array<{
     id: string;
     method: string;
