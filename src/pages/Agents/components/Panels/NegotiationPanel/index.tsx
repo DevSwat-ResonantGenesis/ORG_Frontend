@@ -344,6 +344,18 @@ const NegotiationPanelComponent: React.FC<NegotiationPanelProps> = ({ className 
                         <div className={styles.voteBar}>
                           <span className={styles.voteFor}>For: {p.votes_for}</span>
                           <span className={styles.voteAgainst}>Against: {p.votes_against}</span>
+                          {p.status === 'pending' && (
+                            <>
+                              <button style={{ padding: '2px 8px', background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '4px', color: '#22c55e', fontSize: '10px', cursor: 'pointer', marginLeft: '8px' }}
+                                onClick={() => setProposals(prev => prev.map(pr => pr.id === p.id ? { ...pr, votes_for: pr.votes_for + 1 } : pr))}>
+                                Vote For
+                              </button>
+                              <button style={{ padding: '2px 8px', background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '4px', color: '#ef4444', fontSize: '10px', cursor: 'pointer' }}
+                                onClick={() => setProposals(prev => prev.map(pr => pr.id === p.id ? { ...pr, votes_against: pr.votes_against + 1 } : pr))}>
+                                Vote Against
+                              </button>
+                            </>
+                          )}
                         </div>
                       </div>
                     ))}
