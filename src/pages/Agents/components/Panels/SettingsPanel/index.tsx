@@ -521,6 +521,41 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
               </div>
             )}
 
+            {/* Developer API Keys */}
+            {activeTab === 'developer' && (
+              <div className={styles.settingsSection}>
+                <h3>Developer API Keys</h3>
+                <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '12px' }}>Manage API keys for programmatic access to the platform.</p>
+                <button className={styles.saveBtn} onClick={handleRegenerateKey} style={{ marginBottom: '16px', padding: '8px 16px' }}>
+                  <Icons.Plus /> Create New Key
+                </button>
+                {apiKeys.length === 0 && (
+                  <div style={{ padding: '20px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}>No API keys yet. Create one to get started.</div>
+                )}
+                {apiKeys.map((key: any) => (
+                  <div key={key.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', marginBottom: '8px' }}>
+                    <div>
+                      <div style={{ fontWeight: 600, color: '#e2e8f0', fontSize: '13px' }}>{key.name}</div>
+                      <code style={{ fontSize: '11px', color: '#94a3b8' }}>{key.key?.slice(0, 20)}...</code>
+                      <div style={{ fontSize: '10px', color: '#64748b', marginTop: '2px' }}>
+                        Created: {key.created_at ? new Date(key.created_at).toLocaleDateString() : 'N/A'} | Permissions: {(key.permissions || []).join(', ')}
+                      </div>
+                    </div>
+                    <button style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '6px', color: '#ef4444', padding: '4px 10px', fontSize: '11px', cursor: 'pointer' }}
+                      onClick={async () => {
+                        if (!confirm('Revoke this key?')) return;
+                        try {
+                          await fastapiClient.delete('/api/v1/developer/keys/' + key.id);
+                          setApiKeys((prev: any) => prev.filter((k: any) => k.id !== key.id));
+                        } catch { console.error('Failed to revoke key'); }
+                      }}>
+                      Revoke
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* Advanced Settings */}
             {activeTab === 'advanced' && (
               <div className={styles.settingsSection}>
