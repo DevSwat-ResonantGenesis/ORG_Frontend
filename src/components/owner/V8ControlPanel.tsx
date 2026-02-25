@@ -3,7 +3,7 @@
  * Provides UI for managing V8 ML training, forbidden words, formula settings
  */
 import React, { useState, useEffect, useCallback } from 'react';
-import { RefreshCw, Play, FileText, Shield, Sliders, Database, Cpu, AlertTriangle, X } from 'lucide-react';
+import { RefreshCw, Play, FileText, Shield, Sliders, Database, Cpu, AlertTriangle, X, History, Trash2, CheckCircle } from 'lucide-react';
 
 const V8_API_BASE = '/v8-api';
 const DEV_TOKEN = 'LouieArt';
@@ -31,34 +31,59 @@ interface CorpusFile {
   size: number;
 }
 
+interface PredictionEntry {
+  hash: string | null;
+  words: string[];
+  xyz: number[];
+  r: number;
+  spin: number;
+  energy: number;
+  cluster: string;
+  anchor: boolean;
+  timestamp: string;
+}
+
+const CLUSTER_COLORS: Record<string, string> = {
+  alpha: '#7df6ff', beta: '#ffb347', gamma: '#c09bff',
+  delta: '#ff6b6b', epsilon: '#6bff6b', zeta: '#ff6bff',
+};
+
 const V8ControlPanel: React.FC = () => {
   const [status, setStatus] = useState<V8Status | null>(null);
   const [forbidden, setForbidden] = useState<string[]>([]);
   const [formula, setFormula] = useState<FormulaParams | null>(null);
   const [corpusFiles, setCorpusFiles] = useState<CorpusFile[]>([]);
+  const [predictions, setPredictions] = useState<PredictionEntry[]>([]);
+  const [predictionsTotal, setPredictionsTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [trainingInProgress, setTrainingInProgress] = useState(false);
   const [newForbiddenWord, setNewForbiddenWord] = useState('');
-  const [activeTab, setActiveTab] = useState<'status' | 'training' | 'forbidden' | 'formula'>('status');
+  const [activeTab, setActiveTab] = useState<'status' | 'training' | 'forbidden' | 'formula' | 'predictions'>('status');
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const headers = { 'X-Dev-Token': DEV_TOKEN };
-      const [statusRes, forbiddenRes, formulaRes, corpusRes] = await Promise.all([
+      const [statusRes, forbiddenRes, formulaRes, corpusRes, predsRes] = await Promise.all([
         fetch(V8_API_BASE + '/admin/status', { headers }),
         fetch(V8_API_BASE + '/admin/forbidden', { headers }),
         fetch(V8_API_BASE + '/admin/formula', { headers }),
         fetch(V8_API_BASE + '/admin/corpus', { headers }),
+        fetch(V8_API_BASE + '/admin/predictions?limit=100', { headers }),
       ]);
       if (statusRes.ok) setStatus(await statusRes.json());
+      else console.error('[V8] Status fetch failed:', statusRes.status);
       if (forbiddenRes.ok) { const d = await forbiddenRes.json(); setForbidden(d.words || []); }
+      else console.error('[V8] Forbidden fetch failed:', forbiddenRes.status);
       if (formulaRes.ok) setFormula(await formulaRes.json());
       if (corpusRes.ok) { const d = await corpusRes.json(); setCorpusFiles(d.files || []); }
+      if (predsRes.ok) { const d = await predsRes.json(); setPredictions(d.predictions || []); setPredictionsTotal(d.total || 0); }
     } catch (err) {
-      setError('Failed to fetch V8 data');
+      console.error('[V8] Fetch error:', err);
+      setError('Failed to fetch V8 data. Check console for details.');
     } finally {
       setLoading(false);
     }
@@ -68,27 +93,54 @@ const V8ControlPanel: React.FC = () => {
 
   const startTraining = async (corpusName: string) => {
     setTrainingInProgress(true);
+    setError(null);
+    setSuccess(null);
     try {
       const res = await fetch(V8_API_BASE + '/admin/training/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-Dev-Token': DEV_TOKEN },
         body: JSON.stringify({ corpus: corpusName }),
       });
-      if (res.ok) await fetchData();
-      else { const e = await res.json(); setError(e.error || 'Training failed'); }
-    } catch { setError('Training request failed'); }
+      if (res.ok) {
+        const d = await res.json();
+        setSuccess(`Training completed! Vocab size: ${d.vocab_size || 'N/A'}`);
+        await fetchData();
+      } else {
+        const e = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+        setError(e.error || 'Training failed');
+      }
+    } catch (err) { setError('Training request failed: ' + (err instanceof Error ? err.message : 'network error')); }
     finally { setTrainingInProgress(false); }
   };
 
   const updateForbidden = async (words: string[]) => {
+    setError(null);
+    setSuccess(null);
     try {
-      const res = await fetch(V8_API_BASE + '/forbidden', {
+      const res = await fetch(V8_API_BASE + '/admin/forbidden', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-Dev-Token': DEV_TOKEN },
         body: JSON.stringify({ words }),
       });
-      if (res.ok) { setForbidden(words); await fetchData(); }
-    } catch { setError('Failed to update forbidden words'); }
+      if (res.ok) {
+        setForbidden(words);
+        setSuccess('Forbidden words updated');
+        await fetchData();
+      } else {
+        const e = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+        setError('Failed to update forbidden words: ' + (e.error || res.status));
+      }
+    } catch (err) { setError('Failed to update forbidden words: ' + (err instanceof Error ? err.message : 'network error')); }
+  };
+
+  const clearPredictions = async () => {
+    try {
+      const res = await fetch(V8_API_BASE + '/admin/predictions/clear', {
+        method: 'POST',
+        headers: { 'X-Dev-Token': DEV_TOKEN },
+      });
+      if (res.ok) { setPredictions([]); setPredictionsTotal(0); setSuccess('Prediction history cleared'); }
+    } catch { setError('Failed to clear predictions'); }
   };
 
   const addForbiddenWord = () => {
@@ -118,13 +170,15 @@ const V8ControlPanel: React.FC = () => {
         </button>
       </div>
 
-      {error && <div style={{ padding: '0.75rem 1rem', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '8px', color: '#ef4444', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><AlertTriangle size={16} /> {error}</div>}
+      {error && <div style={{ padding: '0.75rem 1rem', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '8px', color: '#ef4444', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><AlertTriangle size={16} /> {error} <button onClick={() => setError(null)} style={{ marginLeft: 'auto', background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}><X size={14} /></button></div>}
+      {success && <div style={{ padding: '0.75rem 1rem', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '8px', color: '#22c55e', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><CheckCircle size={16} /> {success} <button onClick={() => setSuccess(null)} style={{ marginLeft: 'auto', background: 'none', border: 'none', color: '#22c55e', cursor: 'pointer' }}><X size={14} /></button></div>}
 
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', flexWrap: 'wrap' }}>
         <button style={tabStyle(activeTab === 'status')} onClick={() => setActiveTab('status')}><Database size={16} /> Status</button>
         <button style={tabStyle(activeTab === 'training')} onClick={() => setActiveTab('training')}><Play size={16} /> Training</button>
         <button style={tabStyle(activeTab === 'forbidden')} onClick={() => setActiveTab('forbidden')}><Shield size={16} /> Forbidden</button>
         <button style={tabStyle(activeTab === 'formula')} onClick={() => setActiveTab('formula')}><Sliders size={16} /> Formula</button>
+        <button style={tabStyle(activeTab === 'predictions')} onClick={() => setActiveTab('predictions')}><History size={16} /> Predictions {predictionsTotal > 0 && <span style={{ background: '#6366f1', color: 'white', borderRadius: '999px', padding: '0 6px', fontSize: '0.7rem', minWidth: '18px', textAlign: 'center' }}>{predictionsTotal}</span>}</button>
       </div>
 
       {activeTab === 'status' && status && (
@@ -186,6 +240,52 @@ const V8ControlPanel: React.FC = () => {
             <h4 style={{ margin: '0 0 0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Raw Formula JSON</h4>
             <pre style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-primary)', whiteSpace: 'pre-wrap' }}>{JSON.stringify(formula, null, 2)}</pre>
           </div>
+        </div>
+      )}
+
+      {activeTab === 'predictions' && (
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Prediction History <span style={{ color: 'var(--text-tertiary)', fontWeight: 400, fontSize: '0.875rem' }}>({predictionsTotal} total)</span></h3>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button onClick={fetchData} style={{ padding: '0.4rem 0.75rem', background: 'transparent', border: '1px solid var(--border-color)', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-secondary)', fontSize: '0.8rem' }}><RefreshCw size={14} /> Refresh</button>
+              {predictions.length > 0 && <button onClick={clearPredictions} style={{ padding: '0.4rem 0.75rem', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#ef4444', fontSize: '0.8rem' }}><Trash2 size={14} /> Clear</button>}
+            </div>
+          </div>
+          {predictions.length === 0 ? (
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-tertiary)', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+              <History size={32} style={{ marginBottom: '0.5rem', opacity: 0.5 }} />
+              <p style={{ margin: 0 }}>No predictions yet. Use the V8 HashSphere to generate predictions.</p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '600px', overflowY: 'auto' }}>
+              {predictions.map((p, i) => {
+                const clusterColor = CLUSTER_COLORS[p.cluster?.toLowerCase()] || '#888';
+                const timeStr = p.timestamp ? new Date(p.timestamp).toLocaleString() : 'N/A';
+                return (
+                  <div key={i} style={{ padding: '0.75rem 1rem', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)', borderLeft: `3px solid ${clusterColor}` }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span style={{ padding: '0.15rem 0.5rem', background: clusterColor + '22', color: clusterColor, borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase' }}>{p.cluster || '—'}</span>
+                        <span style={{ fontFamily: 'monospace', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                          r={Number(p.r).toFixed(2)} spin={Number(p.spin).toFixed(2)} E={Number(p.energy).toFixed(2)}
+                        </span>
+                      </div>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>{timeStr}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
+                        {p.words?.length ? p.words.slice(0, 6).join(' ') + (p.words.length > 6 ? '...' : '') : (p.hash ? p.hash.slice(0, 18) + '...' : '—')}
+                      </span>
+                      <span style={{ fontFamily: 'monospace', fontSize: '0.7rem', color: 'var(--text-tertiary)' }}>
+                        [{p.xyz?.map(v => Number(v).toFixed(2)).join(', ')}]
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
     </div>
