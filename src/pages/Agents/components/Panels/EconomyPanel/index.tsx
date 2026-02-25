@@ -33,7 +33,7 @@ const EconomyPanelComponent: React.FC<EconomyPanelProps> = ({ className }) => {
   
   const [activeView, setActiveView] = useState<ViewMode>('wallet');
   const handleExportEconomy = () => {
-    const exportData = { exported_at: new Date().toISOString(), billing: billingData, chainStats, wallets: walletBalances, stakingPools };
+    const exportData = { exported_at: new Date().toISOString(), billing: billingData, network: networkConfig, wallet, transactions, assets };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
