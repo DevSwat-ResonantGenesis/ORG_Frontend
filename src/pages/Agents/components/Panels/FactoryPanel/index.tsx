@@ -2,6 +2,7 @@ import React, { memo, useState } from 'react';
 import AdvancedFactory from './AdvancedFactory';
 import AgentWizard from './AgentWizard';
 import { Icons } from '../../shared/Icons';
+import { useUIStore } from '../../../../../stores';
 import styles from './FactoryPanel.module.css';
 
 interface FactoryPanelProps {
@@ -12,6 +13,7 @@ type FactoryMode = 'wizard' | 'advanced';
 
 const FactoryPanelComponent: React.FC<FactoryPanelProps> = ({ className }) => {
   const [mode, setMode] = useState<FactoryMode>('wizard');
+  const setActiveSection = useUIStore(state => state.setActiveSection);
 
   return (
     <div className={`${styles.factoryContainer} ${className || ''}`}>
@@ -34,7 +36,7 @@ const FactoryPanelComponent: React.FC<FactoryPanelProps> = ({ className }) => {
       {/* Content */}
       {mode === 'wizard' ? (
         <AgentWizard 
-          onComplete={() => {}} 
+          onComplete={() => setActiveSection('agents')} 
           onCancel={() => setMode('advanced')} 
         />
       ) : (
