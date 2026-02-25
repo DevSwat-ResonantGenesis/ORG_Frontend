@@ -282,28 +282,54 @@ const OwnerDashboard: React.FC = () => {
         });
       }
 
-      const usersRes = await fetch(`${API_BASE}/owner/auth/dashboard/users`, {
-        headers: { 'Authorization': `Bearer ${authToken}` }
-      });
-      if (usersRes.ok) {
-        const usersData = await usersRes.json();
-        const mappedUsers: User[] = (usersData.users || []).map((u: any) => ({
-          id: u.id,
-          name: u.full_name || u.email.split('@')[0],
-          email: u.email,
-          username: u.username || '',
-          plan: 'developer' as const,
-          status: (u.status || (u.is_active ? 'active' : 'inactive')) as 'active' | 'inactive' | 'warning',
-          creditsUsed: 0,
-          creditsTotal: 1000,
-          revenue: 0,
-          lastActive: u.last_login_at || 'Never',
-          signupDate: u.created_at ? u.created_at.split('T')[0] : 'N/A',
-          mfaEnabled: u.mfa_enabled || false,
-          emailVerified: u.email_verified || false,
-          lastLoginAt: u.last_login_at ? u.last_login_at.split('T')[0] : null,
-        }));
-        setUsers(mappedUsers);
+      // Fetch users from system endpoint (direct DB query, no JWT needed)
+      try {
+        const sysUsersData = await getPlatformUsers();
+        if (sysUsersData.users && sysUsersData.users.length > 0) {
+          const mappedUsers: User[] = sysUsersData.users.map((u: any) => ({
+            id: u.id,
+            name: u.full_name || u.email.split('@')[0],
+            email: u.email,
+            username: u.username || '',
+            plan: u.is_superuser ? 'enterprise' as const : 'developer' as const,
+            status: (u.status || (u.is_active ? 'active' : 'inactive')) as 'active' | 'inactive' | 'warning',
+            creditsUsed: 0,
+            creditsTotal: 1000,
+            revenue: 0,
+            lastActive: u.last_login_at || 'Never',
+            signupDate: u.created_at ? u.created_at.split('T')[0] : 'N/A',
+            mfaEnabled: u.mfa_enabled || false,
+            emailVerified: u.email_verified || false,
+            lastLoginAt: u.last_login_at ? u.last_login_at.split('T')[0] : null,
+          }));
+          setUsers(mappedUsers);
+        }
+      } catch (e) {
+        console.warn('System users endpoint not available, trying auth endpoint:', e);
+        // Fallback to auth endpoint
+        const usersRes = await fetch(`${API_BASE}/owner/auth/dashboard/users`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        if (usersRes.ok) {
+          const usersData = await usersRes.json();
+          const mappedUsers: User[] = (usersData.users || []).map((u: any) => ({
+            id: u.id,
+            name: u.full_name || u.email.split('@')[0],
+            email: u.email,
+            username: u.username || '',
+            plan: 'developer' as const,
+            status: (u.status || (u.is_active ? 'active' : 'inactive')) as 'active' | 'inactive' | 'warning',
+            creditsUsed: 0,
+            creditsTotal: 1000,
+            revenue: 0,
+            lastActive: u.last_login_at || 'Never',
+            signupDate: u.created_at ? u.created_at.split('T')[0] : 'N/A',
+            mfaEnabled: u.mfa_enabled || false,
+            emailVerified: u.email_verified || false,
+            lastLoginAt: u.last_login_at ? u.last_login_at.split('T')[0] : null,
+          }));
+          setUsers(mappedUsers);
+        }
       }
 
       // Fetch settings
@@ -639,47 +665,45 @@ const OwnerDashboard: React.FC = () => {
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconBlue}`}><UsersIcon /></div>
-            <span className={`${styles.statChange} ${styles.statChangeUp}`}><TrendingUpIcon /> +12.5%</span>
+            {realAnalytics && <span style={{ fontSize: '12px', color: '#64748b' }}>Live from DB</span>}
           </div>
-          <div className={styles.statValue}>{stats.totalUsers.toLocaleString()}</div>
+          <div className={styles.statValue}>{(realAnalytics?.total_users ?? stats.totalUsers).toLocaleString()}</div>
           <div className={styles.statLabel}>Total Users</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconGreen}`}><ActivityIcon /></div>
-            <span className={`${styles.statChange} ${styles.statChangeUp}`}><TrendingUpIcon /> +8.3%</span>
           </div>
-          <div className={styles.statValue}>{stats.activeUsers.toLocaleString()}</div>
-          <div className={styles.statLabel}>Active Users (30d)</div>
+          <div className={styles.statValue}>{(realAnalytics?.active_users_24h ?? stats.activeUsers).toLocaleString()}</div>
+          <div className={styles.statLabel}>Active Users (24h)</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconPurple}`}><DollarIcon /></div>
-            <span className={`${styles.statChange} ${styles.statChangeUp}`}><TrendingUpIcon /> +23.1%</span>
           </div>
-          <div className={styles.statValue}>${stats.mrr.toLocaleString()}</div>
-          <div className={styles.statLabel}>Monthly Recurring Revenue</div>
+          <div className={styles.statValue}>${(realAnalytics?.revenue_30d ?? stats.mrr).toLocaleString()}</div>
+          <div className={styles.statLabel}>Revenue (30d)</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconOrange}`}><CpuIcon /></div>
           </div>
-          <div className={styles.statValue}>{(stats.creditsConsumed / 1000000).toFixed(1)}M</div>
+          <div className={styles.statValue}>{(realAnalytics?.credits_consumed ?? stats.creditsConsumed).toLocaleString()}</div>
           <div className={styles.statLabel}>Credits Consumed</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconCyan}`}><ServerIcon /></div>
           </div>
-          <div className={styles.statValue}>{(stats.apiCalls / 1000000).toFixed(1)}M</div>
+          <div className={styles.statValue}>{(realAnalytics?.api_calls_30d ?? stats.apiCalls).toLocaleString()}</div>
           <div className={styles.statLabel}>API Calls (30d)</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconRed}`}><TrendingUpIcon /></div>
           </div>
-          <div className={styles.statValue}>{stats.conversionRate}%</div>
-          <div className={styles.statLabel}>Conversion Rate</div>
+          <div className={styles.statValue}>{realAnalytics?.active_connections ?? 0}</div>
+          <div className={styles.statLabel}>Active Connections</div>
         </div>
       </div>
 

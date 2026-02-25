@@ -2,6 +2,7 @@ import React, { memo, useState, useEffect, useCallback } from 'react';
 import { useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import * as auditApi from '../../../../../api/audit';
+import fastapiClient from '../../../../../api/fastapiClient';
 import styles from './AuditPanel.module.css';
 
 // Local AuditEntry type to avoid import issues
@@ -106,13 +107,23 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
     }
   }, [currentPage, filter]);
 
-  // Fetch alerts, reports, and cases from backend
+  // Fetch alerts, reports, and cases from real backend endpoints
   useEffect(() => {
-    // TODO: Implement backend endpoints for alerts/reports/cases
-    // For now, show empty state with message
-    setAlerts([]);
-    setReports([]);
-    setCases([]);
+    const fetchAuditExtras = async () => {
+      try {
+        const [alertsRes, reportsRes, casesRes] = await Promise.allSettled([
+          fastapiClient.get('/api/v1/audit/alerts'),
+          fastapiClient.get('/api/v1/audit/reports'),
+          fastapiClient.get('/api/v1/audit/cases'),
+        ]);
+        if (alertsRes.status === 'fulfilled') setAlerts(alertsRes.value.data || []);
+        if (reportsRes.status === 'fulfilled') setReports(reportsRes.value.data || []);
+        if (casesRes.status === 'fulfilled') setCases(casesRes.value.data || []);
+      } catch (err) {
+        console.error('Failed to fetch audit extras:', err);
+      }
+    };
+    fetchAuditExtras();
   }, []);
 
   // Fetch audit data on mount and when filters change

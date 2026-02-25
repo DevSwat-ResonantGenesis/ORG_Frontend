@@ -48,7 +48,7 @@ export interface ComplianceCheck {
  */
 export const listPolicies = async (): Promise<GovernancePolicy[]> => {
   try {
-    const response = await fastapiClient.get('/blockchain/governance/policy/list');
+    const response = await fastapiClient.get('/api/v1/governance/policies');
     // Transform backend response to frontend format
     const policies = response.data?.policies || [];
     return policies.map((p: any) => ({
@@ -72,7 +72,7 @@ export const listPolicies = async (): Promise<GovernancePolicy[]> => {
  */
 export const createPolicy = async (policy: Partial<GovernancePolicy>): Promise<GovernancePolicy | null> => {
   try {
-    const response = await fastapiClient.post('/blockchain/governance/policy/add', {
+    const response = await fastapiClient.post('/api/v1/governance/policies', {
       name: policy.name,
       description: policy.description,
       source: 'user',
@@ -172,7 +172,7 @@ export const updateResourceLimit = async (limitId: string, newLimit: number): Pr
  */
 export const checkCompliance = async (entityId: string): Promise<ComplianceCheck[]> => {
   try {
-    const response = await fastapiClient.post('/blockchain/governance/check-compliance', {
+    const response = await fastapiClient.post('/api/v1/governance/policies', {
       entity_id: entityId,
     });
     return response.data;

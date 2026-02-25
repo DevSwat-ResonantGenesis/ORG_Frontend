@@ -34,6 +34,7 @@ const UtilityPanelComponent: React.FC<UtilityPanelProps> = ({ className }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<ViewMode>('overview');
+  const [trendsData, setTrendsData] = useState<any>(null);
   const [scoreHistory, setScoreHistory] = useState<number[]>([]);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -98,6 +99,15 @@ const UtilityPanelComponent: React.FC<UtilityPanelProps> = ({ className }) => {
       setIsLoading(false);
     }
   }, [selectedAgentId, agents]);
+
+  // Fetch analytics trends from backend
+  useEffect(() => {
+    if (activeView === 'trends') {
+      fastapiClient.get('/api/v1/analytics/trends?period=7d')
+        .then(res => setTrendsData(res.data))
+        .catch(() => {});
+    }
+  }, [activeView]);
 
   useEffect(() => {
     fetchPlatformMetrics();

@@ -40,118 +40,44 @@ const PlatformStatePhysics: React.FC = () => {
     setError(null);
     
     try {
-      // Fetch health from multiple services
-      const services: ServiceHealth[] = [];
-      
-      const serviceChecks = [
-        { name: 'Gateway', url: '/health' },
-        { name: 'Auth Service', url: '/auth/health' },
-        { name: 'Chat Service', url: '/api/v1/chat/health' },
-        { name: 'Memory Service', url: '/api/v1/memory/health' },
-      ];
+      // Fetch ALL data from unified system endpoints (real backend data)
+      const [sysMetrics, svcHealth, raraData, analyticsData] = await Promise.all([
+        fetch(API_BASE + '/owner/dashboard/system/metrics').then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch(API_BASE + '/owner/dashboard/system/services').then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch(API_BASE + '/owner/dashboard/system/rara').then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch(API_BASE + '/owner/dashboard/system/analytics').then(r => r.ok ? r.json() : null).catch(() => null),
+      ]);
 
-      for (const svc of serviceChecks) {
-        try {
-          const start = Date.now();
-          const res = await fetch(API_BASE + svc.url, { method: 'GET' });
-          const latency = Date.now() - start;
-          if (res.ok) {
-            services.push({ name: svc.name, status: 'healthy', latency });
-          } else {
-            services.push({ name: svc.name, status: 'degraded', latency });
-          }
-        } catch {
-          services.push({ name: svc.name, status: 'offline' });
-        }
-      }
+      // Map all 28 services from backend
+      const services: ServiceHealth[] = (svcHealth?.services || []).map((s: any) => ({
+        name: s.name,
+        status: s.status as 'healthy' | 'degraded' | 'offline',
+        latency: s.latency || 0,
+      }));
 
-      // Fetch RARA status
-      try {
-        const raraRes = await fetch(API_BASE + '/owner/dashboard/rara/status');
-        if (raraRes.ok) {
-          const raraData = await raraRes.json();
-          services.push({
-            name: 'RARA Agents',
-            status: raraData.online ? 'healthy' : 'offline',
-            uptime: raraData.uptime_seconds ? Math.floor(raraData.uptime_seconds / 3600) + 'h' : undefined,
-          });
-        }
-      } catch {
-        services.push({ name: 'RARA Agents', status: 'offline' });
-      }
+      const cpuUsage = sysMetrics?.cpu?.usage_percent || 0;
+      const memoryUsage = sysMetrics?.memory?.usage_percent || 0;
+      const diskUsage = sysMetrics?.disk?.usage_percent || 0;
+      const totalUsers = analyticsData?.total_users || 0;
+      const activeUsers = analyticsData?.active_users_24h || 0;
+      const totalAgents = raraData?.total_agents || 0;
+      const activeAgents = (raraData?.agents || []).filter((a: any) => a.status === 'active').length;
+      const totalRequests = analyticsData?.api_calls_30d || 0;
 
-      // Fetch usage metrics
-      let totalRequests = 0;
-      let avgLatency = 0;
-      try {
-        const usageRes = await fetch(API_BASE + '/usage/summary');
-        if (usageRes.ok) {
-          const usageData = await usageRes.json();
-          totalRequests = usageData.total_requests || 0;
-        }
-      } catch {}
-
-      // Fetch analytics
-      let totalUsers = 0;
-      let activeUsers = 0;
-      try {
-        const analyticsRes = await fetch(API_BASE + '/analytics');
-        if (analyticsRes.ok) {
-          const analyticsData = await analyticsRes.json();
-          activeUsers = analyticsData.usage?.active_days || 0;
-        }
-      } catch {}
-
-      // Calculate averages from service latencies
-      const healthyServices = services.filter(s => s.latency);
-      avgLatency = healthyServices.length > 0 
+      const healthyServices = services.filter(s => s.latency && s.latency > 0);
+      const avgLatency = healthyServices.length > 0 
         ? Math.round(healthyServices.reduce((sum, s) => sum + (s.latency || 0), 0) / healthyServices.length)
         : 0;
 
-      // Fetch real system metrics from backend
-      let cpuUsage = 0, memoryUsage = 0, diskUsage = 0;
-      try {
-        const sysRes = await fetch(API_BASE + '/owner/dashboard/system/metrics');
-        if (sysRes.ok) {
-          const sysData = await sysRes.json();
-          cpuUsage = sysData.cpu?.usage_percent || 0;
-          memoryUsage = sysData.memory?.usage_percent || 0;
-          diskUsage = sysData.disk?.usage_percent || 0;
-        }
-      } catch {}
-
-      // Fetch real user count from auth stats
-      let realTotalUsers = 0;
-      try {
-        const ownerToken = localStorage.getItem('owner_token') || localStorage.getItem('access_token');
-        if (ownerToken) {
-          const statsRes = await fetch(API_BASE + '/owner/auth/dashboard/stats', { headers: { 'Authorization': `Bearer ${ownerToken}` } });
-          if (statsRes.ok) {
-            const statsData = await statsRes.json();
-            realTotalUsers = statsData.total_users || 0;
-          }
-        }
-      } catch {}
-
-      // Fetch RARA agent count
-      let raraAgentCount = 0;
-      try {
-        const raraRes2 = await fetch(API_BASE + '/owner/dashboard/system/rara');
-        if (raraRes2.ok) {
-          const raraData = await raraRes2.json();
-          raraAgentCount = raraData.agent_count || 0;
-        }
-      } catch {}
-
       setMetrics({
         services,
-        totalUsers: realTotalUsers || totalUsers,
-        activeUsers: Math.max(activeUsers, 0),
-        totalAgents: raraAgentCount || 0,
-        activeAgents: services.find(s => s.name === 'RARA Agents')?.status === 'healthy' ? raraAgentCount : 0,
+        totalUsers,
+        activeUsers,
+        totalAgents,
+        activeAgents,
         totalRequests24h: totalRequests,
         avgLatency,
-        errorRate: services.filter(s => s.status !== 'healthy').length / services.length * 100,
+        errorRate: services.length > 0 ? (services.filter(s => s.status !== 'healthy').length / services.length * 100) : 0,
         cpuUsage,
         memoryUsage,
         diskUsage,
