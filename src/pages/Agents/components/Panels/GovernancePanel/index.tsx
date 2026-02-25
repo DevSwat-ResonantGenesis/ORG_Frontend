@@ -231,6 +231,13 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
                         ) : (
                           <button className={styles.enableBtn} onClick={() => { fastapiClient.put('/api/v1/governance/policies/' + policy.id, { status: 'active' }).then(() => fetchPolicies()).catch(() => {}); }}><Icons.Play /> Enable</button>
                         )}
+                        <button className={styles.disableBtn} onClick={async () => {
+                          if (!confirm('Delete policy "' + policy.name + '"?')) return;
+                          try {
+                            await fastapiClient.delete('/api/v1/governance/policies/' + policy.id);
+                            fetchPolicies();
+                          } catch (err) { console.error('Failed to delete policy:', err); }
+                        }}><Icons.Trash /> Delete</button>
                       </div>
                     </div>
                   )}
