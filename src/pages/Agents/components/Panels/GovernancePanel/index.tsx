@@ -59,7 +59,7 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
     }
   }, []);
 
-  // Load data based on active tab
+  // Load data based on active tab + auto-refresh approvals
   useEffect(() => {
     if (activeTab === 'policies') {
       fetchPolicies();
@@ -67,6 +67,10 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
       fetchApprovals();
     } else if (activeTab === 'limits') {
       fetchLimits();
+    }
+    if (activeTab === 'approvals') {
+      const interval = setInterval(fetchApprovals, 15000);
+      return () => clearInterval(interval);
     }
   }, [activeTab, fetchPolicies, fetchApprovals, fetchLimits]);
 
