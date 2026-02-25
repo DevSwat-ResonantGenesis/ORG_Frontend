@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect, useCallback } from 'react';
+import React, { memo, useState, useEffect, useCallback, useRef } from 'react';
 import { useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import * as teamsApi from '../../../../../api/teams';
@@ -62,6 +62,7 @@ const NegotiationPanelComponent: React.FC<NegotiationPanelProps> = ({ className 
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [negSearchTerm, setNegSearchTerm] = useState('');
   const [negStatusFilter, setNegStatusFilter] = useState<string>('all');
+  const negPollRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fetchTeams = useCallback(async () => {
     try {
@@ -142,7 +143,7 @@ const NegotiationPanelComponent: React.FC<NegotiationPanelProps> = ({ className 
   }, [teams]);
 
   useEffect(() => { fetchTeams(); }, [fetchTeams]);
-  useEffect(() => { fetchNegotiations(); fetchDelegations(); }, [fetchNegotiations, fetchDelegations]);
+  useEffect(() => { fetchNegotiations(); fetchDelegations(); negPollRef.current = setInterval(() => { fetchNegotiations(); fetchDelegations(); }, 20000); return () => { if (negPollRef.current) clearInterval(negPollRef.current); }; }, [fetchNegotiations, fetchDelegations]);
   useEffect(() => { if (teams.length > 0) fetchProposals(); }, [teams, fetchProposals]);
 
   const getAgentName = (id: string) => agents.find(a => a.id === id)?.name || id.slice(0, 8);
