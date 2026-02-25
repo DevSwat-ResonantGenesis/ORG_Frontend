@@ -538,3 +538,145 @@
   align-items: center;
   gap: 6px;
 }
+
+/* Triggers Section */
+.triggersSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.triggersHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.triggersHeader h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: #ccc;
+}
+
+.triggerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  border-radius: 8px;
+}
+
+.formInput {
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+}
+
+.formSelect {
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+}
+
+.formSelect option {
+  background: #1a1a2e;
+}
+
+.formTextarea {
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  font-family: monospace;
+  resize: vertical;
+}
+
+.formActions {
+  display: flex;
+  gap: 8px;
+}
+
+.secondaryBtn {
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #888;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.triggersList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.triggerCard {
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+
+.triggerInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.triggerName {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.triggerType {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.triggerType.schedule {
+  background: rgba(14, 165, 233, 0.15);
+  color: #0ea5e9;
+}
+
+.triggerType.webhook {
+  background: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
+}
+
+.triggerType.event {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.triggerType.condition {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.triggerStatus {
+  font-size: 10px;
+  color: #888;
+}
+
+.triggerMeta {
+  display: flex;
+  gap: 16px;
+  font-size: 10px;
+  color: #666;
+}

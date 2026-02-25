@@ -4,13 +4,14 @@ import { Icons } from '../../shared/Icons';
 import type { Execution } from '../../../../../types';
 import * as executionsApi from '../../../../../api/executions';
 import { LiveWorkflowView } from './LiveWorkflowView';
+import * as agentEngine from '../../../../../api/agentEngine';
 import styles from './ExecutionPanel.module.css';
 
 // ============== EXECUTION PANEL ==============
 // Contract: reads [execution, agent, workflow], writes [execution]
 // Forbidden: [economy]
 
-type ViewMode = 'active' | 'live' | 'history' | 'queue' | 'metrics';
+type ViewMode = 'active' | 'live' | 'history' | 'queue' | 'metrics' | 'triggers';
 
 interface ExecutionStats {
   total_executions: number;
@@ -41,6 +42,9 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
   const [error, setError] = useState<string | null>(null);
   const [selectedExecution, setSelectedExecution] = useState<executionsApi.Execution | null>(null);
   const [executionStats, setExecutionStats] = useState<ExecutionStats | null>(null);
+  const [triggers, setTriggers] = useState<agentEngine.AgentTrigger[]>([]);
+  const [showTriggerForm, setShowTriggerForm] = useState(false);
+  const [triggerForm, setTriggerForm] = useState({ name: '', trigger_type: 'schedule' as string, config: '{}' });
 
   const runningExecutions = realExecutions?.filter(e => e.status === 'running') || [];
   const completedExecutions = realExecutions?.filter(e => e.status === 'completed') || [];
@@ -186,6 +190,37 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
     }
   }, [cancelExecution, fetchExecutions]);
 
+  // Fetch triggers for selected agent
+  const fetchTriggers = useCallback(async () => {
+    if (!selectedAgentId) return;
+    try {
+      const data = await agentEngine.listTriggers(selectedAgentId);
+      setTriggers(data || []);
+    } catch { setTriggers([]); }
+  }, [selectedAgentId]);
+
+  useEffect(() => {
+    if (activeView === 'triggers' && selectedAgentId) fetchTriggers();
+  }, [activeView, selectedAgentId, fetchTriggers]);
+
+  const handleCreateTrigger = async () => {
+    if (!selectedAgentId || !triggerForm.name.trim()) return;
+    try {
+      let parsedConfig = {};
+      try { parsedConfig = JSON.parse(triggerForm.config); } catch { parsedConfig = {}; }
+      await agentEngine.createTrigger(selectedAgentId, {
+        name: triggerForm.name,
+        trigger_type: triggerForm.trigger_type,
+        config: parsedConfig,
+      });
+      setShowTriggerForm(false);
+      setTriggerForm({ name: '', trigger_type: 'schedule', config: '{}' });
+      fetchTriggers();
+    } catch (err: any) {
+      setError(err.message || 'Failed to create trigger');
+    }
+  };
+
   return (
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
@@ -202,7 +237,7 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
           </select>
         </div>
         <div className={styles.viewTabs}>
-          {(['active', 'live', 'history', 'queue', 'metrics'] as ViewMode[]).map(view => (
+          {(['active', 'live', 'history', 'queue', 'metrics', 'triggers'] as ViewMode[]).map(view => (
             <button
               key={view}
               className={`${styles.viewTab} ${activeView === view ? styles.active : ''}`}
@@ -441,6 +476,85 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
                 </span>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Triggers View */}
+        {activeView === 'triggers' && (
+          <div className={styles.triggersSection}>
+            <div className={styles.triggersHeader}>
+              <h3>Agent Triggers</h3>
+              {selectedAgentId && (
+                <button className={styles.primaryBtn} onClick={() => setShowTriggerForm(!showTriggerForm)}>
+                  <Icons.Plus /> New Trigger
+                </button>
+              )}
+            </div>
+
+            {!selectedAgentId && (
+              <div className={styles.emptyState}>
+                <p>Select an agent to manage triggers</p>
+              </div>
+            )}
+
+            {showTriggerForm && selectedAgentId && (
+              <div className={styles.triggerForm}>
+                <input
+                  type="text"
+                  placeholder="Trigger name"
+                  value={triggerForm.name}
+                  onChange={e => setTriggerForm(prev => ({ ...prev, name: e.target.value }))}
+                  className={styles.formInput}
+                />
+                <select
+                  value={triggerForm.trigger_type}
+                  onChange={e => setTriggerForm(prev => ({ ...prev, trigger_type: e.target.value }))}
+                  className={styles.formSelect}
+                >
+                  <option value="schedule">Schedule</option>
+                  <option value="webhook">Webhook</option>
+                  <option value="event">Event</option>
+                  <option value="condition">Condition</option>
+                </select>
+                <textarea
+                  placeholder='Config JSON, e.g. {"cron": "0 * * * *"}'
+                  value={triggerForm.config}
+                  onChange={e => setTriggerForm(prev => ({ ...prev, config: e.target.value }))}
+                  className={styles.formTextarea}
+                  rows={3}
+                />
+                <div className={styles.formActions}>
+                  <button className={styles.primaryBtn} onClick={handleCreateTrigger}>Create</button>
+                  <button className={styles.secondaryBtn} onClick={() => setShowTriggerForm(false)}>Cancel</button>
+                </div>
+              </div>
+            )}
+
+            {selectedAgentId && triggers.length > 0 && (
+              <div className={styles.triggersList}>
+                {triggers.map(trigger => (
+                  <div key={trigger.id} className={styles.triggerCard}>
+                    <div className={styles.triggerInfo}>
+                      <span className={styles.triggerName}>{trigger.name}</span>
+                      <span className={`${styles.triggerType} ${styles[trigger.trigger_type]}`}>{trigger.trigger_type}</span>
+                      <span className={styles.triggerStatus}>{trigger.is_active ? 'Active' : 'Inactive'}</span>
+                    </div>
+                    <div className={styles.triggerMeta}>
+                      <span>Fired: {trigger.trigger_count} times</span>
+                      {trigger.last_triggered_at && <span>Last: {new Date(trigger.last_triggered_at).toLocaleString()}</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {selectedAgentId && triggers.length === 0 && !showTriggerForm && (
+              <div className={styles.emptyState}>
+                <Icons.Zap />
+                <p>No triggers configured</p>
+                <p style={{ fontSize: '12px', color: '#666' }}>Create triggers to automate agent execution</p>
+              </div>
+            )}
           </div>
         )}
       </div>
