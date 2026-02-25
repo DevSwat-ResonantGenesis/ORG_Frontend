@@ -240,7 +240,7 @@ const NegotiationPanelComponent: React.FC<NegotiationPanelProps> = ({ className 
               {negotiations.length === 0 && !isLoading && (
                 <div className={styles.emptyState}>No active negotiations. Create an auction to start.</div>
               )}
-              {negotiations.filter(n => { if (negSearchTerm && !n.task.toLowerCase().includes(negSearchTerm.toLowerCase())) return false; if (negStatusFilter !== 'all' && n.status !== negStatusFilter) return false; return true; }).map(neg => (
+              {negotiations.filter(n => { if (negSearchTerm && !n.topic.toLowerCase().includes(negSearchTerm.toLowerCase())) return false; if (negStatusFilter !== 'all' && n.status !== negStatusFilter) return false; return true; }).map(neg => (
                 <div key={neg.id} className={styles.negotiationCard}>
                   <div className={styles.negHeader}>
                     <span className={styles.topic}>{neg.topic}</span>
