@@ -145,11 +145,21 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
   }, []);
 
   const acknowledgeAlert = useCallback(async (alertId: string) => {
-    setAlerts(prev => prev.map(a => a.id === alertId ? { ...a, acknowledged: true } : a));
+    try {
+      await fastapiClient.put('/api/v1/audit/alerts/' + alertId + '/acknowledge');
+      setAlerts(prev => prev.map(a => a.id === alertId ? { ...a, status: 'acknowledged', acknowledged: true } : a));
+    } catch (err: any) {
+      console.error('Failed to acknowledge alert:', err);
+    }
   }, []);
 
   const resolveCase = useCallback(async (caseId: string) => {
-    setCases(prev => prev.map(c => c.id === caseId ? { ...c, status: 'resolved' } : c));
+    try {
+      await fastapiClient.put('/api/v1/audit/cases/' + caseId + '/resolve');
+      setCases(prev => prev.map(c => c.id === caseId ? { ...c, status: 'resolved' } : c));
+    } catch (err: any) {
+      console.error('Failed to resolve case:', err);
+    }
   }, []);
 
   // Transform API entries to display format
