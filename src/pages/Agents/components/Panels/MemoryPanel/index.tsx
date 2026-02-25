@@ -153,7 +153,7 @@ const MemoryPanelComponent: React.FC<MemoryPanelProps> = ({ className }) => {
       agent_id: selectedAgentId,
       exported_at: new Date().toISOString(),
       memories: memories.map(m => ({ id: m.id, content: m.content, created_at: m.created_at })),
-      anchors: anchors.map(a => ({ id: a.id, content: a.content, anchor_type: a.anchor_type })),
+      anchors: anchors.map(a => ({ id: a.id, content: a.context, anchor_type: a.anchor_text })),
       stats,
     };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });

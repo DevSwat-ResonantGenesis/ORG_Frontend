@@ -2,6 +2,7 @@ import React, { memo, useState, useEffect, useCallback } from 'react';
 import { useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import * as governanceApi from '../../../../../api/governance';
+import fastapiClient from '../../../../../api/fastapiClient';
 import styles from './GovernancePanel.module.css';
 
 // ============== GOVERNANCE PANEL ==============
@@ -164,9 +165,9 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
                       <div className={styles.policyActions}>
                         <button className={styles.editBtn} onClick={() => alert("Policy editing requires backend endpoint. Coming soon.")}><Icons.Edit /> Edit</button>
                         {policy.status === 'active' ? (
-                          <button className={styles.disableBtn} onClick={() => { governanceApi.updatePolicy(policy.id, { status: "inactive" }).then(() => fetchPolicies()); }}><Icons.Pause /> Disable</button>
+                          <button className={styles.disableBtn} onClick={() => { fastapiClient.put('/api/v1/governance/policies/' + policy.id, { status: 'inactive' }).then(() => fetchPolicies()).catch(() => {}); }}><Icons.Pause /> Disable</button>
                         ) : (
-                          <button className={styles.enableBtn} onClick={() => { governanceApi.updatePolicy(policy.id, { status: "active" }).then(() => fetchPolicies()); }}><Icons.Play /> Enable</button>
+                          <button className={styles.enableBtn} onClick={() => { fastapiClient.put('/api/v1/governance/policies/' + policy.id, { status: 'active' }).then(() => fetchPolicies()).catch(() => {}); }}><Icons.Play /> Enable</button>
                         )}
                       </div>
                     </div>
