@@ -105,6 +105,17 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
     }
   };
 
+  const handleExportPolicies = () => {
+    const data = JSON.stringify(policies, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'governance-policies-' + new Date().toISOString().split('T')[0] + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleCreatePolicy = async () => {
     if (!policyForm.name.trim()) return;
     try {
@@ -150,6 +161,9 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
           <div className={styles.policiesSection}>
             <div className={styles.sectionHeader}>
               <h3>Governance Policies</h3>
+              <button className={styles.exportBtn} onClick={handleExportPolicies} style={{ marginLeft: 'auto', padding: '4px 10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#94a3b8', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Icons.Download /> Export
+              </button>
               <button className={styles.createBtn} onClick={() => setShowPolicyForm(!showPolicyForm)}>
                 <Icons.Plus /> New Policy
               </button>
