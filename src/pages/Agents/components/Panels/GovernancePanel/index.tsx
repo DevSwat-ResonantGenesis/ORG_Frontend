@@ -23,6 +23,7 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
   const [error, setError] = useState<string | null>(null);
   const [selectedPolicy, setSelectedPolicy] = useState<governanceApi.GovernancePolicy | null>(null);
   const [showPolicyForm, setShowPolicyForm] = useState(false);
+  const [policySearch, setPolicySearch] = useState('');
   const [policyForm, setPolicyForm] = useState({ name: '', description: '', type: 'restriction', scope: 'global', rules: '' });
 
   // Fetch policies
@@ -165,6 +166,13 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
           <div className={styles.policiesSection}>
             <div className={styles.sectionHeader}>
               <h3>Governance Policies</h3>
+              <input
+                type="text"
+                placeholder="Filter policies..."
+                value={policySearch}
+                onChange={e => setPolicySearch(e.target.value)}
+                style={{ padding: '6px 10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#e2e8f0', fontSize: '12px', width: '160px' }}
+              />
               <button className={styles.exportBtn} onClick={handleExportPolicies} style={{ marginLeft: 'auto', padding: '4px 10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#94a3b8', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <Icons.Download /> Export
               </button>
