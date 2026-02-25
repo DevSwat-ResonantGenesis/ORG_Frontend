@@ -711,15 +711,28 @@ const OwnerDashboard: React.FC = () => {
         <div className={styles.card}>
           <h3 className={styles.cardTitle}><DollarIcon /> Revenue Overview</h3>
           <div style={{ height: '200px', display: 'flex', alignItems: 'flex-end', gap: '8px', padding: '20px 0' }}>
-            {/* Simple bar chart showing monthly revenue */}
-            {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'].map((month, i) => {
-              const heights = [40, 55, 45, 70, 85, 100];
-              const values = [12000, 18500, 15200, 28400, 35600, stats.mrr || 42000];
-              return (
-                <div key={month} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+            {/* Real billing metrics visualization */}
+            {(() => {
+              const totalRev = realAnalytics?.revenue_30d ?? stats.totalRevenue ?? 0;
+              const creditsUsed = realAnalytics?.credits_consumed ?? stats.creditsConsumed ?? 0;
+              const creditsPurchased = (realAnalytics as any)?.total_credits_purchased ?? 0;
+              const creditsBalance = (realAnalytics as any)?.credits_balance ?? 0;
+              const payingUsers = (realAnalytics as any)?.paying_users ?? 0;
+              const apiCalls = realAnalytics?.api_calls_30d ?? stats.apiCalls ?? 0;
+              const items = [
+                { label: 'Revenue', value: totalRev, display: `$${totalRev.toLocaleString()}` },
+                { label: 'Purchased', value: creditsPurchased, display: `${(creditsPurchased / 1000).toFixed(0)}k` },
+                { label: 'Used', value: creditsUsed, display: `${(creditsUsed / 1000).toFixed(0)}k` },
+                { label: 'Balance', value: creditsBalance, display: `${(creditsBalance / 1000).toFixed(0)}k` },
+                { label: 'Paying', value: payingUsers, display: String(payingUsers) },
+                { label: 'API Calls', value: apiCalls, display: apiCalls.toLocaleString() },
+              ];
+              const maxVal = Math.max(...items.map(it => it.value), 1);
+              return items.map((item, i) => (
+                <div key={item.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
                   <div style={{ 
                     width: '100%', 
-                    height: `${heights[i]}%`, 
+                    height: `${Math.max(10, (item.value / maxVal) * 100)}%`, 
                     background: 'linear-gradient(180deg, #8b5cf6 0%, #6366f1 100%)',
                     borderRadius: '4px 4px 0 0',
                     minHeight: '20px',
@@ -733,25 +746,25 @@ const OwnerDashboard: React.FC = () => {
                       fontSize: '10px',
                       color: '#94a3b8',
                       whiteSpace: 'nowrap'
-                    }}>${(values[i] / 1000).toFixed(0)}k</span>
+                    }}>{item.display}</span>
                   </div>
-                  <span style={{ fontSize: '11px', color: '#64748b' }}>{month}</span>
+                  <span style={{ fontSize: '11px', color: '#64748b' }}>{item.label}</span>
                 </div>
-              );
-            })}
+              ));
+            })()}
           </div>
           <div className={styles.revenueBreakdown} style={{ marginTop: '16px' }}>
             <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#8b5cf6' }} />Enterprise</span>
-              <span className={styles.revenueItemValue}>${stats.totalRevenue > 0 ? (stats.totalRevenue * 0.7).toLocaleString() : '0'}</span>
+              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#8b5cf6' }} />Total Revenue</span>
+              <span className={styles.revenueItemValue}>${(realAnalytics?.revenue_30d ?? stats.totalRevenue ?? 0).toLocaleString()}</span>
             </div>
             <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#3b82f6' }} />Plus</span>
-              <span className={styles.revenueItemValue}>${stats.totalRevenue > 0 ? (stats.totalRevenue * 0.25).toLocaleString() : '0'}</span>
+              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#3b82f6' }} />Credits Purchased</span>
+              <span className={styles.revenueItemValue}>{((realAnalytics as any)?.total_credits_purchased ?? 0).toLocaleString()}</span>
             </div>
             <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Top-ups</span>
-              <span className={styles.revenueItemValue}>${stats.totalRevenue > 0 ? (stats.totalRevenue * 0.05).toLocaleString() : '0'}</span>
+              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Credits Balance</span>
+              <span className={styles.revenueItemValue}>{((realAnalytics as any)?.credits_balance ?? 0).toLocaleString()}</span>
             </div>
           </div>
         </div>
