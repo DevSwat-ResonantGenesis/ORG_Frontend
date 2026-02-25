@@ -39,7 +39,10 @@
   color: #888;
   font-size: 11px;
   cursor: pointer;
+  transition: all 0.2s;
 }
+
+.tab:hover { background: rgba(255, 255, 255, 0.05); }
 
 .tab.active {
   background: rgba(168, 85, 247, 0.15);
@@ -50,94 +53,220 @@
 .panelContent {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 16px;
 }
 
-.negotiationsList {
+/* Action Bar */
+.actionBar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.actionBtn {
+  padding: 8px 16px;
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 6px;
+  color: #a855f7;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.actionBtn:hover { background: rgba(168, 85, 247, 0.25); }
+
+/* Form Card */
+.formCard {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+
+.formCard h4 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a855f7;
+}
+
+.formTextarea {
+  width: 100%;
+  min-height: 60px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  resize: vertical;
+  margin-bottom: 8px;
+  font-family: inherit;
+}
+
+.formSelect {
+  width: 100%;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.formSelect option { background: #1a1a2e; }
+
+.formActions {
+  display: flex;
+  gap: 8px;
+}
+
+.submitBtn {
+  padding: 6px 16px;
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  border-radius: 6px;
+  color: #a855f7;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.submitBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.cancelBtn {
+  padding: 6px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #888;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* Negotiations List */
+.negotiationsList, .delegationsList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
-.negotiationCard {
-  padding: 16px;
+.negotiationCard, .delegationCard {
+  padding: 14px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 10px;
 }
 
-.negHeader {
+.negHeader, .delHeader {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
-.topic {
-  font-size: 14px;
-  font-weight: 500;
-}
+.topic { font-size: 13px; font-weight: 500; }
+
+.negType { font-size: 10px; color: #666; margin-bottom: 8px; }
 
 .status {
-  padding: 4px 8px;
+  padding: 3px 8px;
   border-radius: 4px;
   font-size: 10px;
   font-weight: 600;
 }
 
-.status.active {
-  background: rgba(34, 197, 94, 0.15);
-  color: #22c55e;
-}
+.status.active { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+.status.completed { background: rgba(14, 165, 233, 0.15); color: #0ea5e9; }
+.status.pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.status.rejected { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 
-.status.completed {
-  background: rgba(14, 165, 233, 0.15);
-  color: #0ea5e9;
-}
-
-.status.pending {
-  background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
-}
-
-.agents {
-  font-size: 12px;
+.agents, .delMeta {
+  font-size: 11px;
   color: #888;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .progressBar {
-  height: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
   overflow: hidden;
 }
 
 .progressFill {
   height: 100%;
   background: linear-gradient(90deg, #a855f7, #8b5cf6);
-  border-radius: 3px;
+  border-radius: 2px;
+  transition: width 0.5s ease;
 }
 
-/* Notice and Loading */
-.notice, .loading, .emptyState {
-  padding: 16px;
-  text-align: center;
-  color: #888;
+/* Consensus */
+.consensusView h3 {
   font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 12px;
+  color: #ccc;
 }
 
-.notice {
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+.teamsOverview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.teamCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 8px;
-  color: #93c5fd;
 }
 
-/* Contracts List */
+.teamName { font-size: 13px; font-weight: 500; }
+.teamStatus { font-size: 10px; color: #888; text-transform: capitalize; }
+.teamMembers { font-size: 10px; color: #666; }
+
+.proposalsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.proposalCard {
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+
+.proposalHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.proposalMeta { font-size: 11px; color: #888; margin-bottom: 8px; }
+
+.voteBar {
+  display: flex;
+  gap: 16px;
+  font-size: 11px;
+}
+
+.voteFor { color: #22c55e; }
+.voteAgainst { color: #ef4444; }
+
+/* Contracts */
 .contractsList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .contractCard {
@@ -150,7 +279,7 @@
 .contractHeader {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   font-size: 13px;
 }
 
@@ -162,12 +291,45 @@
   color: #22c55e;
 }
 
-.contractMeta {
-  font-size: 12px;
+.contractMeta { font-size: 11px; color: #888; }
+
+/* Banners & States */
+.notice, .loading, .emptyState {
+  padding: 14px;
+  text-align: center;
   color: #888;
+  font-size: 13px;
 }
 
-/* Settings Section */
+.notice {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+  color: #93c5fd;
+}
+
+.successBanner {
+  padding: 8px 12px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 6px;
+  color: #22c55e;
+  font-size: 12px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.errorBanner {
+  padding: 8px 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  color: #ef4444;
+  font-size: 12px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
 .settingsSection {
   padding: 16px;
   color: #888;

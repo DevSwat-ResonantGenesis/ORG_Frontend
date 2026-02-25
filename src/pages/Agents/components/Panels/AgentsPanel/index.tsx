@@ -423,6 +423,50 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     })();
   }, [toast]);
 
+  // Clone agent
+  const handleCloneAgent = useCallback(async (agent: Agent) => {
+    try {
+      const { createAgent } = await import('../../../../../api/agentEngine');
+      const cloned = await createAgent({
+        name: agent.name + ' (Clone)',
+        description: 'Cloned from ' + agent.name,
+        system_prompt: agent.config?.systemPrompt || '',
+        model: agent.config?.model || 'gpt-4-turbo-preview',
+        temperature: agent.config?.temperature || 0.7,
+        max_tokens: agent.config?.maxTokens || 4096,
+        tools: agent.capabilities || [],
+      });
+      toast.success('Agent cloned: ' + cloned.name);
+      // Reload agents
+      const { listAgents } = await import('../../../../../api/agentEngine');
+      const backendAgents = await listAgents();
+      const agents: Agent[] = backendAgents.map((a) => ({
+        id: a.id,
+        hash: (a as any).manifest_hash || '0x' + a.id.replace(/-/g, '').slice(0, 40),
+        dsid: (a as any).dsid || undefined,
+        persisted: true,
+        name: a.name,
+        type: 'executor',
+        status: (a.is_active ? 'active' : 'idle') as 'idle' | 'active' | 'paused' | 'archived',
+        mode: 'governed' as const,
+        version: String(a.version) + '.0.0',
+        capabilities: Array.isArray((a as any).tools) ? ((a as any).tools as string[]) : [],
+        executions: 0, costToday: 0, walletBalance: 0, pendingApprovals: 0,
+        riskLevel: 'low' as const, utilityScore: 0.5, ownerId: '',
+        config: {
+          provider: 'openai', model: a.model || 'gpt-4-turbo-preview',
+          systemPrompt: '', temperature: 0.7, maxTokens: 4096, tools: [],
+          memoryConfig: { shortTermLimit: 10, longTermEnabled: false, vectorStoreEnabled: false, contextWindow: 4096 },
+          autonomyConfig: { canSpawnSubAgents: false, canModifySelf: false, canAccessNetwork: false, canExecuteCode: false, maxConcurrentTasks: 5 },
+        },
+        createdAt: new Date(), updatedAt: new Date(),
+      }));
+      setAgents(agents);
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to clone agent');
+    }
+  }, [toast, setAgents]);
+
   const copyAgentHash = useCallback((agent: Agent) => {
     const hash = agent.hash || agent.id;
     (async () => {
@@ -618,6 +662,16 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                       title="View Details"
                     >
                       <Icons.Info />
+                    </button>
+                    
+                    {/* Clone button */}
+                    <button 
+                      className={`${styles.actionBtn} ${styles.detailBtn}`}
+                      disabled={bulkMode}
+                      onClick={(e) => { e.stopPropagation(); handleCloneAgent(agent); }}
+                      title="Clone Agent"
+                    >
+                      <Icons.Copy />
                     </button>
                     
                     {/* Delete button */}
