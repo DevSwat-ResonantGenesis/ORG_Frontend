@@ -22,6 +22,8 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedPolicy, setSelectedPolicy] = useState<governanceApi.GovernancePolicy | null>(null);
+  const [showPolicyForm, setShowPolicyForm] = useState(false);
+  const [policyForm, setPolicyForm] = useState({ name: '', description: '', type: 'restriction', scope: 'global', rules: '' });
 
   // Fetch policies
   const fetchPolicies = useCallback(async () => {
@@ -103,6 +105,25 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
     }
   };
 
+  const handleCreatePolicy = async () => {
+    if (!policyForm.name.trim()) return;
+    try {
+      await fastapiClient.post('/api/v1/governance/policies', {
+        name: policyForm.name,
+        description: policyForm.description,
+        type: policyForm.type,
+        scope: policyForm.scope,
+        rules: policyForm.rules.split('\n').filter(Boolean),
+        status: 'draft',
+      });
+      setShowPolicyForm(false);
+      setPolicyForm({ name: '', description: '', type: 'restriction', scope: 'global', rules: '' });
+      fetchPolicies();
+    } catch (err: any) {
+      console.error('Failed to create policy:', err);
+    }
+  };
+
   return (
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
@@ -129,10 +150,43 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
           <div className={styles.policiesSection}>
             <div className={styles.sectionHeader}>
               <h3>Governance Policies</h3>
-              <button className={styles.createBtn} onClick={() => alert("Policy creation requires backend endpoint. Coming soon.")}>
+              <button className={styles.createBtn} onClick={() => setShowPolicyForm(!showPolicyForm)}>
                 <Icons.Plus /> New Policy
               </button>
             </div>
+            {showPolicyForm && (
+              <div className={styles.policyForm}>
+                <input type="text" placeholder="Policy Name" value={policyForm.name}
+                  onChange={e => setPolicyForm(p => ({ ...p, name: e.target.value }))}
+                  className={styles.formInput} />
+                <input type="text" placeholder="Description" value={policyForm.description}
+                  onChange={e => setPolicyForm(p => ({ ...p, description: e.target.value }))}
+                  className={styles.formInput} />
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <select value={policyForm.type} onChange={e => setPolicyForm(p => ({ ...p, type: e.target.value }))}
+                    className={styles.formSelect}>
+                    <option value="restriction">Restriction</option>
+                    <option value="approval">Approval</option>
+                    <option value="limit">Limit</option>
+                    <option value="automation">Automation</option>
+                  </select>
+                  <select value={policyForm.scope} onChange={e => setPolicyForm(p => ({ ...p, scope: e.target.value }))}
+                    className={styles.formSelect}>
+                    <option value="global">Global</option>
+                    <option value="agent">Agent</option>
+                    <option value="workflow">Workflow</option>
+                  </select>
+                </div>
+                <textarea placeholder="Rules (one per line)" value={policyForm.rules}
+                  onChange={e => setPolicyForm(p => ({ ...p, rules: e.target.value }))}
+                  className={styles.formTextarea} rows={3} />
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button className={styles.createBtn} onClick={handleCreatePolicy}>Create Policy</button>
+                  <button className={styles.cancelFormBtn} onClick={() => setShowPolicyForm(false)}>Cancel</button>
+                </div>
+              </div>
+            )}
+
             <div className={styles.policiesList}>
               {Array.isArray(policies) && policies.map((policy) => (
                 <div 
