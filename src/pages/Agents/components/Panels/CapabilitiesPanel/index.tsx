@@ -2,6 +2,7 @@ import React, { memo, useState, useEffect, useCallback } from 'react';
 import { useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import * as capabilitiesApi from '../../../../../api/capabilities';
+import fastapiClient from '../../../../../api/fastapiClient';
 import styles from './CapabilitiesPanel.module.css';
 
 // ============== CAPABILITIES PANEL ==============
@@ -80,6 +81,8 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
 
   const selectedAgent = agents.find(a => a.id === selectedAgentId) || agents[0];
 
+  const [platformTools, setPlatformTools] = useState<any[]>([]);
+
   // Fetch capabilities from backend when agent changes
   const fetchCapabilities = useCallback(async () => {
     if (!selectedAgent?.id) return;
@@ -87,12 +90,14 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
     setIsLoading(true);
     setError(null);
     try {
-      const [systemCaps, customCaps] = await Promise.all([
+      const [systemCaps, customCaps, toolsRes] = await Promise.all([
         capabilitiesApi.getAgentCapabilities(selectedAgent.id),
         capabilitiesApi.getCustomCapabilities(selectedAgent.id),
+        fastapiClient.get('/api/v1/agents/tools').catch(() => ({ data: [] })),
       ]);
       setSystemCapabilities(systemCaps as any);
       setCustomCapabilities(customCaps as any);
+      if (toolsRes.data) setPlatformTools(toolsRes.data);
       setSelectedCapabilities(new Set());
     } catch (err: any) {
       console.error('Failed to fetch custom capabilities:', err);
