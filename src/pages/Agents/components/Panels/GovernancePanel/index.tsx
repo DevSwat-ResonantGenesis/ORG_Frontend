@@ -24,6 +24,7 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
   const [selectedPolicy, setSelectedPolicy] = useState<governanceApi.GovernancePolicy | null>(null);
   const [showPolicyForm, setShowPolicyForm] = useState(false);
   const [policySearch, setPolicySearch] = useState('');
+  const [statusMessage, setStatusMessage] = useState<{text: string, type: 'success' | 'error'} | null>(null);
   const [policyForm, setPolicyForm] = useState({ name: '', description: '', type: 'restriction', scope: 'global', rules: '' });
 
   // Fetch policies
@@ -59,6 +60,14 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
       console.error('Failed to load limits:', err);
     }
   }, []);
+
+  // Auto-clear status message
+  useEffect(() => {
+    if (statusMessage) {
+      const timer = setTimeout(() => setStatusMessage(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [statusMessage]);
 
   // Load data based on active tab + auto-refresh approvals
   useEffect(() => {
@@ -160,6 +169,11 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
         </div>
       </div>
 
+      {statusMessage && (
+        <div style={{ padding: '8px 14px', margin: '0 16px 8px', borderRadius: '8px', fontSize: '12px', background: statusMessage.type === 'success' ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)', color: statusMessage.type === 'success' ? '#22c55e' : '#ef4444', border: '1px solid ' + (statusMessage.type === 'success' ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)') }}>
+          {statusMessage.text}
+        </div>
+      )}
       <div className={styles.panelContent}>
         {/* Policies Tab */}
         {activeTab === 'policies' && (
