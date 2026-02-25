@@ -44,6 +44,8 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
   const [executionStats, setExecutionStats] = useState<ExecutionStats | null>(null);
   const [triggers, setTriggers] = useState<agentEngine.WorkflowTrigger[]>([]);
   const [showTriggerForm, setShowTriggerForm] = useState(false);
+  const [execStatusFilter, setExecStatusFilter] = useState<string>('all');
+  const [execSearchTerm, setExecSearchTerm] = useState('');
   const [triggerForm, setTriggerForm] = useState({ name: '', trigger_type: 'schedule' as string, config: '{}' });
 
   const runningExecutions = realExecutions?.filter(e => e.status === 'running') || [];
@@ -172,7 +174,7 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
     }
   }, [agents, selectedAgentId]);
 
-  const displayExecutions = realExecutions;
+  const displayExecutions = realExecutions.filter(e => { if (execStatusFilter !== "all" && e.status !== execStatusFilter) return false; if (execSearchTerm && !e.id.toLowerCase().includes(execSearchTerm.toLowerCase()) && !(e as any).agentId?.toLowerCase().includes(execSearchTerm.toLowerCase())) return false; return true; });
 
   const handleCancelSession = useCallback(async (sessionId: string) => {
     if (!sessionId) return;
@@ -273,6 +275,25 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
             <span>Loading executions...</span>
           </div>
         )}
+
+        {/* Filter Bar */}
+        <div style={{ display: 'flex', gap: '8px', padding: '0 12px 8px', alignItems: 'center' }}>
+          <select value={execStatusFilter} onChange={e => setExecStatusFilter(e.target.value)}
+            style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#e2e8f0', fontSize: '11px' }}>
+            <option value="all">All Status</option>
+            <option value="running">Running</option>
+            <option value="completed">Completed</option>
+            <option value="failed">Failed</option>
+            <option value="queued">Queued</option>
+          </select>
+          <input
+            type="text"
+            placeholder="Search executions..."
+            value={execSearchTerm}
+            onChange={e => setExecSearchTerm(e.target.value)}
+            style={{ flex: 1, padding: '4px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#e2e8f0', fontSize: '11px' }}
+          />
+        </div>
 
         {/* Stats Bar */}
         <div className={styles.statsBar}>
