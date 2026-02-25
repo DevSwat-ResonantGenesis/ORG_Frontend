@@ -7,8 +7,8 @@
   --chat-header-height: 56px;
   --chat-sidebar-width: 280px;
   --chat-input-height: 120px;
-  --chat-input-clearance-desktop: calc(var(--chat-input-height) + 48px);
-  --chat-input-clearance-mobile: calc(var(--chat-input-height) + 40px);
+  --chat-input-clearance-desktop: calc(var(--chat-input-height) + 88px);
+  --chat-input-clearance-mobile: calc(var(--chat-input-height) + 80px);
   --chat-border-radius: 12px;
   --chat-spacing-xs: 4px;
   --chat-spacing-sm: 8px;
