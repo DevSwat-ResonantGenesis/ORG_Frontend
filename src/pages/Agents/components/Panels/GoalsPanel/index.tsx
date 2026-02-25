@@ -31,6 +31,17 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
   const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'completed'>('all');
   const [goals, setGoals] = useState<Goal[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleExportGoals = () => {
+    const exportData = { exported_at: new Date().toISOString(), goals };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'goals-' + new Date().toISOString().split('T')[0] + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
   const [error, setError] = useState<string | null>(null);
   const [newGoalTitle, setNewGoalTitle] = useState('');
   const [showNewGoalForm, setShowNewGoalForm] = useState(false);
@@ -152,6 +163,7 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
         <h2><Icons.Goals /> Goals & Objectives {isLoading && '(loading...)'}</h2>
+        <button onClick={handleExportGoals} style={{ padding: "4px 10px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", color: "#94a3b8", fontSize: "11px", cursor: "pointer" }}><Icons.Download /> Export</button>
         <button className={styles.addBtn} onClick={() => setShowNewGoalForm(true)} disabled={!selectedAgent}>
           <Icons.Plus /> New Goal
         </button>
