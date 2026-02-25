@@ -45,6 +45,46 @@ const PlaceholderPanel: React.FC<{ name: string }> = memo(({ name }) => (
 // AgentOS toolbar removed - now integrated into global Header component
 
 // ============== METRICS FOOTER COMPONENT ==============
+const NotificationBell: React.FC = memo(() => {
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  useEffect(() => {
+    fastapiClient.get('/api/v1/platform/notifications')
+      .then(res => setNotifications(res.data || []))
+      .catch(() => {});
+  }, []);
+
+  return (
+    <div style={{ position: 'relative', display: 'inline-block' }}>
+      <button
+        onClick={() => setShowDropdown(!showDropdown)}
+        style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', position: 'relative', padding: '4px' }}
+      >
+        <Icons.Bell />
+        {unreadCount > 0 && (
+          <span style={{ position: 'absolute', top: '-2px', right: '-2px', background: '#ef4444', color: '#fff', borderRadius: '50%', width: '14px', height: '14px', fontSize: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {unreadCount}
+          </span>
+        )}
+      </button>
+      {showDropdown && (
+        <div style={{ position: 'absolute', top: '100%', right: 0, width: '280px', background: '#1e1e2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '8px', zIndex: 1000, maxHeight: '300px', overflowY: 'auto' }}>
+          <div style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8f0', marginBottom: '8px', padding: '4px' }}>Notifications</div>
+          {notifications.map(n => (
+            <div key={n.id} style={{ padding: '8px', borderRadius: '6px', marginBottom: '4px', background: n.read ? 'transparent' : 'rgba(14,165,233,0.06)', fontSize: '11px', color: '#94a3b8' }}>
+              <div style={{ fontWeight: 600, color: n.type === 'warning' ? '#f59e0b' : n.type === 'error' ? '#ef4444' : '#e2e8f0', marginBottom: '2px' }}>{n.title}</div>
+              <div>{n.message}</div>
+            </div>
+          ))}
+          {notifications.length === 0 && <div style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontSize: '11px' }}>No notifications</div>}
+        </div>
+      )}
+    </div>
+  );
+});
+
 const MetricsFooter: React.FC = memo(() => {
   const agents = useAgentStore((state) => state.agents);
   const executions = useExecutionStore((state) => (Array.isArray(state.executions) ? state.executions : []));
@@ -328,6 +368,9 @@ const AgentOSv2: React.FC = () => {
         <Sidebar />
         
         <div className={`${styles.mainWrapper} ${sidebarCollapsed ? styles.expanded : ''}`}>
+          <div style={{ position: 'absolute', top: '8px', right: '16px', zIndex: 100 }}>
+            <NotificationBell />
+          </div>
           <main className={styles.mainContent}>
             <PanelErrorBoundary>
               <Suspense fallback={<PanelSkeleton />}>
