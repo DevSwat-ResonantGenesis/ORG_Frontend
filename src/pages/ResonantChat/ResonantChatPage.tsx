@@ -2,6 +2,7 @@ import { createMemory, deleteConversation, deleteMemory, listConversations, list
 import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, getProviderStats, getUserAnalytics, archiveConversation, deleteResonantConversation, deleteResonantMessage, type UserAnalytics } from '@/api/resonantChat';
 import { triggerChatSync } from '@/context/ChatContext';
 import { fetchAvailableProviders } from '@/api/userApiKeys';
+import { executeSkill } from '@/api/skills';
 import { fetchUsageSummary } from '@/api/usage';
 import {
   AnalyticsIcon,
@@ -313,6 +314,7 @@ const ResonantChatPage: React.FC = () => {
   const [teams, setTeams] = useState<AgentTeam[]>([]);
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
   const [availableAgents, setAvailableAgents] = useState<Array<{ hash: string; name: string }>>([]);
+  const [enabledSkillIds, setEnabledSkillIds] = useState<string[]>([]);
 
   // Additional settings states
   const [autoSave, setAutoSave] = useState(true);
@@ -4112,6 +4114,7 @@ const ResonantChatPage: React.FC = () => {
           splitViewWidth={splitViewWidth}
           attachedFiles={attachedFiles}
           onRemoveFile={(index) => setAttachedFiles(prev => prev.filter((_, i) => i !== index))}
+          onEnabledSkillsChange={setEnabledSkillIds}
           memories={memories}
           onShowMemoryLibrary={() => {
             setShowMemoryLibrary(true);

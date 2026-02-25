@@ -36,11 +36,18 @@ const SkillsIcon = () => (
   </svg>
 );
 
-interface SkillsToolbarProps {
+const ChevronIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="6 9 12 15 18 9" />
+  </svg>
+);
+
+export interface SkillsToolbarProps {
   onSkillToggle?: (skillId: string, enabled: boolean) => void;
+  onEnabledSkillsChange?: (enabledSkillIds: string[]) => void;
 }
 
-const SkillsToolbar: React.FC<SkillsToolbarProps> = ({ onSkillToggle }) => {
+const SkillsToolbar: React.FC<SkillsToolbarProps> = ({ onSkillToggle, onEnabledSkillsChange }) => {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [showPopup, setShowPopup] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -50,9 +57,13 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({ onSkillToggle }) => {
   const fetchSkills = useCallback(async () => {
     setLoading(true);
     const data = await listSkills();
-    setSkills(Array.isArray(data) ? data : []);
+    const safeData = Array.isArray(data) ? data : [];
+    setSkills(safeData);
+    // Notify parent of initially enabled skills
+    const enabledIds = safeData.filter(s => s.enabled).map(s => s.id);
+    onEnabledSkillsChange?.(enabledIds);
     setLoading(false);
-  }, []);
+  }, [onEnabledSkillsChange]);
 
   useEffect(() => {
     fetchSkills();
@@ -77,30 +88,20 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({ onSkillToggle }) => {
     const newEnabled = !skill.enabled;
     const success = await toggleSkill(skill.id, newEnabled);
     if (success) {
-      setSkills(prev =>
-        prev.map(s => (s.id === skill.id ? { ...s, enabled: newEnabled } : s))
-      );
+      const updated = skills.map(s => (s.id === skill.id ? { ...s, enabled: newEnabled } : s));
+      setSkills(updated);
       onSkillToggle?.(skill.id, newEnabled);
+      // Notify parent of enabled skill changes
+      const enabledIds = updated.filter(s => s.enabled).map(s => s.id);
+      onEnabledSkillsChange?.(enabledIds);
     }
   };
 
   const enabledCount = (skills || []).filter(s => s.enabled).length;
-  const enabledSkills = (skills || []).filter(s => s.enabled);
 
   return (
     <div className={styles.container}>
-      {/* Enabled skill mini-icons */}
-      {enabledSkills.map(skill => (
-        <div
-          key={skill.id}
-          className={styles.miniIcon}
-          title={`${skill.name} (active)`}
-        >
-          {SKILL_ICONS[skill.icon] || <span className={styles.iconFallback}>{skill.icon[0]?.toUpperCase()}</span>}
-        </div>
-      ))}
-
-      {/* Main skills button */}
+      {/* Main skills button - matches providerButton style */}
       <button
         ref={buttonRef}
         className={`${styles.skillsButton} ${enabledCount > 0 ? styles.hasActive : ''}`}
@@ -114,13 +115,13 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({ onSkillToggle }) => {
         )}
       </button>
 
-      {/* Skills popup */}
+      {/* Skills popup - matches providerDropdown/stickerPanel */}
       {showPopup && (
         <div ref={popupRef} className={styles.popup}>
           <div className={styles.popupHeader}>
             <h3 className={styles.popupTitle}>Skills</h3>
             <span className={styles.popupSubtitle}>
-              Connect skills to enhance Resonant Chat
+              {enabledCount > 0 ? `${enabledCount} active` : 'Toggle skills for this chat'}
             </span>
           </div>
 
@@ -128,13 +129,13 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({ onSkillToggle }) => {
             <div className={styles.loading}>Loading skills...</div>
           ) : (
             <div className={styles.skillsList}>
-              {skills.map(skill => (
+              {(skills || []).map(skill => (
                 <div
                   key={skill.id}
                   className={`${styles.skillCard} ${skill.enabled ? styles.enabled : ''}`}
                 >
                   <div className={styles.skillIcon}>
-                    {SKILL_ICONS[skill.icon] || <span>{skill.icon[0]?.toUpperCase()}</span>}
+                    {SKILL_ICONS[skill.icon] || <span className={styles.iconFallback}>{skill.icon?.[0]?.toUpperCase()}</span>}
                   </div>
                   <div className={styles.skillInfo}>
                     <div className={styles.skillName}>{skill.name}</div>
@@ -158,6 +159,9 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({ onSkillToggle }) => {
                   </button>
                 </div>
               ))}
+              {skills.length === 0 && !loading && (
+                <div className={styles.loading}>No skills available</div>
+              )}
             </div>
           )}
         </div>

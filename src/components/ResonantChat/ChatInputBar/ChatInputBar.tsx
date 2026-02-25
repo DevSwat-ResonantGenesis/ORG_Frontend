@@ -122,6 +122,7 @@ interface ChatInputBarProps {
   // Conversations
   conversations?: Conversation[];
   onShowConversations?: () => void;
+  onEnabledSkillsChange?: (enabledSkillIds: string[]) => void;
   showConversations?: boolean;
   onCloseConversations?: () => void;
   onConversationClick?: (conversation: Conversation) => void;
@@ -186,6 +187,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   onMemoryClick,
   conversations = [],
   onShowConversations,
+  onEnabledSkillsChange,
   showConversations = false,
   onCloseConversations,
   onConversationClick,
@@ -1099,7 +1101,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
 
-            <SkillsToolbar />
+            <SkillsToolbar onEnabledSkillsChange={onEnabledSkillsChange} />
           </div>
 
           <div className={styles.toolsRight}>
