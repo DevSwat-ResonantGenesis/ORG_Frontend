@@ -322,6 +322,17 @@
   min-height: 0;
 }
 
+.messagesBottomSpacer {
+  flex: 0 0 auto;
+  height: var(--chat-input-clearance-desktop);
+  pointer-events: none;
+}
+
+.messagesEndAnchor {
+  height: 1px;
+  scroll-margin-bottom: calc(var(--chat-input-clearance-desktop) + env(safe-area-inset-bottom));
+}
+
 /* ============================================================
    Message Styles - TRANSPARENT with shadow only
    ============================================================ */
@@ -1658,6 +1669,14 @@
     padding-bottom: calc(var(--chat-input-clearance-mobile) + env(safe-area-inset-bottom));
     max-width: none;
     margin: 0;
+  }
+
+  .messagesBottomSpacer {
+    height: var(--chat-input-clearance-mobile);
+  }
+
+  .messagesEndAnchor {
+    scroll-margin-bottom: calc(var(--chat-input-clearance-mobile) + env(safe-area-inset-bottom));
   }
 
   .resonant-chat-usage-bar {

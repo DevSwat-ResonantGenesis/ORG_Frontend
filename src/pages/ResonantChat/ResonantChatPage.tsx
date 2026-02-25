@@ -3942,7 +3942,8 @@ const ResonantChatPage: React.FC = () => {
                       )}
                     </div>
                   ))}
-                  <div ref={messagesEndRef} />
+                  <div className={styles.messagesBottomSpacer} aria-hidden="true" />
+                  <div ref={messagesEndRef} className={styles.messagesEndAnchor} aria-hidden="true" />
                 </div>
               )}
               </SplitViewModule>
