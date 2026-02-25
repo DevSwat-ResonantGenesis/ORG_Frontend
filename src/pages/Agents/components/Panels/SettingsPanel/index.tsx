@@ -573,10 +573,27 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
 
                 <div className={styles.dangerZone}>
                   <h4>Danger Zone</h4>
-                  <button className={styles.dangerBtn}>
+                  <button className={styles.dangerBtn} onClick={() => {
+                    if (confirm('Are you sure you want to clear all local data? This cannot be undone.')) {
+                      localStorage.clear();
+                      sessionStorage.clear();
+                      window.location.reload();
+                    }
+                  }}>
                     <Icons.Trash /> Clear All Data
                   </button>
-                  <button className={styles.dangerBtn}>
+                  <button className={styles.dangerBtn} onClick={() => {
+                    if (confirm('Reset all settings to defaults?')) {
+                      setSettings({
+                        theme: 'dark', language: 'en', fontSize: 14, showLineNumbers: true,
+                        autoSave: true, autoSaveInterval: 30, notifications: true, sounds: false,
+                        animations: true, apiEndpoint: '/api/v1', apiKey: '', rateLimit: 60,
+                        timeout: 30000, mfaEnabled: false, sessionTimeout: 30, ipWhitelist: '',
+                        emailNotifications: true, pushNotifications: false, slackIntegration: false,
+                        webhookUrl: '', debugMode: false, telemetry: true, experimentalFeatures: false,
+                      } as any);
+                    }
+                  }}>
                     <Icons.XCircle /> Reset to Defaults
                   </button>
                 </div>
