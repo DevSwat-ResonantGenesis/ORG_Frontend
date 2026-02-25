@@ -437,31 +437,8 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
         tools: agent.capabilities || [],
       });
       toast.success('Agent cloned: ' + cloned.name);
-      // Reload agents
-      const { listAgents } = await import('../../../../../api/agentEngine');
-      const backendAgents = await listAgents();
-      const agents: Agent[] = backendAgents.map((a) => ({
-        id: a.id,
-        hash: (a as any).manifest_hash || '0x' + a.id.replace(/-/g, '').slice(0, 40),
-        dsid: (a as any).dsid || undefined,
-        persisted: true,
-        name: a.name,
-        type: 'executor',
-        status: (a.is_active ? 'active' : 'idle') as 'idle' | 'active' | 'paused' | 'archived',
-        mode: 'governed' as const,
-        version: String(a.version) + '.0.0',
-        capabilities: Array.isArray((a as any).tools) ? ((a as any).tools as string[]) : [],
-        executions: 0, costToday: 0, walletBalance: 0, pendingApprovals: 0,
-        riskLevel: 'low' as const, utilityScore: 0.5, ownerId: '',
-        config: {
-          provider: 'openai', model: a.model || 'gpt-4-turbo-preview',
-          systemPrompt: '', temperature: 0.7, maxTokens: 4096, tools: [],
-          memoryConfig: { shortTermLimit: 10, longTermEnabled: false, vectorStoreEnabled: false, contextWindow: 4096 },
-          autonomyConfig: { canSpawnSubAgents: false, canModifySelf: false, canAccessNetwork: false, canExecuteCode: false, maxConcurrentTasks: 5 },
-        },
-        createdAt: new Date(), updatedAt: new Date(),
-      }));
-      setAgents(agents);
+      // Trigger a reload by refreshing the page agents
+      window.dispatchEvent(new CustomEvent('agents-refresh'));
     } catch (err: any) {
       toast.error(err.message || 'Failed to clone agent');
     }

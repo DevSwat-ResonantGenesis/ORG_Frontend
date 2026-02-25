@@ -42,7 +42,7 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
   const [error, setError] = useState<string | null>(null);
   const [selectedExecution, setSelectedExecution] = useState<executionsApi.Execution | null>(null);
   const [executionStats, setExecutionStats] = useState<ExecutionStats | null>(null);
-  const [triggers, setTriggers] = useState<agentEngine.AgentTrigger[]>([]);
+  const [triggers, setTriggers] = useState<agentEngine.WorkflowTrigger[]>([]);
   const [showTriggerForm, setShowTriggerForm] = useState(false);
   const [triggerForm, setTriggerForm] = useState({ name: '', trigger_type: 'schedule' as string, config: '{}' });
 
