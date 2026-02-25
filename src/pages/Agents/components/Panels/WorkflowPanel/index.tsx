@@ -4,6 +4,7 @@ import { Icons } from '../../shared/Icons';
 import { WorkflowCanvas } from './WorkflowCanvas';
 import type { Workflow as UIWorkflow, WorkflowNode } from '../../../../../types';
 import * as workflowsApi from '../../../../../api/workflows';
+import fastapiClient from '../../../../../api/fastapiClient';
 import styles from './WorkflowPanel.module.css';
 
 // ============== WORKFLOW PANEL ==============
@@ -33,6 +34,7 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
   const agents = useAgentStore(state => state.agents);
   
   const [activeView, setActiveView] = useState<ViewMode>('list');
+  const [workflowStats, setWorkflowStats] = useState<any>(null);
   const [newWorkflowName, setNewWorkflowName] = useState('');
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const workflows = Array.isArray(storeWorkflows) ? storeWorkflows : [];
@@ -119,7 +121,12 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
       setLoading(true);
       setError(null);
       try {
-        const apiWorkflows = await workflowsApi.listWorkflows();
+        // Fetch workflows and stats in parallel
+        const [apiWorkflows, statsRes] = await Promise.all([
+          workflowsApi.listWorkflows(),
+          fastapiClient.get('/api/v1/workflows/stats').catch(() => ({ data: null })),
+        ]);
+        if (statsRes.data) setWorkflowStats(statsRes.data);
         if (!mounted) return;
         setWorkflows(apiWorkflows.map(apiToUiWorkflow));
       } catch (e: any) {
