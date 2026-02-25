@@ -88,6 +88,37 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
     }
   }, [selectedAgent?.id, newGoalTitle, fetchGoals]);
 
+  // Update goal status
+  const handleUpdateGoalStatus = useCallback(async (goalId: string, newStatus: string) => {
+    if (!selectedAgent?.id) return;
+    setIsLoading(true);
+    try {
+      await fastapiClient.put(`/api/v1/agents/goals/${selectedAgent.id}/${goalId}`, {
+        status: newStatus
+      });
+      fetchGoals();
+    } catch (err: any) {
+      setError(err.message || 'Failed to update goal');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedAgent?.id, fetchGoals]);
+
+  // Delete goal
+  const handleDeleteGoal = useCallback(async (goalId: string) => {
+    if (!selectedAgent?.id) return;
+    if (!confirm('Delete this goal?')) return;
+    setIsLoading(true);
+    try {
+      await fastapiClient.delete(`/api/v1/agents/goals/${selectedAgent.id}/${goalId}`);
+      fetchGoals();
+    } catch (err: any) {
+      setError(err.message || 'Failed to delete goal');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedAgent?.id, fetchGoals]);
+
   useEffect(() => {
     fetchGoals();
   }, [fetchGoals]);
@@ -231,13 +262,24 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
               )}
 
               <div className={styles.goalActions}>
-                <button className={styles.actionBtn}><Icons.Edit /> Edit</button>
                 {goal.status === 'active' && (
-                  <button className={styles.actionBtn}><Icons.Pause /> Pause</button>
+                  <button className={styles.actionBtn} onClick={() => handleUpdateGoalStatus(goal.id, 'completed')}>
+                    <Icons.CheckCircle /> Complete
+                  </button>
+                )}
+                {goal.status === 'active' && (
+                  <button className={styles.actionBtn} onClick={() => handleUpdateGoalStatus(goal.id, 'paused')}>
+                    <Icons.Pause /> Pause
+                  </button>
                 )}
                 {goal.status === 'paused' && (
-                  <button className={styles.actionBtn}><Icons.Play /> Resume</button>
+                  <button className={styles.actionBtn} onClick={() => handleUpdateGoalStatus(goal.id, 'active')}>
+                    <Icons.Play /> Resume
+                  </button>
                 )}
+                <button className={`${styles.actionBtn} ${styles.deleteAction}`} onClick={() => handleDeleteGoal(goal.id)}>
+                  <Icons.Trash /> Delete
+                </button>
               </div>
             </div>
           ))}

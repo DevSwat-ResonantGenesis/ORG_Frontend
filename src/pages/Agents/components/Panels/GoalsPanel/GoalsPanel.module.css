@@ -381,3 +381,12 @@
     flex-wrap: wrap;
   }
 }
+
+.deleteAction {
+  color: #ef4444 !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.deleteAction:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+}
