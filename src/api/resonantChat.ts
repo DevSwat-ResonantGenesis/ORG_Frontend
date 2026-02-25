@@ -73,6 +73,8 @@ export interface ResonantChatRequest {
     files?: { path: string; content: string }[];
     activeFile?: string;
   };
+  // Skills enabled by user in toolbar (sent with each message)
+  enabled_skill_ids?: string[];
   // Social Cognition Layer - adaptive interpersonal mirroring
   social_cognition?: {
     enabled?: boolean;

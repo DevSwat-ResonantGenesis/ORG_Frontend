@@ -1918,6 +1918,7 @@ const ResonantChatPage: React.FC = () => {
         use_rag: useHashSphere ? false : true, // If Hash Sphere is enabled, RAG is optional
         agent_hash: (!selectedTeamId) ? selectedAgentHash || undefined : undefined,
         teamId: selectedTeamId || undefined,
+        enabled_skill_ids: enabledSkillIds.length > 0 ? enabledSkillIds : undefined,
       });
 
       // Handle tool results (e.g., navigation)
