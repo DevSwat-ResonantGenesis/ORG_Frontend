@@ -151,6 +151,11 @@ const MetricsFooter: React.FC = memo(() => {
         <span className={styles.metricValue}>${(wallet.totalBalance || 0).toFixed(2)}</span>
         <span className={styles.metricLabel}>Balance</span>
       </div>
+      <div className={styles.metricItem}>
+        <span style={{ width: 8, height: 8, borderRadius: '50%', background: platformMetrics?.status === 'healthy' ? '#22c55e' : '#f59e0b', display: 'inline-block' }} />
+        <span className={styles.metricValue}>{platformMetrics?.avg_response_ms || '—'}ms</span>
+        <span className={styles.metricLabel}>Avg Response</span>
+      </div>
     </footer>
   );
 });
