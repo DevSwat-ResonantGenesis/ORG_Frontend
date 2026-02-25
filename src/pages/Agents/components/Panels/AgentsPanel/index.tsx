@@ -51,6 +51,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [agentVersions, setAgentVersions] = useState<any[]>([]);
   const [agentActivity, setAgentActivity] = useState<any[]>([]);
+  const [agentBenchmarks, setAgentBenchmarks] = useState<any>(null);
   const [modalAgentId, setModalAgentId] = useState<string | null>(null);
   const [goalInput, setGoalInput] = useState('');
   const [messageInput, setMessageInput] = useState('');
@@ -388,12 +389,14 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     if (activeModal === 'detail' && modalAgent?.id) {
       (async () => {
         try {
-          const [versionsRes, activityRes] = await Promise.allSettled([
+          const [versionsRes, activityRes, benchmarksRes] = await Promise.allSettled([
             fastapiClient.get('/api/v1/agents/' + modalAgent.id + '/versions'),
             fastapiClient.get('/api/v1/agents/' + modalAgent.id + '/activity?limit=5'),
+            fastapiClient.get('/api/v1/agents/' + modalAgent.id + '/benchmarks').catch(() => ({ data: null })),
           ]);
           if (versionsRes.status === 'fulfilled') setAgentVersions(versionsRes.value.data?.versions || []);
           if (activityRes.status === 'fulfilled') setAgentActivity(activityRes.value.data || []);
+          if (benchmarksRes.status === 'fulfilled') setAgentBenchmarks(benchmarksRes.value.data);
         } catch { setAgentVersions([]); setAgentActivity([]); }
       })();
     }
@@ -951,6 +954,41 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   ))}
                 </div>
               </div>
+              {/* Performance Benchmarks */}
+              {agentBenchmarks && (
+                <div className={styles.versionSection}>
+                  <h4 className={styles.sectionTitle}><Icons.TrendingUp /> Performance</h4>
+                  <div className={styles.detailGrid}>
+                    <div className={styles.detailItem}>
+                      <span className={styles.detailLabel}>Avg Response</span>
+                      <span className={styles.detailValue}>{agentBenchmarks.benchmarks?.avg_response_time_ms}ms</span>
+                    </div>
+                    <div className={styles.detailItem}>
+                      <span className={styles.detailLabel}>P95 Response</span>
+                      <span className={styles.detailValue}>{agentBenchmarks.benchmarks?.p95_response_time_ms}ms</span>
+                    </div>
+                    <div className={styles.detailItem}>
+                      <span className={styles.detailLabel}>Success Rate</span>
+                      <span className={styles.detailValue}>{agentBenchmarks.benchmarks?.success_rate}%</span>
+                    </div>
+                    <div className={styles.detailItem}>
+                      <span className={styles.detailLabel}>Throughput</span>
+                      <span className={styles.detailValue}>{agentBenchmarks.benchmarks?.throughput_rpm} req/min</span>
+                    </div>
+                    <div className={styles.detailItem}>
+                      <span className={styles.detailLabel}>Rank</span>
+                      <span className={styles.detailValue}>#{agentBenchmarks.comparison?.rank} of {agentBenchmarks.comparison?.total_agents}</span>
+                    </div>
+                    <div className={styles.detailItem}>
+                      <span className={styles.detailLabel}>vs Platform Avg</span>
+                      <span className={styles.detailValue} style={{ color: (agentBenchmarks.comparison?.vs_platform_avg || 0) > 0 ? '#22c55e' : '#ef4444' }}>
+                        {(agentBenchmarks.comparison?.vs_platform_avg || 0) > 0 ? '+' : ''}{agentBenchmarks.comparison?.vs_platform_avg}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Recent Activity */}
               {agentActivity.length > 0 && (
                 <div className={styles.versionSection}>
