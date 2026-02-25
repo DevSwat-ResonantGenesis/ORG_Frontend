@@ -35,6 +35,17 @@ const UtilityPanelComponent: React.FC<UtilityPanelProps> = ({ className }) => {
   const [error, setError] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<ViewMode>('overview');
   const [trendsData, setTrendsData] = useState<any>(null);
+
+  const handleExportUtility = () => {
+    const exportData = { exported_at: new Date().toISOString(), trendsData };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'utility-trends-' + new Date().toISOString().split('T')[0] + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
   const [scoreHistory, setScoreHistory] = useState<number[]>([]);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -171,6 +182,9 @@ const UtilityPanelComponent: React.FC<UtilityPanelProps> = ({ className }) => {
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
         <h2><Icons.TrendingUp /> Utility Analytics</h2>
+        <button onClick={handleExportUtility} style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#94a3b8', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <Icons.Download /> Export
+        </button>
         <div className={styles.headerControls}>
           <div className={styles.viewTabs}>
             {(['overview', 'agents', 'trends'] as ViewMode[]).map(v => (
