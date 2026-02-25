@@ -3323,12 +3323,6 @@ const ResonantChatPage: React.FC = () => {
 
   return (
     <>
-    <div className={styles.chatParallax} aria-hidden="true">
-      <Suspense fallback={<div className={styles.chatParallaxPlaceholder} />}>
-        <ThreeParticleSphere />
-      </Suspense>
-    </div>
-    <div className={styles.chatGlassOverlay} aria-hidden="true" />
     <div className={styles.chatPage}>
       {/* Enhanced Sidebar with User Info and Settings */}
       <div className={`${styles.sidebarWrapper} ${sidebarOpen ? styles.sidebarOpen : styles.hidden}`}>
