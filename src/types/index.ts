@@ -199,6 +199,7 @@ export interface Agent {
   dsid?: string;
   persisted?: boolean;
   name: string;
+  description?: string;
   type: AgentType;
   status: AgentStatus;
   mode: AgentMode;
@@ -214,6 +215,9 @@ export interface Agent {
   updatedAt: Date;
   ownerId: string;
   config: AgentConfig;
+  provider?: string;
+  model?: string;
+  tools?: string[];
 }
 
 export interface AgentConfig {
