@@ -128,7 +128,7 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
           <div className={styles.policiesSection}>
             <div className={styles.sectionHeader}>
               <h3>Governance Policies</h3>
-              <button className={styles.createBtn}>
+              <button className={styles.createBtn} onClick={() => alert("Policy creation requires backend endpoint. Coming soon.")}>
                 <Icons.Plus /> New Policy
               </button>
             </div>
@@ -162,11 +162,11 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
                         ))}
                       </ul>
                       <div className={styles.policyActions}>
-                        <button className={styles.editBtn}><Icons.Edit /> Edit</button>
+                        <button className={styles.editBtn} onClick={() => alert("Policy editing requires backend endpoint. Coming soon.")}><Icons.Edit /> Edit</button>
                         {policy.status === 'active' ? (
-                          <button className={styles.disableBtn}><Icons.Pause /> Disable</button>
+                          <button className={styles.disableBtn} onClick={() => { governanceApi.updatePolicy(policy.id, { status: "inactive" }).then(() => fetchPolicies()); }}><Icons.Pause /> Disable</button>
                         ) : (
-                          <button className={styles.enableBtn}><Icons.Play /> Enable</button>
+                          <button className={styles.enableBtn} onClick={() => { governanceApi.updatePolicy(policy.id, { status: "active" }).then(() => fetchPolicies()); }}><Icons.Play /> Enable</button>
                         )}
                       </div>
                     </div>
