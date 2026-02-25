@@ -50,7 +50,7 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({ onSkillToggle }) => {
   const fetchSkills = useCallback(async () => {
     setLoading(true);
     const data = await listSkills();
-    setSkills(data);
+    setSkills(Array.isArray(data) ? data : []);
     setLoading(false);
   }, []);
 
@@ -84,8 +84,8 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({ onSkillToggle }) => {
     }
   };
 
-  const enabledCount = skills.filter(s => s.enabled).length;
-  const enabledSkills = skills.filter(s => s.enabled);
+  const enabledCount = (skills || []).filter(s => s.enabled).length;
+  const enabledSkills = (skills || []).filter(s => s.enabled);
 
   return (
     <div className={styles.container}>

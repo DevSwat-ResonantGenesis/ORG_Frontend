@@ -34,7 +34,7 @@ export interface SkillExecuteResponse {
 export const listSkills = async (): Promise<Skill[]> => {
   try {
     const response = await fastapiClient.get<SkillListResponse>('/skills/list');
-    return response.data.skills;
+    return response.data?.skills || [];
   } catch (error: any) {
     logger.error('Failed to list skills', error, { component: 'Skills' });
     return [];

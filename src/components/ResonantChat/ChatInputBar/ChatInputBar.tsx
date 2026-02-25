@@ -453,7 +453,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     }
   };
 
-  const filteredMemories = memories.filter(m => 
+  const filteredMemories = (memories || []).filter(m => 
     (m.name || m.content || '').toLowerCase().includes(mentionQuery.toLowerCase())
   ).slice(0, 5);
 
