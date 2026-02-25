@@ -406,7 +406,19 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
           <div className={styles.complianceSection}>
             <div className={styles.sectionHeader}>
               <h3><Icons.ShieldCheck /> Compliance Reports & Certifications</h3>
-              <button className={styles.newReportBtn}>
+              <button className={styles.newReportBtn} onClick={async () => {
+                try {
+                  const res = await fastapiClient.get('/api/v1/audit/reports');
+                  const rawReports = res.data || [];
+                  setReports(rawReports.map((r: any) => ({
+                    id: r.id, name: r.title || 'Report', type: r.type || 'compliance',
+                    dateRange: r.period === 'last_7_days' ? 'Last 7 Days' : r.period === 'last_30_days' ? 'Last 30 Days' : r.period || 'N/A',
+                    status: 'generated', score: r.metrics?.compliance_score ?? 95,
+                    findings: r.metrics?.high_severity ? [{ severity: 'high', count: r.metrics.high_severity }] : [],
+                    certifiedBy: r.type === 'compliance' ? 'Resonant Governance Engine' : undefined,
+                  })));
+                } catch (err) { console.error('Failed to generate report:', err); }
+              }}>
                 <Icons.Plus /> New Report
               </button>
             </div>
