@@ -4,6 +4,7 @@ import { Icons } from '../../shared/Icons';
 import type { Agent } from '../../../../../types';
 import { startAgentSession, stopAgentSession, deleteAgent } from '../../../../../api/agents';
 import { getSession as getAgentSession } from '../../../../../api/agentEngine';
+import fastapiClient from '../../../../../api/fastapiClient';
 import { executeAgentTask } from '../../../../../api/executions';
 import { useToastContext } from '../../../../../context/ToastContext';
 import styles from './AgentsPanel.module.css';
@@ -48,6 +49,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   
   // Modal state
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const [agentVersions, setAgentVersions] = useState<any[]>([]);
   const [modalAgentId, setModalAgentId] = useState<string | null>(null);
   const [goalInput, setGoalInput] = useState('');
   const [messageInput, setMessageInput] = useState('');
@@ -379,6 +381,18 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
       setIsSendingMessage(false);
     }
   }, [modalAgent, messageInput, isSendingMessage, toast]);
+
+  // Fetch agent versions when detail modal opens
+  useEffect(() => {
+    if (activeModal === 'detail' && modalAgent?.id) {
+      (async () => {
+        try {
+          const res = await fastapiClient.get('/api/v1/agents/' + modalAgent.id + '/versions');
+          setAgentVersions(res.data?.versions || []);
+        } catch { setAgentVersions([]); }
+      })();
+    }
+  }, [activeModal, modalAgent?.id]);
 
   // Handle agent actions
   const handleAgentAction = useCallback(async (action: 'stop' | 'pause' | 'delete', agentId: string) => {
@@ -932,6 +946,22 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   ))}
                 </div>
               </div>
+              {/* Version History */}
+              {agentVersions.length > 0 && (
+                <div className={styles.versionSection}>
+                  <h4 className={styles.sectionTitle}><Icons.Code /> Version History</h4>
+                  <div className={styles.versionList}>
+                    {agentVersions.slice(0, 5).map((v: any, idx: number) => (
+                      <div key={v.version_number || idx} className={styles.versionItem}>
+                        <span className={styles.versionNumber}>v{v.version_number}</span>
+                        <span className={styles.versionHash}>{(v.agent_version_hash || '').slice(0, 12)}...</span>
+                        <span className={styles.versionDate}>{v.created_at ? new Date(v.created_at).toLocaleDateString() : '-'}</span>
+                        {v.changelog && <span className={styles.versionChangelog}>{v.changelog}</span>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
             <div className={styles.modalFooter}>
               <button className={styles.cancelBtn} onClick={closeModal}>Close</button>
