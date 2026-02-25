@@ -446,7 +446,14 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
           <div className={styles.forensicsSection}>
             <div className={styles.sectionHeader}>
               <h3><Icons.Search /> Forensic Analysis</h3>
-              <button className={styles.newCaseBtn}>
+              <button className={styles.newCaseBtn} onClick={async () => {
+                const title = prompt('Case title:');
+                if (!title) return;
+                try {
+                  const res = await fastapiClient.post('/api/v1/audit/cases', { title, description: '', severity: 'medium' });
+                  if (res.data) setCases(prev => [...prev, { id: res.data.id, title: res.data.title, description: res.data.description, severity: res.data.severity, status: 'open', assignee: 'Unassigned', created: new Date(), evidence: [] }]);
+                } catch (err) { console.error('Failed to create case:', err); }
+              }}>
                 <Icons.Plus /> New Case
               </button>
             </div>
