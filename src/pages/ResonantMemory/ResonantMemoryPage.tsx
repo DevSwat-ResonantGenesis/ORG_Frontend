@@ -411,11 +411,14 @@ const ResonantMemoryPage: React.FC = () => {
           setError('No memories found. Start chatting to create memory anchors.');
         } else {
           setAnchors(normalizedAnchors);
+          // Calculate real cluster count from data
+          const uniqueClusters = new Set(normalizedAnchors.map(a => a.cluster_name).filter(Boolean));
+          const realClusterCount = uniqueClusters.size;
           setMetrics(prev => prev ? {
             ...prev,
             total_memories: normalizedAnchors.length,
-            total_clusters: 5,
-            avg_cluster_size: Math.round(normalizedAnchors.length / 5),
+            total_clusters: realClusterCount > 0 ? realClusterCount : (prev.total_clusters || 0),
+            avg_cluster_size: realClusterCount > 0 ? Math.round(normalizedAnchors.length / realClusterCount) : 0,
           } : null);
         }
 
@@ -786,6 +789,45 @@ const ResonantMemoryPage: React.FC = () => {
           scene.add(ring);
           linesRef.current.push(ring as any);
         }
+
+        // Spin vector visualization (real Hash Sphere data)
+        if (showSpinVectors && anchor.spin_magnitude && anchor.spin_magnitude > 0.01) {
+          const spinDir = new THREE.Vector3(
+            anchor.spin_x || 0,
+            anchor.spin_y || 0,
+            anchor.spin_z || 0,
+          ).normalize();
+          const spinLen = size * 2 + (anchor.spin_magnitude * 8);
+          const arrowPoints = [
+            mesh.position.clone(),
+            mesh.position.clone().add(spinDir.multiplyScalar(spinLen)),
+          ];
+          const arrowGeom = new THREE.BufferGeometry().setFromPoints(arrowPoints);
+          const arrowMat = new THREE.LineBasicMaterial({
+            color: 0x22d3ee,
+            transparent: true,
+            opacity: 0.7,
+          });
+          const arrow = new THREE.Line(arrowGeom, arrowMat);
+          scene.add(arrow);
+          linesRef.current.push(arrow);
+        }
+
+        // Anchor energy aura (real data - glow based on anchor_energy)
+        if (showAnchorEnergy && anchor.anchor_energy && anchor.anchor_energy > 0.1) {
+          const auraSize = size * (1.5 + anchor.anchor_energy * 2);
+          const auraGeom = new THREE.SphereGeometry(auraSize, 16, 16);
+          const auraMat = new THREE.MeshBasicMaterial({
+            color: getResonanceColor(anchor.anchor_energy),
+            transparent: true,
+            opacity: 0.12 + anchor.anchor_energy * 0.15,
+            wireframe: true,
+          });
+          const aura = new THREE.Mesh(auraGeom, auraMat);
+          aura.position.copy(mesh.position);
+          scene.add(aura);
+          linesRef.current.push(aura as any);
+        }
       } catch (err) {
         console.error(`Error rendering anchor ${anchor.id}:`, err);
       }
@@ -817,7 +859,7 @@ const ResonantMemoryPage: React.FC = () => {
 
       hasAutoFittedRef.current = true;
     }
-  }, [filteredAnchors, clusters, selectedAnchor, selectedCluster, showClusters, showConnections, showAnchors, showEnergyAura]);
+  }, [filteredAnchors, clusters, selectedAnchor, selectedCluster, showClusters, showConnections, showAnchors, showEnergyAura, showSpinVectors, showAnchorEnergy]);
   // Handle click and hover on 3D objects
   useEffect(() => {
     if (!containerRef.current || !cameraRef.current) return;
@@ -1119,7 +1161,43 @@ const ResonantMemoryPage: React.FC = () => {
                   </p>
                   <p><strong>Resonance:</strong> {(selectedAnchor.resonance_score * 100).toFixed(1)}%</p>
                   <p><strong>Importance:</strong> {(selectedAnchor.importance_score * 100).toFixed(1)}%</p>
-                  <p><strong>Position:</strong> ({selectedAnchor.xyz_x.toFixed(1)}, {selectedAnchor.xyz_y.toFixed(1)}, {selectedAnchor.xyz_z.toFixed(1)})</p>
+                  <p><strong>Cartesian:</strong> ({selectedAnchor.xyz_x.toFixed(1)}, {selectedAnchor.xyz_y.toFixed(1)}, {selectedAnchor.xyz_z.toFixed(1)})</p>
+                  {selectedAnchor.sphere_r != null && (
+                    <p><strong>Hyperspherical:</strong> r={selectedAnchor.sphere_r.toFixed(2)}, φ={selectedAnchor.sphere_phi?.toFixed(2) ?? '–'}, θ={selectedAnchor.sphere_theta?.toFixed(2) ?? '–'}</p>
+                  )}
+                  {selectedAnchor.meaning_hash && (
+                    <p><strong>Meaning:</strong> <code style={{ fontSize: 10 }}>{selectedAnchor.meaning_hash.slice(0, 12)}...</code></p>
+                  )}
+                  {selectedAnchor.energy_hash && (
+                    <p><strong>Energy:</strong> <code style={{ fontSize: 10 }}>{selectedAnchor.energy_hash}</code></p>
+                  )}
+                  {selectedAnchor.spin_hash && (
+                    <p><strong>Spin:</strong> <code style={{ fontSize: 10 }}>{selectedAnchor.spin_hash}</code></p>
+                  )}
+                  {selectedAnchor.spin_magnitude != null && selectedAnchor.spin_magnitude > 0 && (
+                    <p><strong>Spin Vector:</strong> ({selectedAnchor.spin_x?.toFixed(2)}, {selectedAnchor.spin_y?.toFixed(2)}, {selectedAnchor.spin_z?.toFixed(2)}) mag={selectedAnchor.spin_magnitude?.toFixed(2)}</p>
+                  )}
+                  {selectedAnchor.anchor_energy != null && selectedAnchor.anchor_energy > 0 && (
+                    <p><strong>Anchor Energy:</strong> {selectedAnchor.anchor_energy.toFixed(3)}</p>
+                  )}
+                  {selectedAnchor.normalized_resonance != null && (
+                    <p><strong>Normalized Resonance:</strong> {(selectedAnchor.normalized_resonance * 100).toFixed(1)}%</p>
+                  )}
+                  {selectedAnchor.meaning_score != null && selectedAnchor.meaning_score > 0 && (
+                    <p><strong>Meaning Score:</strong> {selectedAnchor.meaning_score.toFixed(3)}</p>
+                  )}
+                  {selectedAnchor.intensity_score != null && selectedAnchor.intensity_score > 0 && (
+                    <p><strong>Intensity:</strong> {selectedAnchor.intensity_score.toFixed(3)}</p>
+                  )}
+                  {selectedAnchor.sentiment_score != null && (
+                    <p><strong>Sentiment:</strong> {selectedAnchor.sentiment_score.toFixed(3)}</p>
+                  )}
+                  {selectedAnchor.cluster_name && (
+                    <p><strong>Cluster:</strong> {selectedAnchor.cluster_name}</p>
+                  )}
+                  {selectedAnchor.universe_id && (
+                    <p><strong>Universe:</strong> <code style={{ fontSize: 10 }}>{selectedAnchor.universe_id.slice(0, 12)}...</code></p>
+                  )}
                   <p><strong>Created:</strong> {new Date(selectedAnchor.created_at).toLocaleString()}</p>
                   <p><strong>Text:</strong> <code className={styles.encrypted}>{selectedAnchor.anchor_text}</code></p>
                   {selectedAnchor.context && <p><strong>Context:</strong> {selectedAnchor.context.slice(0, 100)}...</p>}
