@@ -295,6 +295,24 @@ const AgentOSv2: React.FC = () => {
       { id: 'agents:details', label: canRun ? 'Open Selected Agent Details' : 'Open Selected Agent Details (select one first)', category: 'Agents' },
       { id: 'agents:toggle-favorites', label: 'Toggle Favorites Filter', category: 'Agents' },
       { id: 'agents:toggle-bulk', label: 'Toggle Bulk Mode', category: 'Agents' },
+      { id: 'nav:agents', label: 'Go to Agents', category: 'Navigate' },
+      { id: 'nav:sessions', label: 'Go to Sessions', category: 'Navigate' },
+      { id: 'nav:factory', label: 'Go to Factory', category: 'Navigate' },
+      { id: 'nav:workflow', label: 'Go to Workflows', category: 'Navigate' },
+      { id: 'nav:execution', label: 'Go to Execution', category: 'Navigate' },
+      { id: 'nav:goals', label: 'Go to Goals', category: 'Navigate' },
+      { id: 'nav:memory', label: 'Go to Memory', category: 'Navigate' },
+      { id: 'nav:chat', label: 'Go to Chat', category: 'Navigate' },
+      { id: 'nav:governance', label: 'Go to Governance', category: 'Navigate' },
+      { id: 'nav:audit', label: 'Go to Audit', category: 'Navigate' },
+      { id: 'nav:monitor', label: 'Go to Monitor', category: 'Navigate' },
+      { id: 'nav:settings', label: 'Go to Settings', category: 'Navigate' },
+      { id: 'nav:economy', label: 'Go to Economy', category: 'Navigate' },
+      { id: 'nav:debug', label: 'Go to Debug', category: 'Navigate' },
+      { id: 'nav:capabilities', label: 'Go to Capabilities', category: 'Navigate' },
+      { id: 'nav:negotiation', label: 'Go to Negotiation', category: 'Navigate' },
+      { id: 'nav:external', label: 'Go to External', category: 'Navigate' },
+      { id: 'nav:utility', label: 'Go to Utility', category: 'Navigate' },
     ];
   }, [selectedAgentId]);
 
@@ -319,6 +337,12 @@ const AgentOSv2: React.FC = () => {
 
     if (cmd.id === 'agents:toggle-bulk') {
       document.dispatchEvent(new CustomEvent('agentos:agents:toggleBulkMode'));
+    }
+
+    // Navigation commands
+    if (cmd.id.startsWith('nav:')) {
+      const section = cmd.id.replace('nav:', '');
+      useUIStore.getState().setActiveSection(section as any);
     }
   }, [selectedAgentId]);
 
