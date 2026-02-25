@@ -150,6 +150,7 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
         <h2><Icons.Play /> Sessions - {selectedAgent.name}</h2>
+        <button onClick={handleExportSessions} style={{ padding: "4px 10px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", color: "#94a3b8", fontSize: "11px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px" }}><Icons.Download /> Export</button>
         <button 
           className={styles.newSessionBtn}
           onClick={() => setShowNewSession(true)}
