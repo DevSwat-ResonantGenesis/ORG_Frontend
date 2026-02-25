@@ -427,7 +427,7 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
             <div className={styles.emptyState}>
               <Icons.Clock />
               <p>No executions in queue</p>
-              <button className={styles.primaryBtn}>
+              <button className={styles.primaryBtn} onClick={() => setActiveView('triggers')}>
                 <Icons.Plus /> Schedule Execution
               </button>
             </div>
