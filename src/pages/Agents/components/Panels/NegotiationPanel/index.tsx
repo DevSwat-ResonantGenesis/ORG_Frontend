@@ -60,6 +60,8 @@ const NegotiationPanelComponent: React.FC<NegotiationPanelProps> = ({ className 
   const [delegateTask, setDelegateTask] = useState('');
   const [delegateTarget, setDelegateTarget] = useState('');
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [negSearchTerm, setNegSearchTerm] = useState('');
+  const [negStatusFilter, setNegStatusFilter] = useState<string>('all');
 
   const fetchTeams = useCallback(async () => {
     try {
@@ -238,7 +240,7 @@ const NegotiationPanelComponent: React.FC<NegotiationPanelProps> = ({ className 
               {negotiations.length === 0 && !isLoading && (
                 <div className={styles.emptyState}>No active negotiations. Create an auction to start.</div>
               )}
-              {negotiations.map(neg => (
+              {negotiations.filter(n => { if (negSearchTerm && !n.task.toLowerCase().includes(negSearchTerm.toLowerCase())) return false; if (negStatusFilter !== 'all' && n.status !== negStatusFilter) return false; return true; }).map(neg => (
                 <div key={neg.id} className={styles.negotiationCard}>
                   <div className={styles.negHeader}>
                     <span className={styles.topic}>{neg.topic}</span>
@@ -332,7 +334,7 @@ const NegotiationPanelComponent: React.FC<NegotiationPanelProps> = ({ className 
 
                 {proposals.length > 0 ? (
                   <div className={styles.proposalsList}>
-                    {proposals.map(p => (
+                    {proposals.filter(p => { if (negSearchTerm && !p.title.toLowerCase().includes(negSearchTerm.toLowerCase())) return false; if (negStatusFilter !== 'all' && p.status !== negStatusFilter) return false; return true; }).map(p => (
                       <div key={p.id} className={styles.proposalCard}>
                         <div className={styles.proposalHeader}>
                           <span>{p.title}</span>
