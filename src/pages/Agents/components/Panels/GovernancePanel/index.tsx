@@ -217,7 +217,15 @@ const GovernancePanelComponent: React.FC<GovernancePanelProps> = ({ className })
                         ))}
                       </ul>
                       <div className={styles.policyActions}>
-                        <button className={styles.editBtn} onClick={() => alert("Policy editing requires backend endpoint. Coming soon.")}><Icons.Edit /> Edit</button>
+                        <button className={styles.editBtn} onClick={async () => {
+                          const newName = prompt('Edit policy name:', policy.name);
+                          if (newName && newName !== policy.name) {
+                            try {
+                              await fastapiClient.put('/api/v1/governance/policies/' + policy.id, { name: newName });
+                              fetchPolicies();
+                            } catch (err) { console.error('Failed to update policy:', err); }
+                          }
+                        }}><Icons.Edit /> Edit</button>
                         {policy.status === 'active' ? (
                           <button className={styles.disableBtn} onClick={() => { fastapiClient.put('/api/v1/governance/policies/' + policy.id, { status: 'inactive' }).then(() => fetchPolicies()).catch(() => {}); }}><Icons.Pause /> Disable</button>
                         ) : (
