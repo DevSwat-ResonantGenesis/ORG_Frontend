@@ -266,6 +266,19 @@ const AgentOSv2: React.FC = () => {
   // Cmd/Ctrl+K opens Agents command palette
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      // Quick panel navigation: Ctrl+1-9
+      if (e.ctrlKey && !e.metaKey && !e.shiftKey) {
+        const panelMap: Record<string, string> = {
+          '1': 'agents', '2': 'sessions', '3': 'workflow', '4': 'execution',
+          '5': 'goals', '6': 'memory', '7': 'chat', '8': 'governance', '9': 'audit',
+        };
+        if (panelMap[e.key]) {
+          e.preventDefault();
+          useUIStore.getState().setActiveSection(panelMap[e.key] as any);
+          return;
+        }
+      }
+
       const isInputField =
         e.target instanceof HTMLInputElement ||
         e.target instanceof HTMLTextAreaElement ||
