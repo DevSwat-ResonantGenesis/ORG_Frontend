@@ -206,11 +206,11 @@ const TeamDashboard: React.FC = () => {
           name: a.name || `Agent ${i + 1}`,
           dsid: `dsid_${(a.id || '').slice(0, 8)}`,
           state: a.status === 'active' ? 'running' : 'waiting',
-          trustTier: ['T1', 'T2', 'T3'][Math.floor(Math.random() * 3)] as TrustTier,
+          trustTier: (['T1', 'T2', 'T3'] as const)[i % 3] as TrustTier,
           role: a.role || 'worker',
-          lastExecution: new Date(Date.now() - Math.random() * 3600000).toISOString(),
-          executionCount: Math.floor(Math.random() * 500) + 50,
-          failureRate: Math.random() * 5,
+          lastExecution: new Date(Date.now() - (i + 1) * 600000).toISOString(),
+          executionCount: a.execution_count || ((i + 1) * 47 + 50),
+          failureRate: a.failure_rate || ((i * 1.2) % 5),
         })),
         
         dependencies: [
@@ -282,10 +282,10 @@ const TeamDashboard: React.FC = () => {
           timestamp: new Date(Date.now() - i * 1800000).toISOString(),
           agentId: `agent_${i % 3}`,
           agentName: `Agent ${(i % 3) + 1}`,
-          task: ['process_data', 'generate_report', 'send_notification', 'analyze_input'][Math.floor(Math.random() * 4)],
-          outcome: ['success', 'success', 'success', 'failure'][Math.floor(Math.random() * 4)] as 'success' | 'failure' | 'blocked',
-          trustImpact: Math.random() > 0.8 ? 0.1 : 0,
-          auditHash: `0x${Math.random().toString(16).slice(2, 18)}`,
+          task: ['process_data', 'generate_report', 'send_notification', 'analyze_input'][i % 4],
+          outcome: (['success', 'success', 'success', 'failure'] as const)[i % 4] as 'success' | 'failure' | 'blocked',
+          trustImpact: i % 5 === 0 ? 0.1 : 0,
+          auditHash: `0x${(i * 0x1a2b3c4d5e + 0xf6e5d4c3b2a1).toString(16).slice(0, 16)}`,
         })),
         
         members: [
