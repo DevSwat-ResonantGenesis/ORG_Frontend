@@ -74,6 +74,7 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
   const [activeTab, setActiveTab] = useState<TabType>('monitoring');
   const [filter, setFilter] = useState<FilterType>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [severityFilter, setSeverityFilter] = useState<string>('all');
   const [selectedEntry, setSelectedEntry] = useState<AuditEntry | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -321,10 +322,17 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
             <div className={styles.alertsSection}>
               <div className={styles.alertsHeader}>
                 <h4><Icons.Alert /> Active Alerts</h4>
+                <select value={severityFilter} onChange={e => setSeverityFilter(e.target.value)} style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#e2e8f0', fontSize: '11px' }}>
+                  <option value="all">All Severities</option>
+                  <option value="critical">Critical</option>
+                  <option value="error">Error</option>
+                  <option value="warning">Warning</option>
+                  <option value="info">Info</option>
+                </select>
                 <span className={styles.alertCount}>{unacknowledgedCount} unacknowledged</span>
               </div>
               <div className={styles.alertsList}>
-                {alerts.map(alert => (
+                {alerts.filter(a => severityFilter === 'all' || a.type === severityFilter).map(alert => (
                   <div key={alert.id} className={`${styles.alertCard} ${getAlertTypeColor(alert.type)} ${alert.acknowledged ? styles.acknowledged : ''}`}>
                     <div className={styles.alertHeader}>
                       <span className={`${styles.alertType} ${getAlertTypeColor(alert.type)}`}>{alert.type.toUpperCase()}</span>
