@@ -50,6 +50,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   // Modal state
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [agentVersions, setAgentVersions] = useState<any[]>([]);
+  const [agentActivity, setAgentActivity] = useState<any[]>([]);
   const [modalAgentId, setModalAgentId] = useState<string | null>(null);
   const [goalInput, setGoalInput] = useState('');
   const [messageInput, setMessageInput] = useState('');
@@ -382,14 +383,18 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     }
   }, [modalAgent, messageInput, isSendingMessage, toast]);
 
-  // Fetch agent versions when detail modal opens
+  // Fetch agent versions and activity when detail modal opens
   useEffect(() => {
     if (activeModal === 'detail' && modalAgent?.id) {
       (async () => {
         try {
-          const res = await fastapiClient.get('/api/v1/agents/' + modalAgent.id + '/versions');
-          setAgentVersions(res.data?.versions || []);
-        } catch { setAgentVersions([]); }
+          const [versionsRes, activityRes] = await Promise.allSettled([
+            fastapiClient.get('/api/v1/agents/' + modalAgent.id + '/versions'),
+            fastapiClient.get('/api/v1/agents/' + modalAgent.id + '/activity?limit=5'),
+          ]);
+          if (versionsRes.status === 'fulfilled') setAgentVersions(versionsRes.value.data?.versions || []);
+          if (activityRes.status === 'fulfilled') setAgentActivity(activityRes.value.data || []);
+        } catch { setAgentVersions([]); setAgentActivity([]); }
       })();
     }
   }, [activeModal, modalAgent?.id]);
@@ -946,6 +951,22 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   ))}
                 </div>
               </div>
+              {/* Recent Activity */}
+              {agentActivity.length > 0 && (
+                <div className={styles.versionSection}>
+                  <h4 className={styles.sectionTitle}><Icons.Zap /> Recent Activity</h4>
+                  <div className={styles.versionList}>
+                    {agentActivity.slice(0, 5).map((a: any) => (
+                      <div key={a.id} className={styles.versionItem}>
+                        <span className={styles.versionNumber}>{a.action_type}</span>
+                        <span className={styles.versionChangelog}>{a.description}</span>
+                        <span className={styles.versionDate}>{a.timestamp ? new Date(a.timestamp).toLocaleTimeString() : '-'}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Version History */}
               {agentVersions.length > 0 && (
                 <div className={styles.versionSection}>
