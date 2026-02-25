@@ -63,6 +63,10 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 // @ts-ignore
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import styles from './ResonantChatPage-2025.module.css';
+// Lazy load ThreeParticleSphere (Three.js heavy component)
+const ThreeParticleSphere = React.lazy(() =>
+  import('@/components/features/landing/ThreeParticleSphere').then(module => ({ default: module.ThreeParticleSphere }))
+);
 // Lazy load SplitView to prevent blocking main thread
 const SplitViewModule = React.lazy(() => 
   import('@/components/ResonantChat/SplitView').then(module => ({ default: module.SplitViewModule }))
