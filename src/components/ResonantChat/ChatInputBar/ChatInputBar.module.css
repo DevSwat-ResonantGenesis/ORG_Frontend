@@ -152,7 +152,7 @@
 
 
 :global([data-theme='dark'] body.resonant-chat-page) .inputWrapper {
-  background: transparent !important;
+  background: rgba(18, 18, 18, 0.8) !important;
   box-shadow: none !important;
   border: 1px solid rgba(255, 255, 255, 0.10);
 }
