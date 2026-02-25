@@ -165,6 +165,8 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
       }
     };
     fetchAuditExtras();
+    const auditPollInterval = setInterval(fetchAuditExtras, 30000);
+    return () => clearInterval(auditPollInterval);
   }, []);
 
   // Fetch audit data on mount and when filters change
