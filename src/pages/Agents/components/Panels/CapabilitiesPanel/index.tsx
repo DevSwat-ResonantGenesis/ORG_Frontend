@@ -112,8 +112,21 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
   }, [fetchCapabilities]);
 
   const capabilities = [...systemCapabilities, ...customCapabilities];
+  const allTools = [...capabilities, ...platformTools.map((t: any) => ({
+    id: t.id || t.name,
+    name: t.name,
+    description: t.description || '',
+    category: t.category || 'platform',
+    enabled: true,
+    system: true,
+    tags: t.tags || [],
+    permissions: t.permissions || [],
+    cooldown: 0,
+    maxRetries: 3,
+    timeout: 60,
+  }))];
 
-  const filteredCapabilities = capabilities.filter(cap => {
+  const filteredCapabilities = allTools.filter(cap => {
     if (activeCategory !== 'all' && cap.category !== activeCategory) return false;
     if (searchQuery) {
       return cap.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
