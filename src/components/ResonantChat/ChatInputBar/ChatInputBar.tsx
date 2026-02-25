@@ -14,6 +14,7 @@ import {
   PlusIcon,
 } from '@/components/Icons/ResonantChatIcons';
 import { VoiceInput } from '@/components/ResonantChat/VoiceInput';
+import SkillsToolbar from '@/components/ResonantChat/SkillsToolbar/SkillsToolbar';
 import styles from './ChatInputBar.module.css';
 
 const TeamIcon = () => (
@@ -1097,6 +1098,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 <ChevronDownIcon />
               </button>
             )}
+
+            <SkillsToolbar />
           </div>
 
           <div className={styles.toolsRight}>

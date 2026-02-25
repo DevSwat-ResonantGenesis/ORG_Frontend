@@ -294,20 +294,52 @@ const ResonantMemoryPage: React.FC = () => {
           const rawMemories = memData.memories || [];
           console.log(`Fetched ${rawMemories.length} memories from API`);
           
-          // Transform memories to anchor format for 3D visualization
-          memoryAnchors = rawMemories.map((mem: any, idx: number) => ({
-            id: mem.id || `mem-${idx}`,
-            anchor_text: mem.content?.slice(0, 100) || 'Memory content',
-            anchor_hash: mem.id ? `${mem.id}`.substring(0, 16) : `hash-${idx}`,
-            context: mem.content || '',
-            importance_score: 0.5 + Math.random() * 0.5,
-            xyz_x: (Math.random() - 0.5) * 400,
-            xyz_y: (Math.random() - 0.5) * 400,
-            xyz_z: (Math.random() - 0.5) * 400,
-            anchor_type: mem.source || 'chat',
-            resonance_score: 0.5 + Math.random() * 0.5,
-            created_at: mem.created_at || new Date().toISOString(),
-          }));
+          // Deterministic hash-based coordinate generation (no Math.random)
+          const hashToCoord = (str: string, offset: number): number => {
+            let hash = 0;
+            const s = str + String(offset);
+            for (let i = 0; i < s.length; i++) {
+              hash = ((hash << 5) - hash) + s.charCodeAt(i);
+              hash |= 0;
+            }
+            return ((hash & 0xFFFFFF) / 0xFFFFFF - 0.5) * 400;
+          };
+
+          // Transform memories to anchor format using REAL Hash Sphere data
+          memoryAnchors = rawMemories.map((mem: any, idx: number) => {
+            const memId = mem.id || `mem-${idx}`;
+            const hasRealXYZ = mem.xyz_x != null || (mem.xyz && Array.isArray(mem.xyz));
+            return {
+              id: memId,
+              anchor_text: mem.content?.slice(0, 100) || 'Memory content',
+              anchor_hash: mem.hash || (mem.id ? `${mem.id}`.substring(0, 16) : `hash-${idx}`),
+              context: mem.content || '',
+              importance_score: toFiniteNumber(mem.meaning_score, toFiniteNumber(mem.importance_score, 0.5)),
+              xyz_x: hasRealXYZ ? toFiniteNumber(mem.xyz_x ?? mem.xyz?.[0], hashToCoord(memId, 1)) : hashToCoord(memId, 1),
+              xyz_y: hasRealXYZ ? toFiniteNumber(mem.xyz_y ?? mem.xyz?.[1], hashToCoord(memId, 2)) : hashToCoord(memId, 2),
+              xyz_z: hasRealXYZ ? toFiniteNumber(mem.xyz_z ?? mem.xyz?.[2], hashToCoord(memId, 3)) : hashToCoord(memId, 3),
+              anchor_type: mem.source || 'chat',
+              resonance_score: toFiniteNumber(mem.resonance_score, toFiniteNumber(mem.normalized_resonance, 0.5)),
+              created_at: mem.created_at || new Date().toISOString(),
+              cluster_name: mem.cluster,
+              meaning_hash: mem.meaning_hash,
+              energy_hash: mem.energy_hash,
+              spin_hash: mem.spin_hash,
+              universe_id: mem.universe_id,
+              sphere_r: toFiniteNumber(mem.sphere_r, 1.0),
+              sphere_phi: toFiniteNumber(mem.sphere_phi, 0),
+              sphere_theta: toFiniteNumber(mem.sphere_theta, 0),
+              normalized_resonance: toFiniteNumber(mem.normalized_resonance, 0.5),
+              anchor_energy: toFiniteNumber(mem.anchor_energy, 0),
+              spin_x: toFiniteNumber(mem.spin?.x, 0),
+              spin_y: toFiniteNumber(mem.spin?.y, 0),
+              spin_z: toFiniteNumber(mem.spin?.z, 0),
+              spin_magnitude: toFiniteNumber(mem.spin?.magnitude, 0),
+              meaning_score: toFiniteNumber(mem.semantic?.meaning, 0),
+              intensity_score: toFiniteNumber(mem.semantic?.intensity, 0),
+              sentiment_score: toFiniteNumber(mem.semantic?.sentiment, 0.5),
+            };
+          });
         }
         
         // Then, get actual anchors
@@ -318,9 +350,20 @@ const ResonantMemoryPage: React.FC = () => {
 
           if (rawAnchors.length > 0) {
             apiAnchors = rawAnchors.map((anchor: any, idx: number) => {
-              const fallbackX = (Math.random() - 0.5) * 300;
-              const fallbackY = (Math.random() - 0.5) * 300;
-              const fallbackZ = (Math.random() - 0.5) * 300;
+              // Deterministic fallback based on anchor id/hash (no Math.random)
+              const anchorKey = anchor.id || anchor.anchor_hash || `anchor-${idx}`;
+              const deterministicCoord = (key: string, seed: number): number => {
+                let h = 0;
+                const s = key + String(seed);
+                for (let i = 0; i < s.length; i++) {
+                  h = ((h << 5) - h) + s.charCodeAt(i);
+                  h |= 0;
+                }
+                return ((h & 0xFFFFFF) / 0xFFFFFF - 0.5) * 300;
+              };
+              const fallbackX = deterministicCoord(anchorKey, 1);
+              const fallbackY = deterministicCoord(anchorKey, 2);
+              const fallbackZ = deterministicCoord(anchorKey, 3);
 
               return {
                 id: anchor.id ?? `anchor-${idx}`,
