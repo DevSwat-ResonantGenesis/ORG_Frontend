@@ -112,7 +112,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
   }, [fetchCapabilities]);
 
   const capabilities = [...systemCapabilities, ...customCapabilities];
-  const allTools = [...capabilities, ...platformTools.map((t: any) => ({
+  const allTools: any[] = [...capabilities, ...platformTools.map((t: any) => ({
     id: t.id || t.name,
     name: t.name,
     description: t.description || '',
