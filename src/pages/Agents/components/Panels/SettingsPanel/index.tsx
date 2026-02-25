@@ -10,7 +10,7 @@ import styles from './SettingsPanel.module.css';
 // Contract: reads [session, network, ui], writes [network, ui]
 // Forbidden: [execution, economy]
 
-type SettingsTab = 'general' | 'appearance' | 'autonomy' | 'api' | 'security' | 'notifications' | 'advanced';
+type SettingsTab = 'general' | 'appearance' | 'autonomy' | 'api' | 'developer' | 'security' | 'notifications' | 'advanced';
 
 interface SettingsPanelProps {
   className?: string;
@@ -26,6 +26,7 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
   const selectedAgent = agents.find(a => a.id === selectedAgentId);
   
   const [activeTab, setActiveTab] = useState<SettingsTab>('general');
+  const [apiKeys, setApiKeys] = useState<any[]>([]);
   const [autonomyMode, setAutonomyMode] = useState<AutonomyMode>('governed');
   const [autonomyStatus, setAutonomyStatus] = useState<autonomyApi.AutonomyStatus | null>(null);
   const [autonomyLoading, setAutonomyLoading] = useState(false);
