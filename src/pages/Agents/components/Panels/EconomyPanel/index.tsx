@@ -32,6 +32,17 @@ const EconomyPanelComponent: React.FC<EconomyPanelProps> = ({ className }) => {
   const agents = useAgentStore(state => state.agents);
   
   const [activeView, setActiveView] = useState<ViewMode>('wallet');
+  const handleExportEconomy = () => {
+    const exportData = { exported_at: new Date().toISOString(), billing: billingData, chainStats, wallets: walletBalances, stakingPools };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'economy-' + new Date().toISOString().split('T')[0] + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const [isLoading, setIsLoading] = useState(true);
   const [networkConfig, setNetworkConfig] = useState<NetworkConfig>({
     networkName: 'Resonant Network',
@@ -110,6 +121,7 @@ const EconomyPanelComponent: React.FC<EconomyPanelProps> = ({ className }) => {
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
         <h2><Icons.Economy /> Wallet & Economy</h2>
+        <button onClick={handleExportEconomy} style={{ padding: "4px 10px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", color: "#94a3b8", fontSize: "11px", cursor: "pointer" }}><Icons.Download /> Export</button>
         <div className={styles.viewTabs}>
           {(['wallet', 'portfolio', 'staking', 'history', 'analytics'] as ViewMode[]).map(view => (
             <button
