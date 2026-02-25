@@ -55,8 +55,14 @@ const MetricsFooter: React.FC = memo(() => {
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const res = await fastapiClient.get('/api/v1/agents/metrics');
-        if (res.data) setPlatformMetrics(res.data);
+        const [metricsRes, summaryRes] = await Promise.allSettled([
+          fastapiClient.get('/api/v1/agents/metrics'),
+          fastapiClient.get('/api/v1/agents/metrics/summary'),
+        ]);
+        const merged: any = {};
+        if (metricsRes.status === 'fulfilled' && metricsRes.value.data) Object.assign(merged, metricsRes.value.data);
+        if (summaryRes.status === 'fulfilled' && summaryRes.value.data) Object.assign(merged, summaryRes.value.data);
+        if (Object.keys(merged).length > 0) setPlatformMetrics(merged);
       } catch { /* silent */ }
     };
     fetchMetrics();
