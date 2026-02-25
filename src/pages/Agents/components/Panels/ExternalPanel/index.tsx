@@ -108,6 +108,22 @@ const ExternalPanelComponent: React.FC<ExternalPanelProps> = ({ className }) => 
 
   const onlineCount = services.filter(s => s.online).length;
   const offlineCount = services.filter(s => !s.online).length;
+
+  const handleExportServices = () => {
+    const exportData = {
+      exported_at: new Date().toISOString(),
+      services: services.map(s => ({ name: s.name, key: s.key, status: s.status, online: s.online, latency: s.latency })),
+      database: dbStatus,
+      summary: { total: services.length, online: onlineCount, offline: offlineCount },
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'services-status-' + new Date().toISOString().split('T')[0] + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
   const avgLatency = services.length > 0
     ? Math.round(services.filter(s => s.online).reduce((sum, s) => sum + s.latency, 0) / Math.max(onlineCount, 1))
     : 0;
@@ -125,6 +141,9 @@ const ExternalPanelComponent: React.FC<ExternalPanelProps> = ({ className }) => 
       <div className={styles.panelHeader}>
         <h2><Icons.External /> External Protocols</h2>
         <div className={styles.headerRight}>
+          <button onClick={handleExportServices} style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#94a3b8', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Icons.Download /> Export
+          </button>
           {lastUpdated && (
             <span className={styles.lastUpdated}>
               Updated {lastUpdated.toLocaleTimeString()}
