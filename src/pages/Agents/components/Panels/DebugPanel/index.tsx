@@ -74,6 +74,42 @@ const DebugPanelComponent: React.FC<DebugPanelProps> = ({ className }) => {
     size: string;
   }>>([]);
 
+  // Capture network requests via fetch interceptor
+  useEffect(() => {
+    const originalFetch = window.fetch;
+    window.fetch = async (...args) => {
+      const url = typeof args[0] === 'string' ? args[0] : (args[0] as Request)?.url || '';
+      const method = (args[1]?.method || 'GET').toUpperCase();
+      const startTime = performance.now();
+      try {
+        const response = await originalFetch(...args);
+        const duration = Math.round(performance.now() - startTime);
+        const contentLength = response.headers.get('content-length');
+        setNetworkRequests(prev => [{
+          id: `req-${Date.now()}-${Math.random()}`,
+          method,
+          url: url.replace(window.location.origin, ''),
+          status: response.status,
+          duration,
+          size: contentLength ? `${Math.round(parseInt(contentLength) / 1024)}KB` : '-',
+        }, ...prev].slice(0, 50));
+        return response;
+      } catch (err) {
+        const duration = Math.round(performance.now() - startTime);
+        setNetworkRequests(prev => [{
+          id: `req-${Date.now()}-${Math.random()}`,
+          method,
+          url: url.replace(window.location.origin, ''),
+          status: 0,
+          duration,
+          size: 'ERR',
+        }, ...prev].slice(0, 50));
+        throw err;
+      }
+    };
+    return () => { window.fetch = originalFetch; };
+  }, []);
+
   // Capture console logs
   useEffect(() => {
     const originalConsole = {
