@@ -26,6 +26,17 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
   const [newGoal, setNewGoal] = useState('');
   const [startingSession, setStartingSession] = useState(false);
 
+  const handleExportSessions = () => {
+    const exportData = { exported_at: new Date().toISOString(), sessions };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'sessions-' + new Date().toISOString().split('T')[0] + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   // Load sessions when agent changes
   useEffect(() => {
     if (selectedAgent?.id) {
