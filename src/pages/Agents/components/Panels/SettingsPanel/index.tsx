@@ -132,6 +132,7 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
     { id: 'api', label: 'API & Integrations', icon: <Icons.Plug /> },
     { id: 'security', label: 'Security', icon: <Icons.Shield /> },
     { id: 'notifications', label: 'Notifications', icon: <Icons.Alert /> },
+    { id: 'developer', label: 'Developer', icon: <Icons.Terminal /> },
     { id: 'advanced', label: 'Advanced', icon: <Icons.Code /> },
   ];
 
