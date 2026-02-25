@@ -1011,7 +1011,7 @@
 .inputBar {
   max-width: 800px;
   margin: 0 auto;
-  background: rgba(18, 18, 18, 0.8);
+  background: var(--bg-primary);
   border-radius: 24px;
   padding: 16px 20px;
   display: flex;

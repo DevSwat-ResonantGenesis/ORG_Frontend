@@ -467,7 +467,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
             )}
           </div>
 
-          <select className={styles.filterSelect} value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <select className={styles.filterSelect} value={filter} onChange={(e) => setFilter(e.target.value)} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>
             <option value="all">All</option>
             <option value="favorites">Favorites</option>
             <option value="active">Active</option>
@@ -480,7 +480,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
             const [k, d] = String(e.target.value).split(':');
             setSortKey(k as any);
             setSortDir(d as any);
-          }}>
+          }} style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>
             <option value="name:asc">Name (A→Z)</option>
             <option value="name:desc">Name (Z→A)</option>
             <option value="status:asc">Status</option>

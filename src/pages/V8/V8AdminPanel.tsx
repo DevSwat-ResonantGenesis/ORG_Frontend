@@ -18,7 +18,6 @@ import {
   CheckCircle,
   Loader2,
   List,
-  X,
 } from "lucide-react";
 
 interface V8Status {
@@ -27,6 +26,11 @@ interface V8Status {
   vocab_size: number;
   anchors_count: number;
   forbidden_count: number;
+}
+
+interface AnchorData {
+  hash: string;
+  words: string[];
 }
 
 interface ApiResponse {
@@ -38,6 +42,7 @@ interface ApiResponse {
 const V8AdminPanel: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showForbiddenList, setShowForbiddenList] = useState(false);
+  const [showAnchorsList, setShowAnchorsList] = useState(false);
   const [status, setStatus] = useState<V8Status | null>(null);
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -48,7 +53,9 @@ const V8AdminPanel: React.FC = () => {
   const [newAnchorWords, setNewAnchorWords] = useState("");
   const [newAnchorHash, setNewAnchorHash] = useState("");
   const [forbiddenWords, setForbiddenWords] = useState<string[]>([]);
+  const [anchors, setAnchors] = useState<AnchorData[]>([]);
   const [forbiddenLoading, setForbiddenLoading] = useState(false);
+  const [anchorsLoading, setAnchorsLoading] = useState(false);
 
   // Check if user is platform owner - check multiple conditions
   const session = getSessionData();
@@ -104,7 +111,6 @@ const V8AdminPanel: React.FC = () => {
     setForbiddenLoading(true);
     const result = await apiCall("forbidden");
     if (result.success) {
-      // Handle different response formats
       const words = result.data.words || result.data.forbidden || result.data || [];
       setForbiddenWords(Array.isArray(words) ? words : []);
     } else {
@@ -113,12 +119,25 @@ const V8AdminPanel: React.FC = () => {
     setForbiddenLoading(false);
   }, [apiCall]);
 
+  const loadAnchors = useCallback(async () => {
+    setAnchorsLoading(true);
+    const result = await apiCall("anchors");
+    if (result.success) {
+      const anchorsList = result.data.anchors || result.data || [];
+      setAnchors(Array.isArray(anchorsList) ? anchorsList : []);
+    } else {
+      setMessage({ type: "error", text: result.error || "Failed to load anchors" });
+    }
+    setAnchorsLoading(false);
+  }, [apiCall]);
+
   useEffect(() => {
     if (isExpanded && isOwner) {
       loadStatus();
       loadForbiddenWords();
+      loadAnchors();
     }
-  }, [isExpanded, isOwner, loadStatus, loadForbiddenWords]);
+  }, [isExpanded, isOwner, loadStatus, loadForbiddenWords, loadAnchors]);
 
   const handleRetrain = async () => {
     setActionLoading("retrain");
@@ -140,7 +159,7 @@ const V8AdminPanel: React.FC = () => {
     if (result.success) {
       setMessage({ type: "success", text: `Added "${newForbiddenWord}" to forbidden words` });
       setNewForbiddenWord("");
-      loadForbiddenWords(); // Refresh list from backend
+      loadForbiddenWords();
       loadStatus();
     } else {
       setMessage({ type: "error", text: result.error || "Failed to add forbidden word" });
@@ -161,6 +180,7 @@ const V8AdminPanel: React.FC = () => {
       setMessage({ type: "success", text: "Anchor added successfully" });
       setNewAnchorWords("");
       setNewAnchorHash("");
+      loadAnchors();
       loadStatus();
     } else {
       setMessage({ type: "error", text: result.error || "Failed to add anchor" });
@@ -168,7 +188,6 @@ const V8AdminPanel: React.FC = () => {
     setActionLoading(null);
   };
 
-  // Always show panel for debugging - but with different content based on owner status
   if (!isOwner) {
     return (
       <div style={{ position: "fixed", bottom: "20px", right: "20px", zIndex: 1000, fontFamily: "system-ui, -apple-system, sans-serif" }}>
@@ -213,7 +232,7 @@ const V8AdminPanel: React.FC = () => {
           border: "none", borderRadius: isExpanded ? "12px 12px 0 0" : "12px",
           color: "white", cursor: "pointer", fontSize: "14px", fontWeight: 600,
           boxShadow: "0 4px 12px rgba(99, 102, 241, 0.4)",
-          width: isExpanded ? "380px" : "auto", justifyContent: isExpanded ? "space-between" : "center",
+          width: isExpanded ? "420px" : "auto", justifyContent: isExpanded ? "space-between" : "center",
         }}
       >
         <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -224,7 +243,7 @@ const V8AdminPanel: React.FC = () => {
 
       {isExpanded && (
         <div style={{
-          width: "380px", background: "rgba(15, 15, 25, 0.95)", backdropFilter: "blur(12px)",
+          width: "420px", background: "rgba(15, 15, 25, 0.95)", backdropFilter: "blur(12px)",
           border: "1px solid rgba(99, 102, 241, 0.3)", borderTop: "none", borderRadius: "0 0 12px 12px",
           padding: "16px", maxHeight: "600px", overflowY: "auto",
         }}>
@@ -301,7 +320,6 @@ const V8AdminPanel: React.FC = () => {
               </button>
             </div>
             
-            {/* Forbidden Words List - Fetched Live */}
             {showForbiddenList && (
               <div style={{
                 background: "rgba(0,0,0,0.3)", borderRadius: "8px", padding: "10px", marginBottom: "10px",
@@ -341,7 +359,58 @@ const V8AdminPanel: React.FC = () => {
             </div>
           </div>
 
-          {/* Anchor Section */}
+          {/* Anchors List Section */}
+          <div style={{ marginBottom: "16px" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
+              <label style={{ color: "#a1a1aa", fontSize: "12px", display: "flex", alignItems: "center", gap: "4px" }}>
+                <Anchor size={12} /> Anchors
+              </label>
+              <button 
+                onClick={() => { setShowAnchorsList(!showAnchorsList); if (!showAnchorsList) loadAnchors(); }}
+                style={{ background: "transparent", border: "none", color: "#6366f1", cursor: "pointer", fontSize: "11px", display: "flex", alignItems: "center", gap: "4px" }}
+              >
+                <List size={12} /> {showAnchorsList ? "Hide" : "Show"} List
+              </button>
+            </div>
+            
+            {showAnchorsList && (
+              <div style={{
+                background: "rgba(0,0,0,0.3)", borderRadius: "8px", padding: "10px", marginBottom: "10px",
+                maxHeight: "200px", overflowY: "auto", border: "1px solid rgba(255,255,255,0.1)"
+              }}>
+                {anchorsLoading ? (
+                  <div style={{ textAlign: "center", color: "#71717a" }}><Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} /></div>
+                ) : anchors.length > 0 ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    {anchors.map((anchor, idx) => (
+                      <div key={idx} style={{
+                        background: "rgba(139, 92, 246, 0.15)", border: "1px solid rgba(139, 92, 246, 0.3)",
+                        borderRadius: "6px", padding: "8px", fontSize: "11px"
+                      }}>
+                        <div style={{ color: "#8b5cf6", fontWeight: 600, marginBottom: "4px", wordBreak: "break-all" }}>
+                          {anchor.hash}
+                        </div>
+                        <div style={{ color: "#a1a1aa", fontSize: "10px" }}>
+                          {anchor.words.join(" ")}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ color: "#71717a", fontSize: "12px", textAlign: "center" }}>No anchors yet</div>
+                )}
+                <button onClick={loadAnchors} style={{
+                  marginTop: "8px", width: "100%", padding: "6px", background: "rgba(99, 102, 241, 0.2)",
+                  border: "1px solid rgba(99, 102, 241, 0.3)", borderRadius: "4px", color: "#6366f1",
+                  cursor: "pointer", fontSize: "11px", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px"
+                }}>
+                  <RefreshCw size={12} /> Refresh from Backend
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Add Anchor Section */}
           <div style={{ marginBottom: "16px" }}>
             <label style={{ color: "#a1a1aa", fontSize: "12px", display: "block", marginBottom: "6px" }}>
               <Anchor size={12} style={{ display: "inline", marginRight: "4px" }} /> Add Anchor (12 words + hash)
