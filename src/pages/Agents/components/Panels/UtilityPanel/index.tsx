@@ -100,14 +100,22 @@ const UtilityPanelComponent: React.FC<UtilityPanelProps> = ({ className }) => {
     }
   }, [selectedAgentId, agents]);
 
-  // Fetch analytics trends from backend
+  // Fetch analytics trends from backend (platform + per-agent if selected)
   useEffect(() => {
     if (activeView === 'trends') {
-      fastapiClient.get('/api/v1/analytics/trends?period=7d')
-        .then(res => setTrendsData(res.data))
-        .catch(() => {});
+      const fetches: Promise<any>[] = [
+        fastapiClient.get('/api/v1/analytics/trends?period=7d'),
+      ];
+      if (selectedAgentId) {
+        fetches.push(fastapiClient.get('/api/v1/analytics/agent/' + selectedAgentId + '/trends').catch(() => ({ data: null })));
+      }
+      Promise.all(fetches).then(([platformRes, agentRes]) => {
+        const merged = { ...platformRes.data };
+        if (agentRes?.data) merged.agent_trends = agentRes.data;
+        setTrendsData(merged);
+      }).catch(() => {});
     }
-  }, [activeView]);
+  }, [activeView, selectedAgentId]);
 
   useEffect(() => {
     fetchPlatformMetrics();
