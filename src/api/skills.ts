@@ -33,7 +33,7 @@ export interface SkillExecuteResponse {
  */
 export const listSkills = async (): Promise<Skill[]> => {
   try {
-    const response = await fastapiClient.get<SkillListResponse>('/skills/list');
+    const response = await fastapiClient.get<SkillListResponse>('/api/v1/skills/list');
     return response.data?.skills || [];
   } catch (error: any) {
     logger.error('Failed to list skills', error, { component: 'Skills' });
@@ -46,7 +46,7 @@ export const listSkills = async (): Promise<Skill[]> => {
  */
 export const toggleSkill = async (skillId: string, enabled: boolean): Promise<boolean> => {
   try {
-    await fastapiClient.post('/skills/toggle', { skill_id: skillId, enabled });
+    await fastapiClient.post('/api/v1/skills/toggle', { skill_id: skillId, enabled });
     return true;
   } catch (error: any) {
     logger.error('Failed to toggle skill', error, { component: 'Skills' });
@@ -63,7 +63,7 @@ export const executeSkill = async (
   context?: Record<string, any>
 ): Promise<SkillExecuteResponse | null> => {
   try {
-    const response = await fastapiClient.post<SkillExecuteResponse>('/skills/execute', {
+    const response = await fastapiClient.post<SkillExecuteResponse>('/api/v1/skills/execute', {
       skill_id: skillId,
       message,
       context,
@@ -80,7 +80,7 @@ export const executeSkill = async (
  */
 export const getEnabledSkills = async (): Promise<Array<{ id: string; name: string; icon: string; category: string }>> => {
   try {
-    const response = await fastapiClient.get('/skills/enabled');
+    const response = await fastapiClient.get('/api/v1/skills/enabled');
     return response.data.enabled_skills || [];
   } catch (error: any) {
     logger.error('Failed to get enabled skills', error, { component: 'Skills' });
