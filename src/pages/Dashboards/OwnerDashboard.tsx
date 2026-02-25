@@ -10,6 +10,8 @@ import { fetchPlan } from '../../api/pricing';
 import styles from './OwnerDashboard.module.css';
 import V8ControlPanel from '../../components/owner/V8ControlPanel';
 import PlatformStatePhysics from '../../components/owner/PlatformStatePhysics';
+import DaemonControlPanel from '../../components/owner/DaemonControlPanel';
+import { getSystemMetrics, getServiceHealth, getDatabaseStats, getRaraAgents, getSystemOverview, SystemMetrics, ServiceHealthResponse, DatabaseStats, RaraData } from '../../api/system';
 
 // Icons
 const CrownIcon = () => (
@@ -210,14 +212,13 @@ const OwnerDashboard: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [userSearch, setUserSearch] = useState('');
 
-  const [serviceHealth, setServiceHealth] = useState<ServiceHealth[]>([
-    { name: 'Gateway', status: 'healthy', latency: 45, uptime: '99.99%', lastCheck: 'Just now' },
-    { name: 'Auth Service', status: 'healthy', latency: 120, uptime: '99.95%', lastCheck: 'Just now' },
-    { name: 'Billing Service', status: 'healthy', latency: 85, uptime: '99.98%', lastCheck: 'Just now' },
-    { name: 'Chat Service', status: 'healthy', latency: 65, uptime: '99.97%', lastCheck: 'Just now' },
-    { name: 'Memory Service', status: 'healthy', latency: 55, uptime: '99.96%', lastCheck: 'Just now' },
-    { name: 'LLM Service', status: 'healthy', latency: 250, uptime: '99.90%', lastCheck: 'Just now' },
-  ]);
+  const [serviceHealth, setServiceHealth] = useState<ServiceHealth[]>([]);
+
+  // Real system data from backend
+  const [realMetrics, setRealMetrics] = useState<SystemMetrics | null>(null);
+  const [realServices, setRealServices] = useState<ServiceHealthResponse | null>(null);
+  const [realDbStats, setRealDbStats] = useState<DatabaseStats | null>(null);
+  const [realRara, setRealRara] = useState<RaraData | null>(null);
 
   const [authMetrics, setAuthMetrics] = useState<AuthMetrics>({
     loginSuccess: 0,
@@ -359,6 +360,48 @@ const OwnerDashboard: React.FC = () => {
         console.warn('Auth metrics not available:', e);
       }
 
+      // Fetch real system metrics from backend
+      try {
+        const [metricsData, servicesData, dbData, raraData] = await Promise.all([
+          getSystemMetrics().catch(() => null),
+          getServiceHealth().catch(() => null),
+          getDatabaseStats().catch(() => null),
+          getRaraAgents().catch(() => null),
+        ]);
+        if (metricsData) setRealMetrics(metricsData);
+        if (servicesData) {
+          setRealServices(servicesData);
+          // Also update the legacy serviceHealth state for monitoring tab
+          setServiceHealth(servicesData.services.map(s => ({
+            name: s.name,
+            status: s.status as 'healthy' | 'degraded' | 'down',
+            latency: s.latency,
+            uptime: s.online ? 'online' : 'offline',
+            lastCheck: 'Just now',
+          })));
+        }
+        if (dbData) setRealDbStats(dbData);
+        if (raraData) {
+          setRealRara(raraData);
+          // Update agents from real RARA data
+          if (raraData.agents && raraData.agents.length > 0) {
+            setAgents(raraData.agents.map((a: any, i: number) => ({
+              id: a.id || String(i),
+              name: a.name || a.agent_id || `Agent-${i}`,
+              type: a.type || a.capabilities?.join(', ') || 'RARA Agent',
+              status: (a.status === 'active' || a.is_active) ? 'active' as const : 'idle' as const,
+              tasksCompleted: a.tasks_completed || a.stats?.tasks_completed || 0,
+              uptime: a.uptime || 'N/A',
+              cpu: a.cpu || 0,
+              memory: a.memory || 0,
+              lastTask: a.last_task || a.last_action || 'N/A',
+            })));
+          }
+        }
+      } catch (e) {
+        console.warn('System metrics not available:', e);
+      }
+
       setError(null);
     } catch (err: any) {
       console.error('Failed to fetch dashboard data:', err);
@@ -388,7 +431,7 @@ const OwnerDashboard: React.FC = () => {
     const ownerToken = localStorage.getItem('owner_token');
     const sessionToken = localStorage.getItem('access_token');
     const authToken = ownerToken || sessionToken;
-    if (!token) {
+    if (!authToken) {
       navigate('/dashboard');
       return;
     }
@@ -428,7 +471,7 @@ const OwnerDashboard: React.FC = () => {
     const ownerToken = localStorage.getItem('owner_token');
     const sessionToken = localStorage.getItem('access_token');
     const authToken = ownerToken || sessionToken;
-    if (!token) {
+    if (!authToken) {
       navigate('/dashboard');
       return;
     }
@@ -462,7 +505,7 @@ const OwnerDashboard: React.FC = () => {
     const ownerToken = localStorage.getItem('owner_token');
     const sessionToken = localStorage.getItem('access_token');
     const authToken = ownerToken || sessionToken;
-    if (!token) {
+    if (!authToken) {
       navigate('/dashboard');
       return;
     }
@@ -500,7 +543,7 @@ const OwnerDashboard: React.FC = () => {
     const ownerToken = localStorage.getItem('owner_token');
     const sessionToken = localStorage.getItem('access_token');
     const authToken = ownerToken || sessionToken;
-    if (!token) {
+    if (!authToken) {
       navigate('/dashboard');
       return;
     }
@@ -1224,127 +1267,118 @@ const OwnerDashboard: React.FC = () => {
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconGreen}`}><ServerIcon /></div>
           </div>
-          <div className={styles.statValue}>12</div>
-          <div className={styles.statLabel}>Active Services</div>
-        </div>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={`${styles.statIcon} ${styles.statIconBlue}`}><DatabaseIcon /></div>
-          </div>
-          <div className={styles.statValue}>3</div>
-          <div className={styles.statLabel}>Database Nodes</div>
+          <div className={styles.statValue}>{realServices?.online || 0}/{realServices?.total || 0}</div>
+          <div className={styles.statLabel}>Services Online</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconPurple}`}><CpuIcon /></div>
           </div>
-          <div className={styles.statValue}>24%</div>
+          <div className={styles.statValue}>{realMetrics?.cpu?.usage_percent?.toFixed(1) || '—'}%</div>
           <div className={styles.statLabel}>CPU Usage</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconOrange}`}><ActivityIcon /></div>
           </div>
-          <div className={styles.statValue}>4.2GB</div>
-          <div className={styles.statLabel}>Memory Used</div>
+          <div className={styles.statValue}>{realMetrics?.memory?.usage_percent?.toFixed(1) || '—'}%</div>
+          <div className={styles.statLabel}>Memory ({realMetrics?.memory?.used_gb || '—'}GB / {realMetrics?.memory?.total_gb || '—'}GB)</div>
+        </div>
+        <div className={styles.statCard}>
+          <div className={styles.statHeader}>
+            <div className={`${styles.statIcon} ${styles.statIconBlue}`}><DatabaseIcon /></div>
+          </div>
+          <div className={styles.statValue}>{realMetrics?.disk?.usage_percent?.toFixed(1) || '—'}%</div>
+          <div className={styles.statLabel}>Disk ({realMetrics?.disk?.used_gb || '—'}GB / {realMetrics?.disk?.total_gb || '—'}GB)</div>
         </div>
       </div>
 
       <div className={styles.cardsGrid}>
         <div className={styles.card}>
-          <h3 className={styles.cardTitle}><ServerIcon /> Service Health (Owner Only)</h3>
+          <h3 className={styles.cardTitle}><ServerIcon /> Live Service Health ({realServices?.healthy || 0} healthy / {realServices?.total || 0} total)</h3>
+          <div className={styles.revenueBreakdown}>
+            {realServices?.services?.map(svc => (
+              <div key={svc.key} className={styles.revenueItem}>
+                <span className={styles.revenueItemLabel}>
+                  <span className={styles.revenueItemDot} style={{ background: svc.status === 'healthy' ? '#10b981' : svc.status === 'degraded' ? '#f59e0b' : '#ef4444' }} />
+                  {svc.name}
+                </span>
+                <span style={{ color: svc.status === 'healthy' ? '#10b981' : svc.status === 'degraded' ? '#f59e0b' : '#ef4444', fontSize: '12px' }}>
+                  {svc.status} - {svc.latency}ms
+                </span>
+              </div>
+            )) || <div style={{ color: '#64748b', fontSize: '13px' }}>Loading service data...</div>}
+          </div>
+        </div>
+
+        <div className={styles.card}>
+          <h3 className={styles.cardTitle}><DatabaseIcon /> Database Status</h3>
           <div className={styles.revenueBreakdown}>
             <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Gateway Service</span>
-              <span style={{ color: '#10b981' }}>Healthy - 12ms</span>
+              <span className={styles.revenueItemLabel}>PostgreSQL</span>
+              <span style={{ color: realDbStats?.databases?.postgresql?.status === 'configured' ? '#10b981' : '#f59e0b' }}>
+                {realDbStats?.databases?.postgresql?.status || 'checking...'}
+              </span>
             </div>
             <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Auth Service</span>
-              <span style={{ color: '#10b981' }}>Healthy - 8ms</span>
-            </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Chat Service</span>
-              <span style={{ color: '#10b981' }}>Healthy - 15ms</span>
-            </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Billing Service</span>
-              <span style={{ color: '#10b981' }}>Healthy - 10ms</span>
-            </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />V8 API Service</span>
-              <span style={{ color: '#10b981' }}>Healthy - 22ms</span>
-            </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#f59e0b' }} />ML Service</span>
-              <span style={{ color: '#f59e0b' }}>Degraded - 145ms</span>
+              <span className={styles.revenueItemLabel}>Redis Cache</span>
+              <span style={{ color: realDbStats?.databases?.redis?.status === 'configured' || realDbStats?.databases?.redis?.status === 'connected' ? '#10b981' : '#f59e0b' }}>
+                {realDbStats?.databases?.redis?.status || 'checking...'}
+              </span>
             </div>
           </div>
         </div>
 
         <div className={styles.card}>
-          <h3 className={styles.cardTitle}><DatabaseIcon /> Database Control (Owner Only)</h3>
-          <div className={styles.settingsForm}>
-            <div className={styles.revenueBreakdown}>
-              <div className={styles.revenueItem}>
-                <span className={styles.revenueItemLabel}>PostgreSQL Primary</span>
-                <span style={{ color: '#10b981' }}>Connected</span>
-              </div>
-              <div className={styles.revenueItem}>
-                <span className={styles.revenueItemLabel}>Redis Cache</span>
-                <span style={{ color: '#10b981' }}>Connected</span>
-              </div>
-              <div className={styles.revenueItem}>
-                <span className={styles.revenueItemLabel}>Connection Pool</span>
-                <span>42/100 active</span>
-              </div>
+          <h3 className={styles.cardTitle}><CpuIcon /> System Info</h3>
+          <div className={styles.revenueBreakdown}>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}>CPU Cores</span>
+              <span>{realMetrics?.cpu?.cores || '—'}</span>
             </div>
-            <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
-              <button className={styles.saveBtn} style={{ background: '#f59e0b' }}>Clear Cache</button>
-              <button className={styles.saveBtn} style={{ background: '#6366f1' }}>Run Migrations</button>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}>Load Average</span>
+              <span style={{ fontFamily: 'monospace', fontSize: '11px' }}>{realMetrics?.cpu?.load_avg?.join(', ') || '—'}</span>
+            </div>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}>Server Uptime</span>
+              <span>{realMetrics?.uptime_human || '—'}</span>
+            </div>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}>Network Sent</span>
+              <span style={{ fontFamily: 'monospace', fontSize: '11px' }}>{realMetrics?.network ? (realMetrics.network.bytes_sent / (1024*1024*1024)).toFixed(1) + ' GB' : '—'}</span>
+            </div>
+            <div className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}>Network Received</span>
+              <span style={{ fontFamily: 'monospace', fontSize: '11px' }}>{realMetrics?.network ? (realMetrics.network.bytes_recv / (1024*1024*1024)).toFixed(1) + ' GB' : '—'}</span>
             </div>
           </div>
         </div>
 
         <div className={styles.card}>
-          <h3 className={styles.cardTitle}><CpuIcon /> Deployment Control (Owner Only)</h3>
+          <h3 className={styles.cardTitle}><SettingsIcon /> Platform Access (Owner Only)</h3>
           <div className={styles.revenueBreakdown}>
             <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Current Deployment</span>
-              <span style={{ fontFamily: 'monospace', fontSize: '11px' }}>green</span>
+              <span className={styles.revenueItemLabel}>Domain</span>
+              <span style={{ fontFamily: 'monospace', fontSize: '10px' }}>resonantgenesis.xyz</span>
             </div>
             <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Last Deploy</span>
-              <span style={{ fontSize: '11px' }}>2 hours ago</span>
+              <span className={styles.revenueItemLabel}>Gateway</span>
+              <span style={{ fontFamily: 'monospace', fontSize: '10px' }}>:8001 → nginx → :443</span>
             </div>
             <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Git Commit</span>
-              <span style={{ fontFamily: 'monospace', fontSize: '11px' }}>b914dc4</span>
-            </div>
-          </div>
-          <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
-            <button className={styles.saveBtn} style={{ background: '#10b981' }}>Deploy Latest</button>
-            <button className={styles.saveBtn} style={{ background: '#ef4444' }}>Rollback</button>
-          </div>
-        </div>
-
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}><SettingsIcon /> Platform Source Access (Owner Only)</h3>
-          <div className={styles.revenueBreakdown}>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Frontend Repo</span>
-              <span style={{ fontFamily: 'monospace', fontSize: '10px' }}>genesis2026_frontend</span>
+              <span className={styles.revenueItemLabel}>RARA Agents</span>
+              <span>{realRara?.agent_count ?? '—'} registered</span>
             </div>
             <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Backend Repo</span>
-              <span style={{ fontFamily: 'monospace', fontSize: '10px' }}>genesis2026_backend</span>
-            </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Access Level</span>
-              <span style={{ color: '#8b5cf6', fontWeight: 'bold' }}>OWNER FULL ACCESS</span>
+              <span className={styles.revenueItemLabel}>Kill Switch</span>
+              <span style={{ color: realRara?.kill_switch?.active ? '#ef4444' : '#10b981' }}>
+                {realRara?.kill_switch?.active ? 'ACTIVE' : realRara?.kill_switch ? 'OFF' : '—'}
+              </span>
             </div>
           </div>
           <div style={{ marginTop: '12px', padding: '12px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '8px', fontSize: '12px', color: '#a78bfa' }}>
-            🔒 This control plane is isolated from regular users. Only platform owners can access source code, deployments, and system controls.
+            🔒 This control plane is isolated from regular users. Only platform owners can access these controls.
           </div>
         </div>
       </div>
@@ -1376,19 +1410,30 @@ const OwnerDashboard: React.FC = () => {
         </div>
       </div>
       <div className={styles.card}>
-        <h3 className={styles.cardTitle}><ServerIcon /> System Status</h3>
+        <h3 className={styles.cardTitle}><ServerIcon /> System Status (Live)</h3>
         <div className={styles.revenueBreakdown}>
-          <div className={styles.revenueItem}><span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />API Server</span><span style={{ color: '#10b981' }}>Healthy</span></div>
-          <div className={styles.revenueItem}><span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Database</span><span style={{ color: '#10b981' }}>Healthy</span></div>
-          <div className={styles.revenueItem}><span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />RARA Engine</span><span style={{ color: '#10b981' }}>Healthy</span></div>
+          {realServices?.services?.slice(0, 6).map(svc => (
+            <div key={svc.key} className={styles.revenueItem}>
+              <span className={styles.revenueItemLabel}>
+                <span className={styles.revenueItemDot} style={{ background: svc.status === 'healthy' ? '#10b981' : svc.status === 'degraded' ? '#f59e0b' : '#ef4444' }} />
+                {svc.name}
+              </span>
+              <span style={{ color: svc.status === 'healthy' ? '#10b981' : svc.status === 'degraded' ? '#f59e0b' : '#ef4444' }}>{svc.status}</span>
+            </div>
+          )) || (
+            <>
+              <div className={styles.revenueItem}><span className={styles.revenueItemLabel}>Loading...</span></div>
+            </>
+          )}
         </div>
       </div>
       <div className={styles.card}>
-        <h3 className={styles.cardTitle}><DatabaseIcon /> Database Stats</h3>
+        <h3 className={styles.cardTitle}><DatabaseIcon /> System Resources (Live)</h3>
         <div className={styles.revenueBreakdown}>
-          <div className={styles.revenueItem}><span className={styles.revenueItemLabel}>Records</span><span className={styles.revenueItemValue}>2.4M</span></div>
-          <div className={styles.revenueItem}><span className={styles.revenueItemLabel}>Storage</span><span className={styles.revenueItemValue}>847 GB</span></div>
-          <div className={styles.revenueItem}><span className={styles.revenueItemLabel}>Avg Query</span><span className={styles.revenueItemValue}>12ms</span></div>
+          <div className={styles.revenueItem}><span className={styles.revenueItemLabel}>CPU</span><span className={styles.revenueItemValue}>{realMetrics?.cpu?.usage_percent?.toFixed(1) || '—'}%</span></div>
+          <div className={styles.revenueItem}><span className={styles.revenueItemLabel}>Memory</span><span className={styles.revenueItemValue}>{realMetrics?.memory?.usage_percent?.toFixed(1) || '—'}%</span></div>
+          <div className={styles.revenueItem}><span className={styles.revenueItemLabel}>Disk</span><span className={styles.revenueItemValue}>{realMetrics?.disk?.usage_percent?.toFixed(1) || '—'}%</span></div>
+          <div className={styles.revenueItem}><span className={styles.revenueItemLabel}>Uptime</span><span className={styles.revenueItemValue}>{realMetrics?.uptime_human || '—'}</span></div>
         </div>
       </div>
     </div>
@@ -1441,10 +1486,11 @@ const OwnerDashboard: React.FC = () => {
         {activeTab === 'settings' && renderSettings()}
         {activeTab === "state-physics" && <PlatformStatePhysics />}
         {activeTab === 'v8' && <V8ControlPanel />}
-        {activeTab === 'control' && <div style={{ padding: '1.5rem' }}><h2>Platform Control Center</h2><p>Internal agents and daemons monitoring - Coming soon</p></div>}
+        {activeTab === 'control' && <DaemonControlPanel />}
       </div>
     </div>
   );
 };
 
 export default OwnerDashboard;
+

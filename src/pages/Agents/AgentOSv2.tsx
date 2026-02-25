@@ -1,10 +1,11 @@
-import React, { Suspense, lazy, memo, useEffect, useCallback } from 'react';
+import React, { Suspense, lazy, memo, useEffect, useCallback, useState, useRef } from 'react';
 import { useUIStore, useAgentStore, useExecutionStore, useEconomyStore } from '../../stores';
 import { Sidebar } from './components/Shell';
 import { PanelErrorBoundary, PanelSkeleton, Icons } from './components/shared';
 import { Header } from '../../components/layout/Header/Header';
 import { listAgents } from '../../api/agents';
 import agentOSApi from './services/api';
+import fastapiClient from "../../api/fastapiClient";
 import type { Agent } from '../../types';
 import styles from './AgentOSv2.module.css';
 import { CommandPalette } from '../../components/IDE/CommandPalette';
@@ -48,15 +49,28 @@ const MetricsFooter: React.FC = memo(() => {
   const agents = useAgentStore((state) => state.agents);
   const executions = useExecutionStore((state) => (Array.isArray(state.executions) ? state.executions : []));
   const wallet = useEconomyStore((state) => state.wallet);
+  const [platformMetrics, setPlatformMetrics] = useState<any>(null);
 
-  const activeAgents = agents.filter(a => a.status === 'active').length;
-  const runningExecutions = executions.filter(e => e.status === 'running').length;
-  const completedToday = executions.filter(e => e.status === 'completed').length;
+  // Poll real platform metrics from backend every 15 seconds
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      try {
+        const res = await fastapiClient.get('/api/v1/agents/metrics');
+        if (res.data) setPlatformMetrics(res.data);
+      } catch { /* silent */ }
+    };
+    fetchMetrics();
+    const interval = setInterval(fetchMetrics, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const activeAgents = platformMetrics?.active_agents || agents.filter(a => a.status === 'active').length;
+  const runningExecutions = platformMetrics?.running_sessions || executions.filter(e => e.status === 'running').length;
+  const completedToday = platformMetrics?.total_completed || executions.filter(e => e.status === 'completed').length;
   const totalCost = agents.reduce((sum, a) => sum + (a.costToday || 0), 0);
   
-  // Calculate real success rate from executions
-  const totalExecutions = executions.length;
-  const successfulExecutions = executions.filter(e => e.status === 'completed').length;
+  const totalExecutions = platformMetrics?.total_sessions || executions.length;
+  const successfulExecutions = platformMetrics?.total_completed || executions.filter(e => e.status === 'completed').length;
   const successRate = totalExecutions > 0 ? ((successfulExecutions / totalExecutions) * 100).toFixed(1) : '0.0';
 
   return (

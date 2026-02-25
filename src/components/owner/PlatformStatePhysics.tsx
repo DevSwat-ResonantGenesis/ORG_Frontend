@@ -4,8 +4,9 @@
  */
 import React, { useState, useEffect, useCallback } from 'react';
 import { RefreshCw, Server, Users, Cpu, Activity, Zap, Database, Globe, AlertTriangle } from 'lucide-react';
+import { ENV } from '../../config/env';
 
-const API_BASE = '';
+const API_BASE = ENV.apiUrl;
 
 interface ServiceHealth {
   name: string;
@@ -107,18 +108,53 @@ const PlatformStatePhysics: React.FC = () => {
         ? Math.round(healthyServices.reduce((sum, s) => sum + (s.latency || 0), 0) / healthyServices.length)
         : 0;
 
+      // Fetch real system metrics from backend
+      let cpuUsage = 0, memoryUsage = 0, diskUsage = 0;
+      try {
+        const sysRes = await fetch(API_BASE + '/owner/dashboard/system/metrics');
+        if (sysRes.ok) {
+          const sysData = await sysRes.json();
+          cpuUsage = sysData.cpu?.usage_percent || 0;
+          memoryUsage = sysData.memory?.usage_percent || 0;
+          diskUsage = sysData.disk?.usage_percent || 0;
+        }
+      } catch {}
+
+      // Fetch real user count from auth stats
+      let realTotalUsers = 0;
+      try {
+        const ownerToken = localStorage.getItem('owner_token') || localStorage.getItem('access_token');
+        if (ownerToken) {
+          const statsRes = await fetch(API_BASE + '/owner/auth/dashboard/stats', { headers: { 'Authorization': `Bearer ${ownerToken}` } });
+          if (statsRes.ok) {
+            const statsData = await statsRes.json();
+            realTotalUsers = statsData.total_users || 0;
+          }
+        }
+      } catch {}
+
+      // Fetch RARA agent count
+      let raraAgentCount = 0;
+      try {
+        const raraRes2 = await fetch(API_BASE + '/owner/dashboard/system/rara');
+        if (raraRes2.ok) {
+          const raraData = await raraRes2.json();
+          raraAgentCount = raraData.agent_count || 0;
+        }
+      } catch {}
+
       setMetrics({
         services,
-        totalUsers: 150, // Would come from auth service
-        activeUsers: Math.max(activeUsers, 12),
-        totalAgents: 8,
-        activeAgents: services.find(s => s.name === 'RARA Agents')?.status === 'healthy' ? 5 : 0,
+        totalUsers: realTotalUsers || totalUsers,
+        activeUsers: Math.max(activeUsers, 0),
+        totalAgents: raraAgentCount || 0,
+        activeAgents: services.find(s => s.name === 'RARA Agents')?.status === 'healthy' ? raraAgentCount : 0,
         totalRequests24h: totalRequests,
         avgLatency,
         errorRate: services.filter(s => s.status !== 'healthy').length / services.length * 100,
-        cpuUsage: 35 + Math.random() * 20,
-        memoryUsage: 45 + Math.random() * 15,
-        diskUsage: 28 + Math.random() * 5,
+        cpuUsage,
+        memoryUsage,
+        diskUsage,
       });
       
       setLastUpdate(new Date());

@@ -180,7 +180,7 @@ const V8ControlPanel: React.FC = () => {
 
       {activeTab === 'formula' && formula && (
         <div style={{ display: 'grid', gap: '1rem' }}>
-          <FormulaRow title="Spin Weights" value={formula.spin_weights.join(', ')} />
+          <FormulaRow title="Spin Weights" value={(formula.spin_weights || []).join(', ') || 'N/A'} />
           <FormulaRow title="Energy Multiplier" value={String(formula.energy_multiplier)} />
           <FormulaRow title="Energy Range" value={formula.energy_min + ' - ' + formula.energy_max} />
           <FormulaRow title="Radius Base" value={String(formula.radius_base)} />

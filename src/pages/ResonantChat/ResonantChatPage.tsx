@@ -67,7 +67,6 @@ import styles from './ResonantChatPage-2025.module.css';
 const SplitViewModule = React.lazy(() => 
   import('@/components/ResonantChat/SplitView').then(module => ({ default: module.SplitViewModule }))
 );
-const ThreeParticleSphere = React.lazy(() => import('@/components/features/landing/ThreeParticleSphere'));
 // Lazy load ProjectBuilder to avoid blocking if jszip isn't installed
 const ProjectBuilder = React.lazy(() =>
   import('@/components/ResonantChat/ProjectBuilder').then(module => ({ default: module.ProjectBuilder }))
@@ -3942,8 +3941,7 @@ const ResonantChatPage: React.FC = () => {
                       )}
                     </div>
                   ))}
-                  <div className={styles.messagesBottomSpacer} aria-hidden="true" />
-                  <div ref={messagesEndRef} className={styles.messagesEndAnchor} aria-hidden="true" />
+                  <div ref={messagesEndRef} />
                 </div>
               )}
               </SplitViewModule>
