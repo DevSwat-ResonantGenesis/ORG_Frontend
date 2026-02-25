@@ -116,9 +116,49 @@ const AuditPanelComponent: React.FC<AuditPanelProps> = ({ className }) => {
           fastapiClient.get('/api/v1/audit/reports'),
           fastapiClient.get('/api/v1/audit/cases'),
         ]);
-        if (alertsRes.status === 'fulfilled') setAlerts(alertsRes.value.data || []);
-        if (reportsRes.status === 'fulfilled') setReports(reportsRes.value.data || []);
-        if (casesRes.status === 'fulfilled') setCases(casesRes.value.data || []);
+        if (alertsRes.status === 'fulfilled') {
+          const rawAlerts = alertsRes.value.data || [];
+          setAlerts(rawAlerts.map((a: any) => ({
+            id: a.id,
+            severity: a.severity || 'medium',
+            message: a.message || '',
+            source: a.source || 'system',
+            timestamp: a.created_at ? new Date(a.created_at) : new Date(),
+            acknowledged: a.status === 'acknowledged' || a.status === 'resolved',
+            status: a.status || 'active',
+          })));
+        }
+        if (reportsRes.status === 'fulfilled') {
+          const rawReports = reportsRes.value.data || [];
+          setReports(rawReports.map((r: any) => ({
+            id: r.id,
+            name: r.title || 'Unnamed Report',
+            type: r.type || 'compliance',
+            dateRange: r.period === 'last_7_days' ? 'Last 7 Days' : r.period === 'last_30_days' ? 'Last 30 Days' : r.period || 'N/A',
+            status: r.status || 'generated',
+            score: r.metrics?.compliance_score ?? Math.round((1 - (r.metrics?.high_severity || 0) / Math.max(r.metrics?.total_alerts || 1, 1)) * 100),
+            findings: [
+              ...(r.metrics?.high_severity ? [{ severity: 'high', count: r.metrics.high_severity }] : []),
+              ...(r.metrics?.active_alerts ? [{ severity: 'medium', count: r.metrics.active_alerts }] : []),
+              ...(r.metrics?.resolved_alerts ? [{ severity: 'low', count: r.metrics.resolved_alerts }] : []),
+              ...(r.metrics?.violations !== undefined ? [{ severity: r.metrics.violations > 0 ? 'high' : 'low', count: r.metrics.violations }] : []),
+            ],
+            certifiedBy: r.type === 'compliance' ? 'Resonant Governance Engine' : undefined,
+          })));
+        }
+        if (casesRes.status === 'fulfilled') {
+          const rawCases = casesRes.value.data || [];
+          setCases(rawCases.map((c: any) => ({
+            id: c.id,
+            title: c.title || 'Unnamed Case',
+            description: c.description || '',
+            severity: c.severity || 'medium',
+            status: c.status || 'open',
+            assignee: c.assigned_to || 'Unassigned',
+            created: c.created_at ? new Date(c.created_at) : new Date(),
+            evidence: [],
+          })));
+        }
       } catch (err) {
         console.error('Failed to fetch audit extras:', err);
       }
