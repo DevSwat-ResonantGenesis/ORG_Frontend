@@ -1,6 +1,7 @@
 import React, { memo, useState, useEffect } from 'react';
 import { useUIStore, useSessionStore, useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
+import fastapiClient from '../../../../../api/fastapiClient';
 import { ModeSwitcher, type AutonomyMode } from '../../../../../components/AutonomyMode';
 import * as autonomyApi from '../../../../../api/autonomy';
 import styles from './SettingsPanel.module.css';
@@ -96,6 +97,25 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
     telemetry: true,
     experimentalFeatures: false,
   });
+
+  // Fetch developer API keys from backend
+  useEffect(() => {
+    if (activeTab === 'developer') {
+      fastapiClient.get('/api/v1/developer/keys')
+        .then(res => setApiKeys(res.data || []))
+        .catch(() => {});
+    }
+  }, [activeTab]);
+
+  const handleRegenerateKey = async () => {
+    try {
+      const res = await fastapiClient.post('/api/v1/developer/keys', { name: 'New API Key', permissions: ['read', 'write'] });
+      if (res.data) {
+        setApiKeys(prev => [...prev, res.data]);
+        updateSetting('apiKey', res.data.key);
+      }
+    } catch (err) { console.error('Failed to create API key:', err); }
+  };
 
   const updateSetting = (key: string, value: unknown) => {
     setSettings(prev => ({ ...prev, [key]: value }));
@@ -358,7 +378,7 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
                       value={settings.apiKey}
                       onChange={e => updateSetting('apiKey', e.target.value)}
                     />
-                    <button className={styles.regenerateBtn}>Regenerate</button>
+                    <button className={styles.regenerateBtn} onClick={handleRegenerateKey}>Regenerate</button>
                   </div>
                 </div>
 
