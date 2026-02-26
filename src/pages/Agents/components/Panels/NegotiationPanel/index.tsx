@@ -186,10 +186,27 @@ const NegotiationPanelComponent: React.FC<NegotiationPanelProps> = ({ className 
     } finally { setIsLoading(false); }
   };
 
+  const exportNegotiations = () => {
+    const data = JSON.stringify({ negotiations, delegations, proposals, contracts, teams, agent: selectedAgent?.name || 'all' }, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `negotiations-${selectedAgent?.name || 'all'}-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
         <h2><Icons.Fork /> Agent Negotiation</h2>
+        <button
+          onClick={exportNegotiations}
+          style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(14,165,233,0.15)', border: '1px solid rgba(14,165,233,0.3)', borderRadius: '6px', color: '#0ea5e9', fontSize: '11px', cursor: 'pointer', transition: 'all 0.2s' }}
+        >
+          <Icons.Download /> Export
+        </button>
         <div className={styles.tabs}>
           {(['negotiations', 'delegations', 'consensus', 'contracts'] as const).map(tab => (
             <button
@@ -210,6 +227,25 @@ const NegotiationPanelComponent: React.FC<NegotiationPanelProps> = ({ className 
 
         {successMsg && <div className={styles.successBanner}>{successMsg}</div>}
         {error && <div className={styles.errorBanner}>{error}</div>}
+
+        {/* Search/Filter Bar */}
+        <div style={{ display: 'flex', gap: '8px', padding: '0 0 10px', alignItems: 'center' }}>
+          <select value={negStatusFilter} onChange={e => setNegStatusFilter(e.target.value)}
+            style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#e2e8f0', fontSize: '11px' }}>
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+            <option value="rejected">Rejected</option>
+          </select>
+          <input
+            type="text"
+            placeholder="Search negotiations..."
+            value={negSearchTerm}
+            onChange={e => setNegSearchTerm(e.target.value)}
+            style={{ flex: 1, padding: '4px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#e2e8f0', fontSize: '11px' }}
+          />
+        </div>
 
         {/* Negotiations Tab */}
         {activeTab === 'negotiations' && selectedAgent && (

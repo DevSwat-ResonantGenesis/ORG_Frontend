@@ -350,6 +350,17 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
   const totalCost = capabilities.reduce((sum, c) => sum + ((c.callsToday || 0) * (c.costPerCall || 0)), 0);
   const avgSuccessRate = capabilities.filter(c => c.successRate).reduce((sum, c, _, arr) => sum + (c.successRate || 0) / arr.length, 0);
 
+  const exportCapabilities = () => {
+    const data = JSON.stringify({ systemCapabilities, customCapabilities, platformTools, agent: selectedAgent?.name || 'unknown' }, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `capabilities-${selectedAgent?.name || 'all'}-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleAddCapability = async () => {
     if (!newCapability.name.trim()) {
       setError('Please enter a capability name');
@@ -454,6 +465,12 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
         <h2><Icons.Capabilities /> Capabilities</h2>
+        <button
+          onClick={exportCapabilities}
+          style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(14,165,233,0.15)', border: '1px solid rgba(14,165,233,0.3)', borderRadius: '6px', color: '#0ea5e9', fontSize: '11px', cursor: 'pointer', transition: 'all 0.2s' }}
+        >
+          <Icons.Download /> Export
+        </button>
         <div className={styles.agentSelector}>
           <select 
             value={selectedAgentId || ''} 

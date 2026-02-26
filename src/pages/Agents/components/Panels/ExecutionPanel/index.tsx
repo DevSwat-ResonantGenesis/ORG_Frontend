@@ -223,10 +223,27 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
     }
   };
 
+  const exportExecutions = () => {
+    const data = JSON.stringify({ executions: realExecutions, stats: executionStats, triggers, agent: agents.find(a => a.id === selectedAgentId)?.name || 'unknown' }, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `executions-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
         <h2><Icons.Execution /> Execution Monitor</h2>
+        <button
+          onClick={exportExecutions}
+          style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(14,165,233,0.15)', border: '1px solid rgba(14,165,233,0.3)', borderRadius: '6px', color: '#0ea5e9', fontSize: '11px', cursor: 'pointer', transition: 'all 0.2s' }}
+        >
+          <Icons.Download /> Export
+        </button>
         <div className={styles.agentSelector}>
           <select 
             value={selectedAgentId || ''} 
