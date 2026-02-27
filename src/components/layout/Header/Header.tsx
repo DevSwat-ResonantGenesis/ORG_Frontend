@@ -601,7 +601,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
-              <ThemeToggle />
+              {!isMobileViewport && <ThemeToggle />}
             </div>
 
             {isResonantChatPage && (
@@ -616,8 +616,14 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
+            {isMobileViewport && (
+              <div className={`${styles.mobileThemeToggleSlot} ${isResonantChatPage ? styles.mobileThemeToggleSlotChat : ''}`}>
+                <ThemeToggle />
+              </div>
+            )}
+
             {/* Logged In: Show Account Menu */}
-            {isLoggedIn ? (
+            {isLoggedIn && !(isMobileViewport && isResonantChatPage) ? (
               <div ref={accountRef} className={styles.accountWrapper}>
                 <button 
                   className={styles.accountButton}
@@ -740,7 +746,7 @@ export const Header: React.FC<HeaderProps> = ({
                   </div>
                 )}
               </div>
-            ) : (
+            ) : !isLoggedIn && !(isMobileViewport && isResonantChatPage) ? (
               // Not Logged In: single login icon button (no text Login/Signup)
               <button
                 type="button"
@@ -764,7 +770,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <line x1="15" y1="12" x2="3" y2="12" />
                 </svg>
               </button>
-            )}
+            ) : null}
           </div>
         </div>
       </header>

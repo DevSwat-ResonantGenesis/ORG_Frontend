@@ -345,15 +345,13 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                   <span className={styles.tabIcon}><TerminalIcon /></span>
                   Terminal
                 </button>
-                {visualizerAnalysisId && (
-                  <button
-                    className={`${styles.tab} ${state.activeTab === 'visualizer' ? styles.activeTab : ''} ${styles.visualizerTab}`}
-                    onClick={() => actions.setActiveTab('visualizer')}
-                  >
-                    <span className={styles.tabIcon}><VisualizerIcon /></span>
-                    Visualizer
-                  </button>
-                )}
+                <button
+                  className={`${styles.tab} ${state.activeTab === 'visualizer' ? styles.activeTab : ''} ${styles.visualizerTab}`}
+                  onClick={() => actions.setActiveTab('visualizer')}
+                >
+                  <span className={styles.tabIcon}><VisualizerIcon /></span>
+                  Visualizer
+                </button>
               </div>
               <div className={styles.headerActions}>
                 {codeBlocks && codeBlocks.length > 0 && (
@@ -384,10 +382,10 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                     <RocketIcon /> Start Preview
                   </button>
                 )}
-                {state.activeTab === 'visualizer' && visualizerAnalysisId && (
+                {state.activeTab === 'visualizer' && (
                   <button
                     className={styles.runButton}
-                    onClick={() => window.open(`/code-visualizer?analysis_id=${visualizerAnalysisId}`, '_blank')}
+                    onClick={() => window.open(visualizerAnalysisId ? `/code-visualizer?analysis_id=${visualizerAnalysisId}` : '/code-visualizer', '_blank')}
                     title="Open in full screen"
                   >
                     <RocketIcon /> Full Screen
@@ -481,14 +479,20 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
               )}
 
               {/* Visualizer Tab - Code Visualizer UI */}
-              {state.activeTab === 'visualizer' && visualizerAnalysisId && (
+              {state.activeTab === 'visualizer' && (
                 <div className={styles.visualizerTabContent}>
-                  <iframe
-                    title="Code Visualizer"
-                    src={`/api/v1/code-visualizer-ui/?analysis_id=${visualizerAnalysisId}`}
-                    className={styles.visualizerIframe}
-                    allow="fullscreen"
-                  />
+                  {visualizerAnalysisId ? (
+                    <iframe
+                      title="Code Visualizer"
+                      src={`/api/v1/code-visualizer-ui/?analysis_id=${visualizerAnalysisId}`}
+                      className={styles.visualizerIframe}
+                      allow="fullscreen"
+                    />
+                  ) : (
+                    <div className={styles.codePanelEmpty}>
+                      Run a code visualizer analysis or open the full Visualizer page to start a new scan.
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -570,15 +574,13 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
               <span className={styles.tabIcon}><TerminalIcon /></span>
               Terminal
             </button>
-            {visualizerAnalysisId && (
-              <button
-                className={`${styles.tab} ${state.activeTab === 'visualizer' ? styles.activeTab : ''} ${styles.visualizerTab}`}
-                onClick={() => actions.setActiveTab('visualizer')}
-              >
-                <span className={styles.tabIcon}><VisualizerIcon /></span>
-                Visualizer
-              </button>
-            )}
+            <button
+              className={`${styles.tab} ${state.activeTab === 'visualizer' ? styles.activeTab : ''} ${styles.visualizerTab}`}
+              onClick={() => actions.setActiveTab('visualizer')}
+            >
+              <span className={styles.tabIcon}><VisualizerIcon /></span>
+              Visualizer
+            </button>
           </div>
           <div className={styles.headerActions}>
             {codeBlocks && codeBlocks.length > 0 && (
@@ -609,10 +611,10 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 <RocketIcon /> Start Preview
               </button>
             )}
-            {state.activeTab === 'visualizer' && visualizerAnalysisId && (
+            {state.activeTab === 'visualizer' && (
               <button
                 className={styles.runButton}
-                onClick={() => window.open(`/code-visualizer?analysis_id=${visualizerAnalysisId}`, '_blank')}
+                onClick={() => window.open(visualizerAnalysisId ? `/code-visualizer?analysis_id=${visualizerAnalysisId}` : '/code-visualizer', '_blank')}
                 title="Open in full screen"
               >
                 <RocketIcon /> Full Screen
@@ -706,14 +708,20 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
           )}
 
           {/* Visualizer Tab - Code Visualizer UI */}
-          {state.activeTab === 'visualizer' && visualizerAnalysisId && (
+          {state.activeTab === 'visualizer' && (
             <div className={styles.visualizerTabContent}>
-              <iframe
-                title="Code Visualizer"
-                src={`/api/v1/code-visualizer-ui/?analysis_id=${visualizerAnalysisId}`}
-                className={styles.visualizerIframe}
-                allow="fullscreen"
-              />
+              {visualizerAnalysisId ? (
+                <iframe
+                  title="Code Visualizer"
+                  src={`/api/v1/code-visualizer-ui/?analysis_id=${visualizerAnalysisId}`}
+                  className={styles.visualizerIframe}
+                  allow="fullscreen"
+                />
+              ) : (
+                <div className={styles.codePanelEmpty}>
+                  Run a code visualizer analysis or open the full Visualizer page to start a new scan.
+                </div>
+              )}
             </div>
           )}
         </div>
