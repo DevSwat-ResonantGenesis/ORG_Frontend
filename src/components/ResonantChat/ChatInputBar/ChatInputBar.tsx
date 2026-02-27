@@ -26,6 +26,8 @@ const TeamIcon = () => (
   </svg>
 );
 
+type SpeechLanguagePreference = 'auto' | 'en-US' | 'ru-RU' | 'uk-UA' | 'ar-SA';
+
 const MemoryLibraryIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.54" />
@@ -219,6 +221,17 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const [imagePreviewUrls, setImagePreviewUrls] = useState<Record<string, string>>({});
   const imagePreviewUrlsRef = useRef<Record<string, string>>({});
   const lastAutoSpokenTextRef = useRef('');
+  const [speechLanguagePreference, setSpeechLanguagePreference] = useState<SpeechLanguagePreference>(() => {
+    try {
+      const saved = localStorage.getItem('rg-speech-language');
+      if (saved === 'en-US' || saved === 'ru-RU' || saved === 'uk-UA' || saved === 'ar-SA' || saved === 'auto') {
+        return saved;
+      }
+    } catch {
+      // ignore storage access errors
+    }
+    return 'auto';
+  });
 
   const getFileKey = useCallback((file: File) => `${file.name}-${file.size}-${file.lastModified}`, []);
 
@@ -493,6 +506,10 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   }, []);
 
   const speechRecognitionLanguage = useMemo(() => {
+    if (speechLanguagePreference !== 'auto') {
+      return speechLanguagePreference;
+    }
+
     const sample = `${value} ${voiceInterimTranscript}`.trim();
     if (sample.length > 0) {
       return detectSpeechLanguage(sample);
@@ -514,7 +531,44 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     }
 
     return 'en-US';
-  }, [detectSpeechLanguage, value, voiceInterimTranscript]);
+  }, [detectSpeechLanguage, value, voiceInterimTranscript, speechLanguagePreference]);
+
+  const speechLanguageLabel = useMemo(() => {
+    switch (speechLanguagePreference) {
+      case 'ru-RU':
+        return 'RU';
+      case 'uk-UA':
+        return 'UK';
+      case 'ar-SA':
+        return 'AR';
+      case 'en-US':
+        return 'EN';
+      default:
+        return 'AUTO';
+    }
+  }, [speechLanguagePreference]);
+
+  const cycleSpeechLanguagePreference = useCallback(() => {
+    setSpeechLanguagePreference((prev) => {
+      const next: SpeechLanguagePreference =
+        prev === 'auto'
+          ? 'ru-RU'
+          : prev === 'ru-RU'
+          ? 'uk-UA'
+          : prev === 'uk-UA'
+          ? 'ar-SA'
+          : prev === 'ar-SA'
+          ? 'en-US'
+          : 'auto';
+
+      try {
+        localStorage.setItem('rg-speech-language', next);
+      } catch {
+        // ignore storage access errors
+      }
+      return next;
+    });
+  }, []);
 
   const selectPreferredVoice = useCallback((voices: SpeechSynthesisVoice[], targetLang: string): SpeechSynthesisVoice | undefined => {
     if (voices.length === 0) return undefined;
@@ -950,6 +1004,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
         <div className={styles.inputArea}>
           <div className={`${styles.voiceStack} ${embedded ? styles.embeddedVoiceStack : ''}`}>
             <VoiceInput
+              key={`voice-input-${speechRecognitionLanguage}`}
               onTranscript={(text) => {
                 const currentValue = valueRef.current;
                 const newValue = `${currentValue}${currentValue ? ' ' : ''}${text}`.trim();
@@ -1036,6 +1091,20 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 <span className={`${styles.voiceConversationIcon} ${voiceInInput ? styles.voiceConversationIconActive : ''}`}>
                   <span className={styles.voiceConversationOrb} aria-hidden="true" />
                 </span>
+              </button>
+            )}
+            {onVoiceConversation && (
+              <button
+                className={`${styles.toolButton} ${voiceInInput ? styles.active : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  cycleSpeechLanguagePreference();
+                }}
+                title={`Speech language: ${speechLanguageLabel} (tap to cycle AUTO/RU/UK/AR/EN)`}
+                type="button"
+              >
+                <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.03em' }}>{speechLanguageLabel}</span>
               </button>
             )}
             {!hideProviderSelector && (
