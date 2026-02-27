@@ -221,6 +221,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const [imagePreviewUrls, setImagePreviewUrls] = useState<Record<string, string>>({});
   const imagePreviewUrlsRef = useRef<Record<string, string>>({});
   const lastAutoSpokenTextRef = useRef('');
+  const pendingVoiceSendTextRef = useRef<string | null>(null);
   const [speechLanguagePreference, setSpeechLanguagePreference] = useState<SpeechLanguagePreference>(() => {
     try {
       const saved = localStorage.getItem('rg-speech-language');
@@ -634,6 +635,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   useEffect(() => {
     if (!voiceInInput) {
       lastAutoSpokenTextRef.current = '';
+      pendingVoiceSendTextRef.current = null;
       return;
     }
 
@@ -644,6 +646,18 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     lastAutoSpokenTextRef.current = nextText;
     handleTextToVoice(true);
   }, [voiceInInput, ttsText, handleTextToVoice]);
+
+  useEffect(() => {
+    if (!voiceInInput) return;
+    if (isLoading || disabled) return;
+
+    const pendingText = pendingVoiceSendTextRef.current;
+    if (!pendingText) return;
+    if (value.trim() !== pendingText) return;
+
+    pendingVoiceSendTextRef.current = null;
+    onSend();
+  }, [voiceInInput, isLoading, disabled, value, onSend]);
 
   // Close other panels when opening a new one
   const handleShowMemoryLibrary = () => {
@@ -1255,10 +1269,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 const currentValue = valueRef.current;
                 const newValue = `${currentValue}${currentValue ? ' ' : ''}${text}`.trim();
                 onChange(newValue);
-                if (voiceInInput && newValue.length > 0 && !isLoading && !disabled) {
-                  window.setTimeout(() => {
-                    onSend();
-                  }, 120);
+                if (voiceInInput && newValue.length > 0) {
+                  pendingVoiceSendTextRef.current = newValue;
                 }
                 textareaRef.current?.focus();
               }}
