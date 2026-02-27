@@ -239,3 +239,31 @@ Current scope:
 6. Add interruption (barge-in) handling.
 7. Add transcript persistence + observability metrics.
 8. Add feature flag rollout + fallback to text-only mode.
+
+---
+
+## Backend WS Skeleton Implemented (Gateway, Feb 2026)
+
+Implemented now in backend gateway:
+
+1. WebSocket endpoint available at `/api/v1/voice/session`.
+2. Auth handshake supports:
+   - `{"type":"auth","token":"<jwt>"}` (validated via auth service)
+   - `{"type":"auth","user_id":"..."}` only in `DEV_MODE`
+3. Session lifecycle events:
+   - `voice.session.awaiting_auth`
+   - `auth.success`
+   - `voice.session.ready`
+   - `session.started` / `session.stopped`
+4. Streaming scaffold events:
+   - input ack: `audio.chunk.ack`
+   - ASR placeholders: `asr.partial`, `asr.final`
+   - assistant placeholder stream: `assistant.delta`
+   - TTS placeholder stream: `tts.chunk`
+
+Backend files:
+
+- `genesis2026_production_backend/gateway/app/voice_ws.py`
+- `genesis2026_production_backend/gateway/app/routers.py` (route wiring)
+
+This is a protocol skeleton for duplex integration. Real ASR/TTS/VAD and barge-in are the immediate next backend milestones.
