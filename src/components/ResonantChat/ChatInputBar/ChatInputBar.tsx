@@ -484,6 +484,43 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     };
   }, []);
 
+  const detectSpeechLanguage = useCallback((text: string): string => {
+    if (/[\u0600-\u06FF]/.test(text)) return 'ar-SA';
+    if (/[іїєґІЇЄҐ]/.test(text)) return 'uk-UA';
+    if (/[\u0400-\u04FF]/.test(text)) return 'ru-RU';
+    return 'en-US';
+  }, []);
+
+  const selectPreferredVoice = useCallback((voices: SpeechSynthesisVoice[], targetLang: string): SpeechSynthesisVoice | undefined => {
+    if (voices.length === 0) return undefined;
+
+    const normalizedTarget = targetLang.toLowerCase();
+    const strictMatches = voices.filter((voice) => voice.lang.toLowerCase() === normalizedTarget);
+    const languageMatches = strictMatches.length > 0
+      ? strictMatches
+      : voices.filter((voice) => voice.lang.toLowerCase().startsWith(normalizedTarget.split('-')[0]));
+
+    const pool = languageMatches.length > 0 ? languageMatches : voices;
+    const ranked = [...pool].sort((a, b) => {
+      const score = (voice: SpeechSynthesisVoice) => {
+        const name = voice.name.toLowerCase();
+        let points = 0;
+        if (name.includes('neural')) points += 5;
+        if (name.includes('natural')) points += 4;
+        if (name.includes('premium')) points += 3;
+        if (name.includes('enhanced')) points += 2;
+        if (name.includes('google')) points += 2;
+        if (name.includes('microsoft')) points += 2;
+        if (voice.localService) points += 1;
+        if (voice.default) points += 1;
+        return points;
+      };
+      return score(b) - score(a);
+    });
+
+    return ranked[0];
+  }, []);
+
   const handleTextToVoice = () => {
     if (!ttsText?.trim()) return;
     if (typeof window === 'undefined') return;
@@ -496,7 +533,19 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     }
 
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(ttsText);
+    const text = ttsText.trim();
+    const detectedLang = detectSpeechLanguage(text);
+    const availableVoices = window.speechSynthesis.getVoices();
+    const preferredVoice = selectPreferredVoice(availableVoices, detectedLang);
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = preferredVoice?.lang || detectedLang;
+    if (preferredVoice) {
+      utterance.voice = preferredVoice;
+    }
+    utterance.rate = 0.96;
+    utterance.pitch = 1;
+    utterance.volume = 1;
     utterance.onend = () => setIsSpeaking(false);
     utterance.onerror = () => setIsSpeaking(false);
     setIsSpeaking(true);

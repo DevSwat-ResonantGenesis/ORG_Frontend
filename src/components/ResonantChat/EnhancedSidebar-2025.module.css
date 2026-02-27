@@ -80,6 +80,41 @@
   flex-basis: auto;
 }
 
+.sidebarHeaderActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.themeToggleButton {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: var(--space-1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  min-width: 28px;
+  min-height: 28px;
+  transition: color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.themeToggleButton:hover {
+  color: var(--text-primary);
+  background-color: transparent;
+}
+
+.themeToggleButton:active {
+  transform: scale(0.95);
+}
+
+.themeToggleButton:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
 .sidebarTitle {
   font-size: var(--font-18);
   font-weight: var(--font-weight-semibold);

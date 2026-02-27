@@ -494,12 +494,12 @@
 /* Message Content - Reduced contrast for better readability */
 .messageContent {
   font-size: 15px;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.8);  /* Reduced to 80% for less brightness */
+  line-height: 1.72;
+  color: rgba(255, 255, 255, 0.88);
 }
 
 [data-theme='light'] .messageContent {
-  color: rgba(17, 24, 39, 0.8);  /* Reduced contrast for light theme */
+  color: rgba(15, 23, 42, 0.9);
 }
 
 .messageContent p {
@@ -709,7 +709,7 @@
   padding: 8px 12px 8px 16px;
   position: relative;
   background: linear-gradient(90deg, rgba(14, 165, 233, 0.08) 0%, transparent 100%);
-  border-left: 3px solid #0ea5e9;
+  border-left: 1px solid rgba(14, 165, 233, 0.8);
   border-radius: 0 8px 8px 0;
   transition: all 0.2s ease;
 }
@@ -762,7 +762,7 @@
   font-size: 1.2em;
   color: #38bdf8;
   padding-left: 12px;
-  border-left: 4px solid #0ea5e9;
+  border-left: 1px solid rgba(14, 165, 233, 0.8);
 }
 
 /* H3 - Tertiary importance */
@@ -774,7 +774,7 @@
 .markdownBlockquote {
   margin: 16px 0;
   padding: 12px 16px;
-  border-left: 4px solid #f59e0b;
+  border-left: 1px solid rgba(245, 158, 11, 0.8);
   background: linear-gradient(90deg, rgba(245, 158, 11, 0.1) 0%, transparent 100%);
   border-radius: 0 8px 8px 0;
   color: #fbbf24;
@@ -849,6 +849,14 @@
   background: rgba(255, 255, 255, 0.02);
   border-radius: 8px;
   overflow: hidden;
+}
+
+.markdownTableWrap {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 16px 0;
+  border-radius: 8px;
 }
 
 .messageContent thead {
@@ -936,7 +944,7 @@
 
 [data-theme='light'] .messageContent h2 {
   color: #0284c7;
-  border-left-color: #0369a1;
+  border-left-color: rgba(3, 105, 161, 0.8);
 }
 
 [data-theme='light'] .messageContent h3 {
@@ -946,7 +954,29 @@
 [data-theme='light'] .markdownBlockquote {
   background: linear-gradient(90deg, rgba(245, 158, 11, 0.12) 0%, transparent 100%);
   color: #b45309;
-  border-left-color: #d97706;
+  border-left-color: rgba(217, 119, 6, 0.8);
+}
+
+.typingCaret {
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.1em;
+  background: currentColor;
+  animation: typingCaretBlink 0.9s steps(1, end) infinite;
+  opacity: 0.7;
+}
+
+@keyframes typingCaretBlink {
+  0%,
+  45% {
+    opacity: 0;
+  }
+  46%,
+  100% {
+    opacity: 0.8;
+  }
 }
 
 [data-theme='light'] .markdownLink {
@@ -1713,6 +1743,22 @@
   
   .message {
     padding: var(--chat-spacing-sm);
+  }
+
+  .messageContent {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .markdownTableWrap {
+    margin: 12px 0;
+  }
+
+  .messageContent th,
+  .messageContent td {
+    padding: 8px 10px;
+    font-size: 12px;
+    white-space: nowrap;
   }
 
   .message.user {

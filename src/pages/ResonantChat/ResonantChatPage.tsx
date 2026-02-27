@@ -345,6 +345,10 @@ const ResonantChatPage: React.FC = () => {
   const [chatMetrics, setChatMetrics] = useState<ChatMetrics | null>(null);
   const [messageMetrics, setMessageMetrics] = useState<MessageMetrics | null>(null);
   const [activeMessageId, setActiveMessageId] = useState<string | null>(null);
+  const [typingMessageId, setTypingMessageId] = useState<string | null>(null);
+  const [typingVisibleChars, setTypingVisibleChars] = useState(0);
+  const typingIntervalRef = useRef<number | null>(null);
+  const previousMessagesCountRef = useRef(0);
 
   // Mobile: tap message to reveal tools/metrics; tap outside to hide
   useEffect(() => {
@@ -991,6 +995,57 @@ const ResonantChatPage: React.FC = () => {
 
     return () => window.clearTimeout(t);
   }, [splitViewEnabled, splitViewPane, isMobile, messages.length, scrollToBottomInstant]);
+
+  useEffect(() => {
+    const previousCount = previousMessagesCountRef.current;
+    const currentCount = messages.length;
+    previousMessagesCountRef.current = currentCount;
+
+    if (currentCount <= previousCount) return;
+    if (currentCount - previousCount > 2) {
+      setTypingMessageId(null);
+      setTypingVisibleChars(0);
+      return;
+    }
+
+    const latestMessage = messages[currentCount - 1];
+    if (!latestMessage || latestMessage.role !== 'assistant') return;
+    if (!latestMessage.content || latestMessage.content.length < 40) {
+      setTypingMessageId(null);
+      setTypingVisibleChars(0);
+      return;
+    }
+
+    if (typingIntervalRef.current) {
+      window.clearInterval(typingIntervalRef.current);
+      typingIntervalRef.current = null;
+    }
+
+    const totalChars = latestMessage.content.length;
+    const step = Math.max(4, Math.ceil(totalChars / 55));
+    setTypingMessageId(latestMessage.id);
+    setTypingVisibleChars(0);
+
+    typingIntervalRef.current = window.setInterval(() => {
+      setTypingVisibleChars((prev) => {
+        const next = Math.min(prev + step, totalChars);
+        if (next >= totalChars && typingIntervalRef.current) {
+          window.clearInterval(typingIntervalRef.current);
+          typingIntervalRef.current = null;
+          window.setTimeout(() => setTypingMessageId(null), 120);
+        }
+        return next;
+      });
+    }, 16);
+  }, [messages]);
+
+  useEffect(() => {
+    return () => {
+      if (typingIntervalRef.current) {
+        window.clearInterval(typingIntervalRef.current);
+      }
+    };
+  }, []);
 
   // HYBRID SYNC: Save messages to localStorage for live sync with FloatingChatWidget
   // Backend is still source of truth, but localStorage enables real-time widget sync
@@ -3566,6 +3621,14 @@ const ResonantChatPage: React.FC = () => {
                       }}
                       style={{ cursor: message.content.includes('```') ? 'pointer' : 'default' }}
                     >
+                      {/** Visual typing effect only changes render pacing, not backend generation speed. */}
+                      {(() => {
+                        const renderedMessageContent = message.id === typingMessageId
+                          ? message.content.slice(0, typingVisibleChars)
+                          : message.content;
+
+                        return (
+                          <>
                       <div className={styles.messageHeader}>
                         {showProviderBadges && message.aiProvider && message.role === 'assistant' && (
                           <span className={styles.providerBadge}>{formatProviderName(message.aiProvider)}</span>
@@ -3724,7 +3787,11 @@ const ResonantChatPage: React.FC = () => {
                                 </a>
                               );
                             },
-                            table: ({ children }) => <table className={styles.markdownTable}>{children}</table>,
+                            table: ({ children }) => (
+                              <div className={styles.markdownTableWrap}>
+                                <table className={styles.markdownTable}>{children}</table>
+                              </div>
+                            ),
                             thead: ({ children }) => <thead>{children}</thead>,
                             tbody: ({ children }) => <tbody>{children}</tbody>,
                             tr: ({ children }) => <tr>{children}</tr>,
@@ -3732,8 +3799,11 @@ const ResonantChatPage: React.FC = () => {
                             td: ({ children }) => <td>{children}</td>,
                           }}
                         >
-                          {message.content}
+                          {renderedMessageContent}
                         </ReactMarkdown>
+                        {message.id === typingMessageId && (
+                          <span className={styles.typingCaret} aria-hidden="true" />
+                        )}
                       </div>
                       {/* Generated Images Display */}
                       {message.role === 'assistant' && message.generatedImages && message.generatedImages.length > 0 && (
@@ -3955,9 +4025,13 @@ const ResonantChatPage: React.FC = () => {
                         )}
                       </div>
                       )}
+                          </>
+                        );
+                      })()}
                     </div>
                   ))}
-                  <div ref={messagesEndRef} />
+                  <div className={styles.messagesBottomSpacer} />
+                  <div ref={messagesEndRef} className={styles.messagesEndAnchor} />
                 </div>
               )}
               </SplitViewModule>
