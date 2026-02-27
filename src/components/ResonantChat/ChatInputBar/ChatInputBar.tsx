@@ -218,6 +218,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const [attachmentsExpanded, setAttachmentsExpanded] = useState(false);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<Record<string, string>>({});
   const imagePreviewUrlsRef = useRef<Record<string, string>>({});
+  const lastAutoSpokenTextRef = useRef('');
 
   const getFileKey = useCallback((file: File) => `${file.name}-${file.size}-${file.lastModified}`, []);
 
@@ -491,6 +492,30 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     return 'en-US';
   }, []);
 
+  const speechRecognitionLanguage = useMemo(() => {
+    const sample = `${value} ${voiceInterimTranscript}`.trim();
+    if (sample.length > 0) {
+      return detectSpeechLanguage(sample);
+    }
+
+    if (typeof navigator !== 'undefined' && Array.isArray(navigator.languages)) {
+      const preferred = navigator.languages
+        .map((lang) => lang.toLowerCase())
+        .find((lang) =>
+          lang.startsWith('ar') ||
+          lang.startsWith('uk') ||
+          lang.startsWith('ru') ||
+          lang.startsWith('en')
+        );
+
+      if (preferred?.startsWith('ar')) return 'ar-SA';
+      if (preferred?.startsWith('uk')) return 'uk-UA';
+      if (preferred?.startsWith('ru')) return 'ru-RU';
+    }
+
+    return 'en-US';
+  }, [detectSpeechLanguage, value, voiceInterimTranscript]);
+
   const selectPreferredVoice = useCallback((voices: SpeechSynthesisVoice[], targetLang: string): SpeechSynthesisVoice | undefined => {
     if (voices.length === 0) return undefined;
 
@@ -521,12 +546,12 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     return ranked[0];
   }, []);
 
-  const handleTextToVoice = () => {
+  const handleTextToVoice = useCallback((forceStart = false) => {
     if (!ttsText?.trim()) return;
     if (typeof window === 'undefined') return;
     if (!window.speechSynthesis) return;
 
-    if (isSpeaking) {
+    if (isSpeaking && !forceStart) {
       window.speechSynthesis.cancel();
       setIsSpeaking(false);
       return;
@@ -550,7 +575,21 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     utterance.onerror = () => setIsSpeaking(false);
     setIsSpeaking(true);
     window.speechSynthesis.speak(utterance);
-  };
+  }, [detectSpeechLanguage, isSpeaking, selectPreferredVoice, ttsText]);
+
+  useEffect(() => {
+    if (!voiceInInput) {
+      lastAutoSpokenTextRef.current = '';
+      return;
+    }
+
+    const nextText = ttsText?.trim() || '';
+    if (!nextText) return;
+    if (lastAutoSpokenTextRef.current === nextText) return;
+
+    lastAutoSpokenTextRef.current = nextText;
+    handleTextToVoice(true);
+  }, [voiceInInput, ttsText, handleTextToVoice]);
 
   // Close other panels when opening a new one
   const handleShowMemoryLibrary = () => {
@@ -927,6 +966,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               iconSize={voiceIconSize}
               disabled={isLoading || disabled}
               forceListening={voiceInInput}
+              speechLanguage={speechRecognitionLanguage}
             />
             {embedded && (
               <button

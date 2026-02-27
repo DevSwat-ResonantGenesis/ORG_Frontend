@@ -35,6 +35,7 @@ interface VoiceInputProps {
   iconSize?: number;
   disabled?: boolean;
   forceListening?: boolean;
+  speechLanguage?: string;
 }
 
 export const VoiceInput: React.FC<VoiceInputProps> = ({
@@ -45,6 +46,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
   iconSize = 18,
   disabled = false,
   forceListening,
+  speechLanguage = 'en-US',
 }) => {
   const [isListening, setIsListening] = useState(false);
   const [isSupported, setIsSupported] = useState(true);
@@ -52,6 +54,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
   const recognitionRef = useRef<any>(null);
   const isListeningRef = useRef(isListening);
   const prevForceListeningRef = useRef<boolean | undefined>(forceListening);
+  const speechLanguageRef = useRef(speechLanguage);
   
   // Store callbacks in refs to avoid stale closures
   const onTranscriptRef = useRef(onTranscript);
@@ -75,6 +78,13 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
     isListeningRef.current = isListening;
   }, [isListening]);
 
+  useEffect(() => {
+    speechLanguageRef.current = speechLanguage;
+    if (recognitionRef.current) {
+      recognitionRef.current.lang = speechLanguage;
+    }
+  }, [speechLanguage]);
+
   // Initialize speech recognition only once
   useEffect(() => {
     // Check for browser support
@@ -90,7 +100,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
     const recognition = new SpeechRecognition();
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = 'en-US';
+    recognition.lang = speechLanguageRef.current || 'en-US';
 
     recognition.onresult = (event: any) => {
       let interim = '';
@@ -162,7 +172,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
         const recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.interimResults = true;
-        recognition.lang = 'en-US';
+        recognition.lang = speechLanguageRef.current || 'en-US';
         
         recognition.onresult = (event: any) => {
           let interim = '';
@@ -241,6 +251,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
         // Small delay before starting
         await new Promise(resolve => setTimeout(resolve, 100));
         
+        recognitionRef.current.lang = speechLanguageRef.current || 'en-US';
         recognitionRef.current.start();
         setIsListening(true);
         isListeningRef.current = true;
