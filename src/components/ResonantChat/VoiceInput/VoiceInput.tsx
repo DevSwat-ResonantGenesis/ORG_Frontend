@@ -114,8 +114,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
         // Use ref to get latest callback
         onTranscriptRef.current(final);
         setInterimTranscript('');
-      onInterimTranscriptChangeRef.current?.('');
-            onInterimTranscriptChangeRef.current?.('');
+        onInterimTranscriptChangeRef.current?.('');
       }
     };
 
@@ -178,13 +177,13 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
           }
           console.log('🎤 Speech result - interim:', interim, 'final:', final);
           setInterimTranscript(interim);
-      onInterimTranscriptChangeRef.current?.(interim);
+          onInterimTranscriptChangeRef.current?.(interim);
           if (final) {
             console.log('🎤 Final transcript received:', final);
             onTranscriptRef.current(final);
-        setInterimTranscript('');
-        onInterimTranscriptChangeRef.current?.('');
-      }
+            setInterimTranscript('');
+            onInterimTranscriptChangeRef.current?.('');
+          }
         };
         
         recognition.onerror = (event: any) => {
@@ -224,7 +223,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
       isListeningRef.current = false;
       onListeningChangeRef.current?.(false);
       setInterimTranscript('');
-            onInterimTranscriptChangeRef.current?.('');
+      onInterimTranscriptChangeRef.current?.('');
     } else {
       try {
         // Request microphone permission first
