@@ -265,13 +265,18 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
 
   useEffect(() => {
     if (typeof forceListening !== 'boolean') return;
-    if (prevForceListeningRef.current === forceListening) return;
+    const forceStateChanged = prevForceListeningRef.current !== forceListening;
+    const shouldRetryStartAfterDisabled = forceListening && !disabled && !isListeningRef.current;
 
-    prevForceListeningRef.current = forceListening;
+    if (!forceStateChanged && !shouldRetryStartAfterDisabled) {
+      return;
+    }
 
     if (disabled && forceListening) {
       return;
     }
+
+    prevForceListeningRef.current = forceListening;
 
     void toggleListening(forceListening);
   }, [forceListening, disabled]);

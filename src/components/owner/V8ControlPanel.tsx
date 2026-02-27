@@ -88,7 +88,7 @@ const V8ControlPanel: React.FC = () => {
     setTraining(true); setError(null); setSuccess(null);
     try {
       const res = await fetch(V8_API_BASE + '/admin/training/start', { method: 'POST', headers: hdrJson, body: JSON.stringify({ corpus }) });
-      if (res.ok) { const d = await res.json(); setSuccess(`Training complete! Model: ${d.version_tag} | ${d.metrics?.embedding_count} embeddings`); await fetchData(); }
+      if (res.ok) { const d = await res.json(); setSuccess(`Training complete! Model: ${d.version_tag} | ${d.metrics?.dataset_size || 0} samples | ${d.metrics?.anchor_count || 0} anchors | vocab: ${d.metrics?.vocab_size || 0} | accuracy: ${((d.metrics?.best_val_accuracy || 0) * 100).toFixed(1)}%`); await fetchData(); }
       else { const e = await res.json().catch(() => ({})); setError(e.error || 'Training failed'); }
     } catch (err) { setError('Training failed: ' + (err instanceof Error ? err.message : 'error')); }
     finally { setTraining(false); }
@@ -225,24 +225,28 @@ const V8ControlPanel: React.FC = () => {
       {tab === 'training' && (
         <div>
           <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Train New Model</h3>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>Training builds a TinyU neural net from anchors (ground truth hash↔12-words mappings). Each anchor generates 11 synthetic training samples. Forbidden words are excluded. After training, switch between models in the Models tab.</p>
-          <button onClick={() => startTraining('anchors')} disabled={training} style={{ padding: '0.6rem 1.2rem', marginBottom: '1rem', background: training ? '#666' : 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', border: 'none', borderRadius: '8px', cursor: training ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.9rem' }}><Play size={16} /> {training ? 'Training TinyU Model...' : 'Train from Anchors'}</button>
-          {corpusFiles.length === 0 ? <p style={{ color: 'var(--text-secondary)' }}>No corpus files found.</p> : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              {corpusFiles.map(f => (
-                <div key={f.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem 1rem', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <FileText size={18} style={{ color: '#6366f1' }} />
-                    <span>{f.name}</span>
-                    <span style={{ color: 'var(--text-tertiary)', fontSize: '0.8rem' }}>({(f.size/1024).toFixed(1)} KB, {f.lines} lines)</span>
-                  </div>
-                  <button onClick={() => startTraining(f.name)} disabled={training} style={{ padding: '0.5rem 1rem', background: training ? '#666' : 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', border: 'none', borderRadius: '6px', cursor: training ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <Play size={14} /> {training ? 'Training...' : 'Train'}
-                  </button>
-                </div>
-              ))}
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+            Training builds a TinyU neural net using BIP39 deterministic mapping (2048-word vocabulary).
+            Data sources: <strong>{status?.anchors_count || anchors.length} anchors</strong> (ground truth) + 3000 random BIP39 samples.
+            <strong style={{ color: '#ef4444' }}> {status?.forbidden_count || forbidden.length} forbidden words</strong> are excluded from training data and masked during loss computation.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <div style={{ flex: 1, padding: '0.75rem', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}><Anchor size={14} style={{ color: '#6366f1' }} /><span style={{ fontWeight: 600, fontSize: '0.85rem' }}>Anchors</span></div>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{status?.anchors_count || anchors.length} ground truth mappings + 5 variations each</span>
+              </div>
+              <div style={{ flex: 1, padding: '0.75rem', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}><Shield size={14} style={{ color: '#ef4444' }} /><span style={{ fontWeight: 600, fontSize: '0.85rem' }}>Forbidden Words</span></div>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{status?.forbidden_count || forbidden.length} words excluded from dataset + masked in loss</span>
+              </div>
+              <div style={{ flex: 1, padding: '0.75rem', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}><Database size={14} style={{ color: '#22c55e' }} /><span style={{ fontWeight: 600, fontSize: '0.85rem' }}>BIP39 Vocab</span></div>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>2048 words, deterministic bit-segment mapping</span>
+              </div>
             </div>
-          )}
+          </div>
+          <button onClick={() => startTraining('bip39')} disabled={training} style={{ padding: '0.6rem 1.2rem', marginBottom: '1rem', background: training ? '#666' : 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', border: 'none', borderRadius: '8px', cursor: training ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.9rem' }}><Play size={16} /> {training ? 'Training TinyU Model...' : 'Train from Anchors + Forbidden Exclusion'}</button>
         </div>
       )}
 
