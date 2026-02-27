@@ -53,6 +53,7 @@ const V8ControlPanel: React.FC = () => {
   const [training, setTraining] = useState(false);
   const [newForbidden, setNewForbidden] = useState('');
   const [newAnchorWords, setNewAnchorWords] = useState('');
+  const [newAnchorHash, setNewAnchorHash] = useState('');
   const [tab, setTab] = useState<Tab>('status');
 
   const hdr = { 'X-Dev-Token': DEV_TOKEN };
@@ -112,10 +113,12 @@ const V8ControlPanel: React.FC = () => {
 
   const addAnchor = async () => {
     const words = newAnchorWords.trim().split(/\s+/).map(w => w.toLowerCase());
-    if (words.length !== 12) { setError('Anchors require exactly 12 words'); return; }
+    if (words.length !== 12) { setError('Anchors require exactly 12 words (got ' + words.length + ')'); return; }
+    const hash = newAnchorHash.trim();
+    if (hash && !hash.match(/^0x[0-9a-fA-F]{40}$/)) { setError('Hash must be a valid 40-char hex string starting with 0x'); return; }
     try {
-      const res = await fetch(V8_API_BASE + '/admin/anchors', { method: 'POST', headers: hdrJson, body: JSON.stringify({ words }) });
-      if (res.ok) { setNewAnchorWords(''); setSuccess('Anchor added (retrain to incorporate)'); await fetchData(); }
+      const res = await fetch(V8_API_BASE + '/admin/anchors', { method: 'POST', headers: hdrJson, body: JSON.stringify({ words, hash: hash || undefined }) });
+      if (res.ok) { setNewAnchorWords(''); setNewAnchorHash(''); setSuccess('Anchor added! Retrain model to incorporate.'); await fetchData(); }
       else { const e = await res.json().catch(() => ({})); setError(e.error || 'Failed to add anchor'); }
     } catch { setError('Failed to add anchor'); }
   };
@@ -222,7 +225,8 @@ const V8ControlPanel: React.FC = () => {
       {tab === 'training' && (
         <div>
           <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>Train New Model</h3>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>Training creates a new versioned model with SVD word embeddings. Forbidden words are excluded and anchors are incorporated. You can switch between trained models in the Models tab.</p>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>Training builds a TinyU neural net from anchors (ground truth hash↔12-words mappings). Each anchor generates 11 synthetic training samples. Forbidden words are excluded. After training, switch between models in the Models tab.</p>
+          <button onClick={() => startTraining('anchors')} disabled={training} style={{ padding: '0.6rem 1.2rem', marginBottom: '1rem', background: training ? '#666' : 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', border: 'none', borderRadius: '8px', cursor: training ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.9rem' }}><Play size={16} /> {training ? 'Training TinyU Model...' : 'Train from Anchors'}</button>
           {corpusFiles.length === 0 ? <p style={{ color: 'var(--text-secondary)' }}>No corpus files found.</p> : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {corpusFiles.map(f => (
@@ -264,10 +268,18 @@ const V8ControlPanel: React.FC = () => {
       {/* ANCHORS */}
       {tab === 'anchors' && (
         <div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>Anchors are 12-word reference points that guide the embedding space during training. After adding, retrain to incorporate.</p>
-          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-            <input type="text" value={newAnchorWords} onChange={e => setNewAnchorWords(e.target.value)} placeholder="Enter exactly 12 words separated by spaces..." style={{ flex: 1, padding: '0.5rem 0.75rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '6px', color: 'var(--text-primary)', fontSize: '0.85rem' }} />
-            <button onClick={addAnchor} style={{ padding: '0.5rem 1rem', background: '#6366f1', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', whiteSpace: 'nowrap' }}>Add Anchor</button>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>Anchors are ground truth: each is a hash (0x...) mapped to exactly 12 words. The model trains on these anchors. After adding, retrain to incorporate.</p>
+          <div style={{ padding: '1rem', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)', marginBottom: '1rem' }}>
+            <div style={{ marginBottom: '0.5rem' }}>
+              <label style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', display: 'block', marginBottom: '0.25rem' }}>Hash (0x... 40-char hex) — optional, auto-generated from words if empty</label>
+              <input type="text" value={newAnchorHash} onChange={e => setNewAnchorHash(e.target.value)} placeholder="0xe457550a86cd40bc9c123ba5d11b93c512935a12" style={{ width: '100%', padding: '0.5rem 0.75rem', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '6px', color: 'var(--text-primary)', fontSize: '0.85rem', fontFamily: 'monospace' }} />
+            </div>
+            <div style={{ marginBottom: '0.5rem' }}>
+              <label style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', display: 'block', marginBottom: '0.25rem' }}>12 Words (space separated)</label>
+              <input type="text" value={newAnchorWords} onChange={e => setNewAnchorWords(e.target.value)} placeholder="series repair voice prepare novel volcano absurd fiscal risk fame fox state" style={{ width: '100%', padding: '0.5rem 0.75rem', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '6px', color: 'var(--text-primary)', fontSize: '0.85rem' }} />
+              <span style={{ fontSize: '0.7rem', color: newAnchorWords.trim().split(/\s+/).filter(Boolean).length === 12 ? '#22c55e' : 'var(--text-tertiary)' }}>{newAnchorWords.trim() ? newAnchorWords.trim().split(/\s+/).filter(Boolean).length : 0}/12 words</span>
+            </div>
+            <button onClick={addAnchor} style={{ padding: '0.5rem 1rem', background: '#6366f1', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', whiteSpace: 'nowrap', fontWeight: 600 }}>Add Anchor</button>
           </div>
           {anchors.length === 0 ? <p style={{ color: 'var(--text-tertiary)', fontSize: '0.85rem' }}>No anchors set.</p> : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
