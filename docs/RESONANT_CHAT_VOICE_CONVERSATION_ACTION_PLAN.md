@@ -267,3 +267,35 @@ Backend files:
 - `genesis2026_production_backend/gateway/app/routers.py` (route wiring)
 
 This is a protocol skeleton for duplex integration. Real ASR/TTS/VAD and barge-in are the immediate next backend milestones.
+
+---
+
+## Backend Duplex Runtime Implemented (Gateway, Feb 2026)
+
+The `/api/v1/voice/session` gateway runtime now includes:
+
+1. **Real streaming ASR adapter**
+   - Aggregates PCM chunks into WAV windows and calls OpenAI Whisper (`/v1/audio/transcriptions`) when `OPENAI_API_KEY` is present.
+   - Emits real `asr.final` turns from actual transcribed speech.
+
+2. **ASR → Resonant Chat streaming bridge**
+   - Each final ASR turn is posted to `chat_service` streaming endpoint (`/resonant-chat/message/stream`).
+   - SSE `chunk` events are forwarded as live `assistant.delta` events over the same voice websocket.
+
+3. **Real TTS chunk streaming on the same session**
+   - Assistant final text is synthesized using OpenAI TTS (`/v1/audio/speech`).
+   - Audio is base64-chunked and emitted as `tts.chunk`, then `tts.done`.
+
+4. **Barge-in interruption**
+   - New incoming user audio cancels active TTS stream.
+   - Emits `tts.interrupted` with reason `barge_in`.
+
+5. **Turn/session metrics + health counters**
+   - Tracks ASR, assistant, and TTS latencies per turn.
+   - Tracks health counters: active sessions, turns, barges, errors.
+   - Persists session metrics to JSONL (`VOICE_METRICS_PATH`, default `/tmp/voice_metrics.jsonl`).
+
+### Current production caveat
+
+- Real ASR/TTS require `OPENAI_API_KEY` in gateway runtime env.
+- If missing, websocket still runs but emits `tts.unavailable` and cannot transcribe speech.
