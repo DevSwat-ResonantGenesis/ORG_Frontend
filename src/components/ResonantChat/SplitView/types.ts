@@ -45,7 +45,7 @@ export interface PreviewConfig {
   processId?: string;
 }
 
-export type TabType = 'code' | 'preview' | 'terminal';
+export type TabType = 'code' | 'preview' | 'terminal' | 'visualizer';
 
 export interface SplitViewState {
   width: number;

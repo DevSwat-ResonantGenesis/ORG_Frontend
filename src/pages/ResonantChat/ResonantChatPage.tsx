@@ -893,6 +893,9 @@ const ResonantChatPage: React.FC = () => {
   const [projectMode, setProjectMode] = useState(false);
   const [projectFiles, setProjectFiles] = useState<ProjectFile[]>([]);
 
+  // Code Visualizer analysis ID - set when CV skill returns a scan result
+  const [visualizerAnalysisId, setVisualizerAnalysisId] = useState<string | null>(null);
+
   // Save split view settings to localStorage
   useEffect(() => {
     localStorage.setItem('resonant-chat-split-view', String(splitViewEnabled));
@@ -1921,7 +1924,7 @@ const ResonantChatPage: React.FC = () => {
         enabled_skill_ids: enabledSkillIds.length > 0 ? enabledSkillIds : undefined,
       });
 
-      // Handle tool results (e.g., navigation)
+      // Handle tool results (e.g., navigation, Code Visualizer)
       if (resonantResponse.toolResults && resonantResponse.toolResults.length > 0) {
         for (const toolResult of resonantResponse.toolResults) {
           if (toolResult.success && toolResult.result?.action === 'navigate' && toolResult.result?.url) {
@@ -1932,6 +1935,16 @@ const ResonantChatPage: React.FC = () => {
               navigate(url);
             } else {
               window.open(url, '_blank', 'noopener,noreferrer');
+            }
+          }
+          // Code Visualizer skill: auto-open split view with visualizer tab
+          if (toolResult.success && toolResult.result?.analysis_id && toolResult.tool_name?.includes('code_visualizer')) {
+            const analysisId = toolResult.result.analysis_id;
+            logger.info('[ResonantChatPage] Code Visualizer analysis received:', analysisId);
+            setVisualizerAnalysisId(analysisId);
+            if (!splitViewEnabled) {
+              setSplitViewEnabled(true);
+              setSplitViewPane('split');
             }
           }
         }
@@ -3479,6 +3492,7 @@ const ResonantChatPage: React.FC = () => {
                   projectFiles={projectFiles}
                   showBuildModule={showBuildModule}
                   onCloseBuildModule={() => setShowBuildModule(false)}
+                  visualizerAnalysisId={visualizerAnalysisId}
                 >
                 {messages.length === 0 ? (
                 <FloatingHome

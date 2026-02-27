@@ -573,6 +573,17 @@ export const MaximizeIcon: React.FC<{ className?: string }> = ({ className = '' 
   </svg>
 );
 
+export const VisualizerIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
+  <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="4" cy="4" r="2" stroke="currentColor" strokeWidth="1.5" />
+    <circle cx="12" cy="4" r="2" stroke="currentColor" strokeWidth="1.5" />
+    <circle cx="8" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" />
+    <path d="M5.5 5.5L7 10.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    <path d="M10.5 5.5L9 10.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    <path d="M6 4H10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+  </svg>
+);
+
 export const BuildIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
   <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M3 3H7V7H3V3Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

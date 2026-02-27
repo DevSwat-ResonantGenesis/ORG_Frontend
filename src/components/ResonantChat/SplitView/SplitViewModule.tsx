@@ -9,7 +9,8 @@ import {
   PlayIcon, 
   LoadingIcon,
   RocketIcon,
-  BuildIcon
+  BuildIcon,
+  VisualizerIcon
 } from '@/components/Icons/ResonantChatIcons';
 
 // Lazy load BuildModule
@@ -81,6 +82,8 @@ export interface SplitViewModuleProps {
   // Build module props (controlled from parent)
   showBuildModule?: boolean;
   onCloseBuildModule?: () => void;
+  // Code Visualizer integration
+  visualizerAnalysisId?: string | null;
 }
 
 export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
@@ -101,6 +104,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
   projectId,
   showBuildModule: showBuildModuleProp = false,
   onCloseBuildModule,
+  visualizerAnalysisId = null,
 }) => {
   // Local state for project files (editable)
   const [projectFiles, setProjectFiles] = useState<ProjectFile[]>(initialProjectFiles);
@@ -149,6 +153,15 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
     }
     actions.setActiveTab(autoOpenRequest.tab);
   }, [enabled, autoOpenRequest, actions]);
+
+  // Auto-switch to visualizer tab when analysisId is provided
+  const prevAnalysisIdRef = React.useRef<string | null>(null);
+  useEffect(() => {
+    if (visualizerAnalysisId && visualizerAnalysisId !== prevAnalysisIdRef.current) {
+      prevAnalysisIdRef.current = visualizerAnalysisId;
+      actions.setActiveTab('visualizer');
+    }
+  }, [visualizerAnalysisId, actions]);
 
   // Auto-select first file when project files change
   useEffect(() => {
@@ -332,6 +345,15 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                   <span className={styles.tabIcon}><TerminalIcon /></span>
                   Terminal
                 </button>
+                {visualizerAnalysisId && (
+                  <button
+                    className={`${styles.tab} ${state.activeTab === 'visualizer' ? styles.activeTab : ''} ${styles.visualizerTab}`}
+                    onClick={() => actions.setActiveTab('visualizer')}
+                  >
+                    <span className={styles.tabIcon}><VisualizerIcon /></span>
+                    Visualizer
+                  </button>
+                )}
               </div>
               <div className={styles.headerActions}>
                 {codeBlocks && codeBlocks.length > 0 && (
@@ -360,6 +382,15 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                     title="Start preview"
                   >
                     <RocketIcon /> Start Preview
+                  </button>
+                )}
+                {state.activeTab === 'visualizer' && visualizerAnalysisId && (
+                  <button
+                    className={styles.runButton}
+                    onClick={() => window.open(`/code-visualizer?analysis_id=${visualizerAnalysisId}`, '_blank')}
+                    title="Open in full screen"
+                  >
+                    <RocketIcon /> Full Screen
                   </button>
                 )}
                 <button
@@ -448,6 +479,18 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                   disabled={false}
                 />
               )}
+
+              {/* Visualizer Tab - Code Visualizer UI */}
+              {state.activeTab === 'visualizer' && visualizerAnalysisId && (
+                <div className={styles.visualizerTabContent}>
+                  <iframe
+                    title="Code Visualizer"
+                    src={`/api/v1/code-visualizer-ui/?analysis_id=${visualizerAnalysisId}`}
+                    className={styles.visualizerIframe}
+                    allow="fullscreen"
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -527,6 +570,15 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
               <span className={styles.tabIcon}><TerminalIcon /></span>
               Terminal
             </button>
+            {visualizerAnalysisId && (
+              <button
+                className={`${styles.tab} ${state.activeTab === 'visualizer' ? styles.activeTab : ''} ${styles.visualizerTab}`}
+                onClick={() => actions.setActiveTab('visualizer')}
+              >
+                <span className={styles.tabIcon}><VisualizerIcon /></span>
+                Visualizer
+              </button>
+            )}
           </div>
           <div className={styles.headerActions}>
             {codeBlocks && codeBlocks.length > 0 && (
@@ -555,6 +607,15 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 title="Start preview"
               >
                 <RocketIcon /> Start Preview
+              </button>
+            )}
+            {state.activeTab === 'visualizer' && visualizerAnalysisId && (
+              <button
+                className={styles.runButton}
+                onClick={() => window.open(`/code-visualizer?analysis_id=${visualizerAnalysisId}`, '_blank')}
+                title="Open in full screen"
+              >
+                <RocketIcon /> Full Screen
               </button>
             )}
             <button
@@ -642,6 +703,18 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
               onClear={actions.clearTerminal}
               disabled={false}
             />
+          )}
+
+          {/* Visualizer Tab - Code Visualizer UI */}
+          {state.activeTab === 'visualizer' && visualizerAnalysisId && (
+            <div className={styles.visualizerTabContent}>
+              <iframe
+                title="Code Visualizer"
+                src={`/api/v1/code-visualizer-ui/?analysis_id=${visualizerAnalysisId}`}
+                className={styles.visualizerIframe}
+                allow="fullscreen"
+              />
+            </div>
           )}
         </div>
       </div>
