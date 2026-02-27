@@ -161,18 +161,14 @@ export const CursorTerminalPanel: React.FC<CursorTerminalPanelProps> = ({
 
   const executeTerminalCommand = async (command: string, projectId: string): Promise<{ output: string; error?: string }> => {
     try {
-      // Direct connection to code_execution_service (port 8002) for terminal commands
-      // This bypasses the gateway for faster execution
-      const CODE_EXECUTION_URL = 'http://localhost:8002';
-      
-      const response = await fetch(`${CODE_EXECUTION_URL}/terminal/execute`, {
+      // Use gateway API for terminal execution (proxied to ide_service)
+      const response = await fetch(`/api/v1/terminal/execute`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           command: command,
-          cwd: `/tmp/resonant_projects/${projectId}`,
           timeout: 30,
         }),
       });
@@ -182,9 +178,11 @@ export const CursorTerminalPanel: React.FC<CursorTerminalPanelProps> = ({
       }
 
       const data = await response.json();
+      const output = data.stdout || data.output || '';
+      const error = data.stderr || data.error || undefined;
       return {
-        output: data.stdout || data.output || '',
-        error: data.stderr || data.error || undefined
+        output: error ? `${output}${output ? '\n' : ''}${error}` : output,
+        error: data.success === false ? error : undefined,
       };
     } catch (error: any) {
       // Fallback to simulated command if API fails

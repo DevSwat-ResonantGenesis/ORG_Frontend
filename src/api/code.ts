@@ -1317,6 +1317,201 @@ export const stopTerminalSession = async (
 };
 
 // ============================================
+// Git Remote Operations API (ide_service)
+// ============================================
+
+export interface GitCloneRequest {
+  url: string;
+  project_id?: string;
+  branch?: string;
+  depth?: number;
+  token?: string;
+}
+
+export interface GitCloneResponse {
+  success: boolean;
+  project_id: string;
+  branch: string;
+  files_count: number;
+  message: string;
+  path: string;
+}
+
+export interface GitRemoteInfo {
+  name: string;
+  fetch?: string;
+  push?: string;
+}
+
+export interface GitPushPullResponse {
+  success: boolean;
+  message: string;
+  output?: string;
+  error?: string;
+  updated?: boolean;
+  conflicts?: boolean;
+}
+
+export interface GitRemoteDiffResponse {
+  success: boolean;
+  branch: string;
+  remote: string;
+  ahead: number;
+  behind: number;
+  synced: boolean;
+}
+
+/**
+ * Clone a git repository into a new IDE project
+ * POST /git/clone - Direct to IDE Service
+ */
+export const cloneGitRepo = async (
+  request: GitCloneRequest
+): Promise<GitCloneResponse> => {
+  try {
+    const response = await ideServiceClient.post('/git/clone', request);
+    return response.data;
+  } catch (error: any) {
+    logger.error('Clone repo error', error);
+    if (error?.response?.status === 401) {
+      throw new Error('Authentication failed. Check your GitHub token.');
+    }
+    if (error?.response?.status === 409) {
+      throw new Error('Project already exists. Use a different name.');
+    }
+    throw error;
+  }
+};
+
+/**
+ * Manage git remotes (list, add, remove, set-url)
+ * POST /git/remote - Direct to IDE Service
+ */
+export const manageGitRemote = async (
+  projectId: string,
+  action: 'list' | 'add' | 'remove' | 'set-url',
+  name?: string,
+  url?: string,
+  token?: string
+): Promise<{ success: boolean; remotes?: GitRemoteInfo[]; message?: string }> => {
+  try {
+    const response = await ideServiceClient.post('/git/remote', {
+      project_id: projectId,
+      action,
+      name,
+      url,
+      token,
+    });
+    return response.data;
+  } catch (error: any) {
+    logger.error('Git remote error', error);
+    return { success: false, message: error.message };
+  }
+};
+
+/**
+ * Push commits to remote repository
+ * POST /git/push - Direct to IDE Service
+ */
+export const pushToRemote = async (
+  projectId: string,
+  remote: string = 'origin',
+  branch?: string,
+  force: boolean = false,
+  token?: string
+): Promise<GitPushPullResponse> => {
+  try {
+    const response = await ideServiceClient.post('/git/push', {
+      project_id: projectId,
+      remote,
+      branch,
+      force,
+      token,
+    });
+    return response.data;
+  } catch (error: any) {
+    logger.error('Git push error', error);
+    if (error?.response?.status === 401) {
+      return { success: false, message: 'Push authentication failed. Check your token.', error: 'auth_failed' };
+    }
+    return { success: false, message: error.message || 'Push failed', error: error.message };
+  }
+};
+
+/**
+ * Pull changes from remote repository
+ * POST /git/pull - Direct to IDE Service
+ */
+export const pullFromRemote = async (
+  projectId: string,
+  remote: string = 'origin',
+  branch?: string,
+  rebase: boolean = false,
+  token?: string
+): Promise<GitPushPullResponse> => {
+  try {
+    const response = await ideServiceClient.post('/git/pull', {
+      project_id: projectId,
+      remote,
+      branch,
+      rebase,
+      token,
+    });
+    return response.data;
+  } catch (error: any) {
+    logger.error('Git pull error', error);
+    if (error?.response?.status === 401) {
+      return { success: false, message: 'Pull authentication failed. Check your token.', error: 'auth_failed' };
+    }
+    return { success: false, message: error.message || 'Pull failed', error: error.message };
+  }
+};
+
+/**
+ * Fetch changes from remote without merging
+ * POST /git/fetch - Direct to IDE Service
+ */
+export const fetchFromRemote = async (
+  projectId: string,
+  remote: string = 'origin',
+  prune: boolean = false,
+  token?: string
+): Promise<GitPushPullResponse> => {
+  try {
+    const response = await ideServiceClient.post('/git/fetch', {
+      project_id: projectId,
+      remote,
+      prune,
+      token,
+    });
+    return response.data;
+  } catch (error: any) {
+    logger.error('Git fetch error', error);
+    return { success: false, message: error.message || 'Fetch failed', error: error.message };
+  }
+};
+
+/**
+ * Get ahead/behind count vs remote
+ * GET /git/diff/{projectId}/remote - Direct to IDE Service
+ */
+export const getRemoteDiff = async (
+  projectId: string,
+  remote: string = 'origin',
+  branch?: string
+): Promise<GitRemoteDiffResponse> => {
+  try {
+    const params = new URLSearchParams({ remote });
+    if (branch) params.append('branch', branch);
+    const response = await ideServiceClient.get(`/git/diff/${projectId}/remote?${params.toString()}`);
+    return response.data;
+  } catch (error: any) {
+    logger.error('Git remote diff error', error);
+    return { success: false, branch: '', remote: '', ahead: 0, behind: 0, synced: false };
+  }
+};
+
+// ============================================
 // IDE Project Preview API
 // ============================================
 

@@ -7,8 +7,16 @@ import {
   manageBranch,
   listBranches,
   getCommitLog,
+  cloneGitRepo,
+  pushToRemote,
+  pullFromRemote,
+  fetchFromRemote,
+  manageGitRemote,
+  getRemoteDiff,
   type GitStatus,
-  type GitCommit
+  type GitCommit,
+  type GitRemoteInfo,
+  type GitRemoteDiffResponse
 } from '@/api/code';
 import { stageFile, unstageFile } from '@/api/git';
 import { logger } from '@/utils/logger';
@@ -28,6 +36,12 @@ export const GitPanel: React.FC<GitPanelProps> = ({ projectId }) => {
   const [autoGenerateMessage, setAutoGenerateMessage] = useState(true);
   const [newBranchName, setNewBranchName] = useState('');
   const [stagedFiles, setStagedFiles] = useState<Set<string>>(new Set());
+  const [remotes, setRemotes] = useState<GitRemoteInfo[]>([]);
+  const [remoteDiff, setRemoteDiff] = useState<GitRemoteDiffResponse | null>(null);
+  const [cloneUrl, setCloneUrl] = useState('');
+  const [githubToken, setGithubToken] = useState('');
+  const [showCloneDialog, setShowCloneDialog] = useState(false);
+  const [showRemoteSection, setShowRemoteSection] = useState(false);
   const { success, error: showError } = useToastContext();
 
   useEffect(() => {
@@ -35,8 +49,114 @@ export const GitPanel: React.FC<GitPanelProps> = ({ projectId }) => {
       loadGitStatus();
       loadBranches();
       loadCommitLog();
+      loadRemotes();
+      loadRemoteDiff();
     }
   }, [projectId]);
+
+  const loadRemotes = async () => {
+    try {
+      const result = await manageGitRemote(projectId, 'list');
+      if (result.success && result.remotes) {
+        setRemotes(result.remotes);
+      }
+    } catch (err) {
+      logger.error('Failed to load remotes', err);
+    }
+  };
+
+  const loadRemoteDiff = async () => {
+    try {
+      const diff = await getRemoteDiff(projectId);
+      setRemoteDiff(diff);
+    } catch (err) {
+      logger.error('Failed to load remote diff', err);
+    }
+  };
+
+  const handlePush = async () => {
+    setLoading(true);
+    try {
+      const token = githubToken || localStorage.getItem('github_pat') || undefined;
+      const result = await pushToRemote(projectId, 'origin', undefined, false, token);
+      if (result.success) {
+        success('Pushed to remote successfully');
+        await loadRemoteDiff();
+      } else {
+        showError(result.message || 'Push failed');
+      }
+    } catch (err: any) {
+      showError(`Push failed: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePull = async () => {
+    setLoading(true);
+    try {
+      const token = githubToken || localStorage.getItem('github_pat') || undefined;
+      const result = await pullFromRemote(projectId, 'origin', undefined, false, token);
+      if (result.success) {
+        success(result.message || 'Pull successful');
+        await loadGitStatus();
+        await loadCommitLog();
+        await loadRemoteDiff();
+      } else {
+        showError(result.message || 'Pull failed');
+      }
+    } catch (err: any) {
+      showError(`Pull failed: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFetch = async () => {
+    setLoading(true);
+    try {
+      const token = githubToken || localStorage.getItem('github_pat') || undefined;
+      const result = await fetchFromRemote(projectId, 'origin', false, token);
+      if (result.success) {
+        success('Fetched from remote');
+        await loadRemoteDiff();
+      } else {
+        showError(result.message || 'Fetch failed');
+      }
+    } catch (err: any) {
+      showError(`Fetch failed: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClone = async () => {
+    if (!cloneUrl.trim()) {
+      showError('Please enter a repository URL');
+      return;
+    }
+    setLoading(true);
+    try {
+      const token = githubToken || localStorage.getItem('github_pat') || undefined;
+      const result = await cloneGitRepo({ url: cloneUrl, token });
+      if (result.success) {
+        success(`Cloned: ${result.files_count} files into ${result.project_id}`);
+        setCloneUrl('');
+        setShowCloneDialog(false);
+      }
+    } catch (err: any) {
+      showError(`Clone failed: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveToken = () => {
+    if (githubToken.trim()) {
+      localStorage.setItem('github_pat', githubToken);
+      success('GitHub token saved locally');
+    }
+  };
 
   const loadGitStatus = async () => {
     try {
@@ -413,6 +533,118 @@ export const GitPanel: React.FC<GitPanelProps> = ({ projectId }) => {
             {loading ? 'Committing...' : `Commit ${getStagedFiles().length > 0 ? `(${getStagedFiles().length})` : ''}`}
           </button>
         </div>
+      </div>
+
+      {/* Remote Operations */}
+      <div className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <span
+            onClick={() => setShowRemoteSection(!showRemoteSection)}
+            style={{ cursor: 'pointer' }}
+          >
+            {showRemoteSection ? '▾' : '▸'} Remote
+            {remoteDiff && !remoteDiff.synced && (
+              <span style={{ fontSize: '11px', marginLeft: '6px', opacity: 0.7 }}>
+                {remoteDiff.ahead > 0 && `↑${remoteDiff.ahead}`}
+                {remoteDiff.behind > 0 && `↓${remoteDiff.behind}`}
+              </span>
+            )}
+          </span>
+        </div>
+        {showRemoteSection && (
+          <div className={styles.commitControls}>
+            {/* Push / Pull / Fetch buttons */}
+            <div style={{ display: 'flex', gap: '4px', marginBottom: '8px' }}>
+              <button
+                onClick={handlePush}
+                disabled={loading}
+                className={styles.branchButton}
+                title="Push to remote"
+                style={{ flex: 1 }}
+              >
+                ↑ Push
+              </button>
+              <button
+                onClick={handlePull}
+                disabled={loading}
+                className={styles.branchButton}
+                title="Pull from remote"
+                style={{ flex: 1 }}
+              >
+                ↓ Pull
+              </button>
+              <button
+                onClick={handleFetch}
+                disabled={loading}
+                className={styles.branchButton}
+                title="Fetch from remote"
+                style={{ flex: 1 }}
+              >
+                ⟳ Fetch
+              </button>
+            </div>
+
+            {/* Sync status */}
+            {remoteDiff && (
+              <div style={{ fontSize: '11px', opacity: 0.7, marginBottom: '8px' }}>
+                {remoteDiff.synced
+                  ? '✓ In sync with remote'
+                  : `${remoteDiff.ahead} ahead, ${remoteDiff.behind} behind`}
+              </div>
+            )}
+
+            {/* Remotes list */}
+            {remotes.length > 0 && (
+              <div style={{ fontSize: '11px', opacity: 0.7, marginBottom: '8px' }}>
+                {remotes.map((r, i) => (
+                  <div key={i}>{r.name}: {r.fetch || r.push || 'no url'}</div>
+                ))}
+              </div>
+            )}
+
+            {/* GitHub Token */}
+            <div style={{ marginTop: '4px' }}>
+              <input
+                type="password"
+                placeholder="GitHub PAT (for private repos)"
+                value={githubToken}
+                onChange={(e) => setGithubToken(e.target.value)}
+                className={styles.branchInput}
+                style={{ marginBottom: '4px' }}
+              />
+              {githubToken && (
+                <button
+                  onClick={handleSaveToken}
+                  className={styles.branchButton}
+                  style={{ fontSize: '11px' }}
+                >
+                  Save Token
+                </button>
+              )}
+            </div>
+
+            {/* Clone */}
+            <div style={{ marginTop: '8px' }}>
+              <input
+                type="text"
+                placeholder="https://github.com/user/repo.git"
+                value={cloneUrl}
+                onChange={(e) => setCloneUrl(e.target.value)}
+                className={styles.branchInput}
+                onKeyDown={(e) => e.key === 'Enter' && handleClone()}
+                style={{ marginBottom: '4px' }}
+              />
+              <button
+                onClick={handleClone}
+                disabled={loading || !cloneUrl.trim()}
+                className={styles.commitButton}
+                style={{ fontSize: '11px' }}
+              >
+                Clone Repository
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Commit History */}

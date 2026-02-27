@@ -299,3 +299,24 @@ The `/api/v1/voice/session` gateway runtime now includes:
 
 - Real ASR/TTS require `OPENAI_API_KEY` in gateway runtime env.
 - If missing, websocket still runs but emits `tts.unavailable` and cannot transcribe speech.
+
+### Provider-pluggable runtime (added)
+
+Voice runtime now supports pluggable providers via gateway env vars:
+
+- `VOICE_ASR_PROVIDER=openai|deepgram` (default: `openai`)
+- `VOICE_TTS_PROVIDER=openai|elevenlabs` (default: `openai`)
+- `VOICE_LLM_PROVIDER=<provider>` (default: `groq`; forwarded as `preferred_provider` to chat stream)
+
+Credential env vars:
+
+- `OPENAI_API_KEY` (OpenAI Whisper + OpenAI TTS)
+- `DEEPGRAM_API_KEY` (Deepgram ASR)
+- `ELEVENLABS_API_KEY` (ElevenLabs TTS)
+- `ELEVENLABS_VOICE_ID` (optional, defaults to `EXAVITQu4vr4xnSDxMaL`)
+
+Behavior notes:
+
+1. If `VOICE_ASR_PROVIDER=deepgram` and Deepgram fails/unavailable, runtime falls back to OpenAI ASR when `OPENAI_API_KEY` is present.
+2. If `VOICE_TTS_PROVIDER=elevenlabs` and ElevenLabs fails/unavailable, runtime falls back to OpenAI TTS when `OPENAI_API_KEY` is present.
+3. Groq is used for assistant text generation path (via chat stream provider routing), not for ASR/TTS media conversion.
