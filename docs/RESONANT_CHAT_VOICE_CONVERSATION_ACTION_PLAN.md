@@ -210,3 +210,32 @@ Rules:
 3. Wire mic circle to start/stop session events (no provider yet).
 4. Add protocol contract document and sample payloads in `docs/`.
 5. Ship behind feature flag: `RESONANT_VOICE_LIVE_CONVERSATION`.
+
+---
+
+## Implementation Status (Frontend, Feb 2026)
+
+Completed wiring to the existing circle icon under the microphone in `ChatInputBar`:
+
+1. Circle icon now controls live voice-conversation mode (`voiceInInput` state).
+2. In voice mode, microphone listening can be controlled externally (`forceListening`).
+3. Final transcript turns are auto-submitted to chat while voice mode is active.
+4. Interim transcript remains visible in input overlay while listening.
+
+Current scope:
+
+- Frontend duplex UX scaffold is active.
+- Backend real-time audio gateway (`/api/v1/voice/session`) is still required for production-grade full duplex, VAD, and streamed TTS audio.
+
+---
+
+## Backend Completion Checklist (Required for true real-time conversation)
+
+1. Implement gateway route for `/api/v1/voice/session` (WS upgrade + JWT).
+2. Implement `voice_gateway_service` session manager and protocol events.
+3. Add ASR adapter + VAD turn segmentation.
+4. Add streamed Resonant response adapter (chunked text output).
+5. Add TTS streaming adapter for EN/RU/UK/AR voices.
+6. Add interruption (barge-in) handling.
+7. Add transcript persistence + observability metrics.
+8. Add feature flag rollout + fallback to text-only mode.

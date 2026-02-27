@@ -913,14 +913,20 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             <VoiceInput
               onTranscript={(text) => {
                 const currentValue = valueRef.current;
-                const newValue = currentValue + (currentValue ? ' ' : '') + text;
+                const newValue = `${currentValue}${currentValue ? ' ' : ''}${text}`.trim();
                 onChange(newValue);
+                if (voiceInInput && newValue.length > 0 && !isLoading && !disabled) {
+                  window.setTimeout(() => {
+                    onSend();
+                  }, 120);
+                }
                 textareaRef.current?.focus();
               }}
               onInterimTranscriptChange={setVoiceInterimTranscript}
               renderInterimTranscript={false}
               iconSize={voiceIconSize}
               disabled={isLoading || disabled}
+              forceListening={voiceInInput}
             />
             {embedded && (
               <button

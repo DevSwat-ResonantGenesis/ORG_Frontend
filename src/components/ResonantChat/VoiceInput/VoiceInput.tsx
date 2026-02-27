@@ -34,6 +34,7 @@ interface VoiceInputProps {
   renderInterimTranscript?: boolean;
   iconSize?: number;
   disabled?: boolean;
+  forceListening?: boolean;
 }
 
 export const VoiceInput: React.FC<VoiceInputProps> = ({
@@ -43,12 +44,14 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
   renderInterimTranscript = true,
   iconSize = 18,
   disabled = false,
+  forceListening,
 }) => {
   const [isListening, setIsListening] = useState(false);
   const [isSupported, setIsSupported] = useState(true);
   const [interimTranscript, setInterimTranscript] = useState('');
   const recognitionRef = useRef<any>(null);
   const isListeningRef = useRef(isListening);
+  const prevForceListeningRef = useRef<boolean | undefined>(forceListening);
   
   // Store callbacks in refs to avoid stale closures
   const onTranscriptRef = useRef(onTranscript);
@@ -148,8 +151,9 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
     };
   }, []); // Empty deps - only initialize once
 
-  const toggleListening = async () => {
+  const toggleListening = async (targetState?: boolean) => {
     console.log('🎤 Toggle listening clicked, current state:', isListening);
+    const shouldStart = typeof targetState === 'boolean' ? targetState : !isListening;
     
     if (!recognitionRef.current) {
       console.error('🎤 Speech recognition not initialized, trying to reinitialize...');
@@ -209,7 +213,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
       }
     }
 
-    if (isListening) {
+    if (!shouldStart) {
       console.log('🎤 Stopping voice input...');
       try {
         recognitionRef.current.stop();
@@ -260,6 +264,19 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
     }
   };
 
+  useEffect(() => {
+    if (typeof forceListening !== 'boolean') return;
+    if (prevForceListeningRef.current === forceListening) return;
+
+    prevForceListeningRef.current = forceListening;
+
+    if (disabled && forceListening) {
+      return;
+    }
+
+    void toggleListening(forceListening);
+  }, [forceListening, disabled]);
+
   if (!isSupported) {
     return (
       <button
@@ -276,7 +293,9 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
     <div className={styles.container}>
       <button
         className={`${styles.voiceButton} ${isListening ? styles.listening : ''}`}
-        onClick={toggleListening}
+        onClick={() => {
+          void toggleListening();
+        }}
         disabled={disabled}
         title={isListening ? 'Stop listening' : 'Start voice input'}
       >
