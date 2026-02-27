@@ -1003,26 +1003,22 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
         {/* Input Area: Textarea + Send */}
         <div className={styles.inputArea}>
           <div className={`${styles.voiceStack} ${embedded ? styles.embeddedVoiceStack : ''}`}>
-            <VoiceInput
-              key={`voice-input-${speechRecognitionLanguage}`}
-              onTranscript={(text) => {
-                const currentValue = valueRef.current;
-                const newValue = `${currentValue}${currentValue ? ' ' : ''}${text}`.trim();
-                onChange(newValue);
-                if (voiceInInput && newValue.length > 0 && !isLoading && !disabled) {
-                  window.setTimeout(() => {
-                    onSend();
-                  }, 120);
-                }
-                textareaRef.current?.focus();
-              }}
-              onInterimTranscriptChange={setVoiceInterimTranscript}
-              renderInterimTranscript={false}
-              iconSize={voiceIconSize}
-              disabled={isLoading || disabled}
-              forceListening={voiceInInput}
-              speechLanguage={speechRecognitionLanguage}
-            />
+            {onVoiceConversation && (
+              <button
+                className={`${styles.toolButton} ${voiceInInput ? styles.active : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onVoiceConversation?.();
+                }}
+                title="Voice Conversation"
+                type="button"
+              >
+                <span className={`${styles.voiceConversationIcon} ${voiceInInput ? styles.voiceConversationIconActive : ''}`}>
+                  <span className={styles.voiceConversationOrb} aria-hidden="true" />
+                </span>
+              </button>
+            )}
             {embedded && (
               <button
                 type="button"
@@ -1077,22 +1073,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           }}
         >
           <div className={styles.toolsLeft}>
-            {onVoiceConversation && (
-              <button
-                className={`${styles.toolButton} ${voiceInInput ? styles.active : ''}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onVoiceConversation?.();
-                }}
-                title="Voice Conversation"
-                type="button"
-              >
-                <span className={`${styles.voiceConversationIcon} ${voiceInInput ? styles.voiceConversationIconActive : ''}`}>
-                  <span className={styles.voiceConversationOrb} aria-hidden="true" />
-                </span>
-              </button>
-            )}
             {onVoiceConversation && (
               <button
                 className={`${styles.toolButton} ${voiceInInput ? styles.active : ''}`}
@@ -1269,6 +1249,27 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           </div>
 
           <div className={styles.toolsRight}>
+            <VoiceInput
+              key={`voice-input-${speechRecognitionLanguage}`}
+              onTranscript={(text) => {
+                const currentValue = valueRef.current;
+                const newValue = `${currentValue}${currentValue ? ' ' : ''}${text}`.trim();
+                onChange(newValue);
+                if (voiceInInput && newValue.length > 0 && !isLoading && !disabled) {
+                  window.setTimeout(() => {
+                    onSend();
+                  }, 120);
+                }
+                textareaRef.current?.focus();
+              }}
+              onInterimTranscriptChange={setVoiceInterimTranscript}
+              renderInterimTranscript={false}
+              iconSize={voiceIconSize}
+              disabled={isLoading || disabled}
+              forceListening={voiceInInput}
+              speechLanguage={speechRecognitionLanguage}
+            />
+
             {onShowConversations && (
               <button
                 className={`${styles.toolButton} ${showConversations ? styles.active : ''}`}
