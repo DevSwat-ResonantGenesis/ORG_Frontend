@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { listSkills, toggleSkill, type Skill } from '@/api/skills';
 import styles from './SkillsToolbar.module.css';
 
@@ -32,7 +33,8 @@ const SKILL_ICONS: Record<string, React.ReactNode> = {
 
 const SkillsIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+    <path d="M12 3 21 12 12 21 3 12 12 3Z" />
+    <path d="M12 8 16 12 12 16 8 12 12 8Z" />
   </svg>
 );
 
@@ -51,6 +53,7 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({ onSkillToggle, onEnabledS
   const [skills, setSkills] = useState<Skill[]>([]);
   const [showPopup, setShowPopup] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [popupStyle, setPopupStyle] = useState<React.CSSProperties | null>(null);
   const popupRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -84,6 +87,44 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({ onSkillToggle, onEnabledS
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const updatePopupPosition = useCallback(() => {
+    if (!showPopup || !buttonRef.current || typeof window === 'undefined') return;
+    const rect = buttonRef.current.getBoundingClientRect();
+    const popupWidth = 300;
+    const popupHeight = 360;
+    const spacing = 10;
+    const left = Math.min(
+      Math.max(spacing, rect.right - popupWidth),
+      Math.max(spacing, window.innerWidth - popupWidth - spacing)
+    );
+
+    const canPlaceAbove = rect.top - popupHeight - spacing >= spacing;
+    const top = canPlaceAbove
+      ? Math.max(spacing, rect.top - 12)
+      : Math.min(window.innerHeight - spacing, rect.bottom + 12);
+
+    setPopupStyle({
+      position: 'fixed',
+      left,
+      top,
+      transform: canPlaceAbove ? 'translateY(-100%)' : 'none',
+      width: `${popupWidth}px`,
+      maxWidth: `min(${popupWidth}px, calc(100vw - ${spacing * 2}px))`,
+      zIndex: 120000,
+    });
+  }, [showPopup]);
+
+  useEffect(() => {
+    if (!showPopup) return;
+    updatePopupPosition();
+    window.addEventListener('resize', updatePopupPosition);
+    window.addEventListener('scroll', updatePopupPosition, true);
+    return () => {
+      window.removeEventListener('resize', updatePopupPosition);
+      window.removeEventListener('scroll', updatePopupPosition, true);
+    };
+  }, [showPopup, updatePopupPosition]);
+
   const handleToggle = async (skill: Skill) => {
     const newEnabled = !skill.enabled;
     // Update local state immediately (don't wait for backend)
@@ -104,19 +145,30 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({ onSkillToggle, onEnabledS
       <button
         ref={buttonRef}
         className={`${styles.skillsButton} ${enabledCount > 0 ? styles.hasActive : ''}`}
-        onClick={() => setShowPopup(!showPopup)}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setShowPopup((prev) => !prev);
+        }}
         title="Skills"
         type="button"
       >
         <SkillsIcon />
-        {enabledCount > 0 && (
-          <span className={styles.badge}>{enabledCount}</span>
-        )}
       </button>
 
       {/* Skills popup - matches providerDropdown/stickerPanel */}
-      {showPopup && (
-        <div ref={popupRef} className={styles.popup}>
+      {showPopup && typeof document !== 'undefined' && createPortal(
+        <div
+          ref={popupRef}
+          className={styles.popup}
+          style={popupStyle || undefined}
+          onMouseDown={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className={styles.popupHeader}>
             <h3 className={styles.popupTitle}>Skills</h3>
             <span className={styles.popupSubtitle}>
@@ -163,7 +215,8 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({ onSkillToggle, onEnabledS
               )}
             </div>
           )}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

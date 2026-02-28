@@ -327,30 +327,34 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 <button
                   className={`${styles.tab} ${state.activeTab === 'code' ? styles.activeTab : ''}`}
                   onClick={() => actions.setActiveTab('code')}
+                  title="Code"
+                  aria-label="Code"
                 >
                   <span className={styles.tabIcon}><CodeIcon /></span>
-                  Code
                 </button>
                 <button
                   className={`${styles.tab} ${state.activeTab === 'preview' ? styles.activeTab : ''}`}
                   onClick={() => actions.setActiveTab('preview')}
+                  title="Preview"
+                  aria-label="Preview"
                 >
                   <span className={styles.tabIcon}><PreviewIcon /></span>
-                  Preview
                 </button>
                 <button
                   className={`${styles.tab} ${state.activeTab === 'terminal' ? styles.activeTab : ''}`}
                   onClick={() => actions.setActiveTab('terminal')}
+                  title="Terminal"
+                  aria-label="Terminal"
                 >
                   <span className={styles.tabIcon}><TerminalIcon /></span>
-                  Terminal
                 </button>
                 <button
                   className={`${styles.tab} ${state.activeTab === 'visualizer' ? styles.activeTab : ''} ${styles.visualizerTab}`}
                   onClick={() => actions.setActiveTab('visualizer')}
+                  title="Visualizer"
+                  aria-label="Visualizer"
                 >
                   <span className={styles.tabIcon}><VisualizerIcon /></span>
-                  Visualizer
                 </button>
               </div>
               <div className={styles.headerActions}>
@@ -556,30 +560,34 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
             <button
               className={`${styles.tab} ${state.activeTab === 'code' ? styles.activeTab : ''}`}
               onClick={() => actions.setActiveTab('code')}
+              title="Code"
+              aria-label="Code"
             >
               <span className={styles.tabIcon}><CodeIcon /></span>
-              Code
             </button>
             <button
               className={`${styles.tab} ${state.activeTab === 'preview' ? styles.activeTab : ''}`}
               onClick={() => actions.setActiveTab('preview')}
+              title="Preview"
+              aria-label="Preview"
             >
               <span className={styles.tabIcon}><PreviewIcon /></span>
-              Preview
             </button>
             <button
               className={`${styles.tab} ${state.activeTab === 'terminal' ? styles.activeTab : ''}`}
               onClick={() => actions.setActiveTab('terminal')}
+              title="Terminal"
+              aria-label="Terminal"
             >
               <span className={styles.tabIcon}><TerminalIcon /></span>
-              Terminal
             </button>
             <button
               className={`${styles.tab} ${state.activeTab === 'visualizer' ? styles.activeTab : ''} ${styles.visualizerTab}`}
               onClick={() => actions.setActiveTab('visualizer')}
+              title="Visualizer"
+              aria-label="Visualizer"
             >
               <span className={styles.tabIcon}><VisualizerIcon /></span>
-              Visualizer
             </button>
           </div>
           <div className={styles.headerActions}>
