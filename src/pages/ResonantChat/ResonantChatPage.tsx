@@ -2017,7 +2017,7 @@ const ResonantChatPage: React.FC = () => {
               setSplitViewPane('split');
             }
           }
-          if (toolResult.success && toolResult.tool_name?.includes('agents_os')) {
+          if (toolResult.tool_name?.includes('agents_os')) {
             const panelUrl = toolResult.result?.panel_url || '/agents?embed=1';
             logger.info('[ResonantChatPage] Agents OS tool result received:', panelUrl);
             setAgentsPanelUrl(panelUrl);
