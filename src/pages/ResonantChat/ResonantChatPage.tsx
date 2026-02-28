@@ -2002,10 +2002,12 @@ const ResonantChatPage: React.FC = () => {
             }
           }
           // Code Visualizer skill: auto-open split view with visualizer tab
-          if (toolResult.success && toolResult.result?.analysis_id && toolResult.tool_name?.includes('code_visualizer')) {
-            const analysisId = toolResult.result.analysis_id;
-            logger.info('[ResonantChatPage] Code Visualizer analysis received:', analysisId);
-            setVisualizerAnalysisId(analysisId);
+          if (toolResult.success && toolResult.tool_name?.includes('code_visualizer')) {
+            const analysisId = toolResult.result?.analysis_id || null;
+            if (analysisId) {
+              logger.info('[ResonantChatPage] Code Visualizer analysis received:', analysisId);
+              setVisualizerAnalysisId(analysisId);
+            }
             setSplitAutoOpenRequest({
               requestId: Date.now(),
               tab: 'visualizer',
