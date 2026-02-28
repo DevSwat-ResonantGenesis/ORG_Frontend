@@ -16,6 +16,7 @@ const MainLayout = ({ children }: Props) => {
   const [isLandingScrollLockViewport, setIsLandingScrollLockViewport] = useState(false);
   const [chatWidgetOpen, setChatWidgetOpen] = useState(false);
   const location = useLocation();
+  const isEmbedded = new URLSearchParams(location.search).get('embed') === '1';
 
   // Hide header on auth pages (login/signup)
   const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
@@ -68,12 +69,14 @@ const MainLayout = ({ children }: Props) => {
     <div className="main-layout-wrapper">
       {/* Main Content Area */}
       <div className={`main-content-area content-full${isAuthPage ? ' auth-page' : ''}${isLandingPage ? ' landing-page' : ''}`}>
-        <Header
-          showLogout={true}
-          showChatWidgetButton={!isMobile}
-          onToggleChatWidget={() => setChatWidgetOpen((o) => !o)}
-          chatWidgetOpen={chatWidgetOpen}
-        />
+        {!isEmbedded && (
+          <Header
+            showLogout={true}
+            showChatWidgetButton={!isMobile}
+            onToggleChatWidget={() => setChatWidgetOpen((o) => !o)}
+            chatWidgetOpen={chatWidgetOpen}
+          />
+        )}
         <main className={`main-content${isAuthPage ? ' auth-page-content' : ''}${isLandingPage ? ' landing-page-content' : ''}`}>
           {isLandingPage ? children : <div className="page-wrapper">{children}</div>}
         </main>
@@ -81,7 +84,7 @@ const MainLayout = ({ children }: Props) => {
       </div>
 
       {/* Resonant Chat floating widget */}
-      {!isAuthPage &&
+      {!isAuthPage && !isEmbedded &&
         (isMobile ? (
           <FloatingChatWidget />
         ) : (

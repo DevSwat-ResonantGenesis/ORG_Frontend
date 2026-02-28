@@ -899,10 +899,12 @@ const ResonantChatPage: React.FC = () => {
 
   // Code Visualizer analysis ID - set when CV skill returns a scan result
   const [visualizerAnalysisId, setVisualizerAnalysisId] = useState<string | null>(null);
-  const [agentsPanelUrl, setAgentsPanelUrl] = useState('/agents');
+  const [agentsPanelUrl, setAgentsPanelUrl] = useState('/agents?embed=1');
+  const [statePhysicsPanelUrl, setStatePhysicsPanelUrl] = useState('/state-physics?embed=1');
+  const [idePanelUrl, setIdePanelUrl] = useState('/ide?embed=1');
   const [splitAutoOpenRequest, setSplitAutoOpenRequest] = useState<{
     requestId: number;
-    tab: 'code' | 'preview' | 'terminal' | 'visualizer' | 'agents';
+    tab: 'code' | 'preview' | 'terminal' | 'visualizer' | 'agents' | 'state_physics' | 'ide';
     previewUrl?: string | null;
   } | null>(null);
 
@@ -2013,12 +2015,38 @@ const ResonantChatPage: React.FC = () => {
             }
           }
           if (toolResult.success && toolResult.tool_name?.includes('agents_os')) {
-            const panelUrl = toolResult.result?.panel_url || '/agents';
+            const panelUrl = toolResult.result?.panel_url || '/agents?embed=1';
             logger.info('[ResonantChatPage] Agents OS tool result received:', panelUrl);
             setAgentsPanelUrl(panelUrl);
             setSplitAutoOpenRequest({
               requestId: Date.now(),
               tab: 'agents',
+            });
+            if (!splitViewEnabled) {
+              setSplitViewEnabled(true);
+              setSplitViewPane('split');
+            }
+          }
+          if (toolResult.success && toolResult.tool_name?.includes('state_physics')) {
+            const panelUrl = toolResult.result?.panel_url || '/state-physics?embed=1';
+            logger.info('[ResonantChatPage] State Physics tool result received:', panelUrl);
+            setStatePhysicsPanelUrl(panelUrl);
+            setSplitAutoOpenRequest({
+              requestId: Date.now(),
+              tab: 'state_physics',
+            });
+            if (!splitViewEnabled) {
+              setSplitViewEnabled(true);
+              setSplitViewPane('split');
+            }
+          }
+          if (toolResult.success && toolResult.tool_name?.includes('ide_workspace')) {
+            const panelUrl = toolResult.result?.panel_url || '/ide?embed=1';
+            logger.info('[ResonantChatPage] IDE tool result received:', panelUrl);
+            setIdePanelUrl(panelUrl);
+            setSplitAutoOpenRequest({
+              requestId: Date.now(),
+              tab: 'ide',
             });
             if (!splitViewEnabled) {
               setSplitViewEnabled(true);
@@ -3572,6 +3600,8 @@ const ResonantChatPage: React.FC = () => {
                   onCloseBuildModule={() => setShowBuildModule(false)}
                   visualizerAnalysisId={visualizerAnalysisId}
                   agentsPanelUrl={agentsPanelUrl}
+                  statePhysicsPanelUrl={statePhysicsPanelUrl}
+                  idePanelUrl={idePanelUrl}
                   autoOpenRequest={splitAutoOpenRequest ?? undefined}
                 >
                 {messages.length === 0 ? (

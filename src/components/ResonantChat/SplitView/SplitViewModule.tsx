@@ -49,6 +49,27 @@ import {
 // Styles
 import styles from './EnhancedSplitView.module.css';
 
+const StatePhysicsIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="8" />
+    <circle cx="12" cy="12" r="2" />
+    <path d="M12 4v2" />
+    <path d="M20 12h-2" />
+    <path d="M12 20v-2" />
+    <path d="M4 12h2" />
+  </svg>
+);
+
+const IDEIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="4" width="18" height="14" rx="2" />
+    <path d="M8 21h8" />
+    <path d="M12 18v3" />
+    <polyline points="9 10 7 12 9 14" />
+    <polyline points="15 10 17 12 15 14" />
+  </svg>
+);
+
 interface MessageType {
   id: string;
   content: string;
@@ -86,6 +107,10 @@ export interface SplitViewModuleProps {
   visualizerAnalysisId?: string | null;
   // Agents OS integration
   agentsPanelUrl?: string;
+  // State Physics integration
+  statePhysicsPanelUrl?: string;
+  // IDE integration
+  idePanelUrl?: string;
 }
 
 const AgentsIcon = () => (
@@ -117,7 +142,9 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
   showBuildModule: showBuildModuleProp = false,
   onCloseBuildModule,
   visualizerAnalysisId = null,
-  agentsPanelUrl = '/agents',
+  agentsPanelUrl = '/agents?embed=1',
+  statePhysicsPanelUrl = '/state-physics?embed=1',
+  idePanelUrl = '/ide?embed=1',
 }) => {
   // Local state for project files (editable)
   const [projectFiles, setProjectFiles] = useState<ProjectFile[]>(initialProjectFiles);
@@ -377,6 +404,22 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 >
                   <span className={styles.tabIcon}><AgentsIcon /></span>
                 </button>
+                <button
+                  className={`${styles.tab} ${state.activeTab === 'state_physics' ? styles.activeTab : ''} ${styles.statePhysicsTab}`}
+                  onClick={() => actions.setActiveTab('state_physics')}
+                  title="State Physics"
+                  aria-label="State Physics"
+                >
+                  <span className={styles.tabIcon}><StatePhysicsIcon /></span>
+                </button>
+                <button
+                  className={`${styles.tab} ${state.activeTab === 'ide' ? styles.activeTab : ''} ${styles.ideTab}`}
+                  onClick={() => actions.setActiveTab('ide')}
+                  title="IDE"
+                  aria-label="IDE"
+                >
+                  <span className={styles.tabIcon}><IDEIcon /></span>
+                </button>
               </div>
               <div className={styles.headerActions}>
                 {codeBlocks && codeBlocks.length > 0 && (
@@ -412,6 +455,24 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                     className={styles.runButton}
                     onClick={() => window.open(visualizerAnalysisId ? `/code-visualizer?analysis_id=${visualizerAnalysisId}` : '/code-visualizer', '_blank')}
                     title="Open in full screen"
+                  >
+                    <RocketIcon /> Full Screen
+                  </button>
+                )}
+                {state.activeTab === 'state_physics' && (
+                  <button
+                    className={styles.runButton}
+                    onClick={() => window.open(statePhysicsPanelUrl, '_blank')}
+                    title="Open State Physics in full screen"
+                  >
+                    <RocketIcon /> Full Screen
+                  </button>
+                )}
+                {state.activeTab === 'ide' && (
+                  <button
+                    className={styles.runButton}
+                    onClick={() => window.open(idePanelUrl, '_blank')}
+                    title="Open IDE in full screen"
                   >
                     <RocketIcon /> Full Screen
                   </button>
@@ -541,6 +602,28 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                   />
                 </div>
               )}
+
+              {state.activeTab === 'state_physics' && (
+                <div className={styles.statePhysicsTabContent}>
+                  <iframe
+                    title="State Physics"
+                    src={statePhysicsPanelUrl}
+                    className={styles.statePhysicsIframe}
+                    allow="fullscreen"
+                  />
+                </div>
+              )}
+
+              {state.activeTab === 'ide' && (
+                <div className={styles.ideTabContent}>
+                  <iframe
+                    title="IDE"
+                    src={idePanelUrl}
+                    className={styles.ideIframe}
+                    allow="fullscreen"
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -639,6 +722,22 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
             >
               <span className={styles.tabIcon}><AgentsIcon /></span>
             </button>
+            <button
+              className={`${styles.tab} ${state.activeTab === 'state_physics' ? styles.activeTab : ''} ${styles.statePhysicsTab}`}
+              onClick={() => actions.setActiveTab('state_physics')}
+              title="State Physics"
+              aria-label="State Physics"
+            >
+              <span className={styles.tabIcon}><StatePhysicsIcon /></span>
+            </button>
+            <button
+              className={`${styles.tab} ${state.activeTab === 'ide' ? styles.activeTab : ''} ${styles.ideTab}`}
+              onClick={() => actions.setActiveTab('ide')}
+              title="IDE"
+              aria-label="IDE"
+            >
+              <span className={styles.tabIcon}><IDEIcon /></span>
+            </button>
           </div>
           <div className={styles.headerActions}>
             {codeBlocks && codeBlocks.length > 0 && (
@@ -674,6 +773,24 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 className={styles.runButton}
                 onClick={() => window.open(visualizerAnalysisId ? `/code-visualizer?analysis_id=${visualizerAnalysisId}` : '/code-visualizer', '_blank')}
                 title="Open in full screen"
+              >
+                <RocketIcon /> Full Screen
+              </button>
+            )}
+            {state.activeTab === 'state_physics' && (
+              <button
+                className={styles.runButton}
+                onClick={() => window.open(statePhysicsPanelUrl, '_blank')}
+                title="Open State Physics in full screen"
+              >
+                <RocketIcon /> Full Screen
+              </button>
+            )}
+            {state.activeTab === 'ide' && (
+              <button
+                className={styles.runButton}
+                onClick={() => window.open(idePanelUrl, '_blank')}
+                title="Open IDE in full screen"
               >
                 <RocketIcon /> Full Screen
               </button>
@@ -799,6 +916,28 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 title="Agents OS"
                 src={agentsPanelUrl}
                 className={styles.agentsIframe}
+                allow="fullscreen"
+              />
+            </div>
+          )}
+
+          {state.activeTab === 'state_physics' && (
+            <div className={styles.statePhysicsTabContent}>
+              <iframe
+                title="State Physics"
+                src={statePhysicsPanelUrl}
+                className={styles.statePhysicsIframe}
+                allow="fullscreen"
+              />
+            </div>
+          )}
+
+          {state.activeTab === 'ide' && (
+            <div className={styles.ideTabContent}>
+              <iframe
+                title="IDE"
+                src={idePanelUrl}
+                className={styles.ideIframe}
                 allow="fullscreen"
               />
             </div>
