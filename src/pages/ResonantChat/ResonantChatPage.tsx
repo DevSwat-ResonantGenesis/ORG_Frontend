@@ -899,6 +899,12 @@ const ResonantChatPage: React.FC = () => {
 
   // Code Visualizer analysis ID - set when CV skill returns a scan result
   const [visualizerAnalysisId, setVisualizerAnalysisId] = useState<string | null>(null);
+  const [agentsPanelUrl, setAgentsPanelUrl] = useState('/agents');
+  const [splitAutoOpenRequest, setSplitAutoOpenRequest] = useState<{
+    requestId: number;
+    tab: 'code' | 'preview' | 'terminal' | 'visualizer' | 'agents';
+    previewUrl?: string | null;
+  } | null>(null);
 
   // Save split view settings to localStorage
   useEffect(() => {
@@ -1997,6 +2003,23 @@ const ResonantChatPage: React.FC = () => {
             const analysisId = toolResult.result.analysis_id;
             logger.info('[ResonantChatPage] Code Visualizer analysis received:', analysisId);
             setVisualizerAnalysisId(analysisId);
+            setSplitAutoOpenRequest({
+              requestId: Date.now(),
+              tab: 'visualizer',
+            });
+            if (!splitViewEnabled) {
+              setSplitViewEnabled(true);
+              setSplitViewPane('split');
+            }
+          }
+          if (toolResult.success && toolResult.tool_name?.includes('agents_os')) {
+            const panelUrl = toolResult.result?.panel_url || '/agents';
+            logger.info('[ResonantChatPage] Agents OS tool result received:', panelUrl);
+            setAgentsPanelUrl(panelUrl);
+            setSplitAutoOpenRequest({
+              requestId: Date.now(),
+              tab: 'agents',
+            });
             if (!splitViewEnabled) {
               setSplitViewEnabled(true);
               setSplitViewPane('split');
@@ -3548,6 +3571,8 @@ const ResonantChatPage: React.FC = () => {
                   showBuildModule={showBuildModule}
                   onCloseBuildModule={() => setShowBuildModule(false)}
                   visualizerAnalysisId={visualizerAnalysisId}
+                  agentsPanelUrl={agentsPanelUrl}
+                  autoOpenRequest={splitAutoOpenRequest ?? undefined}
                 >
                 {messages.length === 0 ? (
                 <FloatingHome

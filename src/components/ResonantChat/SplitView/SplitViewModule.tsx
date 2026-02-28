@@ -84,7 +84,19 @@ export interface SplitViewModuleProps {
   onCloseBuildModule?: () => void;
   // Code Visualizer integration
   visualizerAnalysisId?: string | null;
+  // Agents OS integration
+  agentsPanelUrl?: string;
 }
+
+const AgentsIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="11" width="18" height="10" rx="2" />
+    <circle cx="12" cy="5" r="2" />
+    <path d="M12 7v4" />
+    <line x1="8" y1="16" x2="8" y2="16" />
+    <line x1="16" y1="16" x2="16" y2="16" />
+  </svg>
+);
 
 export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
   children,
@@ -105,6 +117,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
   showBuildModule: showBuildModuleProp = false,
   onCloseBuildModule,
   visualizerAnalysisId = null,
+  agentsPanelUrl = '/agents',
 }) => {
   // Local state for project files (editable)
   const [projectFiles, setProjectFiles] = useState<ProjectFile[]>(initialProjectFiles);
@@ -356,6 +369,14 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 >
                   <span className={styles.tabIcon}><VisualizerIcon /></span>
                 </button>
+                <button
+                  className={`${styles.tab} ${state.activeTab === 'agents' ? styles.activeTab : ''} ${styles.agentsTab}`}
+                  onClick={() => actions.setActiveTab('agents')}
+                  title="Agents OS"
+                  aria-label="Agents OS"
+                >
+                  <span className={styles.tabIcon}><AgentsIcon /></span>
+                </button>
               </div>
               <div className={styles.headerActions}>
                 {codeBlocks && codeBlocks.length > 0 && (
@@ -391,6 +412,15 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                     className={styles.runButton}
                     onClick={() => window.open(visualizerAnalysisId ? `/code-visualizer?analysis_id=${visualizerAnalysisId}` : '/code-visualizer', '_blank')}
                     title="Open in full screen"
+                  >
+                    <RocketIcon /> Full Screen
+                  </button>
+                )}
+                {state.activeTab === 'agents' && (
+                  <button
+                    className={styles.runButton}
+                    onClick={() => window.open(agentsPanelUrl, '_blank')}
+                    title="Open Agents OS in full screen"
                   >
                     <RocketIcon /> Full Screen
                   </button>
@@ -499,6 +529,18 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                   )}
                 </div>
               )}
+
+              {/* Agents Tab - Agents OS UI */}
+              {state.activeTab === 'agents' && (
+                <div className={styles.agentsTabContent}>
+                  <iframe
+                    title="Agents OS"
+                    src={agentsPanelUrl}
+                    className={styles.agentsIframe}
+                    allow="fullscreen"
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -589,6 +631,14 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
             >
               <span className={styles.tabIcon}><VisualizerIcon /></span>
             </button>
+            <button
+              className={`${styles.tab} ${state.activeTab === 'agents' ? styles.activeTab : ''} ${styles.agentsTab}`}
+              onClick={() => actions.setActiveTab('agents')}
+              title="Agents OS"
+              aria-label="Agents OS"
+            >
+              <span className={styles.tabIcon}><AgentsIcon /></span>
+            </button>
           </div>
           <div className={styles.headerActions}>
             {codeBlocks && codeBlocks.length > 0 && (
@@ -624,6 +674,15 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 className={styles.runButton}
                 onClick={() => window.open(visualizerAnalysisId ? `/code-visualizer?analysis_id=${visualizerAnalysisId}` : '/code-visualizer', '_blank')}
                 title="Open in full screen"
+              >
+                <RocketIcon /> Full Screen
+              </button>
+            )}
+            {state.activeTab === 'agents' && (
+              <button
+                className={styles.runButton}
+                onClick={() => window.open(agentsPanelUrl, '_blank')}
+                title="Open Agents OS in full screen"
               >
                 <RocketIcon /> Full Screen
               </button>
@@ -730,6 +789,18 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                   Run a code visualizer analysis or open the full Visualizer page to start a new scan.
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Agents Tab - Agents OS UI */}
+          {state.activeTab === 'agents' && (
+            <div className={styles.agentsTabContent}>
+              <iframe
+                title="Agents OS"
+                src={agentsPanelUrl}
+                className={styles.agentsIframe}
+                allow="fullscreen"
+              />
             </div>
           )}
         </div>

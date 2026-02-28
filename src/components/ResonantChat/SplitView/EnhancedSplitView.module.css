@@ -1060,6 +1060,14 @@
   color: #c4b5fd;
 }
 
+.agentsTab {
+  color: #34d399;
+}
+
+.agentsTab:hover {
+  color: #6ee7b7;
+}
+
 .visualizerTabContent {
   flex: 1;
   display: flex;
@@ -1074,4 +1082,19 @@
   width: 100%;
   border: none;
   background: #0a0a0f;
+}
+
+.agentsTabContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #070b0a;
+}
+
+.agentsIframe {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: #070b0a;
 }
