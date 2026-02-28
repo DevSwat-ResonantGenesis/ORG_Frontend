@@ -86,15 +86,14 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({ onSkillToggle, onEnabledS
 
   const handleToggle = async (skill: Skill) => {
     const newEnabled = !skill.enabled;
-    const success = await toggleSkill(skill.id, newEnabled);
-    if (success) {
-      const updated = skills.map(s => (s.id === skill.id ? { ...s, enabled: newEnabled } : s));
-      setSkills(updated);
-      onSkillToggle?.(skill.id, newEnabled);
-      // Notify parent of enabled skill changes
-      const enabledIds = updated.filter(s => s.enabled).map(s => s.id);
-      onEnabledSkillsChange?.(enabledIds);
-    }
+    // Update local state immediately (don't wait for backend)
+    const updated = skills.map(s => (s.id === skill.id ? { ...s, enabled: newEnabled } : s));
+    setSkills(updated);
+    onSkillToggle?.(skill.id, newEnabled);
+    const enabledIds = updated.filter(s => s.enabled).map(s => s.id);
+    onEnabledSkillsChange?.(enabledIds);
+    // Try to persist to backend (non-blocking, ok if it fails)
+    toggleSkill(skill.id, newEnabled);
   };
 
   const enabledCount = (skills || []).filter(s => s.enabled).length;
