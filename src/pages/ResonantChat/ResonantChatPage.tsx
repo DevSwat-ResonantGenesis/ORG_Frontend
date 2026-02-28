@@ -902,9 +902,10 @@ const ResonantChatPage: React.FC = () => {
   const [agentsPanelUrl, setAgentsPanelUrl] = useState('/agents?embed=1');
   const [statePhysicsPanelUrl, setStatePhysicsPanelUrl] = useState('/state-physics?embed=1');
   const [idePanelUrl, setIdePanelUrl] = useState('/ide?embed=1');
+  const [memoryPanelUrl, setMemoryPanelUrl] = useState('/resonant-memory?embed=1');
   const [splitAutoOpenRequest, setSplitAutoOpenRequest] = useState<{
     requestId: number;
-    tab: 'code' | 'preview' | 'terminal' | 'visualizer' | 'agents' | 'state_physics' | 'ide';
+    tab: 'code' | 'preview' | 'terminal' | 'visualizer' | 'agents' | 'state_physics' | 'ide' | 'memory';
     previewUrl?: string | null;
   } | null>(null);
 
@@ -2047,6 +2048,19 @@ const ResonantChatPage: React.FC = () => {
             setSplitAutoOpenRequest({
               requestId: Date.now(),
               tab: 'ide',
+            });
+            if (!splitViewEnabled) {
+              setSplitViewEnabled(true);
+              setSplitViewPane('split');
+            }
+          }
+          if (toolResult.success && (toolResult.tool_name?.includes('memory_library') || toolResult.result?.action === 'open_memory_panel')) {
+            const panelUrl = toolResult.result?.panel_url || '/resonant-memory?embed=1';
+            logger.info('[ResonantChatPage] Memory Library tool result received:', panelUrl);
+            setMemoryPanelUrl(panelUrl);
+            setSplitAutoOpenRequest({
+              requestId: Date.now(),
+              tab: 'memory',
             });
             if (!splitViewEnabled) {
               setSplitViewEnabled(true);
@@ -3602,6 +3616,7 @@ const ResonantChatPage: React.FC = () => {
                   agentsPanelUrl={agentsPanelUrl}
                   statePhysicsPanelUrl={statePhysicsPanelUrl}
                   idePanelUrl={idePanelUrl}
+                  memoryPanelUrl={memoryPanelUrl}
                   autoOpenRequest={splitAutoOpenRequest ?? undefined}
                 >
                 {messages.length === 0 ? (

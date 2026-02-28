@@ -1084,6 +1084,14 @@
   color: #fcd34d;
 }
 
+.memoryTab {
+  color: #f472b6;
+}
+
+.memoryTab:hover {
+  color: #f9a8d4;
+}
+
 .visualizerTabContent {
   flex: 1;
   display: flex;
@@ -1143,4 +1151,19 @@
   width: 100%;
   border: none;
   background: #0b0905;
+}
+
+.memoryTabContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #120811;
+}
+
+.memoryIframe {
+  flex: 1;
+  width: 100%;
+  border: none;
+  background: #120811;
 }

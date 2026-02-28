@@ -60,6 +60,13 @@ const StatePhysicsIcon = () => (
   </svg>
 );
 
+const MemoryIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.54" />
+    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.54" />
+  </svg>
+);
+
 const IDEIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="4" width="18" height="14" rx="2" />
@@ -111,6 +118,8 @@ export interface SplitViewModuleProps {
   statePhysicsPanelUrl?: string;
   // IDE integration
   idePanelUrl?: string;
+  // Memory Library integration
+  memoryPanelUrl?: string;
 }
 
 const AgentsIcon = () => (
@@ -145,6 +154,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
   agentsPanelUrl = '/agents?embed=1',
   statePhysicsPanelUrl = '/state-physics?embed=1',
   idePanelUrl = '/ide?embed=1',
+  memoryPanelUrl = '/resonant-memory?embed=1',
 }) => {
   // Local state for project files (editable)
   const [projectFiles, setProjectFiles] = useState<ProjectFile[]>(initialProjectFiles);
@@ -420,6 +430,14 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 >
                   <span className={styles.tabIcon}><IDEIcon /></span>
                 </button>
+                <button
+                  className={`${styles.tab} ${state.activeTab === 'memory' ? styles.activeTab : ''} ${styles.memoryTab}`}
+                  onClick={() => actions.setActiveTab('memory')}
+                  title="Memory Library"
+                  aria-label="Memory Library"
+                >
+                  <span className={styles.tabIcon}><MemoryIcon /></span>
+                </button>
               </div>
               <div className={styles.headerActions}>
                 {codeBlocks && codeBlocks.length > 0 && (
@@ -482,6 +500,15 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                     className={styles.runButton}
                     onClick={() => window.open(agentsPanelUrl, '_blank')}
                     title="Open Agents OS in full screen"
+                  >
+                    <RocketIcon /> Full Screen
+                  </button>
+                )}
+                {state.activeTab === 'memory' && (
+                  <button
+                    className={styles.runButton}
+                    onClick={() => window.open(memoryPanelUrl, '_blank')}
+                    title="Open Memory Library in full screen"
                   >
                     <RocketIcon /> Full Screen
                   </button>
@@ -624,6 +651,16 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                   />
                 </div>
               )}
+              {state.activeTab === 'memory' && (
+                <div className={styles.memoryTabContent}>
+                  <iframe
+                    title="Memory Library"
+                    src={memoryPanelUrl}
+                    className={styles.memoryIframe}
+                    allow="fullscreen"
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -738,6 +775,14 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
             >
               <span className={styles.tabIcon}><IDEIcon /></span>
             </button>
+            <button
+              className={`${styles.tab} ${state.activeTab === 'memory' ? styles.activeTab : ''} ${styles.memoryTab}`}
+              onClick={() => actions.setActiveTab('memory')}
+              title="Memory Library"
+              aria-label="Memory Library"
+            >
+              <span className={styles.tabIcon}><MemoryIcon /></span>
+            </button>
           </div>
           <div className={styles.headerActions}>
             {codeBlocks && codeBlocks.length > 0 && (
@@ -800,6 +845,15 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 className={styles.runButton}
                 onClick={() => window.open(agentsPanelUrl, '_blank')}
                 title="Open Agents OS in full screen"
+              >
+                <RocketIcon /> Full Screen
+              </button>
+            )}
+            {state.activeTab === 'memory' && (
+              <button
+                className={styles.runButton}
+                onClick={() => window.open(memoryPanelUrl, '_blank')}
+                title="Open Memory Library in full screen"
               >
                 <RocketIcon /> Full Screen
               </button>
@@ -938,6 +992,16 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 title="IDE"
                 src={idePanelUrl}
                 className={styles.ideIframe}
+                allow="fullscreen"
+              />
+            </div>
+          )}
+          {state.activeTab === 'memory' && (
+            <div className={styles.memoryTabContent}>
+              <iframe
+                title="Memory Library"
+                src={memoryPanelUrl}
+                className={styles.memoryIframe}
                 allow="fullscreen"
               />
             </div>
