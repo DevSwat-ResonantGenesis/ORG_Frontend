@@ -174,7 +174,7 @@ const defaultAgents: RARAAgent[] = [
   { id: '3', name: 'DeployBot-Prime', type: 'Deployment', status: 'idle', tasksCompleted: 0, uptime: '98.5%', cpu: 0, memory: 0, lastTask: 'Waiting...' },
 ];
 
-type TabType = 'overview' | 'users' | 'revenue' | 'agents' | 'monitoring' | 'settings' | 'state-physics' | 'system' | 'v8' | 'control';
+type TabType = 'overview' | 'users' | 'revenue' | 'agents' | 'monitoring' | 'settings' | 'state-physics' | 'system' | 'v8' | 'control' | 'chat-skills';
 
 interface ServiceHealth {
   name: string;
@@ -239,6 +239,11 @@ const OwnerDashboard: React.FC = () => {
     checkoutStarted: 0,
     checkoutCompleted: 0,
   });
+
+  // Chat Skills state
+  const [chatSkills, setChatSkills] = useState<Array<{ id: string; name: string; description: string; icon: string; category: string; capabilities: string[]; credit_cost: number; requires_api_key?: string; is_default: boolean; enabled: boolean }>>([]);
+  const [skillsLoading, setSkillsLoading] = useState(false);
+  const [skillsError, setSkillsError] = useState<string | null>(null);
 
   const [settings, setSettings] = useState({
     creditRate: 0.001,
@@ -1439,7 +1444,7 @@ const OwnerDashboard: React.FC = () => {
           </div>
           <div style={{ marginTop: '10px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <button
-              onClick={() => { window.location.href = '/settings/resonant-chat'; }}
+              onClick={() => setActiveTab('chat-skills')}
               style={{
                 padding: '8px 10px',
                 borderRadius: '8px',
@@ -1453,7 +1458,7 @@ const OwnerDashboard: React.FC = () => {
               Open Chat Skills Control
             </button>
             <button
-              onClick={() => { window.location.href = '/agents'; }}
+              onClick={() => setActiveTab('agents')}
               style={{
                 padding: '8px 10px',
                 borderRadius: '8px',
@@ -1471,6 +1476,103 @@ const OwnerDashboard: React.FC = () => {
       </div>
     </>
   );
+
+  const fetchChatSkills = async () => {
+    setSkillsLoading(true);
+    setSkillsError(null);
+    try {
+      const ownerToken = localStorage.getItem('owner_token');
+      const sessionToken = localStorage.getItem('access_token');
+      const authToken = ownerToken || sessionToken;
+      const res = await fetch(`${API_BASE}/skills/list`, {
+        headers: { 'Authorization': `Bearer ${authToken}` },
+      });
+      if (!res.ok) throw new Error(`Failed to fetch skills: ${res.status}`);
+      const data = await res.json();
+      setChatSkills(data.skills || []);
+    } catch (err: any) {
+      setSkillsError(err.message || 'Failed to load skills');
+    } finally {
+      setSkillsLoading(false);
+    }
+  };
+
+  const handleToggleSkill = async (skillId: string, enabled: boolean) => {
+    try {
+      const ownerToken = localStorage.getItem('owner_token');
+      const sessionToken = localStorage.getItem('access_token');
+      const authToken = ownerToken || sessionToken;
+      const res = await fetch(`${API_BASE}/skills/toggle`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${authToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ skill_id: skillId, enabled }),
+      });
+      if (!res.ok) throw new Error(`Toggle failed: ${res.status}`);
+      setChatSkills(prev => prev.map(s => s.id === skillId ? { ...s, enabled } : s));
+    } catch (err: any) {
+      console.error('Failed to toggle skill:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'chat-skills' && chatSkills.length === 0 && !skillsLoading) {
+      fetchChatSkills();
+    }
+  }, [activeTab]);
+
+  const renderChatSkills = () => {
+    return (
+      <>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <h2 style={{ color: '#e2e8f0', fontSize: '18px', margin: 0 }}>Resonant Chat Skills Management</h2>
+          <button
+            onClick={fetchChatSkills}
+            disabled={skillsLoading}
+            style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid rgba(14, 165, 233, 0.4)', background: 'rgba(14, 165, 233, 0.14)', color: '#7dd3fc', fontSize: '12px', cursor: 'pointer' }}
+          >
+            {skillsLoading ? 'Loading...' : 'Refresh Skills'}
+          </button>
+        </div>
+        {skillsError && <div style={{ color: '#ef4444', marginBottom: '12px', fontSize: '13px' }}>{skillsError}</div>}
+        <div className={styles.cardsGrid}>
+          {skillsLoading && chatSkills.length === 0 ? (
+            <div className={styles.card} style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#94a3b8' }}>Loading skills...</div>
+          ) : chatSkills.length === 0 ? (
+            <div className={styles.card} style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#94a3b8' }}>No skills found</div>
+          ) : chatSkills.map(skill => (
+            <div key={skill.id} className={styles.card}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <h3 className={styles.cardTitle} style={{ margin: 0 }}>
+                  <span style={{ fontSize: '18px', marginRight: '6px' }}>{skill.icon}</span> {skill.name}
+                </h3>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '12px', color: skill.enabled ? '#10b981' : '#94a3b8' }}>
+                  <input
+                    type="checkbox"
+                    checked={skill.enabled}
+                    onChange={e => handleToggleSkill(skill.id, e.target.checked)}
+                    style={{ accentColor: '#10b981', width: '16px', height: '16px' }}
+                  />
+                  {skill.enabled ? 'Enabled' : 'Disabled'}
+                </label>
+              </div>
+              <div style={{ color: '#94a3b8', fontSize: '12px', marginTop: '8px', lineHeight: '1.5' }}>{skill.description}</div>
+              <div style={{ marginTop: '10px', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                <span style={{ padding: '2px 8px', borderRadius: '4px', background: 'rgba(139, 92, 246, 0.15)', color: '#a78bfa', fontSize: '10px' }}>{skill.category}</span>
+                <span style={{ padding: '2px 8px', borderRadius: '4px', background: 'rgba(14, 165, 233, 0.15)', color: '#7dd3fc', fontSize: '10px' }}>{skill.credit_cost} credits</span>
+                {skill.is_default && <span style={{ padding: '2px 8px', borderRadius: '4px', background: 'rgba(16, 185, 129, 0.15)', color: '#6ee7b7', fontSize: '10px' }}>Default</span>}
+                {skill.requires_api_key && <span style={{ padding: '2px 8px', borderRadius: '4px', background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', fontSize: '10px' }}>API Key: {skill.requires_api_key}</span>}
+              </div>
+              {skill.capabilities && skill.capabilities.length > 0 && (
+                <div style={{ marginTop: '8px', fontSize: '11px', color: '#64748b' }}>
+                  {skill.capabilities.join(' · ')}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </>
+    );
+  };
 
   const renderSettings = () => (
     <div className={styles.cardsGrid}>
@@ -1560,6 +1662,7 @@ const OwnerDashboard: React.FC = () => {
           <button className={`${styles.navTab} ${activeTab === 'settings' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('settings')}>Settings</button>
           <button className={`${styles.navTab} ${activeTab === 'state-physics' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('state-physics')}>🌌 State Physics</button>
           <button className={`${styles.navTab} ${activeTab === 'v8' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('v8')}>⚡ V8 Engine</button>
+          <button className={`${styles.navTab} ${activeTab === 'chat-skills' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('chat-skills')}>🧠 Chat Skills</button>
           <button className={`${styles.navTab} ${activeTab === 'control' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('control')}>🎛️ Platform Control</button>
           <button className={styles.navTab} onClick={() => window.location.href = '/v8/'}>🔮 V8 HashSphere</button>
         </nav>
@@ -1573,6 +1676,7 @@ const OwnerDashboard: React.FC = () => {
         {activeTab === 'settings' && renderSettings()}
         {activeTab === "state-physics" && <PlatformStatePhysics />}
         {activeTab === 'v8' && <V8ControlPanel />}
+        {activeTab === 'chat-skills' && renderChatSkills()}
         {activeTab === 'control' && <DaemonControlPanel />}
       </div>
     </div>

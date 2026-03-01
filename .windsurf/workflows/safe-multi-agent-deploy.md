@@ -1,5 +1,12 @@
 ---
-description: Safe multi-agent frontend deploy without overwriting others
+Commit locally
+Push to GitHub main only (single source of truth)
+On server:
+git fetch origin main
+git reset --hard origin/main
+git clean -fd
+build + deploy
+Verify live SHA and bundle hashdescription: Safe multi-agent frontend deploy without overwriting others
 ---
 
 1. Verify your local branch is clean and synced before deploy.
