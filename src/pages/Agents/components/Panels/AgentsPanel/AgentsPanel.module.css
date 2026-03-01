@@ -9,6 +9,11 @@
   overflow: hidden;
 }
 
+.modalOpen .cardTopActions,
+.modalOpen .cardActions {
+  visibility: hidden;
+}
+
 .panelHeader {
   display: flex;
   justify-content: space-between;
@@ -444,8 +449,8 @@
 }
 
 .actionBtn svg {
-  width: 11px;
-  height: 11px;
+  width: 12px;
+  height: 12px;
 }
 
 /* Legacy styles kept for compatibility */
@@ -719,7 +724,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.82);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -1143,6 +1148,35 @@
 }
 
 @media (max-width: 768px) {
+  .agentsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(156px, 1fr));
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .agentCard {
+    min-height: 176px;
+  }
+
+  .cardActions {
+    margin-top: auto;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 4px;
+    padding: 8px;
+  }
+
+  .actionBtn {
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+  }
+
+  .actionBtn svg {
+    width: 13px;
+    height: 13px;
+  }
+
   .panelHeader {
     flex-direction: column;
     gap: 12px;

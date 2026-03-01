@@ -1437,6 +1437,36 @@ const OwnerDashboard: React.FC = () => {
           <div style={{ marginTop: '12px', padding: '12px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '8px', fontSize: '12px', color: '#a78bfa' }}>
             🔒 This control plane is isolated from regular users. Only platform owners can access these controls.
           </div>
+          <div style={{ marginTop: '10px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => { window.location.href = '/settings/resonant-chat'; }}
+              style={{
+                padding: '8px 10px',
+                borderRadius: '8px',
+                border: '1px solid rgba(14, 165, 233, 0.4)',
+                background: 'rgba(14, 165, 233, 0.14)',
+                color: '#7dd3fc',
+                fontSize: '12px',
+                cursor: 'pointer',
+              }}
+            >
+              Open Chat Skills Control
+            </button>
+            <button
+              onClick={() => { window.location.href = '/agents'; }}
+              style={{
+                padding: '8px 10px',
+                borderRadius: '8px',
+                border: '1px solid rgba(250, 204, 21, 0.35)',
+                background: 'rgba(250, 204, 21, 0.12)',
+                color: '#fde68a',
+                fontSize: '12px',
+                cursor: 'pointer',
+              }}
+            >
+              Open Agents Control
+            </button>
+          </div>
         </div>
       </div>
     </>

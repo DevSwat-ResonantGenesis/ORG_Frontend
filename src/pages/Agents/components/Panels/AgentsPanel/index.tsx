@@ -55,13 +55,18 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const [modalAgentId, setModalAgentId] = useState<string | null>(null);
   const [goalInput, setGoalInput] = useState('');
   const [messageInput, setMessageInput] = useState('');
-  const [messages, setMessages] = useState<AgentMessage[]>([]);
+  const [agentMessages, setAgentMessages] = useState<Record<string, AgentMessage[]>>({});
+  const [lastRunOutput, setLastRunOutput] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastActiveElementRef = useRef<HTMLElement | null>(null);
 
   const modalAgent = modalAgentId ? agents.find((a: Agent) => a.id === modalAgentId) || null : null;
+  const modalMessages = useMemo(() => {
+    if (!modalAgentId) return [];
+    return agentMessages[modalAgentId] || [];
+  }, [agentMessages, modalAgentId]);
 
   const pinnedSet = useMemo(() => new Set(pinnedAgentIds || []), [pinnedAgentIds]);
 
@@ -156,7 +161,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   // Scroll to bottom of messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [modalMessages, isSendingMessage]);
 
   // Open modal
   const openModal = useCallback((type: ModalType, agent: Agent) => {
@@ -166,6 +171,12 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     setGoalInput('');
     setMessageInput('');
     setError(null);
+    setIsSendingMessage(false);
+
+    if (type === 'run') {
+      setSessionStatus('idle');
+      setLastRunOutput('');
+    }
   }, []);
 
   useEffect(() => {
@@ -261,7 +272,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   // Session state for run modal
   const [sessionStatus, setSessionStatus] = useState<'idle' | 'starting' | 'running' | 'completed' | 'failed'>('idle');
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Cleanup polling on unmount
   useEffect(() => {
@@ -296,12 +307,12 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           if (data.status === 'completed') {
             setSessionStatus('completed');
             toast.success('Agent run completed');
-            setMessages([{
-              id: `msg-${Date.now()}`,
-              role: 'agent',
-              content: data.final_output || 'Task completed successfully.',
-              timestamp: new Date(),
-            }]);
+            const content = typeof data.final_output === 'string'
+              ? data.final_output
+              : data.final_output
+                ? JSON.stringify(data.final_output, null, 2)
+                : 'Task completed successfully.';
+            setLastRunOutput(content);
             updateAgent(modalAgent.id, { status: 'idle' as const });
             if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
           } else if (data.status === 'failed') {
@@ -350,7 +361,10 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setAgentMessages(prev => ({
+      ...prev,
+      [modalAgent.id]: [...(prev[modalAgent.id] || []), userMessage],
+    }));
     setMessageInput('');
     setError(null);
     setIsSendingMessage(true);
@@ -363,22 +377,30 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           ? JSON.stringify(result.output, null, 2)
           : '';
 
-      setMessages(prev => [...prev, {
+      const agentReply: AgentMessage = {
         id: `msg-${Date.now()}`,
         role: 'agent',
         content: outputText || (result?.success ? 'Done.' : (result?.error || 'Failed to execute task.')),
         timestamp: new Date(),
-      }]);
+      };
+      setAgentMessages(prev => ({
+        ...prev,
+        [modalAgent.id]: [...(prev[modalAgent.id] || []), agentReply],
+      }));
     } catch (err: any) {
       const msg = err?.message || 'Failed to send message. Please try again.';
       toast.error(msg);
       setError(msg);
-      setMessages(prev => [...prev, {
+      const errorReply: AgentMessage = {
         id: `msg-${Date.now()}`,
         role: 'agent',
         content: msg,
         timestamp: new Date(),
-      }]);
+      };
+      setAgentMessages(prev => ({
+        ...prev,
+        [modalAgent.id]: [...(prev[modalAgent.id] || []), errorReply],
+      }));
     } finally {
       setIsSendingMessage(false);
     }
@@ -510,7 +532,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   }, [toast]);
 
   return (
-    <div className={`${styles.panel} ${className || ''}`}>
+    <div className={`${styles.panel} ${activeModal ? styles.modalOpen : ''} ${className || ''}`}>
       <div className={styles.panelHeader}>
         <h2><Icons.Agents /> Agent Management</h2>
         
@@ -759,13 +781,13 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
               )}
               
               {/* Show result when completed */}
-              {sessionStatus === 'completed' && messages.length > 0 && (
+              {sessionStatus === 'completed' && !!lastRunOutput && (
                 <div className={styles.resultArea}>
                   <div className={styles.resultHeader}>
                     <Icons.CheckCircle /> Result
                   </div>
                   <div className={styles.resultContent}>
-                    {messages[messages.length - 1]?.content}
+                    {lastRunOutput}
                   </div>
                 </div>
               )}
@@ -774,7 +796,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
               <button className={styles.cancelBtn} onClick={() => {
                 if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
                 setSessionStatus('idle');
-                setMessages([]);
+                setLastRunOutput('');
                 closeModal();
               }}>
                 {sessionStatus === 'completed' ? 'Close' : 'Cancel'}
@@ -793,7 +815,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   className={styles.primaryBtn} 
                   onClick={() => {
                     setSessionStatus('idle');
-                    setMessages([]);
+                    setLastRunOutput('');
                   }}
                 >
                   Run Another Task
@@ -816,13 +838,13 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
               {error && <div className={styles.errorMsg}>{error}</div>}
               {/* Messages area */}
               <div className={styles.messagesArea}>
-                {messages.length === 0 && (
+                {modalMessages.length === 0 && (
                   <div className={styles.emptyMessages}>
                     <Icons.MessageSquare />
                     <p>Start a conversation with {modalAgent.name}</p>
                   </div>
                 )}
-                {messages.map((msg) => (
+                {modalMessages.map((msg) => (
                   <div key={msg.id} className={`${styles.message} ${styles[msg.role]}`}>
                     <div className={styles.messageContent}>{msg.content}</div>
                     <div className={styles.messageTime}>
