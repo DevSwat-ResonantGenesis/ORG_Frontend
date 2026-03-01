@@ -163,6 +163,7 @@ const MetricsFooter: React.FC = memo(() => {
 // ============== MAIN AGENTOS COMPONENT ==============
 
 const AgentOSv2: React.FC = () => {
+  const isEmbedded = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('embed') === '1';
   const activeSection = useUIStore((state) => state.activeSection);
   const sidebarCollapsed = useUIStore((state) => state.sidebarCollapsed);
   const setAgents = useAgentStore((state) => state.setAgents);
@@ -405,8 +406,8 @@ const AgentOSv2: React.FC = () => {
 
   return (
     <>
-      <Header />
-      <div className={styles.agentOS}>
+      {!isEmbedded && <Header />}
+      <div className={`${styles.agentOS} ${isEmbedded ? styles.embedded : ''}`}>
         <Sidebar />
         
         <div className={`${styles.mainWrapper} ${sidebarCollapsed ? styles.expanded : ''}`}>

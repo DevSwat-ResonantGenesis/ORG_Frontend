@@ -830,6 +830,14 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                     </div>
                   </div>
                 ))}
+                {isSendingMessage && (
+                  <div className={`${styles.message} ${styles.agent} ${styles.thinkingMessage}`}>
+                    <div className={styles.thinkingRow}>
+                      <span className={styles.thinkingSpinner} aria-hidden="true" />
+                      <span className={styles.thinkingText}>Thinking...</span>
+                    </div>
+                  </div>
+                )}
                 <div ref={messagesEndRef} />
               </div>
               
@@ -848,7 +856,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   onClick={handleSendMessage}
                   disabled={!messageInput.trim() || isSendingMessage}
                 >
-                  <Icons.Send />
+                  {isSendingMessage ? <span className={styles.sendSpinner} aria-hidden="true" /> : <Icons.Send />}
                 </button>
               </div>
             </div>

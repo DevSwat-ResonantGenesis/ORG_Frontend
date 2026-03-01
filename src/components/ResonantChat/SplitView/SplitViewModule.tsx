@@ -189,6 +189,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
 
   // Code blocks from messages
   const { codeBlocks } = useCodeBlocks(messages, selectedMessageId);
+  const hideSplitHeader = state.activeTab === 'agents';
 
   const lastAutoOpenRequestIdRef = React.useRef<number | null>(null);
 
@@ -372,7 +373,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
         ) : (
           <div className={styles.codePanel} style={{ width: '100%' }}>
             {/* Header with Tabs */}
-            <div className={styles.codePanelHeader}>
+            {!hideSplitHeader && <div className={styles.codePanelHeader}>
               <div className={styles.tabs}>
                 <button
                   className={`${styles.tab} ${state.activeTab === 'code' ? styles.activeTab : ''}`}
@@ -522,7 +523,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 </button>
               </div>
 
-            </div>
+            </div>}
             {/* Tab Content */}
             <div className={styles.codePanelContent}>
               {/* Code Tab */}
@@ -717,7 +718,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
       {/* Code Panel */}
       <div className={styles.codePanel} style={{ width: `${100 - width}%` }}>
         {/* Header with Tabs */}
-        <div className={styles.codePanelHeader}>
+        {!hideSplitHeader && <div className={styles.codePanelHeader}>
           <div className={styles.tabs}>
             <button
               className={`${styles.tab} ${state.activeTab === 'code' ? styles.activeTab : ''}`}
@@ -867,7 +868,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
             </button>
           </div>
 
-        </div>
+        </div>}
         {/* Tab Content */}
         <div className={styles.codePanelContent}>
           {/* Code Tab */}
