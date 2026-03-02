@@ -4011,13 +4011,24 @@ const ResonantChatPage: React.FC = () => {
                         ) : (
                           <>
                             {message.role === 'user' && (
-                              <button
-                                className={styles['resonant-chat-message-action-button']}
-                                onClick={() => handleMessageEdit(message.id, message.content)}
-                              >
-                                <span className={styles['resonant-chat-message-action-icon']}><EditIcon /></span>
-                                <span className={styles['resonant-chat-message-action-label']}>Edit</span>
-                              </button>
+                              <>
+                                <button
+                                  className={styles['resonant-chat-message-action-button']}
+                                  onClick={() => handleMessageEdit(message.id, message.content)}
+                                >
+                                  <span className={styles['resonant-chat-message-action-icon']}><EditIcon /></span>
+                                  <span className={styles['resonant-chat-message-action-label']}>Edit</span>
+                                </button>
+                                <button
+                                  className={styles['resonant-chat-message-action-button']}
+                                  onClick={() => handleSend(message.content)}
+                                  disabled={isLoading}
+                                  title="Resend this message"
+                                >
+                                  <span className={styles['resonant-chat-message-action-icon']}><RegenerateIcon /></span>
+                                  <span className={styles['resonant-chat-message-action-label']}>Resend</span>
+                                </button>
+                              </>
                             )}
                             {message.role === 'assistant' && (
                               <>
