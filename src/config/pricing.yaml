@@ -170,14 +170,14 @@ plans:
       period: "/month"
     description: "For serious builders, teams, and power users. Unlock autonomous agents, full AI assistance, and advanced features."
     credits:
-      included: 75000
-      display: "75,000 / month"
+      included: 499000
+      display: "499,000 / month"
       rollover: true
-      rollover_limit: 37500
+      rollover_limit: 249500
       topups: true
       topup_price: 8
       topup_amount: 10000
-      note: "Rollover up to 37.5K • Top-ups: $8/10K"
+      note: "Rollover up to 249.5K • Top-ups: $8/10K"
     recommended: true
     contact_sales: false
     cta:
@@ -211,8 +211,8 @@ plans:
         ci_integration: false
 
     features:
-      - "75,000 credits/month"
-      - "Rollover up to 37.5K credits"
+      - "499,000 credits/month"
+      - "Rollover up to 249.5K credits"
       - "Top-ups: $8/10K credits"
       - "Up to 20 agents with autonomous mode"
       - "Agent teams enabled"

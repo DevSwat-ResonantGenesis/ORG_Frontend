@@ -29,7 +29,7 @@ const DEFAULT_PRICING = {
       id: 'plus',
       name: 'Plus',
       price: { monthly: 499, yearly: 4990 },
-      credits: { included: 50000, rollover: true, rolloverLimit: 25000, topups: true, topupPrice: 8, topupAmount: 10000 },
+      credits: { included: 499000, rollover: true, rolloverLimit: 249500, topups: true, topupPrice: 8, topupAmount: 10000 },
       limits: {
         agents: { active: 20, autonomousMode: true, teams: true },
         chat: { conversations: -1, messagesPerDay: -1, messagesPerConversation: -1 },
@@ -314,9 +314,9 @@ export const pricingService = {
             name: 'Plus',
             price: { monthly: data.plus.price || 499, yearly: (data.plus.price || 499) * 10 },
             credits: { 
-              included: data.plus.credits || 50000, 
+              included: data.plus.credits || 499000, 
               rollover: true, 
-              rolloverLimit: 25000,
+              rolloverLimit: 249500,
               topups: true,
               topupPrice: data.topupPrice || 8,
               topupAmount: data.topupAmount || 10000
@@ -364,7 +364,7 @@ export const pricingService = {
           },
           credits: {
             ...DEFAULT_PRICING.plans.plus.credits,
-            included: data.plusCredits || 50000,
+            included: data.plusCredits || 499000,
             topupPrice: data.topupPrice || 8,
             topupAmount: data.topupAmount || 10000,
           }

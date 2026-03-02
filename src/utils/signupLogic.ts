@@ -161,7 +161,7 @@ export const PLANS: PlanOption[] = [
     recommended: true,
     bestFor: 'Serious builders and power users',
     limits: {
-      tokens: 50000,         // 50,000 credits/month (rollover up to 25K, top-ups $8/10K)
+      tokens: 499000,        // 499,000 credits/month (rollover up to 249.5K, top-ups $8/10K)
       agents: -1,            // Unlimited agents (credits-only billing)
       agentTeams: -1,        // Unlimited agent teams (agents working together)
       userTeams: 0,          // No user teams (single user only)
@@ -177,8 +177,8 @@ export const PLANS: PlanOption[] = [
       executionTimeout: 120,
     },
     features: [
-      '50,000 credits/month',
-      'Rollover up to 25K credits',
+      '499,000 credits/month',
+      'Rollover up to 249.5K credits',
       'Top-ups: $8/10K credits',
       'Unlimited agents (credits-only)',
       'Unlimited agent teams (agents working together)',
