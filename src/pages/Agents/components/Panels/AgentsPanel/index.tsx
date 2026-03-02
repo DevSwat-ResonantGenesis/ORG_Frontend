@@ -140,21 +140,21 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
   const bulkDelete = useCallback(async () => {
     if (bulkSelectedCount === 0) return;
-    if (!confirm(`Delete ${bulkSelectedCount} agent(s)? This cannot be undone.`)) return;
+    if (!confirm(`Archive ${bulkSelectedCount} agent(s)? They will be hidden but preserved on the blockchain.`)) return;
 
     const ids = Array.from(selectedIds);
-    let deleted = 0;
+    let archived = 0;
     for (const id of ids) {
       try {
         await deleteAgent(id);
         removeAgent(id);
-        deleted += 1;
+        archived += 1;
       } catch (e: any) {
-        toast.error(e?.message || `Failed to delete agent ${id}`);
+        toast.error(e?.message || `Failed to archive agent ${id}`);
       }
     }
 
-    if (deleted > 0) toast.success(`Deleted ${deleted} agent(s)`);
+    if (archived > 0) toast.success(`Archived ${archived} agent(s)`);
     exitBulkMode();
   }, [bulkSelectedCount, exitBulkMode, removeAgent, selectedIds, toast]);
 
@@ -438,10 +438,10 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           pauseAgent(agentId);
           break;
         case 'delete':
-          if (confirm('Are you sure you want to delete this agent?')) {
+          if (confirm('Are you sure you want to archive this agent? It will be hidden but preserved on the blockchain.')) {
             await deleteAgent(agentId);
             removeAgent(agentId);
-            toast.success('Agent deleted');
+            toast.success('Agent archived');
             closeModal();
           }
           break;
@@ -597,8 +597,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
             <span className={styles.bulkCount}>{bulkSelectedCount} selected</span>
             <button className={styles.bulkBtn} type="button" onClick={bulkSelectAll}>Select all</button>
             <button className={styles.bulkBtn} type="button" onClick={bulkSelectNone}>None</button>
-            <button className={styles.bulkBtn} type="button" onClick={bulkArchive} disabled={bulkSelectedCount === 0}>Archive</button>
-            <button className={styles.bulkDangerBtn} type="button" onClick={bulkDelete} disabled={bulkSelectedCount === 0}>Delete</button>
+            <button className={styles.bulkDangerBtn} type="button" onClick={bulkDelete} disabled={bulkSelectedCount === 0}>Archive</button>
           </div>
         </div>
       )}
@@ -714,12 +713,12 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                       <Icons.Copy />
                     </button>
                     
-                    {/* Delete button */}
+                    {/* Archive button */}
                     <button 
                       className={`${styles.actionBtn} ${styles.deleteBtn}`}
                       disabled={bulkMode}
                       onClick={(e) => { e.stopPropagation(); handleAgentAction('delete', agent.id); }}
-                      title="Delete"
+                      title="Archive"
                     >
                       <Icons.Trash />
                     </button>
