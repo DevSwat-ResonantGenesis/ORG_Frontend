@@ -988,38 +988,172 @@ const OwnerDashboard: React.FC = () => {
     </>
   );
 
+  const INTERNAL_AGENTS = [
+    { id: 'reasoning', name: 'Reasoning Agent', desc: 'Analysis, logic, problem solving, critical thinking, deduction', category: 'Core', autonomous: true, specializations: { code_analysis: 0.95, system_design: 0.88, debugging: 0.90, logical_reasoning: 0.96 } },
+    { id: 'code', name: 'Code Generation Agent', desc: 'Code generation, implementation, syntax, best practices (Python, JS, TS, React)', category: 'Development', autonomous: true, specializations: { python: 0.95, javascript: 0.93, typescript: 0.92, react: 0.90 } },
+    { id: 'debug', name: 'Debug Agent', desc: 'Bug finding, error analysis, troubleshooting, root cause analysis', category: 'Development', autonomous: true, specializations: { error_analysis: 0.94, bug_fixing: 0.92, stack_trace: 0.93 } },
+    { id: 'review', name: 'Code Review Agent', desc: 'Code review, quality assessment, feedback, best practices enforcement', category: 'Development', autonomous: true, specializations: { code_review: 0.96, quality: 0.93, best_practices: 0.91 } },
+    { id: 'test', name: 'Test Generation Agent', desc: 'Creates comprehensive test coverage, unit/integration/e2e tests', category: 'Development', autonomous: true, specializations: { unit_tests: 0.94, integration: 0.90, e2e: 0.87 } },
+    { id: 'research', name: 'Research Agent', desc: 'Information gathering, synthesis, web search integration', category: 'Core', autonomous: true, specializations: { research: 0.93, synthesis: 0.90 } },
+    { id: 'explain', name: 'Explanation Agent', desc: 'Simplification, teaching, ELI5, beginner-friendly explanations', category: 'Core', autonomous: true, specializations: { beginner_tutorials: 0.98, eli5: 0.96, teaching: 0.92 } },
+    { id: 'summary', name: 'Summary Agent', desc: 'Summarization of conversations, documents, and code', category: 'Core', autonomous: true, specializations: { summarization: 0.94 } },
+    { id: 'planning', name: 'Planning Agent', desc: 'Actionable plans, roadmaps, project planning', category: 'Core', autonomous: true, specializations: { roadmaps: 0.91, project_planning: 0.89 } },
+    { id: 'security', name: 'Security Agent', desc: 'Vulnerability finding, OWASP/CWE, penetration testing advice', category: 'Security', autonomous: true, specializations: { vulnerability: 0.94, owasp: 0.92 } },
+    { id: 'architecture', name: 'Architecture Agent', desc: 'System design, scalable patterns, microservices, design decisions', category: 'Architecture', autonomous: true, specializations: { system_design: 0.93, microservices: 0.90 } },
+    { id: 'optimization', name: 'Optimization Agent', desc: 'Performance bottlenecks, memory leaks, O(n) complexity analysis', category: 'Performance', autonomous: true, specializations: { performance: 0.93, memory: 0.90 } },
+    { id: 'documentation', name: 'Documentation Agent', desc: 'README, API docs, JSDoc/docstrings, OpenAPI specs', category: 'Development', autonomous: true, specializations: { api_docs: 0.94, readme: 0.92 } },
+    { id: 'math', name: 'Math Agent', desc: 'Mathematical reasoning, calculations, step-by-step proofs', category: 'Core', autonomous: true, specializations: { math: 0.95, proofs: 0.90 } },
+    { id: 'api', name: 'API Design Agent', desc: 'RESTful APIs, GraphQL, OpenAPI, versioning, request/response', category: 'Architecture', autonomous: true, specializations: { rest: 0.94, graphql: 0.88 } },
+    { id: 'database', name: 'Database Agent', desc: 'Schema design, optimized queries, SQL/NoSQL, indexing, migrations', category: 'Architecture', autonomous: true, specializations: { sql: 0.93, nosql: 0.88, indexing: 0.91 } },
+    { id: 'devops', name: 'DevOps Agent', desc: 'CI/CD, Docker, Kubernetes, Terraform, cloud deployments', category: 'Infrastructure', autonomous: true, specializations: { docker: 0.93, kubernetes: 0.88, terraform: 0.85 } },
+    { id: 'migration', name: 'Migration Agent', desc: 'Code migrations, version upgrades, framework transitions, rollbacks', category: 'Development', autonomous: true, specializations: { migrations: 0.91, rollbacks: 0.89 } },
+    { id: 'refactor', name: 'Refactor Agent', desc: 'SOLID, DRY, KISS patterns, safe refactoring with before/after', category: 'Development', autonomous: true, specializations: { solid: 0.93, dry: 0.91 } },
+    { id: 'accessibility', name: 'Accessibility Agent', desc: 'WCAG 2.1 AA/AAA, ARIA, keyboard nav, screen reader, contrast', category: 'Quality', autonomous: true, specializations: { wcag: 0.94, aria: 0.92 } },
+    { id: 'i18n', name: 'i18n Agent', desc: 'Translations, locale handling, RTL support, date/number formatting', category: 'Quality', autonomous: true, specializations: { i18n: 0.91, rtl: 0.87 } },
+    { id: 'regex', name: 'Regex Agent', desc: 'Create, explain, debug regex patterns (JS, Python, PCRE)', category: 'Utility', autonomous: true, specializations: { regex: 0.96 } },
+    { id: 'git', name: 'Git Agent', desc: 'Branching, merge conflicts, rebasing, cherry-picking, hooks', category: 'Utility', autonomous: true, specializations: { git: 0.94 } },
+    { id: 'css', name: 'CSS Agent', desc: 'Flexbox, grid, responsive, animations, Tailwind, cross-browser', category: 'Development', autonomous: true, specializations: { css: 0.93, tailwind: 0.90 } },
+  ];
+
+  const INTERNAL_TEAMS = [
+    { id: 'code_review_team', name: 'Code Review Team', agents: ['code', 'review', 'test'], workflow: 'sequential', desc: 'Full code review pipeline: generate code, review it, then create tests', triggers: 'full review, review my code, code audit' },
+    { id: 'security_audit_team', name: 'Security Audit Team', agents: ['security', 'review', 'architecture'], workflow: 'parallel_merge', desc: 'Comprehensive security analysis from multiple expert perspectives', triggers: 'security audit, vulnerability scan, penetration test' },
+    { id: 'architecture_team', name: 'Architecture Team', agents: ['architecture', 'review', 'planning'], workflow: 'sequential', desc: 'System design with review and implementation planning', triggers: 'design system, architect, system design' },
+    { id: 'learning_team', name: 'Learning Team', agents: ['explain', 'research', 'summary'], workflow: 'sequential', desc: 'Educational content: explain, research deeper, then summarize', triggers: 'teach me, learn about, tutorial' },
+    { id: 'debug_team', name: 'Debug Team', agents: ['debug', 'test', 'review'], workflow: 'sequential', desc: 'Thorough debugging: find bugs, create tests, review fixes', triggers: 'fix everything, debug thoroughly, find all bugs' },
+    { id: 'full_stack_team', name: 'Full Stack Team', agents: ['api', 'database', 'code', 'test'], workflow: 'sequential', desc: 'End-to-end feature development: API, database, code, tests', triggers: 'full stack, end to end, complete feature' },
+    { id: 'refactor_team', name: 'Refactor Team', agents: ['review', 'refactor', 'test'], workflow: 'sequential', desc: 'Safe refactoring: review current code, refactor, verify with tests', triggers: 'safe refactor, clean and test' },
+    { id: 'accessibility_team', name: 'Accessibility Team', agents: ['accessibility', 'review', 'test'], workflow: 'sequential', desc: 'A11y compliance: check accessibility, review, create a11y tests', triggers: 'accessibility audit, a11y check, wcag' },
+    { id: 'performance_team', name: 'Performance Team', agents: ['optimization', 'review', 'test'], workflow: 'sequential', desc: 'Performance optimization: analyze, optimize, verify with benchmarks', triggers: 'performance audit, speed optimization, make faster' },
+  ];
+
+  const RARA_TYPES = [
+    { id: 'task_executor', name: 'Task Executor', desc: 'Executes defined tasks with strict safety boundaries' },
+    { id: 'business_operator', name: 'Business Operator', desc: 'Manages business logic, workflows, and automated operations' },
+    { id: 'tool_agent', name: 'Tool Agent', desc: 'Interfaces with external tools, APIs, and integrations' },
+    { id: 'swarm_member', name: 'Swarm Member', desc: 'Participates in multi-agent swarms for distributed tasks' },
+    { id: 'observer_auditor', name: 'Observer / Auditor', desc: 'Monitors agent actions, enforces safety rules, audits compliance' },
+  ];
+
+  const categoryColors: Record<string, string> = {
+    Core: '#8b5cf6', Development: '#3b82f6', Security: '#ef4444', Architecture: '#f59e0b',
+    Performance: '#10b981', Quality: '#06b6d4', Infrastructure: '#ec4899', Utility: '#64748b',
+  };
+
   const renderAgents = () => (
     <>
       <div className={styles.statsGrid}>
-        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconGreen}`}><BotIcon /></div></div><div className={styles.statValue}>{agents.filter(a => a.status === 'active').length}</div><div className={styles.statLabel}>Active Agents</div></div>
-        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconOrange}`}><BotIcon /></div></div><div className={styles.statValue}>{agents.filter(a => a.status === 'idle').length}</div><div className={styles.statLabel}>Idle Agents</div></div>
-        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconRed}`}><BotIcon /></div></div><div className={styles.statValue}>{agents.filter(a => a.status === 'error').length}</div><div className={styles.statLabel}>Error State</div></div>
-        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconBlue}`}><ActivityIcon /></div></div><div className={styles.statValue}>{agents.reduce((s, a) => s + a.tasksCompleted, 0)}</div><div className={styles.statLabel}>Tasks Completed</div></div>
+        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconBlue}`}><BotIcon /></div></div><div className={styles.statValue}>{INTERNAL_AGENTS.length}</div><div className={styles.statLabel}>Individual Agents</div></div>
+        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconGreen}`}><UsersIcon /></div></div><div className={styles.statValue}>{INTERNAL_TEAMS.length}</div><div className={styles.statLabel}>Agent Teams</div></div>
+        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconOrange}`}><CpuIcon /></div></div><div className={styles.statValue}>{RARA_TYPES.length}</div><div className={styles.statLabel}>RARA Types</div></div>
+        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconRed}`}><ActivityIcon /></div></div><div className={styles.statValue}>{INTERNAL_AGENTS.filter(a => a.autonomous).length}</div><div className={styles.statLabel}>Autonomous</div></div>
       </div>
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}><h2 className={styles.sectionTitle}><BotIcon /> RARA Agents</h2></div>
-        <div className={styles.agentsGrid}>
-          {agents.map(agent => (
-            <div key={agent.id} className={styles.agentCard}>
-              <div className={styles.agentHeader}>
-                <div className={styles.agentInfo}>
-                  <div className={`${styles.agentIcon} ${getAgentIconClass(agent.status)}`}><BotIcon /></div>
-                  <div><div className={styles.agentName}>{agent.name}</div><div className={styles.agentType}>{agent.type}</div></div>
-                </div>
-                <span className={`${styles.agentStatus} ${getAgentStatusClass(agent.status)}`}>{agent.status}</span>
+
+      {/* Individual Agent Types */}
+      <div className={styles.section} style={{ marginBottom: '24px' }}>
+        <div className={styles.sectionHeader}><h2 className={styles.sectionTitle}><BotIcon /> Individual Agent Types ({INTERNAL_AGENTS.length})</h2></div>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid rgba(148,163,184,0.2)' }}>
+                <th style={{ textAlign: 'left', padding: '8px', color: '#94a3b8' }}>Agent</th>
+                <th style={{ textAlign: 'left', padding: '8px', color: '#94a3b8' }}>Category</th>
+                <th style={{ textAlign: 'left', padding: '8px', color: '#94a3b8' }}>Description</th>
+                <th style={{ textAlign: 'center', padding: '8px', color: '#94a3b8' }}>Autonomous</th>
+                <th style={{ textAlign: 'left', padding: '8px', color: '#94a3b8' }}>Top Specializations</th>
+              </tr>
+            </thead>
+            <tbody>
+              {INTERNAL_AGENTS.map(agent => (
+                <tr key={agent.id} style={{ borderBottom: '1px solid rgba(148,163,184,0.08)' }}>
+                  <td style={{ padding: '8px', color: '#e2e8f0', fontWeight: 600 }}>{agent.name}</td>
+                  <td style={{ padding: '8px' }}>
+                    <span style={{ padding: '2px 8px', borderRadius: '4px', background: `${categoryColors[agent.category] || '#64748b'}22`, color: categoryColors[agent.category] || '#94a3b8', fontSize: '10px' }}>{agent.category}</span>
+                  </td>
+                  <td style={{ padding: '8px', color: '#94a3b8', maxWidth: '300px' }}>{agent.desc}</td>
+                  <td style={{ padding: '8px', textAlign: 'center' }}>
+                    <span style={{ color: agent.autonomous ? '#10b981' : '#64748b' }}>{agent.autonomous ? '✅' : '—'}</span>
+                  </td>
+                  <td style={{ padding: '8px' }}>
+                    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                      {Object.entries(agent.specializations).slice(0, 3).map(([k, v]) => (
+                        <span key={k} style={{ padding: '1px 6px', borderRadius: '3px', background: 'rgba(139,92,246,0.12)', color: '#a78bfa', fontSize: '9px' }}>
+                          {k.replace(/_/g, ' ')} {(v * 100).toFixed(0)}%
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Agent Teams */}
+      <div className={styles.section} style={{ marginBottom: '24px' }}>
+        <div className={styles.sectionHeader}><h2 className={styles.sectionTitle}><UsersIcon /> Multi-Agent Teams ({INTERNAL_TEAMS.length})</h2></div>
+        <div className={styles.cardsGrid}>
+          {INTERNAL_TEAMS.map(team => (
+            <div key={team.id} className={styles.card}>
+              <h3 className={styles.cardTitle} style={{ margin: '0 0 6px 0', fontSize: '14px' }}>{team.name}</h3>
+              <div style={{ color: '#94a3b8', fontSize: '12px', lineHeight: 1.5, marginBottom: '8px' }}>{team.desc}</div>
+              <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginBottom: '6px' }}>
+                {team.agents.map((a, i) => (
+                  <span key={a}>
+                    <span style={{ padding: '2px 6px', borderRadius: '4px', background: 'rgba(59,130,246,0.15)', color: '#93c5fd', fontSize: '10px' }}>{a}</span>
+                    {i < team.agents.length - 1 && <span style={{ color: '#475569', fontSize: '10px', margin: '0 2px' }}>→</span>}
+                  </span>
+                ))}
               </div>
-              <div className={styles.agentMetrics}>
-                <div className={styles.agentMetric}><div className={styles.agentMetricValue}>{agent.tasksCompleted}</div><div className={styles.agentMetricLabel}>Tasks</div></div>
-                <div className={styles.agentMetric}><div className={styles.agentMetricValue}>{agent.cpu}%</div><div className={styles.agentMetricLabel}>CPU</div></div>
-                <div className={styles.agentMetric}><div className={styles.agentMetricValue}>{agent.memory}%</div><div className={styles.agentMetricLabel}>Memory</div></div>
+              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                <span style={{ padding: '2px 6px', borderRadius: '4px', background: team.workflow === 'parallel_merge' ? 'rgba(245,158,11,0.15)' : 'rgba(16,185,129,0.15)', color: team.workflow === 'parallel_merge' ? '#fbbf24' : '#6ee7b7', fontSize: '10px' }}>
+                  {team.workflow === 'parallel_merge' ? '⚡ Parallel Merge' : '📋 Sequential'}
+                </span>
               </div>
-              <div style={{ fontSize: '12px', color: '#64748b', marginTop: '12px' }}>Last: {agent.lastTask}</div>
-              <div className={styles.agentActions}>
-                <button className={`${styles.agentBtn} ${styles.agentBtnPrimary}`}>View Logs</button>
-                <button className={`${styles.agentBtn} ${styles.agentBtnDanger}`}>{agent.status === 'active' ? 'Stop' : 'Restart'}</button>
-              </div>
+              <div style={{ marginTop: '6px', fontSize: '10px', color: '#64748b' }}>Triggers: {team.triggers}</div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* RARA Agent Types */}
+      <div className={styles.section} style={{ marginBottom: '24px' }}>
+        <div className={styles.sectionHeader}><h2 className={styles.sectionTitle}><CpuIcon /> RARA Agent Types ({RARA_TYPES.length})</h2></div>
+        <div className={styles.statsGrid}>
+          {RARA_TYPES.map(rt => (
+            <div key={rt.id} className={styles.statCard}>
+              <div className={styles.statValue} style={{ fontSize: '14px' }}>{rt.name}</div>
+              <div className={styles.statLabel} style={{ marginTop: '4px' }}>{rt.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Autonomous Infrastructure */}
+      <div className={styles.section}>
+        <div className={styles.sectionHeader}><h2 className={styles.sectionTitle}><SettingsIcon /> Autonomous Infrastructure</h2></div>
+        <div className={styles.cardsGrid}>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle} style={{ margin: '0 0 6px 0' }}>🧠 AutonomousAgentExecutor</h3>
+            <div style={{ color: '#94a3b8', fontSize: '12px', lineHeight: 1.5 }}>Wraps any agent type for autonomous decision-making. Tries local/cached decisions first (KB lookup), then falls back to LLM consultation. Backed by Hash Sphere memory.</div>
+            <div style={{ marginTop: '8px', fontSize: '10px', color: '#64748b' }}>File: chat_service/app/services/autonomous_agent_executor.py</div>
+          </div>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle} style={{ margin: '0 0 6px 0' }}>⚙️ AutonomousDaemon</h3>
+            <div style={{ color: '#94a3b8', fontSize: '12px', lineHeight: 1.5 }}>Background daemon managing autonomous agent lifecycle, self-triggering, goal updates, and health monitoring.</div>
+            <div style={{ marginTop: '8px', fontSize: '10px', color: '#64748b' }}>File: agent_engine_service/app/routers_autonomous.py</div>
+          </div>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle} style={{ margin: '0 0 6px 0' }}>🔄 ParallelAgentRuntime</h3>
+            <div style={{ color: '#94a3b8', fontSize: '12px', lineHeight: 1.5 }}>Enables parallel agent communication, capability registration, and multi-agent coordination for team workflows.</div>
+            <div style={{ marginTop: '8px', fontSize: '10px', color: '#64748b' }}>File: agent_engine_service/app/parallel_runtime.py</div>
+          </div>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle} style={{ margin: '0 0 6px 0' }}>📊 AgentCapabilityRegistry</h3>
+            <div style={{ color: '#94a3b8', fontSize: '12px', lineHeight: 1.5 }}>Tracks agent strengths, weaknesses, success rates, specialization scores, and workload for intelligent task routing.</div>
+            <div style={{ marginTop: '8px', fontSize: '10px', color: '#64748b' }}>File: chat_service/app/services/agent_capability_registry.py</div>
+          </div>
         </div>
       </div>
     </>
@@ -1656,7 +1790,7 @@ const OwnerDashboard: React.FC = () => {
           <button className={`${styles.navTab} ${activeTab === 'overview' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('overview')}>Overview</button>
           <button className={`${styles.navTab} ${activeTab === 'users' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('users')}>Users</button>
           <button className={`${styles.navTab} ${activeTab === 'revenue' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('revenue')}>Revenue</button>
-          <button className={`${styles.navTab} ${activeTab === 'agents' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('agents')}>RARA Agents</button>
+          <button className={`${styles.navTab} ${activeTab === 'agents' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('agents')}>🤖 Internal Agents</button>
           <button className={`${styles.navTab} ${activeTab === 'monitoring' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('monitoring')}>Monitoring</button>
           <button className={`${styles.navTab} ${activeTab === 'system' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('system')}>🔧 System Control</button>
           <button className={`${styles.navTab} ${activeTab === 'settings' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('settings')}>Settings</button>
