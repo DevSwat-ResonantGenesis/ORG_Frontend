@@ -75,7 +75,7 @@ const AgentsControlPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fastapiClient.get('/owner/internal-catalog');
+      const res = await fastapiClient.get('/api/v1/owner/internal-catalog');
       setCatalog(res.data);
     } catch (err: any) {
       setError(err?.message || err?.error || 'Failed to load internal catalog');

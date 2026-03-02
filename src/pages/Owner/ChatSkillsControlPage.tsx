@@ -55,7 +55,7 @@ const ChatSkillsControlPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fastapiClient.get('/skills/list');
+      const res = await fastapiClient.get('/api/v1/skills/list');
       setSkills(res.data?.skills || []);
     } catch (err: any) {
       setError(err?.message || err?.error || 'Failed to load skills');
@@ -66,7 +66,7 @@ const ChatSkillsControlPage: React.FC = () => {
 
   const handleToggleSkill = async (skillId: string, enabled: boolean) => {
     try {
-      await fastapiClient.post('/skills/toggle', { skill_id: skillId, enabled });
+      await fastapiClient.post('/api/v1/skills/toggle', { skill_id: skillId, enabled });
       setSkills(prev => prev.map(s => s.id === skillId ? { ...s, enabled } : s));
     } catch (err: any) {
       alert('Failed to toggle skill: ' + (err?.message || err?.error || 'Unknown error'));
@@ -88,7 +88,7 @@ const ChatSkillsControlPage: React.FC = () => {
         trigger_keywords: newSkill.trigger_keywords.split(',').map(k => k.trim()).filter(Boolean),
         capabilities: newSkill.capabilities.split(',').map(c => c.trim()).filter(Boolean),
       };
-      await fastapiClient.post('/skills/create', payload);
+      await fastapiClient.post('/api/v1/skills/create', payload);
       setShowCreateForm(false);
       setNewSkill({ name: '', description: '', icon: '🧠', category: 'ai', credit_cost: 1, agent_type: 'reasoning', trigger_keywords: '', capabilities: '' });
       fetchSkills();
