@@ -1825,10 +1825,12 @@ const ResonantChatPage: React.FC = () => {
   };
 
   // Handle send message with improved error handling
-  const handleSend = async () => {
+  // messageOverride: if provided, use this instead of reading from input state
+  //                  (avoids stale closure bugs when called from edit-resend)
+  const handleSend = async (messageOverride?: string) => {
     if (isLoading) return;
 
-    const trimmedInput = input.trim();
+    const trimmedInput = (messageOverride ?? input).trim();
     const hasAttachments = attachedFiles.length > 0;
     if (!trimmedInput && !hasAttachments) {
       showError('Type a message or attach a file to send.');
@@ -2249,15 +2251,11 @@ const ResonantChatPage: React.FC = () => {
   // Auto-send pending initial message from hero section or floating widget
   useEffect(() => {
     if (pendingInitialMessage && !isLoading) {
-      setInput(pendingInitialMessage);
+      const msg = pendingInitialMessage;
+      setInput(msg);
       setPendingInitialMessage(null);
-      // Trigger send after a short delay to ensure input is set
-      setTimeout(() => {
-        const sendButton = document.querySelector('[aria-label="Send message"]') as HTMLButtonElement;
-        if (sendButton) {
-          sendButton.click();
-        }
-      }, 100);
+      // Pass message directly to avoid stale closure
+      handleSend(msg);
     }
   }, [pendingInitialMessage, isLoading]);
 
@@ -3148,16 +3146,18 @@ const ResonantChatPage: React.FC = () => {
 
   const handleMessageSaveEdit = () => {
     if (!editingMessage || !editMessageContent.trim()) return;
+    const editContent = editMessageContent.trim();
     setMessages(prev => prev.map(m =>
-      m.id === editingMessage ? { ...m, content: editMessageContent } : m
+      m.id === editingMessage ? { ...m, content: editContent } : m
     ));
+    const message = messages.find(m => m.id === editingMessage);
     setEditingMessage(null);
     setEditMessageContent('');
-    // Resend message if it's a user message
-    const message = messages.find(m => m.id === editingMessage);
+    // Resend message if it's a user message — pass content directly
+    // to avoid stale closure (setInput + setTimeout doesn't work)
     if (message?.role === 'user') {
-      setInput(editMessageContent);
-      setTimeout(() => handleSend(), 100);
+      setInput(editContent);
+      handleSend(editContent);
     }
   };
 
