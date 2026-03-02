@@ -1578,7 +1578,7 @@ const OwnerDashboard: React.FC = () => {
           </div>
           <div style={{ marginTop: '10px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <button
-              onClick={() => setActiveTab('chat-skills')}
+              onClick={() => navigate('/owner/chat-skills-control')}
               style={{
                 padding: '8px 10px',
                 borderRadius: '8px',
@@ -1592,7 +1592,7 @@ const OwnerDashboard: React.FC = () => {
               Open Chat Skills Control
             </button>
             <button
-              onClick={() => setActiveTab('agents')}
+              onClick={() => navigate('/owner/agents-control')}
               style={{
                 padding: '8px 10px',
                 borderRadius: '8px',

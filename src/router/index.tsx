@@ -92,6 +92,8 @@ const NotFoundPage = lazy(() => import('../pages/NotFound/NotFoundPage'));
 
 // Owner-Only ML Training Page
 const MLTrainingPage = lazy(() => import('../pages/Owner/MLTraining'));
+const ChatSkillsControlPage = lazy(() => import('../pages/Owner/ChatSkillsControlPage'));
+const AgentsControlPage = lazy(() => import('../pages/Owner/AgentsControlPage'));
 
 // DSID-P Protocol Dashboard Pages
 const ProtocolDashboard = lazy(() => import('../pages/Protocol/ProtocolDashboard'));
@@ -217,6 +219,15 @@ const router = createBrowserRouter([
   {
     path: '/owner',
     element: <Navigate to="/owner-dashboard" replace />
+  },
+  // Owner-only dedicated pages
+  {
+    path: '/owner/chat-skills-control',
+    element: withShell(<ChatSkillsControlPage />)
+  },
+  {
+    path: '/owner/agents-control',
+    element: withShell(<AgentsControlPage />)
   },
   // V8 Engine Page - For superusers only
   {
