@@ -16,7 +16,7 @@ interface LimitWarningBannerProps {
 }
 
 const LIMIT_LABELS: Record<string, { name: string; upgradeText: string }> = {
-  credits: { name: 'credits', upgradeText: '50,000 credits/month' },
+  credits: { name: 'credits', upgradeText: '499,000 credits/month' },
   conversations: { name: 'conversations', upgradeText: '1,000 conversations' },
   messages: { name: 'messages today', upgradeText: '1,000 messages/day' },
   agents: { name: 'agents', upgradeText: '20 agents' },

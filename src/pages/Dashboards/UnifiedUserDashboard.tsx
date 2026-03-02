@@ -273,7 +273,7 @@ const UnifiedUserDashboard: React.FC = () => {
                 disabled={upgradeLoading}
               >
                 <ArrowUpRight size={16} />
-                {upgradeLoading ? 'Loading...' : 'Upgrade to Plus - $49/mo'}
+                {upgradeLoading ? 'Loading...' : 'Upgrade to Plus - $499/mo'}
               </button>
             </div>
           ) : (
@@ -322,12 +322,12 @@ const UnifiedUserDashboard: React.FC = () => {
               </div>
               <div className={styles.subscriptionBarText}>
                 <h3>Upgrade to Plus Plan</h3>
-                <p>50,000 credits/month • Unlimited conversations • Priority support</p>
+                <p>499,000 credits/month • Unlimited conversations • Priority support</p>
               </div>
             </div>
             <div className={styles.subscriptionBarRight}>
               <span className={styles.subscriptionBarPrice}>
-                <span className={styles.priceAmount}>$49</span>
+                <span className={styles.priceAmount}>$499</span>
                 <span className={styles.pricePeriod}>/month</span>
               </span>
               <button 
@@ -479,7 +479,7 @@ const UnifiedUserDashboard: React.FC = () => {
             <Crown size={32} />
             <div>
               <h2>Unlock More with Plus</h2>
-              <p>50,000 credits/month, autonomous agents, workflows, and more!</p>
+              <p>499,000 credits/month, autonomous agents, workflows, and more!</p>
             </div>
           </div>
           <Button 
@@ -489,7 +489,7 @@ const UnifiedUserDashboard: React.FC = () => {
             disabled={upgradeLoading}
           >
             <Crown size={18} />
-            {upgradeLoading ? 'Loading...' : 'Upgrade to Plus - $49/month'}
+            {upgradeLoading ? 'Loading...' : 'Upgrade to Plus - $499/month'}
           </Button>
         </section>
       )}

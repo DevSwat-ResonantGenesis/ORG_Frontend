@@ -162,7 +162,7 @@ const UpgradePrompt: React.FC<{ requiredPlan: string }> = ({ requiredPlan }) => 
           fontSize: '0.875rem',
           color: 'var(--text-tertiary)',
         }}>
-          {requiredPlan === 'plus' && 'Plus plan starts at $49/month'}
+          {requiredPlan === 'plus' && 'Plus plan starts at $499/month'}
           {requiredPlan === 'enterprise' && 'Contact us for Enterprise pricing'}
         </p>
       </div>
