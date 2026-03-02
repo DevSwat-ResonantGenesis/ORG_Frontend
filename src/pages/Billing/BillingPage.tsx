@@ -108,21 +108,9 @@ const BillingPage = () => {
     }
   };
 
-  const handleUpgradePlan = async () => {
-    try {
-      const response = await fastapiClient.post('/billing/checkout/subscription', {
-        plan_id: 'plus',
-        billing_cycle: 'monthly',
-        success_url: `${window.location.origin}/billing?success=upgrade`,
-        cancel_url: `${window.location.origin}/billing?canceled=true`,
-      });
-
-      if (response.data?.checkout_url || response.data?.url) {
-        window.location.href = response.data.checkout_url || response.data.url;
-      }
-    } catch (err: any) {
-      setError(err?.response?.data?.detail || 'Failed to initiate upgrade');
-    }
+  const handleUpgradePlan = () => {
+    // Direct redirect to Stripe Payment Link for Plus $499/mo
+    window.location.href = 'https://buy.stripe.com/7sYaEW7owgbHclrb7f33W0b';
   };
 
   const handleAddPaymentMethod = async () => {

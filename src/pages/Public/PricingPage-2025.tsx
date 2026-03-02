@@ -33,7 +33,13 @@ const PricingPage: React.FC = () => {
       return;
     }
 
-    // For paid plans, redirect to Stripe checkout
+    // Plus plan - redirect directly to Stripe Payment Link
+    if (planId === 'plus') {
+      window.location.href = 'https://buy.stripe.com/7sYaEW7owgbHclrb7f33W0b';
+      return;
+    }
+
+    // For other paid plans, redirect to Stripe checkout via backend
     setLoadingPlan(planId);
     try {
       const response = await fetch('/api/billing/checkout/subscription', {

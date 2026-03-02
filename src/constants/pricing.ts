@@ -20,6 +20,14 @@ export interface PlatformPlan {
  * Platform Plans - Main product bundles
  * Aligned with pricing.yaml: developer, plus, enterprise
  */
+/**
+ * Stripe Payment Links - Direct checkout URLs
+ * These bypass the backend checkout session and go straight to Stripe
+ */
+export const STRIPE_PAYMENT_LINKS = {
+  plus_monthly: 'https://buy.stripe.com/7sYaEW7owgbHclrb7f33W0b',
+};
+
 export const PLATFORM_PLANS: PlatformPlan[] = [
   {
     id: 'developer',

@@ -126,7 +126,10 @@ export const PlanComparisonWidget: React.FC<PlanComparisonWidgetProps> = ({
       
       <button 
         className={styles.upgradeBtn}
-        onClick={() => navigate('/pricing')}
+        onClick={() => nextPlan === 'plus' 
+          ? (window.location.href = 'https://buy.stripe.com/7sYaEW7owgbHclrb7f33W0b')
+          : navigate('/pricing')
+        }
       >
         <Crown size={16} />
         {nextPlan === 'plus' ? 'Upgrade to Plus - $499/mo' : 'Contact Sales'}

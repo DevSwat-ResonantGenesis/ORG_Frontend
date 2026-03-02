@@ -245,14 +245,24 @@ const PricingPage: React.FC = () => {
       return;
     }
     
-    // If user is logged in, go directly to Stripe checkout
-    if (isAuthenticated()) {
-      // Free tier - just go to dashboard
-      if (plan.id === 'developer') {
+    // Free tier - just go to dashboard or signup
+    if (plan.id === 'developer') {
+      if (isAuthenticated()) {
         navigate('/dashboard');
-        return;
+      } else {
+        navigate('/signup', { state: { plan: plan.id, billingPeriod } });
       }
-      
+      return;
+    }
+    
+    // Plus plan - redirect directly to Stripe Payment Link
+    if (plan.id === 'plus') {
+      window.location.href = 'https://buy.stripe.com/7sYaEW7owgbHclrb7f33W0b';
+      return;
+    }
+    
+    // Fallback: backend checkout for other plans
+    if (isAuthenticated()) {
       setCheckoutLoading(plan.id);
       try {
         const response = await fetch('/api/billing/checkout/subscription', {
