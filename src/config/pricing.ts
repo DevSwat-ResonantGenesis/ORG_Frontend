@@ -199,15 +199,15 @@ export const PLANS: Plan[] = [
     ],
   },
 
-  // Plus - $49/month (RECOMMENDED)
+  // Plus - $499/month (RECOMMENDED)
   {
     id: 'plus',
     name: 'Plus',
     badge: 'Professional',
     price: {
-      monthly: 49,
-      yearly: 490,
-      display: '$49',
+      monthly: 499,
+      yearly: 4990,
+      display: '$499',
       period: '/month',
     },
     description: 'For serious builders, teams, and power users. Unlock autonomous agents, full AI assistance, and advanced features.',

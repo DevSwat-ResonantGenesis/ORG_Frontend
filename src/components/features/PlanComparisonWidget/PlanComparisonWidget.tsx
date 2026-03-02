@@ -129,7 +129,7 @@ export const PlanComparisonWidget: React.FC<PlanComparisonWidgetProps> = ({
         onClick={() => navigate('/pricing')}
       >
         <Crown size={16} />
-        {nextPlan === 'plus' ? 'Upgrade to Plus - $49/mo' : 'Contact Sales'}
+        {nextPlan === 'plus' ? 'Upgrade to Plus - $499/mo' : 'Contact Sales'}
       </button>
     </div>
   );

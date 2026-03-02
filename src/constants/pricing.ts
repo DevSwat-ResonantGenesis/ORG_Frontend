@@ -32,8 +32,8 @@ export const PLATFORM_PLANS: PlatformPlan[] = [
   {
     id: 'plus',
     name: 'Plus',
-    monthlyPrice: 49,
-    yearlyPrice: 490,
+    monthlyPrice: 499,
+    yearlyPrice: 4990,
     description: 'For serious builders, teams, and power users with autonomous agents',
     popular: true,
   },

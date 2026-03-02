@@ -193,7 +193,7 @@ const BillingPage = () => {
             <div className={styles.planInfo}>
               <h3>{planDetails?.name || plan}</h3>
               <p className={styles.planPrice}>
-                {plan === 'developer' ? 'Free' : `$${planDetails?.price?.monthly || 49}/month`}
+                {plan === 'developer' ? 'Free' : `$${planDetails?.price?.monthly || 499}/month`}
               </p>
               <ul className={styles.planFeatures}>
                 {planDetails?.features?.slice(0, 4).map((feature, i) => (

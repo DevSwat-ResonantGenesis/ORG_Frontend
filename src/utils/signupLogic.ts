@@ -152,12 +152,12 @@ export const PLANS: PlanOption[] = [
       'Community support only',
     ],
   },
-  // Plus - $49/month (RECOMMENDED)
+  // Plus - $499/month (RECOMMENDED)
   {
     id: 'plus',
     name: 'Plus',
     category: 'platform',
-    price: { monthly: 49, yearly: 490 },
+    price: { monthly: 499, yearly: 4990 },
     recommended: true,
     bestFor: 'Serious builders and power users',
     limits: {

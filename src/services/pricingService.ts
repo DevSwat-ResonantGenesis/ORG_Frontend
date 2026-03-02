@@ -28,7 +28,7 @@ const DEFAULT_PRICING = {
     plus: {
       id: 'plus',
       name: 'Plus',
-      price: { monthly: 49, yearly: 490 },
+      price: { monthly: 499, yearly: 4990 },
       credits: { included: 50000, rollover: true, rolloverLimit: 25000, topups: true, topupPrice: 8, topupAmount: 10000 },
       limits: {
         agents: { active: 20, autonomousMode: true, teams: true },
@@ -312,7 +312,7 @@ export const pricingService = {
           plus: {
             id: 'plus',
             name: 'Plus',
-            price: { monthly: data.plus.price || 49, yearly: (data.plus.price || 49) * 10 },
+            price: { monthly: data.plus.price || 499, yearly: (data.plus.price || 499) * 10 },
             credits: { 
               included: data.plus.credits || 50000, 
               rollover: true, 
@@ -359,8 +359,8 @@ export const pricingService = {
         plus: {
           ...DEFAULT_PRICING.plans.plus,
           price: { 
-            monthly: data.plusPrice || 49, 
-            yearly: (data.plusPrice || 49) * 10 
+            monthly: data.plusPrice || 499, 
+            yearly: (data.plusPrice || 499) * 10 
           },
           credits: {
             ...DEFAULT_PRICING.plans.plus.credits,
