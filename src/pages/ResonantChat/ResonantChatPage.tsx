@@ -2443,10 +2443,23 @@ const ResonantChatPage: React.FC = () => {
       });
 
       const messageObj = typeof resonantResponse.message === 'object' ? resonantResponse.message : null;
+      // Handle both string and object message responses (same as handleSend)
+      let regenContent = '';
+      if (typeof resonantResponse?.message === 'string') {
+        regenContent = resonantResponse.message;
+      } else if (resonantResponse?.message?.content) {
+        regenContent = resonantResponse.message.content;
+      } else if (typeof resonantResponse?.message === 'object' && resonantResponse.message) {
+        regenContent = (resonantResponse.message as any).content || '';
+      }
+      if (!regenContent) {
+        showError('Received empty response. Please try again.');
+        return;
+      }
       const newMessage: Message = {
         id: messageObj?.id || crypto.randomUUID(),
         role: 'assistant',
-        content: resonantResponse.message.content,
+        content: regenContent,
         timestamp: new Date(),
         aiProvider: resonantResponse.aiProvider,
         hash: resonantResponse.hash,
