@@ -7,9 +7,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getSessionData } from '../../utils/auth-cookies';
-import { ENV } from '../../config/env';
-
-const API_BASE = ENV.apiUrl;
+import fastapiClient from '../../api/fastapiClient';
 
 interface ChatSkill {
   id: string;
@@ -53,22 +51,14 @@ const ChatSkillsControlPage: React.FC = () => {
     fetchSkills();
   }, []);
 
-  const getAuthToken = () => {
-    return localStorage.getItem('owner_token') || localStorage.getItem('access_token');
-  };
-
   const fetchSkills = async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${API_BASE}/skills/list`, {
-        headers: { 'Authorization': `Bearer ${getAuthToken()}` },
-      });
-      if (!res.ok) throw new Error(`Failed to fetch skills: ${res.status}`);
-      const data = await res.json();
-      setSkills(data.skills || []);
+      const res = await fastapiClient.get('/skills/list');
+      setSkills(res.data?.skills || []);
     } catch (err: any) {
-      setError(err.message || 'Failed to load skills');
+      setError(err?.message || err?.error || 'Failed to load skills');
     } finally {
       setLoading(false);
     }
@@ -76,15 +66,10 @@ const ChatSkillsControlPage: React.FC = () => {
 
   const handleToggleSkill = async (skillId: string, enabled: boolean) => {
     try {
-      const res = await fetch(`${API_BASE}/skills/toggle`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${getAuthToken()}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ skill_id: skillId, enabled }),
-      });
-      if (!res.ok) throw new Error(`Toggle failed: ${res.status}`);
+      await fastapiClient.post('/skills/toggle', { skill_id: skillId, enabled });
       setSkills(prev => prev.map(s => s.id === skillId ? { ...s, enabled } : s));
     } catch (err: any) {
-      alert('Failed to toggle skill: ' + (err.message || 'Unknown error'));
+      alert('Failed to toggle skill: ' + (err?.message || err?.error || 'Unknown error'));
     }
   };
 
@@ -103,15 +88,7 @@ const ChatSkillsControlPage: React.FC = () => {
         trigger_keywords: newSkill.trigger_keywords.split(',').map(k => k.trim()).filter(Boolean),
         capabilities: newSkill.capabilities.split(',').map(c => c.trim()).filter(Boolean),
       };
-      const res = await fetch(`${API_BASE}/skills/create`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${getAuthToken()}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.detail || `Create failed: ${res.status}`);
-      }
+      await fastapiClient.post('/skills/create', payload);
       setShowCreateForm(false);
       setNewSkill({ name: '', description: '', icon: '🧠', category: 'ai', credit_cost: 1, agent_type: 'reasoning', trigger_keywords: '', capabilities: '' });
       fetchSkills();
