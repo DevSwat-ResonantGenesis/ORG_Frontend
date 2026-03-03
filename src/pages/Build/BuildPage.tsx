@@ -338,7 +338,11 @@ export const BuildPage: React.FC = () => {
   const loadTemplates = async () => {
     try {
       const response = await listTemplates();
-      setTemplates(Array.isArray(response?.templates) ? response.templates : []);
+      const apiTemplates = Array.isArray(response?.templates) ? response.templates : [];
+      if (apiTemplates.length > 0) {
+        setTemplates(apiTemplates);
+      }
+      // If API returns empty array, keep pre-populated defaults from useState
     } catch (err) {
       // Use default templates if API fails
       setTemplates([
