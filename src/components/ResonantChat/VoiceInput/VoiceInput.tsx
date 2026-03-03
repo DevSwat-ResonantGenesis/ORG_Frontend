@@ -140,7 +140,6 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
         // Restart if still supposed to be listening
         try {
           console.log('🎤 Restarting recognition...');
-          recognition.lang = speechLanguageRef.current || 'en-US';
           recognition.start();
         } catch (e) {
           console.error('🎤 Failed to restart:', e);
@@ -156,7 +155,6 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
     return () => {
       if (recognitionRef.current) {
         console.log('🎤 Cleaning up speech recognition');
-        isListeningRef.current = false;
         recognitionRef.current.stop();
       }
     };

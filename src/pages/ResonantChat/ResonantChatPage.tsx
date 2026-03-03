@@ -52,6 +52,7 @@ import { ModuleOutputs } from '@/components/ResonantChat/ModuleOutputs';
 import { TeamSelector } from '@/components/ResonantChat/TeamSelector';
 import { ENV } from '@/config/env';
 import { FloatingHome } from '@/components/ResonantChat/FloatingHome';
+import VoiceConversationModal from '@/components/ResonantChat/VoiceConversation/VoiceConversationModal';
 import type { ProjectFile } from '@/components/ResonantChat/SplitView';
 import { SSEClient } from '@/utils/sseClient';
 import type { WebSocketMessage } from '@/utils/websocketClient';
@@ -882,6 +883,7 @@ const ResonantChatPage: React.FC = () => {
   const [showShortcutsPanel, setShowShortcutsPanel] = useState(false);
 
   const [voiceInInput, setVoiceInInput] = useState(false);
+  const [showVoiceModal, setShowVoiceModal] = useState(false);
 
   // Split View for Code Generation (state only - logic moved to SplitViewModule)
   const [splitViewEnabled, setSplitViewEnabled] = useState(() => {
@@ -4328,7 +4330,7 @@ const ResonantChatPage: React.FC = () => {
           onShowSettings={() => setShowSettingsSticker(!showSettingsSticker)}
           showSettings={showSettingsSticker}
           voiceInInput={voiceInInput}
-          onVoiceConversation={() => setVoiceInInput((v) => !v)}
+          onVoiceConversation={() => setShowVoiceModal(true)}
           onCopyChat={() => {
             if (messages.length === 0) {
               warning('No messages to copy');
@@ -5797,6 +5799,9 @@ const ResonantChatPage: React.FC = () => {
           document.body
         )}
 
+      {showVoiceModal && (
+        <VoiceConversationModal onClose={() => setShowVoiceModal(false)} />
+      )}
     </>
   );
 };
