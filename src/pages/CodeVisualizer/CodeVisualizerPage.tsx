@@ -37,6 +37,13 @@ const CodeVisualizerPage: React.FC = () => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [activeAnalysisId, setActiveAnalysisId] = useState<string | null>(null);
 
+  // GitHub export state
+  const [githubConnected, setGithubConnected] = useState(false);
+  const [githubUsername, setGithubUsername] = useState<string | null>(null);
+  const [exportingId, setExportingId] = useState<string | null>(null);
+  const [exportRepoName, setExportRepoName] = useState('resonant-cv-reports');
+  const [exportTargetId, setExportTargetId] = useState<string | null>(null);
+
   useEffect(() => {
     if (!isAuthenticated()) {
       navigate('/signup', { replace: true });
@@ -64,6 +71,42 @@ const CodeVisualizerPage: React.FC = () => {
   useEffect(() => {
     if (panelOpen) fetchAnalyses();
   }, [panelOpen, fetchAnalyses]);
+
+  // Check GitHub connection status when panel opens
+  useEffect(() => {
+    if (!panelOpen) return;
+    fetch(`${apiUrl}/api/v1/github/status`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : { connected: false })
+      .then(d => {
+        setGithubConnected(d.connected || false);
+        setGithubUsername(d.username || null);
+      })
+      .catch(() => setGithubConnected(false));
+  }, [panelOpen, apiUrl]);
+
+  const handleExportToGitHub = async (analysisId: string) => {
+    if (!githubConnected) {
+      window.location.href = `${apiUrl}/api/v1/github/oauth/authorize`;
+      return;
+    }
+    setExportingId(analysisId);
+    try {
+      const res = await fetch(`${apiUrl}/api/v1/github/export/analysis`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ analysis_id: analysisId, repo_name: exportRepoName }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Export failed');
+      setExportTargetId(null);
+      window.open(data.file_url, '_blank');
+    } catch (e: any) {
+      alert(`GitHub export failed: ${e.message}`);
+    } finally {
+      setExportingId(null);
+    }
+  };
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this saved analysis? This cannot be undone.')) return;
@@ -143,7 +186,7 @@ const CodeVisualizerPage: React.FC = () => {
             padding: '16px 16px 12px', borderBottom: '1px solid #2d2d4e',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}>
-            <div>
+            <div style={{ flex: 1 }}>
               <div style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 15 }}>🗂 Saved Analyses</div>
               {storageLimit !== null && (
                 <div style={{ color: '#94a3b8', fontSize: 11, marginTop: 3 }}>
@@ -160,8 +203,24 @@ const CodeVisualizerPage: React.FC = () => {
               {storageLimit === null && (
                 <div style={{ color: '#64748b', fontSize: 11, marginTop: 2 }}>Unlimited storage</div>
               )}
+              {/* GitHub status pill */}
+              <div style={{ marginTop: 6 }}>
+                {githubConnected ? (
+                  <span style={{
+                    background: 'rgba(34,197,94,0.1)', color: '#4ade80',
+                    border: '1px solid rgba(34,197,94,0.3)', borderRadius: 10,
+                    padding: '2px 8px', fontSize: 10, fontWeight: 600,
+                  }}>🐙 GitHub: {githubUsername}</span>
+                ) : (
+                  <button onClick={() => { window.location.href = `${apiUrl}/api/v1/github/oauth/authorize`; }}
+                    style={{
+                      background: 'none', border: '1px solid #27272a', color: '#71717a',
+                      borderRadius: 10, padding: '2px 8px', fontSize: 10, cursor: 'pointer',
+                    }}>🐙 Connect GitHub</button>
+                )}
+              </div>
             </div>
-            <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
               <button onClick={fetchAnalyses} style={{
                 background: 'none', border: '1px solid #2d2d4e', color: '#94a3b8',
                 borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 12,
@@ -231,15 +290,59 @@ const CodeVisualizerPage: React.FC = () => {
                     style={{ background: 'none', border: 'none', color: '#4b5563', cursor: 'pointer', fontSize: 14, padding: '2px 4px', flexShrink: 0 }}
                     title="Delete">🗑</button>
                 </div>
-                <button onClick={() => handleLoad(a.analysis_id)} style={{
-                  marginTop: 8, width: '100%',
-                  background: activeAnalysisId === a.analysis_id ? '#4c1d95' : '#1e1e3a',
-                  color: activeAnalysisId === a.analysis_id ? '#c4b5fd' : '#7c3aed',
-                  border: `1px solid ${activeAnalysisId === a.analysis_id ? '#7c3aed' : '#2d2d4e'}`,
-                  borderRadius: 6, padding: '6px 0', fontSize: 12, cursor: 'pointer', fontWeight: 600,
-                }}>
-                  {activeAnalysisId === a.analysis_id ? '✓ Currently Loaded' : '▶ Load Analysis'}
-                </button>
+                <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                  <button onClick={() => handleLoad(a.analysis_id)} style={{
+                    flex: 1,
+                    background: activeAnalysisId === a.analysis_id ? '#4c1d95' : '#1e1e3a',
+                    color: activeAnalysisId === a.analysis_id ? '#c4b5fd' : '#7c3aed',
+                    border: `1px solid ${activeAnalysisId === a.analysis_id ? '#7c3aed' : '#2d2d4e'}`,
+                    borderRadius: 6, padding: '6px 0', fontSize: 12, cursor: 'pointer', fontWeight: 600,
+                  }}>
+                    {activeAnalysisId === a.analysis_id ? '✓ Loaded' : '▶ Load'}
+                  </button>
+                  <button
+                    onClick={() => setExportTargetId(exportTargetId === a.analysis_id ? null : a.analysis_id)}
+                    title="Push analysis report to GitHub"
+                    style={{
+                      background: '#0d1117', color: '#8b949e',
+                      border: '1px solid #30363d', borderRadius: 6,
+                      padding: '6px 8px', fontSize: 11, cursor: 'pointer',
+                    }}
+                  >🐙</button>
+                </div>
+                {/* Inline GitHub export form */}
+                {exportTargetId === a.analysis_id && (
+                  <div style={{
+                    marginTop: 8, background: '#0d1117', border: '1px solid #30363d',
+                    borderRadius: 8, padding: '10px 10px 8px',
+                  }}>
+                    <div style={{ color: '#8b949e', fontSize: 10, marginBottom: 6 }}>
+                      Push report to GitHub repo:
+                    </div>
+                    <input
+                      value={exportRepoName}
+                      onChange={e => setExportRepoName(e.target.value)}
+                      placeholder="resonant-cv-reports"
+                      style={{
+                        width: '100%', boxSizing: 'border-box',
+                        background: '#161b22', border: '1px solid #30363d',
+                        color: '#e6edf3', borderRadius: 6, padding: '5px 8px',
+                        fontSize: 11, marginBottom: 6, outline: 'none',
+                      }}
+                    />
+                    <button
+                      onClick={() => handleExportToGitHub(a.analysis_id)}
+                      disabled={exportingId === a.analysis_id}
+                      style={{
+                        width: '100%', background: exportingId === a.analysis_id ? '#161b22' : '#238636',
+                        color: '#fff', border: 'none', borderRadius: 6,
+                        padding: '6px 0', fontSize: 11, cursor: 'pointer', fontWeight: 600,
+                      }}
+                    >
+                      {exportingId === a.analysis_id ? 'Pushing...' : (githubConnected ? '🐙 Push to GitHub' : '🐙 Connect & Push')}
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
