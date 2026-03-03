@@ -229,7 +229,11 @@ export const BuildPage: React.FC = () => {
   const [projectName, setProjectName] = useState('');
   const [description, setDescription] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('fullstack_react_fastapi');
-  const [templates, setTemplates] = useState<ProjectTemplate[]>([]);
+  const [templates, setTemplates] = useState<ProjectTemplate[]>([
+    { type: 'fullstack_react_fastapi', name: 'Fullstack React + FastAPI', description: 'Complete fullstack app with React frontend and FastAPI backend', tech_stack: ['React', 'FastAPI', 'PostgreSQL'], estimated_files: 25, estimated_cost: 500 },
+    { type: 'frontend_react', name: 'React Frontend', description: 'Modern React SPA with TypeScript and TailwindCSS', tech_stack: ['React', 'TypeScript', 'TailwindCSS'], estimated_files: 15, estimated_cost: 300 },
+    { type: 'backend_fastapi', name: 'FastAPI Backend', description: 'Python REST API with SQLAlchemy and async support', tech_stack: ['FastAPI', 'SQLAlchemy', 'PostgreSQL'], estimated_files: 12, estimated_cost: 250 },
+  ]);
   
   // Build state
   const [isBuilding, setIsBuilding] = useState(false);
