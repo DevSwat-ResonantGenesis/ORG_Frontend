@@ -1,33 +1,259 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../../utils/apiUrl';
 import { isAuthenticated } from '../../utils/auth-cookies';
 import styles from './CodeVisualizerPage.module.css';
 
+interface SavedAnalysis {
+  analysis_id: string;
+  project_name: string;
+  source: 'github' | 'upload' | string;
+  repo_url: string;
+  stats: Record<string, number>;
+  storage_bytes: number;
+  created_at: string | null;
+}
+
+const formatBytes = (b: number) => {
+  if (b < 1024) return `${b}B`;
+  if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)}KB`;
+  return `${(b / 1024 / 1024).toFixed(1)}MB`;
+};
+
+const formatDate = (iso: string | null) => {
+  if (!iso) return '';
+  try { return new Date(iso).toLocaleDateString(); } catch { return iso.slice(0, 10); }
+};
+
 const CodeVisualizerPage: React.FC = () => {
   const navigate = useNavigate();
   const apiUrl = useMemo(() => getApiUrl(), []);
 
-  // Redirect to signup if not logged in
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [analyses, setAnalyses] = useState<SavedAnalysis[]>([]);
+  const [storageLimit, setStorageLimit] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [activeAnalysisId, setActiveAnalysisId] = useState<string | null>(null);
+
   useEffect(() => {
     if (!isAuthenticated()) {
       navigate('/signup', { replace: true });
     }
   }, [navigate]);
 
-  const iframeSrc = useMemo(() => {
-    const qs = typeof window !== 'undefined' ? (window.location.search || '') : '';
-    return `${apiUrl}/api/v1/code-visualizer-ui/${qs}`;
+  const fetchAnalyses = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`${apiUrl}/api/v1/code-visualizer-ui/api/v1/analyses`, {
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      setAnalyses(data.analyses || []);
+      setStorageLimit(data.storage_limit ?? null);
+    } catch (e: any) {
+      setError(e.message || 'Failed to load analyses');
+    } finally {
+      setLoading(false);
+    }
   }, [apiUrl]);
 
+  useEffect(() => {
+    if (panelOpen) fetchAnalyses();
+  }, [panelOpen, fetchAnalyses]);
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Delete this saved analysis? This cannot be undone.')) return;
+    setDeletingId(id);
+    try {
+      const res = await fetch(`${apiUrl}/api/v1/code-visualizer-ui/api/v1/analyses/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setAnalyses(prev => prev.filter(a => a.analysis_id !== id));
+      if (activeAnalysisId === id) setActiveAnalysisId(null);
+    } catch (e: any) {
+      alert(`Delete failed: ${e.message}`);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleLoad = (id: string) => {
+    setActiveAnalysisId(id);
+    setPanelOpen(false);
+  };
+
+  const iframeSrc = useMemo(() => {
+    const base = `${apiUrl}/api/v1/code-visualizer-ui/`;
+    return activeAnalysisId ? `${base}?analysis_id=${activeAnalysisId}` : base;
+  }, [apiUrl, activeAnalysisId]);
+
+  const usedCount = analyses.length;
+  const limitPct = storageLimit ? Math.min(100, Math.round((usedCount / storageLimit) * 100)) : null;
+
   return (
-    <div className={styles.container} style={{ padding: 0, margin: 0, maxWidth: 'none' }}>
+    <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
+      {/* Main CV iframe */}
       <iframe
+        key={iframeSrc}
         title="Code Visualizer"
         src={iframeSrc}
-        style={{ width: '100vw', height: '100vh', border: '0', display: 'block' }}
+        style={{ width: '100%', height: '100%', border: 0, display: 'block' }}
         allow="fullscreen"
       />
+
+      {/* Saved Analyses toggle button */}
+      <button
+        onClick={() => setPanelOpen(o => !o)}
+        style={{
+          position: 'fixed', top: 16, right: panelOpen ? 368 : 16, zIndex: 1000,
+          background: '#1a1a2e', color: '#a78bfa', border: '1px solid #7c3aed',
+          borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 600,
+          cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
+          boxShadow: '0 2px 12px rgba(124,58,237,0.4)',
+          transition: 'right 0.25s',
+        }}
+        title="Your saved analyses"
+      >
+        <span>🗂</span> Saved Analyses
+        {analyses.length > 0 && (
+          <span style={{
+            background: '#7c3aed', color: '#fff', borderRadius: 10,
+            padding: '1px 7px', fontSize: 11, marginLeft: 4,
+          }}>{analyses.length}</span>
+        )}
+      </button>
+
+      {/* Sidebar panel */}
+      {panelOpen && (
+        <div style={{
+          position: 'fixed', top: 0, right: 0, width: 360, height: '100vh',
+          background: '#0f0f1a', borderLeft: '1px solid #2d2d4e',
+          zIndex: 999, display: 'flex', flexDirection: 'column',
+          boxShadow: '-4px 0 24px rgba(0,0,0,0.5)',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+        }}>
+          {/* Header */}
+          <div style={{
+            padding: '16px 16px 12px', borderBottom: '1px solid #2d2d4e',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          }}>
+            <div>
+              <div style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 15 }}>🗂 Saved Analyses</div>
+              {storageLimit !== null && (
+                <div style={{ color: '#94a3b8', fontSize: 11, marginTop: 3 }}>
+                  {usedCount} / {storageLimit} used
+                  <div style={{ marginTop: 4, height: 3, background: '#2d2d4e', borderRadius: 2 }}>
+                    <div style={{
+                      width: `${limitPct}%`, height: '100%', borderRadius: 2,
+                      background: (limitPct ?? 0) > 80 ? '#ef4444' : '#7c3aed',
+                      transition: 'width 0.3s',
+                    }} />
+                  </div>
+                </div>
+              )}
+              {storageLimit === null && (
+                <div style={{ color: '#64748b', fontSize: 11, marginTop: 2 }}>Unlimited storage</div>
+              )}
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button onClick={fetchAnalyses} style={{
+                background: 'none', border: '1px solid #2d2d4e', color: '#94a3b8',
+                borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 12,
+              }}>↻</button>
+              <button onClick={() => setPanelOpen(false)} style={{
+                background: 'none', border: 'none', color: '#64748b',
+                fontSize: 18, cursor: 'pointer', padding: '0 4px',
+              }}>✕</button>
+            </div>
+          </div>
+
+          {/* Body */}
+          <div style={{ flex: 1, overflowY: 'auto', padding: 12 }}>
+            {loading && (
+              <div style={{ color: '#64748b', textAlign: 'center', padding: 32, fontSize: 13 }}>Loading...</div>
+            )}
+            {error && !loading && (
+              <div style={{
+                color: '#f87171', background: '#1c1c2e', borderRadius: 8,
+                padding: 12, fontSize: 12, marginBottom: 8,
+              }}>{error}</div>
+            )}
+            {!loading && !error && analyses.length === 0 && (
+              <div style={{ color: '#64748b', fontSize: 13, textAlign: 'center', padding: '40px 16px' }}>
+                <div style={{ fontSize: 32, marginBottom: 8 }}>📭</div>
+                <div>No saved analyses yet.</div>
+                <div style={{ marginTop: 6, color: '#4b5563' }}>Scan a GitHub repo or upload code to get started.</div>
+              </div>
+            )}
+            {!loading && analyses.map(a => (
+              <div key={a.analysis_id} style={{
+                background: activeAnalysisId === a.analysis_id ? '#1e1b4b' : '#141428',
+                border: `1px solid ${activeAnalysisId === a.analysis_id ? '#7c3aed' : '#1e1e3a'}`,
+                borderRadius: 8, padding: '10px 12px', marginBottom: 8,
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+                      <span style={{ fontSize: 14 }}>{a.source === 'github' ? '🐙' : '📦'}</span>
+                      <span style={{
+                        color: '#c4b5fd', fontWeight: 600, fontSize: 13,
+                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                      }}>{a.project_name || 'Unnamed'}</span>
+                    </div>
+                    <div style={{ color: '#6b7280', fontSize: 10, fontFamily: 'monospace', marginBottom: 4 }}>
+                      {a.analysis_id.slice(0, 16)}...
+                    </div>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                      {[['⚡', a.stats?.total_functions ?? 0, 'fn'],
+                        ['🔗', a.stats?.total_endpoints ?? 0, 'ep'],
+                        ['📄', a.stats?.total_files ?? 0, 'files']].map(([icon, val, label]) => (
+                        <span key={String(label)} style={{ color: '#475569', fontSize: 10 }}>
+                          {icon} {val} {label}
+                        </span>
+                      ))}
+                      <span style={{ color: '#374151', fontSize: 10 }}>{formatBytes(a.storage_bytes)}</span>
+                    </div>
+                    {a.repo_url && (
+                      <div style={{
+                        color: '#4b5563', fontSize: 10, marginTop: 3,
+                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                      }}>{a.repo_url.replace('https://github.com/', '')}</div>
+                    )}
+                    <div style={{ color: '#374151', fontSize: 10, marginTop: 2 }}>{formatDate(a.created_at)}</div>
+                  </div>
+                  <button onClick={() => handleDelete(a.analysis_id)} disabled={deletingId === a.analysis_id}
+                    style={{ background: 'none', border: 'none', color: '#4b5563', cursor: 'pointer', fontSize: 14, padding: '2px 4px', flexShrink: 0 }}
+                    title="Delete">🗑</button>
+                </div>
+                <button onClick={() => handleLoad(a.analysis_id)} style={{
+                  marginTop: 8, width: '100%',
+                  background: activeAnalysisId === a.analysis_id ? '#4c1d95' : '#1e1e3a',
+                  color: activeAnalysisId === a.analysis_id ? '#c4b5fd' : '#7c3aed',
+                  border: `1px solid ${activeAnalysisId === a.analysis_id ? '#7c3aed' : '#2d2d4e'}`,
+                  borderRadius: 6, padding: '6px 0', fontSize: 12, cursor: 'pointer', fontWeight: 600,
+                }}>
+                  {activeAnalysisId === a.analysis_id ? '✓ Currently Loaded' : '▶ Load Analysis'}
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Footer */}
+          <div style={{
+            padding: '10px 12px', borderTop: '1px solid #1e1e3a',
+            fontSize: 11, color: '#374151', textAlign: 'center',
+          }}>
+            Analyses persist across sessions •{' '}
+            {storageLimit !== null ? `${storageLimit - usedCount} slots remaining` : 'Unlimited storage'}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
