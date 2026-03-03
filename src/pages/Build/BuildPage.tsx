@@ -889,18 +889,20 @@ export const BuildPage: React.FC = () => {
       const result = await syncGitHub(
         currentProjectId,
         'push',
-        `Initial commit from Project Builder: ${projectName || 'New Project'}`
+        `Initial commit from Project Builder: ${projectName || 'New Project'}`,
+        newRepoName || projectName || 'my-project'
       );
       
       if (result.success) {
         setShowGitHubModal(false);
-        alert('Successfully pushed to GitHub!');
+        const repoUrl = result.repo_url || `https://github.com/${githubStatus?.username}/${newRepoName}`;
+        alert(`Successfully pushed to GitHub!\n\nView at: ${repoUrl}`);
       } else {
         setError(result.message || 'Failed to push to GitHub');
       }
     } catch (err: any) {
       logger.error('Failed to push to GitHub', err);
-      setError(err?.message || 'Failed to push to GitHub');
+      setError(err?.response?.data?.detail || err?.message || 'Failed to push to GitHub');
     } finally {
       setIsPushingToGitHub(false);
     }

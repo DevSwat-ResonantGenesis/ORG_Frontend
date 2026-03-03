@@ -84,13 +84,15 @@ export const cloneGitHubRepo = async (
 export const syncGitHub = async (
   projectId: string,
   action: 'pull' | 'push',
-  commitMessage?: string
-): Promise<{ success: boolean; message: string }> => {
+  commitMessage?: string,
+  repoName?: string
+): Promise<{ success: boolean; message: string; repo_url?: string }> => {
   try {
     const response = await fastapiClient.post('/github/sync', {
       project_id: projectId,
-      action,
+      direction: action,
       commit_message: commitMessage,
+      repo_name: repoName,
     });
     return response.data;
   } catch (error) {
