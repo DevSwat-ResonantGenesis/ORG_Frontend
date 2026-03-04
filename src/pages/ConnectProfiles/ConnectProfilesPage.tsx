@@ -81,11 +81,15 @@ const ConnectProfilesPage: React.FC = () => {
   useEffect(() => {
     const c = searchParams.get('connect');
     if (c) { const ig = INTEGRATIONS.find(i => i.id === c); if (ig && ig.status !== 'coming_soon') setModal(ig); }
-  }, [searchParams]);
+    // Returned from GitHub OAuth flow — reload connection status
+    if (searchParams.get('github') === 'connected') loadConnections();
+  }, [searchParams, loadConnections]);
 
   const saveConn = async (id: string, token: string) => {
-    await fastapiClient.post(`/api/v1/user/integrations/${id}`, { token });
-    setConnections(p => ({ ...p, [id]: 'connected' }));
+    const res = await fastapiClient.post<{ status: string; username?: string }>(`/api/v1/user/integrations/${id}`, { token });
+    // For GitHub, show the GitHub username (not the token)
+    const display = res.data?.username || 'connected';
+    setConnections(p => ({ ...p, [id]: display }));
   };
   const disconnect = async (id: string) => {
     try { await fastapiClient.delete(`/api/v1/user/integrations/${id}`); } catch {}
@@ -174,7 +178,9 @@ const ConnectProfilesPage: React.FC = () => {
                       <div className={styles.cardFooter}>
                         {isConn ? (
                           <>
-                            <span className={styles.connectedInfo}>{connections[ig.id]}</span>
+                            <span className={styles.connectedInfo}>
+                              {ig.authType === 'oauth' ? connections[ig.id] : '••••••••'}
+                            </span>
                             <button className={`${styles.connectBtn} ${styles.danger}`} onClick={e => { e.stopPropagation(); disconnect(ig.id); }}>Disconnect</button>
                           </>
                         ) : isSoon ? (
