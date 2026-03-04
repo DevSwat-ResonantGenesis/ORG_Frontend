@@ -86,7 +86,7 @@ const CodeVisualizerPage: React.FC = () => {
 
   const handleExportToGitHub = async (analysisId: string) => {
     if (!githubConnected) {
-      window.location.href = `${apiUrl}/api/v1/github/oauth/authorize`;
+      window.location.href = `/connect-profiles?connect=github`;
       return;
     }
     setExportingId(analysisId);
@@ -212,11 +212,12 @@ const CodeVisualizerPage: React.FC = () => {
                     padding: '2px 8px', fontSize: 10, fontWeight: 600,
                   }}>🐙 GitHub: {githubUsername}</span>
                 ) : (
-                  <button onClick={() => { window.location.href = `${apiUrl}/api/v1/github/oauth/authorize`; }}
+                  <button onClick={() => { window.location.href = `/connect-profiles?connect=github`; }}
                     style={{
                       background: 'none', border: '1px solid #27272a', color: '#71717a',
                       borderRadius: 10, padding: '2px 8px', fontSize: 10, cursor: 'pointer',
-                    }}>🐙 Connect GitHub</button>
+                    }}
+                  >GitHub</button>
                 )}
               </div>
             </div>
