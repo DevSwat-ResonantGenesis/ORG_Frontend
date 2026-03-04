@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../components/ui';
+import { useThemeStore } from '../../store/themeStore';
 import { 
   SearchIcon, 
   PlayIcon, 
@@ -60,6 +61,15 @@ const faqs: FAQ[] = [
     answer: 'Use the Contact Support button in the sidebar, or email support@resonantgenesis.xyz. Enterprise customers have access to dedicated support channels.'
   }
 ];
+
+const HELP_THEME_STORAGE_KEY = 'rg_help_theme';
+
+const applyDomTheme = (t: 'light' | 'dark') => {
+  document.documentElement.setAttribute('data-theme', t);
+  document.documentElement.setAttribute('theme', t);
+  document.body.setAttribute('data-theme', t);
+  document.documentElement.style.colorScheme = t;
+};
 
 const articles: Article[] = [
   // Getting Started
@@ -203,8 +213,39 @@ const HelpCenterPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [helpTheme, setHelpTheme] = useState<'light' | 'dark'>('light');
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const previousTheme = (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || useThemeStore.getState().theme;
+    let nextHelpTheme: 'light' | 'dark' = 'light';
+
+    try {
+      const saved = localStorage.getItem(HELP_THEME_STORAGE_KEY);
+      if (saved === 'light' || saved === 'dark') nextHelpTheme = saved;
+    } catch {
+      nextHelpTheme = 'light';
+    }
+
+    setHelpTheme(nextHelpTheme);
+    applyDomTheme(nextHelpTheme);
+
+    return () => {
+      applyDomTheme(previousTheme);
+    };
+  }, []);
+
+  const toggleHelpTheme = () => {
+    const next = helpTheme === 'dark' ? 'light' : 'dark';
+    setHelpTheme(next);
+    applyDomTheme(next);
+    try {
+      localStorage.setItem(HELP_THEME_STORAGE_KEY, next);
+    } catch {
+      // ignore
+    }
+  };
 
   const categories = Array.from(new Set(articles.map(a => a.category)));
 
@@ -263,6 +304,11 @@ const HelpCenterPage: React.FC = () => {
             </div>
 
             <div className={styles.heroSearch}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 'var(--space-3)' }}>
+                <Button variant="secondary" size="sm" onClick={toggleHelpTheme}>
+                  {helpTheme === 'dark' ? 'Light mode' : 'Dark mode'}
+                </Button>
+              </div>
               <div className={styles.searchInputWrapper}>
                 <SearchIcon size={20} />
                 <input

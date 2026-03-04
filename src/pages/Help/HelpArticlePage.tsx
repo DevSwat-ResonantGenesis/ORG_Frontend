@@ -1,9 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Button, Card, Text } from '../../components/ui';
-import { goToHelp } from '../../utils/navigation';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams, Navigate, Link } from 'react-router-dom';
+import { Button } from '../../components/ui';
+import { useThemeStore } from '../../store/themeStore';
 import styles from './HelpArticlePage.module.css';
 
+const HELP_THEME_STORAGE_KEY = 'rg_help_theme';
+
+const applyDomTheme = (t: 'light' | 'dark') => {
+  document.documentElement.setAttribute('data-theme', t);
+  document.documentElement.setAttribute('theme', t);
+  document.body.setAttribute('data-theme', t);
+  document.documentElement.style.colorScheme = t;
+};
+
+const goToHelp = (navigate: ReturnType<typeof useNavigate>) => {
+  navigate('/help');
+};
 
 interface Article {
   id: string;
@@ -14,7 +26,6 @@ interface Article {
   content?: string;
 }
 
-// This would normally come from a CMS or markdown files
 const articleContent: Record<string, string> = {
   'what-is-resonantgraph': `
 # What Is ResonantGenesis?
@@ -582,31 +593,57 @@ Essential security guidelines for using ResonantGenesis safely and effectively.
   `,
 };
 
-const HelpArticlePage = () => {
-  const { category, article } = useParams<{ category: string; article: string }>();
+const HelpArticlePage: React.FC = () => {
   const navigate = useNavigate();
+  const { category, article } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+  const [helpTheme, setHelpTheme] = useState<'light' | 'dark'>('light');
+
   const [content, setContent] = useState<string>('');
 
   useEffect(() => {
-    // In a real app, this would fetch from a CMS or markdown files
-    const articleKey = article || '';
-    const articleText = articleContent[articleKey] || `
-# ${article?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Article'}
+    setIsLoading(false);
+  }, []);
 
-This article is coming soon. Our documentation team is working on comprehensive guides for all features.
+  useEffect(() => {
+    const previousTheme =
+      (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') ||
+      useThemeStore.getState().theme;
 
-## What You Can Do
+    let nextHelpTheme: 'light' | 'dark' = 'light';
+    try {
+      const saved = localStorage.getItem(HELP_THEME_STORAGE_KEY);
+      if (saved === 'light' || saved === 'dark') nextHelpTheme = saved;
+    } catch {
+      nextHelpTheme = 'light';
+    }
 
-- Browse other [Help Center articles](/help)
-- Contact [support](/help/faq/contact-support) for assistance
-- Check our [FAQ](/help/faq/general) for common questions
+    setHelpTheme(nextHelpTheme);
+    applyDomTheme(nextHelpTheme);
 
-## Related Articles
+    return () => {
+      applyDomTheme(previousTheme);
+    };
+  }, []);
 
-- [Getting Started Guide](/help/getting-started/what-is-resonantgraph)
-- [API Reference](/help/developers/api-reference)
-- [Troubleshooting Guide](/help/faq/troubleshooting)
-    `;
+  const toggleHelpTheme = () => {
+    const next = helpTheme === 'dark' ? 'light' : 'dark';
+    setHelpTheme(next);
+    applyDomTheme(next);
+    try {
+      localStorage.setItem(HELP_THEME_STORAGE_KEY, next);
+    } catch {
+      // ignore
+    }
+  };
+
+  useEffect(() => {
+    if (!article) {
+      setContent('');
+      return;
+    }
+
+    const articleText = articleContent[article] || `# Article Not Found\n\nThis tutorial does not exist yet. Go back to the [Help Center](/help).`;
     setContent(articleText);
   }, [article]);
 
@@ -771,9 +808,14 @@ This article is coming soon. Our documentation team is working on comprehensive 
               <h1>{articleTitle}</h1>
               <p className={styles.subtitle}>{categoryTitle}</p>
             </div>
-            <Button variant="secondary" size="md" onClick={() => goToHelp(navigate)}>
-              ← Back to Help Center
-            </Button>
+            <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
+              <Button variant="secondary" size="sm" onClick={toggleHelpTheme}>
+                {helpTheme === 'dark' ? 'Light mode' : 'Dark mode'}
+              </Button>
+              <Button variant="secondary" size="md" onClick={() => goToHelp(navigate)}>
+                ← Back to Help Center
+              </Button>
+            </div>
           </div>
         </div>
 
