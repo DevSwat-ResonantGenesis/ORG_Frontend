@@ -61,17 +61,20 @@ const V8ControlPanel: React.FC = () => {
   const hdr = { 'X-Dev-Token': DEV_TOKEN };
   const hdrJson = { 'Content-Type': 'application/json', 'X-Dev-Token': DEV_TOKEN };
 
+  const req = { credentials: 'include' as const };
+  const reqJson = { credentials: 'include' as const, headers: hdrJson };
+
   const fetchData = useCallback(async () => {
     setLoading(true); setError(null);
     try {
       const [sR, mR, fR, aR, frR, cR, pR] = await Promise.all([
-        fetch(V8_API_BASE + '/admin/status', { headers: hdr }),
-        fetch(V8_API_BASE + '/admin/models', { headers: hdr }),
-        fetch(V8_API_BASE + '/admin/forbidden', { headers: hdr }),
-        fetch(V8_API_BASE + '/admin/anchors', { headers: hdr }),
-        fetch(V8_API_BASE + '/admin/formula', { headers: hdr }),
-        fetch(V8_API_BASE + '/admin/corpus', { headers: hdr }),
-        fetch(V8_API_BASE + '/admin/predictions?limit=50', { headers: hdr }),
+        fetch(V8_API_BASE + '/admin/status', { ...req, headers: hdr }),
+        fetch(V8_API_BASE + '/admin/models', { ...req, headers: hdr }),
+        fetch(V8_API_BASE + '/admin/forbidden', { ...req, headers: hdr }),
+        fetch(V8_API_BASE + '/admin/anchors', { ...req, headers: hdr }),
+        fetch(V8_API_BASE + '/admin/formula', { ...req, headers: hdr }),
+        fetch(V8_API_BASE + '/admin/corpus', { ...req, headers: hdr }),
+        fetch(V8_API_BASE + '/admin/predictions?limit=50', { ...req, headers: hdr }),
       ]);
       if (sR.ok) setStatus(await sR.json());
       if (mR.ok) { const d = await mR.json(); setModels(d.models || []); }
@@ -91,7 +94,7 @@ const V8ControlPanel: React.FC = () => {
     const maxMs = 30 * 60 * 1000;
     while (Date.now() - startedAt < maxMs) {
       try {
-        const res = await fetch(V8_API_BASE + `/admin/training/status?job_id=${encodeURIComponent(jobId)}`, { headers: hdr });
+        const res = await fetch(V8_API_BASE + `/admin/training/status?job_id=${encodeURIComponent(jobId)}`, { ...req, headers: hdr });
         if (!res.ok) {
           await new Promise(r => setTimeout(r, 2000));
           continue;
@@ -127,7 +130,7 @@ const V8ControlPanel: React.FC = () => {
   const startTraining = async (corpus: string) => {
     setTraining(true); setError(null); setSuccess(null);
     try {
-      const res = await fetch(V8_API_BASE + '/admin/training/start', { method: 'POST', headers: hdrJson, body: JSON.stringify({ corpus }) });
+      const res = await fetch(V8_API_BASE + '/admin/training/start', { ...reqJson, method: 'POST', body: JSON.stringify({ corpus }) });
       if (res.status === 202) {
         const d = await res.json();
         const jobId = d.job_id as string | undefined;
@@ -151,7 +154,7 @@ const V8ControlPanel: React.FC = () => {
 
   const activateModel = async (id: string) => {
     try {
-      const res = await fetch(V8_API_BASE + '/admin/models/activate', { method: 'POST', headers: hdrJson, body: JSON.stringify({ model_version_id: id }) });
+      const res = await fetch(V8_API_BASE + '/admin/models/activate', { ...reqJson, method: 'POST', body: JSON.stringify({ model_version_id: id }) });
       if (res.ok) { setSuccess('Model activated'); await fetchData(); }
       else { const e = await res.json().catch(() => ({})); setError(e.error || 'Activation failed'); }
     } catch { setError('Failed to activate model'); }
@@ -160,7 +163,7 @@ const V8ControlPanel: React.FC = () => {
   const updateForbidden = async (words: string[]) => {
     setError(null); setSuccess(null);
     try {
-      const res = await fetch(V8_API_BASE + '/admin/forbidden', { method: 'POST', headers: hdrJson, body: JSON.stringify({ words }) });
+      const res = await fetch(V8_API_BASE + '/admin/forbidden', { ...reqJson, method: 'POST', body: JSON.stringify({ words }) });
       if (res.ok) { setForbidden(words); setSuccess('Forbidden words updated (retrain to apply)'); }
       else { const e = await res.json().catch(() => ({})); setError(e.error || 'Update failed'); }
     } catch { setError('Failed to update forbidden words'); }
@@ -172,7 +175,7 @@ const V8ControlPanel: React.FC = () => {
     const hash = newAnchorHash.trim();
     if (hash && !hash.match(/^0x[0-9a-fA-F]{40}$/)) { setError('Hash must be a valid 40-char hex string starting with 0x'); return; }
     try {
-      const res = await fetch(V8_API_BASE + '/admin/anchors', { method: 'POST', headers: hdrJson, body: JSON.stringify({ words, hash: hash || undefined }) });
+      const res = await fetch(V8_API_BASE + '/admin/anchors', { ...reqJson, method: 'POST', body: JSON.stringify({ words, hash: hash || undefined }) });
       if (res.ok) { setNewAnchorWords(''); setNewAnchorHash(''); setSuccess('Anchor added! Retrain model to incorporate.'); await fetchData(); }
       else { const e = await res.json().catch(() => ({})); setError(e.error || 'Failed to add anchor'); }
     } catch { setError('Failed to add anchor'); }
@@ -180,14 +183,14 @@ const V8ControlPanel: React.FC = () => {
 
   const removeAnchor = async (id: string) => {
     try {
-      await fetch(V8_API_BASE + '/admin/anchors', { method: 'DELETE', headers: hdrJson, body: JSON.stringify({ id }) });
+      await fetch(V8_API_BASE + '/admin/anchors', { ...reqJson, method: 'DELETE', body: JSON.stringify({ id }) });
       await fetchData();
     } catch { setError('Failed to remove anchor'); }
   };
 
   const clearPredictions = async () => {
     try {
-      const res = await fetch(V8_API_BASE + '/admin/predictions/clear', { method: 'POST', headers: hdr });
+      const res = await fetch(V8_API_BASE + '/admin/predictions/clear', { ...req, method: 'POST', headers: hdr });
       if (res.ok) { setPredictions([]); setPredsTotal(0); setSuccess('History cleared'); }
     } catch { setError('Failed to clear'); }
   };
