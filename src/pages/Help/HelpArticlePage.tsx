@@ -294,7 +294,7 @@ For programmatic access:
 ## Next Steps
 
 - [Learn about Roles & Permissions](/help/getting-started/roles-permissions)
-- [Run Your First Prediction](/help/getting-started/first-prediction)
+- [Browse Tutorials](/help)
   `,
   'creating-agents': `
 # Creating AI Agents

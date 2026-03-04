@@ -337,8 +337,8 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             </button>
 
             <button
-              className={`${styles.usmItem} ${location.pathname === '/help/getting-started/first-prediction' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/help/getting-started/first-prediction'); onClose(); }}
+              className={`${styles.usmItem} ${location.pathname === '/help' || location.pathname.startsWith('/help/') ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/help'); onClose(); }}
             >
               <span className={styles.usmIcon}>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -348,7 +348,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                 </svg>
               </span>
               <span className={styles.usmLabel}>Tutorials</span>
-              {location.pathname === '/help/getting-started/first-prediction' && <span className={styles.usmActiveIndicator} />}
+              {(location.pathname === '/help' || location.pathname.startsWith('/help/')) && <span className={styles.usmActiveIndicator} />}
             </button>
 
             <button

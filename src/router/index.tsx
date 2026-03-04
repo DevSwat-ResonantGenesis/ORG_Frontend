@@ -347,6 +347,10 @@ const router = createBrowserRouter([
     element: withShell(<HelpCenterPage />)
   },
   {
+    path: '/help/getting-started/first-prediction',
+    element: <Navigate to="/help" replace />
+  },
+  {
     path: '/help/:category/:article',
     element: withShell(<HelpArticlePage />)
   },

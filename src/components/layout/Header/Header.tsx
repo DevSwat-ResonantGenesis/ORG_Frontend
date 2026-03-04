@@ -387,7 +387,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className={styles.navItem}>
               <button
                 className={styles.navButton}
-                onClick={() => { navigate('/help/getting-started/first-prediction'); setActiveDropdown(null); }}
+                onClick={() => { navigate('/help'); setActiveDropdown(null); }}
               >
                 Tutorials
               </button>
@@ -652,7 +652,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Tutorials */}
             <div className={styles.mobileMenuSection}>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/help/getting-started/first-prediction'); setIsMobileMenuOpen(false); }}>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/help'); setIsMobileMenuOpen(false); }}>
                 Tutorials
               </button>
             </div>

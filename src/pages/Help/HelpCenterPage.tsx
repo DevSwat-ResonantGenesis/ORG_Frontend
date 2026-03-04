@@ -32,29 +32,28 @@ interface FAQ {
 
 const categoryIcons: Record<string, React.ReactNode> = {
   'Getting Started': <PlayIcon size={20} />,
-  'Using the Platform': <ChartIcon size={20} />,
-  'Organization Management': <UsersIcon size={20} />,
-  'ML Engineer Guide': <BotIcon size={20} />,
-  'Platform Administrator Guide': <SettingsIcon size={20} />,
+  'Core Stack': <ChartIcon size={20} />,
+  'Marketplace': <UsersIcon size={20} />,
+  'Account & Billing': <SettingsIcon size={20} />,
   'Developers': <KeyIcon size={20} />,
 };
 
 const faqs: FAQ[] = [
   {
     question: 'How do I get started with ResonantGenesis?',
-    answer: 'Create an account, set up your organization, and follow our Quick Start guide to submit your first prediction. The onboarding wizard will guide you through the initial setup.'
+    answer: 'Create an account, complete onboarding, and start with AGI Neural Hub. Add API keys if you want to use your own providers, and configure your agent stack (memory, invariants, and analysis) as needed.'
   },
   {
-    question: 'What blockchain networks does ResonantGenesis support?',
-    answer: 'ResonantGenesis currently supports Ethereum mainnet and Base L2. Agent identities are registered on-chain with full transparency and auditability.'
+    question: 'Where do I manage API keys?',
+    answer: 'Go to API Keys and add your provider keys. You can manage and rotate keys anytime.'
   },
   {
-    question: 'How do I connect my AI agents to the platform?',
-    answer: 'Use our SDK (Python or JavaScript) or REST API to connect your agents. Each agent receives a unique blockchain identity for tracking and governance.'
+    question: 'What is the recommended stack?',
+    answer: 'Start with AGI Neural Hub for autonomous action, add Synthetic Neural Memory for persistence, use Invariants SIM for constraint modeling, and use SAST & Dependency Graph Analysis for full-stack observability and remediation.'
   },
   {
     question: 'Is my data secure on ResonantGenesis?',
-    answer: 'Yes. We use enterprise-grade encryption, isolated multi-tenant architecture, and are SOC2 aligned. All agent actions are logged immutably on-chain.'
+    answer: 'Yes. We use secure session handling, tenant isolation, and encryption for sensitive workflows. Use least-privilege roles, rotate API keys, and follow best practices for production deployments.'
   },
   {
     question: 'How do I contact support?',
@@ -67,7 +66,7 @@ const articles: Article[] = [
   {
     id: '1',
     title: 'What Is ResonantGenesis?',
-    description: 'Overview of ResonantGenesis\'s governance platform, prediction tracing, evidence graphs, and policy enforcement.',
+    description: 'Autonomous agent infrastructure for action, memory, invariants simulation, and full-stack observability.',
     category: 'Getting Started',
     path: '/help/getting-started/what-is-resonantgraph',
     tags: ['overview', 'introduction'],
@@ -76,7 +75,7 @@ const articles: Article[] = [
   {
     id: '2',
     title: 'Account Creation',
-    description: 'Create an account, set up an organization, invite users, and configure access.',
+    description: 'Create an account, complete onboarding, and set up access.',
     category: 'Getting Started',
     path: '/help/getting-started/account-creation',
     tags: ['signup', 'onboarding'],
@@ -85,183 +84,83 @@ const articles: Article[] = [
   {
     id: '3',
     title: 'Roles & Permissions (RBAC)',
-    description: 'User roles, permissions, and access levels for Org Admin, Compliance, Finance, ML Engineer, and Platform Dev.',
+    description: 'User roles, permissions, and access levels.',
     category: 'Getting Started',
     path: '/help/getting-started/roles-permissions',
     tags: ['roles', 'permissions', 'rbac'],
     readingTime: 4
   },
-  {
-    id: '4',
-    title: 'Quick Start: First Prediction',
-    description: 'Submit your first AI prediction, review outputs, validate compliance, and analyze results.',
-    category: 'Getting Started',
-    path: '/help/getting-started/first-prediction',
-    tags: ['tutorial', 'quickstart'],
-    readingTime: 6
-  },
-  // Using the Platform
+  // Core Stack
   {
     id: '5',
-    title: 'Dashboard Overview',
-    description: 'KPIs, alerts, compliance scores, risk metrics, and prediction summaries.',
-    category: 'Using the Platform',
-    path: '/help/platform/dashboard',
-    tags: ['dashboard', 'overview']
+    title: 'AGI Neural Hub',
+    description: 'General-purpose autonomous action and operator workflows.',
+    category: 'Core Stack',
+    path: '/help/core/agi-neural-hub',
+    tags: ['chat', 'autonomy', 'agents'],
+    readingTime: 6
   },
   {
     id: '6',
-    title: 'Running Predictions',
-    description: 'Run predictions manually or via API, upload datasets, and analyze risk scores.',
-    category: 'Using the Platform',
-    path: '/help/platform/running-predictions',
-    tags: ['predictions', 'api']
+    title: 'Synthetic Neural Memory',
+    description: 'A physics-informed 9-layer cognitive infrastructure for autonomous agents.',
+    category: 'Core Stack',
+    path: '/help/core/synthetic-neural-memory',
+    tags: ['memory', 'persistence', 'retrieval'],
+    readingTime: 8
   },
   {
     id: '7',
-    title: 'Evidence Graph Explained',
-    description: 'Detailed breakdown of how the Evidence Graph shows feature contributions, decision paths, risk assessment, and transparent reasoning.',
-    category: 'Using the Platform',
-    path: '/help/platform/evidence-graph',
-    tags: ['evidence', 'graph', 'visualization']
+    title: 'Invariants SIM',
+    description: 'Economic constraint modeling and invariants enforcement across state transitions.',
+    category: 'Core Stack',
+    path: '/help/core/invariants-sim',
+    tags: ['constraints', 'simulation', 'safety'],
+    readingTime: 7
   },
   {
     id: '8',
-    title: 'Compliance Center',
-    description: 'Learn how the Compliance Center tracks violations, policy matches, risk thresholds, and organization-wide AI compliance benchmarks.',
-    category: 'Using the Platform',
-    path: '/help/platform/compliance-center',
-    tags: ['compliance', 'policies']
+    title: 'SAST & Dependency Graph Analysis',
+    description: 'Full-stack architecture observability and remediation engine.',
+    category: 'Core Stack',
+    path: '/help/core/sast-dependency-graph-analysis',
+    tags: ['security', 'observability', 'remediation'],
+    readingTime: 7
   },
+  // Marketplace
   {
     id: '9',
-    title: 'Policy Management',
-    description: 'Guide to creating, editing, enabling, and disabling AI policies that enforce rules, thresholds, restrictions, and automatic violation detection.',
-    category: 'Using the Platform',
-    path: '/help/platform/policy-management',
-    tags: ['policies', 'management']
+    title: 'Marketplace',
+    description: 'Discover and evaluate verified AI agents and integrations.',
+    category: 'Marketplace',
+    path: '/help/marketplace/overview',
+    tags: ['agents', 'discover'],
+    readingTime: 5
   },
+  // Account & Billing
   {
     id: '10',
-    title: 'Audit Logs',
-    description: 'Understand the full audit trail, including user actions, model events, policy triggers, and compliance interactions across your organization.',
-    category: 'Using the Platform',
-    path: '/help/platform/audit-logs',
-    tags: ['audit', 'logs', 'compliance']
+    title: 'API Keys',
+    description: 'Add, rotate, and manage provider API keys.',
+    category: 'Account & Billing',
+    path: '/help/account/api-keys',
+    tags: ['api', 'keys', 'security'],
+    readingTime: 4
   },
-  {
-    id: '10a',
-    title: 'Hash Sphere Memory System',
-    description: 'Revolutionary 9-layer semantic memory architecture with 3D spatial coordinates, resonance scoring, spin vectors, anchor energy, magnetic pull, and multi-method retrieval (RAG + Vector + Hash Sphere + Hybrid).',
-    category: 'Using the Platform',
-    path: '/help/platform/hash-sphere-memory',
-    tags: ['memory', 'hash-sphere', 'visualization', '3d', 'resonance', 'semantic'],
-    readingTime: 15
-  },
-  // Organization Management
   {
     id: '11',
-    title: 'Inviting Users',
-    description: 'Instructions for adding users, assigning roles, sending invitations, and managing team access within a secure multi-tenant environment.',
-    category: 'Organization Management',
-    path: '/help/organization/inviting-users',
-    tags: ['users', 'invitations']
-  },
-  {
-    id: '12',
-    title: 'Assigning Roles',
-    description: 'Learn how to assign or change roles, enforce least-privilege access, and maintain compliance through role-based permissions.',
-    category: 'Organization Management',
-    path: '/help/organization/assigning-roles',
-    tags: ['roles', 'permissions']
-  },
-  {
-    id: '13',
-    title: 'API Keys',
-    description: 'How to generate, revoke, rotate, and secure API keys for automated access to the ResonantGenesis API.',
-    category: 'Organization Management',
-    path: '/help/organization/api-keys',
-    tags: ['api', 'keys', 'security']
-  },
-  {
-    id: '14',
-    title: 'Billing & Invoices',
-    description: 'Overview of billing cycles, usage tracking, invoice downloads, payment methods, and financial reporting for your organization.',
-    category: 'Organization Management',
-    path: '/help/organization/billing-invoices',
-    tags: ['billing', 'invoices', 'payments']
-  },
-  // ML Engineer Guide
-  {
-    id: '15',
-    title: 'Training Jobs',
-    description: 'How to create, monitor, and manage ML training jobs, including retraining workflows, dataset usage, and model performance metrics.',
-    category: 'ML Engineer Guide',
-    path: '/help/ml-engineer/training-jobs',
-    tags: ['ml', 'training', 'models']
-  },
-  {
-    id: '16',
-    title: 'Model Versions',
-    description: 'Learn how to view, compare, promote, roll back, and download model versions with full lifecycle tracking.',
-    category: 'ML Engineer Guide',
-    path: '/help/ml-engineer/model-versions',
-    tags: ['models', 'versions', 'mlops']
-  },
-  {
-    id: '17',
-    title: 'Worker Monitoring',
-    description: 'Monitor ML worker health, job queues, uptime, processing load, and system status with real-time insights.',
-    category: 'ML Engineer Guide',
-    path: '/help/ml-engineer/worker-monitoring',
-    tags: ['monitoring', 'workers', 'infrastructure']
-  },
-  {
-    id: '18',
-    title: 'Dataset Management',
-    description: 'Guide to uploading datasets, managing versions, generating synthetic sets, and preparing input for training jobs.',
-    category: 'ML Engineer Guide',
-    path: '/help/ml-engineer/dataset-management',
-    tags: ['datasets', 'data', 'ml']
-  },
-  // Platform Administrator Guide
-  {
-    id: '19',
-    title: 'Global Oversight (Platform Admin)',
-    description: 'Understand the capabilities available to Platform Developers, including cross-org visibility, system metrics, and global governance controls.',
-    category: 'Platform Administrator Guide',
-    path: '/help/platform-admin/global-oversight',
-    tags: ['admin', 'platform', 'governance']
-  },
-  {
-    id: '20',
-    title: 'Feature Flags',
-    description: 'How to enable, disable, roll back, and test feature flags across the entire platform in a controlled production-safe environment.',
-    category: 'Platform Administrator Guide',
-    path: '/help/platform-admin/feature-flags',
-    tags: ['features', 'flags', 'admin']
-  },
-  {
-    id: '21',
-    title: 'Global Metrics & Logging',
-    description: 'Learn to view system-wide metrics, API latency, worker status, and aggregate audit logs for platform-wide monitoring.',
-    category: 'Platform Administrator Guide',
-    path: '/help/platform-admin/global-metrics',
-    tags: ['metrics', 'logging', 'monitoring']
-  },
-  {
-    id: '22',
-    title: 'System Log Aggregation',
-    description: 'Unified view of error logs, security logs, performance records, and cross-service operational data for debugging and compliance.',
-    category: 'Platform Administrator Guide',
-    path: '/help/platform-admin/system-logs',
-    tags: ['logs', 'system', 'debugging']
+    title: 'Billing & Credits',
+    description: 'Understand usage, credits, and plan limits.',
+    category: 'Account & Billing',
+    path: '/help/account/billing-credits',
+    tags: ['billing', 'credits'],
+    readingTime: 5
   },
   // Developers
   {
     id: '23',
     title: 'API Reference',
-    description: 'Complete API reference for predictions, evidence graphs, compliance, training jobs, and model management with request/response schemas.',
+    description: 'Developer reference for integrating with ResonantGenesis services and routes.',
     category: 'Developers',
     path: '/help/developers/api-reference',
     tags: ['api', 'reference', 'documentation']
@@ -269,7 +168,7 @@ const articles: Article[] = [
   {
     id: '24',
     title: 'Authentication & Tokens',
-    description: 'Explanation of JWTs, API keys, scopes, and secure authentication workflows for both internal and external integrations.',
+    description: 'Authentication workflows, sessions, API keys, and secure integrations.',
     category: 'Developers',
     path: '/help/developers/authentication',
     tags: ['auth', 'tokens', 'security']
@@ -328,7 +227,7 @@ const HelpCenterPage: React.FC = () => {
     setExpandedFaq(expandedFaq === index ? null : index);
   };
 
-  const suggestedSearches = ['getting started', 'API', 'blockchain', 'agents', 'compliance'];
+  const suggestedSearches = ['AGI Neural Hub', 'memory', 'invariants', 'SAST', 'API keys', 'marketplace'];
 
   const filteredArticles = articles.filter(article => {
     const matchesSearch = searchQuery === '' || 
@@ -355,7 +254,7 @@ const HelpCenterPage: React.FC = () => {
         <div className={styles.header}>
           <h1>Help Center</h1>
           <p className={styles.subtitle}>
-            Find answers, guides, and documentation for using ResonantGenesis platform.
+            Tutorials and documentation for ResonantGenesis — aligned to the current stack.
           </p>
         </div>
 
@@ -506,10 +405,10 @@ const HelpCenterPage: React.FC = () => {
               <h3>Popular Articles</h3>
               <ul>
                 <li><a href="/help/getting-started/what-is-resonantgraph">What Is ResonantGenesis?</a></li>
-                <li><a href="/help/getting-started/first-prediction">Quick Start: First Prediction</a></li>
-                <li><a href="/help/developers/api-reference">API Reference</a></li>
-                <li><a href="/help/platform/evidence-graph">Evidence Graph Explained</a></li>
-                <li><a href="/help/organization/api-keys">API Keys</a></li>
+                <li><a href="/help/core/agi-neural-hub">AGI Neural Hub</a></li>
+                <li><a href="/help/core/synthetic-neural-memory">Synthetic Neural Memory</a></li>
+                <li><a href="/help/core/invariants-sim">Invariants SIM</a></li>
+                <li><a href="/help/account/api-keys">API Keys</a></li>
               </ul>
             </div>
             <div className={styles.sidebarCard}>
