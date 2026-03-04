@@ -647,7 +647,7 @@ const PricingPage: React.FC = () => {
                 </div>
                 
                 <div className={styles.limitCategory}>
-                  <h4 className={styles.limitCategoryTitle}>Resonant Chat</h4>
+                  <h4 className={styles.limitCategoryTitle}>AGI Neural Hub</h4>
                   <ul className={styles.limitList}>
                     <li className={styles.limitItem}>
                       <span>Conversations</span>

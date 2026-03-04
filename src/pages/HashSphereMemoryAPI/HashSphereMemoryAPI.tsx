@@ -163,8 +163,8 @@ const HashSphereMemoryAPI: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black text-white">
       <Helmet>
-        <title>Hash Sphere Memory API | Resonant Genesis</title>
-        <meta name="description" content="Invariant-governed long-term memory and state simulation for AI systems" />
+        <title>Synthetic Neural Memory - API | ResonantGenesis – Autonomous Agent Infrastructure</title>
+        <meta name="description" content="A Physics-Informed, 9-Layer Cognitive Infrastructure for Autonomous Agents. Build synthetic neural memory with long-term persistence, structured retrieval, and governance-ready storage." />
       </Helmet>
 
       {/* Hero */}

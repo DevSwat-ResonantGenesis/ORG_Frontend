@@ -164,8 +164,8 @@ const StatePhysicsAPI: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a0a1a] via-[#1a1a2e] to-[#0a0a1a]">
       <Helmet>
-        <title>State Physics API - Pricing & Documentation | ResonantGenesis</title>
-        <meta name="description" content="Access constraint-governed state-space simulation through our REST API. Build fraud detection, trust networks, and distributed system monitoring." />
+        <title>Invariants SIM - Pricing & Documentation | ResonantGenesis – Autonomous Agent Infrastructure</title>
+        <meta name="description" content="Economic constraint modeling for autonomous agents. Use Invariants SIM to simulate and enforce invariant-based constraints across state transitions for safer, more reliable autonomous action." />
       </Helmet>
 
       {/* Hero */}

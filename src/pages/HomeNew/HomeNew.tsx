@@ -16,11 +16,11 @@ const HomeNew = () => {
     <div className={styles.page}>
       {/* SEO meta tags */}
       <Helmet>
-        <title>ResonantGenesis – AI Governance Platform</title>
-        <meta name="description" content="AI governance platform that harmonizes meaning across multiple AI models, providing intelligent processing, privacy, security, and enterprise‑grade APIs." />
+        <title>ResonantGenesis – Autonomous Agent Infrastructure</title>
+        <meta name="description" content="Build and operate autonomous agents with a unified stack for action, synthetic neural memory, invariant-based constraint simulation, and full-stack architecture observability. Ship reliable agent systems with governance, security, and remediation built in." />
         <link rel="canonical" href="https://resonantgenesis.xyz/" />
-        <meta property="og:title" content="ResonantGenesis – AI Governance Platform" />
-        <meta property="og:description" content="Intelligent AI governance for multi‑AI operations, privacy‑first, production‑ready." />
+        <meta property="og:title" content="ResonantGenesis – Autonomous Agent Infrastructure" />
+        <meta property="og:description" content="AGI Neural Hub + Synthetic Neural Memory + Invariants SIM + SAST & Dependency Graph Analysis—an end-to-end platform for autonomous action, memory, constraints, and full-stack observability." />
         <meta property="og:url" content="https://resonantgenesis.xyz/" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://resonantgenesis.xyz/images/showcase/step5-homepage.png" />
@@ -34,7 +34,7 @@ const HomeNew = () => {
                   "name": "ResonantGenesis",
                   "url": "https://resonantgenesis.xyz",
                   "logo": "https://resonantgenesis.xyz/favicon.svg",
-                  "description": "AI governance platform that harmonizes meaning across multiple AI models."
+                  "description": "Autonomous agent infrastructure for action, memory, invariant-based constraint simulation, and full-stack observability."
                 },
                 {
                   "@type": "WebSite",

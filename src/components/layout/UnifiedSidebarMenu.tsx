@@ -145,7 +145,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <path d="M8 2C5 2 2.5 4.5 2.5 7.5C2.5 9.5 3.5 11.2 5 12.2V14.5L7.2 12.2C7.5 12.3 7.8 12.3 8.1 12.3C11.1 12.3 13.5 9.8 13.5 7.5C13.5 4.5 11 2 8 2Z" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Resonant Chat</span>
+              <span className={styles.usmLabel}>AGI Neural Hub</span>
               {location.pathname === '/resonant-chat' && <span className={styles.usmActiveIndicator} />}
             </button>
 
@@ -205,7 +205,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <path d="M8 8L5 5M8 8L11 6M8 8L6 11M8 8L10 10" strokeWidth="0.5" opacity="0.5" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Genesis Memory</span>
+              <span className={styles.usmLabel}>Synthetic Neural Memory</span>
               {location.pathname === '/resonant-memory' && <span className={styles.usmActiveIndicator} />}
             </button>
 
@@ -221,7 +221,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <path d="M8 2V4M8 12V14M2 8H4M12 8H14" strokeLinecap="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Invariants Enforcement SIM</span>
+              <span className={styles.usmLabel}>Invariants SIM</span>
               {location.pathname === '/state-physics' && <span className={styles.usmActiveIndicator} />}
             </button>
 
@@ -235,7 +235,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Codebase Analyser</span>
+              <span className={styles.usmLabel}>SAST & Dependency Graph Analysis</span>
               {location.pathname === '/code-visualizer' && <span className={styles.usmActiveIndicator} />}
             </button>
 

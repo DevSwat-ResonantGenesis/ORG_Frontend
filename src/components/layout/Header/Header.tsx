@@ -287,7 +287,7 @@ export const Header: React.FC<HeaderProps> = ({
             className={styles.logo}
             onClick={() => (isLandingPage && landingChatActive ? navigate('/resonant-chat') : goToHome(navigate))}
           >
-            {isLandingPage ? (landingChatActive ? 'Resonant Chat' : 'ResonantGenesis') : 'ResonantGenesis'}
+            {isLandingPage ? (landingChatActive ? 'AGI Neural Hub' : 'ResonantGenesis') : 'ResonantGenesis'}
           </div>
 
           {/* Main Navigation - Desktop */}
@@ -307,8 +307,8 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className={styles.navDropdown}>
                   <div className={styles.navDropdownGridTwoRows}>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-chat'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Resonant Chat</span>
-                      <span className={styles.navDropdownItemDesc}>AI-powered conversations</span>
+                      <span className={styles.navDropdownItemTitle}>AGI Neural Hub</span>
+                      <span className={styles.navDropdownItemDesc}>For general-purpose autonomous action</span>
                     </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/build'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>Resonant Builder</span>
@@ -323,16 +323,16 @@ export const Header: React.FC<HeaderProps> = ({
                       <span className={styles.navDropdownItemDesc}>Open the in-browser IDE</span>
                     </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-memory'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Genesis Memory</span>
-                      <span className={styles.navDropdownItemDesc}>AI memory infrastructure</span>
+                      <span className={styles.navDropdownItemTitle}>Synthetic Neural Memory</span>
+                      <span className={styles.navDropdownItemDesc}>A Physics-Informed, 9-Layer Cognitive Infrastructure for Autonomous Agents</span>
                     </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/state-physics'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Invariants Enforcement SIM</span>
-                      <span className={styles.navDropdownItemDesc}>Invariant enforcement API</span>
+                      <span className={styles.navDropdownItemTitle}>Invariants SIM</span>
+                      <span className={styles.navDropdownItemDesc}>Economic constraint modeling</span>
                     </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/code-visualizer'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Codebase Analyser</span>
-                      <span className={styles.navDropdownItemDesc}>Codebase analysis</span>
+                      <span className={styles.navDropdownItemTitle}>SAST & Dependency Graph Analysis</span>
+                      <span className={styles.navDropdownItemDesc}>Full-Stack Architecture Observability & Remediation Engine</span>
                     </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/network/history'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>Execution History</span>

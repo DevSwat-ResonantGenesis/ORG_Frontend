@@ -1658,7 +1658,7 @@ const OwnerDashboard: React.FC = () => {
     return (
       <>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h2 style={{ color: '#e2e8f0', fontSize: '18px', margin: 0 }}>Resonant Chat Skills Management</h2>
+          <h2 style={{ color: '#e2e8f0', fontSize: '18px', margin: 0 }}>AGI Neural Hub Skills Management</h2>
           <button
             onClick={fetchChatSkills}
             disabled={skillsLoading}

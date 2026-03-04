@@ -45,7 +45,7 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
     <nav className={styles.sidebar}>
       <div className={styles.header}>
         <h2 className={styles.title}>Settings</h2>
-        <p className={styles.subtitle}>Resonant Chat Configuration</p>
+        <p className={styles.subtitle}>AGI Neural Hub Configuration</p>
       </div>
 
       <ul className={styles.menu}>

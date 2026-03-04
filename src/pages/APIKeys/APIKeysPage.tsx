@@ -89,7 +89,7 @@ const APIKeysPage: React.FC = () => {
 
   const services = [
     { id: 'state-physics', name: 'State Physics', icon: <Atom className="w-4 h-4" />, color: 'purple' },
-    { id: 'resonant-chat', name: 'Resonant Chat', icon: <Zap className="w-4 h-4" />, color: 'blue' },
+    { id: 'resonant-chat', name: 'AGI Neural Hub', icon: <Zap className="w-4 h-4" />, color: 'blue' },
     { id: 'governance', name: 'Governance API', icon: <Shield className="w-4 h-4" />, color: 'emerald' },
     { id: 'dsid-p', name: 'DSID-P Protocol', icon: <Server className="w-4 h-4" />, color: 'orange' }
   ];
@@ -221,7 +221,7 @@ const APIKeysPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a0a1a] via-[#1a1a2e] to-[#0a0a1a] py-12">
       <Helmet>
-        <title>API Keys | ResonantGenesis</title>
+        <title>API Keys | ResonantGenesis – Autonomous Agent Infrastructure</title>
       </Helmet>
 
       <div className="container mx-auto px-6 max-w-5xl">

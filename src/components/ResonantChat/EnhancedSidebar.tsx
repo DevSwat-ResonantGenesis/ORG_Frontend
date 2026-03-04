@@ -258,7 +258,7 @@ const EnhancedSidebar: React.FC<EnhancedSidebarProps> = ({
     <div className={`${styles.sidebar} ${isMobile ? styles.mobile : ''} ${isMobile && sidebarOpen ? styles.open : ''}`}>
       {isMobile && (
         <div className={styles.sidebarHeader}>
-          <h2>Resonant Chat</h2>
+          <h2>AGI Neural Hub</h2>
           <div className={styles.sidebarHeaderActions}>
             {onToggleTheme && (
               <button

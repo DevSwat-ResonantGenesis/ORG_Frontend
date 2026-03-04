@@ -390,8 +390,8 @@ const UnifiedUserDashboard: React.FC = () => {
           <button className={styles.featureCard} onClick={() => navigate('/resonant-chat')}>
             <div className={styles.featureIcon}><MessageSquare size={28} /></div>
             <div className={styles.featureInfo}>
-              <h3>Resonant Chat</h3>
-              <p>AI conversations with memory</p>
+              <h3>AGI Neural Hub</h3>
+              <p>For general-purpose autonomous action</p>
             </div>
             <ChevronRight size={20} />
           </button>

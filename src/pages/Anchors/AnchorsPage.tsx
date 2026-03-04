@@ -35,7 +35,7 @@ const AnchorsPage = () => {
   return (
     <ModernPageLayout
       title="Context Memory Management"
-      subtitle="Manage context memory points for intelligent memory system. Create, organize, and track context points that enable persistent context and intelligent retrieval in Resonant Chat and AI applications."
+      subtitle="Manage context memory points for intelligent memory system. Create, organize, and track context points that enable persistent context and intelligent retrieval in AGI Neural Hub and AI applications."
       loading={loading}
       error={error}
       onRetry={load}

@@ -4352,7 +4352,7 @@ const ResonantChatPage: React.FC = () => {
             ).join('\n\n');
             if (navigator.share) {
               navigator.share({ 
-                title: 'Resonant Chat Conversation',
+                title: 'AGI Neural Hub Conversation',
                 text: chatText 
               });
             } else {
