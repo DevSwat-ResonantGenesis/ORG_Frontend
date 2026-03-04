@@ -1308,8 +1308,13 @@
 /* Item Title - Default (Light text for dark dropdown) */
 .navDropdownItemTitle {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 560;
   color: #f1f5f9;
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Item Title - Light Mode */
@@ -1319,14 +1324,18 @@
 
 /* Item Description - Default (Light text for dark dropdown) */
 .navDropdownItemDesc {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
-  line-height: 1.4;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.38);
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Item Description - Light Mode */
 [data-theme='light'] .navDropdownItemDesc {
-  color: #6b7280;
+  color: rgba(107, 114, 128, 0.78);
 }
 
 /* Hide nav on mobile */

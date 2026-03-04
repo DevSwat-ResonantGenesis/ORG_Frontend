@@ -341,10 +341,6 @@ export const Header: React.FC<HeaderProps> = ({
                         <span className={styles.navDropdownItemTitle}>Execution History</span>
                         <span className={styles.navDropdownItemDesc}>View past runs</span>
                       </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/marketplace'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>General Store</span>
-                        <span className={styles.navDropdownItemDesc}>Templates & UI Skins</span>
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -648,9 +644,6 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/network/history'); setIsMobileMenuOpen(false); }}>
                 Execution History
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/marketplace'); setIsMobileMenuOpen(false); }}>
-                General Store
               </button>
             </div>
 
