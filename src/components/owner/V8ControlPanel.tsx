@@ -6,7 +6,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { RefreshCw, Play, FileText, Shield, Sliders, Database, Cpu, AlertTriangle, X, History, Trash2, CheckCircle, Layers, Anchor, Zap } from 'lucide-react';
 
-const V8_API_BASE = '/v8-api';
+const V8_API_BASE = '/api/v1/v8/api';
 const DEV_TOKEN = 'LouieArt';
 
 interface V8Status {
