@@ -30,9 +30,13 @@
   background:
     radial-gradient(1200px 400px at 10% 0%, rgba(14, 165, 233, 0.14), transparent 60%),
     radial-gradient(900px 420px at 90% 30%, rgba(59, 130, 246, 0.12), transparent 55%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.0));
-  border: 1px solid var(--border);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 [data-theme='light'] .hero {
@@ -40,7 +44,12 @@
     radial-gradient(1200px 420px at 10% 0%, rgba(14, 165, 233, 0.12), transparent 60%),
     radial-gradient(900px 420px at 90% 30%, rgba(59, 130, 246, 0.10), transparent 55%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 1));
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .heroInner {
@@ -114,33 +123,44 @@
 
 .featuredCard {
   text-align: left;
-  border: 1px solid var(--border);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.0));
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   cursor: pointer;
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 [data-theme='dark'] .featuredCard {
-  border-color: rgba(255, 255, 255, 0.08);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
+  border-color: rgba(255, 255, 255, 0.11);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02));
 }
 
 [data-theme='light'] .featuredCard {
   background: var(--surface);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 12px 34px rgba(0, 0, 0, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
 .featuredCard:hover {
   transform: translateY(-2px);
   border-color: rgba(14, 165, 233, 0.6);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+  box-shadow:
+    0 18px 52px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 [data-theme='light'] .featuredCard:hover {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
+  box-shadow:
+    0 18px 52px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
 .featuredCardTop {
@@ -157,8 +177,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  border: 1px solid var(--border);
-  background: rgba(14, 165, 233, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(14, 165, 233, 0.12);
   color: var(--color-primary-500);
 }
 
@@ -334,17 +354,24 @@
 .contentSection {
   margin-bottom: var(--space-6);
   padding: var(--space-6);
-  background: var(--surface);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
   border-radius: var(--radius-lg);
   border: none;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.10);
   box-shadow: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 [data-theme='dark'] .contentSection {
-  border-color: rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.11);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.02));
+}
+
+[data-theme='light'] .contentSection {
+  background: var(--surface);
+  border-color: rgba(0, 0, 0, 0.06);
 }
 
 .contentSection:hover {
@@ -381,8 +408,8 @@
 }
 
 .articleCard {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: var(--radius-md);
   padding: var(--space-4);
   cursor: pointer;
@@ -391,16 +418,23 @@
   flex-direction: column;
   gap: var(--space-2);
   box-shadow: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 [data-theme='dark'] .articleCard {
-  border-color: rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.11);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+}
+
+[data-theme='light'] .articleCard {
+  background: var(--surface);
+  border-color: rgba(0, 0, 0, 0.06);
 }
 
 .articleCard:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.20);
+  box-shadow: 0 18px 52px rgba(0, 0, 0, 0.28);
 }
 
 [data-theme='dark'] .articleCard {
@@ -485,17 +519,24 @@
 
 .sidebarCard {
   padding: var(--space-6);
-  background: var(--surface);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.10);
   margin-bottom: var(--space-4);
   box-shadow: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 [data-theme='dark'] .sidebarCard {
-  border-color: rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.11);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+}
+
+[data-theme='light'] .sidebarCard {
+  background: var(--surface);
+  border-color: rgba(0, 0, 0, 0.06);
 }
 
 .sidebarCard:hover {
