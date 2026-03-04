@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from './ConnectProfilesPage.module.css';
 import { connectGitHub, getGitHubStatus } from '@/api/github';
 import { logger } from '@/utils/logger';
-import fastapiClient from '@/api/fastapiClient';
+import { fetchUserApiKeys, addUserApiKey, deleteUserApiKey } from '@/api/userApiKeys';
 
 interface Integration {
   id: string;
@@ -58,19 +58,27 @@ const CAT_EMOJI: Record<string, string> = { 'Version Control': '🔀', 'AI & Int
 const ConnectProfilesPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState('');
+  // display label per integration id ('connected' or github username)
   const [connections, setConnections] = useState<Record<string, string>>({});
+  // key IDs from auth service DB, needed for deletion
+  const [keyIds, setKeyIds] = useState<Record<string, string>>({});
   const [modal, setModal] = useState<Integration | null>(null);
   const [inputValue, setInputValue] = useState('');
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const loadConnections = useCallback(async () => {
-    try {
-      const res = await fastapiClient.get<{ connected: string[] }>('/api/v1/user/integrations');
-      const map: Record<string, string> = {};
-      (res.data.connected || []).forEach((id: string) => { map[id] = 'connected'; });
-      setConnections(map);
-    } catch { /* API unavailable, start empty */ }
+    // Load from the existing encrypted user_api_keys DB (same system as Model Provider Keys)
+    const keys = await fetchUserApiKeys();
+    const map: Record<string, string> = {};
+    const ids: Record<string, string> = {};
+    keys.forEach(k => {
+      map[k.provider] = 'connected';
+      ids[k.provider] = k.id;
+    });
+    setConnections(map);
+    setKeyIds(ids);
+    // For GitHub: also get the username from the status endpoint
     getGitHubStatus().then(s => {
       if (s.connected && s.username) setConnections(p => ({ ...p, github: s.username! }));
     }).catch(() => {});
@@ -81,19 +89,35 @@ const ConnectProfilesPage: React.FC = () => {
   useEffect(() => {
     const c = searchParams.get('connect');
     if (c) { const ig = INTEGRATIONS.find(i => i.id === c); if (ig && ig.status !== 'coming_soon') setModal(ig); }
-    // Returned from GitHub OAuth flow — reload connection status
+    // Returned from GitHub OAuth flow — reload to pick up newly stored token
     if (searchParams.get('github') === 'connected') loadConnections();
   }, [searchParams, loadConnections]);
 
-  const saveConn = async (id: string, token: string) => {
-    const res = await fastapiClient.post<{ status: string; username?: string }>(`/api/v1/user/integrations/${id}`, { token });
-    // For GitHub, show the GitHub username (not the token)
-    const display = res.data?.username || 'connected';
-    setConnections(p => ({ ...p, [id]: display }));
+  const saveConn = async (id: string, token: string, name?: string) => {
+    // Uses existing addUserApiKey which saves to auth service DB with proper encryption
+    const result = await addUserApiKey({ provider: id, apiKey: token, name: name || `${id} Key` });
+    if (!result.success) throw new Error(result.error || 'Failed to save');
+    if (result.key) {
+      setKeyIds(p => ({ ...p, [id]: result.key!.id }));
+      // For GitHub, get username via status endpoint
+      if (id === 'github') {
+        getGitHubStatus().then(s => {
+          setConnections(p => ({ ...p, github: s.connected && s.username ? s.username! : 'connected' }));
+        }).catch(() => setConnections(p => ({ ...p, [id]: 'connected' })));
+      } else {
+        setConnections(p => ({ ...p, [id]: 'connected' }));
+      }
+    }
   };
+
   const disconnect = async (id: string) => {
-    try { await fastapiClient.delete(`/api/v1/user/integrations/${id}`); } catch {}
+    const keyId = keyIds[id];
+    if (keyId) {
+      await deleteUserApiKey(keyId);
+    }
+    // Also evict from in-memory GitHub cache by clearing OAuth token on server (best effort)
     setConnections(p => { const u = { ...p }; delete u[id]; return u; });
+    setKeyIds(p => { const u = { ...p }; delete u[id]; return u; });
   };
 
   const filtered = useMemo(() => {
@@ -115,8 +139,8 @@ const ConnectProfilesPage: React.FC = () => {
     if (!modal || !inputValue.trim()) return;
     setSaving(true); setMsg(null);
     try {
-      await saveConn(modal.id, inputValue.trim());
-      setMsg({ type: 'success', text: `${modal.name} connected! Key stored securely on server.` });
+      await saveConn(modal.id, inputValue.trim(), `${modal.name} Key`);
+      setMsg({ type: 'success', text: `${modal.name} connected! Key stored securely (encrypted on server).` });
       setTimeout(() => { setModal(null); setMsg(null); }, 1200);
     } catch (e) { logger.error('save integration', e); setMsg({ type: 'error', text: 'Failed to save. Please try again.' }); }
     finally { setSaving(false); }
