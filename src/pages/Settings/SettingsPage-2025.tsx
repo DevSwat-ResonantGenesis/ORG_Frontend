@@ -14,7 +14,6 @@ import cardStyles from '../../components/ui/Card-2025.module.css';
 import inputStyles from '../../components/ui/Input-2025.module.css';
 import typographyStyles from '../../theme/modules/typography-2025.css';
 import styles from './SettingsPage-2025.module.css';
-import { useWarmthStore } from '../../store/warmthStore';
 
 const normalizeModels = (items: unknown[]): ModelVersion[] => {
   if (!Array.isArray(items)) return [];
@@ -39,7 +38,6 @@ const normalizeModels = (items: unknown[]): ModelVersion[] => {
 
 const SettingsPage = () => {
   const navigate = useNavigate();
-  const { warmth, setWarmth, resetWarmth } = useWarmthStore();
   const [keys, setKeys] = useState<APIKey[]>([]);
   const [thresholds, setThresholds] = useState<Thresholds | null>(null);
   const [models, setModels] = useState<ModelVersion[]>([]);
@@ -277,38 +275,6 @@ const SettingsPage = () => {
               ) : (
                 <p className="typography-body-small">Unable to load usage metrics</p>
               )}
-            </div>
-          </section>
-
-          {/* Theme Warmth Section */}
-          <section className={styles.section}>
-            <div className={cardStyles.card + ' ' + cardStyles.cardElevated}>
-              <h2 className="typography-section-title">Theme Warmth</h2>
-              <p className={`typography-body-small ${styles.subtitle}`}>
-                Adjust overall warmth across the entire platform (light and dark mode).
-              </p>
-
-              <div className={styles.warmthRow}>
-                <div className={styles.warmthMeta}>
-                  <div className={styles.warmthValue}>Warmth: {warmth}</div>
-                  <div className={styles.warmthHint}>0 = neutral, 100 = warm</div>
-                </div>
-                <input
-                  className={styles.warmthSlider}
-                  type="range"
-                  min={0}
-                  max={100}
-                  value={warmth}
-                  onChange={(e) => setWarmth(Number(e.target.value))}
-                  aria-label="Theme warmth"
-                />
-                <button
-                  className={buttonStyles.button + ' ' + buttonStyles.buttonSecondary}
-                  onClick={resetWarmth}
-                >
-                  Reset
-                </button>
-              </div>
             </div>
           </section>
 

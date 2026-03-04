@@ -15,7 +15,6 @@ import { logout as apiLogout } from '@/api/auth';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Button } from '@/components/ui';
 import { useResonantChatMenu } from '@/context/ResonantChatMenuContext';
-import { useWarmthStore } from '@/store/warmthStore';
 import styles from './Header.module.css';
 import { 
   goToHome, 
@@ -84,8 +83,6 @@ export const Header: React.FC<HeaderProps> = ({
 
   const [splitViewEnabled, setSplitViewEnabled] = useState(false);
   const [splitViewPane, setSplitViewPane] = useState<SplitViewPane>('chat');
-
-  const { warmth, setWarmth, resetWarmth } = useWarmthStore();
 
   useEffect(() => {
     if (!isLandingPage) {
@@ -435,30 +432,6 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
-              {!isMobileViewport && (
-                <div className={styles.warmthControl} title="Warmth">
-                  <span className={styles.warmthLabel}>Warm</span>
-                  <input
-                    className={styles.warmthSlider}
-                    type="range"
-                    min={0}
-                    max={100}
-                    value={warmth}
-                    onChange={(e) => setWarmth(Number(e.target.value))}
-                    aria-label="Warmth"
-                  />
-                  <button
-                    type="button"
-                    className={styles.warmthReset}
-                    onClick={resetWarmth}
-                    aria-label="Reset warmth"
-                    title="Reset warmth"
-                  >
-                    Reset
-                  </button>
-                </div>
-              )}
-
               {!isMobileViewport && <ThemeToggle />}
             </div>
 
@@ -477,20 +450,6 @@ export const Header: React.FC<HeaderProps> = ({
             {isMobileViewport && (
               <div className={`${styles.mobileThemeToggleSlot} ${isResonantChatPage ? styles.mobileThemeToggleSlotChat : ''}`}>
                 <ThemeToggle />
-              </div>
-            )}
-
-            {isMobileViewport && (
-              <div className={styles.mobileWarmthControl}>
-                <input
-                  className={styles.warmthSlider}
-                  type="range"
-                  min={0}
-                  max={100}
-                  value={warmth}
-                  onChange={(e) => setWarmth(Number(e.target.value))}
-                  aria-label="Warmth"
-                />
               </div>
             )}
 
