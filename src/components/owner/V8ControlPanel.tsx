@@ -33,6 +33,7 @@ interface FormulaParams { resonance_scale: number; spin_factor: number; energy_d
 interface CorpusFile { name: string; size: number; lines: number; }
 interface PredictionEntry { id: string; input_hash: string | null; input_words: string[] | null; output_hash: string | null; output_words: string[] | null; xyz: number[]; r: number; spin: number; energy: number; cluster: string; is_anchor: boolean; model_version_id: string | null; created_at: string; }
 interface AnchorEntry { id: string; words: string[]; xyz: number[]; cluster: string; created_at: string; }
+interface TrainingState { status: string; job_id: string | null; corpus: string | null; started_at: string | null; finished_at: string | null; error: string | null; vocab_size?: number; }
 
 const CC: Record<string, string> = { alpha: '#7df6ff', beta: '#ffb347', gamma: '#c09bff', delta: '#ff6b6b', epsilon: '#6bff6b', zeta: '#ff6bff' };
 
@@ -51,6 +52,7 @@ const V8ControlPanel: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [training, setTraining] = useState(false);
+  const [trainingJobId, setTrainingJobId] = useState<string | null>(null);
   const [newForbidden, setNewForbidden] = useState('');
   const [newAnchorWords, setNewAnchorWords] = useState('');
   const [newAnchorHash, setNewAnchorHash] = useState('');
@@ -84,11 +86,64 @@ const V8ControlPanel: React.FC = () => {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  const pollTraining = useCallback(async (jobId: string) => {
+    const startedAt = Date.now();
+    const maxMs = 30 * 60 * 1000;
+    while (Date.now() - startedAt < maxMs) {
+      try {
+        const res = await fetch(V8_API_BASE + `/admin/training/status?job_id=${encodeURIComponent(jobId)}`, { headers: hdr });
+        if (!res.ok) {
+          await new Promise(r => setTimeout(r, 2000));
+          continue;
+        }
+
+        const d = await res.json();
+        const ts: TrainingState | undefined = d?.training;
+        const st = (ts?.status || '').toLowerCase();
+
+        if (st === 'completed') {
+          setTrainingJobId(null);
+          setSuccess(`Training complete! vocab: ${ts?.vocab_size || status?.vocab_size || 0}`);
+          await fetchData();
+          return;
+        }
+        if (st === 'failed') {
+          setTrainingJobId(null);
+          setError(ts?.error || 'Training failed');
+          await fetchData();
+          return;
+        }
+      } catch (e) {
+        console.error('[V8 training poll]', e);
+      }
+
+      await new Promise(r => setTimeout(r, 2000));
+    }
+
+    setTrainingJobId(null);
+    setError('Training timed out while waiting for completion');
+  }, [fetchData, hdr, status?.vocab_size]);
+
   const startTraining = async (corpus: string) => {
     setTraining(true); setError(null); setSuccess(null);
     try {
       const res = await fetch(V8_API_BASE + '/admin/training/start', { method: 'POST', headers: hdrJson, body: JSON.stringify({ corpus }) });
-      if (res.ok) { const d = await res.json(); setSuccess(`Training complete! Model: ${d.version_tag} | ${d.metrics?.dataset_size || 0} samples | ${d.metrics?.anchor_count || 0} anchors | vocab: ${d.metrics?.vocab_size || 0} | accuracy: ${((d.metrics?.best_val_accuracy || 0) * 100).toFixed(1)}%`); await fetchData(); }
+      if (res.status === 202) {
+        const d = await res.json();
+        const jobId = d.job_id as string | undefined;
+        if (jobId) {
+          setTrainingJobId(jobId);
+          setSuccess('Training started. This may take a few minutes...');
+          await pollTraining(jobId);
+        } else {
+          setSuccess('Training started.');
+        }
+      }
+      else if (res.ok) {
+        const d = await res.json();
+        setSuccess(d.message || 'Training completed');
+        await fetchData();
+      }
       else { const e = await res.json().catch(() => ({})); setError(e.error || 'Training failed'); }
     } catch (err) { setError('Training failed: ' + (err instanceof Error ? err.message : 'error')); }
     finally { setTraining(false); }
@@ -246,7 +301,7 @@ const V8ControlPanel: React.FC = () => {
               </div>
             </div>
           </div>
-          <button onClick={() => startTraining('bip39')} disabled={training} style={{ padding: '0.6rem 1.2rem', marginBottom: '1rem', background: training ? '#666' : 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', border: 'none', borderRadius: '8px', cursor: training ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.9rem' }}><Play size={16} /> {training ? 'Training TinyU Model...' : 'Train from Anchors + Forbidden Exclusion'}</button>
+          <button onClick={() => startTraining('bip39')} disabled={training || !!trainingJobId} style={{ padding: '0.6rem 1.2rem', marginBottom: '1rem', background: (training || !!trainingJobId) ? '#666' : 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', border: 'none', borderRadius: '8px', cursor: (training || !!trainingJobId) ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.9rem' }}><Play size={16} /> {(training || !!trainingJobId) ? 'Training TinyU Model...' : 'Train from Anchors + Forbidden Exclusion'}</button>
         </div>
       )}
 
