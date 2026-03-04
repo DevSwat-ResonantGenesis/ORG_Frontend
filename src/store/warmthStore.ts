@@ -90,49 +90,69 @@ export const applyWarmthToDom = (warmth: number) => {
 
   for (const v of varsToTint) document.documentElement.style.removeProperty(v);
 
-  const computed = getComputedStyle(document.documentElement);
+  // Requested mapping:
+  // Light mode: 0 => warm pearl (#F6EEE1 feel), 100 => gray
+  // Dark mode: 0 => deeper black, 100 => lighter warm gray
+  const t = value / 100;
 
-  // Slider is centered: 50 = neutral.
-  // Light mode: 0 => dim/cooler white, 100 => warm pearl.
-  // Dark mode: 0 => deeper black, 100 => lighter warm gray.
-  const warmPearl = { r: 246, g: 238, b: 225 }; // #F6EEE1
-  const dimCoolWhite = { r: 242, g: 243, b: 245 };
-  const darkDeep = { r: 8, g: 8, b: 9 };
-  const darkLightWarmGray = { r: 46, g: 40, b: 34 };
+  const clampRgb = (c: { r: number; g: number; b: number }) => ({
+    r: clamp(c.r, 0, 255),
+    g: clamp(c.g, 0, 255),
+    b: clamp(c.b, 0, 255),
+  });
 
-  const delta = (value - 50) / 50; // -1..1
+  const offset = (c: { r: number; g: number; b: number }, amount: number) =>
+    clampRgb({ r: c.r + amount, g: c.g + amount, b: c.b + amount });
 
-  const target = (() => {
-    if (theme === 'dark') return delta >= 0 ? darkLightWarmGray : darkDeep;
-    return delta >= 0 ? warmPearl : dimCoolWhite;
-  })();
-
-  const strength = (() => {
-    const amt = Math.abs(delta);
-    if (theme === 'dark') return delta >= 0 ? amt * 0.80 : amt * 0.55;
-    return delta >= 0 ? amt * 0.75 : amt * 0.60;
-  })();
-
-  const borderStrength = strength * (theme === 'dark' ? 0.65 : 0.55);
-
-  const applyVar = (name: string, t: number) => {
-    const base = parseColor(computed.getPropertyValue(name));
-    if (!base) return;
-    document.documentElement.style.setProperty(name, toRgbString(mix(base, target, t)));
+  const setVar = (name: string, c: { r: number; g: number; b: number }) => {
+    document.documentElement.style.setProperty(name, toRgbString(c));
   };
 
-  applyVar('--bg-primary', strength);
-  applyVar('--bg-secondary', strength);
-  applyVar('--bg-tertiary', strength);
-  applyVar('--bg', strength);
-  applyVar('--color-bg-root', strength);
+  if (theme === 'light') {
+    const pearl = { r: 246, g: 238, b: 225 }; // #F6EEE1
+    const grayPrimary = { r: 228, g: 228, b: 228 };
+    const graySecondary = { r: 220, g: 220, b: 220 };
+    const grayTertiary = { r: 212, g: 212, b: 212 };
 
-  applyVar('--surface', strength);
-  applyVar('--surface-elevated', strength);
-  applyVar('--surface-hover', strength);
+    const bgPrimary = mix(pearl, grayPrimary, t);
+    const bgSecondary = mix(offset(pearl, 6), graySecondary, t);
+    const bgTertiary = mix(offset(pearl, 12), grayTertiary, t);
 
-  applyVar('--border', borderStrength);
-  applyVar('--border-subtle', borderStrength);
+    setVar('--bg-primary', bgPrimary);
+    setVar('--bg-secondary', bgSecondary);
+    setVar('--bg-tertiary', bgTertiary);
+
+    setVar('--bg', bgPrimary);
+    setVar('--color-bg-root', bgPrimary);
+
+    setVar('--surface', bgPrimary);
+    setVar('--surface-elevated', mix(offset(pearl, 2), offset(grayPrimary, 6), t));
+    setVar('--surface-hover', mix(offset(pearl, 10), offset(graySecondary, 6), t));
+
+    setVar('--border', mix({ r: 229, g: 222, b: 210 }, { r: 196, g: 196, b: 196 }, t));
+    setVar('--border-subtle', mix({ r: 240, g: 232, b: 221 }, { r: 210, g: 210, b: 210 }, t));
+  } else {
+    const deep = { r: 8, g: 8, b: 9 };
+    const warmGray = { r: 46, g: 40, b: 34 };
+
+    const bgPrimary = mix(deep, warmGray, t);
+    const bgSecondary = mix(offset(deep, 0), offset(warmGray, 2), t);
+    const bgTertiary = mix(offset(deep, 8), offset(warmGray, 10), t);
+
+    setVar('--bg-primary', bgPrimary);
+    setVar('--bg-secondary', bgSecondary);
+    setVar('--bg-tertiary', bgTertiary);
+
+    setVar('--bg', bgPrimary);
+    setVar('--color-bg-root', bgPrimary);
+
+    setVar('--surface', bgPrimary);
+    setVar('--surface-elevated', mix(offset(deep, 10), offset(warmGray, 14), t));
+    setVar('--surface-hover', mix(offset(deep, 16), offset(warmGray, 18), t));
+
+    setVar('--border', mix({ r: 24, g: 24, b: 26 }, { r: 96, g: 88, b: 80 }, t));
+    setVar('--border-subtle', mix({ r: 18, g: 18, b: 20 }, { r: 72, g: 66, b: 60 }, t));
+  }
 
   document.documentElement.style.setProperty('--rg-warmth', String(value));
 };
