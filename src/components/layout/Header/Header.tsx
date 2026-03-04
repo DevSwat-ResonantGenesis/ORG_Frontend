@@ -298,7 +298,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className={`${styles.navButton} ${activeDropdown === 'solutions' ? styles.navButtonActive : ''}`}
                 onClick={() => setActiveDropdown(activeDropdown === 'solutions' ? null : 'solutions')}
               >
-                Solutions
+                Products
                 <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -312,93 +312,38 @@ export const Header: React.FC<HeaderProps> = ({
                         <span className={styles.navDropdownItemDesc}>AI-powered conversations</span>
                       </button>
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/build'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Project Builder</span>
+                        <span className={styles.navDropdownItemTitle}>Resonant Builder</span>
                         <span className={styles.navDropdownItemDesc}>AI project generation</span>
                       </button>
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/agents'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Agent Studio</span>
+                        <span className={styles.navDropdownItemTitle}>AI Agent Studio</span>
                         <span className={styles.navDropdownItemDesc}>Create & manage agents</span>
+                      </button>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/ide'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Resonant IDE</span>
+                        <span className={styles.navDropdownItemDesc}>Open the in-browser IDE</span>
                       </button>
                     </div>
                     <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/agent-teams'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Agent Teams</span>
-                        <span className={styles.navDropdownItemDesc}>Collaborative AI workflows</span>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-memory'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Genesis Memory</span>
+                        <span className={styles.navDropdownItemDesc}>AI memory infrastructure</span>
                       </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/workflow-designer'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Workflow Designer</span>
-                        <span className={styles.navDropdownItemDesc}>Visual workflow builder</span>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/state-physics'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Invariants Enforcement SIM</span>
+                        <span className={styles.navDropdownItemDesc}>Invariant enforcement API</span>
+                      </button>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/code-visualizer'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Codebase Analyser</span>
+                        <span className={styles.navDropdownItemDesc}>Codebase analysis</span>
+                      </button>
+                      <button className={styles.navDropdownItem} onClick={() => { navigate('/network/history'); setActiveDropdown(null); }}>
+                        <span className={styles.navDropdownItemTitle}>Execution History</span>
+                        <span className={styles.navDropdownItemDesc}>View past runs</span>
                       </button>
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/marketplace'); setActiveDropdown(null); }}>
                         <span className={styles.navDropdownItemTitle}>General Store</span>
                         <span className={styles.navDropdownItemDesc}>Templates & UI Skins</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Control Center Dropdown */}
-            <div className={styles.navItem}>
-              <button 
-                className={`${styles.navButton} ${activeDropdown === 'control' ? styles.navButtonActive : ''}`}
-                onClick={() => setActiveDropdown(activeDropdown === 'control' ? null : 'control')}
-              >
-                Control Center
-                <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              {activeDropdown === 'control' && (
-                <div className={styles.navDropdown}>
-                  <div className={styles.navDropdownGridWide}>
-                    <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/control-plane'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Overview</span>
-                        <span className={styles.navDropdownItemDesc}>System dashboard</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/control-plane/live'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Live Monitor</span>
-                        <span className={styles.navDropdownItemDesc}>Real-time execution</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/control-plane/performance'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Performance</span>
-                        <span className={styles.navDropdownItemDesc}>Metrics & analytics</span>
-                      </button>
-                    </div>
-                    <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/control-plane/semantics'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Semantics</span>
-                        <span className={styles.navDropdownItemDesc}>Semantic analysis</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/control-plane/trust'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Trust</span>
-                        <span className={styles.navDropdownItemDesc}>Trust verification</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/control-plane/governance'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Governance</span>
-                        <span className={styles.navDropdownItemDesc}>Policy management</span>
-                      </button>
-                    </div>
-                    <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/control-plane/security'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Security</span>
-                        <span className={styles.navDropdownItemDesc}>Access & protection</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/control-plane/compliance'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Compliance</span>
-                        <span className={styles.navDropdownItemDesc}>Regulatory reports</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/control-plane/business'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Business</span>
-                        <span className={styles.navDropdownItemDesc}>Business metrics</span>
-                      </button>
-                    </div>
-                    <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/control-plane/guided'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Guided Scenarios</span>
-                        <span className={styles.navDropdownItemDesc}>Interactive guides</span>
                       </button>
                     </div>
                   </div>
@@ -419,52 +364,13 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             )}
 
-            {/* Developer Tools Dropdown */}
-            <div className={styles.navItem}>
-              <button 
-                className={`${styles.navButton} ${activeDropdown === 'devtools' ? styles.navButtonActive : ''}`}
-                onClick={() => setActiveDropdown(activeDropdown === 'devtools' ? null : 'devtools')}
-              >
-                Developer
-                <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              {activeDropdown === 'devtools' && (
-                <div className={styles.navDropdown}>
-                  <div className={styles.navDropdownGrid}>
-                    <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/state-physics'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>State Physics</span>
-                        <span className={styles.navDropdownItemDesc}>Invariant enforcement API</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-memory'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Resonant Memory</span>
-                        <span className={styles.navDropdownItemDesc}>AI memory infrastructure</span>
-                      </button>
-                    </div>
-                    <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/code-visualizer'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Code Visualizer</span>
-                        <span className={styles.navDropdownItemDesc}>Codebase analysis</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/ide'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Resonant IDE</span>
-                        <span className={styles.navDropdownItemDesc}>Open the in-browser IDE</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
             {/* Network Dropdown - Visible to all, pages redirect to signup if not logged in */}
             <div className={styles.navItem}>
               <button 
                 className={`${styles.navButton} ${activeDropdown === 'network' ? styles.navButtonActive : ''}`}
                 onClick={() => setActiveDropdown(activeDropdown === 'network' ? null : 'network')}
               >
-                Network
+                Marketplace
                 <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -474,92 +380,29 @@ export const Header: React.FC<HeaderProps> = ({
                   <div className={styles.navDropdownGrid}>
                     <div className={styles.navDropdownColumn}>
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/network/marketplace'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>DSID Marketplace</span>
+                        <span className={styles.navDropdownItemTitle}>Marketplace</span>
                         <span className={styles.navDropdownItemDesc}>T3 verified agents only</span>
                       </button>
                       <button className={styles.navDropdownItem} onClick={() => { navigate('/network/agents'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Agent Browser</span>
+                        <span className={styles.navDropdownItemTitle}>Discover AI Agents</span>
                         <span className={styles.navDropdownItemDesc}>Discover agents</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/network/publish'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Publish Agent</span>
-                        <span className={styles.navDropdownItemDesc}>Share your agents</span>
                       </button>
                     </div>
                     <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/network/history'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Execution History</span>
-                        <span className={styles.navDropdownItemDesc}>View past runs</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/network/node'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Node Status</span>
-                        <span className={styles.navDropdownItemDesc}>Network node info</span>
-                      </button>
                     </div>
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Help Center Dropdown */}
+            {/* Tutorials */}
             <div className={styles.navItem}>
-              <button 
-                className={`${styles.navButton} ${false ? styles.navButtonActive : ''}`}
-                onClick={() => setActiveDropdown(false ? null : 'resources')}
+              <button
+                className={styles.navButton}
+                onClick={() => { navigate('/help/getting-started/first-prediction'); setActiveDropdown(null); }}
               >
-                Help Center
-                <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                Tutorials
               </button>
-              {false && (
-                <div className={styles.navDropdown}>
-                  <div className={styles.navDropdownGridWide}>
-                    <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/help'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Help Center</span>
-                        <span className={styles.navDropdownItemDesc}>Documentation & guides</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/help/developers/api-reference'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>API Reference</span>
-                        <span className={styles.navDropdownItemDesc}>Technical documentation</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/help/getting-started/first-prediction'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Tutorials</span>
-                        <span className={styles.navDropdownItemDesc}>Step-by-step guides</span>
-                      </button>
-                    </div>
-                    <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/help/agents/creating-agents'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Agent Guide</span>
-                        <span className={styles.navDropdownItemDesc}>Build AI agents</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/help/security/best-practices'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Security Guide</span>
-                        <span className={styles.navDropdownItemDesc}>Best practices</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/contact'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Contact Support</span>
-                        <span className={styles.navDropdownItemDesc}>Get help from our team</span>
-                      </button>
-                    </div>
-                    <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { window.open('https://github.com/louienemesh/ResonantGenesis', '_blank'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>GitHub</span>
-                        <span className={styles.navDropdownItemDesc}>Open source & community</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/about'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>About Us</span>
-                        <span className={styles.navDropdownItemDesc}>Our mission & team</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/careers'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Careers</span>
-                        <span className={styles.navDropdownItemDesc}>Join our team</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Pricing Link */}
@@ -729,12 +572,6 @@ export const Header: React.FC<HeaderProps> = ({
                       </>
                     )}
                     
-                    <button className={styles.accountMenuItem} onClick={() => { navigate('/connect-profiles'); setShowAccountMenu(false); }}>
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <path d="M10 6L6 10M5 4L3 6L5 8M11 8L13 10L11 12M7 3L9 3C11.2 3 13 4.8 13 7M3 9L3 7" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                      Connect Your Profiles
-                    </button>
                     <button className={styles.accountMenuItem} onClick={() => { navigate('/profile'); setShowAccountMenu(false); }}>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <circle cx="8" cy="5" r="3" />
@@ -787,84 +624,51 @@ export const Header: React.FC<HeaderProps> = ({
           <div className={styles.mobileMenuContent}>
             {/* Solutions */}
             <div className={styles.mobileMenuSection}>
-              <div className={styles.mobileMenuSectionTitle}>Solutions</div>
+              <div className={styles.mobileMenuSectionTitle}>Products</div>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/resonant-chat'); setIsMobileMenuOpen(false); }}>
                 Resonant Chat
               </button>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/build'); setIsMobileMenuOpen(false); }}>
-                Project Builder
+                Resonant Builder
               </button>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/agents'); setIsMobileMenuOpen(false); }}>
-                Agent Studio
+                AI Agent Studio
               </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/agent-teams'); setIsMobileMenuOpen(false); }}>
-                Agent Teams
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/ide'); setIsMobileMenuOpen(false); }}>
+                Resonant IDE
               </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/workflow-designer'); setIsMobileMenuOpen(false); }}>
-                Workflow Designer
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/resonant-memory'); setIsMobileMenuOpen(false); }}>
+                Genesis Memory
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/state-physics'); setIsMobileMenuOpen(false); }}>
+                Invariants Enforcement SIM
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/code-visualizer'); setIsMobileMenuOpen(false); }}>
+                Codebase Analyser
+              </button>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/network/history'); setIsMobileMenuOpen(false); }}>
+                Execution History
               </button>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/marketplace'); setIsMobileMenuOpen(false); }}>
                 General Store
               </button>
             </div>
 
-            {/* Control Center */}
-            <div className={styles.mobileMenuSection}>
-              <div className={styles.mobileMenuSectionTitle}>Control Center</div>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane'); setIsMobileMenuOpen(false); }}>
-                Overview
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane/live'); setIsMobileMenuOpen(false); }}>
-                Live Monitor
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane/performance'); setIsMobileMenuOpen(false); }}>
-                Performance
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane/semantics'); setIsMobileMenuOpen(false); }}>
-                Semantics
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane/trust'); setIsMobileMenuOpen(false); }}>
-                Trust
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane/governance'); setIsMobileMenuOpen(false); }}>
-                Governance
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane/security'); setIsMobileMenuOpen(false); }}>
-                Security
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/control-plane/compliance'); setIsMobileMenuOpen(false); }}>
-                Compliance
-              </button>
-            </div>
-
-            {/* Developer */}
-            <div className={styles.mobileMenuSection}>
-              <div className={styles.mobileMenuSectionTitle}>Developer</div>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/state-physics'); setIsMobileMenuOpen(false); }}>
-                State Physics
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/resonant-memory'); setIsMobileMenuOpen(false); }}>
-                Resonant Memory
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/code-visualizer'); setIsMobileMenuOpen(false); }}>
-                Code Visualizer
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/ide'); setIsMobileMenuOpen(false); }}>
-                Resonant IDE
-              </button>
-            </div>
-
             {/* Network */}
             <div className={styles.mobileMenuSection}>
-              <div className={styles.mobileMenuSectionTitle}>Network</div>
+              <div className={styles.mobileMenuSectionTitle}>Marketplace</div>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/network/marketplace'); setIsMobileMenuOpen(false); }}>
-                DSID Marketplace
+                Marketplace
               </button>
               <button className={styles.mobileMenuItem} onClick={() => { navigate('/network/agents'); setIsMobileMenuOpen(false); }}>
-                Agent Browser
+                Discover AI Agents
               </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/network/publish'); setIsMobileMenuOpen(false); }}>
-                Publish Agent
+            </div>
+
+            {/* Tutorials */}
+            <div className={styles.mobileMenuSection}>
+              <button className={styles.mobileMenuItem} onClick={() => { navigate('/help/getting-started/first-prediction'); setIsMobileMenuOpen(false); }}>
+                Tutorials
               </button>
             </div>
 
