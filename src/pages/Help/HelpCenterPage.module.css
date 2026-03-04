@@ -14,10 +14,6 @@
   margin: 0;
 }
 
-[data-theme='light'] .helpCenterPage {
-  background: #F6EEE1;
-}
-
 .container {
   max-width: 1400px;
   margin: 0 auto;
