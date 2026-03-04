@@ -229,6 +229,8 @@ const HelpCenterPage: React.FC = () => {
 
   const suggestedSearches = ['AGI Neural Hub', 'memory', 'invariants', 'SAST', 'API keys', 'marketplace'];
 
+  const featuredTopics = articles.filter(a => a.category === 'Core Stack');
+
   const filteredArticles = articles.filter(article => {
     const matchesSearch = searchQuery === '' || 
       article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -251,23 +253,22 @@ const HelpCenterPage: React.FC = () => {
   return (
     <div className={styles.helpCenterPage}>
       <div className={styles.container}>
-        <div className={styles.header}>
-          <h1>Help Center</h1>
-          <p className={styles.subtitle}>
-            Tutorials and documentation for ResonantGenesis — aligned to the current stack.
-          </p>
-        </div>
+        <div className={styles.hero}>
+          <div className={styles.heroInner}>
+            <div className={styles.heroText}>
+              <h1>Help Center</h1>
+              <p className={styles.subtitle}>
+                Tutorials and documentation for ResonantGenesis — aligned to the current stack.
+              </p>
+            </div>
 
-        <div className={styles.contentBody}>
-          <div className={styles.contentMain}>
-            {/* Search */}
-            <div className={styles.helpSearch}>
+            <div className={styles.heroSearch}>
               <div className={styles.searchInputWrapper}>
                 <SearchIcon size={20} />
                 <input
                   ref={searchInputRef}
                   type="text"
-                  placeholder="Search help articles... (⌘K)"
+                  placeholder="Search tutorials... (⌘K)"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className={styles.searchInput}
@@ -275,6 +276,41 @@ const HelpCenterPage: React.FC = () => {
                 <span className={styles.searchShortcut}>⌘K</span>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className={styles.contentBody}>
+          <div className={styles.contentMain}>
+            {searchQuery === '' && selectedCategory === null && featuredTopics.length > 0 && (
+              <section className={styles.featuredSection}>
+                <div className={styles.featuredHeader}>
+                  <h2>Start with the Core Stack</h2>
+                  <p className={styles.featuredSubtitle}>
+                    Action, memory, constraints, and analysis—pick a topic to begin.
+                  </p>
+                </div>
+                <div className={styles.featuredGrid}>
+                  {featuredTopics.map(topic => (
+                    <button
+                      key={topic.id}
+                      className={styles.featuredCard}
+                      onClick={() => navigate(topic.path)}
+                    >
+                      <div className={styles.featuredCardTop}>
+                        <span className={styles.featuredIcon}>{categoryIcons[topic.category]}</span>
+                        {topic.readingTime && (
+                          <span className={styles.featuredMeta}>
+                            <FileTextIcon size={14} /> {topic.readingTime} min
+                          </span>
+                        )}
+                      </div>
+                      <div className={styles.featuredTitle}>{topic.title}</div>
+                      <div className={styles.featuredDesc}>{topic.description}</div>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Category Filter */}
             <div className={styles.categoryFilters}>
@@ -299,7 +335,7 @@ const HelpCenterPage: React.FC = () => {
             {/* Articles by Category */}
             {Object.entries(groupedArticles).map(([category, categoryArticles]) => (
               <section key={category} className={styles.contentSection}>
-                <h2>{category}</h2>
+                <h2 className={styles.sectionTitle}>{category}</h2>
                 <div className={styles.articleGrid}>
                   {categoryArticles.map(article => (
                     <div
@@ -307,8 +343,8 @@ const HelpCenterPage: React.FC = () => {
                       className={styles.articleCard}
                       onClick={() => navigate(article.path)}
                     >
-                      <h3>{article.title}</h3>
-                      <p>{article.description}</p>
+                      <h3 className={styles.articleTitle}>{article.title}</h3>
+                      <p className={styles.articleDesc}>{article.description}</p>
                       <div className={styles.articleMeta}>
                         {article.readingTime && (
                           <span className={styles.readingTime}>
@@ -355,19 +391,19 @@ const HelpCenterPage: React.FC = () => {
             )}
             {/* API Reference Section */}
             <section className={styles.contentSection}>
-              <h2>API Reference & Developer Resources</h2>
+              <h2 className={styles.sectionTitle}>API Reference & Developer Resources</h2>
               <div className={styles.articleGrid}>
                 <div className={styles.articleCard} onClick={() => navigate("/help/developers/api-reference")}>
-                  <h3>REST API Documentation</h3>
-                  <p>Complete API reference for integrating with ResonantGenesis platform.</p>
+                  <h3 className={styles.articleTitle}>REST API Documentation</h3>
+                  <p className={styles.articleDesc}>Complete API reference for integrating with ResonantGenesis platform.</p>
                 </div>
                 <div className={styles.articleCard} onClick={() => window.open("https://github.com/louienemesh/ResonantGenesis", "_blank")}>
-                  <h3>GitHub Repository</h3>
-                  <p>Explore our open-source codebase and join the community.</p>
+                  <h3 className={styles.articleTitle}>GitHub Repository</h3>
+                  <p className={styles.articleDesc}>Explore our open-source codebase and join the community.</p>
                 </div>
                 <div className={styles.articleCard} onClick={() => goToContact(navigate)}>
-                  <h3>Contact Support</h3>
-                  <p>Get help from our support team via email or contact form.</p>
+                  <h3 className={styles.articleTitle}>Contact Support</h3>
+                  <p className={styles.articleDesc}>Get help from our support team via email or contact form.</p>
                 </div>
               </div>
             </section>

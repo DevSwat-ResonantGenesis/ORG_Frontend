@@ -622,17 +622,8 @@ This article is coming soon. Our documentation team is working on comprehensive 
       if (line.startsWith('```')) {
         if (inCodeBlock) {
           elements.push(
-            <pre key={index} style={{
-              background: '#0a0a0a',
-              color: '#0f0',
-              padding: '16px',
-              borderRadius: '6px',
-              overflow: 'auto',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '14px',
-              margin: '16px 0'
-            }}>
-              {codeBlockContent}
+            <pre key={index} className={styles.codeBlock}>
+              <code>{codeBlockContent}</code>
             </pre>
           );
           codeBlockContent = '';
@@ -651,48 +642,48 @@ This article is coming soon. Our documentation team is working on comprehensive 
       if (line.startsWith('# ')) {
         if (currentList.length > 0) {
           elements.push(
-            <ul key={`list-${index}`} style={{ margin: '16px 0', paddingLeft: '24px' }}>
+            <ul key={`list-${index}`} className={styles.mdList}>
               {currentList.map((item, i) => (
-                <li key={i} style={{ margin: '8px 0' }}>{item}</li>
+                <li key={i} className={styles.mdListItem}>{item}</li>
               ))}
             </ul>
           );
           currentList = [];
         }
         elements.push(
-          <h1 key={index} style={{ fontSize: '32px', fontWeight: 700, margin: '24px 0 16px' }}>
+          <h1 key={index} className={styles.mdH1}>
             {line.substring(2)}
           </h1>
         );
       } else if (line.startsWith('## ')) {
         if (currentList.length > 0) {
           elements.push(
-            <ul key={`list-${index}`} style={{ margin: '16px 0', paddingLeft: '24px' }}>
+            <ul key={`list-${index}`} className={styles.mdList}>
               {currentList.map((item, i) => (
-                <li key={i} style={{ margin: '8px 0' }}>{item}</li>
+                <li key={i} className={styles.mdListItem}>{item}</li>
               ))}
             </ul>
           );
           currentList = [];
         }
         elements.push(
-          <h2 key={index} style={{ fontSize: '24px', fontWeight: 600, margin: '20px 0 12px' }}>
+          <h2 key={index} className={styles.mdH2}>
             {line.substring(3)}
           </h2>
         );
       } else if (line.startsWith('### ')) {
         if (currentList.length > 0) {
           elements.push(
-            <ul key={`list-${index}`} style={{ margin: '16px 0', paddingLeft: '24px' }}>
+            <ul key={`list-${index}`} className={styles.mdList}>
               {currentList.map((item, i) => (
-                <li key={i} style={{ margin: '8px 0' }}>{item}</li>
+                <li key={i} className={styles.mdListItem}>{item}</li>
               ))}
             </ul>
           );
           currentList = [];
         }
         elements.push(
-          <h3 key={index} style={{ fontSize: '20px', fontWeight: 600, margin: '16px 0 8px' }}>
+          <h3 key={index} className={styles.mdH3}>
             {line.substring(4)}
           </h3>
         );
@@ -701,9 +692,9 @@ This article is coming soon. Our documentation team is working on comprehensive 
       } else if (line.trim() === '') {
         if (currentList.length > 0) {
           elements.push(
-            <ul key={`list-${index}`} style={{ margin: '16px 0', paddingLeft: '24px' }}>
+            <ul key={`list-${index}`} className={styles.mdList}>
               {currentList.map((item, i) => (
-                <li key={i} style={{ margin: '8px 0' }}>{item}</li>
+                <li key={i} className={styles.mdListItem}>{item}</li>
               ))}
             </ul>
           );
@@ -712,9 +703,9 @@ This article is coming soon. Our documentation team is working on comprehensive 
       } else if (line.trim()) {
         if (currentList.length > 0) {
           elements.push(
-            <ul key={`list-${index}`} style={{ margin: '16px 0', paddingLeft: '24px' }}>
+            <ul key={`list-${index}`} className={styles.mdList}>
               {currentList.map((item, i) => (
-                <li key={i} style={{ margin: '8px 0' }}>{item}</li>
+                <li key={i} className={styles.mdListItem}>{item}</li>
               ))}
             </ul>
           );
@@ -732,7 +723,7 @@ This article is coming soon. Our documentation team is working on comprehensive 
             parts.push(<span key={key++}>{line.substring(lastIndex, match.index)}</span>);
           }
           parts.push(
-            <Link key={key++} to={match[2]} style={{ color: 'var(--color-primary-500)', textDecoration: 'none' }}>
+            <Link key={key++} to={match[2]} className={styles.mdLink}>
               {match[1]}
             </Link>
           );
@@ -743,7 +734,7 @@ This article is coming soon. Our documentation team is working on comprehensive 
         }
 
         elements.push(
-          <p key={index} style={{ margin: '12px 0', lineHeight: '1.8', color: 'var(--text-primary)' }}>
+          <p key={index} className={styles.mdP}>
             {parts.length > 0 ? parts : line}
           </p>
         );
@@ -752,9 +743,9 @@ This article is coming soon. Our documentation team is working on comprehensive 
 
     if (currentList.length > 0) {
       elements.push(
-        <ul key="final-list" style={{ margin: '16px 0', paddingLeft: '24px' }}>
+        <ul key="final-list" className={styles.mdList}>
           {currentList.map((item, i) => (
-            <li key={i} style={{ margin: '8px 0' }}>{item}</li>
+            <li key={i} className={styles.mdListItem}>{item}</li>
           ))}
         </ul>
       );
@@ -772,6 +763,11 @@ This article is coming soon. Our documentation team is working on comprehensive 
         <div className={styles.header}>
           <div className={styles.headerContent}>
             <div className={styles.headerText}>
+              <div className={styles.breadcrumbs}>
+                <button className={styles.breadcrumbLink} onClick={() => goToHelp(navigate)}>Help Center</button>
+                <span className={styles.breadcrumbSep}>/</span>
+                <span className={styles.breadcrumbCurrent}>{categoryTitle || 'Article'}</span>
+              </div>
               <h1>{articleTitle}</h1>
               <p className={styles.subtitle}>{categoryTitle}</p>
             </div>
