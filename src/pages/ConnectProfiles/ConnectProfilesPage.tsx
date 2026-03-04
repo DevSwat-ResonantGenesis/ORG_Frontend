@@ -1,8 +1,9 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from './ConnectProfilesPage.module.css';
 import { connectGitHub, getGitHubStatus } from '@/api/github';
 import { logger } from '@/utils/logger';
+import fastapiClient from '@/api/fastapiClient';
 
 interface Integration {
   id: string;
@@ -63,30 +64,32 @@ const ConnectProfilesPage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  useEffect(() => {
-    const saved = localStorage.getItem('rg_integrations');
-    if (saved) { try { setConnections(JSON.parse(saved)); } catch {} }
-  }, []);
-
-  useEffect(() => {
+  const loadConnections = useCallback(async () => {
+    try {
+      const res = await fastapiClient.get<{ connected: string[] }>('/api/v1/user/integrations');
+      const map: Record<string, string> = {};
+      (res.data.connected || []).forEach((id: string) => { map[id] = 'connected'; });
+      setConnections(map);
+    } catch { /* API unavailable, start empty */ }
     getGitHubStatus().then(s => {
       if (s.connected && s.username) setConnections(p => ({ ...p, github: s.username! }));
     }).catch(() => {});
   }, []);
+
+  useEffect(() => { loadConnections(); }, [loadConnections]);
 
   useEffect(() => {
     const c = searchParams.get('connect');
     if (c) { const ig = INTEGRATIONS.find(i => i.id === c); if (ig && ig.status !== 'coming_soon') setModal(ig); }
   }, [searchParams]);
 
-  const saveConn = (id: string, val: string) => {
-    const u = { ...connections, [id]: val };
-    setConnections(u);
-    localStorage.setItem('rg_integrations', JSON.stringify(u));
+  const saveConn = async (id: string, token: string) => {
+    await fastapiClient.post(`/api/v1/user/integrations/${id}`, { token });
+    setConnections(p => ({ ...p, [id]: 'connected' }));
   };
-  const disconnect = (id: string) => {
-    const u = { ...connections }; delete u[id];
-    setConnections(u); localStorage.setItem('rg_integrations', JSON.stringify(u));
+  const disconnect = async (id: string) => {
+    try { await fastapiClient.delete(`/api/v1/user/integrations/${id}`); } catch {}
+    setConnections(p => { const u = { ...p }; delete u[id]; return u; });
   };
 
   const filtered = useMemo(() => {
@@ -108,10 +111,10 @@ const ConnectProfilesPage: React.FC = () => {
     if (!modal || !inputValue.trim()) return;
     setSaving(true); setMsg(null);
     try {
-      saveConn(modal.id, inputValue.trim());
-      setMsg({ type: 'success', text: `${modal.name} connected!` });
+      await saveConn(modal.id, inputValue.trim());
+      setMsg({ type: 'success', text: `${modal.name} connected! Key stored securely on server.` });
       setTimeout(() => { setModal(null); setMsg(null); }, 1200);
-    } catch (e) { logger.error('save integration', e); setMsg({ type: 'error', text: 'Failed to save.' }); }
+    } catch (e) { logger.error('save integration', e); setMsg({ type: 'error', text: 'Failed to save. Please try again.' }); }
     finally { setSaving(false); }
   };
 

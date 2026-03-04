@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   User, Bell, Settings, BarChart3, Zap, CreditCard, History, Key, 
-  Rocket, Share2, Gift, LogOut, Copy, Check, ExternalLink, Trash2
+  Rocket, Share2, Gift, LogOut, Copy, Check, ExternalLink, Trash2, Link2
 } from 'lucide-react';
 import fastapiClient from '../../api/fastapiClient';
 import { fetchUsageMetrics, type UsageMetrics } from '../../api/usage';
@@ -457,6 +457,13 @@ const ProfilePage = () => {
           </div>
         ))}
         
+        <div className={styles.sidebarSection}>
+          <div className={styles.sidebarSectionTitle}>INTEGRATIONS</div>
+          <button className={styles.sidebarItem} onClick={() => navigate('/connect-profiles')}>
+            <Link2 size={16} />
+            <span>Connect Your Profiles</span>
+          </button>
+        </div>
         <div className={styles.sidebarSection}>
           <button className={`${styles.sidebarItem} ${styles.logout}`} onClick={handleLogout}>
             <LogOut size={16} />
