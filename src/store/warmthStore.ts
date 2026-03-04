@@ -92,17 +92,33 @@ export const applyWarmthToDom = (warmth: number) => {
 
   const computed = getComputedStyle(document.documentElement);
 
-  const tintLight = { r: 246, g: 238, b: 225 }; // #F6EEE1
-  const tintDark = { r: 20, g: 16, b: 12 };
+  // Slider is centered: 50 = neutral.
+  // Light mode: 0 => dim/cooler white, 100 => warm pearl.
+  // Dark mode: 0 => deeper black, 100 => lighter warm gray.
+  const warmPearl = { r: 246, g: 238, b: 225 }; // #F6EEE1
+  const dimCoolWhite = { r: 242, g: 243, b: 245 };
+  const darkDeep = { r: 8, g: 8, b: 9 };
+  const darkLightWarmGray = { r: 46, g: 40, b: 34 };
 
-  const strength = theme === 'dark' ? (value / 100) * 0.28 : (value / 100) * 0.40;
-  const borderStrength = strength * 0.55;
-  const tint = theme === 'dark' ? tintDark : tintLight;
+  const delta = (value - 50) / 50; // -1..1
+
+  const target = (() => {
+    if (theme === 'dark') return delta >= 0 ? darkLightWarmGray : darkDeep;
+    return delta >= 0 ? warmPearl : dimCoolWhite;
+  })();
+
+  const strength = (() => {
+    const amt = Math.abs(delta);
+    if (theme === 'dark') return delta >= 0 ? amt * 0.80 : amt * 0.55;
+    return delta >= 0 ? amt * 0.75 : amt * 0.60;
+  })();
+
+  const borderStrength = strength * (theme === 'dark' ? 0.65 : 0.55);
 
   const applyVar = (name: string, t: number) => {
     const base = parseColor(computed.getPropertyValue(name));
     if (!base) return;
-    document.documentElement.style.setProperty(name, toRgbString(mix(base, tint, t)));
+    document.documentElement.style.setProperty(name, toRgbString(mix(base, target, t)));
   };
 
   applyVar('--bg-primary', strength);
