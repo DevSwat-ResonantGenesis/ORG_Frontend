@@ -1110,7 +1110,7 @@ export const BuildPage: React.FC = () => {
               </button>
               <button onClick={handlePushToGitHub} className={styles.tabButton}>
                 <GitHubIcon />
-                <span>Push to GitHub</span>
+                <span>{githubStatus?.connected ? 'Push to GitHub' : 'Connect to GitHub'}</span>
               </button>
               <button onClick={handleSaveToBackend} className={styles.tabButton}>
                 <SaveIcon />
@@ -1274,7 +1274,7 @@ export const BuildPage: React.FC = () => {
                   <DownloadIcon /> Download ZIP
                 </button>
                 <button onClick={handlePushToGitHub} className={styles.secondaryButton}>
-                  <GitHubIcon /> Push to GitHub
+                  <GitHubIcon /> {githubStatus?.connected ? 'Push to GitHub' : 'Connect to GitHub'}
                 </button>
                 <button onClick={handleSaveToBackend} className={styles.secondaryButton}>
                   <SaveIcon /> Save Project
