@@ -66,6 +66,142 @@ To get started with ResonantGenesis:
 
 For more details, see our [Account Creation Guide](/help/getting-started/account-creation).
   `,
+  'agi-neural-hub': `
+# AGI Neural Hub
+
+AGI Neural Hub is the action layer of ResonantGenesis: a workspace for general-purpose autonomous action, operator workflows, and tool-enabled execution.
+
+## Where to find it
+
+- Navigate to: [/resonant-chat](/resonant-chat)
+- In the top nav: Products → **AGI Neural Hub**
+
+## What it does
+
+- Run goal-driven conversations that can trigger platform tools.
+- Orchestrate workflows that combine:
+  - autonomous reasoning
+  - memory retrieval (Synthetic Neural Memory)
+  - constraint simulation (Invariants SIM)
+  - code/security analysis (SAST & Dependency Graph Analysis)
+
+## Providers + “bring your own key”
+
+If a provider requires your own key, add it in:
+
+- Settings → API Keys
+- Or go directly: [/profile?tab=api-keys](/profile?tab=api-keys)
+
+## Recommended stack setup
+
+1. Start in **AGI Neural Hub** for autonomous action.
+2. Enable **Synthetic Neural Memory** for persistence and retrieval.
+3. Use **Invariants SIM** to model constraints and enforce safe state transitions.
+4. Use **SAST & Dependency Graph Analysis** for architecture visibility and remediation planning.
+
+## Troubleshooting
+
+- If you are redirected to signup/login, you’re not authenticated.
+- If a tool says it’s disabled, check your role/plan and the relevant Settings toggles.
+
+## Next steps
+
+- [Synthetic Neural Memory](/help/core/synthetic-neural-memory)
+- [Invariants SIM](/help/core/invariants-sim)
+- [SAST & Dependency Graph Analysis](/help/core/sast-dependency-graph-analysis)
+  `,
+  'synthetic-neural-memory': `
+# Synthetic Neural Memory
+
+Synthetic Neural Memory is the memory layer of ResonantGenesis.
+
+It’s designed as a **physics-informed, 9-layer cognitive infrastructure** for autonomous agents: persistence, structured retrieval, and governance-ready storage.
+
+## Where to find it
+
+- Product page: [/resonant-memory](/resonant-memory)
+- In the top nav: Products → **Synthetic Neural Memory**
+
+## What it’s for
+
+- Long-term memory for agents and operator workflows.
+- Retrieval that supports:
+  - context reconstruction
+  - high-signal recall
+  - “what changed” investigation (pairing well with Execution History)
+
+## How it fits the stack
+
+- **AGI Neural Hub** triggers actions.
+- **Synthetic Neural Memory** stores/retrieves the context that keeps actions consistent.
+- **Invariants SIM** models constraints so actions stay safe.
+- **SAST & Dependency Graph Analysis** provides visibility/remediation when actions touch code.
+
+## Next steps
+
+- [AGI Neural Hub](/help/core/agi-neural-hub)
+- [Invariants SIM](/help/core/invariants-sim)
+  `,
+  'invariants-sim': `
+# Invariants SIM
+
+Invariants SIM is the constraint layer of ResonantGenesis.
+
+It focuses on **economic constraint modeling** and invariant enforcement across state transitions so autonomous systems behave safely and predictably.
+
+## Where to find it
+
+- Product page: [/state-physics](/state-physics)
+- In the top nav: Products → **Invariants SIM**
+
+## What it’s for
+
+- Define constraints (“invariants”) that must hold.
+- Simulate state transitions under constraints.
+- Detect invalid transitions early.
+
+## How to use it (typical workflow)
+
+1. Start a workflow in **AGI Neural Hub**.
+2. Use Invariants SIM concepts to model guardrails.
+3. Validate that planned actions satisfy constraints before execution.
+
+## Next steps
+
+- [AGI Neural Hub](/help/core/agi-neural-hub)
+- [SAST & Dependency Graph Analysis](/help/core/sast-dependency-graph-analysis)
+  `,
+  'sast-dependency-graph-analysis': `
+# SAST & Dependency Graph Analysis
+
+This product provides **full-stack architecture observability and remediation**.
+
+It combines static analysis (SAST) with dependency graph mapping so teams can understand system shape, risks, and remediation paths.
+
+## Where to find it
+
+- Product page: [/code-visualizer](/code-visualizer)
+- In the top nav: Products → **SAST & Dependency Graph Analysis**
+
+## What it’s for
+
+- Identify security issues and risky patterns.
+- Map dependency relationships.
+- Support refactors and remediation planning with architecture visibility.
+
+## Saved analyses
+
+If the UI shows **Saved Analyses**, you can:
+
+- list previous analyses
+- load an analysis
+- delete (soft-delete) an analysis
+
+## Next steps
+
+- [Synthetic Neural Memory](/help/core/synthetic-neural-memory)
+- [Invariants SIM](/help/core/invariants-sim)
+  `,
   'hash-sphere-memory': `
 # 🧠 Hash Sphere Memory System
 
