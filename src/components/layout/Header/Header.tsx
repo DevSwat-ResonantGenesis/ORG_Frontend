@@ -369,19 +369,15 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
               {activeDropdown === 'network' && (
                 <div className={styles.navDropdown}>
-                  <div className={styles.navDropdownGrid}>
-                    <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/network/marketplace'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Marketplace</span>
-                        <span className={styles.navDropdownItemDesc}>T3 verified agents only</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/network/agents'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Discover AI Agents</span>
-                        <span className={styles.navDropdownItemDesc}>Discover agents</span>
-                      </button>
-                    </div>
-                    <div className={styles.navDropdownColumn}>
-                    </div>
+                  <div className={styles.navDropdownGridOneRow}>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/network/marketplace'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Marketplace</span>
+                      <span className={styles.navDropdownItemDesc}>T3 verified agents only</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/network/agents'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Discover AI Agents</span>
+                      <span className={styles.navDropdownItemDesc}>Discover agents</span>
+                    </button>
                   </div>
                 </div>
               )}
