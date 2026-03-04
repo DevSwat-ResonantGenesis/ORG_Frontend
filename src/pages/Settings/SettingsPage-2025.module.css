@@ -15,6 +15,35 @@
   margin-bottom: var(--space-8);
 }
 
+.warmthRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.warmthMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 180px;
+}
+
+.warmthValue {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.warmthHint {
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+}
+
+.warmthSlider {
+  flex: 1;
+  accent-color: var(--color-primary-500);
+}
+
 .form {
   display: flex;
   flex-direction: column;
@@ -72,6 +101,15 @@
   
   .formGroup:has(button) {
     flex-direction: column;
+  }
+
+  .warmthRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .warmthMeta {
+    min-width: auto;
   }
 }
 

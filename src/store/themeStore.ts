@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import logger from '../utils/logger';
+import { applyWarmthToDom, getWarmthFromStorage } from './warmthStore';
 
 type Theme = 'light' | 'dark';
 
@@ -54,6 +55,8 @@ export const useThemeStore = create<ThemeState>((set) => {
         document.documentElement.setAttribute('theme', t);
         document.body.setAttribute('data-theme', t);
         document.documentElement.style.colorScheme = t;
+
+        applyWarmthToDom(getWarmthFromStorage());
       }
       set({ theme: t });
     },
@@ -71,6 +74,8 @@ export const useThemeStore = create<ThemeState>((set) => {
           document.documentElement.setAttribute('theme', next);
           document.body.setAttribute('data-theme', next);
           document.documentElement.style.colorScheme = next;
+
+          applyWarmthToDom(getWarmthFromStorage());
           
           // Force CSS recalculation
           void document.documentElement.offsetWidth;
