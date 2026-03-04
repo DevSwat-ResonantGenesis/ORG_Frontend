@@ -305,43 +305,39 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
               {activeDropdown === 'solutions' && (
                 <div className={styles.navDropdown}>
-                  <div className={styles.navDropdownGrid}>
-                    <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-chat'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Resonant Chat</span>
-                        <span className={styles.navDropdownItemDesc}>AI-powered conversations</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/build'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Resonant Builder</span>
-                        <span className={styles.navDropdownItemDesc}>AI project generation</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/agents'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>AI Agent Studio</span>
-                        <span className={styles.navDropdownItemDesc}>Create & manage agents</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/ide'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Resonant IDE</span>
-                        <span className={styles.navDropdownItemDesc}>Open the in-browser IDE</span>
-                      </button>
-                    </div>
-                    <div className={styles.navDropdownColumn}>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-memory'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Genesis Memory</span>
-                        <span className={styles.navDropdownItemDesc}>AI memory infrastructure</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/state-physics'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Invariants Enforcement SIM</span>
-                        <span className={styles.navDropdownItemDesc}>Invariant enforcement API</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/code-visualizer'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Codebase Analyser</span>
-                        <span className={styles.navDropdownItemDesc}>Codebase analysis</span>
-                      </button>
-                      <button className={styles.navDropdownItem} onClick={() => { navigate('/network/history'); setActiveDropdown(null); }}>
-                        <span className={styles.navDropdownItemTitle}>Execution History</span>
-                        <span className={styles.navDropdownItemDesc}>View past runs</span>
-                      </button>
-                    </div>
+                  <div className={styles.navDropdownGridTwoRows}>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-chat'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Resonant Chat</span>
+                      <span className={styles.navDropdownItemDesc}>AI-powered conversations</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/build'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Resonant Builder</span>
+                      <span className={styles.navDropdownItemDesc}>AI project generation</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/agents'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>AI Agent Studio</span>
+                      <span className={styles.navDropdownItemDesc}>Create & manage agents</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/ide'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Resonant IDE</span>
+                      <span className={styles.navDropdownItemDesc}>Open the in-browser IDE</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-memory'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Genesis Memory</span>
+                      <span className={styles.navDropdownItemDesc}>AI memory infrastructure</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/state-physics'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Invariants Enforcement SIM</span>
+                      <span className={styles.navDropdownItemDesc}>Invariant enforcement API</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/code-visualizer'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Codebase Analyser</span>
+                      <span className={styles.navDropdownItemDesc}>Codebase analysis</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/network/history'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Execution History</span>
+                      <span className={styles.navDropdownItemDesc}>View past runs</span>
+                    </button>
                   </div>
                 </div>
               )}
