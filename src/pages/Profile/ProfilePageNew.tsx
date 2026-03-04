@@ -22,7 +22,8 @@ import {
   Copy,
   Check,
   AlertCircle,
-  Zap
+  Zap,
+  Link2
 } from 'lucide-react';
 import { useAuth } from '../../security/auth/AuthProvider';
 import { useEconomicState } from '../../context/EconomicStateContext';
@@ -237,6 +238,31 @@ export const ProfilePageNew: React.FC = () => {
             </div>
           </section>
         )}
+
+        {/* Connect Profiles */}
+        <section className={styles.section}>
+          <h3 className={styles.sectionTitle}>
+            <Link2 size={18} />
+            Integrations
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary, #71717a)', margin: 0 }}>
+              Connect GitHub, Google, Notion, Stripe, DigitalOcean and 25+ more services to power your builds.
+            </p>
+            <button
+              style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                padding: '12px 20px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                border: 'none', borderRadius: '10px', color: '#fff',
+                fontSize: '14px', fontWeight: 600, cursor: 'pointer', width: 'fit-content'
+              }}
+              onClick={() => navigate('/connect-profiles')}
+            >
+              <Link2 size={16} />
+              Connect Your Profiles
+            </button>
+          </div>
+        </section>
 
         {/* Actions */}
         <section className={styles.actionsSection}>

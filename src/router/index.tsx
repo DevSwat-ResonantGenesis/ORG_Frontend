@@ -128,6 +128,7 @@ const CodeVisualizerPage = lazy(() => import('../pages/CodeVisualizer/CodeVisual
 const StatePhysicsAPI = lazy(() => import('../pages/StatePhysicsAPI/StatePhysicsAPI'));
 const APIKeysPage = lazy(() => import('../pages/APIKeys/APIKeysPage'));
 const HashSphereMemoryAPI = lazy(() => import('../pages/HashSphereMemoryAPI/HashSphereMemoryAPI'));
+const ConnectProfilesPage = lazy(() => import('../pages/ConnectProfiles/ConnectProfilesPage'));
 
 const withShell = (node: React.ReactNode) => (
   <ProtectedRoute>
@@ -574,6 +575,11 @@ const router = createBrowserRouter([
   {
     path: '/state-physics-api',
     element: withPublicShell(<StatePhysicsAPI />)
+  },
+  // Connect Your Profiles - integrations hub
+  {
+    path: '/connect-profiles',
+    element: withShell(<ConnectProfilesPage />)
   },
   // API Keys Management - Redirect to Profile page
   {

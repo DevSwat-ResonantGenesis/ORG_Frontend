@@ -729,6 +729,12 @@ export const Header: React.FC<HeaderProps> = ({
                       </>
                     )}
                     
+                    <button className={styles.accountMenuItem} onClick={() => { navigate('/connect-profiles'); setShowAccountMenu(false); }}>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <path d="M10 6L6 10M5 4L3 6L5 8M11 8L13 10L11 12M7 3L9 3C11.2 3 13 4.8 13 7M3 9L3 7" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      Connect Your Profiles
+                    </button>
                     <button className={styles.accountMenuItem} onClick={() => { navigate('/profile'); setShowAccountMenu(false); }}>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                         <circle cx="8" cy="5" r="3" />

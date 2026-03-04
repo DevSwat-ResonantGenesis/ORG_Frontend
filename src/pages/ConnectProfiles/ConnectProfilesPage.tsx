@@ -1,0 +1,245 @@
+import React, { useState, useMemo, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import styles from './ConnectProfilesPage.module.css';
+import { connectGitHub, getGitHubStatus } from '@/api/github';
+import { logger } from '@/utils/logger';
+
+interface Integration {
+  id: string;
+  name: string;
+  description: string;
+  emoji: string;
+  logoColor: string;
+  category: string;
+  authType: 'oauth' | 'pat' | 'apikey' | 'coming_soon';
+  status: 'connected' | 'available' | 'coming_soon';
+  keyLabel?: string;
+  keyPlaceholder?: string;
+  helpUrl?: string;
+  helpText?: string;
+}
+
+const INTEGRATIONS: Integration[] = [
+  { id: 'github', name: 'GitHub', description: 'Push projects, sync repos, trigger CI/CD pipelines directly from the builder.', emoji: '🐙', logoColor: '#e4e4e7', category: 'Version Control', authType: 'oauth', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'ghp_...', helpUrl: 'https://github.com/settings/tokens/new?scopes=repo,read:user', helpText: 'Create token with repo & read:user scopes' },
+  { id: 'gitlab', name: 'GitLab', description: 'Push generated projects to your GitLab repositories.', emoji: '🦊', logoColor: '#FC6D26', category: 'Version Control', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'glpat-...', helpUrl: 'https://gitlab.com/-/profile/personal_access_tokens', helpText: 'Scopes: api, read_user, write_repository' },
+  { id: 'bitbucket', name: 'Bitbucket', description: 'Sync projects to Bitbucket repositories.', emoji: '🪣', logoColor: '#0052CC', category: 'Version Control', authType: 'pat', status: 'available', keyLabel: 'App Password', keyPlaceholder: 'ATBB...', helpUrl: 'https://bitbucket.org/account/settings/app-passwords/', helpText: 'Repositories read/write permission required' },
+  { id: 'openclaw', name: 'Openclaw', description: "Connect to Openclaw's agent network for cross-platform AI orchestration.", emoji: '🦞', logoColor: '#FF4500', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'oclaw_...', helpUrl: 'https://openclaw.ai/settings/api-keys', helpText: 'Get from your Openclaw account settings' },
+  { id: 'openai', name: 'OpenAI', description: 'Use your own GPT-4o key for unlimited AI generations without platform quotas.', emoji: '🤖', logoColor: '#10A37F', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'sk-proj-...', helpUrl: 'https://platform.openai.com/api-keys', helpText: 'Get from OpenAI platform dashboard' },
+  { id: 'anthropic', name: 'Anthropic Claude', description: 'Power builds and chat with Claude using your own Anthropic API key.', emoji: '🧠', logoColor: '#D4A574', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'sk-ant-...', helpUrl: 'https://console.anthropic.com/settings/keys', helpText: 'Get from Anthropic console' },
+  { id: 'huggingface', name: 'HuggingFace', description: 'Access open-source models and the HuggingFace Hub.', emoji: '🤗', logoColor: '#FF9A00', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'Access Token', keyPlaceholder: 'hf_...', helpUrl: 'https://huggingface.co/settings/tokens', helpText: 'Create read-access token' },
+  { id: 'digitalocean', name: 'DigitalOcean', description: 'Deploy projects to DigitalOcean Droplets, App Platform, or Kubernetes.', emoji: '🌊', logoColor: '#0080FF', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'dop_v1_...', helpUrl: 'https://cloud.digitalocean.com/account/api/tokens', helpText: 'Read/write access required' },
+  { id: 'vercel', name: 'Vercel', description: 'One-click deploy React/Next.js projects to the Vercel edge network.', emoji: '▲', logoColor: '#ffffff', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Access Token', keyPlaceholder: 'vercel_token_...', helpUrl: 'https://vercel.com/account/tokens', helpText: 'Create from Vercel account settings' },
+  { id: 'netlify', name: 'Netlify', description: 'Deploy static sites and serverless functions to Netlify CDN.', emoji: '🌐', logoColor: '#00C7B7', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'nfp_...', helpUrl: 'https://app.netlify.com/user/applications#personal-access-tokens', helpText: 'Create from Netlify user settings' },
+  { id: 'railway', name: 'Railway', description: 'Deploy any backend project to Railway with automatic scaling.', emoji: '🚂', logoColor: '#7A3FDE', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'API Token', keyPlaceholder: 'railway_token_...', helpUrl: 'https://railway.app/account/tokens', helpText: 'Create from Railway account settings' },
+  { id: 'aws', name: 'Amazon AWS', description: 'Deploy to EC2, Lambda, ECS, or S3.', emoji: '☁️', logoColor: '#FF9900', category: 'Cloud & Hosting', authType: 'coming_soon', status: 'coming_soon' },
+  { id: 'google-calendar', name: 'Google Calendar', description: 'Schedule deployments and milestones synced to your calendar.', emoji: '📅', logoColor: '#4285F4', category: 'Productivity', authType: 'oauth', status: 'available' },
+  { id: 'google-drive', name: 'Google Drive', description: 'Save generated projects and docs directly to Google Drive.', emoji: '📁', logoColor: '#34A853', category: 'Productivity', authType: 'oauth', status: 'available' },
+  { id: 'notion', name: 'Notion', description: 'Auto-create project docs and changelogs in Notion.', emoji: '📝', logoColor: '#ffffff', category: 'Productivity', authType: 'pat', status: 'available', keyLabel: 'Integration Token', keyPlaceholder: 'secret_...', helpUrl: 'https://www.notion.so/my-integrations', helpText: 'Create an internal integration' },
+  { id: 'slack', name: 'Slack', description: 'Get build and deployment notifications in Slack channels.', emoji: '💬', logoColor: '#4A154B', category: 'Productivity', authType: 'pat', status: 'available', keyLabel: 'Bot OAuth Token', keyPlaceholder: 'xoxb-...', helpUrl: 'https://api.slack.com/apps', helpText: 'Create a Slack app and get Bot User OAuth Token' },
+  { id: 'discord', name: 'Discord', description: 'Real-time build and deploy notifications via Discord webhook.', emoji: '🎮', logoColor: '#5865F2', category: 'Productivity', authType: 'apikey', status: 'available', keyLabel: 'Webhook URL', keyPlaceholder: 'https://discord.com/api/webhooks/...', helpUrl: 'https://discord.com/developers/applications', helpText: 'Create webhook from server settings' },
+  { id: 'figma', name: 'Figma', description: 'Import Figma designs to auto-generate UI code and components.', emoji: '🎨', logoColor: '#1ABCFE', category: 'Design', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'figd_...', helpUrl: 'https://www.figma.com/settings', helpText: 'Generate from Figma account settings' },
+  { id: 'supabase', name: 'Supabase', description: 'Auto-provision databases, auth and storage for generated backends.', emoji: '⚡', logoColor: '#3ECF8E', category: 'Databases', authType: 'pat', status: 'available', keyLabel: 'Access Token', keyPlaceholder: 'sbp_...', helpUrl: 'https://supabase.com/dashboard/account/tokens', helpText: 'Generate from Supabase account settings' },
+  { id: 'mongodb', name: 'MongoDB Atlas', description: 'Auto-create Atlas databases for generated projects.', emoji: '🍃', logoColor: '#13AA52', category: 'Databases', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'xxxxxxxx-xxxx-...', helpUrl: 'https://cloud.mongodb.com/v2#/org/settings/apiKeys', helpText: 'Create from Atlas organization settings' },
+  { id: 'firebase', name: 'Firebase', description: 'Real-time databases, auth, and cloud functions.', emoji: '🔥', logoColor: '#FFCA28', category: 'Databases', authType: 'coming_soon', status: 'coming_soon' },
+  { id: 'stripe', name: 'Stripe', description: 'Auto-configure Stripe checkout and subscriptions in e-commerce projects.', emoji: '💳', logoColor: '#6772E5', category: 'Payments', authType: 'apikey', status: 'available', keyLabel: 'Secret Key', keyPlaceholder: 'sk_live_... or sk_test_...', helpUrl: 'https://dashboard.stripe.com/apikeys', helpText: 'Use test key for development' },
+  { id: 'twilio', name: 'Twilio', description: 'Add SMS and messaging to your generated applications.', emoji: '📱', logoColor: '#F22F46', category: 'Communication', authType: 'apikey', status: 'available', keyLabel: 'Auth Token', keyPlaceholder: 'xxxxxxxx...', helpUrl: 'https://console.twilio.com', helpText: 'Get Account SID and Auth Token from Twilio Console' },
+  { id: 'sendgrid', name: 'SendGrid', description: 'Configure transactional email in generated apps.', emoji: '📧', logoColor: '#1A82E2', category: 'Communication', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'SG...', helpUrl: 'https://app.sendgrid.com/settings/api_keys', helpText: 'Create with Mail Send permission' },
+  { id: 'zapier', name: 'Zapier', description: 'Trigger Zapier workflows on build completion and project events.', emoji: '⚡', logoColor: '#FF4A00', category: 'Automation', authType: 'apikey', status: 'available', keyLabel: 'Webhook URL', keyPlaceholder: 'https://hooks.zapier.com/...', helpUrl: 'https://zapier.com', helpText: 'Create a Zap with Webhook trigger' },
+  { id: 'n8n', name: 'n8n', description: 'Open-source workflow automation for advanced build pipelines.', emoji: '🔄', logoColor: '#EA4B71', category: 'Automation', authType: 'apikey', status: 'available', keyLabel: 'Webhook URL', keyPlaceholder: 'https://your-n8n.com/webhook/...', helpUrl: 'https://n8n.io', helpText: 'Create a Webhook node in your n8n workflow' },
+  { id: 'sentry', name: 'Sentry', description: 'Auto-configure error tracking in your generated applications.', emoji: '🛡️', logoColor: '#362D59', category: 'Monitoring', authType: 'apikey', status: 'available', keyLabel: 'Auth Token', keyPlaceholder: 'sntrys_...', helpUrl: 'https://sentry.io/settings/account/api/auth-tokens/', helpText: 'Create from Sentry account settings' },
+  { id: 'datadog', name: 'Datadog', description: 'Monitor deployed applications with APM, logs, and metrics.', emoji: '📊', logoColor: '#632CA6', category: 'Monitoring', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'xxxxxxxx...', helpUrl: 'https://app.datadoghq.com/organization-settings/api-keys', helpText: 'Get from Datadog Organization Settings' },
+  { id: 'newrelic', name: 'New Relic', description: 'Full-stack observability and performance monitoring.', emoji: '🔍', logoColor: '#1CE783', category: 'Monitoring', authType: 'coming_soon', status: 'coming_soon' },
+];
+
+const CATEGORIES = ['Version Control', 'AI & Intelligence', 'Cloud & Hosting', 'Productivity', 'Design', 'Databases', 'Payments', 'Communication', 'Automation', 'Monitoring'];
+const CAT_EMOJI: Record<string, string> = { 'Version Control': '🔀', 'AI & Intelligence': '🤖', 'Cloud & Hosting': '☁️', Productivity: '📋', Design: '🎨', Databases: '🗄️', Payments: '💳', Communication: '📡', Automation: '⚡', Monitoring: '📊' };
+
+const ConnectProfilesPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState('');
+  const [connections, setConnections] = useState<Record<string, string>>({});
+  const [modal, setModal] = useState<Integration | null>(null);
+  const [inputValue, setInputValue] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('rg_integrations');
+    if (saved) { try { setConnections(JSON.parse(saved)); } catch {} }
+  }, []);
+
+  useEffect(() => {
+    getGitHubStatus().then(s => {
+      if (s.connected && s.username) setConnections(p => ({ ...p, github: s.username! }));
+    }).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const c = searchParams.get('connect');
+    if (c) { const ig = INTEGRATIONS.find(i => i.id === c); if (ig && ig.status !== 'coming_soon') setModal(ig); }
+  }, [searchParams]);
+
+  const saveConn = (id: string, val: string) => {
+    const u = { ...connections, [id]: val };
+    setConnections(u);
+    localStorage.setItem('rg_integrations', JSON.stringify(u));
+  };
+  const disconnect = (id: string) => {
+    const u = { ...connections }; delete u[id];
+    setConnections(u); localStorage.setItem('rg_integrations', JSON.stringify(u));
+  };
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    return q ? INTEGRATIONS.filter(i => i.name.toLowerCase().includes(q) || i.description.toLowerCase().includes(q) || i.category.toLowerCase().includes(q)) : INTEGRATIONS;
+  }, [search]);
+
+  const connected = INTEGRATIONS.filter(i => connections[i.id]);
+
+  const openModal = (ig: Integration) => { if (ig.status === 'coming_soon') return; setModal(ig); setInputValue(''); setMsg(null); };
+
+  const handleOAuth = (ig: Integration) => {
+    if (ig.id === 'github') { connectGitHub(); }
+    else { window.open('https://accounts.google.com/o/oauth2/v2/auth', '_blank'); }
+    setModal(null);
+  };
+
+  const handleSave = async () => {
+    if (!modal || !inputValue.trim()) return;
+    setSaving(true); setMsg(null);
+    try {
+      saveConn(modal.id, inputValue.trim());
+      setMsg({ type: 'success', text: `${modal.name} connected!` });
+      setTimeout(() => { setModal(null); setMsg(null); }, 1200);
+    } catch (e) { logger.error('save integration', e); setMsg({ type: 'error', text: 'Failed to save.' }); }
+    finally { setSaving(false); }
+  };
+
+  return (
+    <div className={styles.page}>
+      <div className={styles.header}>
+        <div className={styles.headerTop}>
+          <div className={styles.headerIcon}>🔗</div>
+          <div className={styles.headerText}>
+            <h1>Connect Your Profiles</h1>
+            <p>Connect external services — push to GitHub, deploy to cloud, automate workflows. {INTEGRATIONS.filter(i => i.status !== 'coming_soon').length}+ integrations.</p>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.searchBar}>
+        <input className={styles.searchInput} placeholder="Search integrations (GitHub, Stripe, Notion…)" value={search} onChange={e => setSearch(e.target.value)} />
+      </div>
+
+      <div className={styles.connectedSummary}>
+        <span className={styles.summaryTitle}>✅ Connected ({connected.length})</span>
+        {connected.length === 0
+          ? <span className={styles.noConnected}>No integrations connected yet — pick one below to get started.</span>
+          : <div className={styles.summaryChips}>{connected.map(i => <span key={i.id} className={styles.summaryChip}>{i.emoji} {i.name}</span>)}</div>
+        }
+      </div>
+
+      <div className={styles.content}>
+        {CATEGORIES.map(cat => {
+          const items = filtered.filter(i => i.category === cat);
+          if (!items.length) return null;
+          return (
+            <div key={cat} className={styles.category}>
+              <div className={styles.categoryHeader}>
+                <span className={styles.categoryEmoji}>{CAT_EMOJI[cat]}</span>
+                <span className={styles.categoryTitle}>{cat}</span>
+                <span className={styles.categoryCount}>{items.length}</span>
+              </div>
+              <div className={styles.grid}>
+                {items.map(ig => {
+                  const isConn = !!connections[ig.id];
+                  const isSoon = ig.status === 'coming_soon';
+                  return (
+                    <div key={ig.id} className={`${styles.card} ${isConn ? styles.connected : ''} ${isSoon ? styles.comingSoon : ''}`} onClick={() => !isConn && openModal(ig)}>
+                      {isConn && <div className={styles.connectedGlow} />}
+                      <div className={styles.cardTop}>
+                        <div className={styles.logo} style={{ background: `${ig.logoColor}22`, color: ig.logoColor, fontSize: 24 }}>{ig.emoji}</div>
+                        <div className={styles.cardMeta}>
+                          <h3 className={styles.cardName}>{ig.name}</h3>
+                          <p className={styles.cardDesc}>{ig.description}</p>
+                        </div>
+                        <span className={`${styles.statusBadge} ${isConn ? styles.connected : isSoon ? styles.comingSoon : styles.available}`}>
+                          <span className={`${styles.dot} ${isConn ? styles.green : isSoon ? styles.gray : styles.purple}`} />
+                          {isConn ? 'Connected' : isSoon ? 'Soon' : 'Available'}
+                        </span>
+                      </div>
+                      <div className={styles.cardFooter}>
+                        {isConn ? (
+                          <>
+                            <span className={styles.connectedInfo}>{connections[ig.id]}</span>
+                            <button className={`${styles.connectBtn} ${styles.danger}`} onClick={e => { e.stopPropagation(); disconnect(ig.id); }}>Disconnect</button>
+                          </>
+                        ) : isSoon ? (
+                          <button className={`${styles.connectBtn} ${styles.disabled}`} disabled>Coming Soon</button>
+                        ) : (
+                          <button className={`${styles.connectBtn} ${styles.primary}`} onClick={e => { e.stopPropagation(); openModal(ig); }}>Connect</button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {modal && (
+        <div className={styles.modalOverlay} onClick={() => setModal(null)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <button className={styles.modalClose} onClick={() => setModal(null)}>×</button>
+            <div className={styles.modalHeader}>
+              <div className={styles.modalLogo} style={{ background: `${modal.logoColor}22`, color: modal.logoColor, fontSize: 28 }}>{modal.emoji}</div>
+              <div>
+                <h2 className={styles.modalTitle}>Connect {modal.name}</h2>
+                <p className={styles.modalSubtitle}>{modal.description}</p>
+              </div>
+            </div>
+            <div className={styles.modalBody}>
+              {msg && <div className={msg.type === 'success' ? styles.successMsg : styles.errorMsg}>{msg.type === 'success' ? '✅' : '⚠️'} {msg.text}</div>}
+
+              {modal.authType === 'oauth' && (
+                <>
+                  <button className={styles.oauthBtn} onClick={() => handleOAuth(modal)}>
+                    <span style={{ fontSize: 20 }}>{modal.emoji}</span> Connect with {modal.name}
+                  </button>
+                  {modal.id === 'github' && (
+                    <>
+                      <div className={styles.divider}>or use a Personal Access Token</div>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Personal Access Token</label>
+                        <input className={styles.formInput} type="password" placeholder="ghp_..." value={inputValue} onChange={e => setInputValue(e.target.value)} autoComplete="off" />
+                        <span className={styles.formHint}>🔑 <a href="https://github.com/settings/tokens/new?scopes=repo,read:user" target="_blank" rel="noreferrer">Create token</a> — repo & read:user scopes</span>
+                      </div>
+                      <button className={styles.submitBtn} onClick={handleSave} disabled={saving || !inputValue.trim()}>{saving ? 'Saving…' : 'Save Token'}</button>
+                    </>
+                  )}
+                </>
+              )}
+
+              {(modal.authType === 'pat' || modal.authType === 'apikey') && (
+                <>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>🔑 {modal.keyLabel || 'API Key'}</label>
+                    <input className={styles.formInput} type="password" placeholder={modal.keyPlaceholder || 'Enter your key…'} value={inputValue} onChange={e => setInputValue(e.target.value)} autoComplete="off" />
+                    {modal.helpUrl && <span className={styles.formHint}><a href={modal.helpUrl} target="_blank" rel="noreferrer">Where to find this</a>{modal.helpText ? ` — ${modal.helpText}` : ''}</span>}
+                  </div>
+                  <button className={styles.submitBtn} onClick={handleSave} disabled={saving || !inputValue.trim()}>{saving ? 'Saving…' : `Connect ${modal.name}`}</button>
+                </>
+              )}
+
+              <button className={styles.cancelBtn} onClick={() => setModal(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ConnectProfilesPage;

@@ -870,8 +870,8 @@ export const BuildPage: React.FC = () => {
   const handlePushToGitHub = async () => {
     // Check if connected to GitHub
     if (!githubStatus?.connected) {
-      // Show modal to connect
-      setShowGitHubModal(true);
+      // Redirect to Connect Profiles page to link GitHub
+      navigate('/connect-profiles?connect=github');
       return;
     }
     
@@ -880,9 +880,9 @@ export const BuildPage: React.FC = () => {
     setShowGitHubModal(true);
   };
 
-  // Connect to GitHub OAuth
+  // Connect to GitHub OAuth - redirect to integrations page
   const handleConnectGitHub = () => {
-    connectGitHub();
+    navigate('/connect-profiles?connect=github');
   };
 
   // Push project to selected repo
