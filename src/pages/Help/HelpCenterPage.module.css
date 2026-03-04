@@ -32,7 +32,7 @@
     radial-gradient(900px 420px at 90% 30%, rgba(59, 130, 246, 0.12), transparent 55%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.0));
   border: 1px solid var(--border);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
 }
 
 [data-theme='light'] .hero {
@@ -115,26 +115,32 @@
 .featuredCard {
   text-align: left;
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.0));
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   cursor: pointer;
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+[data-theme='dark'] .featuredCard {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
 }
 
 [data-theme='light'] .featuredCard {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  background: var(--surface);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
 }
 
 .featuredCard:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   border-color: rgba(14, 165, 233, 0.6);
-  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
 }
 
 [data-theme='light'] .featuredCard:hover {
-  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
 }
 
 .featuredCardTop {
@@ -331,21 +337,27 @@
   background: var(--surface);
   border-radius: var(--radius-lg);
   border: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border);
+  box-shadow: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+[data-theme='dark'] .contentSection {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
 .contentSection:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transform: none;
+  box-shadow: none;
 }
 
 [data-theme='dark'] .contentSection {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
 }
 
 [data-theme='dark'] .contentSection:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: none;
 }
 
 .contentSection h2 {
@@ -369,8 +381,8 @@
 }
 
 .articleCard {
-  background: var(--bg-primary);
-  border: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: var(--space-4);
   cursor: pointer;
@@ -378,20 +390,25 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.articleCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: none;
 }
 
 [data-theme='dark'] .articleCard {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.articleCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.20);
+}
+
+[data-theme='dark'] .articleCard {
+  box-shadow: none;
 }
 
 [data-theme='dark'] .articleCard:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
 }
 
 .articleCard h3 {
@@ -470,23 +487,28 @@
   padding: var(--space-6);
   background: var(--surface);
   border-radius: var(--radius-lg);
-  border: none;
+  border: 1px solid var(--border);
   margin-bottom: var(--space-4);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+[data-theme='dark'] .sidebarCard {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
 .sidebarCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transform: none;
+  box-shadow: none;
 }
 
 [data-theme='dark'] .sidebarCard {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
 }
 
 [data-theme='dark'] .sidebarCard:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: none;
 }
 
 .sidebarCard:last-child {
