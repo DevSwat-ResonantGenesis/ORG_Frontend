@@ -130,6 +130,7 @@ export const fetchAvailableProviders = async (): Promise<{
 };
 
 export const API_KEY_PROVIDERS = [
+  { id: 'github', name: 'GitHub (PAT)', placeholder: 'ghp_...', helpUrl: 'https://github.com/settings/tokens', models: [] },
   { id: 'openai', name: 'OpenAI', placeholder: 'sk-proj-...', helpUrl: 'https://platform.openai.com/api-keys', models: ['gpt-4o', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'] },
   { id: 'anthropic', name: 'Anthropic (Claude)', placeholder: 'sk-ant-...', helpUrl: 'https://console.anthropic.com/settings/keys', models: ['claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku'] },
   { id: 'google', name: 'Google (Gemini)', placeholder: 'AIza...', helpUrl: 'https://aistudio.google.com/app/apikey', models: ['gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro'] },

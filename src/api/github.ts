@@ -37,11 +37,9 @@ export const getGitHubStatus = async (): Promise<GitHubStatus> => {
  * Redirects to backend OAuth endpoint
  */
 export const connectGitHub = (): void => {
-  // Use getApiUrl to get the correct API base URL
-  const apiUrl = getApiUrl();
-  
-  // Redirect to backend OAuth endpoint
-  window.location.href = `${apiUrl}/github/oauth/authorize`;
+  // PAT-only setup: send user to Connect Profiles to add a GitHub Personal Access Token.
+  // Keep same-origin navigation so cookies/session are preserved.
+  window.location.href = `/connect-profiles?connect=github`;
 };
 
 /**
