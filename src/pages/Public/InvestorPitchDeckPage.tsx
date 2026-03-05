@@ -11,17 +11,16 @@ const InvestorPitchDeckPage = () => {
   const sphereRef = useRef<HTMLDivElement | null>(null);
   const anchorRef = useRef<HTMLButtonElement | null>(null);
 
-  const [pathD, setPathD] = useState<string>('');
   const [heroSize, setHeroSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
-  const [particlePoints, setParticlePoints] = useState<Array<{ x: number; y: number }>>([]);
-  const [pathDWhite, setPathDWhite] = useState<string>('');
-  const [particlePointsWhite, setParticlePointsWhite] = useState<Array<{ x: number; y: number }>>([]);
-  const [pathDCyan, setPathDCyan] = useState<string>('');
-  const [particlePointsCyan, setParticlePointsCyan] = useState<Array<{ x: number; y: number }>>([]);
-  const [pathDPurple, setPathDPurple] = useState<string>('');
-  const [particlePointsPurple, setParticlePointsPurple] = useState<Array<{ x: number; y: number }>>([]);
-  const [pathDAmber, setPathDAmber] = useState<string>('');
-  const [particlePointsAmber, setParticlePointsAmber] = useState<Array<{ x: number; y: number }>>([]);
+  const [traces, setTraces] = useState<
+    Array<{
+      points: Array<{ x: number; y: number }>;
+      nodeSize: number;
+      nodeOpacity: number;
+      baseDelayMs: number;
+      stepDelayMs: number;
+    }>
+  >([]);
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
@@ -65,94 +64,53 @@ const InvestorPitchDeckPage = () => {
     const updatePath = () => {
       const heroEl = heroRef.current;
       const sphereEl = sphereRef.current;
-      const anchorEl = anchorRef.current;
-      if (!heroEl || !sphereEl || !anchorEl) return;
+      if (!heroEl || !sphereEl) return;
 
       const heroRect = heroEl.getBoundingClientRect();
       const sphereRect = sphereEl.getBoundingClientRect();
-      const anchorRect = anchorEl.getBoundingClientRect();
 
       setHeroSize({ width: heroRect.width, height: heroRect.height });
-
-      const startX = anchorRect.right - heroRect.left - 14;
-      const startY = anchorRect.top - heroRect.top + 10;
 
       const endX = sphereRect.left - heroRect.left + sphereRect.width * 0.55;
       const endY = sphereRect.top - heroRect.top + sphereRect.height * 0.45;
 
-      const midX = (startX + endX) * 0.5;
-      const c1X = midX + 140;
-      const c1Y = startY - 120;
-      const c2X = midX - 180;
-      const c2Y = endY + 120;
+      const w = heroRect.width;
+      const h = heroRect.height;
+      const end = { x: endX, y: endY };
 
-      const p0 = { x: startX, y: startY };
-      const p1 = { x: c1X, y: c1Y };
-      const p2 = { x: c2X, y: c2Y };
-      const p3 = { x: endX, y: endY };
+      const starts = [
+        { x: 22, y: 44 },
+        { x: w - 22, y: 56 },
+        { x: 26, y: h - 140 },
+        { x: w - 36, y: h - 170 },
+        { x: 18, y: h * 0.5 }
+      ];
 
-      setPathD(`M ${p0.x} ${p0.y} C ${p1.x} ${p1.y}, ${p2.x} ${p2.y}, ${p3.x} ${p3.y}`);
+      const profiles = [
+        { nodeSize: 6, nodeOpacity: 0.65, baseDelayMs: 0, stepDelayMs: 55, count: 34, c1: { x: w * 0.62, y: h * 0.18 }, c2: { x: w * 0.38, y: h * 0.74 } },
+        { nodeSize: 5, nodeOpacity: 0.5, baseDelayMs: 220, stepDelayMs: 60, count: 26, c1: { x: w * 0.78, y: h * 0.46 }, c2: { x: w * 0.44, y: h * 0.2 } },
+        { nodeSize: 4, nodeOpacity: 0.4, baseDelayMs: 420, stepDelayMs: 65, count: 22, c1: { x: w * 0.22, y: h * 0.88 }, c2: { x: w * 0.55, y: h * 0.62 } },
+        { nodeSize: 3, nodeOpacity: 0.28, baseDelayMs: 620, stepDelayMs: 70, count: 18, c1: { x: w * 0.9, y: h * 0.82 }, c2: { x: w * 0.52, y: h * 0.84 } },
+        { nodeSize: 2.8, nodeOpacity: 0.22, baseDelayMs: 800, stepDelayMs: 75, count: 16, c1: { x: w * 0.28, y: h * 0.46 }, c2: { x: w * 0.58, y: h * 0.44 } }
+      ];
 
-      const points: Array<{ x: number; y: number }> = [];
-      const count = 36;
-      for (let i = 0; i < count; i += 1) {
-        const t = i / (count - 1);
-        points.push(cubicBezierPoint(t, p0, p1, p2, p3));
-      }
-      setParticlePoints(points);
+      const nextTraces = starts.map((start, i) => {
+        const profile = profiles[i];
+        const points: Array<{ x: number; y: number }> = [];
+        for (let j = 0; j < profile.count; j += 1) {
+          const t = j / (profile.count - 1);
+          points.push(cubicBezierPoint(t, start, profile.c1, profile.c2, end));
+        }
+        return {
+          points,
+          nodeSize: profile.nodeSize,
+          nodeOpacity: profile.nodeOpacity,
+          baseDelayMs: profile.baseDelayMs,
+          stepDelayMs: profile.stepDelayMs
+        };
+      });
 
-      const w1X = midX + 90;
-      const w1Y = startY + 140;
-      const w2X = midX - 220;
-      const w2Y = endY - 140;
-
-      const wp0 = p0;
-      const wp1 = { x: w1X, y: w1Y };
-      const wp2 = { x: w2X, y: w2Y };
-      const wp3 = p3;
-
-      setPathDWhite(`M ${wp0.x} ${wp0.y} C ${wp1.x} ${wp1.y}, ${wp2.x} ${wp2.y}, ${wp3.x} ${wp3.y}`);
-
-      const whitePoints: Array<{ x: number; y: number }> = [];
-      const whiteCount = 28;
-      for (let i = 0; i < whiteCount; i += 1) {
-        const t = i / (whiteCount - 1);
-        whitePoints.push(cubicBezierPoint(t, wp0, wp1, wp2, wp3));
-      }
-      setParticlePointsWhite(whitePoints);
-
-      const c1 = { x: midX + 220, y: startY - 40 };
-      const c2 = { x: midX - 120, y: endY + 180 };
-      setPathDCyan(`M ${p0.x} ${p0.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${p3.x} ${p3.y}`);
-      const cyanPoints: Array<{ x: number; y: number }> = [];
-      const cyanCount = 22;
-      for (let i = 0; i < cyanCount; i += 1) {
-        const t = i / (cyanCount - 1);
-        cyanPoints.push(cubicBezierPoint(t, p0, c1, c2, p3));
-      }
-      setParticlePointsCyan(cyanPoints);
-
-      const pr1 = { x: midX + 40, y: startY - 220 };
-      const pr2 = { x: midX - 300, y: endY + 40 };
-      setPathDPurple(`M ${p0.x} ${p0.y} C ${pr1.x} ${pr1.y}, ${pr2.x} ${pr2.y}, ${p3.x} ${p3.y}`);
-      const purplePoints: Array<{ x: number; y: number }> = [];
-      const purpleCount = 18;
-      for (let i = 0; i < purpleCount; i += 1) {
-        const t = i / (purpleCount - 1);
-        purplePoints.push(cubicBezierPoint(t, p0, pr1, pr2, p3));
-      }
-      setParticlePointsPurple(purplePoints);
-
-      const a1 = { x: midX + 120, y: startY + 220 };
-      const a2 = { x: midX - 60, y: endY - 240 };
-      setPathDAmber(`M ${p0.x} ${p0.y} C ${a1.x} ${a1.y}, ${a2.x} ${a2.y}, ${p3.x} ${p3.y}`);
-      const amberPoints: Array<{ x: number; y: number }> = [];
-      const amberCount = 16;
-      for (let i = 0; i < amberCount; i += 1) {
-        const t = i / (amberCount - 1);
-        amberPoints.push(cubicBezierPoint(t, p0, a1, a2, p3));
-      }
-      setParticlePointsAmber(amberPoints);
+      setTraces(nextTraces);
     };
 
     updatePath();
@@ -183,7 +141,7 @@ const InvestorPitchDeckPage = () => {
             </Suspense>
           </div>
 
-          {!prefersReducedMotion && pathD && heroSize.width > 0 && heroSize.height > 0 && (
+          {!prefersReducedMotion && traces.length > 0 && heroSize.width > 0 && heroSize.height > 0 && (
             <svg
               className={styles.noodleOverlay}
               aria-hidden="true"
@@ -192,80 +150,22 @@ const InvestorPitchDeckPage = () => {
               viewBox={`0 0 ${heroSize.width} ${heroSize.height}`}
               preserveAspectRatio="none"
             >
-              <path className={styles.noodlePath} d={pathD} />
-              {pathDWhite && <path className={styles.noodlePath} d={pathDWhite} />}
-              {pathDCyan && <path className={styles.noodlePath} d={pathDCyan} />}
-              {pathDPurple && <path className={styles.noodlePath} d={pathDPurple} />}
-              {pathDAmber && <path className={styles.noodlePath} d={pathDAmber} />}
-              {particlePoints.map((pt, idx) => (
-                <rect
-                  key={idx}
-                  className={styles.nodeParticle}
-                  x={pt.x - 2}
-                  y={pt.y - 2}
-                  width={4}
-                  height={4}
-                  rx={0.8}
-                  ry={0.8}
-                  style={{ animationDelay: `${idx * 55}ms` }}
-                />
-              ))}
-
-              {particlePointsWhite.map((pt, idx) => (
-                <rect
-                  key={`w-${idx}`}
-                  className={styles.nodeParticleWhite}
-                  x={pt.x - 2}
-                  y={pt.y - 2}
-                  width={4}
-                  height={4}
-                  rx={0.8}
-                  ry={0.8}
-                  style={{ animationDelay: `${400 + idx * 65}ms` }}
-                />
-              ))}
-
-              {particlePointsCyan.map((pt, idx) => (
-                <rect
-                  key={`c-${idx}`}
-                  className={styles.nodeParticleCyan}
-                  x={pt.x - 2}
-                  y={pt.y - 2}
-                  width={4}
-                  height={4}
-                  rx={0.8}
-                  ry={0.8}
-                  style={{ animationDelay: `${650 + idx * 70}ms` }}
-                />
-              ))}
-
-              {particlePointsPurple.map((pt, idx) => (
-                <rect
-                  key={`p-${idx}`}
-                  className={styles.nodeParticlePurple}
-                  x={pt.x - 2}
-                  y={pt.y - 2}
-                  width={4}
-                  height={4}
-                  rx={0.8}
-                  ry={0.8}
-                  style={{ animationDelay: `${900 + idx * 75}ms` }}
-                />
-              ))}
-
-              {particlePointsAmber.map((pt, idx) => (
-                <rect
-                  key={`a-${idx}`}
-                  className={styles.nodeParticleAmber}
-                  x={pt.x - 2}
-                  y={pt.y - 2}
-                  width={4}
-                  height={4}
-                  rx={0.8}
-                  ry={0.8}
-                  style={{ animationDelay: `${1150 + idx * 80}ms` }}
-                />
-              ))}
+              {traces.flatMap((trace, traceIdx) =>
+                trace.points.map((pt, idx) => (
+                  <rect
+                    key={`${traceIdx}-${idx}`}
+                    className={styles.nodeParticleTools}
+                    x={pt.x - trace.nodeSize / 2}
+                    y={pt.y - trace.nodeSize / 2}
+                    width={trace.nodeSize}
+                    height={trace.nodeSize}
+                    rx={0.9}
+                    ry={0.9}
+                    opacity={trace.nodeOpacity}
+                    style={{ animationDelay: `${trace.baseDelayMs + idx * trace.stepDelayMs}ms` }}
+                  />
+                ))
+              )}
             </svg>
           )}
 
@@ -324,24 +224,8 @@ const InvestorPitchDeckPage = () => {
 
               <div className={styles.traceLegend} aria-label="Trace legend">
                 <div className={styles.traceLegendItem}>
-                  <span className={`${styles.traceLegendSwatch} ${styles.traceLegendSwatchBlue}`} aria-hidden="true" />
-                  <span>AI Agent</span>
-                </div>
-                <div className={styles.traceLegendItem}>
-                  <span className={`${styles.traceLegendSwatch} ${styles.traceLegendSwatchWhite}`} aria-hidden="true" />
-                  <span>LLM</span>
-                </div>
-                <div className={styles.traceLegendItem}>
                   <span className={`${styles.traceLegendSwatch} ${styles.traceLegendSwatchCyan}`} aria-hidden="true" />
                   <span>Tools</span>
-                </div>
-                <div className={styles.traceLegendItem}>
-                  <span className={`${styles.traceLegendSwatch} ${styles.traceLegendSwatchPurple}`} aria-hidden="true" />
-                  <span>Memory</span>
-                </div>
-                <div className={styles.traceLegendItem}>
-                  <span className={`${styles.traceLegendSwatch} ${styles.traceLegendSwatchAmber}`} aria-hidden="true" />
-                  <span>Policies</span>
                 </div>
               </div>
             </div>
