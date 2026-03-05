@@ -76,6 +76,7 @@ const IDEPage = lazy(() => import('../pages/IDE/IDEPage'));
 const BuildPage = lazy(() => import('../pages/Build/BuildPage'));
 const EmbeddingTestPage = lazy(() => import('../pages/Test/EmbeddingTestPage'));
 const ReviewQueuePage = lazy(() => import('../pages/AIReview/ReviewQueuePage'));
+const InvestorPitchDeckPage = lazy(() => import('../pages/Public/InvestorPitchDeckPage'));
 const AgentTeamsPage = lazy(() => import('../pages/AgentTeams/AgentTeamsPage'));
 const TeamDashboard = lazy(() => import('../pages/AgentTeams/TeamDashboard'));
 const MarketplacePage = lazy(() => import('../pages/Marketplace/MarketplacePage'));
@@ -374,6 +375,10 @@ const router = createBrowserRouter([
   {
     path: '/pricing',
     element: withPublicShell(<PricingPage />)
+  },
+  {
+    path: '/investor-pitch-deck',
+    element: withPublicShell(<InvestorPitchDeckPage />)
   },
   // Enterprise page
   {

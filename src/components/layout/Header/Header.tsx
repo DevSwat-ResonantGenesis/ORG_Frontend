@@ -249,6 +249,7 @@ export const Header: React.FC<HeaderProps> = ({
                         location.pathname !== '/signup' &&
                         location.pathname !== '/api/docs' &&
                         location.pathname !== '/pricing' &&
+                        location.pathname !== '/investor-pitch-deck' &&
                         location.pathname !== '/about' &&
                         location.pathname !== '/contact' &&
                         location.pathname !== '/careers';
@@ -399,6 +400,13 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => goToPricing(navigate)}
             >
               Pricing
+            </button>
+
+            <button
+              className={styles.navButton}
+              onClick={() => navigate('/investor-pitch-deck')}
+            >
+              Investor Pitch Deck
             </button>
           </nav>
 
