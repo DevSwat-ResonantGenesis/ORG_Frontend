@@ -9,6 +9,7 @@ const InvestorPitchDeckPage = () => {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLElement | null>(null);
   const sphereRef = useRef<HTMLDivElement | null>(null);
+  const sphereLayerRef = useRef<HTMLDivElement | null>(null);
   const anchorRef = useRef<HTMLButtonElement | null>(null);
 
   const [heroSize, setHeroSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
@@ -65,10 +66,11 @@ const InvestorPitchDeckPage = () => {
     const updatePath = () => {
       const heroEl = heroRef.current;
       const sphereEl = sphereRef.current;
+      const sphereLayerEl = sphereLayerRef.current;
       if (!heroEl || !sphereEl) return;
 
       const heroRect = heroEl.getBoundingClientRect();
-      const sphereRect = sphereEl.getBoundingClientRect();
+      const sphereRect = (sphereLayerEl ?? sphereEl).getBoundingClientRect();
 
       setHeroSize({ width: heroRect.width, height: heroRect.height });
 
@@ -138,7 +140,9 @@ const InvestorPitchDeckPage = () => {
           <div className={styles.parallax} aria-hidden="true">
             <Suspense fallback={null}>
               <div ref={sphereRef} className={styles.parallaxInner}>
-                <div className={styles.sphereLayer}>{isReactSnap ? null : <ThreeParticleSphere />}</div>
+                <div ref={sphereLayerRef} className={styles.sphereLayer}>
+                  {isReactSnap ? null : <ThreeParticleSphere />}
+                </div>
               </div>
             </Suspense>
           </div>
