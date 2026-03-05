@@ -120,8 +120,8 @@ const InvestorPitchDeckPage = () => {
         const nearViewer = i === 0;
 
         const t = totalTraces <= 1 ? 0 : i / (totalTraces - 1);
-        const nodeSize = nearViewer ? 160 : lerp(18, 2.8, t);
-        const endNodeSize = nearViewer ? 48 : lerp(6, 1.3, t);
+        const nodeSize = nearViewer ? 96 : lerp(18, 2.8, t);
+        const endNodeSize = nearViewer ? 28 : lerp(6, 1.3, t);
         const nodeOpacity = nearViewer ? 0.9 : lerp(0.55, 0.18, t);
         const count = nearViewer ? 10 : Math.round(lerp(26, 14, t));
         const baseDelayMs = nearViewer ? 0 : 180 + i * 80;
