@@ -16,6 +16,7 @@ const InvestorPitchDeckPage = () => {
     Array<{
       points: Array<{ x: number; y: number }>;
       nodeSize: number;
+      endNodeSize: number;
       nodeOpacity: number;
       baseDelayMs: number;
       stepDelayMs: number;
@@ -71,8 +72,8 @@ const InvestorPitchDeckPage = () => {
 
       setHeroSize({ width: heroRect.width, height: heroRect.height });
 
-      const endX = sphereRect.left - heroRect.left + sphereRect.width * 0.55;
-      const endY = sphereRect.top - heroRect.top + sphereRect.height * 0.45;
+      const endX = sphereRect.left - heroRect.left + sphereRect.width * 0.50;
+      const endY = sphereRect.top - heroRect.top + sphereRect.height * 0.50;
 
       const w = heroRect.width;
       const h = heroRect.height;
@@ -87,11 +88,11 @@ const InvestorPitchDeckPage = () => {
       ];
 
       const profiles = [
-        { nodeSize: 6, nodeOpacity: 0.65, baseDelayMs: 0, stepDelayMs: 55, count: 34, c1: { x: w * 0.62, y: h * 0.18 }, c2: { x: w * 0.38, y: h * 0.74 } },
-        { nodeSize: 5, nodeOpacity: 0.5, baseDelayMs: 220, stepDelayMs: 60, count: 26, c1: { x: w * 0.78, y: h * 0.46 }, c2: { x: w * 0.44, y: h * 0.2 } },
-        { nodeSize: 4, nodeOpacity: 0.4, baseDelayMs: 420, stepDelayMs: 65, count: 22, c1: { x: w * 0.22, y: h * 0.88 }, c2: { x: w * 0.55, y: h * 0.62 } },
-        { nodeSize: 3, nodeOpacity: 0.28, baseDelayMs: 620, stepDelayMs: 70, count: 18, c1: { x: w * 0.9, y: h * 0.82 }, c2: { x: w * 0.52, y: h * 0.84 } },
-        { nodeSize: 2.8, nodeOpacity: 0.22, baseDelayMs: 800, stepDelayMs: 75, count: 16, c1: { x: w * 0.28, y: h * 0.46 }, c2: { x: w * 0.58, y: h * 0.44 } }
+        { nodeSize: 6, endNodeSize: 2.2, nodeOpacity: 0.65, baseDelayMs: 0, stepDelayMs: 65, count: 34, c1: { x: w * 0.62, y: h * 0.18 }, c2: { x: w * 0.38, y: h * 0.74 } },
+        { nodeSize: 5, endNodeSize: 2.0, nodeOpacity: 0.5, baseDelayMs: 240, stepDelayMs: 70, count: 26, c1: { x: w * 0.78, y: h * 0.46 }, c2: { x: w * 0.44, y: h * 0.2 } },
+        { nodeSize: 4, endNodeSize: 1.8, nodeOpacity: 0.4, baseDelayMs: 480, stepDelayMs: 75, count: 22, c1: { x: w * 0.22, y: h * 0.88 }, c2: { x: w * 0.55, y: h * 0.62 } },
+        { nodeSize: 3, endNodeSize: 1.6, nodeOpacity: 0.28, baseDelayMs: 720, stepDelayMs: 80, count: 18, c1: { x: w * 0.9, y: h * 0.82 }, c2: { x: w * 0.52, y: h * 0.84 } },
+        { nodeSize: 2.8, endNodeSize: 1.4, nodeOpacity: 0.22, baseDelayMs: 960, stepDelayMs: 85, count: 16, c1: { x: w * 0.28, y: h * 0.46 }, c2: { x: w * 0.58, y: h * 0.44 } }
       ];
 
       const nextTraces = starts.map((start, i) => {
@@ -104,6 +105,7 @@ const InvestorPitchDeckPage = () => {
         return {
           points,
           nodeSize: profile.nodeSize,
+          endNodeSize: profile.endNodeSize,
           nodeOpacity: profile.nodeOpacity,
           baseDelayMs: profile.baseDelayMs,
           stepDelayMs: profile.stepDelayMs
@@ -152,18 +154,24 @@ const InvestorPitchDeckPage = () => {
             >
               {traces.flatMap((trace, traceIdx) =>
                 trace.points.map((pt, idx) => (
+                  (() => {
+                    const t = trace.points.length <= 1 ? 1 : idx / (trace.points.length - 1);
+                    const size = trace.nodeSize + (trace.endNodeSize - trace.nodeSize) * t;
+                    return (
                   <rect
                     key={`${traceIdx}-${idx}`}
                     className={styles.nodeParticleTools}
-                    x={pt.x - trace.nodeSize / 2}
-                    y={pt.y - trace.nodeSize / 2}
-                    width={trace.nodeSize}
-                    height={trace.nodeSize}
+                    x={pt.x - size / 2}
+                    y={pt.y - size / 2}
+                    width={size}
+                    height={size}
                     rx={0.9}
                     ry={0.9}
                     opacity={trace.nodeOpacity}
                     style={{ animationDelay: `${trace.baseDelayMs + idx * trace.stepDelayMs}ms` }}
                   />
+                    );
+                  })()
                 ))
               )}
             </svg>
