@@ -81,36 +81,65 @@ const InvestorPitchDeckPage = () => {
       const h = heroRect.height;
       const end = { x: endX, y: endY };
 
-      const starts = [
-        { x: 22, y: 44 },
-        { x: w - 22, y: 56 },
-        { x: 26, y: h - 140 },
-        { x: w - 36, y: h - 170 },
-        { x: 18, y: h * 0.5 }
-      ];
+      const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+      const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
-      const profiles = [
-        { nodeSize: 6, endNodeSize: 2.2, nodeOpacity: 0.65, baseDelayMs: 0, stepDelayMs: 65, count: 34, c1: { x: w * 0.62, y: h * 0.18 }, c2: { x: w * 0.38, y: h * 0.74 } },
-        { nodeSize: 5, endNodeSize: 2.0, nodeOpacity: 0.5, baseDelayMs: 240, stepDelayMs: 70, count: 26, c1: { x: w * 0.78, y: h * 0.46 }, c2: { x: w * 0.44, y: h * 0.2 } },
-        { nodeSize: 4, endNodeSize: 1.8, nodeOpacity: 0.4, baseDelayMs: 480, stepDelayMs: 75, count: 22, c1: { x: w * 0.22, y: h * 0.88 }, c2: { x: w * 0.55, y: h * 0.62 } },
-        { nodeSize: 3, endNodeSize: 1.6, nodeOpacity: 0.28, baseDelayMs: 720, stepDelayMs: 80, count: 18, c1: { x: w * 0.9, y: h * 0.82 }, c2: { x: w * 0.52, y: h * 0.84 } },
-        { nodeSize: 2.8, endNodeSize: 1.4, nodeOpacity: 0.22, baseDelayMs: 960, stepDelayMs: 85, count: 16, c1: { x: w * 0.28, y: h * 0.46 }, c2: { x: w * 0.58, y: h * 0.44 } }
-      ];
+      const totalTraces = 15;
+      const margin = 18;
 
-      const nextTraces = starts.map((start, i) => {
-        const profile = profiles[i];
+      const startPointFor = (i: number) => {
+        const side = i % 4;
+        const t = (i + 1) / (totalTraces + 1);
+        if (i === 0) return { x: w * 0.14, y: h * 0.22 };
+        if (side === 0) return { x: lerp(margin, w - margin, t), y: margin }; // top
+        if (side === 1) return { x: w - margin, y: lerp(margin, h - margin, t) }; // right
+        if (side === 2) return { x: lerp(w - margin, margin, t), y: h - margin }; // bottom
+        return { x: margin, y: lerp(h - margin, margin, t) }; // left
+      };
+
+      const makeControls = (i: number, start: { x: number; y: number }) => {
+        const base = (i + 3) * 0.37;
+        const wobbleX = Math.sin(base) * w * 0.18;
+        const wobbleY = Math.cos(base) * h * 0.16;
+        const c1 = {
+          x: clamp(start.x + wobbleX + w * 0.25, margin, w - margin),
+          y: clamp(start.y + wobbleY + h * 0.12, margin, h - margin)
+        };
+        const c2 = {
+          x: clamp(end.x - wobbleX + w * 0.08, margin, w - margin),
+          y: clamp(end.y - wobbleY + h * 0.08, margin, h - margin)
+        };
+        return { c1, c2 };
+      };
+
+      const nextTraces = Array.from({ length: totalTraces }).map((_, i) => {
+        const start = startPointFor(i);
+
+        const nearViewer = i === 0;
+
+        const t = totalTraces <= 1 ? 0 : i / (totalTraces - 1);
+        const nodeSize = nearViewer ? 160 : lerp(18, 2.8, t);
+        const endNodeSize = nearViewer ? 48 : lerp(6, 1.3, t);
+        const nodeOpacity = nearViewer ? 0.9 : lerp(0.55, 0.18, t);
+        const count = nearViewer ? 10 : Math.round(lerp(26, 14, t));
+        const baseDelayMs = nearViewer ? 0 : 180 + i * 80;
+        const stepDelayMs = nearViewer ? 120 : Math.round(lerp(70, 95, t));
+
+        const { c1, c2 } = makeControls(i, start);
+
         const points: Array<{ x: number; y: number }> = [];
-        for (let j = 0; j < profile.count; j += 1) {
-          const t = j / (profile.count - 1);
-          points.push(cubicBezierPoint(t, start, profile.c1, profile.c2, end));
+        for (let j = 0; j < count; j += 1) {
+          const tt = count <= 1 ? 1 : j / (count - 1);
+          points.push(cubicBezierPoint(tt, start, c1, c2, end));
         }
+
         return {
           points,
-          nodeSize: profile.nodeSize,
-          endNodeSize: profile.endNodeSize,
-          nodeOpacity: profile.nodeOpacity,
-          baseDelayMs: profile.baseDelayMs,
-          stepDelayMs: profile.stepDelayMs
+          nodeSize,
+          endNodeSize,
+          nodeOpacity,
+          baseDelayMs,
+          stepDelayMs
         };
       });
 
