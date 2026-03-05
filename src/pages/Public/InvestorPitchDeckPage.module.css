@@ -140,6 +140,42 @@
   animation: nodePulse 3s cubic-bezier(0.2, 0, 0.2, 1) forwards;
 }
 
+.nodeParticleCyan {
+  fill: rgba(34, 211, 238, 0.0);
+  opacity: 0;
+}
+
+.animate .nodeParticleCyan {
+  fill: rgba(34, 211, 238, 0.86);
+  opacity: 0;
+  filter: drop-shadow(0 0 12px rgba(34, 211, 238, 0.28));
+  animation: nodePulse 3s cubic-bezier(0.2, 0, 0.2, 1) forwards;
+}
+
+.nodeParticlePurple {
+  fill: rgba(168, 85, 247, 0.0);
+  opacity: 0;
+}
+
+.animate .nodeParticlePurple {
+  fill: rgba(168, 85, 247, 0.84);
+  opacity: 0;
+  filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.26));
+  animation: nodePulse 3s cubic-bezier(0.2, 0, 0.2, 1) forwards;
+}
+
+.nodeParticleAmber {
+  fill: rgba(251, 191, 36, 0.0);
+  opacity: 0;
+}
+
+.animate .nodeParticleAmber {
+  fill: rgba(251, 191, 36, 0.82);
+  opacity: 0;
+  filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.22));
+  animation: nodePulse 3s cubic-bezier(0.2, 0, 0.2, 1) forwards;
+}
+
 @keyframes nodePulse {
   0% {
     opacity: 0;
@@ -428,6 +464,48 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+.traceLegend {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  color: rgba(226, 232, 240, 0.62);
+  font-size: 12px;
+}
+
+.traceLegendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.traceLegendSwatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.18);
+}
+
+.traceLegendSwatchBlue {
+  background: rgba(96, 165, 250, 0.92);
+}
+
+.traceLegendSwatchWhite {
+  background: rgba(248, 250, 252, 0.86);
+}
+
+.traceLegendSwatchCyan {
+  background: rgba(34, 211, 238, 0.86);
+}
+
+.traceLegendSwatchPurple {
+  background: rgba(168, 85, 247, 0.84);
+}
+
+.traceLegendSwatchAmber {
+  background: rgba(251, 191, 36, 0.82);
 }
 
 .ctaPrimary {

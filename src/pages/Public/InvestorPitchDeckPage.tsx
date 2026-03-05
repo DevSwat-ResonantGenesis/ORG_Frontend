@@ -16,6 +16,12 @@ const InvestorPitchDeckPage = () => {
   const [particlePoints, setParticlePoints] = useState<Array<{ x: number; y: number }>>([]);
   const [pathDWhite, setPathDWhite] = useState<string>('');
   const [particlePointsWhite, setParticlePointsWhite] = useState<Array<{ x: number; y: number }>>([]);
+  const [pathDCyan, setPathDCyan] = useState<string>('');
+  const [particlePointsCyan, setParticlePointsCyan] = useState<Array<{ x: number; y: number }>>([]);
+  const [pathDPurple, setPathDPurple] = useState<string>('');
+  const [particlePointsPurple, setParticlePointsPurple] = useState<Array<{ x: number; y: number }>>([]);
+  const [pathDAmber, setPathDAmber] = useState<string>('');
+  const [particlePointsAmber, setParticlePointsAmber] = useState<Array<{ x: number; y: number }>>([]);
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
@@ -114,6 +120,39 @@ const InvestorPitchDeckPage = () => {
         whitePoints.push(cubicBezierPoint(t, wp0, wp1, wp2, wp3));
       }
       setParticlePointsWhite(whitePoints);
+
+      const c1 = { x: midX + 220, y: startY - 40 };
+      const c2 = { x: midX - 120, y: endY + 180 };
+      setPathDCyan(`M ${p0.x} ${p0.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${p3.x} ${p3.y}`);
+      const cyanPoints: Array<{ x: number; y: number }> = [];
+      const cyanCount = 22;
+      for (let i = 0; i < cyanCount; i += 1) {
+        const t = i / (cyanCount - 1);
+        cyanPoints.push(cubicBezierPoint(t, p0, c1, c2, p3));
+      }
+      setParticlePointsCyan(cyanPoints);
+
+      const pr1 = { x: midX + 40, y: startY - 220 };
+      const pr2 = { x: midX - 300, y: endY + 40 };
+      setPathDPurple(`M ${p0.x} ${p0.y} C ${pr1.x} ${pr1.y}, ${pr2.x} ${pr2.y}, ${p3.x} ${p3.y}`);
+      const purplePoints: Array<{ x: number; y: number }> = [];
+      const purpleCount = 18;
+      for (let i = 0; i < purpleCount; i += 1) {
+        const t = i / (purpleCount - 1);
+        purplePoints.push(cubicBezierPoint(t, p0, pr1, pr2, p3));
+      }
+      setParticlePointsPurple(purplePoints);
+
+      const a1 = { x: midX + 120, y: startY + 220 };
+      const a2 = { x: midX - 60, y: endY - 240 };
+      setPathDAmber(`M ${p0.x} ${p0.y} C ${a1.x} ${a1.y}, ${a2.x} ${a2.y}, ${p3.x} ${p3.y}`);
+      const amberPoints: Array<{ x: number; y: number }> = [];
+      const amberCount = 16;
+      for (let i = 0; i < amberCount; i += 1) {
+        const t = i / (amberCount - 1);
+        amberPoints.push(cubicBezierPoint(t, p0, a1, a2, p3));
+      }
+      setParticlePointsAmber(amberPoints);
     };
 
     updatePath();
@@ -155,6 +194,9 @@ const InvestorPitchDeckPage = () => {
             >
               <path className={styles.noodlePath} d={pathD} />
               {pathDWhite && <path className={styles.noodlePath} d={pathDWhite} />}
+              {pathDCyan && <path className={styles.noodlePath} d={pathDCyan} />}
+              {pathDPurple && <path className={styles.noodlePath} d={pathDPurple} />}
+              {pathDAmber && <path className={styles.noodlePath} d={pathDAmber} />}
               {particlePoints.map((pt, idx) => (
                 <rect
                   key={idx}
@@ -180,6 +222,48 @@ const InvestorPitchDeckPage = () => {
                   rx={0.8}
                   ry={0.8}
                   style={{ animationDelay: `${400 + idx * 65}ms` }}
+                />
+              ))}
+
+              {particlePointsCyan.map((pt, idx) => (
+                <rect
+                  key={`c-${idx}`}
+                  className={styles.nodeParticleCyan}
+                  x={pt.x - 2}
+                  y={pt.y - 2}
+                  width={4}
+                  height={4}
+                  rx={0.8}
+                  ry={0.8}
+                  style={{ animationDelay: `${650 + idx * 70}ms` }}
+                />
+              ))}
+
+              {particlePointsPurple.map((pt, idx) => (
+                <rect
+                  key={`p-${idx}`}
+                  className={styles.nodeParticlePurple}
+                  x={pt.x - 2}
+                  y={pt.y - 2}
+                  width={4}
+                  height={4}
+                  rx={0.8}
+                  ry={0.8}
+                  style={{ animationDelay: `${900 + idx * 75}ms` }}
+                />
+              ))}
+
+              {particlePointsAmber.map((pt, idx) => (
+                <rect
+                  key={`a-${idx}`}
+                  className={styles.nodeParticleAmber}
+                  x={pt.x - 2}
+                  y={pt.y - 2}
+                  width={4}
+                  height={4}
+                  rx={0.8}
+                  ry={0.8}
+                  style={{ animationDelay: `${1150 + idx * 80}ms` }}
                 />
               ))}
             </svg>
@@ -236,6 +320,29 @@ const InvestorPitchDeckPage = () => {
                   <span>Pricing</span>
                   <span aria-hidden="true">↗</span>
                 </button>
+              </div>
+
+              <div className={styles.traceLegend} aria-label="Trace legend">
+                <div className={styles.traceLegendItem}>
+                  <span className={`${styles.traceLegendSwatch} ${styles.traceLegendSwatchBlue}`} aria-hidden="true" />
+                  <span>AI Agent</span>
+                </div>
+                <div className={styles.traceLegendItem}>
+                  <span className={`${styles.traceLegendSwatch} ${styles.traceLegendSwatchWhite}`} aria-hidden="true" />
+                  <span>LLM</span>
+                </div>
+                <div className={styles.traceLegendItem}>
+                  <span className={`${styles.traceLegendSwatch} ${styles.traceLegendSwatchCyan}`} aria-hidden="true" />
+                  <span>Tools</span>
+                </div>
+                <div className={styles.traceLegendItem}>
+                  <span className={`${styles.traceLegendSwatch} ${styles.traceLegendSwatchPurple}`} aria-hidden="true" />
+                  <span>Memory</span>
+                </div>
+                <div className={styles.traceLegendItem}>
+                  <span className={`${styles.traceLegendSwatch} ${styles.traceLegendSwatchAmber}`} aria-hidden="true" />
+                  <span>Policies</span>
+                </div>
               </div>
             </div>
 
