@@ -23,6 +23,8 @@
   overflow: hidden;
   min-height: 100dvh;
   padding: calc(var(--header-height, 60px) + 36px) clamp(18px, 4vw, 56px) 64px;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (min-width: 1024px) {
@@ -39,6 +41,12 @@
   align-items: center;
   max-width: 1400px;
   margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .heroGrid {
+    margin-top: auto;
+  }
 }
 
 @media (max-width: 1023px) {
