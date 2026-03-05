@@ -264,6 +264,52 @@
   font-size: 14px;
 }
 
+.codebaseGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.codebaseCard {
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  background: rgba(15, 23, 42, 0.35);
+  padding: 12px;
+}
+
+.codebaseKicker {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: rgba(226, 232, 240, 0.62);
+}
+
+.codebaseMetric {
+  margin: 6px 0 2px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.codebaseMetricValue {
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(248, 250, 252, 0.92);
+}
+
+.codebaseMetricLabel {
+  font-size: 12px;
+  color: rgba(226, 232, 240, 0.6);
+}
+
+.codebaseDetail {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(226, 232, 240, 0.66);
+}
+
 .heroMetrics {
   margin-top: 22px;
   display: grid;
@@ -274,6 +320,10 @@
 
 @media (max-width: 640px) {
   .heroMetrics {
+    grid-template-columns: 1fr;
+  }
+
+  .codebaseGrid {
     grid-template-columns: 1fr;
   }
 }
