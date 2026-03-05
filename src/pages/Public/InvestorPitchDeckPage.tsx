@@ -14,9 +14,17 @@ const InvestorPitchDeckPage = () => {
   const [pathD, setPathD] = useState<string>('');
   const [heroSize, setHeroSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
   const [animate, setAnimate] = useState(false);
+  const [activePanel, setActivePanel] = useState<'pitch' | 'codebase'>('pitch');
 
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setActivePanel((p) => (p === 'pitch' ? 'codebase' : 'pitch'));
+    }, 5000);
+    return () => window.clearInterval(interval);
   }, []);
 
   const prefersReducedMotion = useMemo(() => {
@@ -116,6 +124,43 @@ const InvestorPitchDeckPage = () => {
                 <br />
                 Govern it end-to-end. Execute.
               </h1>
+
+              <div className={styles.switchPanel}>
+                <div className={styles.switchTabs} role="tablist" aria-label="Investor pitch details">
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activePanel === 'pitch'}
+                    className={`${styles.switchTab}${activePanel === 'pitch' ? ` ${styles.switchTabActive}` : ''}`}
+                    onClick={() => setActivePanel('pitch')}
+                  >
+                    Pitch
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={activePanel === 'codebase'}
+                    className={`${styles.switchTab}${activePanel === 'codebase' ? ` ${styles.switchTabActive}` : ''}`}
+                    onClick={() => setActivePanel('codebase')}
+                  >
+                    Codebase
+                  </button>
+                </div>
+
+                {activePanel === 'pitch' ? (
+                  <div className={styles.switchBody} role="tabpanel">
+                    <p className={styles.switchText}>
+                      A sovereign platform for agentic AI that prioritizes control: governed memory, invariant-based constraints, and observability—so autonomy is safe to ship.
+                    </p>
+                  </div>
+                ) : (
+                  <div className={styles.switchBody} role="tabpanel">
+                    <p className={styles.switchText}>
+                      Codebase details are generated from an automated architecture scan (Code Visualizer). This section will populate with live metrics and component breakdowns.
+                    </p>
+                  </div>
+                )}
+              </div>
 
               <p className={styles.subtitle}>
                 ResonantGenesis is sovereign infrastructure for autonomous agents: governed memory, invariant-based constraint simulation, and full-stack observability—so teams can ship agentic products that are safe, auditable, and controllable.
