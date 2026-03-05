@@ -76,7 +76,7 @@ const InvestorPitchDeckPage = () => {
 
       setHeroSize({ width: heroRect.width, height: heroRect.height });
 
-      const endX = sphereRect.left - heroRect.left + sphereRect.width * 0.50;
+      const endX = sphereRect.left - heroRect.left + sphereRect.width * 0.44;
       const endY = sphereRect.top - heroRect.top + sphereRect.height * 0.50;
 
       const w = heroRect.width;
