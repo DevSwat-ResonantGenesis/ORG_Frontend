@@ -93,59 +93,6 @@
   z-index: 2;
 }
 
-.orbit {
-  position: absolute;
-  width: min(560px, 44vw);
-  height: min(560px, 44vw);
-  right: clamp(-12px, 2vw, 20px);
-  top: 50%;
-  transform: translateY(-50%) rotate(-12deg);
-  opacity: 0.75;
-  filter: drop-shadow(0 0 18px rgba(59, 130, 246, 0.24));
-  pointer-events: none;
-  z-index: 1;
-}
-
-.orbitRing {
-  fill: none;
-  stroke: rgba(96, 165, 250, 0.55);
-  stroke-width: 1.2;
-  stroke-linecap: round;
-  stroke-dasharray: 290;
-  stroke-dashoffset: 290;
-}
-
-.animate .orbit {
-  animation: orbitRotate 3s cubic-bezier(0.2, 0, 0.2, 1) forwards;
-}
-
-.animate .orbitRing {
-  animation: orbitOpen 3s cubic-bezier(0.2, 0, 0.2, 1) forwards;
-}
-
-@keyframes orbitOpen {
-  0% {
-    stroke-dashoffset: 290;
-    opacity: 0.1;
-  }
-  40% {
-    opacity: 0.9;
-  }
-  100% {
-    stroke-dashoffset: 32;
-    opacity: 0.85;
-  }
-}
-
-@keyframes orbitRotate {
-  0% {
-    transform: translateY(-50%) rotate(-18deg) scale(1);
-  }
-  100% {
-    transform: translateY(-50%) rotate(34deg) scale(1);
-  }
-}
-
 .noodleOverlay {
   position: absolute;
   inset: 0;
@@ -156,17 +103,43 @@
 .noodlePath {
   fill: none;
   stroke: rgba(96, 165, 250, 0.0);
-  stroke-width: 2.2;
+  stroke-width: 0;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0 0 16px rgba(59, 130, 246, 0.25));
+  filter: none;
 }
 
 .animate .noodlePath {
-  stroke: rgba(96, 165, 250, 0.9);
+  stroke: rgba(96, 165, 250, 0.0);
   stroke-dasharray: 900;
   stroke-dashoffset: 900;
-  animation: noodleFlow 3s cubic-bezier(0.2, 0, 0.2, 1) forwards;
+  animation: none;
+}
+
+.nodeParticle {
+  fill: rgba(96, 165, 250, 0.0);
+  opacity: 0;
+}
+
+.animate .nodeParticle {
+  fill: rgba(96, 165, 250, 0.92);
+  opacity: 0;
+  filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.42));
+  animation: nodePulse 3s cubic-bezier(0.2, 0, 0.2, 1) forwards;
+}
+
+@keyframes nodePulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  18% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0.1;
+    transform: scale(1);
+  }
 }
 
 @keyframes noodleFlow {
@@ -481,7 +454,7 @@
   top: 8px;
   width: 8px;
   height: 8px;
-  border-radius: 999px;
+  border-radius: 2px;
   background: rgba(96, 165, 250, 0.95);
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.20), 0 0 22px rgba(59, 130, 246, 0.45);
   opacity: 0.9;

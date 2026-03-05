@@ -13,6 +13,7 @@ const InvestorPitchDeckPage = () => {
 
   const [pathD, setPathD] = useState<string>('');
   const [heroSize, setHeroSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
+  const [particlePoints, setParticlePoints] = useState<Array<{ x: number; y: number }>>([]);
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
@@ -34,6 +35,24 @@ const InvestorPitchDeckPage = () => {
 
   useLayoutEffect(() => {
     if (prefersReducedMotion) return;
+
+    const cubicBezierPoint = (
+      t: number,
+      p0: { x: number; y: number },
+      p1: { x: number; y: number },
+      p2: { x: number; y: number },
+      p3: { x: number; y: number }
+    ) => {
+      const u = 1 - t;
+      const tt = t * t;
+      const uu = u * u;
+      const uuu = uu * u;
+      const ttt = tt * t;
+
+      const x = uuu * p0.x + 3 * uu * t * p1.x + 3 * u * tt * p2.x + ttt * p3.x;
+      const y = uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y;
+      return { x, y };
+    };
 
     const updatePath = () => {
       const heroEl = heroRef.current;
@@ -59,7 +78,20 @@ const InvestorPitchDeckPage = () => {
       const c2X = midX - 180;
       const c2Y = endY + 120;
 
-      setPathD(`M ${startX} ${startY} C ${c1X} ${c1Y}, ${c2X} ${c2Y}, ${endX} ${endY}`);
+      const p0 = { x: startX, y: startY };
+      const p1 = { x: c1X, y: c1Y };
+      const p2 = { x: c2X, y: c2Y };
+      const p3 = { x: endX, y: endY };
+
+      setPathD(`M ${p0.x} ${p0.y} C ${p1.x} ${p1.y}, ${p2.x} ${p2.y}, ${p3.x} ${p3.y}`);
+
+      const points: Array<{ x: number; y: number }> = [];
+      const count = 36;
+      for (let i = 0; i < count; i += 1) {
+        const t = i / (count - 1);
+        points.push(cubicBezierPoint(t, p0, p1, p2, p3));
+      }
+      setParticlePoints(points);
     };
 
     updatePath();
@@ -85,9 +117,6 @@ const InvestorPitchDeckPage = () => {
           <div className={styles.parallax} aria-hidden="true">
             <Suspense fallback={null}>
               <div ref={sphereRef} className={styles.parallaxInner}>
-                <svg className={styles.orbit} viewBox="0 0 120 120" aria-hidden="true">
-                  <circle className={styles.orbitRing} cx="60" cy="60" r="46" />
-                </svg>
                 <div className={styles.sphereLayer}>{isReactSnap ? null : <ThreeParticleSphere />}</div>
               </div>
             </Suspense>
@@ -103,6 +132,19 @@ const InvestorPitchDeckPage = () => {
               preserveAspectRatio="none"
             >
               <path className={styles.noodlePath} d={pathD} />
+              {particlePoints.map((pt, idx) => (
+                <rect
+                  key={idx}
+                  className={styles.nodeParticle}
+                  x={pt.x - 2}
+                  y={pt.y - 2}
+                  width={4}
+                  height={4}
+                  rx={0.8}
+                  ry={0.8}
+                  style={{ animationDelay: `${idx * 55}ms` }}
+                />
+              ))}
             </svg>
           )}
 
