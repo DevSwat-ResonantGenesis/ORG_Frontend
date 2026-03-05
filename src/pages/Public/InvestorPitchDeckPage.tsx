@@ -70,7 +70,9 @@ const InvestorPitchDeckPage = () => {
       if (!heroEl || !sphereEl) return;
 
       const heroRect = heroEl.getBoundingClientRect();
-      const sphereRect = (sphereLayerEl ?? sphereEl).getBoundingClientRect();
+      const sphereCanvasEl = sphereLayerEl?.querySelector('canvas') as HTMLElement | null;
+      const sphereTargetEl = sphereCanvasEl ?? sphereLayerEl ?? sphereEl;
+      const sphereRect = sphereTargetEl.getBoundingClientRect();
 
       setHeroSize({ width: heroRect.width, height: heroRect.height });
 
