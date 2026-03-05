@@ -14,6 +14,8 @@ const InvestorPitchDeckPage = () => {
   const [pathD, setPathD] = useState<string>('');
   const [heroSize, setHeroSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
   const [particlePoints, setParticlePoints] = useState<Array<{ x: number; y: number }>>([]);
+  const [pathDWhite, setPathDWhite] = useState<string>('');
+  const [particlePointsWhite, setParticlePointsWhite] = useState<Array<{ x: number; y: number }>>([]);
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
@@ -92,6 +94,26 @@ const InvestorPitchDeckPage = () => {
         points.push(cubicBezierPoint(t, p0, p1, p2, p3));
       }
       setParticlePoints(points);
+
+      const w1X = midX + 90;
+      const w1Y = startY + 140;
+      const w2X = midX - 220;
+      const w2Y = endY - 140;
+
+      const wp0 = p0;
+      const wp1 = { x: w1X, y: w1Y };
+      const wp2 = { x: w2X, y: w2Y };
+      const wp3 = p3;
+
+      setPathDWhite(`M ${wp0.x} ${wp0.y} C ${wp1.x} ${wp1.y}, ${wp2.x} ${wp2.y}, ${wp3.x} ${wp3.y}`);
+
+      const whitePoints: Array<{ x: number; y: number }> = [];
+      const whiteCount = 28;
+      for (let i = 0; i < whiteCount; i += 1) {
+        const t = i / (whiteCount - 1);
+        whitePoints.push(cubicBezierPoint(t, wp0, wp1, wp2, wp3));
+      }
+      setParticlePointsWhite(whitePoints);
     };
 
     updatePath();
@@ -132,6 +154,7 @@ const InvestorPitchDeckPage = () => {
               preserveAspectRatio="none"
             >
               <path className={styles.noodlePath} d={pathD} />
+              {pathDWhite && <path className={styles.noodlePath} d={pathDWhite} />}
               {particlePoints.map((pt, idx) => (
                 <rect
                   key={idx}
@@ -143,6 +166,20 @@ const InvestorPitchDeckPage = () => {
                   rx={0.8}
                   ry={0.8}
                   style={{ animationDelay: `${idx * 55}ms` }}
+                />
+              ))}
+
+              {particlePointsWhite.map((pt, idx) => (
+                <rect
+                  key={`w-${idx}`}
+                  className={styles.nodeParticleWhite}
+                  x={pt.x - 2}
+                  y={pt.y - 2}
+                  width={4}
+                  height={4}
+                  rx={0.8}
+                  ry={0.8}
+                  style={{ animationDelay: `${400 + idx * 65}ms` }}
                 />
               ))}
             </svg>

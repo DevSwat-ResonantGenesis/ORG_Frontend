@@ -128,6 +128,18 @@
   animation: nodePulse 3s cubic-bezier(0.2, 0, 0.2, 1) forwards;
 }
 
+.nodeParticleWhite {
+  fill: rgba(248, 250, 252, 0.0);
+  opacity: 0;
+}
+
+.animate .nodeParticleWhite {
+  fill: rgba(248, 250, 252, 0.86);
+  opacity: 0;
+  filter: drop-shadow(0 0 12px rgba(248, 250, 252, 0.28));
+  animation: nodePulse 3s cubic-bezier(0.2, 0, 0.2, 1) forwards;
+}
+
 @keyframes nodePulse {
   0% {
     opacity: 0;
