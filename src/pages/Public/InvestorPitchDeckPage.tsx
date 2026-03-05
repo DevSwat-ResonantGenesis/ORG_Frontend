@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import styles from './InvestorPitchDeckPage.module.css';
@@ -7,15 +7,68 @@ const ThreeParticleSphere = React.lazy(() => import('@/components/features/landi
 
 const InvestorPitchDeckPage = () => {
   const navigate = useNavigate();
+  const heroRef = useRef<HTMLElement | null>(null);
+  const sphereRef = useRef<HTMLDivElement | null>(null);
+  const anchorRef = useRef<HTMLButtonElement | null>(null);
+
+  const [pathD, setPathD] = useState<string>('');
+  const [heroSize, setHeroSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
+  const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const prefersReducedMotion = useMemo(() => {
+    if (typeof window === 'undefined') return true;
+    return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    const raf = requestAnimationFrame(() => setAnimate(true));
+    return () => cancelAnimationFrame(raf);
+  }, [prefersReducedMotion]);
+
+  useLayoutEffect(() => {
+    if (prefersReducedMotion) return;
+
+    const updatePath = () => {
+      const heroEl = heroRef.current;
+      const sphereEl = sphereRef.current;
+      const anchorEl = anchorRef.current;
+      if (!heroEl || !sphereEl || !anchorEl) return;
+
+      const heroRect = heroEl.getBoundingClientRect();
+      const sphereRect = sphereEl.getBoundingClientRect();
+      const anchorRect = anchorEl.getBoundingClientRect();
+
+      setHeroSize({ width: heroRect.width, height: heroRect.height });
+
+      const startX = anchorRect.right - heroRect.left - 14;
+      const startY = anchorRect.top - heroRect.top + 10;
+
+      const endX = sphereRect.left - heroRect.left + sphereRect.width * 0.55;
+      const endY = sphereRect.top - heroRect.top + sphereRect.height * 0.45;
+
+      const midX = (startX + endX) * 0.5;
+      const c1X = midX + 140;
+      const c1Y = startY - 120;
+      const c2X = midX - 180;
+      const c2Y = endY + 120;
+
+      setPathD(`M ${startX} ${startY} C ${c1X} ${c1Y}, ${c2X} ${c2Y}, ${endX} ${endY}`);
+    };
+
+    updatePath();
+    window.addEventListener('resize', updatePath);
+    return () => window.removeEventListener('resize', updatePath);
+  }, [prefersReducedMotion]);
+
   const isReactSnap = typeof navigator !== 'undefined' && navigator.userAgent === 'ReactSnap';
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page}${animate ? ` ${styles.animate}` : ''}`}>
       <Helmet>
         <title>Investor Pitch Deck – ResonantGenesis</title>
         <meta
@@ -26,14 +79,30 @@ const InvestorPitchDeckPage = () => {
       </Helmet>
 
       <main className={styles.main}>
-        <section className={styles.hero}>
+        <section ref={heroRef} className={styles.hero}>
           <div className={styles.parallax} aria-hidden="true">
             <Suspense fallback={null}>
-              <div className={styles.parallaxInner}>
-                {isReactSnap ? null : <ThreeParticleSphere />}
+              <div ref={sphereRef} className={styles.parallaxInner}>
+                <svg className={styles.orbit} viewBox="0 0 120 120" aria-hidden="true">
+                  <circle className={styles.orbitRing} cx="60" cy="60" r="46" />
+                </svg>
+                <div className={styles.sphereLayer}>{isReactSnap ? null : <ThreeParticleSphere />}</div>
               </div>
             </Suspense>
           </div>
+
+          {!prefersReducedMotion && pathD && heroSize.width > 0 && heroSize.height > 0 && (
+            <svg
+              className={styles.noodleOverlay}
+              aria-hidden="true"
+              width="100%"
+              height="100%"
+              viewBox={`0 0 ${heroSize.width} ${heroSize.height}`}
+              preserveAspectRatio="none"
+            >
+              <path className={styles.noodlePath} d={pathD} />
+            </svg>
+          )}
 
           <div className={styles.heroGrid}>
             <div className={styles.heroContent}>
@@ -45,7 +114,7 @@ const InvestorPitchDeckPage = () => {
               <h1 className={styles.title}>
                 Own your agent stack.
                 <br />
-                Govern it end-to-end.
+                Govern it end-to-end. Execute.
               </h1>
 
               <p className={styles.subtitle}>
@@ -78,8 +147,9 @@ const InvestorPitchDeckPage = () => {
                 </button>
 
                 <button
+                  ref={anchorRef}
                   type="button"
-                  className={styles.ctaSecondary}
+                  className={`${styles.ctaSecondary} ${styles.anchorButton}`}
                   onClick={() => navigate('/pricing')}
                 >
                   <span>Pricing</span>
