@@ -149,9 +149,34 @@ const InvestorPitchDeckPage = () => {
     };
 
     updatePath();
+
+    let rafId: number | null = null;
+    let stopTimeoutId: number | null = null;
+
+    if (animate) {
+      const start = performance.now();
+      const step = () => {
+        updatePath();
+        if (performance.now() - start < 3200) {
+          rafId = requestAnimationFrame(step);
+        }
+      };
+      rafId = requestAnimationFrame(step);
+
+      stopTimeoutId = window.setTimeout(() => {
+        updatePath();
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = null;
+      }, 3300);
+    }
+
     window.addEventListener('resize', updatePath);
-    return () => window.removeEventListener('resize', updatePath);
-  }, [prefersReducedMotion]);
+    return () => {
+      window.removeEventListener('resize', updatePath);
+      if (rafId) cancelAnimationFrame(rafId);
+      if (stopTimeoutId) window.clearTimeout(stopTimeoutId);
+    };
+  }, [prefersReducedMotion, animate]);
 
   const isReactSnap = typeof navigator !== 'undefined' && navigator.userAgent === 'ReactSnap';
 
