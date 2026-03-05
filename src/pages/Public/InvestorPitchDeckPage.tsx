@@ -270,11 +270,7 @@ const InvestorPitchDeckPage = () => {
               </div>
 
               <div className={styles.ctaRow}>
-                <button
-                  type="button"
-                  className={styles.ctaPrimary}
-                  onClick={() => navigate('/signup')}
-                >
+                <button type="button" className={styles.ctaPrimary} onClick={() => navigate('/request-access')}>
                   <span>Request Access</span>
                   <span aria-hidden="true">→</span>
                 </button>
@@ -288,13 +284,6 @@ const InvestorPitchDeckPage = () => {
                   <span>Pricing</span>
                   <span aria-hidden="true">↗</span>
                 </button>
-              </div>
-
-              <div className={styles.traceLegend} aria-label="Trace legend">
-                <div className={styles.traceLegendItem}>
-                  <span className={`${styles.traceLegendSwatch} ${styles.traceLegendSwatchCyan}`} aria-hidden="true" />
-                  <span>Tools</span>
-                </div>
               </div>
             </div>
 
