@@ -22,15 +22,15 @@
   position: relative;
   overflow: hidden;
   min-height: 100dvh;
-  padding: calc(var(--header-height, 60px) + 36px) 24px 64px;
+  padding: calc(var(--header-height, 60px) + 36px) 8px 64px;
   display: flex;
   flex-direction: column;
 }
 
 @media (min-width: 1024px) {
   .hero {
-    padding-left: 24px;
-    padding-right: 24px;
+    padding-left: 8px;
+    padding-right: 8px;
   }
 }
 
@@ -51,7 +51,7 @@
 
 @media (max-width: 1023px) {
   .hero {
-    padding: calc(var(--header-height, 60px) + 20px) 24px 56px;
+    padding: calc(var(--header-height, 60px) + 20px) 8px 56px;
     min-height: auto;
   }
 
