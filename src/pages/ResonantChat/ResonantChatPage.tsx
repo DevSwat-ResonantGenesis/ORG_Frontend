@@ -2006,7 +2006,8 @@ const ResonantChatPage: React.FC = () => {
             }
           }
           // Code Visualizer skill: auto-open split view with visualizer tab
-          if (toolResult.success && toolResult.tool_name?.includes('code_visualizer')) {
+          // Opens on both success AND failure so the user sees the CV panel
+          if (toolResult.tool_name?.includes('code_visualizer')) {
             const analysisId = toolResult.result?.analysis_id || null;
             if (analysisId) {
               logger.info('[ResonantChatPage] Code Visualizer analysis received:', analysisId);
