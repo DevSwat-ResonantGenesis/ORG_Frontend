@@ -288,7 +288,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   useEffect(() => {
     const fetchProviders = async () => {
       try {
-        const response = await fetch("/resonant-chat/providers");
+        const response = await fetch("/resonant-chat/providers", { credentials: 'include' });
         if (response.ok) {
           const data = await response.json();
           console.log('[ProviderDropdown] API response:', data);
