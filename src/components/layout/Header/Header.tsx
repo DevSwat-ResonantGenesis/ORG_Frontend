@@ -394,6 +394,16 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
+            {/* Rabbit - Standalone Community */}
+            <div className={styles.navItem}>
+              <button
+                className={styles.navButton}
+                onClick={() => { navigate('/rabbit'); setActiveDropdown(null); }}
+              >
+                Rabbit
+              </button>
+            </div>
+
             {/* Pricing Link */}
             <button 
               className={styles.navButton}

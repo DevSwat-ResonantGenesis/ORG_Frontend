@@ -240,21 +240,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             </button>
 
             <button
-              className={`${styles.usmItem} ${location.pathname === '/rabbit' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/rabbit'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="8" r="6" />
-                  <path d="M5.5 9.5c1 1 4 1 5 0" strokeLinecap="round" />
-                  <path d="M6 6.5h0.01M10 6.5h0.01" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Rabbit</span>
-              {location.pathname === '/rabbit' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
               className={`${styles.usmItem} ${location.pathname === '/network/history' ? styles.usmActive : ''}`}
               onClick={() => { navigate('/network/history'); onClose(); }}
             >
@@ -379,6 +364,28 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               </span>
               <span className={styles.usmLabel}>API Keys</span>
               {location.pathname === '/api-keys' && <span className={styles.usmActiveIndicator} />}
+            </button>
+          </div>
+
+          <div className={styles.usmDivider} />
+
+          {/* Rabbit - Standalone Community Section */}
+          <div className={styles.usmSection}>
+            <div className={styles.usmSectionTitle}>Community</div>
+
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/rabbit' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/rabbit'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <circle cx="8" cy="8" r="6" />
+                  <path d="M5.5 9.5c1 1 4 1 5 0" strokeLinecap="round" />
+                  <path d="M6 6.5h0.01M10 6.5h0.01" strokeLinecap="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>Rabbit</span>
+              {location.pathname === '/rabbit' && <span className={styles.usmActiveIndicator} />}
             </button>
           </div>
 
