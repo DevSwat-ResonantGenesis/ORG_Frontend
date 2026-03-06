@@ -1,0 +1,685 @@
+/* ── Rabbit – Reddit-like community platform ── */
+
+.rabbitRoot {
+  display: flex;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 16px;
+  min-height: 70vh;
+}
+
+/* ── Left sidebar – communities ── */
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebarCard {
+  background: var(--card-bg, #18181b);
+  border: 1px solid var(--border, #27272a);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.sidebarTitle {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted, #a1a1aa);
+  margin-bottom: 12px;
+}
+
+.communityList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.communityItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--text, #e4e4e7);
+  font-size: 14px;
+  text-align: left;
+  width: 100%;
+  transition: background 0.15s;
+}
+
+.communityItem:hover {
+  background: var(--hover-bg, #27272a);
+}
+
+.communityItemActive {
+  background: var(--accent-bg, rgba(99, 102, 241, 0.15));
+  color: var(--accent, #818cf8);
+}
+
+.communityAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.communityName {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.communityDesc {
+  font-size: 12px;
+  color: var(--text-muted, #a1a1aa);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.noCommunities {
+  color: var(--text-muted, #a1a1aa);
+  font-size: 13px;
+  padding: 8px 0;
+}
+
+/* ── Main feed area ── */
+.feed {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.feedHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.feedTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text, #e4e4e7);
+}
+
+.feedSubtitle {
+  font-size: 13px;
+  color: var(--text-muted, #a1a1aa);
+}
+
+.feedActions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ── Buttons ── */
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background: #6366f1;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btnPrimary:hover {
+  background: #4f46e5;
+}
+
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #27272a);
+  background: transparent;
+  color: var(--text, #e4e4e7);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btnSecondary:hover {
+  background: var(--hover-bg, #27272a);
+}
+
+.btnSmall {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.btnIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted, #a1a1aa);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btnIcon:hover {
+  background: var(--hover-bg, #27272a);
+  color: var(--text, #e4e4e7);
+}
+
+/* ── Create Post Box ── */
+.createBox {
+  background: var(--card-bg, #18181b);
+  border: 1px solid var(--border, #27272a);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.createBox:hover {
+  border-color: #6366f1;
+}
+
+.createBoxAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--hover-bg, #27272a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.createBoxInput {
+  flex: 1;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border, #3f3f46);
+  background: var(--hover-bg, #27272a);
+  color: var(--text-muted, #a1a1aa);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ── Post Card ── */
+.postCard {
+  background: var(--card-bg, #18181b);
+  border: 1px solid var(--border, #27272a);
+  border-radius: 12px;
+  display: flex;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.postCard:hover {
+  border-color: #3f3f46;
+}
+
+.postVoteSidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  gap: 2px;
+  min-width: 44px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.voteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--text-muted, #71717a);
+  transition: color 0.15s, background 0.15s;
+}
+
+.voteBtn:hover {
+  background: var(--hover-bg, #27272a);
+}
+
+.voteBtnUp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--text-muted, #71717a);
+  transition: color 0.15s, background 0.15s;
+}
+
+.voteBtnUpActive {
+  color: #f97316;
+}
+
+.voteBtnDown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  color: var(--text-muted, #71717a);
+  transition: color 0.15s, background 0.15s;
+}
+
+.voteBtnDownActive {
+  color: #6366f1;
+}
+
+.voteCount {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text, #e4e4e7);
+  min-width: 20px;
+  text-align: center;
+}
+
+.postContent {
+  flex: 1;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.postMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted, #a1a1aa);
+  flex-wrap: wrap;
+}
+
+.postCommunity {
+  font-weight: 600;
+  color: var(--text, #e4e4e7);
+  cursor: pointer;
+}
+
+.postCommunity:hover {
+  text-decoration: underline;
+}
+
+.postAuthor {
+  color: var(--text-muted, #a1a1aa);
+}
+
+.postTitle {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text, #e4e4e7);
+  cursor: pointer;
+  line-height: 1.35;
+}
+
+.postTitle:hover {
+  color: #818cf8;
+}
+
+.postBody {
+  font-size: 14px;
+  color: var(--text-secondary, #d4d4d8);
+  line-height: 1.5;
+  max-height: 120px;
+  overflow: hidden;
+  white-space: pre-wrap;
+}
+
+.postFooter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.postFooterBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted, #a1a1aa);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.postFooterBtn:hover {
+  background: var(--hover-bg, #27272a);
+  color: var(--text, #e4e4e7);
+}
+
+/* ── Post Detail View ── */
+.postDetail {
+  background: var(--card-bg, #18181b);
+  border: 1px solid var(--border, #27272a);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.postDetailTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text, #e4e4e7);
+  margin-bottom: 8px;
+}
+
+.postDetailBody {
+  font-size: 15px;
+  color: var(--text-secondary, #d4d4d8);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  margin-bottom: 16px;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted, #a1a1aa);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 0;
+  margin-bottom: 12px;
+}
+
+.backBtn:hover {
+  color: var(--text, #e4e4e7);
+}
+
+/* ── Comments ── */
+.commentsSection {
+  margin-top: 16px;
+}
+
+.commentsTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text, #e4e4e7);
+  margin-bottom: 12px;
+}
+
+.commentBox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.commentTextarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #3f3f46);
+  background: var(--hover-bg, #27272a);
+  color: var(--text, #e4e4e7);
+  font-size: 14px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.commentTextarea:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+.commentItem {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border, #27272a);
+}
+
+.commentItem:last-child {
+  border-bottom: none;
+}
+
+.commentMeta {
+  font-size: 12px;
+  color: var(--text-muted, #a1a1aa);
+  margin-bottom: 4px;
+}
+
+.commentAuthor {
+  font-weight: 600;
+  color: var(--text, #e4e4e7);
+}
+
+.commentBody {
+  font-size: 14px;
+  color: var(--text-secondary, #d4d4d8);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.noComments {
+  font-size: 13px;
+  color: var(--text-muted, #71717a);
+  padding: 12px 0;
+}
+
+/* ── Modal ── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.modal {
+  background: var(--card-bg, #18181b);
+  border: 1px solid var(--border, #27272a);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 520px;
+  padding: 24px;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text, #e4e4e7);
+  margin-bottom: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.formLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted, #a1a1aa);
+}
+
+.formInput {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #3f3f46);
+  background: var(--hover-bg, #27272a);
+  color: var(--text, #e4e4e7);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+.formTextarea {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #3f3f46);
+  background: var(--hover-bg, #27272a);
+  color: var(--text, #e4e4e7);
+  font-size: 14px;
+  font-family: inherit;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.error {
+  color: #ef4444;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+/* ── Empty state ── */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  gap: 12px;
+}
+
+.emptyIcon {
+  width: 64px;
+  height: 64px;
+  color: var(--text-muted, #52525b);
+}
+
+.emptyTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text, #e4e4e7);
+}
+
+.emptyDesc {
+  font-size: 14px;
+  color: var(--text-muted, #a1a1aa);
+  max-width: 360px;
+}
+
+/* ── Loading ── */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: var(--text-muted, #a1a1aa);
+  font-size: 14px;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border, #3f3f46);
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-right: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Timestamp ── */
+.timeAgo {
+  color: var(--text-muted, #71717a);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .rabbitRoot {
+    flex-direction: column;
+    padding: 12px;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 8px;
+  }
+
+  .sidebarCard {
+    min-width: 200px;
+    flex-shrink: 0;
+  }
+
+  .communityList {
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+
+  .communityItem {
+    white-space: nowrap;
+  }
+
+  .postVoteSidebar {
+    padding: 8px 4px;
+    min-width: 36px;
+  }
+}
