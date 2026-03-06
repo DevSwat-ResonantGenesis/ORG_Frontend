@@ -192,6 +192,11 @@
     margin-left: 250px;
     width: calc(100% - 250px);
   }
+
+  .main-content-area.content-pushed.investor-pitch-deck-page:not(:has(.idePageContainer)) {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 /* Content shrinking when global side menu opens (same as Resonant Chat) */
