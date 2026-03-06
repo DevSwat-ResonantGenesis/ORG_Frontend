@@ -84,6 +84,7 @@ const NFTMarketplace = lazy(() => import('../pages/Marketplace/NFTMarketplace'))
 const ItemDetailPage = lazy(() => import('../pages/Marketplace/ItemDetailPage'));
 const MyInstallationsPage = lazy(() => import('../pages/Marketplace/MyInstallationsPage'));
 const PurchasesPage = lazy(() => import('../pages/Marketplace/PurchasesPage'));
+const RabbitPage = lazy(() => import('../pages/Rabbit/RabbitPage'));
 const AgentsPage = lazy(() => import('../pages/Agents/AgentOSv2'));
 const AgentDashboard = lazy(() => import('../pages/Agents/AgentOSv2'));
 const CreateTeamPage = lazy(() => import('../pages/AgentTeams/CreateTeamPage'));
@@ -662,6 +663,10 @@ const router = createBrowserRouter([
   {
     path: '/code-visualizer',
     element: withPublicShell(<CodeVisualizerPage />)
+  },
+  {
+    path: '/rabbit',
+    element: withPublicShell(<RabbitPage />)
   },
   {
     path: '*',
