@@ -166,6 +166,13 @@
   overflow-x: hidden;
 }
 
+/* Investor Pitch Deck: never allow global layout modes to shift content horizontally. */
+.main-content-area.investor-pitch-deck-page:not(:has(.idePageContainer)) {
+  margin-left: 0 !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+}
+
 @media (max-width: 768px) {
   .main-content-area.landing-page {
     height: 100dvh;
