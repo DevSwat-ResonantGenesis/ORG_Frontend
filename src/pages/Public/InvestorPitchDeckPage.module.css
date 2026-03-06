@@ -45,6 +45,8 @@
 
 @media (min-width: 1024px) {
   .heroGrid {
+    margin-left: 0;
+    margin-right: 0;
     margin-top: auto;
   }
 }
