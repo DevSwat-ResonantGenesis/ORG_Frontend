@@ -1218,7 +1218,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                           e.stopPropagation();
                           setShowProviderDropdown(false);
                           // Navigate to settings/API keys
-                          window.location.href = '/profile?tab=byok';
+                          window.location.href = '/profile?tab=api-keys';
                         }}
                         style={{
                           width: '100%',
