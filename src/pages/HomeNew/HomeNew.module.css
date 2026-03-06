@@ -563,7 +563,7 @@
   right: calc(-20% - 12mm);
   left: auto;
   transform: translateY(-50%) scale(0.5);
-  transform-origin: 68% 48%;
+  transform-origin: center center;
   width: calc(100% + 64px);
   height: calc(100% + 64px);
   z-index: 0;
