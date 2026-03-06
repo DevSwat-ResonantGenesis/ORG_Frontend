@@ -40,13 +40,11 @@
   gap: clamp(24px, 4vw, 72px);
   align-items: center;
   max-width: 1400px;
-  margin: 0 auto;
+  margin: 0;
 }
 
 @media (min-width: 1024px) {
   .heroGrid {
-    margin-left: 0;
-    margin-right: 0;
     margin-top: auto;
   }
 }
