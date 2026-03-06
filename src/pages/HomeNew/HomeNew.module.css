@@ -562,7 +562,8 @@
   top: calc(50% + 34px);
   right: calc(-20% - 12mm);
   left: auto;
-  transform: translateY(-50%);
+  transform: translateY(-50%) scale(0.5);
+  transform-origin: 68% 48%;
   width: calc(100% + 64px);
   height: calc(100% + 64px);
   z-index: 0;
@@ -572,6 +573,23 @@
   align-items: center;
   justify-content: flex-end;
   opacity: 1;
+  animation: sphereScaleUp 3s cubic-bezier(0.2, 0, 0.2, 1) forwards;
+}
+
+@keyframes sphereScaleUp {
+  0% {
+    transform: translateY(-50%) scale(0.5);
+  }
+  100% {
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroParallax {
+    animation: none;
+    transform: translateY(-50%) scale(1);
+  }
 }
 
 .heroParallax > * {
@@ -597,6 +615,7 @@
     right: calc(-1 * var(--space-8));
     bottom: 0;
     transform: none;
+    animation: none;
     width: auto;
     height: auto;
     margin-left: 0;
@@ -2741,6 +2760,7 @@
     right: calc(-1 * var(--space-8));
     bottom: 0;
     transform: none;
+    animation: none;
     width: auto;
     height: auto;
     margin-left: 0;

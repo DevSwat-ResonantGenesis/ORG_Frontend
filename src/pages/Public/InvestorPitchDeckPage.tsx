@@ -25,9 +25,31 @@ const InvestorPitchDeckPage = () => {
   >([]);
   const [animate, setAnimate] = useState(false);
   const [scrollCentered, setScrollCentered] = useState(false);
+  const [heroPadLeft, setHeroPadLeft] = useState<number | null>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  /* Measure the header logo's left offset and mirror it as hero padding-left */
+  useEffect(() => {
+    const measure = () => {
+      const logo = document.querySelector('header [class*="logo"]') as HTMLElement | null;
+      if (logo) {
+        const left = logo.getBoundingClientRect().left;
+        if (left > 0 && left < 200) setHeroPadLeft(left);
+      }
+    };
+    measure();
+    /* re-measure after layout settles (sidebar transitions, fonts, etc.) */
+    const t1 = setTimeout(measure, 300);
+    const t2 = setTimeout(measure, 1000);
+    window.addEventListener('resize', measure);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      window.removeEventListener('resize', measure);
+    };
   }, []);
 
   useEffect(() => {
@@ -204,7 +226,7 @@ const InvestorPitchDeckPage = () => {
       </Helmet>
 
       <main className={styles.main}>
-        <section ref={heroRef} className={styles.hero}>
+        <section ref={heroRef} className={styles.hero} style={heroPadLeft != null ? { paddingLeft: heroPadLeft } : undefined}>
           <div className={styles.parallax} aria-hidden="true">
             <Suspense fallback={null}>
               <div ref={sphereRef} className={styles.parallaxInner}>
