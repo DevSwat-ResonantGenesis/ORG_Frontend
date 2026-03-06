@@ -228,6 +228,7 @@ interface Message {
   content: string;
   timestamp: Date;
   aiProvider?: string;
+  llmProvider?: string;
   validity?: number;
   sources?: Array<{
     id: string;
@@ -599,6 +600,7 @@ const ResonantChatPage: React.FC = () => {
                 content: msg.content || '',
                 timestamp: new Date(msg.timestamp || msg.created_at || Date.now()),
                 aiProvider: msg.aiProvider || msg.ai_provider,
+                llmProvider: msg.llmProvider || msg.llm_provider,
                 hash: msg.hash,
                 anchors: msg.anchors || [],
                 resonanceScore: msg.resonanceScore || msg.resonance_score || 0,
@@ -2112,6 +2114,7 @@ const ResonantChatPage: React.FC = () => {
       const hash = isError ? undefined : (resonantResponse.hash ?? messageObj?.hash);
       const anchors = isError ? [] : (resonantResponse.anchors ?? []);
       const aiProvider = resonantResponse.aiProvider ?? messageObj?.aiProvider;
+      const llmProvider = resonantResponse.llmProvider ?? messageObj?.llmProvider;
       const xyz = isError ? undefined : (messageObj?.xyz as [number, number, number] | undefined);
       const modules = isError ? undefined : (messageObj?.modules as ModuleOutputs | undefined);
 
@@ -2124,6 +2127,7 @@ const ResonantChatPage: React.FC = () => {
         content: responseContent,
         timestamp: new Date(),
         aiProvider: aiProvider || resonantResponse.aiProvider || 'unknown',
+        llmProvider: llmProvider || undefined,
         hash: hash,
         anchors: anchors,
         resonanceScore: resonanceScore,
@@ -2463,6 +2467,7 @@ const ResonantChatPage: React.FC = () => {
         content: regenContent,
         timestamp: new Date(),
         aiProvider: resonantResponse.aiProvider,
+        llmProvider: resonantResponse.llmProvider || messageObj?.llmProvider || undefined,
         hash: resonantResponse.hash,
         anchors: resonantResponse.anchors,
         resonanceScore: resonantResponse.resonanceScore,
@@ -4502,8 +4507,8 @@ const ResonantChatPage: React.FC = () => {
                           <div style={{ fontSize: '14px', color: '#fff', fontWeight: 500 }}>{messageMetrics?.role || selectedMessage.role}</div>
                         </div>
                         <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Provider</div>
-                          <div style={{ fontSize: '14px', color: '#0ea5e9', fontWeight: 500 }}>{selectedMessage.aiProvider || messageMetrics?.provider || 'N/A'}</div>
+                          <div style={{ fontSize: '11px', color: '#666' }}>LLM Provider</div>
+                          <div style={{ fontSize: '14px', color: '#0ea5e9', fontWeight: 500 }}>{formatProviderName(selectedMessage.llmProvider || messageMetrics?.provider || (selectedMessage.aiProvider?.startsWith('agent_') ? undefined : selectedMessage.aiProvider) || 'N/A')}</div>
                         </div>
                         {/* Agent Type */}
                         <div style={{ padding: '10px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '8px' }}>

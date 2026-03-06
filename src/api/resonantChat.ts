@@ -38,6 +38,7 @@ export interface ResonantChatMessage {
   content: string;
   timestamp: string;
   aiProvider?: string;
+  llmProvider?: string;
   anchors?: string[];
   hash?: string;
   resonanceScore?: number;
@@ -121,6 +122,7 @@ export interface ResonantChatResponse {
   hash: string;
   resonanceScore: number;
   aiProvider: string;
+  llmProvider?: string;
   memoryUpdated: boolean;
   chatId?: string; // Chat ID for persistence
   generatedImages?: GeneratedImage[];
