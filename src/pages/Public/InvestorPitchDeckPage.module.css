@@ -22,15 +22,15 @@
   position: relative;
   overflow: hidden;
   min-height: 100dvh;
-  padding: calc(var(--header-height, 60px) + 36px) 8px 64px;
+  padding: calc(var(--header-height, 60px) + 36px) 24px 64px;
   display: flex;
   flex-direction: column;
 }
 
 @media (min-width: 1024px) {
   .hero {
-    padding-left: 8px;
-    padding-right: 8px;
+    padding-left: 24px;
+    padding-right: 24px;
   }
 }
 
@@ -51,7 +51,7 @@
 
 @media (max-width: 1023px) {
   .hero {
-    padding: calc(var(--header-height, 60px) + 20px) 8px 56px;
+    padding: calc(var(--header-height, 60px) + 20px) 24px 56px;
     min-height: auto;
   }
 
@@ -76,11 +76,23 @@
   padding-right: clamp(0px, 2vw, 28px);
   transform: translateZ(0);
   transform-origin: 68% 48%;
-  transition: transform 3s cubic-bezier(0.2, 0, 0.2, 1);
+  transition: transform 3s cubic-bezier(0.2, 0, 0.2, 1),
+    justify-content 0.6s ease,
+    padding-right 0.6s ease;
+}
+
+.parallaxCentered .parallaxInner {
+  justify-content: center;
+  padding-right: 0;
+  transform-origin: center center;
 }
 
 .animate .parallaxInner {
   transform: translateZ(0) scale(0.5);
+}
+
+.parallaxCentered.animate .parallaxInner {
+  transform: translateZ(0) scale(0.65);
 }
 
 @media (max-width: 1023px) {

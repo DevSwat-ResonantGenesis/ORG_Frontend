@@ -24,9 +24,21 @@ const InvestorPitchDeckPage = () => {
     }>
   >([]);
   const [animate, setAnimate] = useState(false);
+  const [scrollCentered, setScrollCentered] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const heroEl = heroRef.current;
+      if (!heroEl) return;
+      const threshold = heroEl.offsetHeight * 0.35;
+      setScrollCentered(window.scrollY > threshold);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
 
@@ -181,7 +193,7 @@ const InvestorPitchDeckPage = () => {
   const isReactSnap = typeof navigator !== 'undefined' && navigator.userAgent === 'ReactSnap';
 
   return (
-    <div className={`${styles.page}${animate ? ` ${styles.animate}` : ''}`}>
+    <div className={`${styles.page}${animate ? ` ${styles.animate}` : ''}${scrollCentered ? ` ${styles.parallaxCentered}` : ''}`}>
       <Helmet>
         <title>Investor Pitch Deck – ResonantGenesis</title>
         <meta
