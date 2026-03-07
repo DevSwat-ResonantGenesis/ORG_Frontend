@@ -312,6 +312,12 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
                         </div>
                       )}
 
+                      {step.step_type === 'respond' && step.output_data?.response && (
+                        <div className={styles.stepReasoning} style={{ marginTop: '8px', borderLeft: '3px solid var(--color-success)', paddingLeft: '12px' }}>
+                          <strong>Response:</strong> {String(step.output_data.response)}
+                        </div>
+                      )}
+
                       {!step.safety_check_passed && step.safety_violations && (
                         <div className={styles.safetyWarning}>
                           <Icons.AlertTriangle />
