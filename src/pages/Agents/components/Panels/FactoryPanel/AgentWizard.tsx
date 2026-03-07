@@ -438,24 +438,36 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                   </button>
                 </div>
               ) : (
-                <div className={styles.providerChips}>
+                <div className={styles.providerList}>
                   {dynamicProviders.map((p) => (
                     <button
                       key={p.id}
-                      className={`${styles.providerChip} ${provider === p.id ? styles.selected : ''} ${!p.available ? styles.unavailable : ''}`}
+                      className={`${styles.providerRow} ${provider === p.id ? styles.selected : ''} ${!p.available ? styles.unavailable : ''}`}
                       onClick={() => handleProviderSelect(p.id)}
                       disabled={!p.available}
-                      title={
-                        p.has_user_key && !p.live
-                          ? `${p.name} — available via your API key`
-                          : p.live
-                            ? `${p.name} — live`
-                            : `${p.name} — unavailable`
-                      }
                     >
-                      <span className={styles.providerChipName}>{p.name}</span>
-                      <span className={`${styles.statusDot} ${p.available ? styles.online : styles.offline}`} />
-                      {p.has_user_key && <span className={styles.keyIcon} title="Using your API key">🔑</span>}
+                      <span className={styles.providerRowIcon}>
+                        {p.id === 'groq' && '⚡'}
+                        {p.id === 'openai' && '🤖'}
+                        {p.id === 'anthropic' && '🧠'}
+                        {p.id === 'google' && '💎'}
+                        {p.id === 'local' && '🖥️'}
+                      </span>
+                      <div className={styles.providerRowContent}>
+                        <span className={styles.providerRowName}>{p.name}</span>
+                        <span className={styles.providerRowModel}>
+                          {p.model || (p.models?.[0]) || 'No models'}
+                        </span>
+                      </div>
+                      <div className={styles.providerRowMeta}>
+                        {p.has_user_key && (
+                          <span className={styles.byokBadge} title="Your API Key">🔑</span>
+                        )}
+                        {!p.has_user_key && p.has_system_key && (
+                          <span className={styles.systemKeyBadge} title="Platform Key">�</span>
+                        )}
+                        <span className={`${styles.statusDot} ${p.available ? styles.online : styles.offline}`} />
+                      </div>
                     </button>
                   ))}
                 </div>
@@ -477,9 +489,6 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                       <option key={m} value={m}>{m}</option>
                     ))}
                   </select>
-                  {activeProvider?.tier && (
-                    <span className={styles.tierBadge}>{activeProvider.tier}</span>
-                  )}
                 </div>
               )}
 
@@ -488,8 +497,8 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                 <div className={styles.byokRow}>
                   <span className={styles.byokLabel}>
                     {activeProvider.has_user_key
-                      ? '✅ Using your API key'
-                      : '💡 Bring your own key for free usage'}
+                      ? '✅ Using your API key — no credits used'
+                      : '💡 Add your own key for free unlimited usage'}
                   </span>
                   <a
                     href="/profile?tab=api-keys"
