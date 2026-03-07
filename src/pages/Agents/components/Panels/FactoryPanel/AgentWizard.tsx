@@ -445,11 +445,17 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                       className={`${styles.providerChip} ${provider === p.id ? styles.selected : ''} ${!p.available ? styles.unavailable : ''}`}
                       onClick={() => handleProviderSelect(p.id)}
                       disabled={!p.available}
-                      title={p.description || p.name}
+                      title={
+                        p.has_user_key && !p.live
+                          ? `${p.name} — available via your API key`
+                          : p.live
+                            ? `${p.name} — live`
+                            : `${p.name} — unavailable`
+                      }
                     >
                       <span className={styles.providerChipName}>{p.name}</span>
                       <span className={`${styles.statusDot} ${p.available ? styles.online : styles.offline}`} />
-                      {p.has_user_key && <span className={styles.keyIcon} title="Your API Key">🔑</span>}
+                      {p.has_user_key && <span className={styles.keyIcon} title="Using your API key">🔑</span>}
                     </button>
                   ))}
                 </div>
