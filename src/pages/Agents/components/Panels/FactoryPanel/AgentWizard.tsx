@@ -97,8 +97,9 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
         if (cancelled) return;
         if (catalog?.providers?.length) {
           setDynamicProviders(catalog.providers);
-          // Auto-select the default or first available provider
-          const defaultId = catalog.default || catalog.providers.find(p => p.available)?.id || catalog.providers[0]?.id;
+          // Auto-select: prefer catalog.default ONLY if it's available, else first available
+          const preferredDefault = catalog.providers.find(p => p.id === catalog.default && p.available);
+          const defaultId = preferredDefault?.id || catalog.providers.find(p => p.available)?.id || catalog.providers[0]?.id;
           if (defaultId && !provider) {
             const prov = catalog.providers.find(p => p.id === defaultId);
             setProvider(defaultId);
@@ -420,7 +421,8 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                       getAgentProvidersCatalog().then(catalog => {
                         if (catalog?.providers?.length) {
                           setDynamicProviders(catalog.providers);
-                          const defaultId = catalog.default || catalog.providers.find(p => p.available)?.id || catalog.providers[0]?.id;
+                          const prefDefault = catalog.providers.find(p => p.id === catalog.default && p.available);
+                          const defaultId = prefDefault?.id || catalog.providers.find(p => p.available)?.id || catalog.providers[0]?.id;
                           if (defaultId) {
                             const prov = catalog.providers.find(p => p.id === defaultId);
                             setProvider(defaultId);
