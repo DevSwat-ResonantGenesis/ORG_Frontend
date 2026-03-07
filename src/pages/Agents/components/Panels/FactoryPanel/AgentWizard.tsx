@@ -30,13 +30,6 @@ const AGENT_TYPES = [
   { id: 'assistant', name: 'General Assistant', icon: 'MessageSquare', description: 'Versatile helper for various tasks' },
 ];
 
-// Fallback providers — used only if the dynamic catalog fetch fails
-const FALLBACK_PROVIDERS: ProviderCatalogProvider[] = [
-  { id: 'groq', name: 'Groq', available: true, model: 'llama-3.3-70b-versatile', models: ['llama-3.3-70b-versatile'], description: 'Ultra-fast inference', tier: 'fast' },
-  { id: 'openai', name: 'OpenAI', available: true, model: 'gpt-4o', models: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo'], description: 'GPT-4o — code, reasoning, creativity', tier: 'quality' },
-  { id: 'anthropic', name: 'Anthropic', available: true, model: 'claude-3-5-sonnet-20241022', models: ['claude-3-5-sonnet-20241022'], description: 'Claude — reasoning, analysis, safety', tier: 'premium' },
-  { id: 'google', name: 'Gemini', available: true, model: 'gemini-2.0-flash', models: ['gemini-2.0-flash', 'gemini-1.5-pro'], description: 'Gemini — fast, multimodal, 1M context', tier: 'balanced' },
-];
 
 const TOOLS = [
   { id: 'web_search', name: 'Web Search', icon: 'Search', description: 'Search the internet for information' },
@@ -76,9 +69,10 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
   const [error, setError] = useState<string | null>(null);
   const [createdAgentId, setCreatedAgentId] = useState<string | null>(null);
   
-  // Dynamic providers from backend LLM service
-  const [dynamicProviders, setDynamicProviders] = useState<ProviderCatalogProvider[]>(FALLBACK_PROVIDERS);
+  // Dynamic providers from backend LLM service — no hardcoded fallbacks
+  const [dynamicProviders, setDynamicProviders] = useState<ProviderCatalogProvider[]>([]);
   const [providersLoading, setProvidersLoading] = useState(true);
+  const [providersError, setProvidersError] = useState<string | null>(null);
 
   // Field validation state
   const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -98,6 +92,7 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
     let cancelled = false;
     (async () => {
       try {
+        setProvidersError(null);
         const catalog = await getAgentProvidersCatalog();
         if (cancelled) return;
         if (catalog?.providers?.length) {
@@ -110,19 +105,11 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
             setModel(prov?.model || prov?.models?.[0] || '');
           }
         } else {
-          // Fallback: select first fallback provider
-          if (!provider) {
-            setProvider(FALLBACK_PROVIDERS[0].id);
-            setModel(FALLBACK_PROVIDERS[0].model || '');
-          }
+          setProvidersError('No providers returned from backend');
         }
-      } catch {
+      } catch (err: any) {
         if (cancelled) return;
-        // Use fallback providers on error
-        if (!provider) {
-          setProvider(FALLBACK_PROVIDERS[0].id);
-          setModel(FALLBACK_PROVIDERS[0].model || '');
-        }
+        setProvidersError(err?.message || 'Failed to fetch LLM providers');
       } finally {
         if (!cancelled) setProvidersLoading(false);
       }
@@ -421,6 +408,33 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
               <label className={styles.fieldLabel}>Provider</label>
               {providersLoading ? (
                 <div className={styles.loadingProviders}>Loading providers...</div>
+              ) : providersError ? (
+                <div className={styles.loadingProviders}>
+                  <span style={{ color: '#f87171' }}>⚠ {providersError}</span>
+                  <button
+                    className={styles.byokLink}
+                    style={{ marginLeft: 12 }}
+                    onClick={() => {
+                      setProvidersLoading(true);
+                      setProvidersError(null);
+                      getAgentProvidersCatalog().then(catalog => {
+                        if (catalog?.providers?.length) {
+                          setDynamicProviders(catalog.providers);
+                          const defaultId = catalog.default || catalog.providers.find(p => p.available)?.id || catalog.providers[0]?.id;
+                          if (defaultId) {
+                            const prov = catalog.providers.find(p => p.id === defaultId);
+                            setProvider(defaultId);
+                            setModel(prov?.model || prov?.models?.[0] || '');
+                          }
+                        } else {
+                          setProvidersError('No providers returned from backend');
+                        }
+                      }).catch((err: any) => setProvidersError(err?.message || 'Failed to fetch')).finally(() => setProvidersLoading(false));
+                    }}
+                  >
+                    Retry
+                  </button>
+                </div>
               ) : (
                 <div className={styles.providerChips}>
                   {dynamicProviders.map((p) => (
