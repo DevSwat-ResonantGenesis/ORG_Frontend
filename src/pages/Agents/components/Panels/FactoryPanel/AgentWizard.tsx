@@ -1,7 +1,8 @@
 import React, { memo, useState, useCallback, useEffect } from 'react';
 import { useAgentStore } from '../../../../../stores/agentStore';
 import { Icons } from '../../shared/Icons';
-import { createAgent as createAgentApi } from '../../../../../api/agents';
+import { createAgent as createAgentApi, getAgentProvidersCatalog } from '../../../../../api/agents';
+import type { ProviderCatalogProvider } from '../../../../../api/agents';
 import styles from './AgentWizard.module.css';
 
 // ============== AGENT CREATION WIZARD ==============
@@ -29,11 +30,12 @@ const AGENT_TYPES = [
   { id: 'assistant', name: 'General Assistant', icon: 'MessageSquare', description: 'Versatile helper for various tasks' },
 ];
 
-const PROVIDERS = [
-  { id: 'groq', name: 'Groq (Fast)', model: 'llama-3.3-70b-versatile', description: 'Ultra-fast inference' },
-  { id: 'openai', name: 'OpenAI GPT-4', model: 'gpt-4o', description: 'Most capable model' },
-  { id: 'anthropic', name: 'Claude 3.5', model: 'claude-3.5-sonnet', description: 'Best for coding & analysis' },
-  { id: 'google', name: 'Gemini 2.0', model: 'gemini-2.0-flash', description: 'Fast and efficient' },
+// Fallback providers — used only if the dynamic catalog fetch fails
+const FALLBACK_PROVIDERS: ProviderCatalogProvider[] = [
+  { id: 'groq', name: 'Groq', available: true, model: 'llama-3.3-70b-versatile', models: ['llama-3.3-70b-versatile'], description: 'Ultra-fast inference', tier: 'fast' },
+  { id: 'openai', name: 'OpenAI', available: true, model: 'gpt-4o', models: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo'], description: 'GPT-4o — code, reasoning, creativity', tier: 'quality' },
+  { id: 'anthropic', name: 'Anthropic', available: true, model: 'claude-3-5-sonnet-20241022', models: ['claude-3-5-sonnet-20241022'], description: 'Claude — reasoning, analysis, safety', tier: 'premium' },
+  { id: 'google', name: 'Gemini', available: true, model: 'gemini-2.0-flash', models: ['gemini-2.0-flash', 'gemini-1.5-pro'], description: 'Gemini — fast, multimodal, 1M context', tier: 'balanced' },
 ];
 
 const TOOLS = [
@@ -74,6 +76,10 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
   const [error, setError] = useState<string | null>(null);
   const [createdAgentId, setCreatedAgentId] = useState<string | null>(null);
   
+  // Dynamic providers from backend LLM service
+  const [dynamicProviders, setDynamicProviders] = useState<ProviderCatalogProvider[]>(FALLBACK_PROVIDERS);
+  const [providersLoading, setProvidersLoading] = useState(true);
+
   // Field validation state
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [fieldErrors, setFieldErrors] = useState<Record<string, string | null>>({});
@@ -82,10 +88,47 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [agentType, setAgentType] = useState('executor');
-  const [provider, setProvider] = useState('groq');
-  const [model, setModel] = useState('llama-3.3-70b-versatile');
+  const [provider, setProvider] = useState('');
+  const [model, setModel] = useState('');
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
   const [mode, setMode] = useState<'governed' | 'unbounded'>('governed');
+
+  // Fetch live provider catalog from the LLM service on mount
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const catalog = await getAgentProvidersCatalog();
+        if (cancelled) return;
+        if (catalog?.providers?.length) {
+          setDynamicProviders(catalog.providers);
+          // Auto-select the default or first available provider
+          const defaultId = catalog.default || catalog.providers.find(p => p.available)?.id || catalog.providers[0]?.id;
+          if (defaultId && !provider) {
+            const prov = catalog.providers.find(p => p.id === defaultId);
+            setProvider(defaultId);
+            setModel(prov?.model || prov?.models?.[0] || '');
+          }
+        } else {
+          // Fallback: select first fallback provider
+          if (!provider) {
+            setProvider(FALLBACK_PROVIDERS[0].id);
+            setModel(FALLBACK_PROVIDERS[0].model || '');
+          }
+        }
+      } catch {
+        if (cancelled) return;
+        // Use fallback providers on error
+        if (!provider) {
+          setProvider(FALLBACK_PROVIDERS[0].id);
+          setModel(FALLBACK_PROVIDERS[0].model || '');
+        }
+      } finally {
+        if (!cancelled) setProvidersLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const currentStepData = WIZARD_STEPS[currentStep];
   const isFirstStep = currentStep === 0;
@@ -166,12 +209,12 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
   }, [currentStep]);
 
   const handleProviderSelect = useCallback((providerId: string) => {
-    const providerData = PROVIDERS.find(p => p.id === providerId);
+    const providerData = dynamicProviders.find(p => p.id === providerId);
     setProvider(providerId);
     if (providerData) {
-      setModel(providerData.model);
+      setModel(providerData.model || providerData.models?.[0] || '');
     }
-  }, []);
+  }, [dynamicProviders]);
 
   const toggleTool = useCallback((toolId: string) => {
     setSelectedTools(prev => 
@@ -370,16 +413,20 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
         return (
           <div className={styles.stepContent}>
             <div className={styles.providerGrid}>
-              {PROVIDERS.map((p) => (
+              {providersLoading ? (
+                <div className={styles.loadingProviders}>Loading providers...</div>
+              ) : dynamicProviders.map((p) => (
                 <button
                   key={p.id}
-                  className={`${styles.providerCard} ${provider === p.id ? styles.selected : ''}`}
+                  className={`${styles.providerCard} ${provider === p.id ? styles.selected : ''} ${!p.available ? styles.unavailable : ''}`}
                   onClick={() => handleProviderSelect(p.id)}
+                  disabled={!p.available}
                 >
                   <div className={styles.providerInfo}>
-                    <h4>{p.name}</h4>
+                    <h4>{p.name}{p.tier ? ` (${p.tier})` : ''}</h4>
                     <p>{p.description}</p>
-                    <span className={styles.modelName}>{p.model}</span>
+                    <span className={styles.modelName}>{p.model || p.models?.[0]}</span>
+                    {!p.available && <span className={styles.unavailableLabel}>Unavailable</span>}
                   </div>
                   {provider === p.id && (
                     <div className={styles.checkmark}>
@@ -464,8 +511,9 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                     setName('');
                     setDescription('');
                     setAgentType('executor');
-                    setProvider('groq');
-                    setModel('llama-3.3-70b-versatile');
+                    const defaultProv = dynamicProviders.find(p => p.available) || dynamicProviders[0];
+                    setProvider(defaultProv?.id || '');
+                    setModel(defaultProv?.model || defaultProv?.models?.[0] || '');
                     setSelectedTools([]);
                     setCreatedAgentId(null);
                   }}>
@@ -478,7 +526,7 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
         }
 
         const selectedType = AGENT_TYPES.find(t => t.id === agentType);
-        const selectedProvider = PROVIDERS.find(p => p.id === provider);
+        const selectedProvider = dynamicProviders.find(p => p.id === provider);
 
         return (
           <div className={styles.stepContent}>

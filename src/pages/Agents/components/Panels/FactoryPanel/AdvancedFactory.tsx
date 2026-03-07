@@ -9,6 +9,7 @@ import {
   getAgentProvidersCatalog,
   listCustomTools,
 } from '../../../../../api/agents';
+import type { ProviderCatalogProvider, AgentProvidersCatalogResponse } from '../../../../../api/agents';
 import { fetchUserApiKeys } from '../../../../../api/userApiKeys';
 import fastapiClient from '../../../../../api/fastapiClient';
 import styles from './AdvancedFactory.module.css';
@@ -72,57 +73,13 @@ interface AdvancedConfig {
   fallbackChain: string[];
 }
 
-const PROVIDERS = {
-  groq: {
-    name: 'Groq',
-    models: ['llama-3.3-70b-versatile', 'llama-3.1-70b-versatile', 'mixtral-8x7b-32768'],
-    icon: 'Zap'
-  },
-  openai: {
-    name: 'OpenAI',
-    models: ['gpt-4o', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'],
-    icon: 'Zap'
-  },
-  anthropic: {
-    name: 'Anthropic',
-    models: ['claude-3.5-sonnet', 'claude-3-opus', 'claude-3-sonnet', 'claude-3-haiku'],
-    icon: 'Brain'
-  },
-  google: {
-    name: 'Gemini',
-    models: ['gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro'],
-    icon: 'Globe'
-  },
-  local: { 
-    name: 'Local', 
-    models: ['llama-3-70b', 'llama-3-8b', 'mistral-7b', 'codellama-34b', 'mixtral-8x7b'],
-    icon: 'Server'
-  },
-};
-
-type ProviderCatalogProvider = {
-  id: string;
-  provider_key?: string;
-  name: string;
-  available: boolean;
-  has_user_key?: boolean;
-  uses_credits?: boolean;
-  model?: string;
-  description?: string;
-  capabilities?: string[];
-};
-
-type ProvidersCatalogResponse = {
-  providers: ProviderCatalogProvider[];
-  default?: string;
-  fallback_chain?: string[];
-  fallback_chain_provider_keys?: string[];
-  message?: string | null;
-  credits?: {
-    remaining?: number | null;
-    total?: number | null;
-    unlimited?: boolean;
-  };
+// Fallback provider map — used only when dynamic catalog fetch fails
+const FALLBACK_PROVIDERS_MAP: Record<string, { name: string; models: string[]; icon: string }> = {
+  groq: { name: 'Groq', models: ['llama-3.3-70b-versatile', 'llama-3.1-70b-versatile', 'mixtral-8x7b-32768'], icon: 'Zap' },
+  openai: { name: 'OpenAI', models: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'], icon: 'Zap' },
+  anthropic: { name: 'Anthropic', models: ['claude-3-5-sonnet-20241022', 'claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307'], icon: 'Brain' },
+  google: { name: 'Gemini', models: ['gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro'], icon: 'Globe' },
+  local: { name: 'Local', models: ['llama3.1:8b', 'codellama:13b', 'mistral:7b'], icon: 'Server' },
 };
 
 const _normalize_provider_id = (id: string) => {
@@ -142,8 +99,8 @@ const _category_for_capabilities = (caps?: string[]): string => {
   return 'Chat / General';
 };
 
-const _get_default_model_for_provider = (providerId: string): string => {
-  const provider = (PROVIDERS as any)[providerId];
+const _get_default_model_for_provider = (providerId: string, providersMap: Record<string, { name: string; models: string[]; icon: string }>): string => {
+  const provider = providersMap[providerId];
   const models: string[] | undefined = provider?.models;
   if (models && models.length > 0) return models[0];
   return '';
@@ -231,7 +188,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
   const [showApiKey, setShowApiKey] = useState(false);
   const [createdAgentId, setCreatedAgentId] = useState<string | null>(null);
 
-  const [resonantProviders, setResonantProviders] = useState<ProvidersCatalogResponse | null>(null);
+  const [resonantProviders, setResonantProviders] = useState<AgentProvidersCatalogResponse | null>(null);
 
   const [providerKeyStatus, setProviderKeyStatus] = useState<Record<string, 'configured' | 'missing' | 'unknown'>>({});
 
@@ -277,7 +234,11 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
         );
 
         const status: Record<string, 'configured' | 'missing' | 'unknown'> = {};
-        for (const id of Object.keys(PROVIDERS)) {
+        // Check all known provider IDs (from catalog or fallback)
+        const allIds = resonantProviders?.providers?.length
+          ? resonantProviders.providers.map(p => _normalize_provider_id(p.provider_key || p.id))
+          : Object.keys(FALLBACK_PROVIDERS_MAP);
+        for (const id of allIds) {
           const normalized = id.toLowerCase();
           if (normalized === 'local') {
             status[id] = 'configured';
@@ -304,7 +265,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
   useEffect(() => {
     const loadProviders = async () => {
       try {
-        const data = (await getAgentProvidersCatalog()) as ProvidersCatalogResponse;
+        const data = await getAgentProvidersCatalog();
         setResonantProviders(data);
         const chainSource = (data.fallback_chain_provider_keys || data.fallback_chain || []);
         const chain = chainSource.map(_normalize_provider_id).filter(Boolean);
@@ -315,7 +276,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
             provider: prev.routingMode === 'auto' ? chain[0] : prev.provider,
             model:
               prev.routingMode === 'auto'
-                ? _get_default_model_for_provider(chain[0]) || prev.model
+                ? _get_default_model_for_provider(chain[0], FALLBACK_PROVIDERS_MAP) || prev.model
                 : prev.model,
           }));
         }
@@ -560,6 +521,22 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
     return status === 'configured';
   }, [providerKeyStatus]);
 
+  // Build dynamic providers map from the backend catalog, falling back to hardcoded map
+  const dynamicProvidersMap = useMemo<Record<string, { name: string; models: string[]; icon: string }>>(() => {
+    if (!resonantProviders?.providers?.length) return { ...FALLBACK_PROVIDERS_MAP };
+    const map: Record<string, { name: string; models: string[]; icon: string }> = {};
+    for (const p of resonantProviders.providers) {
+      const key = _normalize_provider_id(p.provider_key || p.id);
+      const fallback = FALLBACK_PROVIDERS_MAP[key];
+      map[key] = {
+        name: p.name || fallback?.name || key,
+        models: p.models?.length ? p.models : (fallback?.models || [p.model || '']),
+        icon: fallback?.icon || 'Zap',
+      };
+    }
+    return map;
+  }, [resonantProviders]);
+
   const providerCapsByKey = (resonantProviders?.providers || []).reduce<Record<string, string[]>>((acc, p) => {
     const key = _normalize_provider_id(p.provider_key || p.id);
     if (key) acc[key] = p.capabilities || [];
@@ -576,7 +553,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
     .filter((p) => p.available)
     .map((p) => _normalize_provider_id(p.provider_key || p.id));
 
-  const visibleProviders = Object.entries(PROVIDERS)
+  const visibleProviders = Object.entries(dynamicProvidersMap)
     .filter(([id]) => id === 'local' || availableProviderIds.length === 0 || availableProviderIds.includes(id));
 
   const categorizedProviders = visibleProviders.reduce<Record<string, Array<[string, any]>>>((acc, entry) => {
@@ -1063,7 +1040,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                         updateConfig({
                           routingMode: 'auto',
                           provider: primary,
-                          model: _get_default_model_for_provider(primary) || config.model,
+                          model: _get_default_model_for_provider(primary, dynamicProvidersMap) || config.model,
                         });
                       }}
                     >
@@ -1144,7 +1121,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                   <div className={styles.field}>
                     <label>Model</label>
                     <select value={config.model} onChange={e => updateConfig({ model: e.target.value })}>
-                      {(PROVIDERS[config.provider as keyof typeof PROVIDERS]?.models || []).map(m => (
+                      {(dynamicProvidersMap[config.provider]?.models || []).map(m => (
                         <option key={m} value={m}>{m}</option>
                       ))}
                     </select>

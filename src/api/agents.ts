@@ -120,13 +120,17 @@ export const createAgent = async (data: CreateAgentRequest): Promise<CreateAgent
 
 export interface ProviderCatalogProvider {
   id: string;
+  provider_key?: string;
   name: string;
   available: boolean;
   has_user_key?: boolean;
   uses_credits?: boolean;
+  supports_byok?: boolean;
   model?: string;
+  models?: string[];
   description?: string;
   capabilities?: string[];
+  tier?: string;
 }
 
 export interface AgentProvidersCatalogResponse {
