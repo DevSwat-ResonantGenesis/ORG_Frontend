@@ -50,11 +50,8 @@ const NotificationBell: React.FC = memo(() => {
   const [showDropdown, setShowDropdown] = useState(false);
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  useEffect(() => {
-    fastapiClient.get('/api/v1/platform/notifications')
-      .then(res => setNotifications(res.data || []))
-      .catch(() => {});
-  }, []);
+  // Notifications endpoint not yet implemented — skip the API call
+  // to avoid 404 errors and wasted network round-trips
 
   return (
     <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -223,8 +220,11 @@ const AgentOSv2: React.FC = () => {
           updatedAt: new Date(),
         }));
         setAgents(agents);
+        // Show agents immediately — don't block on metrics
+        setLoading(false);
 
-        await Promise.allSettled(
+        // Fire-and-forget: load per-agent metrics in background
+        Promise.allSettled(
           agents
             .filter((a) => a.persisted)
             .map(async (a) => {
@@ -232,10 +232,6 @@ const AgentOSv2: React.FC = () => {
                 const metrics: any = await agentOSApi.getAgentMetrics(a.id);
 
                 const executions = Number(metrics?.sessions_total ?? metrics?.executions ?? 0) || 0;
-                const running = Number(metrics?.sessions_by_status?.running ?? 0) || 0;
-                const completed = Number(metrics?.sessions_by_status?.completed ?? 0) || 0;
-                const failed = Number(metrics?.sessions_by_status?.failed ?? 0) || 0;
-                const totalTokens = Number(metrics?.total_tokens_used ?? 0) || 0;
 
                 updateAgent(a.id, {
                   executions,
@@ -244,11 +240,6 @@ const AgentOSv2: React.FC = () => {
                   riskLevel: a.riskLevel,
                   walletBalance: a.walletBalance,
                 });
-
-                void running;
-                void completed;
-                void failed;
-                void totalTokens;
               } catch {
                 return;
               }
@@ -256,7 +247,6 @@ const AgentOSv2: React.FC = () => {
         );
       } catch (error) {
         console.error('Failed to load agents from backend:', error);
-      } finally {
         setLoading(false);
       }
     };
