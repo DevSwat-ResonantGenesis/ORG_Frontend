@@ -123,7 +123,9 @@ export interface ProviderCatalogProvider {
   provider_key?: string;
   name: string;
   available: boolean;
-  has_user_key?: boolean;
+  live?: boolean;            // real ping result — is the API actually responding?
+  has_system_key?: boolean;  // platform has a key configured for this provider
+  has_user_key?: boolean;    // current user has their own BYOK key
   uses_credits?: boolean;
   supports_byok?: boolean;
   model?: string;
