@@ -245,7 +245,7 @@ const styles: Record<string, React.CSSProperties> = {
 import { ENV } from '../../config/env';
 
 // API base URL for node service
-const NODE_API_BASE = ENV.apiUrl;
+const NODE_API_BASE = ENV.nodeApiUrl;
 
 // Fetch real execution history from backend
 async function fetchExecutionHistory(): Promise<{ executions: ExecutionRecord[]; stats: any }> {
