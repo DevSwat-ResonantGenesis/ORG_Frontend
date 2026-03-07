@@ -461,10 +461,10 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                       </div>
                       <div className={styles.providerRowMeta}>
                         {p.has_user_key && (
-                          <span className={styles.byokBadge} title="Your API Key">🔑</span>
+                          <span className={styles.byokBadge} title="Using your API key">BYOK</span>
                         )}
                         {!p.has_user_key && p.has_system_key && (
-                          <span className={styles.systemKeyBadge} title="Platform Key">�</span>
+                          <span className={styles.systemKeyBadge} title="Platform key">SYS</span>
                         )}
                         <span className={`${styles.statusDot} ${p.available ? styles.online : styles.offline}`} />
                       </div>

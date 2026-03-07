@@ -21,6 +21,7 @@ export interface LLMProvider {
   capabilities?: string[];
   latency?: number;
   model?: string;
+  models?: string[];
   has_user_key?: boolean;
   uses_credits?: boolean;
 }
@@ -45,15 +46,20 @@ const getProviderIcon = (providerId: string): React.ReactNode => {
 interface ProviderSelectorProps {
   selectedProvider: string;
   onProviderChange: (providerId: string) => void;
+  selectedModel?: string;
+  onModelChange?: (model: string) => void;
   autoReason?: string;
 }
 
 const ProviderSelector: React.FC<ProviderSelectorProps> = ({
   selectedProvider,
   onProviderChange,
+  selectedModel,
+  onModelChange,
   autoReason,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [expandedModels, setExpandedModels] = useState<string | null>(null);
   const [providers, setProviders] = useState<LLMProvider[]>([{
     id: 'auto',
     name: 'Auto',
@@ -87,6 +93,7 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
             capabilities: p.capabilities,
             latency: p.latency,
             model: p.model,
+            models: p.models || [],
             has_user_key: p.has_user_key,
             uses_credits: p.uses_credits,
           }))
@@ -138,9 +145,24 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
     const provider = providers.find(p => p.id === providerId);
     if (provider && (provider.available || provider.id === 'auto')) {
       onProviderChange(providerId);
+      setExpandedModels(null);
       setShowDropdown(false);
     }
   };
+
+  const handleModelSelect = (providerId: string, model: string) => {
+    onProviderChange(providerId);
+    if (onModelChange) onModelChange(model);
+    setExpandedModels(null);
+    setShowDropdown(false);
+  };
+
+  const toggleModelExpander = (e: React.MouseEvent, providerId: string) => {
+    e.stopPropagation();
+    setExpandedModels(expandedModels === providerId ? null : providerId);
+  };
+
+  const displayModel = selectedModel || selectedProviderData.model;
 
   return (
     <div className={styles.container} ref={dropdownRef}>
@@ -155,7 +177,10 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
         {selectedProvider === 'auto' && autoReason && (
           <span className={styles.badge}>SMART</span>
         )}
-        {selectedProviderData.latency && (
+        {displayModel && selectedProvider !== 'auto' && (
+          <span className={styles.latency}>• {displayModel}</span>
+        )}
+        {selectedProviderData.latency && !displayModel && (
           <span className={styles.latency}>• {formatLatency(selectedProviderData.latency)}</span>
         )}
         <ChevronDownIcon className={styles.chevron} />
@@ -168,33 +193,59 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
             <div className={styles.loading}>Loading providers...</div>
           ) : (
             providers.map((provider) => (
-              <button
-                key={provider.id}
-                className={`${styles.option} ${selectedProvider === provider.id ? styles.selected : ''} ${!provider.available && provider.id !== 'auto' ? styles.disabled : ''}`}
-                onClick={() => handleProviderSelect(provider.id)}
-                disabled={!provider.available && provider.id !== 'auto'}
-                role="option"
-                aria-selected={selectedProvider === provider.id}
-              >
-                <span className={styles.optionIcon}>{provider.icon}</span>
-                <div className={styles.optionContent}>
-                  <span className={styles.optionName}>{provider.name}</span>
-                  {provider.model && (
-                    <span className={styles.optionModel}>{provider.model}</span>
-                  )}
-                </div>
-                <div className={styles.optionMeta}>
-                  {provider.id === 'auto' && <span className={styles.badge}>SMART</span>}
-                  {provider.latency && (
-                    <span className={styles.latency}>• {formatLatency(provider.latency)}</span>
-                  )}
-                  {provider.has_user_key && <span className={styles.byokBadge}>BYOK</span>}
-                  {!provider.uses_credits && provider.id !== 'auto' && (
-                    <span className={styles.freeBadge}>FREE</span>
-                  )}
-                  {selectedProvider === provider.id && <CheckmarkIcon className={styles.checkmark} />}
-                </div>
-              </button>
+              <div key={provider.id}>
+                <button
+                  className={`${styles.option} ${selectedProvider === provider.id ? styles.selected : ''} ${!provider.available && provider.id !== 'auto' ? styles.disabled : ''}`}
+                  onClick={() => handleProviderSelect(provider.id)}
+                  disabled={!provider.available && provider.id !== 'auto'}
+                  role="option"
+                  aria-selected={selectedProvider === provider.id}
+                >
+                  <span className={styles.optionIcon}>{provider.icon}</span>
+                  <div className={styles.optionContent}>
+                    <span className={styles.optionName}>{provider.name}</span>
+                    {provider.model && (
+                      <span className={styles.optionModel}>
+                        {(selectedProvider === provider.id && selectedModel) || provider.model}
+                      </span>
+                    )}
+                  </div>
+                  <div className={styles.optionMeta}>
+                    {provider.id === 'auto' && <span className={styles.badge}>SMART</span>}
+                    {provider.latency && (
+                      <span className={styles.latency}>• {formatLatency(provider.latency)}</span>
+                    )}
+                    {provider.has_user_key && <span className={styles.byokBadge}>BYOK</span>}
+                    {!provider.uses_credits && provider.id !== 'auto' && (
+                      <span className={styles.freeBadge}>FREE</span>
+                    )}
+                    {provider.models && provider.models.length > 1 && provider.available && (
+                      <span
+                        className={styles.modelExpandBtn}
+                        onClick={(e) => toggleModelExpander(e, provider.id)}
+                        title={`${provider.models.length} models available`}
+                      >
+                        {expandedModels === provider.id ? '▾' : '▸'} {provider.models.length}
+                      </span>
+                    )}
+                    {selectedProvider === provider.id && <CheckmarkIcon className={styles.checkmark} />}
+                  </div>
+                </button>
+                {expandedModels === provider.id && provider.models && provider.models.length > 1 && (
+                  <div className={styles.modelSubList}>
+                    {provider.models.map((m) => (
+                      <button
+                        key={m}
+                        className={`${styles.modelSubItem} ${(selectedModel || provider.model) === m ? styles.selected : ''}`}
+                        onClick={() => handleModelSelect(provider.id, m)}
+                      >
+                        <span className={styles.modelSubName}>{m}</span>
+                        {(selectedModel || provider.model) === m && <CheckmarkIcon className={styles.checkmark} />}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))
           )}
         </div>

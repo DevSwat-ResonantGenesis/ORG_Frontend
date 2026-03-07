@@ -315,6 +315,89 @@
   }
 }
 
+/* ═══════ MODEL SUB-SELECTOR ═══════ */
+.modelExpandBtn {
+  font-size: 11px;
+  color: var(--color-text-tertiary, #6b7280);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  transition: all .15s;
+  white-space: nowrap;
+}
+.modelExpandBtn:hover {
+  background: rgba(255,255,255,.1);
+  color: var(--color-text-primary, #fff);
+}
+
+.modelSubList {
+  display: flex;
+  flex-direction: column;
+  padding: 2px 0 4px 36px;
+  max-height: 200px;
+  overflow-y: auto;
+  border-left: 2px solid rgba(99,102,241,.2);
+  margin-left: 20px;
+  margin-bottom: 4px;
+}
+
+.modelSubItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-secondary, #a1a1aa);
+  font-size: 12px;
+  font-family: 'SF Mono','Fira Code','Consolas', monospace;
+  cursor: pointer;
+  transition: all .12s;
+  text-align: left;
+}
+.modelSubItem:hover {
+  background: rgba(255,255,255,.05);
+  color: var(--color-text-primary, #fff);
+}
+.modelSubItem.selected {
+  background: rgba(99,102,241,.1);
+  color: #818cf8;
+}
+
+.modelSubName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.byokBadge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(234,179,8,.15);
+  border: 1px solid rgba(234,179,8,.3);
+  color: #eab308;
+  white-space: nowrap;
+}
+
+.freeBadge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(34,197,94,.12);
+  border: 1px solid rgba(34,197,94,.25);
+  color: #22c55e;
+  white-space: nowrap;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .providerButton {

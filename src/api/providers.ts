@@ -15,6 +15,7 @@ export interface LiveProvider {
   has_user_key: boolean;
   uses_credits: boolean;
   model: string;
+  models?: string[];
   description: string;
   capabilities: string[];
   latency?: number;
