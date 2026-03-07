@@ -281,8 +281,9 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   }, [splitViewEnabled, splitViewWidth, sidebarOpen]);
 
   // Provider data with status and model info
-  const [providerData, setProviderData] = useState<Array<{id: string; name: string; model?: string; available: boolean; has_user_key?: boolean; uses_credits?: boolean}>>([]);
+  const [providerData, setProviderData] = useState<Array<{id: string; name: string; model?: string; models?: string[]; available: boolean; has_user_key?: boolean; uses_credits?: boolean}>>([]);
   const [providerSearch, setProviderSearch] = useState('');
+  const [expandedModels, setExpandedModels] = useState<string | null>(null);
 
   // Fetch live providers from API
   useEffect(() => {
@@ -328,7 +329,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   }, [providerOptions, providerSearch, providerData]);
 
   const getProviderInfo = (providerId: string) => {
-    if (providerId === 'auto') return { name: 'Auto (Smart)', model: 'Best available', available: true, has_user_key: false, uses_credits: false };
+    if (providerId === 'auto') return { name: 'Auto (Smart)', model: 'Best available', models: [] as string[], available: true, has_user_key: false, uses_credits: false };
     const provider = providerData.find(p => p.id === providerId);
     return provider || { name: providerId, model: '', available: false, has_user_key: false, uses_credits: false };
   };
@@ -1150,59 +1151,133 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                     {/* Provider list */}
                     {filteredProviders.map((provider) => {
                       const info = getProviderInfo(provider);
+                      const models = info.models || [];
                       return (
-                        <button
-                          key={provider}
-                          type="button"
-                          className={`${styles.providerOption} ${selectedProvider === provider ? styles.selected : ''}`}
-                          style={{ opacity: info.available ? 1 : 0.5 }}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (info.available || provider === 'auto') {
-                              onProviderChange(normalizeProvider(provider));
-                              setShowProviderDropdown(false);
-                              setProviderSearch('');
-                            }
-                          }}
-                        >
-                          <span className={styles.providerIcon}>
-                            {provider === 'auto' && <span style={{fontSize: '16px'}}>✨</span>}
-                            {(provider === 'openai' || provider === 'chatgpt') && <span style={{fontSize: '16px'}}>��</span>}
-                            {provider === 'gemini' && <span style={{fontSize: '16px'}}>💎</span>}
-                            {provider === 'anthropic' && <span style={{fontSize: '16px'}}>🧠</span>}
-                            {provider === 'groq' && <span style={{fontSize: '16px'}}>⚡</span>}
-                            {provider === 'local' && <span style={{fontSize: '16px'}}>🏠</span>}
-                            {provider === 'codellama' && <span style={{fontSize: '16px'}}>💻</span>}
-                          </span>
-                          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
-                            <span className={styles.providerName}>
-                              {info.name || provider.charAt(0).toUpperCase() + provider.slice(1)}
+                        <div key={provider}>
+                          <button
+                            type="button"
+                            className={`${styles.providerOption} ${selectedProvider === provider ? styles.selected : ''}`}
+                            style={{ opacity: info.available ? 1 : 0.5 }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              if (info.available || provider === 'auto') {
+                                onProviderChange(normalizeProvider(provider));
+                                setShowProviderDropdown(false);
+                                setProviderSearch('');
+                                setExpandedModels(null);
+                              }
+                            }}
+                          >
+                            <span className={styles.providerIcon}>
+                              {provider === 'auto' && <span style={{fontSize: '16px'}}>✨</span>}
+                              {(provider === 'openai' || provider === 'chatgpt') && <span style={{fontSize: '16px'}}>🤖</span>}
+                              {provider === 'gemini' && <span style={{fontSize: '16px'}}>💎</span>}
+                              {provider === 'anthropic' && <span style={{fontSize: '16px'}}>🧠</span>}
+                              {provider === 'groq' && <span style={{fontSize: '16px'}}>⚡</span>}
+                              {provider === 'local' && <span style={{fontSize: '16px'}}>🏠</span>}
+                              {provider === 'codellama' && <span style={{fontSize: '16px'}}>💻</span>}
                             </span>
-                            {info.model && (
-                              <span style={{ fontSize: '10px', color: '#888', fontWeight: 'normal' }}>
-                                {info.model}
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
+                              <span className={styles.providerName}>
+                                {info.name || provider.charAt(0).toUpperCase() + provider.slice(1)}
                               </span>
-                            )}
-                          </div>
-                          {/* Status indicator */}
-                          <span style={{ 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            gap: '4px',
-                            fontSize: '11px',
-                            color: info.available ? '#4ade80' : '#f87171'
-                          }}>
-                            {info.has_user_key && <span title="Your API Key" style={{color: '#60a5fa'}}>🔑</span>}
-                            {info.uses_credits && <span title="Uses Credits" style={{color: '#fbbf24'}}>💰</span>}
-                            <span style={{
-                              width: '8px',
-                              height: '8px',
-                              borderRadius: '50%',
-                              background: info.available ? '#4ade80' : '#f87171',
-                            }} />
-                          </span>
-                        </button>
+                              {info.model && (
+                                <span style={{ fontSize: '10px', color: '#888', fontWeight: 'normal' }}>
+                                  {info.model}
+                                </span>
+                              )}
+                            </div>
+                            {/* Status + model count */}
+                            <span style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              gap: '4px',
+                              fontSize: '11px',
+                              color: info.available ? '#4ade80' : '#f87171'
+                            }}>
+                              {info.has_user_key && <span title="Your API Key" style={{color: '#60a5fa'}}>🔑</span>}
+                              {info.uses_credits && <span title="Uses Credits" style={{color: '#fbbf24'}}>💰</span>}
+                              {models.length > 0 && provider !== 'auto' && (
+                                <span
+                                  title={`${models.length} models`}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setExpandedModels(expandedModels === provider ? null : provider);
+                                  }}
+                                  style={{
+                                    fontSize: '10px',
+                                    color: '#9ca3af',
+                                    padding: '1px 5px',
+                                    borderRadius: '4px',
+                                    background: 'rgba(255,255,255,0.06)',
+                                    border: '1px solid rgba(255,255,255,0.08)',
+                                    cursor: 'pointer',
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                >
+                                  {expandedModels === provider ? '▾' : '▸'} {models.length}
+                                </span>
+                              )}
+                              <span style={{
+                                width: '8px',
+                                height: '8px',
+                                borderRadius: '50%',
+                                background: info.available ? '#4ade80' : '#f87171',
+                              }} />
+                            </span>
+                          </button>
+                          {/* Model sub-list */}
+                          {expandedModels === provider && models.length > 0 && (
+                            <div style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              paddingLeft: '36px',
+                              maxHeight: '200px',
+                              overflowY: 'auto',
+                              borderLeft: '2px solid rgba(99,102,241,0.2)',
+                              marginLeft: '20px',
+                              marginBottom: '4px',
+                            }}>
+                              {models.map((m) => (
+                                <button
+                                  key={m}
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    onProviderChange(normalizeProvider(provider));
+                                    if ((window as any).__onModelChange) (window as any).__onModelChange(m);
+                                    setShowProviderDropdown(false);
+                                    setProviderSearch('');
+                                    setExpandedModels(null);
+                                  }}
+                                  style={{
+                                    display: 'block',
+                                    width: '100%',
+                                    padding: '5px 10px',
+                                    border: 'none',
+                                    borderRadius: '5px',
+                                    background: info.model === m ? 'rgba(99,102,241,0.12)' : 'transparent',
+                                    color: info.model === m ? '#818cf8' : '#a1a1aa',
+                                    fontSize: '11px',
+                                    fontFamily: "'SF Mono','Fira Code','Consolas', monospace",
+                                    cursor: 'pointer',
+                                    textAlign: 'left',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                  }}
+                                  onMouseEnter={(e) => { (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.06)'; }}
+                                  onMouseLeave={(e) => { (e.target as HTMLElement).style.background = info.model === m ? 'rgba(99,102,241,0.12)' : 'transparent'; }}
+                                >
+                                  {m}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       );
                     })}
                     {/* BYOK Button */}
