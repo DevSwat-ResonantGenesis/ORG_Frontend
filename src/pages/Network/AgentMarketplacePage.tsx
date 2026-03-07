@@ -593,6 +593,7 @@ export default function AgentMarketplacePage() {
     return (
       agent.name?.toLowerCase().includes(query) ||
       agent.description?.toLowerCase().includes(query) ||
+      agent.manifest_hash?.toLowerCase().includes(query) ||
       agent.tags?.some(tag => tag.toLowerCase().includes(query))
     );
   });

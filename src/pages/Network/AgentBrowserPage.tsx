@@ -323,8 +323,12 @@ export default function AgentBrowserPage() {
   }
 
   const filteredAgents = agents.filter(agent => {
-    if (searchQuery && !agent.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const matchesName = agent.name?.toLowerCase().includes(q);
+      const matchesDesc = agent.description?.toLowerCase().includes(q);
+      const matchesHash = agent.manifest_hash?.toLowerCase().includes(q);
+      if (!matchesName && !matchesDesc && !matchesHash) return false;
     }
     if (category !== 'all' && agent.category !== category) {
       return false;
