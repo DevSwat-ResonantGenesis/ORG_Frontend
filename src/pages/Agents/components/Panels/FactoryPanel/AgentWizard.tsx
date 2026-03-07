@@ -411,38 +411,79 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
           </div>
         );
 
-      case 'model':
+      case 'model': {
+        const activeProvider = dynamicProviders.find(p => p.id === provider);
+        const providerModels = activeProvider?.models || (activeProvider?.model ? [activeProvider.model] : []);
         return (
           <div className={styles.stepContent}>
-            <div className={styles.providerGrid}>
+            {/* Provider selector row */}
+            <div className={styles.formCard}>
+              <label className={styles.fieldLabel}>Provider</label>
               {providersLoading ? (
                 <div className={styles.loadingProviders}>Loading providers...</div>
-              ) : dynamicProviders.map((p) => (
-                <button
-                  key={p.id}
-                  className={`${styles.providerCard} ${provider === p.id ? styles.selected : ''} ${!p.available ? styles.unavailable : ''}`}
-                  onClick={() => handleProviderSelect(p.id)}
-                  disabled={!p.available}
-                >
-                  <div className={styles.providerInfo}>
-                    <h4>
-                      {p.name}
-                      {p.tier && <span className={styles.tierBadge}>{p.tier}</span>}
-                    </h4>
-                    <p>{p.description}</p>
-                    <span className={styles.modelName}>{p.model || p.models?.[0]}</span>
-                    {!p.available && <span className={styles.unavailableLabel}>Unavailable</span>}
-                  </div>
-                  {provider === p.id && (
-                    <div className={styles.checkmark}>
-                      <Icons.CheckCircle />
-                    </div>
+              ) : (
+                <div className={styles.providerChips}>
+                  {dynamicProviders.map((p) => (
+                    <button
+                      key={p.id}
+                      className={`${styles.providerChip} ${provider === p.id ? styles.selected : ''} ${!p.available ? styles.unavailable : ''}`}
+                      onClick={() => handleProviderSelect(p.id)}
+                      disabled={!p.available}
+                      title={p.description || p.name}
+                    >
+                      <span className={styles.providerChipName}>{p.name}</span>
+                      <span className={`${styles.statusDot} ${p.available ? styles.online : styles.offline}`} />
+                      {p.has_user_key && <span className={styles.keyIcon} title="Your API Key">🔑</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Model dropdown */}
+              {provider && (
+                <div className={styles.modelSelectGroup}>
+                  <label className={styles.fieldLabel}>Model</label>
+                  <select
+                    className={styles.modelSelect}
+                    value={model}
+                    onChange={(e) => setModel(e.target.value)}
+                  >
+                    {providerModels.length === 0 && (
+                      <option value="">No models available</option>
+                    )}
+                    {providerModels.map((m) => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
+                  </select>
+                  {activeProvider?.tier && (
+                    <span className={styles.tierBadge}>{activeProvider.tier}</span>
                   )}
-                </button>
-              ))}
+                </div>
+              )}
+
+              {/* BYOK link */}
+              {activeProvider?.supports_byok && (
+                <div className={styles.byokRow}>
+                  <span className={styles.byokLabel}>
+                    {activeProvider.has_user_key
+                      ? '✅ Using your API key'
+                      : '💡 Bring your own key for free usage'}
+                  </span>
+                  <a
+                    href="/profile?tab=api-keys"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.byokLink}
+                  >
+                    {activeProvider.has_user_key ? 'Manage Keys' : 'Add API Key'}
+                  </a>
+                </div>
+              )}
             </div>
+
+            {/* Governance mode */}
             <div className={styles.modeToggle}>
-              <label>Governance Mode:</label>
+              <label>Governance Mode</label>
               <div className={styles.modeButtons}>
                 <button
                   className={`${styles.modeBtn} ${mode === 'governed' ? styles.active : ''}`}
@@ -465,6 +506,7 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
             </div>
           </div>
         );
+      }
 
       case 'tools':
         return (
