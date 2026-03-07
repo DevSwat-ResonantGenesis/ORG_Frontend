@@ -423,7 +423,10 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                   disabled={!p.available}
                 >
                   <div className={styles.providerInfo}>
-                    <h4>{p.name}{p.tier ? ` (${p.tier})` : ''}</h4>
+                    <h4>
+                      {p.name}
+                      {p.tier && <span className={styles.tierBadge}>{p.tier}</span>}
+                    </h4>
                     <p>{p.description}</p>
                     <span className={styles.modelName}>{p.model || p.models?.[0]}</span>
                     {!p.available && <span className={styles.unavailableLabel}>Unavailable</span>}
