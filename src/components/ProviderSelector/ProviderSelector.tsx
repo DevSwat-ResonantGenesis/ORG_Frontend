@@ -219,11 +219,11 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
                     {!provider.uses_credits && provider.id !== 'auto' && (
                       <span className={styles.freeBadge}>FREE</span>
                     )}
-                    {provider.models && provider.models.length > 1 && provider.available && (
+                    {provider.models && provider.models.length > 0 && provider.id !== 'auto' && (
                       <span
                         className={styles.modelExpandBtn}
                         onClick={(e) => toggleModelExpander(e, provider.id)}
-                        title={`${provider.models.length} models available`}
+                        title={`${provider.models.length} models`}
                       >
                         {expandedModels === provider.id ? '▾' : '▸'} {provider.models.length}
                       </span>
@@ -231,7 +231,7 @@ const ProviderSelector: React.FC<ProviderSelectorProps> = ({
                     {selectedProvider === provider.id && <CheckmarkIcon className={styles.checkmark} />}
                   </div>
                 </button>
-                {expandedModels === provider.id && provider.models && provider.models.length > 1 && (
+                {expandedModels === provider.id && provider.models && provider.models.length > 0 && (
                   <div className={styles.modelSubList}>
                     {provider.models.map((m) => (
                       <button
