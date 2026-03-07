@@ -137,6 +137,15 @@ const articles: Article[] = [
     tags: ['security', 'observability', 'remediation'],
     readingTime: 7
   },
+  {
+    id: '30',
+    title: 'Agent Studio & Factory',
+    description: 'Deep-dive into the Agent Factory: Wizard vs Advanced panels, backend API map, hardcoded providers analysis, and platform pages reference.',
+    category: 'Core Stack',
+    path: '/help/core/agent-studio',
+    tags: ['agents', 'factory', 'wizard', 'advanced', 'providers'],
+    readingTime: 12
+  },
   // Marketplace
   {
     id: '9',

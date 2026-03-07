@@ -510,6 +510,235 @@ Once tested, deploy your agent to production with:
 - [Agent Monitoring](/help/agents/monitoring)
 - [Team Collaboration](/help/agents/teams)
   `,
+  'agent-studio': `
+# Agent Studio & Factory
+
+The **Agent Studio** is the primary workspace for creating, managing, and operating AI agents in ResonantGenesis. It lives at \`/agents\` and is powered by the \`AgentOSv2\` component.
+
+## Page Architecture
+
+\`\`\`
+/agents (route)
+  AgentOSv2 (main page)
+    Sidebar (section navigation)
+      agents    - list / manage agents
+      sessions  - active agent sessions
+      factory   - create new agents (Wizard or Advanced)
+      economy   - agent wallet & spending
+      settings  - agent-level settings
+    Active Panel (lazy-loaded per section)
+\`\`\`
+
+When you click **Factory** in the sidebar, you see two modes: **Wizard** and **Advanced**.
+
+---
+
+## Wizard Panel (AgentWizard)
+
+A **5-step guided flow** designed for new users or quick agent creation.
+
+### Steps
+
+| # | Step | What You Configure |
+|---|------|--------------------|
+| 1 | **Basic Info** | Agent name (2-50 chars, validated), description (max 500 chars) |
+| 2 | **Agent Type** | executor, researcher, coder, planner, or general assistant |
+| 3 | **AI Model** | Pick a provider + model from a fixed list (see below) |
+| 4 | **Tools** | Toggle up to 4 built-in tools: web_search, code_exec, file_access, api_calls |
+| 5 | **Review** | Summary of all selections, then "Create Agent" |
+
+### Hardcoded Providers in Wizard
+
+| Provider | Model | Label |
+|----------|-------|-------|
+| Groq | llama-3.3-70b-versatile | Groq (Fast) |
+| OpenAI | gpt-4o | OpenAI GPT-4 |
+| Anthropic | claude-3.5-sonnet | Claude 3.5 |
+| Google | gemini-2.0-flash | Gemini 2.0 |
+
+### What happens on "Create"
+
+1. Calls \`POST /api/v1/agents\` with name, type, description, model, tools.
+2. Adds the new agent to the frontend store (\`useAgentStore\`).
+3. Navigates back to the agents list panel.
+
+### What Wizard does NOT support
+
+- System prompt editing
+- Temperature / token limit tuning
+- Memory, autonomy, or wallet configuration
+- Custom tool creation
+- Provider routing / fallback chain
+- Templates, import/export
+- API key generation
+- Deployment settings
+
+---
+
+## Advanced Panel (AdvancedFactory)
+
+A **single-page full-configuration form** for power users. All sections are visible at once.
+
+### Sections
+
+#### 1. Agent Templates
+8 pre-built templates (Research Assistant, Code Generator, Data Analyst, Content Writer, Task Planner, Customer Support, Full Stack Dev, Vision Analyst). Clicking a template pre-fills name, description, type, provider, model, and tools.
+
+#### 2. Agent Identity
+- **Name** (required)
+- **Type** (executor, planner, researcher, coder, negotiator, verifier)
+- **Description** (free text)
+- **Tags** (array of strings)
+- **Governance Mode** (governed / unbounded)
+
+#### 3. AI Model & Provider
+- **Routing Mode**: auto, manual, or fallback
+- **Provider Selection**: groq, openai, anthropic, google, local (5 hardcoded providers + live catalog overlay from \`GET /api/v1/agents/providers\`)
+- **Model Selection**: each provider has a hardcoded list of models
+- **Provider Key Status**: checks which keys the user has configured via \`fetchUserApiKeys()\`
+- **Fallback Chain**: ordered list of providers for automatic failover
+
+#### 4. Model Parameters
+- Temperature (0-2)
+- Max tokens
+- Top P
+- Frequency penalty
+- Presence penalty
+- System prompt (full text editor)
+
+#### 5. Tools
+- 10 built-in tools (web_search, code_exec, file_access, api_calls, database, email, calendar, image_gen, speech, vision)
+- **Live tool catalog** from \`GET /api/v1/agents/tools\` with filtering by category, risk level, search
+- **Custom tools** from \`GET /api/v1/agents/tools/custom\`
+- **Create custom tool**: name, URL, method, risk level, approval required, JSON parameters schema
+- **Edit / delete custom tools**
+- Tool detail inspector (schema, handler config, risk level)
+
+#### 6. Memory Configuration
+- Memory enabled (toggle)
+- Vector store enabled (toggle)
+- Context window size
+
+#### 7. Autonomy Configuration
+- Can spawn sub-agents
+- Can modify self
+- Can access network
+- Can execute code
+- Max concurrent tasks
+
+#### 8. Wallet Configuration
+- Wallet enabled (toggle)
+- Initial balance, daily limit, transaction limit, monthly limit
+
+#### 9. Developer Options
+- Webhook URL
+- API key generation (\`POST /api/v1/developer/keys\`)
+- Rate limit per minute
+
+#### 10. Deployment Settings
+- Environment (development / staging / production)
+- Auto-scale toggle
+- Min / max instances
+
+#### 11. Import / Export
+- Import agent config from JSON
+- Export current config to JSON file
+
+### What happens on "Create"
+
+1. Calls \`POST /api/v1/agents\` with full payload (name, type, description, system_prompt, model, temperature, max_tokens, tools, allowed_actions, blocked_actions, safety_config with provider, routing, memory, autonomy, deployment, developer settings).
+2. Sets autonomy mode: \`POST /api/v1/autonomy/mode/{agent_id}\`
+3. Creates wallet if enabled: \`POST /api/v1/wallets/{agent_id}\`
+4. Generates API key if enabled: \`POST /api/v1/developer/keys\`
+5. Adds agent to frontend store
+6. Shows option to "Publish to Network" or "Create Another"
+
+---
+
+## Backend API Dependency Map
+
+| API Endpoint | Wizard | Advanced | Backend Service |
+|---|---|---|---|
+| \`POST /api/v1/agents\` | Yes | Yes | agent_engine_service |
+| \`GET /api/v1/agents/providers\` | No | Yes | agent_engine_service |
+| \`GET /api/v1/agents/tools\` | No | Yes | agent_engine_service |
+| \`GET /api/v1/agents/tools/custom\` | No | Yes | agent_engine_service |
+| \`POST /api/v1/agents/tools/custom\` | No | Yes | agent_engine_service |
+| \`DELETE /api/v1/agents/tools/custom/{id}\` | No | Yes | agent_engine_service |
+| \`POST /api/v1/autonomy/mode/{id}\` | No | Yes | agent_engine_service |
+| \`POST /api/v1/wallets/{id}\` | No | Yes | agent_engine_service |
+| \`POST /api/v1/developer/keys\` | No | Yes | agent_engine_service |
+| \`fetchUserApiKeys()\` | No | Yes | gateway |
+
+All requests go through \`fastapiClient\` (Axios) -> gateway -> agent_engine_service.
+
+---
+
+## Why Are Providers Hardcoded?
+
+**Both panels hardcode provider and model lists in the frontend instead of fetching them from the LLM service router.**
+
+The backend already has:
+- **llm_service/multi_provider/multi_ai_router.py** — full BYOK (Bring Your Own Key) support, automatic fallback chain, intelligent routing by task complexity
+- **llm_service/services/intelligent_router.py** — Layer 8 routing that scores providers by strength, cost, speed, quality, and health
+- **chat_service/domain/provider/facade.py** — provider facade with \`set_user_api_keys()\` and streaming support
+
+The Advanced panel partially addresses this: it calls \`GET /api/v1/agents/providers\` to get the live catalog and overlays it on top of the hardcoded list. But the **Wizard panel** does not call any provider catalog at all — it shows 4 static entries regardless of which providers are actually available or which keys the user has configured.
+
+**This is a known gap.** Ideally both panels should:
+1. Fetch the live provider catalog on mount
+2. Show only providers that are available (system keys or user BYOK keys)
+3. Use the intelligent router's model list instead of hardcoded model arrays
+4. Respect the user's configured fallback chain from their profile
+
+---
+
+## Do We Need Both Panels?
+
+**Yes.** They serve different audiences:
+
+- **Wizard** = onboarding funnel. 5 clicks, no cognitive overload. Good for first-time or casual users.
+- **Advanced** = power-user configuration. Full control over every parameter. Templates, custom tools, wallet, deployment, import/export.
+
+This follows standard UX patterns (WordPress Quick Draft vs. full editor, GitHub Quick Setup vs. full repo settings). The Wizard reduces drop-off; the Advanced panel is where real configuration happens.
+
+They are **complementary, not redundant**.
+
+---
+
+## Platform Pages Reference
+
+Short descriptions for every major page in ResonantGenesis:
+
+| Page | Route | Description |
+|------|-------|-------------|
+| **Home** | \`/\` | Landing page with platform overview and quick-start links |
+| **AGI Neural Hub** | \`/resonant-chat\` | General-purpose autonomous action workspace with tool-enabled chat |
+| **Synthetic Neural Memory** | \`/resonant-memory\` | 9-layer cognitive memory system for agents: storage, retrieval, visualization |
+| **Invariants SIM** | \`/state-physics\` | Economic constraint modeling and invariant enforcement across state transitions |
+| **SAST & Dependency Graph** | \`/code-visualizer\` | Full-stack architecture observability, SAST scanning, and remediation engine |
+| **Agent Studio** | \`/agents\` | Create, manage, and operate AI agents (Wizard + Advanced factory, sessions, economy) |
+| **Agent Teams** | \`/agent-teams\` | Orchestrate multi-agent teams and collaborative workflows |
+| **Network / Marketplace** | \`/network\` | Discover, publish, and execute agents on the decentralized agent network |
+| **Hash Sphere Memory** | \`/hash-sphere\` | 3D visualization of the Hash Sphere memory coordinate system |
+| **Dashboard** | \`/dashboard\` | System metrics, agent activity, and operational overview |
+| **Evidence Graph** | \`/evidence-graph\` | Visualize reasoning chains and prediction evidence |
+| **API Keys** | \`/api-keys\` | Manage provider API keys (OpenAI, Anthropic, Groq, Google, etc.) |
+| **Profile** | \`/profile\` | User account settings, preferences, and API key management |
+| **Billing** | \`/billing\` | Usage, credits, plan limits, and payment management |
+| **Admin** | \`/admin\` | Platform administration, user management, system configuration |
+| **Help Center** | \`/help\` | Tutorials, documentation, and FAQ for all platform features |
+| **Community** | \`/community\` | Community discussions, shared agents, and collaboration |
+| **Rabbit** | \`/rabbit\` | Rabbit social network and content feed |
+| **Compliance** | \`/compliance\` | Compliance monitoring, policy enforcement, and audit trails |
+
+## Next Steps
+
+- [AGI Neural Hub](/help/core/agi-neural-hub)
+- [Synthetic Neural Memory](/help/core/synthetic-neural-memory)
+- [Marketplace](/help/marketplace/overview)
+- [API Keys](/help/account/api-keys)
+  `,
   'best-practices': `
 # Security Best Practices
 
