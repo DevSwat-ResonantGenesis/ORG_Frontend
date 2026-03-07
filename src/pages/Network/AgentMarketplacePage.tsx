@@ -109,7 +109,7 @@ const styles: Record<string, React.CSSProperties> = {
     flex: 1,
     padding: '0.5rem 1rem',
     overflowY: 'auto' as const,
-    height: '100%',
+    minHeight: 0,
   },
   header: {
     marginBottom: '5px',
