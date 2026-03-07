@@ -1,8 +1,8 @@
 import React, { memo, useState, useCallback, useEffect } from 'react';
 import { useAgentStore } from '../../../../../stores/agentStore';
 import { Icons } from '../../shared/Icons';
-import { createAgent as createAgentApi, getAgentProvidersCatalog } from '../../../../../api/agents';
-import type { ProviderCatalogProvider } from '../../../../../api/agents';
+import { createAgent as createAgentApi, getAgentProvidersCatalog, getAvailableTools } from '../../../../../api/agents';
+import type { ProviderCatalogProvider, AvailableTool } from '../../../../../api/agents';
 import styles from './AgentWizard.module.css';
 
 // ============== AGENT CREATION WIZARD ==============
@@ -31,12 +31,16 @@ const AGENT_TYPES = [
 ];
 
 
-const TOOLS = [
-  { id: 'web_search', name: 'Web Search', icon: 'Search', description: 'Search the internet for information' },
-  { id: 'code_exec', name: 'Code Execution', icon: 'Code', description: 'Run code in a secure sandbox' },
-  { id: 'file_access', name: 'File Access', icon: 'Folder', description: 'Read and write files' },
-  { id: 'api_calls', name: 'API Calls', icon: 'External', description: 'Make HTTP requests to external APIs' },
-];
+const TOOL_ICON_MAP: Record<string, string> = {
+  web_search: 'Search', fetch_url: 'External', 'memory.read': 'Database', 'memory.write': 'Database',
+  create_rabbit_post: 'MessageSquare', list_rabbit_communities: 'Folder', create_rabbit_community: 'Folder',
+  http_request: 'External', generate_image: 'Image', generate_audio: 'Volume2',
+  generate_music: 'Music', generate_video: 'Video',
+};
+
+const CATEGORY_LABELS: Record<string, string> = {
+  web: '🌐 Web', memory: '🧠 Memory', platform: '📦 Platform', media: '🎨 Media', general: '⚙️ General',
+};
 
 interface AgentWizardProps {
   className?: string;
@@ -85,7 +89,20 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
   const [provider, setProvider] = useState('');
   const [model, setModel] = useState('');
   const [selectedTools, setSelectedTools] = useState<string[]>([]);
+  const [toolMode, setToolMode] = useState<'smart' | 'manual'>('smart');
+  const [availableTools, setAvailableTools] = useState<AvailableTool[]>([]);
+  const [toolsLoading, setToolsLoading] = useState(false);
   const [mode, setMode] = useState<'governed' | 'unbounded'>('governed');
+
+  // Fetch available tools when switching to manual mode
+  useEffect(() => {
+    if (toolMode === 'manual' && availableTools.length === 0) {
+      setToolsLoading(true);
+      getAvailableTools()
+        .then(tools => setAvailableTools(tools))
+        .finally(() => setToolsLoading(false));
+    }
+  }, [toolMode]);
 
   // Fetch live provider catalog from the LLM service on mount
   useEffect(() => {
@@ -265,7 +282,8 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
         mode,
         provider,
         model,
-        tools: selectedTools,
+        tool_mode: toolMode,
+        tools: toolMode === 'smart' ? [] : selectedTools,
         systemPrompt: '',
         temperature: 0.7,
         maxTokens: 4096,
@@ -542,31 +560,93 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
       case 'tools':
         return (
           <div className={styles.stepContent}>
-            <p className={styles.toolsIntro}>Select the tools your agent can use (optional):</p>
-            <div className={styles.toolsGrid}>
-              {TOOLS.map((tool) => {
-                const IconComponent = (Icons as any)[tool.icon] || Icons.Zap;
-                const isSelected = selectedTools.includes(tool.id);
-                return (
-                  <button
-                    key={tool.id}
-                    className={`${styles.toolCard} ${isSelected ? styles.selected : ''}`}
-                    onClick={() => toggleTool(tool.id)}
-                  >
-                    <div className={styles.toolIcon}>
-                      <IconComponent />
-                    </div>
-                    <div className={styles.toolInfo}>
-                      <h4>{tool.name}</h4>
-                      <p>{tool.description}</p>
-                    </div>
-                    <div className={styles.toolCheckbox}>
-                      {isSelected ? <Icons.CheckCircle /> : <Icons.Circle />}
-                    </div>
-                  </button>
-                );
-              })}
+            {/* Smart / Manual toggle */}
+            <div className={styles.modeToggle} style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: 14, fontWeight: 600, marginBottom: 8, display: 'block' }}>Tool Mode</label>
+              <div className={styles.modeButtons}>
+                <button
+                  className={`${styles.modeBtn} ${toolMode === 'smart' ? styles.active : ''}`}
+                  onClick={() => setToolMode('smart')}
+                >
+                  <Icons.Zap /> Smart (Auto)
+                </button>
+                <button
+                  className={`${styles.modeBtn} ${toolMode === 'manual' ? styles.active : ''}`}
+                  onClick={() => setToolMode('manual')}
+                >
+                  <Icons.Settings /> Manual
+                </button>
+              </div>
+              <span className={styles.hint}>
+                {toolMode === 'smart'
+                  ? 'Agent automatically has access to all tools and picks the right ones for each task.'
+                  : 'You choose exactly which tools this agent can use.'}
+              </span>
             </div>
+
+            {toolMode === 'smart' ? (
+              <div style={{ padding: '20px', background: 'rgba(59, 130, 246, 0.08)', borderRadius: 12, border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+                <p style={{ margin: 0, fontSize: 14, color: 'rgba(255,255,255,0.8)' }}>
+                  ✨ <strong>Smart mode enabled</strong> — Your agent will have access to all available tools including web search, memory, platform actions, and media generation (images, audio, music, video via BYOK).
+                  The AI decides which tools to use based on the goal.
+                </p>
+              </div>
+            ) : (
+              <>
+                <p className={styles.toolsIntro}>Select the tools your agent can use:</p>
+                {toolsLoading ? (
+                  <div style={{ textAlign: 'center', padding: 20, color: 'rgba(255,255,255,0.5)' }}>Loading tools...</div>
+                ) : (
+                  <>
+                    {/* Group tools by category */}
+                    {Object.entries(
+                      availableTools.reduce<Record<string, AvailableTool[]>>((acc, tool) => {
+                        const cat = tool.category || 'general';
+                        if (!acc[cat]) acc[cat] = [];
+                        acc[cat].push(tool);
+                        return acc;
+                      }, {})
+                    ).map(([category, tools]: [string, AvailableTool[]]) => (
+                      <div key={category} style={{ marginBottom: 16 }}>
+                        <h4 style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: 1 }}>
+                          {CATEGORY_LABELS[category] || category}
+                        </h4>
+                        <div className={styles.toolsGrid}>
+                          {tools.map((tool) => {
+                            const iconName = TOOL_ICON_MAP[tool.name] || 'Zap';
+                            const IconComponent = (Icons as any)[iconName] || Icons.Zap;
+                            const isSelected = selectedTools.includes(tool.name);
+                            return (
+                              <button
+                                key={tool.id}
+                                className={`${styles.toolCard} ${isSelected ? styles.selected : ''}`}
+                                onClick={() => toggleTool(tool.name)}
+                              >
+                                <div className={styles.toolIcon}>
+                                  <IconComponent />
+                                </div>
+                                <div className={styles.toolInfo}>
+                                  <h4>{tool.name.replace(/_/g, ' ').replace(/\./g, ' ')}</h4>
+                                  <p>{tool.description}</p>
+                                  {tool.byok_provider && (
+                                    <span style={{ fontSize: 11, color: '#f59e0b', marginTop: 2, display: 'inline-block' }}>
+                                      🔑 Requires {tool.byok_provider} API key
+                                    </span>
+                                  )}
+                                </div>
+                                <div className={styles.toolCheckbox}>
+                                  {isSelected ? <Icons.CheckCircle /> : <Icons.Circle />}
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </>
+            )}
           </div>
         );
 
@@ -629,13 +709,19 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                   <span className={styles.reviewValue}>{mode === 'governed' ? 'Governed' : 'Unbounded'}</span>
                 </div>
                 <div className={styles.reviewItem}>
-                  <span className={styles.reviewLabel}>Tools</span>
-                  <span className={styles.reviewValue}>
-                    {selectedTools.length > 0 
-                      ? selectedTools.map(t => TOOLS.find(tool => tool.id === t)?.name).join(', ')
-                      : 'None selected'}
-                  </span>
+                  <span className={styles.reviewLabel}>Tool Mode</span>
+                  <span className={styles.reviewValue}>{toolMode === 'smart' ? '✨ Smart (All tools auto)' : '🔧 Manual'}</span>
                 </div>
+                {toolMode === 'manual' && (
+                  <div className={styles.reviewItem}>
+                    <span className={styles.reviewLabel}>Tools</span>
+                    <span className={styles.reviewValue}>
+                      {selectedTools.length > 0
+                        ? selectedTools.map(t => t.replace(/_/g, ' ')).join(', ')
+                        : 'None selected'}
+                    </span>
+                  </div>
+                )}
                 {description && (
                   <div className={styles.reviewItem}>
                     <span className={styles.reviewLabel}>Description</span>

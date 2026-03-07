@@ -14,6 +14,7 @@ export interface AgentResponse {
   type?: string | null;
   description?: string | null;
   model: string;
+  tool_mode?: string | null;
   tools?: string[] | null;
   is_active: boolean;
   version: number;
@@ -71,6 +72,7 @@ export interface CreateAgentRequest {
   model?: string;
   temperature?: number;
   max_tokens?: number;
+  tool_mode?: string;
   tools?: string[];
   safety_config?: Record<string, any>;
   allowed_actions?: string[];
@@ -86,12 +88,38 @@ export interface CreateAgentResponse {
   type?: string | null;
   description?: string | null;
   model: string;
+  tool_mode?: string | null;
   tools?: string[] | null;
   is_active: boolean;
   version: number;
   manifest_hash?: string | null;
   dsid?: string | null;
 }
+
+export interface AvailableTool {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  parameters_schema?: Record<string, any>;
+  risk_level: string;
+  requires_approval: boolean;
+  byok_provider?: string | null;
+}
+
+/**
+ * Get available tools for agent tool picker
+ * GET /api/v1/agents/available-tools
+ */
+export const getAvailableTools = async (): Promise<AvailableTool[]> => {
+  try {
+    const response = await fastapiClient.get('/api/v1/agents/available-tools');
+    return Array.isArray(response.data) ? response.data : [];
+  } catch (error) {
+    logger.apiError('/api/v1/agents/available-tools', error);
+    return [];
+  }
+};
 
 export interface SessionResponse {
   id: string;
