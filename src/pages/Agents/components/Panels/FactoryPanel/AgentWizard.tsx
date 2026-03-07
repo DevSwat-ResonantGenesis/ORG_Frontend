@@ -334,46 +334,48 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
       case 'basics':
         return (
           <div className={styles.stepContent}>
-            <div className={`${styles.inputGroup} ${touched.name && fieldErrors.name ? styles.hasError : ''}`}>
-              <label htmlFor="agent-name">Agent Name *</label>
-              <input
-                id="agent-name"
-                type="text"
-                value={name}
-                onChange={(e) => handleNameChange(e.target.value)}
-                onBlur={() => handleFieldBlur('name')}
-                placeholder="e.g., Research Assistant, Code Helper"
-                autoFocus
-                className={touched.name && fieldErrors.name ? styles.inputError : ''}
-                aria-invalid={touched.name && !!fieldErrors.name}
-                aria-describedby={fieldErrors.name ? 'name-error' : 'name-hint'}
-              />
-              {touched.name && fieldErrors.name ? (
-                <span id="name-error" className={styles.errorText}>{fieldErrors.name}</span>
-              ) : (
-                <span id="name-hint" className={styles.hint}>Choose a descriptive name (2-50 characters)</span>
-              )}
-              <div className={styles.charCount}>{name.length}/50</div>
-            </div>
-            <div className={`${styles.inputGroup} ${touched.description && fieldErrors.description ? styles.hasError : ''}`}>
-              <label htmlFor="agent-description">Description (optional)</label>
-              <textarea
-                id="agent-description"
-                value={description}
-                onChange={(e) => handleDescriptionChange(e.target.value)}
-                onBlur={() => handleFieldBlur('description')}
-                placeholder="What does this agent do?"
-                rows={3}
-                className={touched.description && fieldErrors.description ? styles.inputError : ''}
-                aria-invalid={touched.description && !!fieldErrors.description}
-                aria-describedby={fieldErrors.description ? 'desc-error' : 'desc-hint'}
-              />
-              {touched.description && fieldErrors.description ? (
-                <span id="desc-error" className={styles.errorText}>{fieldErrors.description}</span>
-              ) : (
-                <span id="desc-hint" className={styles.hint}>Describe what your agent does</span>
-              )}
-              <div className={styles.charCount}>{description.length}/500</div>
+            <div className={styles.formCard}>
+              <div className={`${styles.inputGroup} ${touched.name && fieldErrors.name ? styles.hasError : ''}`}>
+                <label htmlFor="agent-name">Agent Name *</label>
+                <input
+                  id="agent-name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                  onBlur={() => handleFieldBlur('name')}
+                  placeholder="e.g., Research Assistant, Code Helper"
+                  autoFocus
+                  className={touched.name && fieldErrors.name ? styles.inputError : ''}
+                  aria-invalid={touched.name && !!fieldErrors.name}
+                  aria-describedby={fieldErrors.name ? 'name-error' : 'name-hint'}
+                />
+                {touched.name && fieldErrors.name ? (
+                  <span id="name-error" className={styles.errorText}>{fieldErrors.name}</span>
+                ) : (
+                  <span id="name-hint" className={styles.hint}>2-50 characters</span>
+                )}
+                <div className={styles.charCount}>{name.length}/50</div>
+              </div>
+              <div className={`${styles.inputGroup} ${touched.description && fieldErrors.description ? styles.hasError : ''}`}>
+                <label htmlFor="agent-description">Description (optional)</label>
+                <textarea
+                  id="agent-description"
+                  value={description}
+                  onChange={(e) => handleDescriptionChange(e.target.value)}
+                  onBlur={() => handleFieldBlur('description')}
+                  placeholder="What does this agent do?"
+                  rows={2}
+                  className={touched.description && fieldErrors.description ? styles.inputError : ''}
+                  aria-invalid={touched.description && !!fieldErrors.description}
+                  aria-describedby={fieldErrors.description ? 'desc-error' : 'desc-hint'}
+                />
+                {touched.description && fieldErrors.description ? (
+                  <span id="desc-error" className={styles.errorText}>{fieldErrors.description}</span>
+                ) : (
+                  <span id="desc-hint" className={styles.hint}>Brief description of the agent's purpose</span>
+                )}
+                <div className={styles.charCount}>{description.length}/500</div>
+              </div>
             </div>
           </div>
         );
@@ -579,71 +581,73 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
 
   return (
     <div className={`${styles.wizard} ${className || ''}`}>
-      {/* Progress Steps */}
-      <div className={styles.progressBar}>
-        {WIZARD_STEPS.map((step, index) => (
-          <div
-            key={step.id}
-            className={`${styles.progressStep} ${index === currentStep ? styles.active : ''} ${index < currentStep ? styles.completed : ''}`}
-          >
-            <div className={styles.stepNumber}>
-              {index < currentStep ? <Icons.CheckCircle /> : index + 1}
+      <div className={styles.wizardInner}>
+        {/* Progress Steps */}
+        <div className={styles.progressBar}>
+          {WIZARD_STEPS.map((step, index) => (
+            <div
+              key={step.id}
+              className={`${styles.progressStep} ${index === currentStep ? styles.active : ''} ${index < currentStep ? styles.completed : ''}`}
+            >
+              <div className={styles.stepNumber}>
+                {index < currentStep ? <Icons.CheckCircle /> : index + 1}
+              </div>
+              <span className={styles.stepTitle}>{step.title}</span>
             </div>
-            <span className={styles.stepTitle}>{step.title}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Step Header */}
-      <div className={styles.stepHeader}>
-        <h2>{currentStepData.title}</h2>
-        <p>{currentStepData.description}</p>
-      </div>
-
-      {/* Step Content */}
-      {renderStepContent()}
-
-      {/* Navigation */}
-      {!createdAgentId && (
-        <div className={styles.navigation}>
-          <div className={styles.navLeft}>
-            <button
-              className={styles.backBtn}
-              onClick={isFirstStep ? onCancel : handleBack}
-            >
-              {isFirstStep ? 'Cancel' : '← Back'}
-            </button>
-            <span className={styles.keyboardHint}>
-              Use ← → or Enter to navigate • Esc to cancel
-            </span>
-          </div>
-          
-          {isReviewStep ? (
-            <button
-              className={`${styles.createBtn} ${isCreating ? styles.loading : ''}`}
-              onClick={handleCreate}
-              disabled={isCreating}
-            >
-              {isCreating ? (
-                <>
-                  <span className={styles.spinner}></span>
-                  Creating...
-                </>
-              ) : (
-                'Create Agent'
-              )}
-            </button>
-          ) : (
-            <button
-              className={styles.nextBtn}
-              onClick={handleNext}
-              disabled={!canProceed()}
-            >
-              Next →
-            </button>
-          )}
+          ))}
         </div>
-      )}
+
+        {/* Step Header */}
+        <div className={styles.stepHeader}>
+          <h2>{currentStepData.title}</h2>
+          <p>{currentStepData.description}</p>
+        </div>
+
+        {/* Step Content */}
+        {renderStepContent()}
+
+        {/* Navigation */}
+        {!createdAgentId && (
+          <div className={styles.navigation}>
+            <div className={styles.navLeft}>
+              <button
+                className={styles.backBtn}
+                onClick={isFirstStep ? onCancel : handleBack}
+              >
+                {isFirstStep ? 'Cancel' : '← Back'}
+              </button>
+              <span className={styles.keyboardHint}>
+                ← → Enter Esc
+              </span>
+            </div>
+            
+            {isReviewStep ? (
+              <button
+                className={`${styles.createBtn} ${isCreating ? styles.loading : ''}`}
+                onClick={handleCreate}
+                disabled={isCreating}
+              >
+                {isCreating ? (
+                  <>
+                    <span className={styles.spinner}></span>
+                    Creating...
+                  </>
+                ) : (
+                  'Create Agent'
+                )}
+              </button>
+            ) : (
+              <button
+                className={styles.nextBtn}
+                onClick={handleNext}
+                disabled={!canProceed()}
+              >
+                Continue
+              </button>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
