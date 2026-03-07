@@ -208,3 +208,94 @@
   line-height: 1.4;
 }
 
+/* ═══════ MODEL SUB-SELECTOR ═══════ */
+.modelText {
+  font-size: 10px;
+  color: var(--text-secondary, #9CA3AF);
+  font-family: 'SF Mono','Fira Code','Consolas', monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.modelExpandBtn {
+  font-size: 10px;
+  color: var(--text-secondary, #9CA3AF);
+  cursor: pointer;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  transition: all .15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.modelExpandBtn:hover {
+  background: rgba(255,255,255,.12);
+  color: var(--text-primary, #fff);
+}
+
+.modelSubList {
+  display: flex;
+  flex-direction: column;
+  padding: 2px 0 4px 28px;
+  max-height: 200px;
+  overflow-y: auto;
+  border-left: 2px solid rgba(99,102,241,.2);
+  margin-left: 16px;
+  margin-bottom: 2px;
+}
+
+.modelSubItem {
+  display: block;
+  width: 100%;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-secondary, #a1a1aa);
+  font-size: 11px;
+  font-family: 'SF Mono','Fira Code','Consolas', monospace;
+  cursor: pointer;
+  transition: all .12s;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.modelSubItem:hover {
+  background: rgba(255,255,255,.06);
+  color: var(--text-primary, #fff);
+}
+.modelSubItemActive {
+  background: rgba(99,102,241,.12);
+  color: #818cf8;
+}
+
+.byokBadge {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(234,179,8,.15);
+  border: 1px solid rgba(234,179,8,.3);
+  color: #eab308;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.freeBadge {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(34,197,94,.12);
+  border: 1px solid rgba(34,197,94,.25);
+  color: #22c55e;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
