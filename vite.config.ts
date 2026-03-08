@@ -27,7 +27,6 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       output: {
-        chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
         },
