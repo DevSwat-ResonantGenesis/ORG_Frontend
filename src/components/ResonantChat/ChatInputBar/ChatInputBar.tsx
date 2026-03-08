@@ -996,10 +996,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 {conversations.length > 0 && (
                   <button
                     onClick={() => {
-                      if (!smartGroupView) {
-                        // Switching TO topics view — always load/refresh groups
-                        onLoadConversationGroups?.();
-                      }
                       onToggleSmartGroupView?.();
                     }}
                     style={{

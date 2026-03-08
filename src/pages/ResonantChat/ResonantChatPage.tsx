@@ -4464,13 +4464,23 @@ const ResonantChatPage: React.FC = () => {
           currentConversationId={currentConversationId}
           conversationGroups={conversationGroups}
           smartGroupView={smartGroupView}
-          onToggleSmartGroupView={() => setSmartGroupView(prev => !prev)}
-          onLoadConversationGroups={async () => {
-            try {
-              const result = await categorizeConversations();
-              if (result.groups) setConversationGroups(result.groups);
-            } catch (e) { console.error('Failed to load conversation groups', e); }
+          onToggleSmartGroupView={() => {
+            if (!smartGroupView) {
+              // Switching TO topics — set view first, then load data
+              setSmartGroupView(true);
+              setConversationGroups([]); // Clear to show loading
+              categorizeConversations()
+                .then((result) => {
+                  if (result.groups && result.groups.length > 0) {
+                    setConversationGroups(result.groups);
+                  }
+                })
+                .catch((e) => console.error('Failed to load conversation groups', e));
+            } else {
+              setSmartGroupView(false);
+            }
           }}
+          onLoadConversationGroups={() => {}}
           onShowSearch={() => {
             setShowThreadsSticker(!showThreadsSticker);
             if (!showThreadsSticker) {
