@@ -4165,6 +4165,20 @@ const ResonantChatPage: React.FC = () => {
                                   <span className={styles['resonant-chat-message-action-icon']}><RegenerateIcon /></span>
                                   <span className={styles['resonant-chat-message-action-label']}>Resend</span>
                                 </button>
+                                <button
+                                  className={styles['resonant-chat-message-action-button']}
+                                  onClick={() => {
+                                    saveToMemory(message.content);
+                                  }}
+                                  disabled={isLoadingMemory}
+                                  title={isLoadingMemory ? "Saving..." : "Save to Memory"}
+                                >
+                                  <span className={styles['resonant-chat-message-action-icon']}>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                                    </svg>
+                                  </span>
+                                </button>
                               </>
                             )}
                             {message.role === 'assistant' && (
