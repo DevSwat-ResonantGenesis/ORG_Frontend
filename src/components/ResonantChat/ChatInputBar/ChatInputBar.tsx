@@ -121,6 +121,12 @@ interface ChatInputBarProps {
   onCloseMemoryLibrary?: () => void;
   onMemoryClick?: (memory: Memory) => void;
   
+  // Knowledge Base (for hallucination cross-referencing)
+  knowledgeBaseEntries?: Array<{ id: string; title: string; type: string; length: number; file_name?: string }>;
+  onAddKbEntry?: (title: string, content: string, entryType: string) => void;
+  onUploadKbFile?: (file: File) => void;
+  onDeleteKbEntry?: (entryId: string) => void;
+  
   // Conversations
   conversations?: Conversation[];
   onShowConversations?: () => void;
@@ -187,6 +193,10 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   showMemoryLibrary = false,
   onCloseMemoryLibrary,
   onMemoryClick,
+  knowledgeBaseEntries = [],
+  onAddKbEntry,
+  onUploadKbFile,
+  onDeleteKbEntry,
   conversations = [],
   onShowConversations,
   onEnabledSkillsChange,
@@ -862,6 +872,69 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                   </div>
                 ))
               )}
+
+              {/* Knowledge Base Section */}
+              <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '12px', paddingTop: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '13px', fontWeight: 600, color: '#8b5cf6', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    Knowledge Base ({knowledgeBaseEntries.length})
+                  </span>
+                </div>
+                <div style={{ fontSize: '11px', color: '#888', marginBottom: '8px' }}>Upload facts, docs, or data for hallucination cross-referencing</div>
+
+                {/* File upload zone */}
+                <label
+                  style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                    padding: '10px', background: 'rgba(139, 92, 246, 0.08)', border: '2px dashed rgba(139, 92, 246, 0.25)',
+                    borderRadius: '8px', color: '#8b5cf6', cursor: 'pointer', fontSize: '12px', fontWeight: 500,
+                    marginBottom: '8px', transition: 'all 0.2s',
+                  }}
+                  onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); (e.currentTarget as HTMLElement).style.borderColor = '#8b5cf6'; (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.15)'; }}
+                  onDragLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.25)'; (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.08)'; }}
+                  onDrop={(e) => {
+                    e.preventDefault(); e.stopPropagation();
+                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.25)';
+                    (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.08)';
+                    const files = e.dataTransfer?.files;
+                    if (files?.[0] && onUploadKbFile) onUploadKbFile(files[0]);
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Drop file or click (.txt, .md, .csv, .json)
+                  <input
+                    type="file"
+                    accept=".txt,.md,.csv,.json,.text"
+                    style={{ display: 'none' }}
+                    onChange={(e) => { const f = e.target.files?.[0]; if (f && onUploadKbFile) onUploadKbFile(f); e.target.value = ''; }}
+                  />
+                </label>
+
+                {/* KB entries list */}
+                {knowledgeBaseEntries.length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', maxHeight: '150px', overflowY: 'auto' }}>
+                    {knowledgeBaseEntries.map((entry) => (
+                      <div key={entry.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 8px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '6px', border: '1px solid rgba(139, 92, 246, 0.1)' }}>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: '12px', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{entry.title}</div>
+                          <div style={{ fontSize: '10px', color: '#888' }}>{entry.type} · {(entry.length / 1024).toFixed(1)}KB{entry.file_name ? ` · ${entry.file_name}` : ''}</div>
+                        </div>
+                        <button
+                          onClick={() => onDeleteKbEntry?.(entry.id)}
+                          style={{ padding: '2px 8px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '4px', color: '#ef4444', cursor: 'pointer', fontSize: '10px', flexShrink: 0, marginLeft: '8px' }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ fontSize: '11px', color: '#666', textAlign: 'center', padding: '8px' }}>
+                    No entries yet. Upload files or add facts in Settings.
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}

@@ -4431,6 +4431,13 @@ const ResonantChatPage: React.FC = () => {
             setInput(prev => prev + ` @${memory.name || memory.content?.substring(0, 20)} `);
             setShowMemoryLibrary(false);
           }}
+          knowledgeBaseEntries={knowledgeBaseEntries}
+          onAddKbEntry={(title, content, entryType) => {
+            setKbTitle(title); setKbContent(content); setKbType(entryType as any);
+            addKnowledgeBaseEntry();
+          }}
+          onUploadKbFile={uploadKnowledgeBaseFile}
+          onDeleteKbEntry={deleteKnowledgeBaseEntry}
           conversations={conversations}
           onShowConversations={() => setShowThreadsSticker(true)}
           showConversations={showThreadsSticker}
