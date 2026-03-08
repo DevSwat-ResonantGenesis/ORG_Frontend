@@ -739,6 +739,266 @@ Short descriptions for every major page in ResonantGenesis:
 - [Marketplace](/help/marketplace/overview)
 - [API Keys](/help/account/api-keys)
   `,
+  'resonant-chat-metrics': `
+# Resonant Chat Metrics & Hallucination Detection
+
+Everything you need to understand about how AGI Neural Hub measures response quality, detects hallucinations, and gives you control over AI verification.
+
+---
+
+## Overview
+
+Every message in Resonant Chat is scored across multiple dimensions. You can view these metrics by clicking the **metrics icon** on any assistant message. Metrics help you understand:
+
+- How good a response is (quality)
+- Whether the AI made things up (hallucination)
+- How well the response uses conversation context (coherence)
+- Whether it followed your instructions (grounding)
+
+---
+
+## Chat-Level Metrics
+
+When you open the **Metrics panel** (bottom-left icon), you see aggregate scores for the entire conversation:
+
+| Metric | Range | What It Means |
+|--------|-------|---------------|
+| **Quality** | 0-100% | Overall response quality across all messages |
+| **Hallucination** | 0-100% | Average hallucination risk (lower = better) |
+| **Tokens** | Count | Total tokens used in the conversation |
+
+These are calculated from all assistant messages in the chat, giving you a high-level view of the conversation's reliability.
+
+---
+
+## Message-Level Metrics
+
+Click the **chart icon** on any assistant message to see detailed per-message metrics:
+
+### Resonant Energy
+\`0.0 - 1.0\` · How well the response "resonates" with the conversation context.
+
+Factors:
+- Base resonance from Hash Sphere positioning
+- Response completeness and structure
+- Code blocks, lists, and formatting quality
+- Semantic coherence with previous messages
+
+### Hallucination Score
+\`0.0 - 1.0\` · Risk that the response contains fabricated or inaccurate information.
+
+**Lower is better.** A score of 0.0 means no hallucination detected. A score above 0.4 triggers a warning.
+
+This score is calculated by combining multiple detection methods (see Hallucination Detection below).
+
+### Evidence Score
+\`0.0 - 1.0\` · How well the response is grounded in available evidence (RAG sources, anchors, knowledge base).
+
+### Anchor Following
+\`0.0 - 1.0\` · How well the response follows conversation anchors (key topics and context points).
+
+### Context Coherence
+\`0.0 - 1.0\` · Semantic similarity between the response and the conversation history.
+
+### Memory Utilization
+\`0.0 - 1.0\` · How effectively the response uses stored memories from your conversation history.
+
+---
+
+## Sentiment & Emotion Detection
+
+Each message is also analyzed for:
+
+| Metric | Values | Description |
+|--------|--------|-------------|
+| **Sentiment** | positive, negative, neutral | Overall tone of the response |
+| **Sentiment Confidence** | 0-100% | How confident the detection is |
+| **Emotion** | joy, sadness, anger, fear, surprise, neutral | Detected emotional tone |
+| **Emotion Confidence** | 0-100% | How confident the emotion detection is |
+
+---
+
+## Hallucination Detection System
+
+The hallucination detector uses **multiple layers** of analysis. You can configure which methods are active in **Chat Settings > Hallucination Detection**.
+
+### Layer 1: Base Pattern Detection (Always Active)
+
+This runs on every message automatically. It uses regex patterns to detect:
+
+- **Fake Libraries**: References to non-existent packages or APIs
+- **Fake Statistics**: Made-up numbers, percentages, or data claims
+- **Overconfident Claims**: Phrases like "definitely", "100%", "guaranteed" without evidence
+- **Fabrication Indicators**: Unsourced claims like "studies show", "research indicates"
+- **System Leaks**: Internal debug output appearing in responses
+- **Fake Versions**: Suspiciously high or non-existent version numbers
+
+### Layer 2: RAG Verification (Automatic when sources exist)
+
+When the response has RAG (Retrieval-Augmented Generation) sources or conversation anchors, claims are verified against them:
+
+- Claims are extracted from the response
+- Each claim is checked against source material
+- A **support score** indicates how many claims are backed by evidence
+- Unsupported claims increase the hallucination risk score
+
+### Layer 3: System Prompt Grounding (Default ON, Free)
+
+**What it does:** Checks if the AI response contradicts the system prompt instructions.
+
+**Detects:**
+- **Identity Mismatch**: The AI claims to be something the system prompt didn't define (e.g., saying "I am Spectrum" when the system prompt says "You are a helpful assistant")
+- **Directive Violations**: Breaking "never do X" or "always do Y" rules from the system prompt
+- **Role Deviation**: The AI breaks character by revealing it's an AI when the system prompt defined a persona
+
+**Cost:** Free - no additional API calls. Uses local text analysis.
+
+**How to enable:** On by default. Toggle in Chat Settings > Hallucination Detection > **System Prompt Grounding**.
+
+### Layer 4: Knowledge Base Cross-Referencing (Optional)
+
+**What it does:** Checks AI responses against facts, documents, and data that you upload.
+
+**How it works:**
+1. You upload entries to your Knowledge Base (facts, documents, data, book excerpts)
+2. When enabled, every response is checked against your uploaded content
+3. Claims that contradict your knowledge base are flagged
+4. Claims that are supported by your knowledge base reduce the hallucination score
+
+**Use cases:**
+- Upload company facts to ensure the AI doesn't make up information about your business
+- Upload product specifications to verify technical claims
+- Upload book excerpts or research papers to fact-check against
+- Upload data tables to verify numerical claims
+
+**Cost:** Free - no additional API calls. Uses local text matching.
+
+**How to enable:** Toggle in Chat Settings > Hallucination Detection > **Knowledge Base Check**, then add entries using the **+ Add** button.
+
+### Layer 5: LLM-as-Judge Verification (Optional, Costly)
+
+**What it does:** Makes a **second AI call** to independently judge the original response for hallucinations.
+
+**How it works:**
+1. The original response is sent to a fast AI model (Groq)
+2. The judge AI analyzes for: factual accuracy, identity accuracy, self-consistency, and groundedness
+3. Returns a structured verdict: **clean**, **minor**, or **major**
+4. Issues found are listed as specific hallucination flags
+
+**What it catches that other methods don't:**
+- Subtle factual errors that pattern matching misses
+- Logical inconsistencies within the response
+- Plausible-sounding but incorrect technical claims
+
+**Cost:** Uses credits - one additional LLM call per message. Uses the fastest/cheapest available provider (Groq) to minimize cost.
+
+**How to enable:** Toggle in Chat Settings > Hallucination Detection > **LLM-as-Judge**. Labeled "COSTLY" in the UI.
+
+---
+
+## How Scores Are Combined
+
+The final hallucination score blends all active detection methods:
+
+\`\`\`
+Final Score = Base Regex Score
+            + (System Prompt Grounding Score × 0.4)    [if enabled]
+            + (Knowledge Base Contradiction Score × 0.3) [if enabled]
+            + (LLM Judge Score × 0.5)                   [if enabled]
+\`\`\`
+
+The score is clamped to \`0.0 - 1.0\`.
+
+### Risk Levels
+
+| Score | Level | Meaning |
+|-------|-------|---------|
+| 0.0 - 0.3 | **Low** | Response appears reliable |
+| 0.3 - 0.7 | **Medium** | Some concerns detected - verify key claims |
+| 0.7 - 1.0 | **High** | Significant hallucination risk - do not trust without verification |
+
+A warning is shown when the score exceeds **0.4**.
+
+---
+
+## Managing Your Knowledge Base
+
+Your Knowledge Base is your personal fact store for hallucination cross-referencing.
+
+### Adding Entries
+
+1. Open **Chat Settings** (gear icon, bottom-left)
+2. Scroll to **Hallucination Detection**
+3. Enable **Knowledge Base Check**
+4. Click **+ Add**
+5. Fill in:
+   - **Title**: A descriptive name (e.g., "Company Product List")
+   - **Type**: fact, document, data, or book_excerpt
+   - **Content**: Paste your text content
+6. Click **Save Entry**
+
+### Entry Types
+
+| Type | Best For | Example |
+|------|----------|---------|
+| **Fact** | Short, specific truths | "Our company was founded in 2020" |
+| **Document** | Longer reference material | Product documentation, policies |
+| **Data** | Structured information | Price lists, specifications, statistics |
+| **Book Excerpt** | Published source material | Textbook passages, research papers |
+
+### Deleting Entries
+
+Click the red **Delete** button next to any entry to remove it.
+
+---
+
+## Viewing Detailed Results
+
+In the Message Metrics modal, you'll see:
+
+### Hallucination Section
+- **Risk Score**: The combined hallucination score (0-100%)
+- **Risk Level**: low / medium / high
+- **Flags Count**: Number of individual issues detected
+- **Flag Details**: Each detected issue with type, content, and confidence
+
+### Claim Verification Section (when enhanced detection is active)
+- **Methods Used**: Which detection methods ran
+- **System Prompt Grounding**: Grounded (yes/no), violations list
+- **Knowledge Base**: Claims checked, supported, contradictions found
+- **LLM Judge**: Verdict (clean/minor/major), specific issues
+
+### RAG Verification Section
+- **Verified**: Whether claims are supported by sources
+- **Support Score**: Percentage of claims backed by evidence
+- **Claims Checked/Supported**: Raw counts
+- **Claim Details**: Per-claim breakdown
+
+---
+
+## Tips for Best Results
+
+1. **Keep System Prompt Grounding ON** - it's free and catches identity/instruction violations
+2. **Add key facts to your Knowledge Base** when discussing specific topics
+3. **Enable LLM-as-Judge selectively** - turn it on when accuracy is critical, off for casual chat
+4. **Check the flags count** - even a low overall score might have specific concerning flags
+5. **Use the risk level as a guide** - "medium" means double-check, "high" means don't trust
+
+## Settings Location
+
+All hallucination detection settings are in:
+**Chat Settings** (gear icon, bottom-left of chat) → scroll to **Hallucination Detection**
+
+Settings are saved per-user and persist across sessions.
+
+---
+
+## Related Articles
+
+- [AGI Neural Hub](/help/core/agi-neural-hub) - The chat workspace these metrics apply to
+- [Hash Sphere Memory](/help/core/hash-sphere-memory) - How memory and retrieval works
+- [Synthetic Neural Memory](/help/core/synthetic-neural-memory) - The memory system behind context coherence
+  `,
   'best-practices': `
 # Security Best Practices
 

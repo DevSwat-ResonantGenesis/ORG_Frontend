@@ -111,6 +111,15 @@ const articles: Article[] = [
     readingTime: 6
   },
   {
+    id: '31',
+    title: 'Chat Metrics & Hallucination Detection',
+    description: 'Understand quality scores, hallucination risk levels, and configure detection methods: system prompt grounding, LLM-as-judge, and knowledge base cross-referencing.',
+    category: 'Core Stack',
+    path: '/help/core/resonant-chat-metrics',
+    tags: ['metrics', 'hallucination', 'quality', 'grounding', 'knowledge-base', 'llm-judge', 'verification'],
+    readingTime: 10
+  },
+  {
     id: '6',
     title: 'Synthetic Neural Memory',
     description: 'A physics-informed 9-layer cognitive infrastructure for autonomous agents.',
