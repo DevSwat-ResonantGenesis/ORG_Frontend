@@ -762,6 +762,30 @@ export interface MessageMetrics {
         support_type: string;
       }>;
     };
+    claim_verification?: {
+      system_prompt_grounding?: {
+        grounded: boolean;
+        score: number;
+        violations: Array<{ type: string; detail: string; confidence: number }>;
+        method: string;
+      } | null;
+      knowledge_base?: {
+        checked: boolean;
+        score: number;
+        method: string;
+        claims_checked?: number;
+        claims_supported?: number;
+        contradictions?: Array<{ claim: string; type: string; confidence: number }>;
+      } | null;
+      llm_as_judge?: {
+        judged: boolean;
+        score: number;
+        issues?: string[];
+        verdict?: string;
+        method: string;
+      } | null;
+      methods_used?: string[];
+    } | null;
   };
 }
 

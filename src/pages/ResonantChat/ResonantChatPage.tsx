@@ -321,6 +321,16 @@ const ResonantChatPage: React.FC = () => {
   const [availableAgents, setAvailableAgents] = useState<Array<{ hash: string; name: string }>>([]);
   const [enabledSkillIds, setEnabledSkillIds] = useState<string[]>([]);
 
+  // Hallucination detection settings
+  const [hallucinationSystemPromptGrounding, setHallucinationSystemPromptGrounding] = useState(true);
+  const [hallucinationLlmJudge, setHallucinationLlmJudge] = useState(false);
+  const [hallucinationKnowledgeBase, setHallucinationKnowledgeBase] = useState(false);
+  const [knowledgeBaseEntries, setKnowledgeBaseEntries] = useState<Array<{ id: string; title: string; type: string; length: number }>>([]);
+  const [showKbAddForm, setShowKbAddForm] = useState(false);
+  const [kbTitle, setKbTitle] = useState('');
+  const [kbContent, setKbContent] = useState('');
+  const [kbType, setKbType] = useState<'fact' | 'document' | 'data' | 'book_excerpt'>('fact');
+
   // Additional settings states
   const [autoSave, setAutoSave] = useState(true);
   const [showTimestamps, setShowTimestamps] = useState(true);
@@ -1359,6 +1369,85 @@ const ResonantChatPage: React.FC = () => {
   useEffect(() => {
     savePreferenceToBackend('chat', 'focus_highlights', enableFocusHighlights);
   }, [enableFocusHighlights, savePreferenceToBackend]);
+
+  // Load hallucination detection settings from backend
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    const loadHallucinationSettings = async () => {
+      try {
+        const apiUrl = ENV.apiUrl;
+        const res = await fetch(`${apiUrl}/resonant-chat/hallucination-settings`, { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.settings) {
+            setHallucinationSystemPromptGrounding(data.settings.system_prompt_grounding ?? true);
+            setHallucinationLlmJudge(data.settings.llm_as_judge ?? false);
+            setHallucinationKnowledgeBase(data.settings.knowledge_base_check ?? false);
+          }
+          if (data.knowledge_base?.entries) {
+            setKnowledgeBaseEntries(data.knowledge_base.entries);
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to load hallucination settings:', e);
+      }
+    };
+    loadHallucinationSettings();
+  }, [isLoggedIn]);
+
+  // Save hallucination setting to backend
+  const saveHallucinationSetting = useCallback(async (key: string, value: boolean) => {
+    try {
+      const apiUrl = ENV.apiUrl;
+      await fetch(`${apiUrl}/resonant-chat/hallucination-settings`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [key]: value }),
+      });
+    } catch (e) {
+      console.warn('Failed to save hallucination setting:', e);
+    }
+  }, []);
+
+  // Add knowledge base entry
+  const addKnowledgeBaseEntry = useCallback(async () => {
+    if (!kbTitle.trim() || !kbContent.trim()) return;
+    try {
+      const apiUrl = ENV.apiUrl;
+      const res = await fetch(`${apiUrl}/resonant-chat/knowledge-base`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: kbTitle, content: kbContent, entry_type: kbType }),
+      });
+      if (res.ok) {
+        const entry = await res.json();
+        setKnowledgeBaseEntries(prev => [...prev, entry]);
+        setKbTitle('');
+        setKbContent('');
+        setShowKbAddForm(false);
+      }
+    } catch (e) {
+      console.warn('Failed to add KB entry:', e);
+    }
+  }, [kbTitle, kbContent, kbType]);
+
+  // Delete knowledge base entry
+  const deleteKnowledgeBaseEntry = useCallback(async (entryId: string) => {
+    try {
+      const apiUrl = ENV.apiUrl;
+      const res = await fetch(`${apiUrl}/resonant-chat/knowledge-base/${entryId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (res.ok) {
+        setKnowledgeBaseEntries(prev => prev.filter(e => e.id !== entryId));
+      }
+    } catch (e) {
+      console.warn('Failed to delete KB entry:', e);
+    }
+  }, []);
 
   // Initialize textarea height on mount
   useEffect(() => {
@@ -5760,6 +5849,167 @@ const ResonantChatPage: React.FC = () => {
                     {keyboardShortcuts ? 'ON' : 'OFF'}
                   </button>
                 </div>
+              </div>
+            </div>
+
+            {/* Hallucination Detection Settings */}
+            <div style={{ marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '14px', color: '#f59e0b', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span>Hallucination Detection</span>
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {/* System Prompt Grounding - Default ON */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(245, 158, 11, 0.05)', borderRadius: '8px', border: '1px solid rgba(245, 158, 11, 0.15)' }}>
+                  <div>
+                    <div style={{ fontSize: '14px', fontWeight: 500 }}>System Prompt Grounding</div>
+                    <div style={{ fontSize: '11px', color: '#888' }}>Check if response contradicts system instructions (free, default)</div>
+                  </div>
+                  <button
+                    onClick={() => { setHallucinationSystemPromptGrounding(!hallucinationSystemPromptGrounding); saveHallucinationSetting('system_prompt_grounding', !hallucinationSystemPromptGrounding); }}
+                    style={{
+                      padding: '6px 12px',
+                      background: hallucinationSystemPromptGrounding ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+                      border: `1px solid ${hallucinationSystemPromptGrounding ? '#22c55e' : 'rgba(255, 255, 255, 0.2)'}`,
+                      borderRadius: '6px',
+                      color: hallucinationSystemPromptGrounding ? '#22c55e' : '#888',
+                      cursor: 'pointer',
+                      fontSize: '12px',
+                    }}
+                  >
+                    {hallucinationSystemPromptGrounding ? 'ON' : 'OFF'}
+                  </button>
+                </div>
+
+                {/* LLM-as-Judge */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.15)' }}>
+                  <div>
+                    <div style={{ fontSize: '14px', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      LLM-as-Judge
+                      <span style={{ fontSize: '10px', padding: '2px 6px', background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', borderRadius: '4px' }}>COSTLY</span>
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#888' }}>Second LLM call to verify claims (uses credits)</div>
+                  </div>
+                  <button
+                    onClick={() => { setHallucinationLlmJudge(!hallucinationLlmJudge); saveHallucinationSetting('llm_as_judge', !hallucinationLlmJudge); }}
+                    style={{
+                      padding: '6px 12px',
+                      background: hallucinationLlmJudge ? 'rgba(239, 68, 68, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+                      border: `1px solid ${hallucinationLlmJudge ? '#ef4444' : 'rgba(255, 255, 255, 0.2)'}`,
+                      borderRadius: '6px',
+                      color: hallucinationLlmJudge ? '#ef4444' : '#888',
+                      cursor: 'pointer',
+                      fontSize: '12px',
+                    }}
+                  >
+                    {hallucinationLlmJudge ? 'ON' : 'OFF'}
+                  </button>
+                </div>
+
+                {/* Knowledge Base Cross-referencing */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '8px', border: '1px solid rgba(139, 92, 246, 0.15)' }}>
+                  <div>
+                    <div style={{ fontSize: '14px', fontWeight: 500 }}>Knowledge Base Check</div>
+                    <div style={{ fontSize: '11px', color: '#888' }}>Cross-reference against your uploaded facts/data</div>
+                  </div>
+                  <button
+                    onClick={() => { setHallucinationKnowledgeBase(!hallucinationKnowledgeBase); saveHallucinationSetting('knowledge_base_check', !hallucinationKnowledgeBase); }}
+                    style={{
+                      padding: '6px 12px',
+                      background: hallucinationKnowledgeBase ? 'rgba(139, 92, 246, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+                      border: `1px solid ${hallucinationKnowledgeBase ? '#8b5cf6' : 'rgba(255, 255, 255, 0.2)'}`,
+                      borderRadius: '6px',
+                      color: hallucinationKnowledgeBase ? '#8b5cf6' : '#888',
+                      cursor: 'pointer',
+                      fontSize: '12px',
+                    }}
+                  >
+                    {hallucinationKnowledgeBase ? 'ON' : 'OFF'}
+                  </button>
+                </div>
+
+                {/* Knowledge Base Entries */}
+                {hallucinationKnowledgeBase && (
+                  <div style={{ padding: '12px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '8px', border: '1px solid rgba(139, 92, 246, 0.1)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                      <div style={{ fontSize: '13px', fontWeight: 500, color: '#8b5cf6' }}>Knowledge Base ({knowledgeBaseEntries.length} entries)</div>
+                      <button
+                        onClick={() => setShowKbAddForm(!showKbAddForm)}
+                        style={{ padding: '4px 10px', background: 'rgba(139, 92, 246, 0.2)', border: '1px solid rgba(139, 92, 246, 0.3)', borderRadius: '6px', color: '#8b5cf6', cursor: 'pointer', fontSize: '11px' }}
+                      >
+                        {showKbAddForm ? 'Cancel' : '+ Add'}
+                      </button>
+                    </div>
+
+                    {/* Add Form */}
+                    {showKbAddForm && (
+                      <div style={{ marginBottom: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        <input
+                          value={kbTitle}
+                          onChange={(e) => setKbTitle(e.target.value)}
+                          placeholder="Title (e.g. Company Facts)"
+                          style={{ padding: '8px', background: '#222', border: '1px solid #444', borderRadius: '6px', color: '#fff', fontSize: '12px' }}
+                        />
+                        <select
+                          value={kbType}
+                          onChange={(e) => setKbType(e.target.value as any)}
+                          style={{ padding: '8px', background: '#222', border: '1px solid #444', borderRadius: '6px', color: '#fff', fontSize: '12px' }}
+                        >
+                          <option value="fact">Fact</option>
+                          <option value="document">Document</option>
+                          <option value="data">Data</option>
+                          <option value="book_excerpt">Book Excerpt</option>
+                        </select>
+                        <textarea
+                          value={kbContent}
+                          onChange={(e) => setKbContent(e.target.value)}
+                          placeholder="Paste your content here (facts, data, book excerpts...)"
+                          rows={4}
+                          style={{ padding: '8px', background: '#222', border: '1px solid #444', borderRadius: '6px', color: '#fff', fontSize: '12px', resize: 'vertical' }}
+                        />
+                        <button
+                          onClick={addKnowledgeBaseEntry}
+                          disabled={!kbTitle.trim() || !kbContent.trim()}
+                          style={{
+                            padding: '8px',
+                            background: kbTitle.trim() && kbContent.trim() ? 'rgba(139, 92, 246, 0.3)' : 'rgba(255,255,255,0.05)',
+                            border: '1px solid rgba(139, 92, 246, 0.3)',
+                            borderRadius: '6px',
+                            color: kbTitle.trim() && kbContent.trim() ? '#8b5cf6' : '#666',
+                            cursor: kbTitle.trim() && kbContent.trim() ? 'pointer' : 'not-allowed',
+                            fontSize: '12px',
+                            fontWeight: 500,
+                          }}
+                        >
+                          Save Entry
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Entries List */}
+                    {knowledgeBaseEntries.length > 0 ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        {knowledgeBaseEntries.map((entry) => (
+                          <div key={entry.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 8px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px' }}>
+                            <div>
+                              <div style={{ fontSize: '12px', fontWeight: 500 }}>{entry.title}</div>
+                              <div style={{ fontSize: '10px', color: '#888' }}>{entry.type} · {(entry.length / 1024).toFixed(1)}KB</div>
+                            </div>
+                            <button
+                              onClick={() => deleteKnowledgeBaseEntry(entry.id)}
+                              style={{ padding: '2px 8px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '4px', color: '#ef4444', cursor: 'pointer', fontSize: '10px' }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: '11px', color: '#666', textAlign: 'center', padding: '8px' }}>
+                        No entries yet. Add facts, documents, or data to check AI responses against.
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
