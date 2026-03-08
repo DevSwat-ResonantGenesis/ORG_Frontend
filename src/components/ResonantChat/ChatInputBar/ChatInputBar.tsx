@@ -124,7 +124,7 @@ interface ChatInputBarProps {
   // Knowledge Base (for hallucination cross-referencing)
   knowledgeBaseEntries?: Array<{ id: string; title: string; type: string; length: number; file_name?: string }>;
   onAddKbEntry?: (title: string, content: string, entryType: string) => void;
-  onUploadKbFile?: (file: File) => void;
+  onUploadKbFile?: (file: File) => Promise<void> | void;
   onDeleteKbEntry?: (entryId: string) => void;
   
   // Conversations
@@ -228,6 +228,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const [showEmbeddedTools, setShowEmbeddedTools] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [attachmentsExpanded, setAttachmentsExpanded] = useState(false);
+  const [kbUploading, setKbUploading] = useState(false);
+  const [disabledKbEntries, setDisabledKbEntries] = useState<Set<string>>(new Set());
   const [imagePreviewUrls, setImagePreviewUrls] = useState<Record<string, string>>({});
   const imagePreviewUrlsRef = useRef<Record<string, string>>({});
   const lastAutoSpokenTextRef = useRef('');
@@ -811,129 +813,162 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           document.body
         )}
 
-        {/* Memory Library Panel */}
+        {/* Memory & Knowledge Base Panel — Two-Column Layout */}
         {showMemoryLibrary && (
-          <div className={styles.stickerPanel}>
+          <div className={styles.stickerPanel} style={{ maxHeight: '480px' }}>
             <div className={styles.stickerHeader}>
               <span className={styles.stickerTitle}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.54" />
                   <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.54" />
                 </svg>
-                Memory Library ({memories.length})
+                Memory & Knowledge Base
               </span>
               <button className={styles.stickerClose} onClick={onCloseMemoryLibrary}>
                 <CloseIcon />
               </button>
             </div>
-            <div className={styles.stickerContent}>
-              {memories.length === 0 ? (
-                <div className={styles.stickerEmpty}>
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.54" />
-                    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.54" />
-                  </svg>
-                  <div>No memories found</div>
-                  <div style={{ fontSize: '12px', marginTop: '8px', opacity: 0.7 }}>Say "remember this" or "note this" to save memories</div>
+            <div style={{ display: 'flex', gap: '0', minHeight: '320px' }}>
+              {/* LEFT COLUMN — Memories */}
+              <div style={{ flex: 1, borderRight: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ padding: '10px 12px 8px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.54" /><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.54" /></svg>
+                  <span style={{ fontSize: '13px', fontWeight: 600, color: '#10b981' }}>Memories ({memories.length})</span>
                 </div>
-              ) : (
-                memories.map(memory => (
-                  <div
-                    key={memory.id}
-                    className={styles.listItem}
-                    onClick={() => onMemoryClick?.(memory)}
-                  >
-                    <div className={styles.listItemIcon}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                        <polyline points="14 2 14 8 20 8" />
+                <div style={{ padding: '8px', overflowY: 'auto', flex: 1 }}>
+                  {memories.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '24px 12px', color: '#666', fontSize: '12px' }}>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto 8px', display: 'block', opacity: 0.4 }}>
+                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.54" />
+                        <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.54" />
                       </svg>
+                      No memories yet
+                      <div style={{ fontSize: '11px', marginTop: '4px', opacity: 0.7 }}>Say "remember this" to save</div>
                     </div>
-                    <div className={styles.listItemContent}>
-                      <div className={styles.listItemHeader}>
-                        <span className={styles.listItemTitle}>{memory.name || 'Untitled'}</span>
-                        {(memory as any).type && (
-                          <span className={styles.listItemBadge}>{(memory as any).type}</span>
-                        )}
-                      </div>
-                      <div className={styles.listItemMeta}>
-                        {memory.content?.substring(0, 60)}...
-                      </div>
-                      {(memory as any).created_at && (
-                        <div className={styles.listItemTimestamp}>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
-                          </svg>
-                          {new Date((memory as any).created_at).toLocaleString()}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))
-              )}
-
-              {/* Knowledge Base Section */}
-              <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '12px', paddingTop: '12px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '13px', fontWeight: 600, color: '#8b5cf6', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                    Knowledge Base ({knowledgeBaseEntries.length})
-                  </span>
-                </div>
-                <div style={{ fontSize: '11px', color: '#888', marginBottom: '8px' }}>Upload facts, docs, or data for hallucination cross-referencing</div>
-
-                {/* File upload zone */}
-                <label
-                  style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                    padding: '10px', background: 'rgba(139, 92, 246, 0.08)', border: '2px dashed rgba(139, 92, 246, 0.25)',
-                    borderRadius: '8px', color: '#8b5cf6', cursor: 'pointer', fontSize: '12px', fontWeight: 500,
-                    marginBottom: '8px', transition: 'all 0.2s',
-                  }}
-                  onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); (e.currentTarget as HTMLElement).style.borderColor = '#8b5cf6'; (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.15)'; }}
-                  onDragLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.25)'; (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.08)'; }}
-                  onDrop={(e) => {
-                    e.preventDefault(); e.stopPropagation();
-                    (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.25)';
-                    (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.08)';
-                    const files = e.dataTransfer?.files;
-                    if (files?.[0] && onUploadKbFile) onUploadKbFile(files[0]);
-                  }}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                  Drop file or click (.txt, .md, .csv, .json)
-                  <input
-                    type="file"
-                    accept=".txt,.md,.csv,.json,.text"
-                    style={{ display: 'none' }}
-                    onChange={(e) => { const f = e.target.files?.[0]; if (f && onUploadKbFile) onUploadKbFile(f); e.target.value = ''; }}
-                  />
-                </label>
-
-                {/* KB entries list */}
-                {knowledgeBaseEntries.length > 0 ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', maxHeight: '150px', overflowY: 'auto' }}>
-                    {knowledgeBaseEntries.map((entry) => (
-                      <div key={entry.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 8px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '6px', border: '1px solid rgba(139, 92, 246, 0.1)' }}>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: '12px', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{entry.title}</div>
-                          <div style={{ fontSize: '10px', color: '#888' }}>{entry.type} · {(entry.length / 1024).toFixed(1)}KB{entry.file_name ? ` · ${entry.file_name}` : ''}</div>
-                        </div>
-                        <button
-                          onClick={() => onDeleteKbEntry?.(entry.id)}
-                          style={{ padding: '2px 8px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '4px', color: '#ef4444', cursor: 'pointer', fontSize: '10px', flexShrink: 0, marginLeft: '8px' }}
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      {memories.map(memory => (
+                        <div
+                          key={memory.id}
+                          onClick={() => onMemoryClick?.(memory)}
+                          style={{ padding: '8px', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '6px', border: '1px solid rgba(16, 185, 129, 0.1)', cursor: 'pointer', transition: 'background 0.15s' }}
+                          onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(16, 185, 129, 0.12)')}
+                          onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(16, 185, 129, 0.05)')}
                         >
-                          Delete
-                        </button>
-                      </div>
-                    ))}
+                          <div style={{ fontSize: '12px', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{memory.name || 'Untitled'}</div>
+                          <div style={{ fontSize: '10px', color: '#888', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{memory.content?.substring(0, 50)}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* RIGHT COLUMN — Knowledge Base */}
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <div style={{ padding: '10px 12px 8px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#8b5cf6' }}>Knowledge Base ({knowledgeBaseEntries.length})</span>
                   </div>
-                ) : (
-                  <div style={{ fontSize: '11px', color: '#666', textAlign: 'center', padding: '8px' }}>
-                    No entries yet. Upload files or add facts in Settings.
-                  </div>
-                )}
+                  <span style={{ fontSize: '10px', color: '#666' }}>Max 500KB/file · 20 max</span>
+                </div>
+                <div style={{ padding: '8px', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  {/* Upload zone */}
+                  <label
+                    style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                      padding: kbUploading ? '12px' : '14px', background: kbUploading ? 'rgba(139, 92, 246, 0.15)' : 'rgba(139, 92, 246, 0.06)',
+                      border: `2px dashed ${kbUploading ? '#8b5cf6' : 'rgba(139, 92, 246, 0.2)'}`,
+                      borderRadius: '8px', color: '#8b5cf6', cursor: kbUploading ? 'wait' : 'pointer', fontSize: '12px', fontWeight: 500,
+                      transition: 'all 0.2s', flexShrink: 0,
+                    }}
+                    onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); if (!kbUploading) { (e.currentTarget as HTMLElement).style.borderColor = '#8b5cf6'; (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.18)'; } }}
+                    onDragLeave={(e) => { if (!kbUploading) { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.2)'; (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.06)'; } }}
+                    onDrop={(e) => {
+                      e.preventDefault(); e.stopPropagation();
+                      (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.2)';
+                      (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.06)';
+                      if (kbUploading) return;
+                      const files = e.dataTransfer?.files;
+                      if (files && files.length > 0 && onUploadKbFile) {
+                        setKbUploading(true);
+                        const uploadPromises = Array.from(files).slice(0, 5).map(f => onUploadKbFile(f));
+                        Promise.all(uploadPromises).finally(() => setKbUploading(false));
+                      }
+                    }}
+                  >
+                    {kbUploading ? (
+                      <>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: 'spin 1s linear infinite' }}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        Drop files or click to upload
+                        <div style={{ fontSize: '10px', opacity: 0.7 }}>.txt .md .csv .json</div>
+                      </>
+                    )}
+                    <input
+                      type="file"
+                      accept=".txt,.md,.csv,.json,.text"
+                      multiple
+                      style={{ display: 'none' }}
+                      disabled={kbUploading}
+                      onChange={(e) => {
+                        const files = e.target.files;
+                        if (files && files.length > 0 && onUploadKbFile) {
+                          setKbUploading(true);
+                          const uploadPromises = Array.from(files).slice(0, 5).map(f => onUploadKbFile(f));
+                          Promise.all(uploadPromises).finally(() => setKbUploading(false));
+                        }
+                        e.target.value = '';
+                      }}
+                    />
+                  </label>
+
+                  {/* KB entries list */}
+                  {knowledgeBaseEntries.length > 0 ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', flex: 1, overflowY: 'auto' }}>
+                      {knowledgeBaseEntries.map((entry) => (
+                        <div key={entry.id} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 8px', background: disabledKbEntries.has(entry.id) ? 'rgba(255,255,255,0.02)' : 'rgba(139, 92, 246, 0.05)', borderRadius: '6px', border: `1px solid ${disabledKbEntries.has(entry.id) ? 'rgba(255,255,255,0.05)' : 'rgba(139, 92, 246, 0.1)'}`, opacity: disabledKbEntries.has(entry.id) ? 0.5 : 1, transition: 'all 0.15s' }}>
+                          {/* Enable/Disable toggle */}
+                          <button
+                            onClick={() => {
+                              setDisabledKbEntries(prev => {
+                                const next = new Set(prev);
+                                if (next.has(entry.id)) next.delete(entry.id); else next.add(entry.id);
+                                return next;
+                              });
+                            }}
+                            title={disabledKbEntries.has(entry.id) ? 'Enable this entry' : 'Disable this entry'}
+                            style={{ width: '28px', height: '16px', borderRadius: '8px', border: 'none', cursor: 'pointer', flexShrink: 0, position: 'relative', background: disabledKbEntries.has(entry.id) ? 'rgba(255,255,255,0.1)' : '#8b5cf6', transition: 'background 0.2s', padding: 0 }}
+                          >
+                            <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#fff', position: 'absolute', top: '2px', transition: 'left 0.2s', left: disabledKbEntries.has(entry.id) ? '2px' : '14px' }} />
+                          </button>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: '11px', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{entry.title}</div>
+                            <div style={{ fontSize: '9px', color: '#888' }}>{entry.type} · {(entry.length / 1024).toFixed(1)}KB</div>
+                          </div>
+                          <button
+                            onClick={() => onDeleteKbEntry?.(entry.id)}
+                            title="Delete entry permanently"
+                            style={{ padding: '2px 6px', background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.15)', borderRadius: '4px', color: '#ef4444', cursor: 'pointer', fontSize: '9px', flexShrink: 0 }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div style={{ textAlign: 'center', padding: '20px 12px', color: '#666', fontSize: '12px' }}>
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto 6px', display: 'block', opacity: 0.3 }}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                      No entries yet
+                      <div style={{ fontSize: '10px', marginTop: '2px', opacity: 0.7 }}>Upload facts & docs above</div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
