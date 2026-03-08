@@ -136,6 +136,12 @@ interface ChatInputBarProps {
   onConversationClick?: (conversation: Conversation) => void;
   currentConversationId?: string | null;
   
+  // Smart Conversation Grouping
+  conversationGroups?: Array<{ topic: string; count: number; conversations: Array<{ id: string; title: string; created_at: string | null; updated_at: string | null; message_count: number; last_message_at: string | null }> }>;
+  smartGroupView?: boolean;
+  onToggleSmartGroupView?: () => void;
+  onLoadConversationGroups?: () => void;
+  
   // Search
   onShowSearch?: () => void;
   
@@ -204,6 +210,10 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   onCloseConversations,
   onConversationClick,
   currentConversationId,
+  conversationGroups = [],
+  smartGroupView = false,
+  onToggleSmartGroupView,
+  onLoadConversationGroups,
   onShowSearch,
   onShowSettings,
   showSettings = false,
@@ -974,19 +984,54 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           </div>
         )}
 
-        {/* Chat History Panel - Shows list of chats, click to load full chat */}
+        {/* Chat History Panel - Shows list of chats with flat/grouped toggle */}
         {showConversations && (
-          <div className={styles.stickerPanel}>
+          <div className={styles.stickerPanel} style={{ maxHeight: '520px' }}>
             <div className={styles.stickerHeader}>
               <span className={styles.stickerTitle}>
                 <HistoryIcon />
                 My Chats ({conversations.length})
               </span>
-              <button className={styles.stickerClose} onClick={onCloseConversations}>
-                <CloseIcon />
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                {conversations.length > 0 && (
+                  <button
+                    onClick={() => {
+                      onToggleSmartGroupView?.();
+                      if (!smartGroupView && conversationGroups.length === 0) {
+                        onLoadConversationGroups?.();
+                      }
+                    }}
+                    style={{
+                      background: smartGroupView ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255,255,255,0.06)',
+                      border: `1px solid ${smartGroupView ? 'rgba(99, 102, 241, 0.4)' : 'rgba(255,255,255,0.1)'}`,
+                      borderRadius: '6px',
+                      padding: '4px 10px',
+                      fontSize: '11px',
+                      color: smartGroupView ? '#818cf8' : '#888',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      transition: 'all 0.15s',
+                    }}
+                    title={smartGroupView ? 'Switch to chronological view' : 'Switch to smart topic grouping'}
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      {smartGroupView ? (
+                        <><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></>
+                      ) : (
+                        <><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></>
+                      )}
+                    </svg>
+                    {smartGroupView ? 'List' : 'Topics'}
+                  </button>
+                )}
+                <button className={styles.stickerClose} onClick={onCloseConversations}>
+                  <CloseIcon />
+                </button>
+              </div>
             </div>
-            <div className={styles.stickerContent}>
+            <div className={styles.stickerContent} style={{ maxHeight: '440px', overflowY: 'auto' }}>
               {conversations.length === 0 ? (
                 <div className={styles.stickerEmpty}>
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -995,7 +1040,51 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                   <div>No chats yet</div>
                   <div style={{ fontSize: '12px', marginTop: '8px', opacity: 0.7 }}>Start chatting to create one</div>
                 </div>
+              ) : smartGroupView && conversationGroups.length > 0 ? (
+                /* Smart Topic Grouped View */
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  {conversationGroups.map(group => (
+                    <details key={group.topic} open={group.conversations.some(c => c.id === currentConversationId)} style={{ marginBottom: '2px' }}>
+                      <summary style={{
+                        display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px',
+                        background: 'rgba(99, 102, 241, 0.06)', borderRadius: '8px',
+                        cursor: 'pointer', fontSize: '13px', fontWeight: 600,
+                        color: '#a5b4fc', border: '1px solid rgba(99, 102, 241, 0.12)',
+                        listStyle: 'none', userSelect: 'none',
+                      }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        <span style={{ flex: 1 }}>{group.topic}</span>
+                        <span style={{ fontSize: '11px', color: '#666', fontWeight: 400 }}>{group.count}</span>
+                      </summary>
+                      <div style={{ paddingLeft: '8px', marginTop: '2px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                        {group.conversations.map(conv => (
+                          <div
+                            key={conv.id}
+                            className={`${styles.listItem} ${currentConversationId === conv.id ? styles.active : ''}`}
+                            onClick={() => onConversationClick?.({ id: conv.id, title: conv.title, created_at: conv.created_at || undefined })}
+                            style={{ padding: '6px 10px' }}
+                          >
+                            <div className={styles.listItemContent}>
+                              <div className={styles.listItemHeader}>
+                                <span className={styles.listItemTitle} style={{ fontSize: '12px' }}>{conv.title || 'Untitled Chat'}</span>
+                                <span className={styles.listItemBadge}>{conv.message_count} msgs</span>
+                              </div>
+                              {conv.last_message_at && (
+                                <div className={styles.listItemTimestamp} style={{ fontSize: '10px' }}>
+                                  {new Date(conv.last_message_at).toLocaleDateString()}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  ))}
+                </div>
               ) : (
+                /* Flat Chronological View */
                 conversations.map(conv => (
                   <div
                     key={conv.id}

@@ -871,3 +871,50 @@ export const deleteResonantMessage = async (conversationId: string, messageId: s
     throw error;
   }
 };
+
+/**
+ * Extract memorable facts from a conversation exchange.
+ * Called after each AI response to auto-save user preferences, facts, etc.
+ */
+export const extractMemories = async (
+  userMessage: string,
+  assistantMessage: string,
+  chatId: string,
+): Promise<{ memories_extracted: Array<{ id: string; content: string; type: string }>; count: number }> => {
+  try {
+    const response = await fastapiClient.post('/resonant-chat/extract-memories', {
+      user_message: userMessage,
+      assistant_message: assistantMessage,
+      chat_id: chatId,
+    });
+    return response.data;
+  } catch (error: any) {
+    // Non-critical — don't throw
+    return { memories_extracted: [], count: 0 };
+  }
+};
+
+/**
+ * Smart-group conversations into topic categories.
+ */
+export interface ConversationGroup {
+  topic: string;
+  count: number;
+  conversations: Array<{
+    id: string;
+    title: string;
+    created_at: string | null;
+    updated_at: string | null;
+    message_count: number;
+    last_message_at: string | null;
+  }>;
+}
+
+export const categorizeConversations = async (): Promise<{ groups: ConversationGroup[]; total: number }> => {
+  try {
+    const response = await fastapiClient.post('/resonant-chat/conversations/categorize');
+    return response.data;
+  } catch (error: any) {
+    return { groups: [], total: 0 };
+  }
+};

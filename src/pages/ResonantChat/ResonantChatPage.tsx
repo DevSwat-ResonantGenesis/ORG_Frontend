@@ -1,5 +1,5 @@
 import { createMemory, deleteConversation, deleteMemory, listConversations, listMemories, updateConversation, updateMemory, uploadFile, type MemoryResponse } from '@/api/rag';
-import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, getProviderStats, getUserAnalytics, archiveConversation, deleteResonantConversation, deleteResonantMessage, type UserAnalytics } from '@/api/resonantChat';
+import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, getProviderStats, getUserAnalytics, archiveConversation, deleteResonantConversation, deleteResonantMessage, extractMemories, categorizeConversations, type UserAnalytics, type ConversationGroup } from '@/api/resonantChat';
 import { triggerChatSync } from '@/context/ChatContext';
 import { fetchAvailableProviders } from '@/api/userApiKeys';
 import { executeSkill } from '@/api/skills';
@@ -414,6 +414,8 @@ const ResonantChatPage: React.FC = () => {
   const [isUpdatingMemory, setIsUpdatingMemory] = useState(false);
   const [isUpdatingConversation, setIsUpdatingConversation] = useState(false);
   const [isLoadingConversation, setIsLoadingConversation] = useState<string | null>(null);
+  const [conversationGroups, setConversationGroups] = useState<ConversationGroup[]>([]);
+  const [smartGroupView, setSmartGroupView] = useState(false);
   // SECURITY: Clear chat data on mount if user changed
   useEffect(() => {
     clearChatDataIfUserChanged();
@@ -2342,6 +2344,19 @@ const ResonantChatPage: React.FC = () => {
           // Ignore audio errors
           logger.error('Audio notification failed', error);
         }
+      }
+
+      // Auto-extract memories from this exchange (fire-and-forget, per-user cross-chat)
+      if (isLoggedIn && currentInput && responseContent && !isError) {
+        extractMemories(currentInput, responseContent, currentConversationId || '')
+          .then((result) => {
+            if (result.count > 0) {
+              console.log(`[Memory] Auto-extracted ${result.count} memories`);
+              // Reload memories to show new ones in Memory Library
+              loadMemories();
+            }
+          })
+          .catch(() => {}); // Non-critical
       }
     } catch (error: unknown) {
       // Don't show error if request was aborted
@@ -4447,6 +4462,15 @@ const ResonantChatPage: React.FC = () => {
             setShowThreadsSticker(false);
           }}
           currentConversationId={currentConversationId}
+          conversationGroups={conversationGroups}
+          smartGroupView={smartGroupView}
+          onToggleSmartGroupView={() => setSmartGroupView(prev => !prev)}
+          onLoadConversationGroups={async () => {
+            try {
+              const result = await categorizeConversations();
+              if (result.groups) setConversationGroups(result.groups);
+            } catch (e) { console.error('Failed to load conversation groups', e); }
+          }}
           onShowSearch={() => {
             setShowThreadsSticker(!showThreadsSticker);
             if (!showThreadsSticker) {
