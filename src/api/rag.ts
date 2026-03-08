@@ -87,7 +87,8 @@ export const askWithRAG = async (request: RAGAskRequest): Promise<RAGAskResponse
  */
 export const createMemory = async (request: MemoryCreateRequest): Promise<MemoryResponse> => {
   try {
-    const response = await fastapiClient.post('/rag/memories', request);
+    // Route through chat_service proxy to avoid gateway /rag/ auth issues
+    const response = await fastapiClient.post('/resonant-chat/memories/save', request);
     return response.data;
   } catch (error: any) {
     logger.error('RAG create memory error', error, { component: 'RAG' });
@@ -100,7 +101,8 @@ export const createMemory = async (request: MemoryCreateRequest): Promise<Memory
  */
 export const listMemories = async (limit: number = 50): Promise<MemoryResponse[]> => {
   try {
-    const response = await fastapiClient.get(`/rag/memories?limit=${limit}`);
+    // Route through chat_service proxy to avoid gateway /rag/ auth issues
+    const response = await fastapiClient.get(`/resonant-chat/memories/list?limit=${limit}`);
     return response.data;
   } catch (error: any) {
     // Suppress connection errors - they're expected when backend is down
@@ -134,7 +136,8 @@ export const getMemory = async (memoryId: string): Promise<MemoryResponse> => {
  */
 export const deleteMemory = async (memoryId: string): Promise<void> => {
   try {
-    await fastapiClient.delete(`/rag/memories/${memoryId}`);
+    // Route through chat_service proxy to avoid gateway /rag/ auth issues
+    await fastapiClient.delete(`/resonant-chat/memories/${memoryId}`);
   } catch (error: any) {
     logger.error('RAG delete memory error', error, { component: 'RAG' });
     throw error;
