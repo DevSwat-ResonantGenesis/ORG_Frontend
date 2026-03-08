@@ -120,6 +120,7 @@ interface ChatInputBarProps {
   showMemoryLibrary?: boolean;
   onCloseMemoryLibrary?: () => void;
   onMemoryClick?: (memory: Memory) => void;
+  onDeleteMemory?: (memoryId: string) => void;
   
   // Knowledge Base (for hallucination cross-referencing)
   knowledgeBaseEntries?: Array<{ id: string; title: string; type: string; length: number; file_name?: string }>;
@@ -199,6 +200,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   showMemoryLibrary = false,
   onCloseMemoryLibrary,
   onMemoryClick,
+  onDeleteMemory,
   knowledgeBaseEntries = [],
   onAddKbEntry,
   onUploadKbFile,
@@ -845,7 +847,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.54" /><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.54" /></svg>
                   <span style={{ fontSize: '13px', fontWeight: 600, color: '#10b981' }}>Memories ({memories.length})</span>
                 </div>
-                <div style={{ padding: '8px', overflowY: 'auto', flex: 1 }}>
+                <div style={{ padding: '8px', overflowY: 'auto', flex: 1, maxHeight: '340px' }}>
                   {memories.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '24px 12px', color: '#666', fontSize: '12px' }}>
                       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ margin: '0 auto 8px', display: 'block', opacity: 0.4 }}>
@@ -853,20 +855,35 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                         <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.54" />
                       </svg>
                       No memories yet
-                      <div style={{ fontSize: '11px', marginTop: '4px', opacity: 0.7 }}>Say "remember this" to save</div>
+                      <div style={{ fontSize: '11px', marginTop: '4px', opacity: 0.7 }}>Say "remember this" or click the bookmark icon on any message</div>
                     </div>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                       {memories.map(memory => (
                         <div
                           key={memory.id}
-                          onClick={() => onMemoryClick?.(memory)}
-                          style={{ padding: '8px', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '6px', border: '1px solid rgba(16, 185, 129, 0.1)', cursor: 'pointer', transition: 'background 0.15s' }}
-                          onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(16, 185, 129, 0.12)')}
-                          onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(16, 185, 129, 0.05)')}
+                          style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
                         >
-                          <div style={{ fontSize: '12px', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{memory.name || 'Untitled'}</div>
-                          <div style={{ fontSize: '10px', color: '#888', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{memory.content?.substring(0, 50)}</div>
+                          <div
+                            onClick={() => onMemoryClick?.(memory)}
+                            style={{ flex: 1, padding: '8px', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '6px', border: '1px solid rgba(16, 185, 129, 0.1)', cursor: 'pointer', transition: 'background 0.15s', minWidth: 0 }}
+                            onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(16, 185, 129, 0.12)')}
+                            onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(16, 185, 129, 0.05)')}
+                          >
+                            <div style={{ fontSize: '12px', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{memory.name || 'Untitled'}</div>
+                            <div style={{ fontSize: '10px', color: '#888', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{memory.content?.substring(0, 60)}</div>
+                          </div>
+                          {onDeleteMemory && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); onDeleteMemory(memory.id); }}
+                              style={{ flexShrink: 0, width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', borderRadius: '4px', cursor: 'pointer', color: '#666', transition: 'color 0.15s, background 0.15s', padding: 0 }}
+                              onMouseEnter={(e) => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.color = '#666'; e.currentTarget.style.background = 'transparent'; }}
+                              title="Delete memory"
+                            >
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                          )}
                         </div>
                       ))}
                     </div>

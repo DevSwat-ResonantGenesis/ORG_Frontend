@@ -1847,6 +1847,17 @@ const ResonantChatPage: React.FC = () => {
     }
   };
 
+  const handleDeleteMemory = async (memoryId: string) => {
+    try {
+      await deleteMemory(memoryId);
+      setMemories(prev => prev.filter(m => m.id !== memoryId));
+      success('Memory deleted');
+    } catch (error) {
+      console.error('Failed to delete memory:', error);
+      showError('Failed to delete memory');
+    }
+  };
+
   // Detect project building requests using semantic meaning (Hash Sphere anchor + cluster logic)
   // Uses semantic resonance instead of simple keyword matching
   const detectProjectRequest = (message: string): { isProject: boolean; projectType?: string } => {
@@ -4460,6 +4471,7 @@ const ResonantChatPage: React.FC = () => {
             setInput(prev => prev + ` @${memory.name || memory.content?.substring(0, 20)} `);
             setShowMemoryLibrary(false);
           }}
+          onDeleteMemory={handleDeleteMemory}
           knowledgeBaseEntries={knowledgeBaseEntries}
           onAddKbEntry={(title, content, entryType) => {
             setKbTitle(title); setKbContent(content); setKbType(entryType as any);
