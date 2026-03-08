@@ -996,10 +996,11 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 {conversations.length > 0 && (
                   <button
                     onClick={() => {
-                      onToggleSmartGroupView?.();
-                      if (!smartGroupView && conversationGroups.length === 0) {
+                      if (!smartGroupView) {
+                        // Switching TO topics view — always load/refresh groups
                         onLoadConversationGroups?.();
                       }
+                      onToggleSmartGroupView?.();
                     }}
                     style={{
                       background: smartGroupView ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255,255,255,0.06)',
@@ -1040,9 +1041,16 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                   <div>No chats yet</div>
                   <div style={{ fontSize: '12px', marginTop: '8px', opacity: 0.7 }}>Start chatting to create one</div>
                 </div>
-              ) : smartGroupView && conversationGroups.length > 0 ? (
+              ) : smartGroupView ? (
                 /* Smart Topic Grouped View */
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                conversationGroups.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '32px 16px', color: '#888', fontSize: '13px' }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ margin: '0 auto 8px', display: 'block', opacity: 0.5, animation: 'spin 1s linear infinite' }}>
+                      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                    </svg>
+                    Loading topics...
+                  </div>
+                ) : <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   {conversationGroups.map(group => (
                     <details key={group.topic} open={group.conversations.some(c => c.id === currentConversationId)} style={{ marginBottom: '2px' }}>
                       <summary style={{
