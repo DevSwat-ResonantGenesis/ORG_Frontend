@@ -2900,6 +2900,7 @@ const ResonantChatPage: React.FC = () => {
       setShowThreadsSticker(false);
 
       let conversationMessages: Message[] = [];
+      let rawMessagesArray: any[] = [];
 
       if (isLoggedIn) {
         try {
@@ -2917,6 +2918,7 @@ const ResonantChatPage: React.FC = () => {
             agentHash = data.agent_hash || null;
           }
           
+          rawMessagesArray = messagesArray;
           conversationMessages = messagesArray.map((msg: any) => ({
             id: msg.id || `msg-${Date.now()}-${Math.random()}`,
             role: msg.role as 'user' | 'assistant' | 'system',
@@ -2964,6 +2966,23 @@ const ResonantChatPage: React.FC = () => {
       setCurrentConversationId(conversationId);
       // Mark this conversation as loaded to prevent unnecessary reloads
       setLoadedConversationId(conversationId);
+
+      // Restore tool state from saved messages (e.g., Code Visualizer analysis ID)
+      // Scan the raw messages in reverse to find the most recent CV analysis
+      for (let i = rawMessagesArray.length - 1; i >= 0; i--) {
+        const msg = rawMessagesArray[i];
+        const trs = msg.toolResults || (msg.meta_data && typeof msg.meta_data === 'object' ? (msg.meta_data as Record<string, unknown>).toolResults : null);
+        if (trs && Array.isArray(trs)) {
+          for (const tr of trs) {
+            if (tr.tool_name?.includes('code_visualizer') && tr.result?.analysis_id) {
+              setVisualizerAnalysisId(tr.result.analysis_id);
+              logger.info('[ResonantChatPage] Restored CV analysis ID from conversation:', tr.result.analysis_id);
+            }
+          }
+          break;
+        }
+      }
+
       // NOTE: No localStorage - conversations are loaded only from backend
       success('Conversation loaded');
     } catch (error: unknown) {
@@ -4288,6 +4307,12 @@ const ResonantChatPage: React.FC = () => {
                       })()}
                     </div>
                   ))}
+                  {isLoading && (
+                    <div className={styles.thinkingIndicator}>
+                      <div className={styles.thinkingSpinner} />
+                      <span className={styles.thinkingText}>Thinking...</span>
+                    </div>
+                  )}
                   <div className={styles.messagesBottomSpacer} />
                   <div ref={messagesEndRef} className={styles.messagesEndAnchor} />
                 </div>
