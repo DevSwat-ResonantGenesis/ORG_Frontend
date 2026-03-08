@@ -5111,6 +5111,105 @@ const ResonantChatPage: React.FC = () => {
                     </div>
                   )}
 
+                  {/* Claim Verification (KB check, grounding, LLM judge) */}
+                  {messageMetrics?.metrics?.claim_verification && (
+                    <div style={{ marginBottom: '16px' }}>
+                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        Claim Verification
+                      </div>
+                      {/* Methods used */}
+                      {messageMetrics.metrics.claim_verification.methods_used && messageMetrics.metrics.claim_verification.methods_used.length > 0 && (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '8px' }}>
+                          {messageMetrics.metrics.claim_verification.methods_used.map((m: string, i: number) => (
+                            <span key={i} style={{ fontSize: '10px', padding: '3px 8px', background: 'rgba(20, 184, 166, 0.15)', color: '#14b8a6', borderRadius: '4px', textTransform: 'capitalize' }}>
+                              {m.replace(/_/g, ' ')}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                        {/* System Prompt Grounding */}
+                        {messageMetrics.metrics.claim_verification.system_prompt_grounding && (
+                          <div style={{ padding: '10px', background: messageMetrics.metrics.claim_verification.system_prompt_grounding.grounded ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)', borderRadius: '8px' }}>
+                            <div style={{ fontSize: '11px', color: '#666' }}>System Prompt Grounding</div>
+                            <div style={{ fontSize: '14px', color: messageMetrics.metrics.claim_verification.system_prompt_grounding.grounded ? '#22c55e' : '#ef4444', fontWeight: 600 }}>
+                              {messageMetrics.metrics.claim_verification.system_prompt_grounding.grounded ? 'Grounded' : 'Violations Found'}
+                            </div>
+                            <div style={{ fontSize: '10px', color: '#888', marginTop: '2px' }}>
+                              Score: {((messageMetrics.metrics.claim_verification.system_prompt_grounding.score || 0) * 100).toFixed(0)}%
+                            </div>
+                          </div>
+                        )}
+                        {/* Knowledge Base Check */}
+                        {messageMetrics.metrics.claim_verification.knowledge_base && (
+                          <div style={{ padding: '10px', background: (messageMetrics.metrics.claim_verification.knowledge_base.score || 0) > 0 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)', borderRadius: '8px' }}>
+                            <div style={{ fontSize: '11px', color: '#666', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                              Knowledge Base Check
+                            </div>
+                            <div style={{ fontSize: '14px', color: (messageMetrics.metrics.claim_verification.knowledge_base.score || 0) > 0 ? '#ef4444' : '#22c55e', fontWeight: 600 }}>
+                              {(messageMetrics.metrics.claim_verification.knowledge_base.score || 0) > 0 ? 'Contradictions Found' : 'No Contradictions'}
+                            </div>
+                            <div style={{ fontSize: '10px', color: '#888', marginTop: '2px' }}>
+                              Claims checked: {messageMetrics.metrics.claim_verification.knowledge_base.claims_checked || 0}
+                            </div>
+                          </div>
+                        )}
+                        {/* LLM-as-Judge */}
+                        {messageMetrics.metrics.claim_verification.llm_as_judge && (
+                          <div style={{ padding: '10px', background: messageMetrics.metrics.claim_verification.llm_as_judge.verdict === 'clean' ? 'rgba(34, 197, 94, 0.1)' : messageMetrics.metrics.claim_verification.llm_as_judge.verdict === 'minor' ? 'rgba(251, 191, 36, 0.1)' : 'rgba(239, 68, 68, 0.1)', borderRadius: '8px' }}>
+                            <div style={{ fontSize: '11px', color: '#666', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                              LLM-as-Judge
+                            </div>
+                            <div style={{ fontSize: '14px', color: messageMetrics.metrics.claim_verification.llm_as_judge.verdict === 'clean' ? '#22c55e' : messageMetrics.metrics.claim_verification.llm_as_judge.verdict === 'minor' ? '#fbbf24' : '#ef4444', fontWeight: 600, textTransform: 'capitalize' }}>
+                              {messageMetrics.metrics.claim_verification.llm_as_judge.verdict || 'unknown'}
+                            </div>
+                            <div style={{ fontSize: '10px', color: '#888', marginTop: '2px' }}>
+                              Score: {((messageMetrics.metrics.claim_verification.llm_as_judge.score || 0) * 100).toFixed(0)}%
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      {/* KB Contradictions detail */}
+                      {messageMetrics.metrics.claim_verification.knowledge_base?.contradictions && messageMetrics.metrics.claim_verification.knowledge_base.contradictions.length > 0 && (
+                        <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                          {messageMetrics.metrics.claim_verification.knowledge_base.contradictions.map((c: any, idx: number) => (
+                            <div key={idx} style={{ padding: '8px 10px', background: 'rgba(239, 68, 68, 0.08)', borderRadius: '6px', borderLeft: '3px solid #ef4444' }}>
+                              <div style={{ fontSize: '11px', color: '#ef4444', fontWeight: 500 }}>KB Contradiction</div>
+                              <div style={{ fontSize: '12px', color: '#ccc', marginTop: '2px' }}>{c.claim}</div>
+                              <div style={{ fontSize: '10px', color: '#666', marginTop: '2px' }}>Confidence: {((c.confidence || 0) * 100).toFixed(0)}%</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {/* LLM Judge Issues detail */}
+                      {messageMetrics.metrics.claim_verification.llm_as_judge?.issues && messageMetrics.metrics.claim_verification.llm_as_judge.issues.length > 0 && (
+                        <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                          {messageMetrics.metrics.claim_verification.llm_as_judge.issues.map((issue: string, idx: number) => (
+                            <div key={idx} style={{ padding: '8px 10px', background: 'rgba(251, 191, 36, 0.08)', borderRadius: '6px', borderLeft: '3px solid #fbbf24' }}>
+                              <div style={{ fontSize: '11px', color: '#fbbf24', fontWeight: 500 }}>LLM Judge Issue</div>
+                              <div style={{ fontSize: '12px', color: '#ccc', marginTop: '2px' }}>{issue}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {/* System Prompt Grounding Violations detail */}
+                      {messageMetrics.metrics.claim_verification.system_prompt_grounding?.violations && messageMetrics.metrics.claim_verification.system_prompt_grounding.violations.length > 0 && (
+                        <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                          {messageMetrics.metrics.claim_verification.system_prompt_grounding.violations.map((v: any, idx: number) => (
+                            <div key={idx} style={{ padding: '8px 10px', background: 'rgba(239, 68, 68, 0.08)', borderRadius: '6px', borderLeft: '3px solid #ef4444' }}>
+                              <div style={{ fontSize: '11px', color: '#ef4444', fontWeight: 500, textTransform: 'capitalize' }}>{v.type}</div>
+                              <div style={{ fontSize: '12px', color: '#ccc', marginTop: '2px' }}>{v.detail}</div>
+                              <div style={{ fontSize: '10px', color: '#666', marginTop: '2px' }}>Confidence: {((v.confidence || 0) * 100).toFixed(0)}%</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Hallucination Details */}
                   {messageMetrics?.metrics?.hallucination_details && messageMetrics.metrics.hallucination_details.length > 0 && (
                     <div style={{ marginBottom: '16px' }}>
