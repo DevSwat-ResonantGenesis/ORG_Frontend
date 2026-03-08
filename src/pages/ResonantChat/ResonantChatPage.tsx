@@ -4510,6 +4510,79 @@ const ResonantChatPage: React.FC = () => {
                           <div style={{ fontSize: '11px', color: '#666' }}>LLM Provider</div>
                           <div style={{ fontSize: '14px', color: '#0ea5e9', fontWeight: 500 }}>{formatProviderName(selectedMessage.llmProvider || messageMetrics?.provider || (selectedMessage.aiProvider?.startsWith('agent_') ? undefined : selectedMessage.aiProvider) || 'N/A')}</div>
                         </div>
+                        {/* Model */}
+                        {messageMetrics?.model && (
+                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                          <div style={{ fontSize: '11px', color: '#666' }}>Model</div>
+                          <div style={{ fontSize: '13px', color: '#a78bfa', fontWeight: 500, fontFamily: 'monospace' }}>{messageMetrics.model}</div>
+                        </div>
+                        )}
+                        {/* Preferred Provider (what user selected) */}
+                        {messageMetrics?.preferred_provider && (
+                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                          <div style={{ fontSize: '11px', color: '#666' }}>Requested Provider</div>
+                          <div style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 500 }}>{formatProviderName(messageMetrics.preferred_provider)}</div>
+                        </div>
+                        )}
+                        {/* Fallback Warning */}
+                        {messageMetrics?.was_fallback && (
+                        <div style={{ padding: '10px', background: 'rgba(234, 179, 8, 0.1)', borderRadius: '8px', gridColumn: 'span 2' }}>
+                          <div style={{ fontSize: '11px', color: '#eab308', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#eab308" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            Fallback Used
+                          </div>
+                          <div style={{ fontSize: '12px', color: '#eab308', marginTop: '4px' }}>
+                            Requested <strong>{formatProviderName(messageMetrics.preferred_provider || '')}</strong> failed — fell back to <strong>{formatProviderName(messageMetrics.provider || '')}</strong>
+                          </div>
+                        </div>
+                        )}
+                        {/* Fallback Chain Detail */}
+                        {messageMetrics?.fallback_chain && messageMetrics.fallback_chain.length > 0 && (
+                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', gridColumn: 'span 2' }}>
+                          <div style={{ fontSize: '11px', color: '#666', marginBottom: '6px' }}>Provider Chain</div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            {messageMetrics.fallback_chain.map((step, i) => (
+                              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px' }}>
+                                <span style={{ 
+                                  width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0,
+                                  background: step.status === 'success' ? '#22c55e' : '#ef4444'
+                                }} />
+                                <span style={{ color: step.status === 'success' ? '#22c55e' : '#ef4444', fontWeight: 500 }}>
+                                  {formatProviderName(step.provider)}
+                                </span>
+                                {step.status === 'failed' && step.reason && (
+                                  <span style={{ color: '#666', fontSize: '11px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px' }} title={step.reason}>
+                                    — {step.reason.substring(0, 60)}{step.reason.length > 60 ? '...' : ''}
+                                  </span>
+                                )}
+                                {step.status === 'success' && (
+                                  <span style={{ color: '#666', fontSize: '11px' }}>✓</span>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        )}
+                        {/* Token Usage Breakdown */}
+                        {messageMetrics?.token_usage && (
+                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', gridColumn: 'span 2' }}>
+                          <div style={{ fontSize: '11px', color: '#666', marginBottom: '6px' }}>Token Usage</div>
+                          <div style={{ display: 'flex', gap: '16px', fontSize: '12px' }}>
+                            <div>
+                              <span style={{ color: '#666' }}>Prompt: </span>
+                              <span style={{ color: '#0ea5e9', fontWeight: 500 }}>{messageMetrics.token_usage.prompt_tokens?.toLocaleString() || '—'}</span>
+                            </div>
+                            <div>
+                              <span style={{ color: '#666' }}>Completion: </span>
+                              <span style={{ color: '#22c55e', fontWeight: 500 }}>{messageMetrics.token_usage.completion_tokens?.toLocaleString() || '—'}</span>
+                            </div>
+                            <div>
+                              <span style={{ color: '#666' }}>Total: </span>
+                              <span style={{ color: '#fff', fontWeight: 600 }}>{messageMetrics.token_usage.total_tokens?.toLocaleString() || '—'}</span>
+                            </div>
+                          </div>
+                        </div>
+                        )}
                         {/* Agent Type */}
                         <div style={{ padding: '10px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: '#666', display: 'flex', alignItems: 'center', gap: '4px' }}>

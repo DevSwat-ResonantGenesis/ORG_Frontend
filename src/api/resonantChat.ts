@@ -693,6 +693,11 @@ export interface MessageMetrics {
   hallucination: number;
   tokens: number;
   provider: string | null;
+  model?: string | null;
+  preferred_provider?: string | null;
+  was_fallback?: boolean;
+  fallback_chain?: Array<{ provider: string; status: string; reason?: string }> | null;
+  token_usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } | null;
   agent_id?: string;
   team_id?: string | null;
   hash: string | null;
