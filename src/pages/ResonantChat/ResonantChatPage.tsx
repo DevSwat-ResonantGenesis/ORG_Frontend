@@ -2013,7 +2013,23 @@ const ResonantChatPage: React.FC = () => {
     const controller = new AbortController();
     setAbortControllerRef(controller);
 
-    // Removed mock welcome message - users will get real responses from providers
+    // Eagerly open split view for Code Visualizer intent (don't wait for backend response)
+    const msgLower = currentInput.toLowerCase();
+    const cvKeywords = [
+      'code visualizer', 'scan github', 'scan repo', 'analyze code', 'analyze codebase',
+      'analyse code', 'analyse codebase', 'trace pipeline', 'show all functions',
+      'show all endpoints', 'governance check', 'reachability analysis', 'graph janitor',
+      'reanalyse', 'reanalyze', 're-analyse', 're-analyze', 'analyse again', 'analyze again',
+      'scan again', 'rescan', 're-scan',
+    ];
+    const hasCvIntent = cvKeywords.some(k => msgLower.includes(k)) || msgLower.includes('github.com/');
+    if (hasCvIntent) {
+      setSplitAutoOpenRequest({ requestId: Date.now(), tab: 'visualizer' });
+      if (!splitViewEnabled) {
+        setSplitViewEnabled(true);
+        setSplitViewPane('split');
+      }
+    }
 
     try {
       // Prepare file context if files are attached
