@@ -17,6 +17,8 @@ export interface Agent {
   memory_config?: Record<string, any>;
   anchor_config?: Record<string, any>;
   isolate_anchors?: boolean; // If true, anchors are isolated to this agent. If false, anchors are shared across user's agents.
+  tool_mode?: string; // smart = all tools auto, manual = only selected tools
+  tools?: string[]; // List of enabled tool names (used when tool_mode='manual')
   status: string;
   created_at: string;
   is_template?: boolean;
@@ -168,6 +170,8 @@ export const settingsApi = {
       memory_config?: Record<string, any>;
       anchor_config?: Record<string, any>;
       isolate_anchors?: boolean;
+      tool_mode?: string;
+      tools?: string[];
       status?: string;
     }
   ): Promise<Agent> {

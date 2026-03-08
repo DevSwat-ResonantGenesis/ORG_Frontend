@@ -36,6 +36,7 @@ interface AdvancedConfig {
   presencePenalty: number;
   
   // Tools & Capabilities
+  toolMode: 'smart' | 'manual';
   tools: string[];
   capabilities: string[];
   
@@ -155,6 +156,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
     topP: 1,
     frequencyPenalty: 0,
     presencePenalty: 0,
+    toolMode: 'manual',
     tools: [],
     capabilities: [],
     memoryEnabled: true,
@@ -659,7 +661,8 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
         model: config.model,
         temperature: config.temperature,
         max_tokens: config.maxTokens,
-        tools: config.tools,
+        tool_mode: config.toolMode,
+        tools: config.toolMode === 'smart' ? [] : config.tools,
         allowed_actions: allowedActions,
         blocked_actions: blockedActions,
         safety_config: {
@@ -1166,7 +1169,47 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                 <h3><Icons.Zap /> Tools & Capabilities</h3>
                 <p className={styles.sectionDesc}>Select the tools this agent can use</p>
 
-                {customTools.length > 0 && (
+                {/* Tool Mode Toggle */}
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setConfig(c => ({ ...c, toolMode: 'smart' }))}
+                    style={{
+                      flex: 1, padding: '10px 16px', borderRadius: '8px',
+                      border: config.toolMode === 'smart' ? '2px solid #3b82f6' : '1px solid rgba(255,255,255,0.15)',
+                      background: config.toolMode === 'smart' ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.04)',
+                      color: config.toolMode === 'smart' ? '#60a5fa' : 'rgba(255,255,255,0.6)',
+                      cursor: 'pointer', fontSize: '13px', textAlign: 'left' as const,
+                    }}
+                  >
+                    <div style={{ fontWeight: 600 }}>⚡ Smart (Auto)</div>
+                    <div style={{ fontSize: '11px', opacity: 0.7, marginTop: '2px' }}>All tools available — AI picks the right ones</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfig(c => ({ ...c, toolMode: 'manual' }))}
+                    style={{
+                      flex: 1, padding: '10px 16px', borderRadius: '8px',
+                      border: config.toolMode === 'manual' ? '2px solid #f59e0b' : '1px solid rgba(255,255,255,0.15)',
+                      background: config.toolMode === 'manual' ? 'rgba(245,158,11,0.12)' : 'rgba(255,255,255,0.04)',
+                      color: config.toolMode === 'manual' ? '#fbbf24' : 'rgba(255,255,255,0.6)',
+                      cursor: 'pointer', fontSize: '13px', textAlign: 'left' as const,
+                    }}
+                  >
+                    <div style={{ fontWeight: 600 }}>🔧 Manual</div>
+                    <div style={{ fontSize: '11px', opacity: 0.7, marginTop: '2px' }}>You choose exactly which tools to enable</div>
+                  </button>
+                </div>
+
+                {config.toolMode === 'smart' && (
+                  <div style={{ padding: '16px', background: 'rgba(59,130,246,0.08)', borderRadius: 12, border: '1px solid rgba(59,130,246,0.2)', marginBottom: '16px' }}>
+                    <p style={{ margin: 0, fontSize: '13px', color: 'rgba(255,255,255,0.8)' }}>
+                      ✨ <strong>Smart mode</strong> — Agent will have access to all available tools (web search, memory, platform actions, media generation via BYOK). The AI automatically picks the right tools for each task.
+                    </p>
+                  </div>
+                )}
+
+                {config.toolMode === 'manual' && customTools.length > 0 && (
                   <div className={styles.customToolsStrip}>
                     <div className={styles.customToolsTitle}>Your Tools</div>
                     <div className={styles.customToolsRow}>
@@ -1185,6 +1228,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                   </div>
                 )}
 
+                {config.toolMode === 'manual' && (<>
                 <div className={styles.toolsFilterRow}>
                   <div className={styles.field}>
                     <label>Search tools</label>
@@ -1286,6 +1330,7 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                     </div>
                   )}
                 </div>
+                </>)}
               </div>
 
             {/* Step 4: Memory */}

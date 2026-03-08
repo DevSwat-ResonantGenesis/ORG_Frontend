@@ -4,6 +4,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import { settingsApi, type Agent } from '@/api/settings';
+import { getAvailableTools, type AvailableTool } from '@/api/agents';
 import { LoadingState } from '@/components/shared/LoadingState';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { MemorySettings } from './MemorySettings';
@@ -58,7 +59,12 @@ export const AgentEditor: React.FC<AgentEditorProps> = ({ agentId, onBack, onSav
     system_prompt: '',
     personality_config: {} as Record<string, any>,
     isolate_anchors: true, // Default to isolated
+    tool_mode: 'smart' as string,
+    tools: [] as string[],
   });
+
+  const [availableTools, setAvailableTools] = useState<AvailableTool[]>([]);
+  const [toolsLoading, setToolsLoading] = useState(false);
 
   const [agentData, setAgentData] = useState<Agent | null>(null);
 
@@ -82,7 +88,14 @@ export const AgentEditor: React.FC<AgentEditorProps> = ({ agentId, onBack, onSav
         system_prompt: agent.system_prompt || '',
         personality_config: agent.personality_config || {},
         isolate_anchors: agent.isolate_anchors !== undefined ? agent.isolate_anchors : true,
+        tool_mode: agent.tool_mode || 'smart',
+        tools: agent.tools || [],
       });
+      // Load available tools if agent is in manual mode
+      if (agent.tool_mode === 'manual') {
+        setToolsLoading(true);
+        getAvailableTools().then(t => setAvailableTools(t)).finally(() => setToolsLoading(false));
+      }
     } catch (err: any) {
       logger.error('Failed to load agent', err);
       setError(err?.message || 'Failed to load agent');
@@ -108,6 +121,8 @@ export const AgentEditor: React.FC<AgentEditorProps> = ({ agentId, onBack, onSav
         await settingsApi.updateAgent(agentId, {
           ...formData,
           isolate_anchors: formData.isolate_anchors,
+          tool_mode: formData.tool_mode,
+          tools: formData.tool_mode === 'smart' ? [] : formData.tools,
         });
       } else {
         await settingsApi.createAgent(formData);
@@ -406,6 +421,104 @@ export const AgentEditor: React.FC<AgentEditorProps> = ({ agentId, onBack, onSav
               : <>Enter a structured JSON prompt. Must contain "content" or "role" field. The backend will automatically parse and validate the JSON format.</>
             }
           </p>
+        </div>
+
+        {/* Tool Mode Section */}
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Tool Mode</label>
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+            <button
+              type="button"
+              onClick={() => handleChange('tool_mode', 'smart')}
+              disabled={agentData?.is_imported}
+              style={{
+                flex: 1,
+                padding: '10px 16px',
+                borderRadius: '8px',
+                border: formData.tool_mode === 'smart' ? '2px solid #3b82f6' : '1px solid rgba(255,255,255,0.15)',
+                background: formData.tool_mode === 'smart' ? 'rgba(59, 130, 246, 0.12)' : 'rgba(255,255,255,0.04)',
+                color: formData.tool_mode === 'smart' ? '#60a5fa' : 'rgba(255,255,255,0.6)',
+                cursor: agentData?.is_imported ? 'not-allowed' : 'pointer',
+                fontWeight: formData.tool_mode === 'smart' ? 600 : 400,
+                fontSize: '13px',
+                textAlign: 'left' as const,
+              }}
+            >
+              <div style={{ fontWeight: 600 }}>Smart (Auto)</div>
+              <div style={{ fontSize: '11px', opacity: 0.7, marginTop: '2px' }}>All tools available — AI picks the right ones</div>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                handleChange('tool_mode', 'manual');
+                if (availableTools.length === 0) {
+                  setToolsLoading(true);
+                  getAvailableTools().then(t => setAvailableTools(t)).finally(() => setToolsLoading(false));
+                }
+              }}
+              disabled={agentData?.is_imported}
+              style={{
+                flex: 1,
+                padding: '10px 16px',
+                borderRadius: '8px',
+                border: formData.tool_mode === 'manual' ? '2px solid #f59e0b' : '1px solid rgba(255,255,255,0.15)',
+                background: formData.tool_mode === 'manual' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(255,255,255,0.04)',
+                color: formData.tool_mode === 'manual' ? '#fbbf24' : 'rgba(255,255,255,0.6)',
+                cursor: agentData?.is_imported ? 'not-allowed' : 'pointer',
+                fontWeight: formData.tool_mode === 'manual' ? 600 : 400,
+                fontSize: '13px',
+                textAlign: 'left' as const,
+              }}
+            >
+              <div style={{ fontWeight: 600 }}>Manual</div>
+              <div style={{ fontSize: '11px', opacity: 0.7, marginTop: '2px' }}>You choose exactly which tools to enable</div>
+            </button>
+          </div>
+
+          {formData.tool_mode === 'manual' && (
+            <div style={{ marginTop: '12px' }}>
+              {toolsLoading ? (
+                <div style={{ textAlign: 'center', padding: '16px', color: 'rgba(255,255,255,0.5)' }}>Loading tools...</div>
+              ) : (
+                <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px' }}>
+                  {availableTools.map((tool) => {
+                    const isSelected = formData.tools.includes(tool.name);
+                    return (
+                      <button
+                        key={tool.id}
+                        type="button"
+                        disabled={agentData?.is_imported}
+                        onClick={() => {
+                          const newTools = isSelected
+                            ? formData.tools.filter(t => t !== tool.name)
+                            : [...formData.tools, tool.name];
+                          handleChange('tools', newTools);
+                        }}
+                        title={tool.description}
+                        style={{
+                          padding: '6px 12px',
+                          borderRadius: '16px',
+                          border: isSelected ? '1px solid #3b82f6' : '1px solid rgba(255,255,255,0.15)',
+                          background: isSelected ? 'rgba(59, 130, 246, 0.15)' : 'rgba(255,255,255,0.04)',
+                          color: isSelected ? '#60a5fa' : 'rgba(255,255,255,0.6)',
+                          cursor: agentData?.is_imported ? 'not-allowed' : 'pointer',
+                          fontSize: '12px',
+                          fontWeight: isSelected ? 600 : 400,
+                        }}
+                      >
+                        {tool.name.replace(/_/g, ' ')}
+                        {tool.byok_provider && <span style={{ fontSize: '10px', marginLeft: '4px', opacity: 0.6 }}>({tool.byok_provider})</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              <p className={styles.helpText} style={{ marginTop: '8px' }}>
+                {formData.tools.length} tool{formData.tools.length !== 1 ? 's' : ''} selected.
+                Tools with a provider tag require your own API key (BYOK).
+              </p>
+            </div>
+          )}
         </div>
 
         {agentId && (
