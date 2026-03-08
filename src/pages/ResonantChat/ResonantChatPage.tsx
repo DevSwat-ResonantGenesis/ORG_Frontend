@@ -118,6 +118,9 @@ interface ModuleOutputs {
 
 // NOTE: No localStorage for conversation ID - always load from backend for cross-device sync
 
+const METRICS_VERSION = "v2.2-fallback-chain-20260308";
+if (typeof window !== "undefined") (window as any).__METRICS_V = METRICS_VERSION;
+
 const getChatIdFromResponse = (response: any): string | null =>
   response?.id || response?.chatId || response?.chat_id || response?.chat?.id || null;
 
