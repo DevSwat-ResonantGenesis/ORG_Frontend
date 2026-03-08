@@ -1433,6 +1433,28 @@ const ResonantChatPage: React.FC = () => {
     }
   }, [kbTitle, kbContent, kbType]);
 
+  // Upload file as knowledge base entry
+  const uploadKnowledgeBaseFile = useCallback(async (file: File) => {
+    try {
+      const apiUrl = ENV.apiUrl;
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('title', file.name);
+      formData.append('entry_type', 'document');
+      const res = await fetch(`${apiUrl}/resonant-chat/knowledge-base/upload`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
+      if (res.ok) {
+        const entry = await res.json();
+        setKnowledgeBaseEntries(prev => [...prev, entry]);
+      }
+    } catch (e) {
+      console.warn('Failed to upload KB file:', e);
+    }
+  }, []);
+
   // Delete knowledge base entry
   const deleteKnowledgeBaseEntry = useCallback(async (entryId: string) => {
     try {
@@ -5982,6 +6004,32 @@ const ResonantChatPage: React.FC = () => {
                         >
                           Save Entry
                         </button>
+                        <div style={{ textAlign: 'center', fontSize: '11px', color: '#666', padding: '4px 0' }}>— or —</div>
+                        <label
+                          style={{
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+                            padding: '10px', background: 'rgba(139, 92, 246, 0.08)', border: '2px dashed rgba(139, 92, 246, 0.3)',
+                            borderRadius: '8px', color: '#8b5cf6', cursor: 'pointer', fontSize: '12px', fontWeight: 500,
+                            transition: 'all 0.2s',
+                          }}
+                          onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); (e.currentTarget as HTMLElement).style.borderColor = '#8b5cf6'; (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.15)'; }}
+                          onDragLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.3)'; (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.08)'; }}
+                          onDrop={(e) => {
+                            e.preventDefault(); e.stopPropagation();
+                            (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                            (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.08)';
+                            const files = e.dataTransfer?.files;
+                            if (files?.[0]) uploadKnowledgeBaseFile(files[0]);
+                          }}
+                        >
+                          <span>📄 Upload File (.txt, .md, .csv, .json)</span>
+                          <input
+                            type="file"
+                            accept=".txt,.md,.csv,.json,.text"
+                            style={{ display: 'none' }}
+                            onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadKnowledgeBaseFile(f); e.target.value = ''; }}
+                          />
+                        </label>
                       </div>
                     )}
 
