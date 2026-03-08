@@ -4500,6 +4500,7 @@ const ResonantChatPage: React.FC = () => {
                     {/* Message Info - Use backend metrics only */}
                     {selectedMessage && (
                     <div style={{ marginBottom: '16px' }}>
+                      {/* v2: model + fallback chain + token usage */}
                       <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase' }}>Message Info</div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                         <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
