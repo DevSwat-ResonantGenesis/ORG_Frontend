@@ -11,130 +11,113 @@
   overflow-x: clip;
 }
 
-/* Force dark appearance regardless of theme — this is a presentation.
-   Uses #pitch-deck ID for specificity (1,0,0) to beat themes.css
-   [data-theme="light"] * rules which have specificity (0,1,0).
-   Only affects this page — no other pages are impacted. */
-:global(#pitch-deck),
-:global(#pitch-deck) * {
-  background-color: transparent !important;
-  color: #e5e7eb !important;
+:global([data-theme="light"]) .page {
+  background: #f8fafc;
+  color: #1e293b;
 }
 
-:global(#pitch-deck) {
-  background: #0a0a0a !important;
+/* VR image slides — always dark so photos show in any theme */
+.slideVr {
+  background: #000;
 }
 
-:global(#pitch-deck) .slideDark {
-  background: #0a0a0a !important;
+/* ============================================================
+   LIGHT MODE OVERRIDES — follows platform theme
+   ============================================================ */
+:global([data-theme="light"]) .slideDark {
+  background: #f8fafc;
 }
 
-:global(#pitch-deck) .slideVr {
-  background: #000 !important;
+:global([data-theme="light"]) .sectionTitle {
+  color: #0f172a;
 }
 
-:global(#pitch-deck) .sectionTitle {
-  color: #f8fafc !important;
+:global([data-theme="light"]) .sectionLead {
+  color: #475569;
 }
 
-:global(#pitch-deck) .sectionLead {
-  color: rgba(226, 232, 240, 0.72) !important;
+:global([data-theme="light"]) .card {
+  background: rgba(241, 245, 249, 0.6);
+  border-color: rgba(148, 163, 184, 0.25);
 }
 
-:global(#pitch-deck) .card {
-  background: rgba(2, 6, 23, 0.48) !important;
-  border-color: rgba(148, 163, 184, 0.14) !important;
+:global([data-theme="light"]) .cardTitle {
+  color: #0f172a;
 }
 
-:global(#pitch-deck) .cardTitle {
-  color: rgba(248, 250, 252, 0.95) !important;
+:global([data-theme="light"]) .cardBody {
+  color: #475569;
 }
 
-:global(#pitch-deck) .cardBody {
-  color: rgba(226, 232, 240, 0.72) !important;
+:global([data-theme="light"]) .badge {
+  background: rgba(241, 245, 249, 0.65);
+  border-color: rgba(59, 130, 246, 0.15);
+  color: #334155;
 }
 
-:global(#pitch-deck) .vrImage {
-  opacity: 1 !important;
-  background: #000 !important;
+:global([data-theme="light"]) .footerCta {
+  background: radial-gradient(900px 480px at 15% 15%, rgba(37, 99, 235, 0.08), transparent),
+    radial-gradient(1100px 540px at 75% 35%, rgba(14, 165, 233, 0.06), transparent);
 }
 
-:global(#pitch-deck) .workflowPanel {
-  background: rgba(255, 255, 255, 0.07) !important;
+:global([data-theme="light"]) .footerCtaInner {
+  background: rgba(241, 245, 249, 0.75);
+  border-color: rgba(148, 163, 184, 0.25);
 }
 
-:global(#pitch-deck) .workflowTitle {
-  color: #f8fafc !important;
+:global([data-theme="light"]) .footerCtaTitle {
+  color: #0f172a;
 }
 
-:global(#pitch-deck) .workflowSubtitle {
-  color: rgba(226, 232, 240, 0.7) !important;
+:global([data-theme="light"]) .footerCtaBody {
+  color: #475569;
 }
 
-:global(#pitch-deck) .workflowStep {
-  background: transparent !important;
+:global([data-theme="light"]) .ctaPrimary {
+  color: #fff;
 }
 
-:global(#pitch-deck) .workflowStepNum {
-  color: #60a5fa !important;
+:global([data-theme="light"]) .workflowPanel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border-color: rgba(148, 163, 184, 0.25);
 }
 
-:global(#pitch-deck) .workflowStepBody strong {
-  color: #f1f5f9 !important;
+:global([data-theme="light"]) .workflowTitle {
+  color: #0f172a;
 }
 
-:global(#pitch-deck) .workflowStepBody span {
-  color: rgba(226, 232, 240, 0.65) !important;
+:global([data-theme="light"]) .workflowSubtitle {
+  color: #475569;
 }
 
-:global(#pitch-deck) .footerCtaInner {
-  background: rgba(2, 6, 23, 0.65) !important;
-  border-color: rgba(148, 163, 184, 0.14) !important;
+:global([data-theme="light"]) .workflowStepNum {
+  color: #2563eb;
 }
 
-:global(#pitch-deck) .footerCtaTitle {
-  color: #f8fafc !important;
+:global([data-theme="light"]) .workflowStepBody strong {
+  color: #0f172a;
 }
 
-:global(#pitch-deck) .footerCtaBody {
-  color: rgba(226, 232, 240, 0.72) !important;
+:global([data-theme="light"]) .workflowStepBody span {
+  color: #64748b;
 }
 
-:global(#pitch-deck) .vrQuote {
-  color: rgba(255, 255, 255, 0.92) !important;
+:global([data-theme="light"]) .slideDot {
+  border-color: rgba(0, 0, 0, 0.3);
 }
 
-:global(#pitch-deck) .vrQuote strong {
-  color: #60a5fa !important;
+:global([data-theme="light"]) .slideDot:hover {
+  border-color: rgba(0, 0, 0, 0.6);
 }
 
-:global(#pitch-deck) .badge {
-  background: rgba(15, 23, 42, 0.55) !important;
-  border-color: rgba(59, 130, 246, 0.25) !important;
-  color: rgba(248, 250, 252, 0.85) !important;
+:global([data-theme="light"]) .slideDotActive {
+  background: #2563eb;
+  border-color: #2563eb;
 }
 
-:global(#pitch-deck) .vrTitle {
-  color: #fff !important;
-}
-
-:global(#pitch-deck) .ctaPrimary {
-  color: #fff !important;
-  background: #2563eb !important;
-}
-
-:global(#pitch-deck) .slideDot {
-  border-color: rgba(255, 255, 255, 0.5) !important;
-  background: transparent !important;
-}
-
-:global(#pitch-deck) .slideDotActive {
-  background: #60a5fa !important;
-  border-color: #60a5fa !important;
-}
-
-:global(#pitch-deck) .vrQuoteOverlay {
-  background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 40%, transparent 70%) !important;
+:global([data-theme="light"]) .parallax {
+  opacity: 0.7;
 }
 
 .main {

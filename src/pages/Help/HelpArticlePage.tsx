@@ -1094,25 +1094,10 @@ const HelpArticlePage: React.FC = () => {
     setIsLoading(false);
   }, []);
 
+  /* Follow platform theme — read current theme on mount */
   useEffect(() => {
-    const previousTheme =
-      (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') ||
-      useThemeStore.getState().theme;
-
-    let nextHelpTheme: 'light' | 'dark' = 'light';
-    try {
-      const saved = localStorage.getItem(HELP_THEME_STORAGE_KEY);
-      if (saved === 'light' || saved === 'dark') nextHelpTheme = saved;
-    } catch {
-      nextHelpTheme = 'light';
-    }
-
-    setHelpTheme(nextHelpTheme);
-    applyDomTheme(nextHelpTheme);
-
-    return () => {
-      applyDomTheme(previousTheme);
-    };
+    const currentTheme = (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || useThemeStore.getState().theme || 'dark';
+    setHelpTheme(currentTheme);
   }, []);
 
   const toggleHelpTheme = () => {

@@ -270,7 +270,7 @@ const InvestorPitchDeckPage = () => {
   const isReactSnap = typeof navigator !== 'undefined' && navigator.userAgent === 'ReactSnap';
 
   return (
-    <div id="pitch-deck" className={`${styles.page}${animate ? ` ${styles.animate}` : ''}${scrollCentered ? ` ${styles.parallaxCentered}` : ''}`}>
+    <div className={`${styles.page}${animate ? ` ${styles.animate}` : ''}${scrollCentered ? ` ${styles.parallaxCentered}` : ''}`}>
       <Helmet>
         <title>Investor Pitch Deck – ResonantGenesis</title>
         <meta
