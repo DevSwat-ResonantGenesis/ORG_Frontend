@@ -6,9 +6,15 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  background: transparent;
+  background: #0a0a0a;
   color: #e5e7eb;
   overflow-x: clip;
+}
+
+/* Force dark appearance regardless of theme — this is a presentation */
+:global([data-theme="light"]) .page {
+  background: #0a0a0a;
+  color: #e5e7eb;
 }
 
 .main {
@@ -21,10 +27,11 @@
   overflow: hidden;
   width: 100%;
   height: 100%;
-  padding: 0 24px 64px;
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: flex-start;
 }
 
 @media (min-width: 1024px) {
@@ -47,7 +54,7 @@
 
 @media (min-width: 1024px) {
   .heroGrid {
-    margin-top: auto;
+    margin-top: 0;
   }
 }
 
@@ -669,196 +676,8 @@
 }
 
 /* ============================================================
-   LIGHT MODE OVERRIDES
+   LIGHT MODE — Pitch deck always renders dark (presentation)
    ============================================================ */
-:global([data-theme="light"]) .page {
-  background: #f8fafc;
-  color: #1e293b;
-}
-
-:global([data-theme="light"]) .badge {
-  background: rgba(241, 245, 249, 0.65);
-  border-color: rgba(59, 130, 246, 0.15);
-  color: #334155;
-  backdrop-filter: blur(8px);
-}
-
-:global([data-theme="light"]) .title {
-  color: #0f172a;
-}
-
-:global([data-theme="light"]) .subtitle {
-  color: #475569;
-}
-
-:global([data-theme="light"]) .switchTab {
-  color: #64748b;
-}
-
-:global([data-theme="light"]) .switchTabActive {
-  color: #0f172a;
-}
-
-:global([data-theme="light"]) .switchText {
-  color: #475569;
-}
-
-:global([data-theme="light"]) .reportTitle {
-  color: #0f172a;
-}
-
-:global([data-theme="light"]) .reportMeta {
-  color: #64748b;
-}
-
-:global([data-theme="light"]) .reportSectionTitle {
-  color: #334155;
-}
-
-:global([data-theme="light"]) .reportParagraph {
-  color: #475569;
-}
-
-:global([data-theme="light"]) .reportHeader {
-  border-bottom-color: rgba(148, 163, 184, 0.25);
-}
-
-:global([data-theme="light"]) .reportCellKey {
-  color: #64748b;
-}
-
-:global([data-theme="light"]) .reportCellVal {
-  color: #1e293b;
-}
-
-:global([data-theme="light"]) .reportFooter {
-  border-top-color: rgba(148, 163, 184, 0.25);
-}
-
-:global([data-theme="light"]) .reportFootnote {
-  color: #64748b;
-}
-
-:global([data-theme="light"]) .codebaseCard {
-  background: rgba(241, 245, 249, 0.7);
-  border-color: rgba(148, 163, 184, 0.25);
-}
-
-:global([data-theme="light"]) .codebaseKicker {
-  color: #64748b;
-}
-
-:global([data-theme="light"]) .codebaseMetricValue {
-  color: #0f172a;
-}
-
-:global([data-theme="light"]) .codebaseMetricLabel {
-  color: #64748b;
-}
-
-:global([data-theme="light"]) .codebaseDetail {
-  color: #64748b;
-}
-
-:global([data-theme="light"]) .metricCard {
-  background: transparent;
-  border-color: rgba(148, 163, 184, 0.18);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-:global([data-theme="light"]) .metricValue {
-  color: #0f172a;
-}
-
-:global([data-theme="light"]) .metricLabel {
-  color: #64748b;
-}
-
-:global([data-theme="light"]) .traceLegend {
-  color: #64748b;
-}
-
-:global([data-theme="light"]) .ctaPrimary {
-  color: #ffffff;
-}
-
-:global([data-theme="light"]) .ctaSecondary {
-  background: rgba(241, 245, 249, 0.65);
-  border-color: rgba(148, 163, 184, 0.3);
-  color: #1e293b;
-}
-
-:global([data-theme="light"]) .sectionTitle {
-  color: #0f172a;
-}
-
-:global([data-theme="light"]) .sectionLead {
-  color: #475569;
-}
-
-:global([data-theme="light"]) .card {
-  background: rgba(241, 245, 249, 0.6);
-  border-color: rgba(148, 163, 184, 0.25);
-}
-
-:global([data-theme="light"]) .cardTitle {
-  color: #0f172a;
-}
-
-:global([data-theme="light"]) .cardBody {
-  color: #475569;
-}
-
-:global([data-theme="light"]) .list {
-  color: #475569;
-}
-
-:global([data-theme="light"]) .quote {
-  background: rgba(241, 245, 249, 0.7);
-  border-color: rgba(59, 130, 246, 0.15);
-  color: #334155;
-}
-
-:global([data-theme="light"]) .quote strong {
-  color: #0f172a;
-}
-
-:global([data-theme="light"]) .footerCta {
-  background: radial-gradient(900px 480px at 15% 15%, rgba(37, 99, 235, 0.08), transparent),
-    radial-gradient(1100px 540px at 75% 35%, rgba(14, 165, 233, 0.06), transparent);
-}
-
-:global([data-theme="light"]) .footerCtaInner {
-  background: rgba(241, 245, 249, 0.75);
-  border-color: rgba(148, 163, 184, 0.25);
-}
-
-:global([data-theme="light"]) .footerCtaTitle {
-  color: #0f172a;
-}
-
-:global([data-theme="light"]) .footerCtaBody {
-  color: #475569;
-}
-
-:global([data-theme="light"]) .hero,
-:global([data-theme="light"]) .hero::before,
-:global([data-theme="light"]) .hero::after,
-:global([data-theme="light"]) .heroContent,
-:global([data-theme="light"]) .heroGrid,
-:global([data-theme="light"]) .badgeRow,
-:global([data-theme="light"]) .title,
-:global([data-theme="light"]) .subtitle,
-:global([data-theme="light"]) .heroMetrics,
-:global([data-theme="light"]) .ctaRow {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
 
 /* ============================================================
    Fixed Fullscreen Slides — scroll-hijacked presentation
@@ -890,7 +709,7 @@
 }
 
 :global([data-theme="light"]) .slideDark {
-  background: #f8fafc;
+  background: #0a0a0a;
 }
 
 /* VR image slides — always dark so photos show in any theme */
@@ -1118,28 +937,3 @@
   border-color: #60a5fa;
 }
 
-:global([data-theme="light"]) .slideDot {
-  border-color: rgba(0, 0, 0, 0.3);
-}
-
-:global([data-theme="light"]) .slideDot:hover {
-  border-color: rgba(0, 0, 0, 0.6);
-}
-
-:global([data-theme="light"]) .slideDotActive {
-  background: #2563eb;
-  border-color: #2563eb;
-}
-
-:global([data-theme="light"]) .parallax {
-  opacity: 0.7;
-}
-
-:global([data-theme="light"]) .heroGrid {
-  position: relative;
-  z-index: 3;
-}
-
-:global([data-theme="light"]) .section {
-  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #f8fafc 100%);
-}

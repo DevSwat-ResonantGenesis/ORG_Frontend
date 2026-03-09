@@ -1314,6 +1314,12 @@
 }
 
 /* Dropdown Items - Light Mode */
+[data-theme='light'] .navDropdownItem {
+  background: transparent;
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: none;
+}
+
 [data-theme='light'] .navDropdownItem:hover {
   background: rgba(0, 0, 0, 0.04);
 }
