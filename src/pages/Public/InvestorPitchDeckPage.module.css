@@ -209,19 +209,26 @@
 }
 
 .title {
-  font-size: clamp(38px, 5vw, 64px);
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-  margin: 0;
-  color: #f8fafc;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: clamp(36px, 6.5vw, 72px);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  margin: 0 0 18px 0;
+  color: #1D1D1F;
+  -webkit-font-smoothing: antialiased;
 }
 
 .subtitle {
-  margin-top: 14px;
-  font-size: clamp(16px, 1.4vw, 19px);
-  line-height: 1.55;
-  color: rgba(226, 232, 240, 0.78);
-  max-width: 72ch;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: clamp(16px, 2.8vw, 20px);
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: 0;
+  margin: 0 0 22px 0;
+  color: #64748b;
+  max-width: 680px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .switchPanel {
@@ -649,6 +656,17 @@
   color: rgba(226, 232, 240, 0.72);
   line-height: 1.7;
   max-width: 78ch;
+}
+
+/* ============================================================
+   DARK MODE OVERRIDES (base styles are now light mode)
+   ============================================================ */
+:global([data-theme="dark"]) .title {
+  color: #f1f5f9;
+}
+
+:global([data-theme="dark"]) .subtitle {
+  color: rgba(148, 163, 184, 0.9);
 }
 
 /* ============================================================
