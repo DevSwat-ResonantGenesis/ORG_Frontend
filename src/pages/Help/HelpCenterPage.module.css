@@ -141,43 +141,28 @@
    Sticky Search — floats at top on scroll
    ============================================================ */
 .stickySearch {
-  position: sticky;
+  position: fixed;
   top: var(--header-height, 56px);
-  z-index: 10;
+  left: 0;
+  right: 0;
+  z-index: 100;
   padding: 12px 24px;
-  background: transparent;
-  transition: background 200ms ease, padding 200ms ease;
-}
-
-.stickySearchSearching {
-  padding-top: calc(var(--header-height, 56px) + 20px);
-}
-
-/* Subtle backdrop when scrolled */
-.stickySearch::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(10, 10, 10, 0.7);
+  background: rgba(10, 10, 10, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  opacity: 0;
-  transition: opacity 200ms ease;
-  z-index: -1;
-  pointer-events: none;
 }
 
-[data-theme='light'] .stickySearch::before {
-  background: rgba(250, 251, 252, 0.75);
+[data-theme='light'] .stickySearch {
+  background: rgba(255, 255, 255, 0.85);
 }
 
 .stickySearchInner {
   max-width: 900px;
 }
 
-/* Backdrop visible when stuck at top */
-.stickySearchStuck::before {
-  opacity: 1;
+/* Spacer to push content below the fixed search bar */
+.searchSpacer {
+  height: 100px;
 }
 
 /* Hero Title — matches home page hero title */

@@ -350,11 +350,11 @@ const HelpCenterPage: React.FC = () => {
         </section>
       )}
 
-      {/* Sentinel — used by IntersectionObserver to detect sticky state */}
-      <div ref={sentinelRef} style={{ height: 1, marginTop: -1 }} />
+      {/* Spacer for fixed search bar */}
+      <div className={styles.searchSpacer} />
 
-      {/* Sticky Search Bar — floats at top on scroll */}
-      <div className={`${styles.stickySearch} ${isStuck ? styles.stickySearchStuck : ''} ${searchQuery ? styles.stickySearchSearching : ''}`}>
+      {/* Fixed Search Bar — always visible below header */}
+      <div className={styles.stickySearch}>
         <div className={styles.stickySearchInner}>
           <div className={styles.searchBar}>
             <SearchIcon size={18} />
