@@ -97,14 +97,15 @@
 .hero {
   display: flex;
   align-items: flex-start;
-  justify-content: flex-start;
-  padding: calc(var(--header-height, 56px) + 20px) 24px 60px;
-  min-height: 60vh;
+  justify-content: flex-end;
+  padding: calc(var(--header-height, 56px) + 40px) 24px 80px;
+  min-height: 100vh;
   margin: 0;
   background: transparent;
   position: relative;
   z-index: 1;
   box-sizing: border-box;
+  flex-direction: column;
 }
 
 /* Hero Content — above sphere */
@@ -547,7 +548,7 @@
 /* Content Body */
 .contentBody {
   display: grid;
-  grid-template-columns: 1fr 280px;
+  grid-template-columns: 1fr;
   gap: 32px;
   width: 100%;
   box-sizing: border-box;

@@ -336,23 +336,17 @@ const HelpCenterPage: React.FC = () => {
         </Suspense>
       </div>
 
-      {/* Hero — title + subtitle (collapses when searching) */}
-      {!searchQuery && (
-        <section className={styles.hero}>
-          <div className={styles.heroContent}>
-            <div className={styles.heroIntro}>
-              <h1 className={styles.heroTitle}>Help Center</h1>
-              <p className={styles.heroSubtitle}>
-                Tutorials and documentation for ResonantGenesis — aligned to the current stack.
-              </p>
-            </div>
+      {/* Hero — title + subtitle + search + hashtags all together */}
+      <section className={styles.hero}>
+        <div className={styles.heroContent}>
+          <div className={styles.heroIntro}>
+            <h1 className={styles.heroTitle}>Help Center</h1>
+            <p className={styles.heroSubtitle}>
+              Tutorials and documentation for ResonantGenesis — aligned to the current stack.
+            </p>
           </div>
-        </section>
-      )}
 
-      {/* Search Bar — stays in normal flow, dropdown pushes content down */}
-      <div className={styles.stickySearch}>
-        <div className={styles.stickySearchInner}>
+          {/* Search Bar */}
           <div className={styles.searchBar}>
             <SearchIcon size={18} />
             <input
@@ -413,7 +407,7 @@ const HelpCenterPage: React.FC = () => {
             </div>
           )}
         </div>
-      </div>
+      </section>
 
       <div className={styles.container}>
         <div className={styles.contentBody}>
@@ -551,37 +545,6 @@ const HelpCenterPage: React.FC = () => {
                 ))}
               </div>
             </section>
-          </div>
-
-          <div className={styles.contentSidebar}>
-            <div className={styles.sidebarCard}>
-              <h3>Popular Articles</h3>
-              <ul>
-                <li><a href="/help/getting-started/what-is-resonantgraph">What Is ResonantGenesis?</a></li>
-                <li><a href="/help/core/agi-neural-hub">AGI Neural Hub</a></li>
-                <li><a href="/help/core/synthetic-neural-memory">Synthetic Neural Memory</a></li>
-                <li><a href="/help/core/invariants-sim">Invariants SIM</a></li>
-                <li><a href="/help/account/api-keys">API Keys</a></li>
-              </ul>
-            </div>
-            <div className={styles.sidebarCard}>
-              <h3>Quick Links</h3>
-              <ul>
-                <li><a href="/validate">Validation Tool</a></li>
-                <li><a href="/llm-scan">LLM Scanner</a></li>
-                <li><a href="/contact">Contact Support</a></li>
-                <li><a href="/about">About Us</a></li>
-              </ul>
-            </div>
-            <div className={styles.sidebarCard}>
-              <h3>Need More Help?</h3>
-              <p>
-                Can't find what you're looking for? Our support team is here to help.
-              </p>
-              <Button variant="primary" size="sm" fullWidth onClick={() => goToContact(navigate)}>
-                Contact Support
-              </Button>
-            </div>
           </div>
         </div>
       </div>
