@@ -73,29 +73,7 @@ header {
 }
 
 
-/* ============================================================
-   SECTION BACKGROUNDS
-   ============================================================ */
-section,
-.section,
-[class*="section"],
-.page-section {
-  background: var(--color-bg-root, #FFFFFF) !important;
-}
-
-[data-theme='light'] section,
-[data-theme='light'] .section,
-[data-theme='light'] [class*="section"],
-[data-theme='light'] .page-section {
-  background: #FFFFFF !important;
-}
-
-[data-theme='dark'] section,
-[data-theme='dark'] .section,
-[data-theme='dark'] [class*="section"],
-[data-theme='dark'] .page-section {
-  background: var(--bg-primary) !important; /* Use new token system - warm gray */
-}
+/* Section backgrounds removed — pages handle their own section styling via CSS modules */
 
 /* ============================================================
    PAGE STRUCTURE & LAYOUT
