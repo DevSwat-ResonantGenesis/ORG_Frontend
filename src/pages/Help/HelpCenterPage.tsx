@@ -313,33 +313,24 @@ const HelpCenterPage: React.FC = () => {
     <div className={styles.helpCenterPage}>
       <div className={styles.container}>
         <div className={styles.hero}>
-          <div className={styles.heroInner}>
-            <div className={styles.heroText}>
-              <h1>Help Center</h1>
-              <p className={styles.subtitle}>
-                Tutorials and documentation for ResonantGenesis — aligned to the current stack.
-              </p>
-            </div>
-
-            <div className={styles.heroSearch}>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 'var(--space-3)' }}>
-                <Button variant="secondary" size="sm" onClick={toggleHelpTheme}>
-                  {helpTheme === 'dark' ? 'Light mode' : 'Dark mode'}
-                </Button>
-              </div>
-              <div className={styles.searchInputWrapper}>
-                <SearchIcon size={20} />
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  placeholder="Search tutorials... (⌘K)"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className={styles.searchInput}
-                />
-                <span className={styles.searchShortcut}>⌘K</span>
-              </div>
-            </div>
+          <button className={styles.themeToggle} onClick={toggleHelpTheme}>
+            {helpTheme === 'dark' ? '☀️' : '🌙'}
+          </button>
+          <h1 className={styles.heroTitle}>Help Center</h1>
+          <p className={styles.heroSubtitle}>
+            Tutorials and documentation for ResonantGenesis — aligned to the current stack.
+          </p>
+          <div className={styles.searchBar}>
+            <SearchIcon size={18} />
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder="Search tutorials..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={styles.searchInput}
+            />
+            <span className={styles.searchShortcut}>⌘K</span>
           </div>
         </div>
 
