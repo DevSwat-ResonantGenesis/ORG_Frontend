@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../../utils/apiUrl';
 import { isAuthenticated } from '../../utils/auth-cookies';
+import { useThemeStore } from '@/store/themeStore';
 import styles from './CodeVisualizerPage.module.css';
 
 interface SavedAnalysis {
@@ -43,6 +44,17 @@ const CodeVisualizerPage: React.FC = () => {
   const [exportingId, setExportingId] = useState<string | null>(null);
   const [exportRepoName, setExportRepoName] = useState('resonant-cv-reports');
   const [exportTargetId, setExportTargetId] = useState<string | null>(null);
+
+  /* Force dark mode — restore previous theme on unmount */
+  const { theme, setTheme } = useThemeStore();
+  const savedThemeRef = useRef(theme);
+  useEffect(() => {
+    savedThemeRef.current = useThemeStore.getState().theme;
+    if (savedThemeRef.current !== 'dark') setTheme('dark');
+    return () => {
+      if (savedThemeRef.current !== 'dark') setTheme(savedThemeRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (!isAuthenticated()) {

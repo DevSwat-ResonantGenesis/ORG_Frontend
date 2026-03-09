@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Clock,
@@ -19,6 +19,7 @@ import {
   BarChart3,
 } from 'lucide-react';
 import { isAuthenticated } from '../../utils/auth-cookies';
+import { useThemeStore } from '@/store/themeStore';
 
 interface ExecutionRecord {
   id: string;
@@ -284,6 +285,17 @@ export default function ExecutionHistoryPage() {
   const [filter, setFilter] = useState<'all' | 'success' | 'failed'>('all');
   const [typeFilter, setTypeFilter] = useState<'all' | 'agent' | 'workflow'>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  /* Force dark mode — restore previous theme on unmount */
+  const { theme, setTheme } = useThemeStore();
+  const savedTheme = useRef(theme);
+  useEffect(() => {
+    savedTheme.current = useThemeStore.getState().theme;
+    if (savedTheme.current !== 'dark') setTheme('dark');
+    return () => {
+      if (savedTheme.current !== 'dark') setTheme(savedTheme.current);
+    };
+  }, []);
 
   // Redirect to signup if not logged in
   useEffect(() => {
