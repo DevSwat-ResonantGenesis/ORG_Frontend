@@ -664,10 +664,6 @@ export default function AgentMarketplacePage() {
         ))}
 
         <div style={{ ...styles.sidebarTitle, marginTop: '2rem' }}>Quick Links</div>
-        <Link to="/network/publish" style={{ ...styles.categoryItem, textDecoration: 'none', color: 'inherit' }}>
-          <Plus size={14} color={isLight ? '#6b7280' : '#888'} />
-          <span style={styles.categoryName}>Publish Agent</span>
-        </Link>
         <Link to="/network/agents" style={{ ...styles.categoryItem, textDecoration: 'none', color: 'inherit' }}>
           <Search size={14} color={isLight ? '#6b7280' : '#888'} />
           <span style={styles.categoryName}>Agent Browser</span>

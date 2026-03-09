@@ -347,22 +347,7 @@ export default function AgentBrowserPage() {
               Discover and execute agents on the ResonantGenesis decentralized network
             </p>
           </div>
-          <a
-            href="/network/publish"
-            style={{
-              padding: '0.75rem 1.5rem',
-              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-              borderRadius: '8px',
-              color: '#fff',
-              textDecoration: 'none',
-              fontWeight: '600',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-            }}
-          >
-            + Publish Agent
-          </a>
+          
         </div>
       </div>
 

@@ -557,10 +557,7 @@ const router = createBrowserRouter([
     path: '/agent-browser',
     element: <Navigate to="/network/agents" replace />
   },
-  {
-    path: '/publish-agent',
-    element: <Navigate to="/network/publish" replace />
-  },
+  
   {
     path: '/execution-history',
     element: <Navigate to="/network/history" replace />

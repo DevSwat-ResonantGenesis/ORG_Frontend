@@ -1,4 +1,5 @@
 import React, { memo, useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAgentStore, useUIStore, selectAgents, selectSelectedAgent } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import type { Agent } from '../../../../../types';
@@ -32,6 +33,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const agents = useAgentStore(selectAgents);
   const selectedAgent = useAgentStore(selectSelectedAgent);
   const { selectAgent, startAgent, stopAgent, pauseAgent, archiveAgent, updateAgent, removeAgent, addAgent } = useAgentStore();
+  const navigate = useNavigate();
   const isLoadingAgents = useAgentStore((s) => s.loading);
   const setActiveSection = useUIStore((s) => s.setActiveSection);
   const pinnedAgentIds = useUIStore((s) => s.pinnedAgentIds);
@@ -715,6 +717,16 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                           title="Clone Agent"
                         >
                           <Icons.Copy />
+                        </button>
+                        
+                        {/* Publish button */}
+                        <button 
+                          className={`${styles.actionBtn} ${styles.detailBtn}`}
+                          disabled={bulkMode}
+                          onClick={(e) => { e.stopPropagation(); navigate('/network/publish', { state: { fromFactory: true, agentId: agent.id, name: agent.name, description: '', type: agent.type, tags: [], tools: agent.capabilities || [], provider: agent.config?.provider, model: agent.config?.model } }); }}
+                          title="Publish to DSID Network"
+                        >
+                          <Icons.Upload />
                         </button>
                         
                         {/* Archive button */}
