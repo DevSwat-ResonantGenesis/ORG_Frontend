@@ -680,3 +680,290 @@
   font-size: 10px;
   color: #666;
 }
+
+/* ============== LIGHT MODE ============== */
+
+[data-theme='light'] .panel {
+  background: #ffffff;
+}
+
+[data-theme='light'] .panelHeader {
+  border-bottom: none;
+}
+
+[data-theme='light'] .panelHeader h2 {
+  color: #111827;
+}
+
+[data-theme='light'] .viewTab {
+  border: none;
+  background: transparent;
+  color: #6b7280;
+}
+
+[data-theme='light'] .viewTab:hover {
+  background: transparent;
+  color: #111827;
+}
+
+[data-theme='light'] .viewTab.active {
+  background: #eff6ff;
+  border: none;
+  color: #2563eb;
+}
+
+[data-theme='light'] .badge {
+  background: transparent;
+  color: #16a34a;
+}
+
+/* --- Agent Selector --- */
+[data-theme='light'] .agentSelector select {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #111827;
+}
+
+[data-theme='light'] .agentSelector select:focus {
+  border-bottom-color: #0ea5e9;
+}
+
+/* --- Stats --- */
+[data-theme='light'] .stat {
+  background: transparent;
+  border: none;
+}
+
+[data-theme='light'] .statLabel {
+  color: #6b7280;
+}
+
+[data-theme='light'] .statValue {
+  color: #111827;
+}
+
+/* --- Execution Cards --- */
+[data-theme='light'] .executionCard {
+  background: #ffffff;
+  border: 1px solid #f3f4f6;
+}
+
+[data-theme='light'] .executionCard:hover {
+  background: #ffffff;
+  border-color: #93c5fd;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .executionCard.selected {
+  background: #f0f9ff;
+  border-color: #0ea5e9;
+}
+
+[data-theme='light'] .execAgent {
+  color: #111827;
+}
+
+[data-theme='light'] .execId {
+  color: #9ca3af;
+}
+
+[data-theme='light'] .execMeta {
+  color: #9ca3af;
+}
+
+[data-theme='light'] .progressBar {
+  background: #e5e7eb;
+}
+
+[data-theme='light'] .progressText {
+  color: #9ca3af;
+}
+
+/* --- Status Badges --- */
+[data-theme='light'] .statusBadge.running {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+[data-theme='light'] .statusBadge.completed {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+[data-theme='light'] .statusBadge.failed {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+[data-theme='light'] .statusBadge.paused {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+/* --- Error --- */
+[data-theme='light'] .errorBanner {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+[data-theme='light'] .errorMessage {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+[data-theme='light'] .loadingBanner {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #2563eb;
+}
+
+/* --- Exec Actions --- */
+[data-theme='light'] .execActions button {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+[data-theme='light'] .execActions button:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+/* --- Metrics --- */
+[data-theme='light'] .metricsSection h3 {
+  color: #111827;
+}
+
+[data-theme='light'] .metricCard {
+  background: transparent;
+  border: none;
+}
+
+[data-theme='light'] .metricCard h4 {
+  color: #6b7280;
+}
+
+[data-theme='light'] .metricValue {
+  color: #111827;
+}
+
+[data-theme='light'] .metricChange {
+  color: #16a34a;
+}
+
+/* --- Queue --- */
+[data-theme='light'] .queueSection h3 {
+  color: #111827;
+}
+
+[data-theme='light'] .executionsList h3 {
+  color: #111827;
+}
+
+/* --- Triggers --- */
+[data-theme='light'] .triggersHeader h3 {
+  color: #111827;
+}
+
+[data-theme='light'] .triggerForm {
+  background: transparent;
+  border-color: #e5e7eb;
+}
+
+[data-theme='light'] .formInput {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #111827;
+}
+
+[data-theme='light'] .formSelect {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #111827;
+}
+
+[data-theme='light'] .formSelect option {
+  background: #ffffff;
+  color: #111827;
+}
+
+[data-theme='light'] .formTextarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #111827;
+}
+
+[data-theme='light'] .secondaryBtn {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  color: #6b7280;
+}
+
+[data-theme='light'] .triggerCard {
+  background: #ffffff;
+  border: 1px solid #f3f4f6;
+}
+
+[data-theme='light'] .triggerName {
+  color: #111827;
+}
+
+[data-theme='light'] .triggerType.schedule {
+  background: transparent;
+}
+
+[data-theme='light'] .triggerType.webhook {
+  background: transparent;
+}
+
+[data-theme='light'] .triggerType.event {
+  background: transparent;
+}
+
+[data-theme='light'] .triggerType.condition {
+  background: transparent;
+}
+
+[data-theme='light'] .triggerStatus {
+  color: #9ca3af;
+}
+
+[data-theme='light'] .triggerMeta {
+  color: #9ca3af;
+}
+
+/* --- Empty State --- */
+[data-theme='light'] .emptyState {
+  color: #9ca3af;
+}
+
+[data-theme='light'] .noSelection {
+  color: #9ca3af;
+}
+
+[data-theme='light'] .noSelectionContent h3 {
+  color: #111827;
+}
+
+[data-theme='light'] .noSelectionContent p {
+  color: #9ca3af;
+}
+
+/* --- Filter Select (status filter) --- */
+[data-theme='light'] .filterSelect {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  border-radius: 0 !important;
+  color: #111827 !important;
+}

@@ -790,10 +790,10 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           <div className={styles.sessionsPane}>
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
               {/* Factory header */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', borderBottom: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}>
+              <div className={styles.publishHeader}>
                 <Icons.Factory />
-                <span style={{ fontWeight: 600, fontSize: 13, flex: 1 }}>Create Agent</span>
-                <button onClick={() => setShowFactory(false)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 16, padding: '2px 6px' }} title="Close">×</button>
+                <span className={styles.publishTitle}>Create Agent</span>
+                <button onClick={() => setShowFactory(false)} className={styles.publishCloseBtn} title="Close">×</button>
               </div>
 
               {/* Factory content */}
@@ -806,12 +806,12 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           <div className={styles.sessionsPane}>
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
               {/* Inline panel header */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', borderBottom: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}>
+              <div className={styles.publishHeader}>
                 {{ execution: <Icons.Execution />, utility: <Icons.TrendingUp />, memory: <Icons.Memory />, capabilities: <Icons.Capabilities />, goals: <Icons.Goals />, economy: <Icons.Economy />, negotiation: <Icons.Negotiation />, governance: <Icons.Governance />, audit: <Icons.Audit />, debug: <Icons.Health />, workflow: <Icons.Fork />, monitor: <Icons.Health />, external: <Icons.External />, settings: <Icons.Settings />, sessions: <Icons.Agents /> }[inlinePanel.type]}
-                <span style={{ fontWeight: 600, fontSize: 13, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <span className={styles.publishTitle}>
                   {{ execution: 'Execution', utility: 'Utility', memory: 'Memory', capabilities: 'Capabilities', goals: 'Goals', economy: 'Economy', negotiation: 'Negotiation', governance: 'Governance', audit: 'Audit', debug: 'Debug', workflow: 'Workflow', monitor: 'Monitor', external: 'External', settings: 'Settings', sessions: 'Sessions' }[inlinePanel.type]}
                 </span>
-                <button onClick={() => setInlinePanel(null)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 16, padding: '2px 6px' }} title="Close">×</button>
+                <button onClick={() => setInlinePanel(null)} className={styles.publishCloseBtn} title="Close">×</button>
               </div>
 
               {/* Inline panel content */}
@@ -840,24 +840,24 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           <div className={styles.sessionsPane}>
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
               {/* Publish header */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', borderBottom: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}>
+              <div className={styles.publishHeader}>
                 <Icons.Upload />
-                <span style={{ fontWeight: 600, fontSize: 13, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Publish {publishAgent.name}</span>
+                <span className={styles.publishTitle}>Publish {publishAgent.name}</span>
                 <button
                   onClick={handlePublishAgent}
                   disabled={isPublishing}
-                  style={{ padding: '4px 12px', background: isPublishing ? 'rgba(99,102,241,0.4)' : 'linear-gradient(135deg,#6366f1,#8b5cf6)', border: 'none', borderRadius: 4, color: '#fff', fontSize: 11, fontWeight: 600, cursor: isPublishing ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
+                  className={styles.publishBtn}
                 >
                   {isPublishing ? 'Publishing…' : 'Publish'}
                 </button>
-                <button onClick={() => { setPublishAgentId(null); setPublishResult(null); }} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 16, padding: '2px 6px' }} title="Close">×</button>
+                <button onClick={() => { setPublishAgentId(null); setPublishResult(null); }} className={styles.publishCloseBtn} title="Close">×</button>
               </div>
 
               {/* Publish content */}
-              <div style={{ flex: 1, overflowY: 'auto', padding: '8px 12px' }}>
+              <div className={styles.publishContent}>
                 {/* Result banner */}
                 {publishResult && (
-                  <div style={{ padding: '8px 10px', borderRadius: 6, marginBottom: 8, background: publishResult.success ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)', border: publishResult.success ? '1px solid rgba(16,185,129,0.25)' : '1px solid rgba(239,68,68,0.25)' }}>
+                  <div className={`${styles.publishResultBanner} ${publishResult.success ? styles.success : styles.error}`}>
                     {publishResult.success ? (
                       <>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#10b981', fontSize: 12, fontWeight: 600, marginBottom: 6 }}>✓ Published Successfully</div>
@@ -873,70 +873,70 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                 )}
 
                 {/* Form fields */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px', gap: 6 }}>
+                <div className={styles.publishForm}>
+                  <div className={styles.publishFormGridNameVer}>
                     <div>
-                      <label style={{ display: 'block', fontSize: 10, color: '#888', marginBottom: 2, fontWeight: 500 }}>Name *</label>
-                      <input type="text" style={{ width: '100%', padding: '5px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, color: '#fff', fontSize: 12, outline: 'none', boxSizing: 'border-box' as const }} value={publishManifest.name} onChange={e => updatePublishManifest('name', e.target.value)} />
+                      <label className={styles.publishLabel}>Name *</label>
+                      <input type="text" className={styles.publishInput} value={publishManifest.name} onChange={e => updatePublishManifest('name', e.target.value)} />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: 10, color: '#888', marginBottom: 2, fontWeight: 500 }}>Version</label>
-                      <input type="text" style={{ width: '100%', padding: '5px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, color: '#fff', fontSize: 12, outline: 'none', boxSizing: 'border-box' as const }} value={publishManifest.version} onChange={e => updatePublishManifest('version', e.target.value)} />
+                      <label className={styles.publishLabel}>Version</label>
+                      <input type="text" className={styles.publishInput} value={publishManifest.version} onChange={e => updatePublishManifest('version', e.target.value)} />
                     </div>
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: 10, color: '#888', marginBottom: 2, fontWeight: 500 }}>Description *</label>
-                    <textarea style={{ width: '100%', padding: '5px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, color: '#fff', fontSize: 12, outline: 'none', boxSizing: 'border-box' as const, minHeight: 48, resize: 'vertical' as const, fontFamily: 'inherit' }} value={publishManifest.description} onChange={e => updatePublishManifest('description', e.target.value)} placeholder="What does your agent do…" />
+                    <label className={styles.publishLabel}>Description *</label>
+                    <textarea className={styles.publishTextarea} value={publishManifest.description} onChange={e => updatePublishManifest('description', e.target.value)} placeholder="What does your agent do…" />
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                  <div className={styles.publishFormGrid2}>
                     <div>
-                      <label style={{ display: 'block', fontSize: 10, color: '#888', marginBottom: 2, fontWeight: 500 }}>Category</label>
-                      <select style={{ width: '100%', padding: '5px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, color: '#fff', fontSize: 12, outline: 'none' }} value={publishManifest.category} onChange={e => updatePublishManifest('category', e.target.value)}>
+                      <label className={styles.publishLabel}>Category</label>
+                      <select className={styles.publishSelect} value={publishManifest.category} onChange={e => updatePublishManifest('category', e.target.value)}>
                         {['utility','analysis','automation','communication','data','developer-tools','productivity','security'].map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: 10, color: '#888', marginBottom: 2, fontWeight: 500 }}>License</label>
-                      <select style={{ width: '100%', padding: '5px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, color: '#fff', fontSize: 12, outline: 'none' }} value={publishManifest.license} onChange={e => updatePublishManifest('license', e.target.value)}>
+                      <label className={styles.publishLabel}>License</label>
+                      <select className={styles.publishSelect} value={publishManifest.license} onChange={e => updatePublishManifest('license', e.target.value)}>
                         {['MIT','Apache-2.0','GPL-3.0','BSD-3-Clause','Proprietary'].map(l => <option key={l} value={l}>{l}</option>)}
                       </select>
                     </div>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                  <div className={styles.publishFormGrid2}>
                     <div>
-                      <label style={{ display: 'block', fontSize: 10, color: '#888', marginBottom: 2, fontWeight: 500 }}>Author</label>
-                      <input type="text" style={{ width: '100%', padding: '5px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, color: '#fff', fontSize: 12, outline: 'none', boxSizing: 'border-box' as const }} placeholder="Name" value={publishManifest.authorName} onChange={e => updatePublishManifest('authorName', e.target.value)} />
+                      <label className={styles.publishLabel}>Author</label>
+                      <input type="text" className={styles.publishInput} placeholder="Name" value={publishManifest.authorName} onChange={e => updatePublishManifest('authorName', e.target.value)} />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: 10, color: '#888', marginBottom: 2, fontWeight: 500 }}>Email</label>
-                      <input type="email" style={{ width: '100%', padding: '5px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, color: '#fff', fontSize: 12, outline: 'none', boxSizing: 'border-box' as const }} placeholder="you@example.com" value={publishManifest.authorEmail} onChange={e => updatePublishManifest('authorEmail', e.target.value)} />
+                      <label className={styles.publishLabel}>Email</label>
+                      <input type="email" className={styles.publishInput} placeholder="you@example.com" value={publishManifest.authorEmail} onChange={e => updatePublishManifest('authorEmail', e.target.value)} />
                     </div>
                   </div>
 
                   {/* Tags */}
                   <div>
-                    <label style={{ display: 'block', fontSize: 10, color: '#888', marginBottom: 2, fontWeight: 500 }}>Tags</label>
-                    <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 3, padding: '3px 6px', minHeight: 26, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4 }}>
+                    <label className={styles.publishLabel}>Tags</label>
+                    <div className={styles.publishTagsWrap}>
                       {publishManifest.tags.map(t => (
-                        <span key={t} style={{ display: 'inline-flex', alignItems: 'center', gap: 2, padding: '1px 5px', background: 'rgba(99,102,241,0.15)', color: '#6366f1', borderRadius: 3, fontSize: 10 }}>
-                          {t} <span onClick={() => updatePublishManifest('tags', publishManifest.tags.filter((x: string) => x !== t))} style={{ cursor: 'pointer', opacity: 0.6, fontSize: 10 }}>×</span>
+                        <span key={t} className={styles.publishTag}>
+                          {t} <span onClick={() => updatePublishManifest('tags', publishManifest.tags.filter((x: string) => x !== t))} className={styles.publishTagRemove}>×</span>
                         </span>
                       ))}
-                      <input type="text" placeholder="Add…" value={publishTagInput} onChange={e => setPublishTagInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); if (publishTagInput.trim() && !publishManifest.tags.includes(publishTagInput.trim())) { updatePublishManifest('tags', [...publishManifest.tags, publishTagInput.trim()]); setPublishTagInput(''); } } }} style={{ flex: 1, minWidth: 50, border: 'none', background: 'transparent', color: '#fff', fontSize: 11, outline: 'none', padding: 0 }} />
+                      <input type="text" placeholder="Add…" value={publishTagInput} onChange={e => setPublishTagInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); if (publishTagInput.trim() && !publishManifest.tags.includes(publishTagInput.trim())) { updatePublishManifest('tags', [...publishManifest.tags, publishTagInput.trim()]); setPublishTagInput(''); } } }} className={styles.publishTagInput} />
                     </div>
                   </div>
 
                   {/* Trust Tier */}
                   <div>
-                    <label style={{ display: 'block', fontSize: 10, color: '#888', marginBottom: 2, fontWeight: 500 }}>Trust Tier</label>
-                    <div style={{ display: 'flex', gap: 4 }}>
+                    <label className={styles.publishLabel}>Trust Tier</label>
+                    <div className={styles.trustTierRow}>
                       {[{ v: 0, l: 'T0', d: 'Minimal' }, { v: 1, l: 'T1', d: 'Sandbox' }, { v: 2, l: 'T2', d: 'Network' }, { v: 3, l: 'T3', d: 'Extended' }].map(t => (
-                        <button key={t.v} onClick={() => updatePublishManifest('trustTier', t.v)} style={{ flex: 1, padding: '4px 2px', textAlign: 'center' as const, border: publishManifest.trustTier === t.v ? '1px solid #6366f1' : '1px solid rgba(255,255,255,0.1)', background: publishManifest.trustTier === t.v ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.05)', borderRadius: 4, cursor: 'pointer', color: '#fff', fontSize: 10 }}>
-                          <div style={{ fontWeight: 600 }}>{t.l}</div>
-                          <div style={{ fontSize: 9, color: '#888' }}>{t.d}</div>
+                        <button key={t.v} onClick={() => updatePublishManifest('trustTier', t.v)} className={`${styles.trustTierBtn} ${publishManifest.trustTier === t.v ? styles.active : ''}`}>
+                          <div className={styles.trustTierLabel}>{t.l}</div>
+                          <div className={styles.trustTierDesc}>{t.d}</div>
                         </button>
                       ))}
                     </div>
@@ -944,13 +944,13 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
                   {/* Permissions */}
                   <div>
-                    <label style={{ display: 'block', fontSize: 10, color: '#888', marginBottom: 2, fontWeight: 500 }}>Permissions</label>
-                    <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 3 }}>
+                    <label className={styles.publishLabel}>Permissions</label>
+                    <div className={styles.permissionsWrap}>
                       {['memory:read','memory:write','network:http','network:websocket','filesystem:read','agent:spawn'].map(p => {
                         const active = publishManifest.permissions.includes(p);
                         return (
-                          <button key={p} onClick={() => updatePublishManifest('permissions', active ? publishManifest.permissions.filter((x: string) => x !== p) : [...publishManifest.permissions, p])} style={{ display: 'flex', alignItems: 'center', gap: 3, padding: '2px 6px', fontSize: 10, borderRadius: 3, cursor: 'pointer', border: active ? '1px solid rgba(99,102,241,0.5)' : '1px solid rgba(255,255,255,0.1)', background: active ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.05)', color: active ? '#6366f1' : '#fff' }}>
-                            <span style={{ width: 10, height: 10, borderRadius: 2, border: `1px solid ${active ? '#6366f1' : '#888'}`, background: active ? '#6366f1' : 'transparent', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, color: '#fff', lineHeight: 1 }}>{active ? '✓' : ''}</span>
+                          <button key={p} onClick={() => updatePublishManifest('permissions', active ? publishManifest.permissions.filter((x: string) => x !== p) : [...publishManifest.permissions, p])} className={`${styles.permBtn} ${active ? styles.active : ''}`}>
+                            <span className={`${styles.permCheck} ${active ? styles.active : ''}`}>{active ? '✓' : ''}</span>
                             {p}
                           </button>
                         );
@@ -960,16 +960,16 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
                   {/* Code */}
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
-                      <label style={{ fontSize: 10, color: '#888', fontWeight: 500 }}>Agent Code</label>
+                    <div className={styles.codeRow}>
+                      <label className={styles.publishLabel} style={{ marginBottom: 0 }}>Agent Code</label>
                       <div style={{ flex: 1 }} />
-                      <select style={{ padding: '2px 4px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 3, color: '#fff', fontSize: 10 }} value={publishManifest.runtime} onChange={e => updatePublishManifest('runtime', e.target.value)}>
+                      <select className={styles.codeSelect} value={publishManifest.runtime} onChange={e => updatePublishManifest('runtime', e.target.value)}>
                         <option value="python">Python</option>
                         <option value="javascript">JavaScript</option>
                       </select>
-                      <input type="text" style={{ width: 70, padding: '2px 4px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 3, color: '#fff', fontSize: 10, boxSizing: 'border-box' as const }} value={publishManifest.entrypoint} onChange={e => updatePublishManifest('entrypoint', e.target.value)} />
+                      <input type="text" className={styles.codeEntrypoint} value={publishManifest.entrypoint} onChange={e => updatePublishManifest('entrypoint', e.target.value)} />
                     </div>
-                    <textarea style={{ width: '100%', minHeight: 120, padding: '6px 8px', background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, color: '#10b981', fontSize: 11, fontFamily: 'monospace', resize: 'vertical' as const, outline: 'none', boxSizing: 'border-box' as const }} value={publishCode} onChange={e => setPublishCode(e.target.value)} spellCheck={false} />
+                    <textarea className={styles.codeEditor} value={publishCode} onChange={e => setPublishCode(e.target.value)} spellCheck={false} />
                   </div>
                 </div>
               </div>
@@ -979,10 +979,10 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           <div className={styles.sessionsPane}>
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
               {/* Detail header */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', borderBottom: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}>
+              <div className={styles.publishHeader}>
                 <Icons.Info />
-                <span style={{ fontWeight: 600, fontSize: 13, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{detailAgent.name} Details</span>
-                <button onClick={() => setDetailAgentId(null)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 16, padding: '2px 6px' }} title="Close details">×</button>
+                <span className={styles.publishTitle}>{detailAgent.name} Details</span>
+                <button onClick={() => setDetailAgentId(null)} className={styles.publishCloseBtn} title="Close details">×</button>
               </div>
 
               {/* Detail content */}

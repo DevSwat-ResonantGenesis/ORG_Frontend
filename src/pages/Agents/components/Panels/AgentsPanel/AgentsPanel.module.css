@@ -1678,6 +1678,425 @@
   color: #4f46e5;
 }
 
+/* ============== PUBLISH FORM ============== */
+.publishHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+
+.publishTitle {
+  font-weight: 600;
+  font-size: 13px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.publishBtn {
+  padding: 4px 12px;
+  background: linear-gradient(135deg,#6366f1,#8b5cf6);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.publishBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.publishCloseBtn {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 6px;
+}
+
+.publishContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px;
+}
+
+.publishForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.publishFormGrid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.publishFormGridNameVer {
+  display: grid;
+  grid-template-columns: 1fr 80px;
+  gap: 6px;
+}
+
+.publishLabel {
+  display: block;
+  font-size: 10px;
+  color: #888;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+
+.publishInput {
+  width: 100%;
+  padding: 5px 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  color: inherit;
+  font-size: 12px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.publishTextarea {
+  width: 100%;
+  padding: 5px 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  color: inherit;
+  font-size: 12px;
+  outline: none;
+  box-sizing: border-box;
+  min-height: 48px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.publishSelect {
+  width: 100%;
+  padding: 5px 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  color: inherit;
+  font-size: 12px;
+  outline: none;
+}
+
+.publishTagsWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 3px 6px;
+  min-height: 26px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+}
+
+.publishTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 1px 5px;
+  background: rgba(99,102,241,0.15);
+  color: #6366f1;
+  border-radius: 3px;
+  font-size: 10px;
+}
+
+.publishTagRemove {
+  cursor: pointer;
+  opacity: 0.6;
+  font-size: 10px;
+}
+
+.publishTagInput {
+  flex: 1;
+  min-width: 50px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 11px;
+  outline: none;
+  padding: 0;
+}
+
+.trustTierRow {
+  display: flex;
+  gap: 4px;
+}
+
+.trustTierBtn {
+  flex: 1;
+  padding: 4px 2px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+  cursor: pointer;
+  color: inherit;
+  font-size: 10px;
+}
+
+.trustTierBtn.active {
+  border-color: #6366f1;
+  background: rgba(99,102,241,0.15);
+}
+
+.trustTierLabel {
+  font-weight: 600;
+}
+
+.trustTierDesc {
+  font-size: 9px;
+  color: #888;
+}
+
+.permissionsWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.permBtn {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 6px;
+  font-size: 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  color: inherit;
+}
+
+.permBtn.active {
+  border-color: rgba(99,102,241,0.5);
+  background: rgba(99,102,241,0.15);
+  color: #6366f1;
+}
+
+.permCheck {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1px solid #888;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: #fff;
+  line-height: 1;
+}
+
+.permCheck.active {
+  border-color: #6366f1;
+  background: #6366f1;
+}
+
+.codeRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.codeSelect {
+  padding: 2px 4px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 3px;
+  color: inherit;
+  font-size: 10px;
+}
+
+.codeEntrypoint {
+  width: 70px;
+  padding: 2px 4px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 3px;
+  color: inherit;
+  font-size: 10px;
+  box-sizing: border-box;
+}
+
+.codeEditor {
+  width: 100%;
+  min-height: 120px;
+  padding: 6px 8px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  color: #10b981;
+  font-size: 11px;
+  font-family: monospace;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.publishResultBanner {
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.publishResultBanner.success {
+  background: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.25);
+}
+
+.publishResultBanner.error {
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.25);
+}
+
+/* --- Publish Light Mode --- */
+[data-theme='light'] .publishHeader {
+  border-bottom: none;
+}
+
+[data-theme='light'] .publishLabel {
+  color: #6b7280;
+}
+
+[data-theme='light'] .publishInput {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #111827;
+}
+
+[data-theme='light'] .publishInput:focus {
+  border-bottom-color: #0ea5e9;
+}
+
+[data-theme='light'] .publishTextarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #111827;
+}
+
+[data-theme='light'] .publishTextarea:focus {
+  border-bottom-color: #0ea5e9;
+}
+
+[data-theme='light'] .publishSelect {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #111827;
+}
+
+[data-theme='light'] .publishTagsWrap {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+}
+
+[data-theme='light'] .publishTagInput {
+  color: #111827;
+}
+
+[data-theme='light'] .trustTierBtn {
+  border-color: #d1d5db;
+  background: transparent;
+  color: #374151;
+}
+
+[data-theme='light'] .trustTierBtn.active {
+  border-color: #6366f1;
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+[data-theme='light'] .trustTierDesc {
+  color: #9ca3af;
+}
+
+[data-theme='light'] .permBtn {
+  border-color: #d1d5db;
+  background: transparent;
+  color: #374151;
+}
+
+[data-theme='light'] .permBtn.active {
+  border-color: rgba(99,102,241,0.5);
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+[data-theme='light'] .permCheck {
+  border-color: #d1d5db;
+}
+
+[data-theme='light'] .permCheck.active {
+  border-color: #6366f1;
+  background: #6366f1;
+}
+
+[data-theme='light'] .codeSelect {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #111827;
+}
+
+[data-theme='light'] .codeEntrypoint {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #111827;
+}
+
+[data-theme='light'] .codeEditor {
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  color: #059669;
+}
+
+[data-theme='light'] .publishResultBanner.success {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+[data-theme='light'] .publishResultBanner.error {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+[data-theme='light'] .publishCloseBtn {
+  color: #9ca3af;
+}
+
+/* Also fix detail pane header and factory header borders in light mode */
+[data-theme='light'] .inlinePaneHeader {
+  border-bottom: none;
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
   .detailGrid {
