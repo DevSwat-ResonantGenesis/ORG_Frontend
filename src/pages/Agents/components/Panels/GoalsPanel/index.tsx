@@ -93,7 +93,8 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
       setShowNewGoalForm(false);
       fetchGoals();
     } catch (err: any) {
-      setError(err.message || 'Failed to create goal');
+      setError(err.response?.data?.detail || err.message || 'Failed to create goal');
+      setTimeout(() => setError(null), 5000);
     } finally {
       setIsLoading(false);
     }
@@ -104,12 +105,13 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
     if (!selectedAgent?.id) return;
     setIsLoading(true);
     try {
-      await fastapiClient.put(`/api/v1/agents/goals/${selectedAgent.id}/${goalId}`, {
+      await fastapiClient.patch(`/api/v1/agents/goals/${selectedAgent.id}/goals/${goalId}`, {
         status: newStatus
       });
       fetchGoals();
     } catch (err: any) {
-      setError(err.message || 'Failed to update goal');
+      setError(err.response?.data?.detail || err.message || 'Failed to update goal');
+      setTimeout(() => setError(null), 5000);
     } finally {
       setIsLoading(false);
     }
@@ -121,10 +123,11 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
     if (!confirm('Delete this goal?')) return;
     setIsLoading(true);
     try {
-      await fastapiClient.delete(`/api/v1/agents/goals/${selectedAgent.id}/${goalId}`);
+      await fastapiClient.delete(`/api/v1/agents/goals/${selectedAgent.id}/goals/${goalId}`);
       fetchGoals();
     } catch (err: any) {
-      setError(err.message || 'Failed to delete goal');
+      setError(err.response?.data?.detail || err.message || 'Failed to delete goal');
+      setTimeout(() => setError(null), 5000);
     } finally {
       setIsLoading(false);
     }
