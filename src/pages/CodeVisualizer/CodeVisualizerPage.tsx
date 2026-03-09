@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../../utils/apiUrl';
 import { isAuthenticated } from '../../utils/auth-cookies';
+import { useThemeStore } from '../../store/themeStore';
 import styles from './CodeVisualizerPage.module.css';
 
 interface SavedAnalysis {
@@ -28,6 +29,14 @@ const formatDate = (iso: string | null) => {
 const CodeVisualizerPage: React.FC = () => {
   const navigate = useNavigate();
   const apiUrl = useMemo(() => getApiUrl(), []);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const theme = useThemeStore(state => state.theme);
+
+  const postThemeToIframe = (nextTheme: 'dark' | 'light') => {
+    const targetWindow = iframeRef.current?.contentWindow;
+    if (!targetWindow) return;
+    targetWindow.postMessage({ type: 'RG_THEME', theme: nextTheme }, '*');
+  };
 
   const [panelOpen, setPanelOpen] = useState(false);
   const [analyses, setAnalyses] = useState<SavedAnalysis[]>([]);
@@ -49,6 +58,10 @@ const CodeVisualizerPage: React.FC = () => {
       navigate('/signup', { replace: true });
     }
   }, [navigate]);
+
+  useEffect(() => {
+    postThemeToIframe(theme);
+  }, [theme]);
 
   const fetchAnalyses = useCallback(async () => {
     setLoading(true);
@@ -143,11 +156,13 @@ const CodeVisualizerPage: React.FC = () => {
     <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
       {/* Main CV iframe */}
       <iframe
+        ref={iframeRef}
         key={iframeSrc}
         title="Code Visualizer"
         src={iframeSrc}
         style={{ width: '100%', height: '100%', border: 0, display: 'block' }}
         allow="fullscreen"
+        onLoad={() => postThemeToIframe(theme)}
       />
 
       {/* Saved Analyses toggle button */}
