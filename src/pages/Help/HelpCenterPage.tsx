@@ -314,9 +314,9 @@ const HelpCenterPage: React.FC = () => {
   return (
     <div className={styles.helpCenterPage}>
       {/* Hero — full-width, matches home page structure exactly */}
-      <section className={styles.hero}>
+      <section className={`${styles.hero} ${searchQuery ? styles.heroSearching : ''}`}>
         {/* Parallax Background — 3D Particle Sphere */}
-        <div className={styles.heroParallax} aria-hidden="true">
+        <div className={`${styles.heroParallax} ${searchQuery ? styles.sphereSlid : ''}`} aria-hidden="true">
           <Suspense fallback={<div className={styles.parallaxPlaceholder} />}>
             <div className={styles.heroParallaxInner}>
               <ThreeParticleSphere />
@@ -325,11 +325,18 @@ const HelpCenterPage: React.FC = () => {
         </div>
 
         <div className={styles.heroContent}>
-          <div className={styles.heroIntro}>
-            <h1 className={styles.heroTitle}>Help Center</h1>
-            <p className={styles.heroSubtitle}>
-              Tutorials and documentation for ResonantGenesis — aligned to the current stack.
-            </p>
+          <div className={`${styles.heroIntro} ${searchQuery ? styles.introSearching : ''}`}>
+            {/* Title + Subtitle — hidden when searching */}
+            {!searchQuery && (
+              <>
+                <h1 className={styles.heroTitle}>Help Center</h1>
+                <p className={styles.heroSubtitle}>
+                  Tutorials and documentation for ResonantGenesis — aligned to the current stack.
+                </p>
+              </>
+            )}
+
+            {/* Search Bar */}
             <div className={styles.searchBar}>
               <SearchIcon size={18} />
               <input
@@ -342,6 +349,53 @@ const HelpCenterPage: React.FC = () => {
               />
               <span className={styles.searchShortcut}>⌘K</span>
             </div>
+
+            {/* Hashtag Category Filters — inside hero, below search */}
+            <div className={styles.hashTags}>
+              <button
+                className={`${styles.hashTag} ${selectedCategory === null ? styles.hashTagActive : ''}`}
+                onClick={() => setSelectedCategory(null)}
+              >
+                #All
+              </button>
+              {categories.map(category => (
+                <button
+                  key={category}
+                  className={`${styles.hashTag} ${selectedCategory === category ? styles.hashTagActive : ''}`}
+                  onClick={() => setSelectedCategory(category)}
+                >
+                  #{category.replace(/\s+&\s+/g, '').replace(/\s+/g, '')}
+                </button>
+              ))}
+            </div>
+
+            {/* Search Results — appear below hashtags when user is typing */}
+            {searchQuery && (
+              <div className={styles.heroSearchResults}>
+                {filteredArticles.length > 0 ? (
+                  filteredArticles.slice(0, 8).map(article => (
+                    <button
+                      key={article.id}
+                      className={styles.heroSearchItem}
+                      onClick={() => navigate(article.path)}
+                    >
+                      <FileTextIcon size={16} />
+                      <div className={styles.heroSearchItemText}>
+                        <span className={styles.heroSearchItemTitle}>{article.title}</span>
+                        <span className={styles.heroSearchItemDesc}>{article.description}</span>
+                      </div>
+                      {article.readingTime && (
+                        <span className={styles.heroSearchItemMeta}>{article.readingTime} min</span>
+                      )}
+                    </button>
+                  ))
+                ) : (
+                  <div className={styles.heroSearchEmpty}>
+                    No articles found for "{searchQuery}"
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -379,26 +433,6 @@ const HelpCenterPage: React.FC = () => {
                 </div>
               </section>
             )}
-
-            {/* Category Filter */}
-            <div className={styles.categoryFilters}>
-              <button
-                className={`${styles.categoryFilter} ${selectedCategory === null ? styles.active : ''}`}
-                onClick={() => setSelectedCategory(null)}
-              >
-                All Categories
-              </button>
-              {categories.map(category => (
-                <button
-                  key={category}
-                  className={`${styles.categoryFilter} ${selectedCategory === category ? styles.active : ''}`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  <span className={styles.categoryIcon}>{categoryIcons[category]}</span>
-                  {category}
-                </button>
-              ))}
-            </div>
 
             {/* Articles by Category */}
             {Object.entries(groupedArticles).map(([category, categoryArticles]) => (

@@ -80,6 +80,7 @@
   justify-content: flex-end;
   opacity: 1;
   animation: helpSphereScaleUp 3s cubic-bezier(0.2, 0, 0.2, 1) forwards;
+  transition: right 800ms cubic-bezier(0.4, 0, 0.2, 1), opacity 600ms ease;
 }
 
 @keyframes helpSphereScaleUp {
@@ -165,6 +166,7 @@
   flex-direction: column;
   justify-content: center;
   padding-top: clamp(20px, 5vh, 84px);
+  transition: padding-top 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (min-width: 1024px) {
@@ -253,6 +255,182 @@
 
 [data-theme='light'] .searchBar svg {
   color: #94a3b8;
+}
+
+/* ============================================================
+   Hashtag Category Filters — inside hero, below search
+   ============================================================ */
+.hashTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-top: 16px;
+  padding: 0;
+}
+
+.hashTag {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(148, 163, 184, 0.6);
+  cursor: pointer;
+  transition: color 200ms ease;
+  letter-spacing: 0.01em;
+}
+
+.hashTag:hover {
+  color: rgba(96, 165, 250, 0.9);
+}
+
+.hashTagActive {
+  color: #60a5fa;
+}
+
+[data-theme='light'] .hashTag {
+  color: #94a3b8;
+}
+
+[data-theme='light'] .hashTag:hover {
+  color: #3b82f6;
+}
+
+[data-theme='light'] .hashTagActive {
+  color: #3b82f6;
+}
+
+/* ============================================================
+   Hero Search Results — appear below hashtags when typing
+   ============================================================ */
+.heroSearchResults {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: fadeInResults 300ms ease forwards;
+  max-height: 60vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.2) transparent;
+}
+
+@keyframes fadeInResults {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.heroSearchItem {
+  appearance: none;
+  border: none;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 150ms ease;
+  text-align: left;
+  width: 100%;
+  color: #f1f5f9;
+}
+
+.heroSearchItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='light'] .heroSearchItem {
+  background: rgba(0, 0, 0, 0.02);
+  color: #0f172a;
+}
+
+[data-theme='light'] .heroSearchItem:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.heroSearchItem svg {
+  color: rgba(148, 163, 184, 0.5);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.heroSearchItemText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.heroSearchItemTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-theme='light'] .heroSearchItemTitle {
+  color: #0f172a;
+}
+
+.heroSearchItemDesc {
+  font-size: 13px;
+  color: rgba(148, 163, 184, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-theme='light'] .heroSearchItemDesc {
+  color: #64748b;
+}
+
+.heroSearchItemMeta {
+  font-size: 12px;
+  color: rgba(148, 163, 184, 0.4);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.heroSearchEmpty {
+  padding: 24px 0;
+  font-size: 15px;
+  color: rgba(148, 163, 184, 0.6);
+}
+
+[data-theme='light'] .heroSearchEmpty {
+  color: #94a3b8;
+}
+
+/* ============================================================
+   Searching State Animations
+   ============================================================ */
+
+/* Hero shrinks when searching */
+.heroSearching {
+  min-height: auto;
+  overflow: hidden;
+}
+
+/* Content moves to top when searching */
+.introSearching {
+  padding-top: calc(var(--header-height, 56px) + 20px) !important;
+  justify-content: flex-start;
+}
+
+/* Sphere slides right — only half visible */
+.sphereSlid {
+  right: calc(-50% - 12mm) !important;
+  opacity: 0.5 !important;
+  transition: right 800ms cubic-bezier(0.4, 0, 0.2, 1), opacity 600ms ease;
 }
 
 /* Featured */
