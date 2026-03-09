@@ -118,11 +118,6 @@ html::-webkit-scrollbar-thumb:hover {
    Global consistency rules to ensure proper styling across the app
    ============================================================ */
 
-/* Remove any conflicting styles */
-* {
-  background-image: none !important;
-}
-
 /* Ensure proper inheritance */
 .page-container,
 .page-section,
