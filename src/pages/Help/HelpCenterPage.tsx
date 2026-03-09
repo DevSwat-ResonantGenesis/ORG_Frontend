@@ -235,7 +235,9 @@ const HelpCenterPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [helpTheme, setHelpTheme] = useState<'light' | 'dark'>('light');
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [isStuck, setIsStuck] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const previousTheme = (document.documentElement.getAttribute('data-theme') as 'light' | 'dark') || useThemeStore.getState().theme;
@@ -284,6 +286,18 @@ const HelpCenterPage: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Detect when sticky search bar is stuck at top
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsStuck(!entry.isIntersecting),
+      { threshold: 0, rootMargin: `-${parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-height') || '56')}px 0px 0px 0px` }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const toggleFaq = (index: number) => {
     setExpandedFaq(expandedFaq === index ? null : index);
   };
@@ -313,92 +327,94 @@ const HelpCenterPage: React.FC = () => {
 
   return (
     <div className={styles.helpCenterPage}>
-      {/* Hero — full-width, matches home page structure exactly */}
-      <section className={`${styles.hero} ${searchQuery ? styles.heroSearching : ''}`}>
-        {/* Parallax Background — 3D Particle Sphere */}
-        <div className={`${styles.heroParallax} ${searchQuery ? styles.sphereSlid : ''}`} aria-hidden="true">
-          <Suspense fallback={<div className={styles.parallaxPlaceholder} />}>
-            <div className={styles.heroParallaxInner}>
-              <ThreeParticleSphere />
-            </div>
-          </Suspense>
-        </div>
+      {/* Fixed Background — 3D Particle Sphere stays behind everything */}
+      <div className={`${styles.fixedBg} ${searchQuery ? styles.fixedBgSearching : ''}`} aria-hidden="true">
+        <Suspense fallback={<div className={styles.parallaxPlaceholder} />}>
+          <div className={styles.heroParallaxInner}>
+            <ThreeParticleSphere />
+          </div>
+        </Suspense>
+      </div>
 
+      {/* Hero — title + subtitle */}
+      <section className={styles.hero}>
         <div className={styles.heroContent}>
-          <div className={`${styles.heroIntro} ${searchQuery ? styles.introSearching : ''}`}>
-            {/* Title + Subtitle — hidden when searching */}
-            {!searchQuery && (
-              <>
-                <h1 className={styles.heroTitle}>Help Center</h1>
-                <p className={styles.heroSubtitle}>
-                  Tutorials and documentation for ResonantGenesis — aligned to the current stack.
-                </p>
-              </>
-            )}
-
-            {/* Search Bar */}
-            <div className={styles.searchBar}>
-              <SearchIcon size={18} />
-              <input
-                ref={searchInputRef}
-                type="text"
-                placeholder="Search tutorials..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={styles.searchInput}
-              />
-              <span className={styles.searchShortcut}>⌘K</span>
-            </div>
-
-            {/* Hashtag Category Filters — inside hero, below search */}
-            <div className={styles.hashTags}>
-              <button
-                className={`${styles.hashTag} ${selectedCategory === null ? styles.hashTagActive : ''}`}
-                onClick={() => setSelectedCategory(null)}
-              >
-                #All
-              </button>
-              {categories.map(category => (
-                <button
-                  key={category}
-                  className={`${styles.hashTag} ${selectedCategory === category ? styles.hashTagActive : ''}`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  #{category.replace(/\s+&\s+/g, '').replace(/\s+/g, '')}
-                </button>
-              ))}
-            </div>
-
-            {/* Search Results — appear below hashtags when user is typing */}
-            {searchQuery && (
-              <div className={styles.heroSearchResults}>
-                {filteredArticles.length > 0 ? (
-                  filteredArticles.slice(0, 8).map(article => (
-                    <button
-                      key={article.id}
-                      className={styles.heroSearchItem}
-                      onClick={() => navigate(article.path)}
-                    >
-                      <FileTextIcon size={16} />
-                      <div className={styles.heroSearchItemText}>
-                        <span className={styles.heroSearchItemTitle}>{article.title}</span>
-                        <span className={styles.heroSearchItemDesc}>{article.description}</span>
-                      </div>
-                      {article.readingTime && (
-                        <span className={styles.heroSearchItemMeta}>{article.readingTime} min</span>
-                      )}
-                    </button>
-                  ))
-                ) : (
-                  <div className={styles.heroSearchEmpty}>
-                    No articles found for "{searchQuery}"
-                  </div>
-                )}
-              </div>
-            )}
+          <div className={styles.heroIntro}>
+            <h1 className={styles.heroTitle}>Help Center</h1>
+            <p className={styles.heroSubtitle}>
+              Tutorials and documentation for ResonantGenesis — aligned to the current stack.
+            </p>
           </div>
         </div>
       </section>
+
+      {/* Sentinel — used by IntersectionObserver to detect sticky state */}
+      <div ref={sentinelRef} style={{ height: 1, marginTop: -1 }} />
+
+      {/* Sticky Search Bar — floats at top on scroll */}
+      <div className={`${styles.stickySearch} ${isStuck ? styles.stickySearchStuck : ''}`}>
+        <div className={styles.stickySearchInner}>
+          <div className={styles.searchBar}>
+            <SearchIcon size={18} />
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder="Search tutorials..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={styles.searchInput}
+            />
+            <span className={styles.searchShortcut}>⌘K</span>
+          </div>
+
+          {/* Hashtag Category Filters */}
+          <div className={styles.hashTags}>
+            <button
+              className={`${styles.hashTag} ${selectedCategory === null ? styles.hashTagActive : ''}`}
+              onClick={() => setSelectedCategory(null)}
+            >
+              #All
+            </button>
+            {categories.map(category => (
+              <button
+                key={category}
+                className={`${styles.hashTag} ${selectedCategory === category ? styles.hashTagActive : ''}`}
+                onClick={() => setSelectedCategory(category)}
+              >
+                #{category.replace(/\s+&\s+/g, '').replace(/\s+/g, '')}
+              </button>
+            ))}
+          </div>
+
+          {/* Search Results — appear below hashtags when user is typing */}
+          {searchQuery && (
+            <div className={styles.heroSearchResults}>
+              {filteredArticles.length > 0 ? (
+                filteredArticles.slice(0, 8).map(article => (
+                  <button
+                    key={article.id}
+                    className={styles.heroSearchItem}
+                    onClick={() => navigate(article.path)}
+                  >
+                    <FileTextIcon size={16} />
+                    <div className={styles.heroSearchItemText}>
+                      <span className={styles.heroSearchItemTitle}>{article.title}</span>
+                      <span className={styles.heroSearchItemDesc}>{article.description}</span>
+                    </div>
+                    {article.readingTime && (
+                      <span className={styles.heroSearchItemMeta}>{article.readingTime} min</span>
+                    )}
+                  </button>
+                ))
+              ) : (
+                <div className={styles.heroSearchEmpty}>
+                  No articles found for "{searchQuery}"
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
 
       <div className={styles.container}>
         <div className={styles.contentBody}>
