@@ -1,4 +1,5 @@
 import React, { memo, useState, useCallback, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAgentStore } from '../../../../../stores/agentStore';
 import { Icons } from '../../shared/Icons';
 import type { Agent } from '../../../../../types';
@@ -11,6 +12,7 @@ import {
 } from '../../../../../api/agents';
 import type { ProviderCatalogProvider, AgentProvidersCatalogResponse } from '../../../../../api/agents';
 import { fetchUserApiKeys } from '../../../../../api/userApiKeys';
+import { createMarketplaceItem } from '../../../../../api/marketplace';
 import fastapiClient from '../../../../../api/fastapiClient';
 import styles from './AdvancedFactory.module.css';
 
@@ -137,8 +139,10 @@ interface AdvancedFactoryProps {
 
 const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className }) => {
   const { addAgent } = useAgentStore();
+  const navigate = useNavigate();
   
   const [isCreating, setIsCreating] = useState(false);
+  const [isPublishingToStore, setIsPublishingToStore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   
@@ -845,10 +849,50 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
 
   const handlePublishToNetwork = useCallback(() => {
     if (createdAgentId) {
-      // Navigate to network publish page with agent ID as query param
-      window.location.href = `/network/publish?agentId=${createdAgentId}`;
+      navigate('/network/publish', {
+        state: {
+          fromFactory: true,
+          agentId: createdAgentId,
+          name: config.name,
+          description: config.description,
+          type: config.type,
+          tags: config.tags,
+          tools: config.tools,
+          provider: config.provider,
+          model: config.model,
+          systemPrompt: config.systemPrompt,
+        },
+      });
     }
-  }, [createdAgentId]);
+  }, [createdAgentId, config, navigate]);
+
+  const handlePublishToStore = useCallback(async () => {
+    if (!createdAgentId) return;
+    setIsPublishingToStore(true);
+    setError(null);
+    try {
+      await createMarketplaceItem({
+        name: config.name,
+        description: config.description || undefined,
+        short_description: config.description ? config.description.substring(0, 120) : undefined,
+        item_type: 'agent',
+        category: config.type || 'utility',
+        tags: config.tags.length > 0 ? config.tags : [config.type],
+        price: 0,
+        is_free: true,
+        metadata: {
+          agent_id: createdAgentId,
+          provider: config.provider,
+          model: config.model,
+        },
+      });
+      setSuccess(`Agent "${config.name}" published to General Store!`);
+    } catch (err: any) {
+      setError(err?.message || 'Failed to publish to General Store');
+    } finally {
+      setIsPublishingToStore(false);
+    }
+  }, [createdAgentId, config]);
 
   const getToolIcon = (iconName: string) => {
     const iconMap: Record<string, JSX.Element> = {
@@ -896,8 +940,11 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
           <Icons.CheckCircle /> {success}
           {createdAgentId && (
             <div className={styles.successActions}>
+              <button className={styles.publishStoreBtn} onClick={handlePublishToStore} disabled={isPublishingToStore}>
+                {isPublishingToStore ? <>⏳ Publishing...</> : <><Icons.Package /> Publish to General Store</>}
+              </button>
               <button className={styles.publishNetworkBtn} onClick={handlePublishToNetwork}>
-                <Icons.Upload /> Publish to Network
+                <Icons.Upload /> Publish to DSID Network
               </button>
               <button className={styles.createAnotherBtn} onClick={handleReset}>
                 <Icons.Plus /> Create Another
