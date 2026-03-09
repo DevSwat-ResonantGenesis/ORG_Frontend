@@ -12,144 +12,129 @@
 }
 
 /* Force dark appearance regardless of theme — this is a presentation.
-   Must use !important to override global themes.css nuclear rules like:
-   [data-theme="light"] * { background-color: inherit !important; }
-   [data-theme="light"] h1,h2,...,div,span,p { color: #111827 !important; } */
-:global([data-theme="light"]) .page,
-:global([data-theme="light"]) .page * {
+   Uses #pitch-deck ID for specificity (1,0,0) to beat themes.css
+   [data-theme="light"] * rules which have specificity (0,1,0).
+   Only affects this page — no other pages are impacted. */
+:global(#pitch-deck),
+:global(#pitch-deck) * {
   background-color: transparent !important;
-}
-
-:global([data-theme="light"]) .page {
-  background: #0a0a0a !important;
   color: #e5e7eb !important;
 }
 
-:global([data-theme="light"]) .page h1,
-:global([data-theme="light"]) .page h2,
-:global([data-theme="light"]) .page h3,
-:global([data-theme="light"]) .page h4,
-:global([data-theme="light"]) .page p,
-:global([data-theme="light"]) .page span,
-:global([data-theme="light"]) .page div,
-:global([data-theme="light"]) .page label {
-  color: inherit !important;
-}
-
-:global([data-theme="light"]) .slide {
-  color: #e5e7eb !important;
-}
-
-:global([data-theme="light"]) .slideDark {
+:global(#pitch-deck) {
   background: #0a0a0a !important;
 }
 
-:global([data-theme="light"]) .slideVr {
+:global(#pitch-deck) .slideDark {
+  background: #0a0a0a !important;
+}
+
+:global(#pitch-deck) .slideVr {
   background: #000 !important;
 }
 
-:global([data-theme="light"]) .section {
-  background-color: transparent !important;
-}
-
-:global([data-theme="light"]) .sectionTitle {
+:global(#pitch-deck) .sectionTitle {
   color: #f8fafc !important;
 }
 
-:global([data-theme="light"]) .sectionLead {
+:global(#pitch-deck) .sectionLead {
   color: rgba(226, 232, 240, 0.72) !important;
 }
 
-:global([data-theme="light"]) .card {
+:global(#pitch-deck) .card {
   background: rgba(2, 6, 23, 0.48) !important;
   border-color: rgba(148, 163, 184, 0.14) !important;
 }
 
-:global([data-theme="light"]) .cardTitle {
+:global(#pitch-deck) .cardTitle {
   color: rgba(248, 250, 252, 0.95) !important;
 }
 
-:global([data-theme="light"]) .cardBody {
+:global(#pitch-deck) .cardBody {
   color: rgba(226, 232, 240, 0.72) !important;
 }
 
-:global([data-theme="light"]) .vrImage {
+:global(#pitch-deck) .vrImage {
   opacity: 1 !important;
+  background: #000 !important;
 }
 
-:global([data-theme="light"]) .workflowPanel {
+:global(#pitch-deck) .workflowPanel {
   background: rgba(255, 255, 255, 0.07) !important;
-  color: #e5e7eb !important;
 }
 
-:global([data-theme="light"]) .workflowTitle {
+:global(#pitch-deck) .workflowTitle {
   color: #f8fafc !important;
 }
 
-:global([data-theme="light"]) .workflowSubtitle {
+:global(#pitch-deck) .workflowSubtitle {
   color: rgba(226, 232, 240, 0.7) !important;
 }
 
-:global([data-theme="light"]) .workflowStep {
+:global(#pitch-deck) .workflowStep {
   background: transparent !important;
 }
 
-:global([data-theme="light"]) .workflowStepNum {
+:global(#pitch-deck) .workflowStepNum {
   color: #60a5fa !important;
 }
 
-:global([data-theme="light"]) .workflowStepBody strong {
+:global(#pitch-deck) .workflowStepBody strong {
   color: #f1f5f9 !important;
 }
 
-:global([data-theme="light"]) .workflowStepBody span {
+:global(#pitch-deck) .workflowStepBody span {
   color: rgba(226, 232, 240, 0.65) !important;
 }
 
-:global([data-theme="light"]) .footerCtaInner {
+:global(#pitch-deck) .footerCtaInner {
   background: rgba(2, 6, 23, 0.65) !important;
   border-color: rgba(148, 163, 184, 0.14) !important;
 }
 
-:global([data-theme="light"]) .footerCtaTitle {
+:global(#pitch-deck) .footerCtaTitle {
   color: #f8fafc !important;
 }
 
-:global([data-theme="light"]) .footerCtaBody {
+:global(#pitch-deck) .footerCtaBody {
   color: rgba(226, 232, 240, 0.72) !important;
 }
 
-:global([data-theme="light"]) .vrQuote {
+:global(#pitch-deck) .vrQuote {
   color: rgba(255, 255, 255, 0.92) !important;
 }
 
-:global([data-theme="light"]) .vrQuote strong {
+:global(#pitch-deck) .vrQuote strong {
   color: #60a5fa !important;
 }
 
-:global([data-theme="light"]) .badge {
+:global(#pitch-deck) .badge {
   background: rgba(15, 23, 42, 0.55) !important;
   border-color: rgba(59, 130, 246, 0.25) !important;
   color: rgba(248, 250, 252, 0.85) !important;
 }
 
-:global([data-theme="light"]) .vrTitle {
+:global(#pitch-deck) .vrTitle {
   color: #fff !important;
 }
 
-:global([data-theme="light"]) .ctaPrimary {
+:global(#pitch-deck) .ctaPrimary {
   color: #fff !important;
   background: #2563eb !important;
 }
 
-:global([data-theme="light"]) .slideDot {
+:global(#pitch-deck) .slideDot {
   border-color: rgba(255, 255, 255, 0.5) !important;
   background: transparent !important;
 }
 
-:global([data-theme="light"]) .slideDotActive {
+:global(#pitch-deck) .slideDotActive {
   background: #60a5fa !important;
   border-color: #60a5fa !important;
+}
+
+:global(#pitch-deck) .vrQuoteOverlay {
+  background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 40%, transparent 70%) !important;
 }
 
 .main {

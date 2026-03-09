@@ -39,17 +39,6 @@ const InvestorPitchDeckPage = () => {
     return () => { document.body.style.overflow = prev; };
   }, []);
 
-  /* Force dark theme on mount — pitch deck is always a dark presentation.
-     useLayoutEffect fires synchronously before paint so no light-mode flash. */
-  useLayoutEffect(() => {
-    const html = document.documentElement;
-    const prevTheme = html.getAttribute('data-theme');
-    html.setAttribute('data-theme', 'dark');
-    return () => {
-      if (prevTheme) html.setAttribute('data-theme', prevTheme);
-      else html.removeAttribute('data-theme');
-    };
-  }, []);
 
   /* Scroll-hijack: wheel + touch events change slide, no page scroll */
   useEffect(() => {
@@ -281,7 +270,7 @@ const InvestorPitchDeckPage = () => {
   const isReactSnap = typeof navigator !== 'undefined' && navigator.userAgent === 'ReactSnap';
 
   return (
-    <div data-theme="dark" className={`${styles.page}${animate ? ` ${styles.animate}` : ''}${scrollCentered ? ` ${styles.parallaxCentered}` : ''}`}>
+    <div id="pitch-deck" className={`${styles.page}${animate ? ` ${styles.animate}` : ''}${scrollCentered ? ` ${styles.parallaxCentered}` : ''}`}>
       <Helmet>
         <title>Investor Pitch Deck – ResonantGenesis</title>
         <meta
