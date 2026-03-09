@@ -655,9 +655,7 @@
    LIGHT MODE OVERRIDES
    ============================================================ */
 :global([data-theme="light"]) .page {
-  background: radial-gradient(1200px 600px at 70% 30%, rgba(59, 130, 246, 0.08), transparent),
-    radial-gradient(900px 480px at 20% 20%, rgba(14, 165, 233, 0.06), transparent),
-    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #f8fafc 100%);
+  background: #f8fafc;
   color: #1e293b;
 }
 
@@ -827,12 +825,22 @@
   color: #475569;
 }
 
-:global([data-theme="light"]) .hero {
-  background: transparent;
-}
-
-:global([data-theme="light"]) .heroContent {
-  background: transparent;
+:global([data-theme="light"]) .hero,
+:global([data-theme="light"]) .hero::before,
+:global([data-theme="light"]) .hero::after,
+:global([data-theme="light"]) .heroContent,
+:global([data-theme="light"]) .heroGrid,
+:global([data-theme="light"]) .badgeRow,
+:global([data-theme="light"]) .title,
+:global([data-theme="light"]) .subtitle,
+:global([data-theme="light"]) .heroMetrics,
+:global([data-theme="light"]) .ctaRow {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 :global([data-theme="light"]) .parallax {
@@ -842,5 +850,8 @@
 :global([data-theme="light"]) .heroGrid {
   position: relative;
   z-index: 3;
-  background: transparent;
+}
+
+:global([data-theme="light"]) .section {
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #f8fafc 100%);
 }

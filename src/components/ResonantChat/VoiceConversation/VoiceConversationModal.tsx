@@ -16,7 +16,11 @@
  *   → tts.chunk (base64 mp3), tts.done
  */
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
+
+const ThreeParticleSphere = lazy(() =>
+  import('@/components/features/landing/ThreeParticleSphere').then(m => ({ default: m.ThreeParticleSphere }))
+);
 
 interface Turn {
   role: 'user' | 'assistant';
@@ -386,8 +390,7 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
 
   const isLight = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light';
   const isActive = status === 'listening' || status === 'speaking' || status === 'processing';
-  const sphereSize = isActive ? 200 : 160;
-  const particleCount = 48;
+  const sphereSize = isActive ? 260 : 220;
 
   return (
     <div style={{
@@ -413,7 +416,7 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
         </p>
       </div>
 
-      {/* Sphere + Mic container */}
+      {/* ThreeParticleSphere + Mic container */}
       <div
         style={{
           position: 'relative',
@@ -425,89 +428,52 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
         }}
         onClick={handleToggleListen}
       >
-        {/* Particle ring — orbiting dots like parallax sphere */}
-        {Array.from({ length: particleCount }).map((_, i) => {
-          const angle = (i / particleCount) * Math.PI * 2;
-          const radius = sphereSize / 2 + 8;
-          const size = 2 + Math.random() * 2.5;
-          const delay = (i / particleCount) * 4;
-          return (
-            <div
-              key={`p-${i}`}
-              style={{
-                position: 'absolute',
-                width: size, height: size, borderRadius: '50%',
-                background: isActive ? pulseColor : (isLight ? '#3b82f6' : '#60a5fa'),
-                left: '50%', top: '50%',
-                transform: `translate(-50%, -50%) rotate(${angle}rad) translateX(${radius}px)`,
-                opacity: isActive ? 0.7 + Math.sin(angle * 3) * 0.3 : 0.35,
-                animation: isActive
-                  ? `voiceOrbit 4s linear ${delay}s infinite, voiceParticlePulse 2s ease-in-out ${delay * 0.5}s infinite`
-                  : `voiceOrbitSlow 12s linear ${delay}s infinite`,
-                transformOrigin: `${-radius + size / 2}px 0`,
-                transition: 'opacity 0.5s, background 0.5s',
-                boxShadow: isActive ? `0 0 6px ${pulseColor}88` : 'none',
-              }}
-            />
-          );
-        })}
+        {/* Actual 3D Parallax Sphere */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          transform: isActive ? 'scale(1.08)' : 'scale(1)',
+          transition: 'transform 1.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s',
+          animation: isActive ? 'voiceSphereBreath 3s ease-in-out infinite' : 'none',
+          opacity: isActive ? 1 : 0.85,
+          pointerEvents: 'none',
+        }}>
+          <Suspense fallback={null}>
+            <ThreeParticleSphere />
+          </Suspense>
+        </div>
 
-        {/* Breathing ring — expands/shrinks when listening */}
+        {/* Breathing rings — expands/shrinks when listening */}
         {isActive && [0, 1, 2].map(i => (
           <div key={`ring-${i}`} style={{
             position: 'absolute',
             left: '50%', top: '50%',
-            width: sphereSize + i * 30,
-            height: sphereSize + i * 30,
+            width: sphereSize + 20 + i * 30,
+            height: sphereSize + 20 + i * 30,
             borderRadius: '50%',
             border: `1.5px solid ${pulseColor}`,
-            opacity: 0.35 - i * 0.1,
+            opacity: 0.3 - i * 0.08,
             transform: 'translate(-50%, -50%)',
             animation: `voiceBreathe 2.5s ease-in-out ${i * 0.3}s infinite`,
+            pointerEvents: 'none',
           }} />
         ))}
 
-        {/* Wireframe sphere shell */}
+        {/* Mic icon — overlays center of sphere */}
         <div style={{
-          position: 'absolute',
-          left: '50%', top: '50%',
-          width: sphereSize, height: sphereSize,
-          borderRadius: '50%',
-          transform: 'translate(-50%, -50%)',
-          border: `1.5px solid ${isActive ? `${pulseColor}44` : (isLight ? '#3b82f633' : '#60a5fa33')}`,
-          background: `radial-gradient(circle at 35% 35%, ${isActive ? `${pulseColor}18` : (isLight ? '#3b82f60d' : '#60a5fa0d')} 0%, transparent 70%)`,
-          transition: 'all 0.5s',
-          boxShadow: isActive
-            ? `0 0 60px ${pulseColor}22, inset 0 0 40px ${pulseColor}11`
-            : `0 0 30px ${isLight ? '#3b82f60a' : '#60a5fa0a'}`,
-        }} />
-
-        {/* Inner glow core */}
-        <div style={{
-          position: 'absolute',
-          left: '50%', top: '50%',
-          width: sphereSize * 0.5, height: sphereSize * 0.5,
-          borderRadius: '50%',
-          transform: 'translate(-50%, -50%)',
-          background: `radial-gradient(circle, ${isActive ? `${pulseColor}30` : (isLight ? '#3b82f618' : '#60a5fa18')} 0%, transparent 70%)`,
-          animation: isActive ? 'voiceCoreGlow 2s ease-in-out infinite' : 'none',
-          transition: 'background 0.5s',
-        }} />
-
-        {/* Mic icon — always centered */}
-        <div style={{
-          position: 'relative', zIndex: 2,
-          width: 56, height: 56, borderRadius: '50%',
+          position: 'absolute', zIndex: 10,
+          width: 64, height: 64, borderRadius: '50%',
           background: isActive
-            ? `radial-gradient(circle, ${pulseColor}25 0%, transparent 70%)`
-            : 'transparent',
+            ? `radial-gradient(circle, ${pulseColor}35 0%, transparent 70%)`
+            : `radial-gradient(circle, rgba(0,0,0,0.4) 0%, transparent 70%)`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transition: 'all 0.3s',
+          transition: 'all 0.4s',
+          left: '50%', top: '50%', transform: 'translate(-50%, -50%)',
         }}>
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
-            stroke={isActive ? pulseColor : (isLight ? '#3b82f6' : '#60a5fa')}
+            stroke={isActive ? pulseColor : (isLight ? '#3b82f6' : '#e0e7ff')}
             strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-            style={{ transition: 'stroke 0.3s' }}
+            style={{ transition: 'stroke 0.3s', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.5))' }}
           >
             {listening ? (
               <rect x="9" y="9" width="6" height="6" rx="1" fill={pulseColor} />
@@ -604,29 +570,17 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
 
       {/* Keyframes */}
       <style>{`
-        @keyframes voiceOrbit {
-          0%   { transform: translate(-50%, -50%) rotate(0deg) translateX(${sphereSize / 2 + 8}px); }
-          100% { transform: translate(-50%, -50%) rotate(360deg) translateX(${sphereSize / 2 + 8}px); }
-        }
-        @keyframes voiceOrbitSlow {
-          0%   { transform: translate(-50%, -50%) rotate(0deg) translateX(${sphereSize / 2 + 8}px); }
-          100% { transform: translate(-50%, -50%) rotate(360deg) translateX(${sphereSize / 2 + 8}px); }
+        @keyframes voiceSphereBreath {
+          0%, 100% { transform: scale(1); }
+          50%      { transform: scale(1.1); }
         }
         @keyframes voiceBreathe {
-          0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.35; }
-          50%      { transform: translate(-50%, -50%) scale(1.12); opacity: 0.15; }
-        }
-        @keyframes voiceCoreGlow {
-          0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
-          50%      { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+          0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+          50%      { transform: translate(-50%, -50%) scale(1.12); opacity: 0.12; }
         }
         @keyframes voiceBar {
           0%   { height: 4px; }
-          100% { height: ${24 + Math.random() * 8}px; }
-        }
-        @keyframes voiceParticlePulse {
-          0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) rotate(var(--a)) translateX(var(--r)) scale(1); }
-          50%      { opacity: 0.9; transform: translate(-50%, -50%) rotate(var(--a)) translateX(var(--r)) scale(1.5); }
+          100% { height: 28px; }
         }
       `}</style>
     </div>
