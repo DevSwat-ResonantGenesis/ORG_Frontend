@@ -258,3 +258,89 @@
   font-weight: 600;
   color: #22c55e;
 }
+
+/* ============== LIGHT MODE ============== */
+[data-theme='light'] .modal {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .header {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .title {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .closeBtn {
+  color: #6b7280;
+}
+
+[data-theme='light'] .closeBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .tabs {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .tab {
+  color: #6b7280;
+}
+
+[data-theme='light'] .tab:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='light'] .tab.active {
+  color: #6366f1;
+  background: rgba(99, 102, 241, 0.06);
+  border-bottom-color: #6366f1;
+}
+
+[data-theme='light'] .metricCard,
+[data-theme='light'] .feedbackCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .agentName {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .statLabel {
+  color: #6b7280;
+}
+
+[data-theme='light'] .progressBar {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .satisfaction {
+  color: #6b7280;
+}
+
+[data-theme='light'] .topAgents {
+  border-top-color: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme='light'] .topAgents h3 {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .topItem {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='light'] .topName {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .loading,
+[data-theme='light'] .empty {
+  color: #6b7280;
+}

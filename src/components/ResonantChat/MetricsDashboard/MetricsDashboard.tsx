@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getSession } from '@/utils/auth';
+import { useThemeStore } from '@/store/themeStore';
 
 interface AgentMetric {
   agent_type: string;
@@ -25,6 +26,8 @@ interface MetricsDashboardProps {
 }
 
 const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) => {
+  const theme = useThemeStore(state => state.theme);
+  const isLight = theme === 'light';
   const [metrics, setMetrics] = useState<Record<string, AgentMetric>>({});
   const [feedback, setFeedback] = useState<Record<string, FeedbackStat>>({});
   const [topAgents, setTopAgents] = useState<any[]>([]);
@@ -121,9 +124,9 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
         maxWidth: '600px',
         maxHeight: '85vh',
         zIndex: 99998,
-        background: 'linear-gradient(180deg, rgba(28, 28, 30, 0.98) 0%, rgba(20, 20, 22, 0.98) 100%)',
+        background: isLight ? 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%)' : 'linear-gradient(180deg, rgba(28, 28, 30, 0.98) 0%, rgba(20, 20, 22, 0.98) 100%)',
         borderRadius: '16px',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+        boxShadow: isLight ? '0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.08)' : '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
@@ -134,10 +137,10 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center', 
-          background: 'rgba(255,255,255,0.03)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          background: isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.03)',
+          borderBottom: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)',
         }}>
-          <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#fff', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: isLight ? '#1D1D1F' : '#fff', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2">
               <line x1="18" y1="20" x2="18" y2="10" />
               <line x1="12" y1="20" x2="12" y2="4" />
@@ -148,13 +151,13 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
           <button
             onClick={onClose}
             style={{
-              background: 'rgba(255,255,255,0.08)',
+              background: isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.08)',
               border: 'none',
               width: '28px',
               height: '28px',
               borderRadius: '8px',
               fontSize: '16px',
-              color: '#888',
+              color: isLight ? '#6b7280' : '#888',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -162,12 +165,12 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
               transition: 'all 0.2s',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
-              e.currentTarget.style.color = '#fff';
+              e.currentTarget.style.background = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.15)';
+              e.currentTarget.style.color = isLight ? '#1D1D1F' : '#fff';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-              e.currentTarget.style.color = '#888';
+              e.currentTarget.style.background = isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.08)';
+              e.currentTarget.style.color = isLight ? '#6b7280' : '#888';
             }}
           >
             ×
@@ -180,26 +183,26 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
           gridTemplateColumns: 'repeat(3, 1fr)', 
           gap: '12px', 
           padding: '16px 20px',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)',
         }}>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: '#8b5cf6' }}>{totalStats.executions}</div>
-            <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase' }}>Total Executions</div>
+            <div style={{ fontSize: '11px', color: isLight ? '#6b7280' : '#888', textTransform: 'uppercase' }}>Total Executions</div>
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: totalStats.successRate > 0.8 ? '#22c55e' : totalStats.successRate > 0.5 ? '#eab308' : '#ef4444' }}>
               {(totalStats.successRate * 100).toFixed(0)}%
             </div>
-            <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase' }}>Avg Success Rate</div>
+            <div style={{ fontSize: '11px', color: isLight ? '#6b7280' : '#888', textTransform: 'uppercase' }}>Avg Success Rate</div>
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: '#0ea5e9' }}>{totalStats.avgTime.toFixed(0)}ms</div>
-            <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase' }}>Avg Response Time</div>
+            <div style={{ fontSize: '11px', color: isLight ? '#6b7280' : '#888', textTransform: 'uppercase' }}>Avg Response Time</div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div style={{ display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ display: 'flex', borderBottom: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)' }}>
           <button
             onClick={() => setActiveTab('performance')}
             style={{
@@ -239,20 +242,20 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
         {/* Content */}
         <div style={{ padding: '20px', overflowY: 'auto', flex: 1 }}>
           {loading ? (
-            <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
+            <div style={{ padding: '40px', textAlign: 'center', color: isLight ? '#6b7280' : '#666' }}>
               Loading metrics...
             </div>
           ) : activeTab === 'performance' ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {Object.keys(metrics).length === 0 ? (
-                <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="1.5" style={{ marginBottom: '12px' }}>
+                <div style={{ padding: '40px', textAlign: 'center', color: isLight ? '#6b7280' : '#666' }}>
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={isLight ? '#9ca3af' : '#555'} strokeWidth="1.5" style={{ marginBottom: '12px' }}>
                     <line x1="18" y1="20" x2="18" y2="10" />
                     <line x1="12" y1="20" x2="12" y2="4" />
                     <line x1="6" y1="20" x2="6" y2="14" />
                   </svg>
-                  <div style={{ fontSize: '14px' }}>No performance data yet</div>
-                  <div style={{ fontSize: '12px', marginTop: '8px', color: '#555' }}>
+                  <div style={{ fontSize: '14px', color: isLight ? '#374151' : undefined }}>No performance data yet</div>
+                  <div style={{ fontSize: '12px', marginTop: '8px', color: isLight ? '#6b7280' : '#555' }}>
                     Start chatting to generate metrics!
                   </div>
                 </div>
@@ -260,32 +263,32 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
                 Object.entries(metrics).map(([agentType, metric]) => (
                   <div key={agentType} style={{ 
                     padding: '14px', 
-                    background: 'rgba(255,255,255,0.03)', 
+                    background: isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.03)', 
                     borderRadius: '12px',
-                    border: '1px solid rgba(255,255,255,0.06)',
+                    border: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)',
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                       <span style={{ fontSize: '20px' }}>{getAgentIcon(agentType)}</span>
-                      <span style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>{formatAgentName(agentType)}</span>
+                      <span style={{ fontSize: '14px', fontWeight: 600, color: isLight ? '#1D1D1F' : '#fff' }}>{formatAgentName(agentType)}</span>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-                      <div style={{ textAlign: 'center', padding: '8px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
+                      <div style={{ textAlign: 'center', padding: '8px', background: isLight ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
                         <div style={{ fontSize: '18px', fontWeight: 600, color: '#8b5cf6' }}>{metric.total_executions}</div>
-                        <div style={{ fontSize: '10px', color: '#888', textTransform: 'uppercase' }}>Executions</div>
+                        <div style={{ fontSize: '10px', color: isLight ? '#6b7280' : '#888', textTransform: 'uppercase' }}>Executions</div>
                       </div>
-                      <div style={{ textAlign: 'center', padding: '8px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
+                      <div style={{ textAlign: 'center', padding: '8px', background: isLight ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
                         <div style={{ fontSize: '18px', fontWeight: 600, color: metric.success_rate > 0.8 ? '#22c55e' : '#eab308' }}>
                           {(metric.success_rate * 100).toFixed(0)}%
                         </div>
-                        <div style={{ fontSize: '10px', color: '#888', textTransform: 'uppercase' }}>Success</div>
+                        <div style={{ fontSize: '10px', color: isLight ? '#6b7280' : '#888', textTransform: 'uppercase' }}>Success</div>
                       </div>
-                      <div style={{ textAlign: 'center', padding: '8px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
+                      <div style={{ textAlign: 'center', padding: '8px', background: isLight ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
                         <div style={{ fontSize: '18px', fontWeight: 600, color: '#0ea5e9' }}>{metric.avg_execution_time_ms.toFixed(0)}ms</div>
-                        <div style={{ fontSize: '10px', color: '#888', textTransform: 'uppercase' }}>Avg Time</div>
+                        <div style={{ fontSize: '10px', color: isLight ? '#6b7280' : '#888', textTransform: 'uppercase' }}>Avg Time</div>
                       </div>
                     </div>
                     {/* Progress bar */}
-                    <div style={{ marginTop: '10px', height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
+                    <div style={{ marginTop: '10px', height: '4px', background: isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
                       <div style={{ 
                         height: '100%', 
                         width: `${metric.success_rate * 100}%`, 
@@ -301,12 +304,12 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {Object.keys(feedback).length === 0 ? (
-                <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="1.5" style={{ marginBottom: '12px' }}>
+                <div style={{ padding: '40px', textAlign: 'center', color: isLight ? '#6b7280' : '#666' }}>
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={isLight ? '#9ca3af' : '#555'} strokeWidth="1.5" style={{ marginBottom: '12px' }}>
                     <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
                   </svg>
-                  <div style={{ fontSize: '14px' }}>No feedback data yet</div>
-                  <div style={{ fontSize: '12px', marginTop: '8px', color: '#555' }}>
+                  <div style={{ fontSize: '14px', color: isLight ? '#374151' : undefined }}>No feedback data yet</div>
+                  <div style={{ fontSize: '12px', marginTop: '8px', color: isLight ? '#6b7280' : '#555' }}>
                     Rate responses to see stats!
                   </div>
                 </div>
@@ -314,14 +317,14 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
                 Object.entries(feedback).map(([agentType, stat]) => (
                   <div key={agentType} style={{ 
                     padding: '14px', 
-                    background: 'rgba(255,255,255,0.03)', 
+                    background: isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.03)', 
                     borderRadius: '12px',
-                    border: '1px solid rgba(255,255,255,0.06)',
+                    border: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)',
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <span style={{ fontSize: '20px' }}>{getAgentIcon(agentType)}</span>
-                        <span style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>{formatAgentName(agentType)}</span>
+                        <span style={{ fontSize: '14px', fontWeight: 600, color: isLight ? '#1D1D1F' : '#fff' }}>{formatAgentName(agentType)}</span>
                       </div>
                       <span style={{ 
                         fontSize: '11px', 
@@ -357,10 +360,10 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
         {topAgents.length > 0 && (
           <div style={{ 
             padding: '16px 20px', 
-            borderTop: '1px solid rgba(255,255,255,0.06)',
-            background: 'rgba(255,255,255,0.02)',
+            borderTop: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)',
+            background: isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.02)',
           }}>
-            <div style={{ fontSize: '12px', color: '#888', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{ fontSize: '12px', color: isLight ? '#6b7280' : '#888', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
               🏆 Top Performers
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
@@ -368,15 +371,15 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
                 <div key={agent.agent_type} style={{ 
                   flex: 1, 
                   padding: '10px', 
-                  background: 'rgba(255,255,255,0.03)', 
+                  background: isLight ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.03)', 
                   borderRadius: '8px',
                   textAlign: 'center',
                 }}>
                   <div style={{ fontSize: '16px', marginBottom: '4px' }}>
                     {i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'}
                   </div>
-                  <div style={{ fontSize: '12px', color: '#fff', fontWeight: 500 }}>{formatAgentName(agent.agent_type)}</div>
-                  <div style={{ fontSize: '11px', color: '#888' }}>{(agent.value * 100).toFixed(0)}%</div>
+                  <div style={{ fontSize: '12px', color: isLight ? '#1D1D1F' : '#fff', fontWeight: 500 }}>{formatAgentName(agent.agent_type)}</div>
+                  <div style={{ fontSize: '11px', color: isLight ? '#6b7280' : '#888' }}>{(agent.value * 100).toFixed(0)}%</div>
                 </div>
               ))}
             </div>

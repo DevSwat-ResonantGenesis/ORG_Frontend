@@ -5,6 +5,19 @@ import { isAuthenticated } from '../../utils/auth-cookies';
 import { useThemeStore } from '../../store/themeStore';
 import styles from './CodeVisualizerPage.module.css';
 
+/* Force dark mode on this page — restore previous theme on unmount */
+function useForceDarkMode() {
+  const { setTheme } = useThemeStore();
+  const savedTheme = useRef(useThemeStore.getState().theme);
+  useEffect(() => {
+    savedTheme.current = useThemeStore.getState().theme;
+    if (savedTheme.current !== 'dark') setTheme('dark');
+    return () => {
+      if (savedTheme.current !== 'dark') setTheme(savedTheme.current);
+    };
+  }, []);
+}
+
 interface SavedAnalysis {
   analysis_id: string;
   project_name: string;
@@ -27,6 +40,7 @@ const formatDate = (iso: string | null) => {
 };
 
 const CodeVisualizerPage: React.FC = () => {
+  useForceDarkMode();
   const navigate = useNavigate();
   const apiUrl = useMemo(() => getApiUrl(), []);
   const iframeRef = useRef<HTMLIFrameElement>(null);

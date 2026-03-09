@@ -989,6 +989,74 @@
   }
 }
 
+[data-theme='light'] .accountMenu {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .accountMenu * {
+  background-color: transparent !important;
+}
+
+[data-theme='light'] .accountMenuHeader {
+  background: #f5f5f7 !important;
+  background-color: #f5f5f7 !important;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+[data-theme='light'] .accountMenuItem {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #374151;
+}
+
+[data-theme='light'] .accountMenuItem:hover {
+  background: #f3f4f6 !important;
+  background-color: #f3f4f6 !important;
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .accountMenuItem svg {
+  color: #6b7280;
+}
+
+[data-theme='light'] .accountMenuItem:hover svg {
+  color: #374151;
+}
+
+[data-theme='light'] .accountMenuItemDanger {
+  color: #ef4444 !important;
+}
+
+[data-theme='light'] .accountMenuItemDanger:hover {
+  background: rgba(239, 68, 68, 0.08) !important;
+  background-color: rgba(239, 68, 68, 0.08) !important;
+}
+
+[data-theme='light'] .accountMenuDivider {
+  background: #e5e5e5 !important;
+  background-color: #e5e5e5 !important;
+}
+
+[data-theme='light'] .accountMenuSectionTitle {
+  color: #9ca3af;
+}
+
+[data-theme='light'] .accountMenuEmail {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .accountMenuRole {
+  color: #6b7280;
+}
+
+[data-theme='light'] .accountMenuAvatar {
+  color: white !important;
+}
+
 [data-theme='dark'] .accountMenu {
   background: #0a0a0a;
   border-color: rgba(255, 255, 255, 0.1);

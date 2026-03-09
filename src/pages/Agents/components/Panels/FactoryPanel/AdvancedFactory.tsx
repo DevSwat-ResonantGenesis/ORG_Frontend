@@ -1333,117 +1333,81 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
                 </>)}
               </div>
 
-            {/* Step 4: Memory */}
+            {/* Step 4+5: Memory & Autonomy — combined compact card */}
               <div className={styles.formSection}>
-                <h3><Icons.Database /> Memory Configuration</h3>
-                <div className={styles.toggleGrid}>
-                  <label className={styles.toggleItem}>
-                    <input type="checkbox" checked={config.memoryEnabled} onChange={e => updateConfig({ memoryEnabled: e.target.checked })} />
-                    <span className={styles.toggleLabel}>
-                      <strong>Long-term Memory</strong>
-                      <span>Persist information across sessions</span>
+                <h3><Icons.Lock /> Memory & Autonomy</h3>
+                <div className={styles.compactToggles}>
+                  <label className={styles.compactToggle}>
+                    <span className={styles.compactToggleSwitch}>
+                      <input type="checkbox" checked={config.memoryEnabled} onChange={e => updateConfig({ memoryEnabled: e.target.checked })} />
+                      <span className={styles.compactToggleTrack} />
                     </span>
+                    <span className={styles.compactToggleText}>Long-term Memory</span>
                   </label>
-                  <label className={styles.toggleItem}>
-                    <input type="checkbox" checked={config.vectorStoreEnabled} onChange={e => updateConfig({ vectorStoreEnabled: e.target.checked })} />
-                    <span className={styles.toggleLabel}>
-                      <strong>Vector Store</strong>
-                      <span>Enable semantic search over memories</span>
+                  <label className={styles.compactToggle}>
+                    <span className={styles.compactToggleSwitch}>
+                      <input type="checkbox" checked={config.vectorStoreEnabled} onChange={e => updateConfig({ vectorStoreEnabled: e.target.checked })} />
+                      <span className={styles.compactToggleTrack} />
                     </span>
+                    <span className={styles.compactToggleText}>Vector Store</span>
+                  </label>
+                  <label className={styles.compactToggle}>
+                    <span className={styles.compactToggleSwitch}>
+                      <input type="checkbox" checked={config.canSpawnSubAgents} onChange={e => updateConfig({ canSpawnSubAgents: e.target.checked })} />
+                      <span className={styles.compactToggleTrack} />
+                    </span>
+                    <span className={styles.compactToggleText}>Spawn Sub-Agents</span>
+                  </label>
+                  <label className={styles.compactToggle}>
+                    <span className={styles.compactToggleSwitch}>
+                      <input type="checkbox" checked={config.canModifySelf} onChange={e => updateConfig({ canModifySelf: e.target.checked })} />
+                      <span className={styles.compactToggleTrack} />
+                    </span>
+                    <span className={styles.compactToggleText}>Self-Modification</span>
+                  </label>
+                  <label className={styles.compactToggle}>
+                    <span className={styles.compactToggleSwitch}>
+                      <input type="checkbox" checked={config.canAccessNetwork} onChange={e => updateConfig({ canAccessNetwork: e.target.checked })} />
+                      <span className={styles.compactToggleTrack} />
+                    </span>
+                    <span className={styles.compactToggleText}>Network Access</span>
+                  </label>
+                  <label className={styles.compactToggle}>
+                    <span className={styles.compactToggleSwitch}>
+                      <input type="checkbox" checked={config.canExecuteCode} onChange={e => updateConfig({ canExecuteCode: e.target.checked })} />
+                      <span className={styles.compactToggleTrack} />
+                    </span>
+                    <span className={styles.compactToggleText}>Code Execution</span>
+                  </label>
+                  <label className={styles.compactToggle}>
+                    <span className={styles.compactToggleSwitch}>
+                      <input type="checkbox" checked={config.walletEnabled} onChange={e => updateConfig({ walletEnabled: e.target.checked })} />
+                      <span className={styles.compactToggleTrack} />
+                    </span>
+                    <span className={styles.compactToggleText}>Wallet & Budget</span>
                   </label>
                 </div>
-              </div>
-
-            {/* Step 5: Autonomy */}
-              <div className={styles.formSection}>
-                <h3><Icons.Lock /> Autonomy Settings</h3>
-                <div className={styles.toggleGrid}>
-                  <label className={styles.toggleItem}>
-                    <input type="checkbox" checked={config.canSpawnSubAgents} onChange={e => updateConfig({ canSpawnSubAgents: e.target.checked })} />
-                    <span className={styles.toggleLabel}>
-                      <strong>Spawn Sub-Agents</strong>
-                      <span>Create child agents for subtasks</span>
-                    </span>
-                  </label>
-                  <label className={styles.toggleItem}>
-                    <input type="checkbox" checked={config.canModifySelf} onChange={e => updateConfig({ canModifySelf: e.target.checked })} />
-                    <span className={styles.toggleLabel}>
-                      <strong>Self-Modification</strong>
-                      <span>Allow agent to update its own config</span>
-                    </span>
-                  </label>
-                  <label className={styles.toggleItem}>
-                    <input type="checkbox" checked={config.canAccessNetwork} onChange={e => updateConfig({ canAccessNetwork: e.target.checked })} />
-                    <span className={styles.toggleLabel}>
-                      <strong>Network Access</strong>
-                      <span>Make external API calls</span>
-                    </span>
-                  </label>
-                  <label className={styles.toggleItem}>
-                    <input type="checkbox" checked={config.canExecuteCode} onChange={e => updateConfig({ canExecuteCode: e.target.checked })} />
-                    <span className={styles.toggleLabel}>
-                      <strong>Code Execution</strong>
-                      <span>Run code in sandbox</span>
-                    </span>
-                  </label>
-                </div>
-                <div className={styles.field}>
-                  <label>Max Concurrent Tasks: {config.maxConcurrentTasks}</label>
+                <div className={styles.compactSlider}>
+                  <label>Max Tasks: {config.maxConcurrentTasks}</label>
                   <input type="range" min="1" max="20" value={config.maxConcurrentTasks} onChange={e => updateConfig({ maxConcurrentTasks: parseInt(e.target.value) })} />
                 </div>
-
-                <div className={styles.field}>
-                  <label>Budget & Wallet Limits</label>
-                  <label className={styles.toggleItem}>
-                    <input type="checkbox" checked={config.walletEnabled} onChange={e => updateConfig({ walletEnabled: e.target.checked })} />
-                    <span className={styles.toggleLabel}>
-                      <strong>Enable wallet</strong>
-                      <span>Apply spend limits and approval gating</span>
-                    </span>
-                  </label>
-                </div>
-
                 {config.walletEnabled && (
-                  <div className={styles.formGrid}>
-                    <div className={styles.field}>
-                      <label>Initial Balance</label>
-                      <input
-                        type="number"
-                        min={0}
-                        step={1}
-                        value={config.walletInitialBalance}
-                        onChange={e => updateConfig({ walletInitialBalance: parseFloat(e.target.value || '0') })}
-                      />
+                  <div className={styles.compactWalletGrid}>
+                    <div className={styles.compactWalletField}>
+                      <label>Initial</label>
+                      <input type="number" min={0} step={1} value={config.walletInitialBalance} onChange={e => updateConfig({ walletInitialBalance: parseFloat(e.target.value || '0') })} />
                     </div>
-                    <div className={styles.field}>
-                      <label>Daily Limit</label>
-                      <input
-                        type="number"
-                        min={0}
-                        step={1}
-                        value={config.walletDailyLimit}
-                        onChange={e => updateConfig({ walletDailyLimit: parseFloat(e.target.value || '0') })}
-                      />
+                    <div className={styles.compactWalletField}>
+                      <label>Daily</label>
+                      <input type="number" min={0} step={1} value={config.walletDailyLimit} onChange={e => updateConfig({ walletDailyLimit: parseFloat(e.target.value || '0') })} />
                     </div>
-                    <div className={styles.field}>
-                      <label>Transaction Limit</label>
-                      <input
-                        type="number"
-                        min={0}
-                        step={1}
-                        value={config.walletTransactionLimit}
-                        onChange={e => updateConfig({ walletTransactionLimit: parseFloat(e.target.value || '0') })}
-                      />
+                    <div className={styles.compactWalletField}>
+                      <label>Per Tx</label>
+                      <input type="number" min={0} step={1} value={config.walletTransactionLimit} onChange={e => updateConfig({ walletTransactionLimit: parseFloat(e.target.value || '0') })} />
                     </div>
-                    <div className={styles.field}>
-                      <label>Monthly Limit</label>
-                      <input
-                        type="number"
-                        min={0}
-                        step={1}
-                        value={config.walletMonthlyLimit}
-                        onChange={e => updateConfig({ walletMonthlyLimit: parseFloat(e.target.value || '0') })}
-                      />
+                    <div className={styles.compactWalletField}>
+                      <label>Monthly</label>
+                      <input type="number" min={0} step={1} value={config.walletMonthlyLimit} onChange={e => updateConfig({ walletMonthlyLimit: parseFloat(e.target.value || '0') })} />
                     </div>
                   </div>
                 )}

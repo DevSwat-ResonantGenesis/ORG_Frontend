@@ -6,6 +6,19 @@ import styles from './HashSpherePage.module.css';
 import { ENV } from '../../config/env';
 import { useThemeStore } from '../../store/themeStore';
 
+/* Force dark mode on this page — restore previous theme on unmount */
+function useForceDarkMode() {
+  const { setTheme } = useThemeStore();
+  const savedTheme = useRef(useThemeStore.getState().theme);
+  useEffect(() => {
+    savedTheme.current = useThemeStore.getState().theme;
+    if (savedTheme.current !== 'dark') setTheme('dark');
+    return () => {
+      if (savedTheme.current !== 'dark') setTheme(savedTheme.current);
+    };
+  }, []);
+}
+
 const DEFAULT_HASH_SPHERE_PATH = '/api/v1/state-physics/ui';
 
 const resolveHashSphereUrl = (value: string): string => {
@@ -37,6 +50,7 @@ const resolveHashSphereUrl = (value: string): string => {
 const HASH_SPHERE_URL = resolveHashSphereUrl(ENV.hashSphereUrl);
 
 const HashSpherePage: React.FC = () => {
+  useForceDarkMode();
   const navigate = useNavigate();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isLoading, setIsLoading] = useState(true);

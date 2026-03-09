@@ -4663,7 +4663,7 @@ const ResonantChatPage: React.FC = () => {
                   <button
                     onClick={() => setShowUsagePanel(true)}
                     style={{
-                      background: 'rgba(255,255,255,0.08)',
+                      background: isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.08)',
                       border: 'none',
                       width: '28px',
                       height: '28px',
@@ -4681,8 +4681,8 @@ const ResonantChatPage: React.FC = () => {
                       e.currentTarget.style.color = '#0ea5e9';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-                      e.currentTarget.style.color = '#888';
+                      e.currentTarget.style.background = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.08)';
+                      e.currentTarget.style.color = tc.muted;
                     }}
                     title="What do these metrics mean?"
                   >
@@ -4709,11 +4709,11 @@ const ResonantChatPage: React.FC = () => {
                       transition: 'all 0.2s',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
-                      e.currentTarget.style.color = '#fff';
+                      e.currentTarget.style.background = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.15)';
+                      e.currentTarget.style.color = isLight ? '#1D1D1F' : '#fff';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+                      e.currentTarget.style.background = isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.08)';
                       e.currentTarget.style.color = '#888';
                     }}
                     title="Close"
@@ -4726,7 +4726,7 @@ const ResonantChatPage: React.FC = () => {
               {/* Metrics Content */}
               <div style={{ padding: '20px', overflowY: 'auto', flex: 1 }}>
                 {isLoadingEvidenceGraph ? (
-                  <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
+                  <div style={{ padding: '40px', textAlign: 'center', color: tc.muted }}>
                     Loading metrics...
                   </div>
                 ) : (
@@ -4734,27 +4734,27 @@ const ResonantChatPage: React.FC = () => {
                     {/* Message Info - Use backend metrics only */}
                     {selectedMessage && (
                     <div style={{ marginBottom: '16px' }}>
-                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase' }} data-v={METRICS_VERSION}>Message Info</div>
+                      <div style={{ fontSize: '12px', color: tc.muted, marginBottom: '8px', textTransform: 'uppercase' }} data-v={METRICS_VERSION}>Message Info</div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Role</div>
-                          <div style={{ fontSize: '14px', color: '#fff', fontWeight: 500 }}>{messageMetrics?.role || selectedMessage.role}</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Role</div>
+                          <div style={{ fontSize: '14px', color: isLight ? '#1D1D1F' : '#fff', fontWeight: 500 }}>{messageMetrics?.role || selectedMessage.role}</div>
                         </div>
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>LLM Provider</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>LLM Provider</div>
                           <div style={{ fontSize: '14px', color: '#0ea5e9', fontWeight: 500 }}>{formatProviderName(selectedMessage.llmProvider || messageMetrics?.provider || (selectedMessage.aiProvider?.startsWith('agent_') ? undefined : selectedMessage.aiProvider) || 'N/A')}</div>
                         </div>
                         {/* Model */}
                         {messageMetrics?.model && (
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Model</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Model</div>
                           <div style={{ fontSize: '13px', color: '#a78bfa', fontWeight: 500, fontFamily: 'monospace' }}>{messageMetrics.model}</div>
                         </div>
                         )}
                         {/* Preferred Provider (what user selected) */}
                         {messageMetrics?.preferred_provider && (
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Requested Provider</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Requested Provider</div>
                           <div style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 500 }}>{formatProviderName(messageMetrics.preferred_provider)}</div>
                         </div>
                         )}
@@ -4773,7 +4773,7 @@ const ResonantChatPage: React.FC = () => {
                         {/* Fallback Chain Detail */}
                         {messageMetrics?.fallback_chain && messageMetrics.fallback_chain.length > 0 && (
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px', gridColumn: 'span 2' }}>
-                          <div style={{ fontSize: '11px', color: '#666', marginBottom: '6px' }}>Provider Chain</div>
+                          <div style={{ fontSize: '11px', color: tc.muted, marginBottom: '6px' }}>Provider Chain</div>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                             {messageMetrics.fallback_chain.map((step, i) => (
                               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px' }}>
@@ -4785,12 +4785,12 @@ const ResonantChatPage: React.FC = () => {
                                   {formatProviderName(step.provider)}
                                 </span>
                                 {step.status === 'failed' && step.reason && (
-                                  <span style={{ color: '#666', fontSize: '11px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px' }} title={step.reason}>
+                                  <span style={{ color: tc.muted, fontSize: '11px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px' }} title={step.reason}>
                                     — {step.reason.substring(0, 60)}{step.reason.length > 60 ? '...' : ''}
                                   </span>
                                 )}
                                 {step.status === 'success' && (
-                                  <span style={{ color: '#666', fontSize: '11px' }}>✓</span>
+                                  <span style={{ color: tc.muted, fontSize: '11px' }}>✓</span>
                                 )}
                               </div>
                             ))}
@@ -4800,26 +4800,26 @@ const ResonantChatPage: React.FC = () => {
                         {/* Token Usage Breakdown */}
                         {messageMetrics?.token_usage && (
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px', gridColumn: 'span 2' }}>
-                          <div style={{ fontSize: '11px', color: '#666', marginBottom: '6px' }}>Token Usage</div>
+                          <div style={{ fontSize: '11px', color: tc.muted, marginBottom: '6px' }}>Token Usage</div>
                           <div style={{ display: 'flex', gap: '16px', fontSize: '12px' }}>
                             <div>
-                              <span style={{ color: '#666' }}>Prompt: </span>
+                              <span style={{ color: tc.muted }}>Prompt: </span>
                               <span style={{ color: '#0ea5e9', fontWeight: 500 }}>{messageMetrics.token_usage.prompt_tokens?.toLocaleString() || '—'}</span>
                             </div>
                             <div>
-                              <span style={{ color: '#666' }}>Completion: </span>
+                              <span style={{ color: tc.muted }}>Completion: </span>
                               <span style={{ color: '#22c55e', fontWeight: 500 }}>{messageMetrics.token_usage.completion_tokens?.toLocaleString() || '—'}</span>
                             </div>
                             <div>
-                              <span style={{ color: '#666' }}>Total: </span>
-                              <span style={{ color: '#fff', fontWeight: 600 }}>{messageMetrics.token_usage.total_tokens?.toLocaleString() || '—'}</span>
+                              <span style={{ color: tc.muted }}>Total: </span>
+                              <span style={{ color: isLight ? '#1D1D1F' : '#fff', fontWeight: 600 }}>{messageMetrics.token_usage.total_tokens?.toLocaleString() || '—'}</span>
                             </div>
                           </div>
                         </div>
                         )}
                         {/* Agent Type */}
                         <div style={{ padding: '10px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <div style={{ fontSize: '11px', color: tc.muted, display: 'flex', alignItems: 'center', gap: '4px' }}>
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                             Agent Type
                           </div>
@@ -4839,7 +4839,7 @@ const ResonantChatPage: React.FC = () => {
                             }}
                             title="Click to copy Team ID"
                           >
-                            <div style={{ fontSize: '11px', color: '#666', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <div style={{ fontSize: '11px', color: tc.muted, display: 'flex', alignItems: 'center', gap: '4px' }}>
                               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                               Team ID
                               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -4854,23 +4854,23 @@ const ResonantChatPage: React.FC = () => {
                           </div>
                         )}
                         {/* Quality Score - from backend only */}
-                        <div style={{ padding: '10px', background: messageMetrics ? 'rgba(14, 165, 233, 0.1)' : 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Quality Score</div>
+                        <div style={{ padding: '10px', background: messageMetrics ? 'rgba(14, 165, 233, 0.1)' : tc.rowBg, borderRadius: '8px' }}>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Quality Score</div>
                           <div style={{ fontSize: '18px', color: messageMetrics ? '#0ea5e9' : '#666', fontWeight: 600 }}>
                             {messageMetrics ? `${(messageMetrics.quality * 100).toFixed(1)}%` : 'N/A'}
                           </div>
                         </div>
                         {/* Hallucination Score - from backend only */}
-                        <div style={{ padding: '10px', background: messageMetrics ? (messageMetrics.hallucination > 0.1 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)') : 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Hallucination Risk</div>
+                        <div style={{ padding: '10px', background: messageMetrics ? (messageMetrics.hallucination > 0.1 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)') : tc.rowBg, borderRadius: '8px' }}>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Hallucination Risk</div>
                           <div style={{ fontSize: '18px', color: messageMetrics ? (messageMetrics.hallucination > 0.1 ? '#ef4444' : '#22c55e') : '#666', fontWeight: 600 }}>
                             {messageMetrics ? `${(messageMetrics.hallucination * 100).toFixed(1)}%` : 'N/A'}
                           </div>
                         </div>
                         {/* Token Count */}
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Tokens</div>
-                          <div style={{ fontSize: '14px', color: '#fff', fontWeight: 500 }}>{messageMetrics?.tokens || 'N/A'}</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Tokens</div>
+                          <div style={{ fontSize: '14px', color: isLight ? '#1D1D1F' : '#fff', fontWeight: 500 }}>{messageMetrics?.tokens || 'N/A'}</div>
                         </div>
                         {/* Message ID - Copyable */}
                         <div 
@@ -4883,7 +4883,7 @@ const ResonantChatPage: React.FC = () => {
                           }}
                           title="Click to copy Message ID"
                         >
-                          <div style={{ fontSize: '11px', color: '#666', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <div style={{ fontSize: '11px', color: tc.muted, display: 'flex', alignItems: 'center', gap: '4px' }}>
                             Message ID
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
@@ -4907,7 +4907,7 @@ const ResonantChatPage: React.FC = () => {
                             }}
                             title="Click to copy Hash ID"
                           >
-                            <div style={{ fontSize: '11px', color: '#666', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <div style={{ fontSize: '11px', color: tc.muted, display: 'flex', alignItems: 'center', gap: '4px' }}>
                               Hash ID
                               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
@@ -4927,32 +4927,32 @@ const ResonantChatPage: React.FC = () => {
                   {/* Backend Metrics Details */}
                   {messageMetrics?.metrics && (
                     <div style={{ marginBottom: '16px' }}>
-                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase' }}>Detailed Metrics</div>
+                      <div style={{ fontSize: '12px', color: tc.muted, marginBottom: '8px', textTransform: 'uppercase' }}>Detailed Metrics</div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                         <div style={{ padding: '10px', background: 'rgba(102, 204, 102, 0.1)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Resonant Energy</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Resonant Energy</div>
                           <div style={{ fontSize: '14px', color: '#66cc66', fontWeight: 500 }}>{((messageMetrics.metrics.resonant_energy || 0) * 100).toFixed(1)}%</div>
                         </div>
                         <div style={{ padding: '10px', background: 'rgba(51, 153, 255, 0.1)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Evidence Score</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Evidence Score</div>
                           <div style={{ fontSize: '14px', color: '#3399ff', fontWeight: 500 }}>{((messageMetrics.metrics.evidence || 0) * 100).toFixed(1)}%</div>
                         </div>
                         <div style={{ padding: '10px', background: 'rgba(204, 102, 204, 0.1)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Anchor Following</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Anchor Following</div>
                           <div style={{ fontSize: '14px', color: '#cc66cc', fontWeight: 500 }}>{((messageMetrics.metrics.anchor_following || 0) * 100).toFixed(1)}%</div>
                         </div>
                         <div style={{ padding: '10px', background: 'rgba(251, 191, 36, 0.1)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Context Coherence</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Context Coherence</div>
                           <div style={{ fontSize: '14px', color: '#fbbf24', fontWeight: 500 }}>{((messageMetrics.metrics.context_coherence || 0) * 100).toFixed(1)}%</div>
                         </div>
                         <div style={{ padding: '10px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Memory Utilization</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Memory Utilization</div>
                           <div style={{ fontSize: '14px', color: '#8b5cf6', fontWeight: 500 }}>{((messageMetrics.metrics.memory_utilization || 0) * 100).toFixed(1)}%</div>
                         </div>
                         {messageMetrics.metrics.response_time_ms && (
                           <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666' }}>Response Time</div>
-                            <div style={{ fontSize: '14px', color: '#fff', fontWeight: 500 }}>{messageMetrics.metrics.response_time_ms}ms</div>
+                            <div style={{ fontSize: '11px', color: tc.muted }}>Response Time</div>
+                            <div style={{ fontSize: '14px', color: isLight ? '#1D1D1F' : '#fff', fontWeight: 500 }}>{messageMetrics.metrics.response_time_ms}ms</div>
                           </div>
                         )}
                       </div>
@@ -4962,11 +4962,11 @@ const ResonantChatPage: React.FC = () => {
                   {/* Sentiment & Emotion Analysis */}
                   {messageMetrics?.metrics && (messageMetrics.metrics.sentiment || messageMetrics.metrics.emotion) && (
                     <div style={{ marginBottom: '16px' }}>
-                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase' }}>Sentiment Analysis</div>
+                      <div style={{ fontSize: '12px', color: tc.muted, marginBottom: '8px', textTransform: 'uppercase' }}>Sentiment Analysis</div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                         {messageMetrics.metrics.sentiment && (
                           <div style={{ padding: '10px', background: messageMetrics.metrics.sentiment === 'positive' ? 'rgba(34, 197, 94, 0.1)' : messageMetrics.metrics.sentiment === 'negative' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666' }}>Sentiment</div>
+                            <div style={{ fontSize: '11px', color: tc.muted }}>Sentiment</div>
                             <div style={{ fontSize: '14px', color: messageMetrics.metrics.sentiment === 'positive' ? '#22c55e' : messageMetrics.metrics.sentiment === 'negative' ? '#ef4444' : '#888', fontWeight: 500, textTransform: 'capitalize' }}>
                               {messageMetrics.metrics.sentiment} ({((messageMetrics.metrics.sentiment_confidence || 0) * 100).toFixed(0)}%)
                             </div>
@@ -4974,7 +4974,7 @@ const ResonantChatPage: React.FC = () => {
                         )}
                         {messageMetrics.metrics.emotion && (
                           <div style={{ padding: '10px', background: 'rgba(236, 72, 153, 0.1)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666' }}>Emotion</div>
+                            <div style={{ fontSize: '11px', color: tc.muted }}>Emotion</div>
                             <div style={{ fontSize: '14px', color: '#ec4899', fontWeight: 500, textTransform: 'capitalize' }}>
                               {messageMetrics.metrics.emotion} ({((messageMetrics.metrics.emotion_confidence || 0) * 100).toFixed(0)}%)
                             </div>
@@ -4982,7 +4982,7 @@ const ResonantChatPage: React.FC = () => {
                         )}
                         {messageMetrics.metrics.hallucination_risk_level && (
                           <div style={{ padding: '10px', background: messageMetrics.metrics.hallucination_risk_level === 'high' ? 'rgba(239, 68, 68, 0.1)' : messageMetrics.metrics.hallucination_risk_level === 'medium' ? 'rgba(251, 191, 36, 0.1)' : 'rgba(34, 197, 94, 0.1)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666' }}>Hallucination Risk</div>
+                            <div style={{ fontSize: '11px', color: tc.muted }}>Hallucination Risk</div>
                             <div style={{ fontSize: '14px', color: messageMetrics.metrics.hallucination_risk_level === 'high' ? '#ef4444' : messageMetrics.metrics.hallucination_risk_level === 'medium' ? '#fbbf24' : '#22c55e', fontWeight: 500, textTransform: 'capitalize' }}>
                               {messageMetrics.metrics.hallucination_risk_level} {(messageMetrics.metrics.hallucination_flags ?? 0) > 0 && `(${messageMetrics.metrics.hallucination_flags} flags)`}
                             </div>
@@ -4995,22 +4995,22 @@ const ResonantChatPage: React.FC = () => {
                   {/* Agent Feedback Score */}
                   {messageMetrics?.metrics?.agent_feedback && (
                     <div style={{ marginBottom: '16px' }}>
-                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase' }}>Agent Feedback</div>
+                      <div style={{ fontSize: '12px', color: tc.muted, marginBottom: '8px', textTransform: 'uppercase' }}>Agent Feedback</div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                         <div style={{ padding: '10px', background: 'rgba(34, 197, 94, 0.1)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Satisfaction Rate</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Satisfaction Rate</div>
                           <div style={{ fontSize: '18px', color: messageMetrics.metrics.agent_feedback.satisfaction_rate > 0.7 ? '#22c55e' : messageMetrics.metrics.agent_feedback.satisfaction_rate > 0.5 ? '#eab308' : '#ef4444', fontWeight: 600 }}>
                             {((messageMetrics.metrics.agent_feedback.satisfaction_rate || 0) * 100).toFixed(0)}%
                           </div>
                         </div>
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Total Feedback</div>
-                          <div style={{ fontSize: '14px', color: '#fff', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Total Feedback</div>
+                          <div style={{ fontSize: '14px', color: isLight ? '#1D1D1F' : '#fff', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{ display: 'flex', alignItems: 'center', gap: '2px', color: '#22c55e' }}>
                               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
                               {messageMetrics.metrics.agent_feedback.positive_count || 0}
                             </span>
-                            <span style={{ color: '#666' }}>/</span>
+                            <span style={{ color: tc.muted }}>/</span>
                             <span style={{ display: 'flex', alignItems: 'center', gap: '2px', color: '#ef4444' }}>
                               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
                               {messageMetrics.metrics.agent_feedback.negative_count || 0}
@@ -5019,7 +5019,7 @@ const ResonantChatPage: React.FC = () => {
                         </div>
                         {messageMetrics.metrics.agent_feedback.trend && (
                           <div style={{ padding: '10px', background: messageMetrics.metrics.agent_feedback.trend === 'improving' ? 'rgba(34, 197, 94, 0.1)' : messageMetrics.metrics.agent_feedback.trend === 'declining' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(255,255,255,0.03)', borderRadius: '8px', gridColumn: 'span 2' }}>
-                            <div style={{ fontSize: '11px', color: '#666' }}>Trend</div>
+                            <div style={{ fontSize: '11px', color: tc.muted }}>Trend</div>
                             <div style={{ fontSize: '14px', color: messageMetrics.metrics.agent_feedback.trend === 'improving' ? '#22c55e' : messageMetrics.metrics.agent_feedback.trend === 'declining' ? '#ef4444' : '#888', fontWeight: 500, textTransform: 'capitalize', display: 'flex', alignItems: 'center', gap: '6px' }}>
                               {messageMetrics.metrics.agent_feedback.trend === 'improving' ? (
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg>
@@ -5039,25 +5039,25 @@ const ResonantChatPage: React.FC = () => {
                   {/* DSID Trust Metrics */}
                   {messageMetrics?.metrics?.dsid && (
                     <div style={{ marginBottom: '16px' }}>
-                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div style={{ fontSize: '12px', color: tc.muted, marginBottom: '8px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                         DSID Trust Metrics
                       </div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                         <div style={{ padding: '10px', background: 'rgba(14, 165, 233, 0.1)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>T1 Score (Basic Trust)</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>T1 Score (Basic Trust)</div>
                           <div style={{ fontSize: '18px', color: (messageMetrics.metrics.dsid.t1_score || 0) > 0.7 ? '#22c55e' : '#eab308', fontWeight: 600 }}>
                             {((messageMetrics.metrics.dsid.t1_score || 0) * 100).toFixed(0)}%
                           </div>
                         </div>
                         <div style={{ padding: '10px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>T3 Score (Full Provenance)</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>T3 Score (Full Provenance)</div>
                           <div style={{ fontSize: '18px', color: (messageMetrics.metrics.dsid.t3_score || 0) > 0.5 ? '#8b5cf6' : '#666', fontWeight: 600 }}>
                             {((messageMetrics.metrics.dsid.t3_score || 0) * 100).toFixed(0)}%
                           </div>
                         </div>
                         <div style={{ padding: '10px', background: messageMetrics.metrics.dsid.verification_status === 'passed' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Verification Status</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Verification Status</div>
                           <div style={{ fontSize: '14px', color: messageMetrics.metrics.dsid.verification_status === 'passed' ? '#22c55e' : '#ef4444', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '6px', textTransform: 'capitalize' }}>
                             {messageMetrics.metrics.dsid.verification_status === 'passed' ? (
                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -5068,8 +5068,8 @@ const ResonantChatPage: React.FC = () => {
                           </div>
                         </div>
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Lineage Depth</div>
-                          <div style={{ fontSize: '14px', color: '#fff', fontWeight: 500 }}>{messageMetrics.metrics.dsid.lineage_depth || 0} messages</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Lineage Depth</div>
+                          <div style={{ fontSize: '14px', color: isLight ? '#1D1D1F' : '#fff', fontWeight: 500 }}>{messageMetrics.metrics.dsid.lineage_depth || 0} messages</div>
                         </div>
                       </div>
                     </div>
@@ -5077,27 +5077,27 @@ const ResonantChatPage: React.FC = () => {
 
                   {messageMetrics?.metrics?.enhanced_metrics && (
                     <div style={{ marginBottom: '16px' }}>
-                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div style={{ fontSize: '12px', color: tc.muted, marginBottom: '8px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
                         Enhanced Metrics Breakdown
                       </div>
 
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                         <div style={{ padding: '10px', background: 'rgba(14, 165, 233, 0.1)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Confidence</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Confidence</div>
                           <div style={{ fontSize: '18px', color: '#0ea5e9', fontWeight: 600 }}>
                             {(((messageMetrics.metrics.enhanced_metrics.confidence || 0) * 100)).toFixed(0)}%
                           </div>
                         </div>
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Method</div>
-                          <div style={{ fontSize: '12px', color: '#fff', fontWeight: 500, wordBreak: 'break-word' }}>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Method</div>
+                          <div style={{ fontSize: '12px', color: isLight ? '#1D1D1F' : '#fff', fontWeight: 500, wordBreak: 'break-word' }}>
                             {messageMetrics.metrics.enhanced_metrics.calculation_method || 'N/A'}
                           </div>
                         </div>
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Semantic Similarity</div>
-                          <div style={{ fontSize: '12px', color: '#fff', fontWeight: 500, textTransform: 'capitalize' }}>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Semantic Similarity</div>
+                          <div style={{ fontSize: '12px', color: isLight ? '#1D1D1F' : '#fff', fontWeight: 500, textTransform: 'capitalize' }}>
                             {(messageMetrics.metrics.enhanced_metrics.semantic_similarity_source || 'fallback').replace(/_/g, ' ')}
                           </div>
                         </div>
@@ -5106,7 +5106,7 @@ const ResonantChatPage: React.FC = () => {
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '8px' }}>
                         {messageMetrics.metrics.enhanced_metrics.resonant_energy_breakdown && (
                           <div style={{ padding: '10px', background: 'rgba(102, 204, 102, 0.1)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666', marginBottom: '6px' }}>Resonant Energy</div>
+                            <div style={{ fontSize: '11px', color: tc.muted, marginBottom: '6px' }}>Resonant Energy</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               {Object.entries(messageMetrics.metrics.enhanced_metrics.resonant_energy_breakdown).map(([k, v]) => (
                                 <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', fontSize: '11px' }}>
@@ -5120,7 +5120,7 @@ const ResonantChatPage: React.FC = () => {
 
                         {messageMetrics.metrics.enhanced_metrics.evidence_breakdown && (
                           <div style={{ padding: '10px', background: 'rgba(51, 153, 255, 0.1)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666', marginBottom: '6px' }}>Evidence</div>
+                            <div style={{ fontSize: '11px', color: tc.muted, marginBottom: '6px' }}>Evidence</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               {Object.entries(messageMetrics.metrics.enhanced_metrics.evidence_breakdown).map(([k, v]) => (
                                 <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', fontSize: '11px' }}>
@@ -5134,7 +5134,7 @@ const ResonantChatPage: React.FC = () => {
 
                         {messageMetrics.metrics.enhanced_metrics.anchor_breakdown && (
                           <div style={{ padding: '10px', background: 'rgba(204, 102, 204, 0.1)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666', marginBottom: '6px' }}>Anchor Following</div>
+                            <div style={{ fontSize: '11px', color: tc.muted, marginBottom: '6px' }}>Anchor Following</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               {Object.entries(messageMetrics.metrics.enhanced_metrics.anchor_breakdown).map(([k, v]) => (
                                 <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', fontSize: '11px' }}>
@@ -5148,7 +5148,7 @@ const ResonantChatPage: React.FC = () => {
 
                         {messageMetrics.metrics.enhanced_metrics.coherence_breakdown && (
                           <div style={{ padding: '10px', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666', marginBottom: '6px' }}>Context Coherence</div>
+                            <div style={{ fontSize: '11px', color: tc.muted, marginBottom: '6px' }}>Context Coherence</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               {Object.entries(messageMetrics.metrics.enhanced_metrics.coherence_breakdown).map(([k, v]) => (
                                 <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', fontSize: '11px' }}>
@@ -5162,7 +5162,7 @@ const ResonantChatPage: React.FC = () => {
 
                         {messageMetrics.metrics.enhanced_metrics.memory_breakdown && (
                           <div style={{ padding: '10px', background: 'rgba(20, 184, 166, 0.1)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666', marginBottom: '6px' }}>Memory Utilization</div>
+                            <div style={{ fontSize: '11px', color: tc.muted, marginBottom: '6px' }}>Memory Utilization</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               {Object.entries(messageMetrics.metrics.enhanced_metrics.memory_breakdown).map(([k, v]) => (
                                 <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', fontSize: '11px' }}>
@@ -5179,33 +5179,33 @@ const ResonantChatPage: React.FC = () => {
 
                   {messageMetrics?.metrics?.rag_verification && (
                     <div style={{ marginBottom: '16px' }}>
-                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div style={{ fontSize: '12px', color: tc.muted, marginBottom: '8px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                         RAG Verification
                       </div>
 
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                         <div style={{ padding: '10px', background: messageMetrics.metrics.rag_verification.verified ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)', borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Verified</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Verified</div>
                           <div style={{ fontSize: '14px', color: messageMetrics.metrics.rag_verification.verified ? '#22c55e' : '#ef4444', fontWeight: 600 }}>
                             {messageMetrics.metrics.rag_verification.verified ? 'Yes' : 'No'}
                           </div>
                         </div>
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Support Score</div>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Support Score</div>
                           <div style={{ fontSize: '18px', color: '#fbbf24', fontWeight: 600 }}>
                             {(((messageMetrics.metrics.rag_verification.support_score || 0) * 100)).toFixed(0)}%
                           </div>
                         </div>
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Reason</div>
-                          <div style={{ fontSize: '12px', color: '#fff', fontWeight: 500, wordBreak: 'break-word' }}>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Reason</div>
+                          <div style={{ fontSize: '12px', color: isLight ? '#1D1D1F' : '#fff', fontWeight: 500, wordBreak: 'break-word' }}>
                             {messageMetrics.metrics.rag_verification.reason || 'N/A'}
                           </div>
                         </div>
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
-                          <div style={{ fontSize: '11px', color: '#666' }}>Claims</div>
-                          <div style={{ fontSize: '12px', color: '#fff', fontWeight: 500 }}>
+                          <div style={{ fontSize: '11px', color: tc.muted }}>Claims</div>
+                          <div style={{ fontSize: '12px', color: isLight ? '#1D1D1F' : '#fff', fontWeight: 500 }}>
                             {(messageMetrics.metrics.rag_verification.claims_supported ?? 0)} / {(messageMetrics.metrics.rag_verification.claims_checked ?? 0)}
                           </div>
                         </div>
@@ -5216,7 +5216,7 @@ const ResonantChatPage: React.FC = () => {
                           {messageMetrics.metrics.rag_verification.claim_details.slice(0, 6).map((c, idx) => (
                             <div key={idx} style={{ padding: '8px 10px', background: c.supported ? 'rgba(34, 197, 94, 0.08)' : 'rgba(239, 68, 68, 0.08)', borderRadius: '6px', borderLeft: `3px solid ${c.supported ? '#22c55e' : '#ef4444'}` }}>
                               <div style={{ fontSize: '11px', color: tc.muted }}>{c.type} • {c.support_type}</div>
-                              <div style={{ fontSize: '12px', color: '#ccc', marginTop: '2px' }}>{c.claim}</div>
+                              <div style={{ fontSize: '12px', color: isLight ? '#374151' : '#ccc', marginTop: '2px' }}>{c.claim}</div>
                             </div>
                           ))}
                         </div>
@@ -5227,7 +5227,7 @@ const ResonantChatPage: React.FC = () => {
                   {/* Claim Verification (KB check, grounding, LLM judge) */}
                   {messageMetrics?.metrics?.claim_verification && (
                     <div style={{ marginBottom: '16px' }}>
-                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div style={{ fontSize: '12px', color: tc.muted, marginBottom: '8px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                         Claim Verification
                       </div>
@@ -5245,7 +5245,7 @@ const ResonantChatPage: React.FC = () => {
                         {/* System Prompt Grounding */}
                         {messageMetrics.metrics.claim_verification.system_prompt_grounding && (
                           <div style={{ padding: '10px', background: messageMetrics.metrics.claim_verification.system_prompt_grounding.grounded ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666' }}>System Prompt Grounding</div>
+                            <div style={{ fontSize: '11px', color: tc.muted }}>System Prompt Grounding</div>
                             <div style={{ fontSize: '14px', color: messageMetrics.metrics.claim_verification.system_prompt_grounding.grounded ? '#22c55e' : '#ef4444', fontWeight: 600 }}>
                               {messageMetrics.metrics.claim_verification.system_prompt_grounding.grounded ? 'Grounded' : 'Violations Found'}
                             </div>
@@ -5257,7 +5257,7 @@ const ResonantChatPage: React.FC = () => {
                         {/* Knowledge Base Check */}
                         {messageMetrics.metrics.claim_verification.knowledge_base && (
                           <div style={{ padding: '10px', background: (messageMetrics.metrics.claim_verification.knowledge_base.score || 0) > 0 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <div style={{ fontSize: '11px', color: tc.muted, display: 'flex', alignItems: 'center', gap: '4px' }}>
                               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                               Knowledge Base Check
                             </div>
@@ -5272,7 +5272,7 @@ const ResonantChatPage: React.FC = () => {
                         {/* LLM-as-Judge */}
                         {messageMetrics.metrics.claim_verification.llm_as_judge && (
                           <div style={{ padding: '10px', background: messageMetrics.metrics.claim_verification.llm_as_judge.verdict === 'clean' ? 'rgba(34, 197, 94, 0.1)' : messageMetrics.metrics.claim_verification.llm_as_judge.verdict === 'minor' ? 'rgba(251, 191, 36, 0.1)' : 'rgba(239, 68, 68, 0.1)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <div style={{ fontSize: '11px', color: tc.muted, display: 'flex', alignItems: 'center', gap: '4px' }}>
                               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
                               LLM-as-Judge
                             </div>
@@ -5291,8 +5291,8 @@ const ResonantChatPage: React.FC = () => {
                           {messageMetrics.metrics.claim_verification.knowledge_base.contradictions.map((c: any, idx: number) => (
                             <div key={idx} style={{ padding: '8px 10px', background: 'rgba(239, 68, 68, 0.08)', borderRadius: '6px', borderLeft: '3px solid #ef4444' }}>
                               <div style={{ fontSize: '11px', color: '#ef4444', fontWeight: 500 }}>KB Contradiction</div>
-                              <div style={{ fontSize: '12px', color: '#ccc', marginTop: '2px' }}>{c.claim}</div>
-                              <div style={{ fontSize: '10px', color: '#666', marginTop: '2px' }}>Confidence: {((c.confidence || 0) * 100).toFixed(0)}%</div>
+                              <div style={{ fontSize: '12px', color: isLight ? '#374151' : '#ccc', marginTop: '2px' }}>{c.claim}</div>
+                              <div style={{ fontSize: '10px', color: tc.muted, marginTop: '2px' }}>Confidence: {((c.confidence || 0) * 100).toFixed(0)}%</div>
                             </div>
                           ))}
                         </div>
@@ -5303,7 +5303,7 @@ const ResonantChatPage: React.FC = () => {
                           {messageMetrics.metrics.claim_verification.llm_as_judge.issues.map((issue: string, idx: number) => (
                             <div key={idx} style={{ padding: '8px 10px', background: 'rgba(251, 191, 36, 0.08)', borderRadius: '6px', borderLeft: '3px solid #fbbf24' }}>
                               <div style={{ fontSize: '11px', color: '#fbbf24', fontWeight: 500 }}>LLM Judge Issue</div>
-                              <div style={{ fontSize: '12px', color: '#ccc', marginTop: '2px' }}>{issue}</div>
+                              <div style={{ fontSize: '12px', color: isLight ? '#374151' : '#ccc', marginTop: '2px' }}>{issue}</div>
                             </div>
                           ))}
                         </div>
@@ -5314,8 +5314,8 @@ const ResonantChatPage: React.FC = () => {
                           {messageMetrics.metrics.claim_verification.system_prompt_grounding.violations.map((v: any, idx: number) => (
                             <div key={idx} style={{ padding: '8px 10px', background: 'rgba(239, 68, 68, 0.08)', borderRadius: '6px', borderLeft: '3px solid #ef4444' }}>
                               <div style={{ fontSize: '11px', color: '#ef4444', fontWeight: 500, textTransform: 'capitalize' }}>{v.type}</div>
-                              <div style={{ fontSize: '12px', color: '#ccc', marginTop: '2px' }}>{v.detail}</div>
-                              <div style={{ fontSize: '10px', color: '#666', marginTop: '2px' }}>Confidence: {((v.confidence || 0) * 100).toFixed(0)}%</div>
+                              <div style={{ fontSize: '12px', color: isLight ? '#374151' : '#ccc', marginTop: '2px' }}>{v.detail}</div>
+                              <div style={{ fontSize: '10px', color: tc.muted, marginTop: '2px' }}>Confidence: {((v.confidence || 0) * 100).toFixed(0)}%</div>
                             </div>
                           ))}
                         </div>
@@ -5326,7 +5326,7 @@ const ResonantChatPage: React.FC = () => {
                   {/* Hallucination Details */}
                   {messageMetrics?.metrics?.hallucination_details && messageMetrics.metrics.hallucination_details.length > 0 && (
                     <div style={{ marginBottom: '16px' }}>
-                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div style={{ fontSize: '12px', color: tc.muted, marginBottom: '8px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                         Hallucination Flags ({messageMetrics.metrics.hallucination_flags})
                       </div>
@@ -5335,7 +5335,7 @@ const ResonantChatPage: React.FC = () => {
                           <div key={idx} style={{ padding: '8px 10px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '6px', borderLeft: '3px solid #ef4444' }}>
                             <div style={{ fontSize: '11px', color: '#ef4444', fontWeight: 500, textTransform: 'capitalize' }}>{flag.type}</div>
                             <div style={{ fontSize: '12px', color: tc.muted, marginTop: '2px' }}>{flag.content}</div>
-                            <div style={{ fontSize: '10px', color: '#666', marginTop: '4px' }}>Confidence: {((flag.confidence || 0) * 100).toFixed(0)}%</div>
+                            <div style={{ fontSize: '10px', color: tc.muted, marginTop: '4px' }}>Confidence: {((flag.confidence || 0) * 100).toFixed(0)}%</div>
                           </div>
                         ))}
                       </div>
@@ -5345,7 +5345,7 @@ const ResonantChatPage: React.FC = () => {
                   {/* Context Anchors */}
                   {selectedMessage?.anchors && selectedMessage.anchors.length > 0 && (
                     <div style={{ marginBottom: '16px' }}>
-                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase' }}>Context Anchors ({selectedMessage.anchors.length})</div>
+                      <div style={{ fontSize: '12px', color: tc.muted, marginBottom: '8px', textTransform: 'uppercase' }}>Context Anchors ({selectedMessage.anchors.length})</div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                         {selectedMessage.anchors.map((anchor, idx) => (
                           <span key={idx} style={{ fontSize: '11px', padding: '4px 8px', background: 'rgba(255, 204, 51, 0.15)', color: '#ffcc33', borderRadius: '4px' }}>
@@ -5359,11 +5359,11 @@ const ResonantChatPage: React.FC = () => {
                   {/* Module Outputs */}
                   {selectedMessage?.modules && (
                     <div style={{ marginBottom: '16px' }}>
-                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase' }}>Hash Sphere Modules</div>
+                      <div style={{ fontSize: '12px', color: tc.muted, marginBottom: '8px', textTransform: 'uppercase' }}>Hash Sphere Modules</div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         {selectedMessage.modules.word_representation && (
                           <div style={{ padding: '10px', background: 'rgba(102, 204, 102, 0.1)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666', marginBottom: '4px' }}>Word Representation</div>
+                            <div style={{ fontSize: '11px', color: tc.muted, marginBottom: '4px' }}>Word Representation</div>
                             <div style={{ fontSize: '13px', color: '#66cc66' }}>
                               Confidence: {(selectedMessage.modules.word_representation.confidence * 100).toFixed(0)}%
                             </div>
@@ -5374,7 +5374,7 @@ const ResonantChatPage: React.FC = () => {
                         )}
                         {selectedMessage.modules.word_phrase && (
                           <div style={{ padding: '10px', background: 'rgba(204, 102, 204, 0.1)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666', marginBottom: '4px' }}>Word Phrase Analysis</div>
+                            <div style={{ fontSize: '11px', color: tc.muted, marginBottom: '4px' }}>Word Phrase Analysis</div>
                             <div style={{ fontSize: '13px', color: '#cc66cc' }}>
                               Confidence: {(selectedMessage.modules.word_phrase.confidence * 100).toFixed(0)}%
                             </div>
@@ -5389,7 +5389,7 @@ const ResonantChatPage: React.FC = () => {
                         )}
                         {selectedMessage.modules.text_processing && (
                           <div style={{ padding: '10px', background: 'rgba(51, 153, 255, 0.1)', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '11px', color: '#666', marginBottom: '4px' }}>Text Processing</div>
+                            <div style={{ fontSize: '11px', color: tc.muted, marginBottom: '4px' }}>Text Processing</div>
                             <div style={{ fontSize: '13px', color: '#3399ff' }}>
                               Status: {selectedMessage.modules.text_processing.available ? 'Available' : 'Unavailable'}
                             </div>
@@ -5406,7 +5406,7 @@ const ResonantChatPage: React.FC = () => {
 
                   {/* No Data State */}
                   {!selectedMessage?.modules && !selectedMessage?.anchors?.length && (!evidenceGraphData || evidenceGraphData.nodes.length === 0) && !messageMetrics && (
-                    <div style={{ padding: '30px', textAlign: 'center', color: '#666' }}>
+                    <div style={{ padding: '30px', textAlign: 'center', color: tc.muted }}>
                       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="1.5" style={{ marginBottom: '12px' }}>
                         <path d="M3 3v18h18" />
                         <path d="M18 17V9" />
@@ -5414,7 +5414,7 @@ const ResonantChatPage: React.FC = () => {
                         <path d="M8 17v-3" />
                       </svg>
                       <div style={{ fontSize: '14px' }}>No detailed metrics available for this message</div>
-                      <div style={{ fontSize: '12px', marginTop: '8px', color: '#555' }}>
+                      <div style={{ fontSize: '12px', marginTop: '8px', color: tc.muted }}>
                         Metrics are generated during AI processing
                       </div>
                     </div>
@@ -5422,8 +5422,8 @@ const ResonantChatPage: React.FC = () => {
 
                   {/* Evidence Graph - At Bottom */}
                   {evidenceGraphData && evidenceGraphData.nodes && evidenceGraphData.nodes.length > 0 && (
-                    <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                      <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.1)' }}>
+                      <div style={{ fontSize: '12px', color: tc.muted, marginBottom: '8px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/></svg>
                         Evidence Graph ({evidenceGraphData.node_count} nodes, {evidenceGraphData.edge_count} edges)
                       </div>
@@ -5502,7 +5502,7 @@ const ResonantChatPage: React.FC = () => {
               background: tc.rowBg,
               borderBottom: isLight ? '1px solid rgba(0,0,0,0.06)' : '1px solid rgba(255,255,255,0.06)',
             }}>
-              <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#fff', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: isLight ? '#1D1D1F' : '#fff', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
@@ -5527,11 +5527,11 @@ const ResonantChatPage: React.FC = () => {
                   transition: 'all 0.2s',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
-                  e.currentTarget.style.color = '#fff';
+                  e.currentTarget.style.background = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.15)';
+                  e.currentTarget.style.color = isLight ? '#1D1D1F' : '#fff';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+                  e.currentTarget.style.background = isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.08)';
                   e.currentTarget.style.color = '#888';
                 }}
               >
@@ -5577,7 +5577,7 @@ const ResonantChatPage: React.FC = () => {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
                   Quality Score
                 </h3>
-                <p style={{ margin: 0, fontSize: '14px', color: '#ccc', lineHeight: 1.6 }}>
+                <p style={{ margin: 0, fontSize: '14px', color: isLight ? '#374151' : '#ccc', lineHeight: 1.6 }}>
                   Based on Hash Sphere resonance, semantic coherence with your conversation, and response structure quality.
                   Combines base resonance (40%), semantic similarity (25%), structural quality (20%), and sentiment alignment (15%).
                 </p>
@@ -5588,7 +5588,7 @@ const ResonantChatPage: React.FC = () => {
 
               <div style={{ padding: '16px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '12px', borderLeft: '4px solid #ef4444' }}>
                 <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#ef4444' }}>⚠️ Hallucination Risk</h3>
-                <p style={{ margin: 0, fontSize: '14px', color: '#ccc', lineHeight: 1.6 }}>
+                <p style={{ margin: 0, fontSize: '14px', color: isLight ? '#374151' : '#ccc', lineHeight: 1.6 }}>
                   Detects potential fabrications using pattern matching for fake libraries, APIs, and statistics.
                   Now includes RAG verification - claims are checked against your stored knowledge and conversation context.
                 </p>
@@ -5599,7 +5599,7 @@ const ResonantChatPage: React.FC = () => {
 
               <div style={{ padding: '16px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '12px', borderLeft: '4px solid #8b5cf6' }}>
                 <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#8b5cf6' }}>🔢 Token Usage</h3>
-                <p style={{ margin: 0, fontSize: '14px', color: '#ccc', lineHeight: 1.6 }}>
+                <p style={{ margin: 0, fontSize: '14px', color: isLight ? '#374151' : '#ccc', lineHeight: 1.6 }}>
                   Total tokens consumed by your conversation. Tokens are the basic units of text that AI models process.
                   Roughly 1 token ≈ 4 characters or ¾ of a word.
                 </p>
@@ -5613,7 +5613,7 @@ const ResonantChatPage: React.FC = () => {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
                   Memory Anchors
                 </h3>
-                <p style={{ margin: 0, fontSize: '14px', color: '#ccc', lineHeight: 1.6 }}>
+                <p style={{ margin: 0, fontSize: '14px', color: isLight ? '#374151' : '#ccc', lineHeight: 1.6 }}>
                   Key concepts extracted from your conversations that help maintain context over time.
                   These anchors enable more relevant and personalized responses as you continue chatting.
                 </p>
@@ -5624,7 +5624,7 @@ const ResonantChatPage: React.FC = () => {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
                   Evidence Graph
                 </h3>
-                <p style={{ margin: 0, fontSize: '14px', color: '#ccc', lineHeight: 1.6 }}>
+                <p style={{ margin: 0, fontSize: '14px', color: isLight ? '#374151' : '#ccc', lineHeight: 1.6 }}>
                   Visual representation of how information is connected. Nodes represent concepts, edges show relationships.
                   Provides insight into key concepts and relationships that informed the response.
                 </p>
@@ -5635,7 +5635,7 @@ const ResonantChatPage: React.FC = () => {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                   Sentiment & Emotion
                 </h3>
-                <p style={{ margin: 0, fontSize: '14px', color: '#ccc', lineHeight: 1.6 }}>
+                <p style={{ margin: 0, fontSize: '14px', color: isLight ? '#374151' : '#ccc', lineHeight: 1.6 }}>
                   Detects the emotional tone of messages to help the AI respond more empathetically.
                   Understanding sentiment helps provide more contextually appropriate responses.
                 </p>
@@ -5646,7 +5646,7 @@ const ResonantChatPage: React.FC = () => {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
                   Context Coherence
                 </h3>
-                <p style={{ margin: 0, fontSize: '14px', color: '#ccc', lineHeight: 1.6 }}>
+                <p style={{ margin: 0, fontSize: '14px', color: isLight ? '#374151' : '#ccc', lineHeight: 1.6 }}>
                   Uses NLP analysis to measure topic continuity (30%), logical flow markers (25%), question-answer alignment (25%), and conversation progression (20%).
                   Detects off-topic responses and rewards proper discourse structure.
                 </p>
@@ -5657,7 +5657,7 @@ const ResonantChatPage: React.FC = () => {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                   Memory Utilization
                 </h3>
-                <p style={{ margin: 0, fontSize: '14px', color: '#ccc', lineHeight: 1.6 }}>
+                <p style={{ margin: 0, fontSize: '14px', color: isLight ? '#374151' : '#ccc', lineHeight: 1.6 }}>
                   Tracks actual memory service usage: memories retrieved, RAG queries made, and anchor matches.
                   Combines memory calls (40%), RAG sources used (30%), and anchor count (30%).
                 </p>

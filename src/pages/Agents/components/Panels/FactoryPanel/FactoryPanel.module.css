@@ -548,6 +548,152 @@
   }
 }
 
+/* ============== LIGHT MODE OVERRIDES ============== */
+:global([data-theme='light']) .modeToggle {
+  background: rgba(0, 0, 0, 0.03);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .modeToggle .modeBtn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .modeToggle .modeBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .modeToggle .modeBtn.active {
+  background: rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.35);
+  color: #0284c7;
+}
+
+:global([data-theme='light']) .tabsContainer {
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .field input[type="text"],
+:global([data-theme='light']) .field input:not([type]),
+:global([data-theme='light']) .field textarea,
+:global([data-theme='light']) .field select {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .field label {
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .typeBtn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .typeBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .modeSelector .modeBtn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .modeSelector .modeBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .modeSelector .modeBtn.active {
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: #16a34a;
+}
+
+:global([data-theme='light']) .providerBtn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .providerBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .filterBtn {
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .filterBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .templateCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .templateCard:hover {
+  background: rgba(168, 85, 247, 0.06);
+  border-color: rgba(168, 85, 247, 0.25);
+}
+
+:global([data-theme='light']) .reviewCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .reviewRow {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+:global([data-theme='light']) .backBtn {
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .formNav {
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .stepBtn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .stepBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+:global([data-theme='light']) .stepNum {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+:global([data-theme='light']) .divider::before,
+:global([data-theme='light']) .divider::after {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+:global([data-theme='light']) .toolItem {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .panel {
+  background: rgba(0, 0, 0, 0.01);
+}
+
 /* Error and Success Messages */
 .errorMessage {
   padding: 10px 14px;

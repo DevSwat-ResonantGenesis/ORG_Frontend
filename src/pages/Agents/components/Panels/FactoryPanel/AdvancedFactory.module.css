@@ -377,7 +377,7 @@
 .formSection {
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 2px solid rgba(14, 165, 233, 0.18);
   border-radius: 0;
   padding: 16px 20px;
   margin-bottom: 0;
@@ -1679,6 +1679,631 @@
   color: rgba(255, 255, 255, 0.85);
   font-size: 12px;
   overflow: auto;
+}
+
+/* ============== COMPACT TOGGLES (Memory & Autonomy) ============== */
+.compactToggles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 6px;
+}
+
+.compactToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.compactToggle:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.compactToggleSwitch {
+  position: relative;
+  display: inline-block;
+  width: 28px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.compactToggleSwitch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.compactToggleTrack {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.compactToggleTrack::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s, background 0.2s;
+}
+
+.compactToggleSwitch input:checked + .compactToggleTrack {
+  background: rgba(14, 165, 233, 0.4);
+}
+
+.compactToggleSwitch input:checked + .compactToggleTrack::after {
+  transform: translateX(12px);
+  background: #0ea5e9;
+}
+
+.compactToggleText {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.2;
+}
+
+.compactSlider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.compactSlider label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  min-width: 90px;
+}
+
+.compactSlider input[type="range"] {
+  flex: 1;
+  height: 4px;
+  accent-color: #0ea5e9;
+}
+
+.compactWalletGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.compactWalletField {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.compactWalletField label {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.compactWalletField input {
+  padding: 5px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+  font-size: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ============== LIGHT MODE OVERRIDES ============== */
+:global([data-theme='light']) .compactToggle {
+  border-color: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+:global([data-theme='light']) .compactToggle:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+:global([data-theme='light']) .compactToggleTrack {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+:global([data-theme='light']) .compactToggleTrack::after {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme='light']) .compactToggleSwitch input:checked + .compactToggleTrack {
+  background: rgba(14, 165, 233, 0.3);
+}
+
+:global([data-theme='light']) .compactToggleSwitch input:checked + .compactToggleTrack::after {
+  background: #0284c7;
+}
+
+:global([data-theme='light']) .compactToggleText {
+  color: #4b5563;
+}
+
+:global([data-theme='light']) .compactSlider {
+  border-color: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+:global([data-theme='light']) .compactSlider label {
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .compactWalletField label {
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .compactWalletField input {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .panel {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+:global([data-theme='light']) .navColumn {
+  background: rgba(0, 0, 0, 0.02);
+  border-right-color: rgba(0, 0, 0, 0.1);
+}
+
+:global([data-theme='light']) .navTitle {
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .navSubtitle {
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .navSectionTitle {
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .navDivider {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+:global([data-theme='light']) .navItem,
+:global([data-theme='light']) .stepNavItem {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+  color: #4b5563;
+}
+
+:global([data-theme='light']) .navItem:hover,
+:global([data-theme='light']) .stepNavItem:hover {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .navItem.active,
+:global([data-theme='light']) .stepNavItem.active {
+  background: rgba(14, 165, 233, 0.08);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #0284c7;
+}
+
+:global([data-theme='light']) .tabsContainer {
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .tab {
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .tab:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .tab.active {
+  background: rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #0284c7;
+}
+
+:global([data-theme='light']) .stepHeader {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .stepHeaderTitle {
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .summaryChip {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #4b5563;
+}
+
+:global([data-theme='light']) .stepProgress {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+:global([data-theme='light']) .stepBtn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .stepBtn:hover {
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .stepIcon {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+:global([data-theme='light']) .formSection {
+  border-bottom-color: rgba(14, 165, 233, 0.15);
+}
+
+:global([data-theme='light']) .formSection h3 {
+  color: #0284c7;
+}
+
+:global([data-theme='light']) .sectionDesc {
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .field label {
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .field input,
+:global([data-theme='light']) .field select,
+:global([data-theme='light']) .field textarea {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .modeBtn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .modeBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .modeBtn.active {
+  background: rgba(14, 165, 233, 0.08);
+  border-color: rgba(14, 165, 233, 0.35);
+  color: #0284c7;
+}
+
+:global([data-theme='light']) .modeBtnTop {
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .modeBtnDesc {
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .providerGroup {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+:global([data-theme='light']) .providerGroupTitle {
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .providerCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .providerCard:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .providerCard.active {
+  background: rgba(14, 165, 233, 0.06);
+  border-color: rgba(14, 165, 233, 0.4);
+  color: #0284c7;
+}
+
+:global([data-theme='light']) .providerHintRow {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .providerHintText {
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .fallbackChainRow {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .routingBtn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #4b5563;
+}
+
+:global([data-theme='light']) .routingBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .routingBtn.active {
+  background: rgba(14, 165, 233, 0.08);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #0284c7;
+}
+
+:global([data-theme='light']) .paramField label {
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .paramField input[type="range"] {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+:global([data-theme='light']) .toolCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+:global([data-theme='light']) .toolCard:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+:global([data-theme='light']) .toolName {
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .toolDesc {
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .toggleItem {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .toggleLabel strong {
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .toggleLabel span {
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .reviewCard {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+:global([data-theme='light']) .reviewSection {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+:global([data-theme='light']) .reviewSection h4 {
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .reviewRow span {
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .reviewRow strong {
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .formNav {
+  border-top-color: rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+:global([data-theme='light']) .backBtn {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .backBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .templateCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+:global([data-theme='light']) .templateCard:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+:global([data-theme='light']) .cardInfo h3 {
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .cardBody p {
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .cardFooter {
+  background: rgba(0, 0, 0, 0.02);
+  border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+:global([data-theme='light']) .useTemplateBtn {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .useTemplateBtn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .customToolsStrip {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+:global([data-theme='light']) .customToolsTitle {
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .customToolChip {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #4b5563;
+}
+
+:global([data-theme='light']) .customToolChip:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .badge {
+  border-color: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.03);
+  color: #4b5563;
+}
+
+:global([data-theme='light']) .miniChip {
+  border-color: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.03);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .toolDetailsBtn {
+  border-color: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.02);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .toolDetailsBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .toolsEmptyState {
+  border-color: rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.02);
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .customToolRow {
+  border-color: rgba(0, 0, 0, 0.06);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+:global([data-theme='light']) .customToolRowName {
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .modalCard {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+:global([data-theme='light']) .modalHeader {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .modalTitle {
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .modalClose {
+  border-color: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.03);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .modalClose:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .modalLabel {
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .modalValue {
+  color: #374151;
+}
+
+:global([data-theme='light']) .modalCode {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #374151;
+}
+
+:global([data-theme='light']) .devCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+:global([data-theme='light']) .devCard h4 {
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .importArea {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .importArea textarea {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .createAnotherBtn {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #374151;
+}
+
+:global([data-theme='light']) .createAnotherBtn:hover {
+  background: rgba(0, 0, 0, 0.08);
 }
 
 /* Responsive */

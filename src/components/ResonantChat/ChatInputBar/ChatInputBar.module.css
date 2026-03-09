@@ -114,9 +114,10 @@
 }
 
 [data-theme='light'] .inputWrapper {
-  background: transparent;
-  box-shadow: none;
-  border: 1px solid rgba(0, 0, 0, 0.10);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(12px);
 }
 
 /* Agent Panel - Modern redesign matching provider dropdown */
@@ -167,9 +168,10 @@
 }
 
 :global([data-theme='light'] body.resonant-chat-page) .inputWrapper {
-  background: transparent !important;
-  box-shadow: none !important;
-  border: 1px solid rgba(0, 0, 0, 0.10);
+  background: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(12px);
 }
 
 :global([data-theme='light'] body.resonant-chat-page) .textarea {

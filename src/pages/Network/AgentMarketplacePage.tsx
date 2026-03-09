@@ -29,6 +29,18 @@ import {
 } from 'lucide-react';
 import { getNodeStatus, searchAgents, executeAgent, type Agent, type NodeStatus, type ExecuteResponse } from '../../services/nodeApi';
 
+function useTheme() {
+  const [isLight, setIsLight] = React.useState(() => document.documentElement.getAttribute('data-theme') === 'light');
+  React.useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsLight(document.documentElement.getAttribute('data-theme') === 'light');
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => observer.disconnect();
+  }, []);
+  return isLight;
+}
+
 const ICON_MAP: Record<string, React.ReactNode> = {
   bot: <Bot size={14} />,
   wrench: <Wrench size={14} />,
@@ -51,398 +63,425 @@ const CATEGORIES = [
   { id: 'security', name: 'Security', icon: 'shield', count: 0 },
 ];
 
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    height: '100%',
-    maxHeight: 'calc(100vh - 56px)',
-    background: 'linear-gradient(180deg, #0a0a0f 0%, #12121a 100%)',
-    color: '#fff',
-    display: 'flex',
-    overflow: 'hidden',
-  },
-  sidebar: {
-    width: '200px',
-    borderRight: '1px solid rgba(255,255,255,0.05)',
-    padding: '0.5rem',
-    position: 'relative' as const,
-    height: '100%',
-    overflowY: 'auto' as const,
-    flexShrink: 0,
-  },
-  sidebarTitle: {
-    fontSize: '0.65rem',
-    textTransform: 'uppercase' as const,
-    letterSpacing: '0.1em',
-    color: '#666',
-    marginBottom: '0.5rem',
-    padding: '0 0.5rem',
-  },
-  categoryItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    padding: '0.4rem 0.5rem',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    marginBottom: '0.1rem',
-  },
-  categoryItemActive: {
-    background: 'rgba(99,102,241,0.2)',
-    color: '#6366f1',
-  },
-  categoryIcon: {
-    fontSize: '1rem',
-  },
-  categoryName: {
-    flex: 1,
-    fontSize: '0.75rem',
-  },
-  categoryCount: {
-    fontSize: '0.6rem',
-    color: '#666',
-    background: 'rgba(255,255,255,0.05)',
-    padding: '0.1rem 0.3rem',
-    borderRadius: '6px',
-  },
-  main: {
-    flex: 1,
-    padding: '0.5rem 1rem',
-    overflowY: 'auto' as const,
-    minHeight: 0,
-  },
-  header: {
-    marginBottom: '5px',
-  },
-  headerTop: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '1.5rem',
-  },
-  title: {
-    fontSize: '2rem',
-    fontWeight: '700',
-  },
-  searchBar: {
-    display: 'inline-flex',
-    gap: '0.5rem',
-    marginBottom: '0.5rem',
-    alignItems: 'center',
-  },
-  searchInput: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '0.25rem',
-    padding: '0',
-    background: 'transparent',
-    border: 'none',
-    borderBottom: '1px solid rgba(255,255,255,0.15)',
-  },
-  input: {
-    width: '120px',
-    background: 'none',
-    border: 'none',
-    color: '#888',
-    fontSize: '0.7rem',
-    outline: 'none',
-    padding: '0.15rem 0',
-  },
-  featuredSection: {
-    marginBottom: '2rem',
-  },
-  sectionTitle: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    fontSize: '1.125rem',
-    fontWeight: '600',
-    marginBottom: '1rem',
-  },
-  featuredGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '1rem',
-  },
-  featuredCard: {
-    background: 'linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(139,92,246,0.1) 100%)',
-    border: '1px solid rgba(99,102,241,0.3)',
-    borderRadius: '12px',
-    padding: '1.5rem',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-  },
-  agentGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-    gap: '1rem',
-  },
-  agentCard: {
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '12px',
-    padding: '1.25rem',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    position: 'relative' as const,
-  },
-  agentCardHover: {
-    background: 'rgba(255,255,255,0.06)',
-    borderColor: 'rgba(99,102,241,0.3)',
-    transform: 'translateY(-2px)',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-  },
-  agentHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: '0.75rem',
-  },
-  agentName: {
-    fontSize: '1rem',
-    fontWeight: '600',
-    marginBottom: '0.25rem',
-  },
-  agentVersion: {
-    fontSize: '0.75rem',
-    color: '#888',
-  },
-  trustBadge: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.25rem',
-    padding: '0.25rem 0.5rem',
-    background: 'rgba(16,185,129,0.2)',
-    color: '#10b981',
-    borderRadius: '4px',
-    fontSize: '0.7rem',
-    fontWeight: '500',
-  },
-  agentDescription: {
-    fontSize: '0.8rem',
-    color: '#aaa',
-    lineHeight: '1.5',
-    marginBottom: '1rem',
-    display: '-webkit-box',
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: 'vertical' as const,
-    overflow: 'hidden',
-  },
-  agentTags: {
-    display: 'flex',
-    flexWrap: 'wrap' as const,
-    gap: '0.5rem',
-    marginBottom: '1rem',
-  },
-  agentTag: {
-    padding: '0.25rem 0.5rem',
-    background: 'rgba(255,255,255,0.05)',
-    borderRadius: '4px',
-    fontSize: '0.7rem',
-    color: '#888',
-  },
-  agentFooter: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: '8px',
-    paddingTop: '8px',
-    borderTop: '1px solid rgba(255,255,255,0.05)',
-  },
-  agentStats: {
-    display: 'flex',
-    gap: '1rem',
-    fontSize: '0.75rem',
-    color: '#666',
-  },
-  statItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.25rem',
-  },
-  runButton: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.25rem',
-    padding: '0.5rem 0.75rem',
-    background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-    border: 'none',
-    borderRadius: '6px',
-    color: '#fff',
-    fontSize: '0.75rem',
-    fontWeight: '500',
-    cursor: 'pointer',
-  },
-  // Modal styles
-  modalOverlay: {
-    position: 'fixed' as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: 'rgba(0,0,0,0.9)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 9999,
-    padding: '2rem',
-  },
-  modal: {
-    background: '#1a1a24',
-    borderRadius: '12px',
-    width: '100%',
-    maxWidth: '550px',
-    maxHeight: '80vh',
-    overflow: 'auto' as const,
-    position: 'relative' as const,
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-  },
-  modalHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    padding: '1.5rem',
-    borderBottom: '1px solid rgba(255,255,255,0.1)',
-  },
-  modalClose: {
-    background: 'none',
-    border: 'none',
-    color: '#888',
-    cursor: 'pointer',
-    padding: '0.5rem',
-  },
-  modalBody: {
-    padding: '1.5rem',
-  },
-  modalSection: {
-    marginBottom: '1.5rem',
-  },
-  modalSectionTitle: {
-    fontSize: '0.875rem',
-    fontWeight: '600',
-    marginBottom: '0.75rem',
-    color: '#888',
-  },
-  capabilityList: {
-    display: 'flex',
-    flexWrap: 'wrap' as const,
-    gap: '0.5rem',
-  },
-  capability: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.25rem',
-    padding: '0.375rem 0.75rem',
-    background: 'rgba(99,102,241,0.1)',
-    border: '1px solid rgba(99,102,241,0.3)',
-    borderRadius: '6px',
-    fontSize: '0.75rem',
-    color: '#6366f1',
-  },
-  codeBlock: {
-    background: 'rgba(0,0,0,0.3)',
-    borderRadius: '8px',
-    padding: '1rem',
-    fontFamily: 'monospace',
-    fontSize: '0.8rem',
-    color: '#10b981',
-    overflow: 'auto' as const,
-  },
-  executeSection: {
-    padding: '1.5rem',
-    borderTop: '1px solid rgba(255,255,255,0.1)',
-    background: 'rgba(0,0,0,0.2)',
-  },
-  executeButton: {
-    width: '100%',
-    padding: '0.875rem',
-    background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-    border: 'none',
-    borderRadius: '8px',
-    color: '#fff',
-    fontSize: '0.875rem',
-    fontWeight: '600',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '0.5rem',
-  },
-  resultBox: {
-    marginTop: '1rem',
-    padding: '1rem',
-    background: 'rgba(0,0,0,0.3)',
-    borderRadius: '8px',
-  },
-  statusBar: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-    padding: '0.75rem 1rem',
-    background: 'rgba(255,255,255,0.03)',
-    borderRadius: '8px',
-    marginBottom: '1.5rem',
-    fontSize: '0.8rem',
-  },
-  statusDot: {
-    width: '8px',
-    height: '8px',
-    borderRadius: '50%',
-  },
-  emptyState: {
-    textAlign: 'center' as const,
-    padding: '4rem 2rem',
-    color: '#666',
-  },
-  skeletonCard: {
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '12px',
-    padding: '1.25rem',
-    animation: 'pulse 1.5s ease-in-out infinite',
-  },
-  skeletonLine: {
-    background: 'linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 100%)',
-    borderRadius: '4px',
-    animation: 'shimmer 1.5s ease-in-out infinite',
-  },
-  skeletonTitle: {
-    height: '20px',
-    width: '60%',
-    marginBottom: '8px',
-  },
-  skeletonText: {
-    height: '14px',
-    width: '40%',
-    marginBottom: '12px',
-  },
-  skeletonDescription: {
-    height: '40px',
-    width: '100%',
-    marginBottom: '12px',
-  },
-  skeletonTag: {
-    height: '24px',
-    width: '80px',
-    marginBottom: '12px',
-  },
-  skeletonFooter: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: '12px',
-    borderTop: '1px solid rgba(255,255,255,0.05)',
-  },
-  skeletonStats: {
-    height: '16px',
-    width: '100px',
-  },
-  skeletonButton: {
-    height: '32px',
-    width: '70px',
-    borderRadius: '6px',
-  },
-};
+function getStyles(light: boolean): Record<string, React.CSSProperties> {
+  const bg = light ? '#fafafa' : 'linear-gradient(180deg, #0a0a0f 0%, #12121a 100%)';
+  const fg = light ? '#1D1D1F' : '#fff';
+  const fg2 = light ? '#6b7280' : '#888';
+  const fg3 = light ? '#9ca3af' : '#666';
+  const fg4 = light ? '#4b5563' : '#aaa';
+  const border1 = light ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.05)';
+  const border2 = light ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+  const surface = light ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.03)';
+  const surfaceHover = light ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)';
+  const surfaceSubtle = light ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.05)';
+  const modalBg = light ? '#ffffff' : '#1a1a24';
+  const overlayBg = light ? 'rgba(0,0,0,0.4)' : 'rgba(0,0,0,0.9)';
+  const codeBlockBg = light ? 'rgba(0,0,0,0.04)' : 'rgba(0,0,0,0.3)';
+  const skeletonLine = light
+    ? 'linear-gradient(90deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0.04) 100%)'
+    : 'linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 100%)';
+
+  return {
+    container: {
+      height: '100%',
+      maxHeight: 'calc(100vh - 56px)',
+      background: bg,
+      color: fg,
+      display: 'flex',
+      overflow: 'hidden',
+    },
+    sidebar: {
+      width: '200px',
+      borderRight: `1px solid ${border1}`,
+      padding: '0.5rem',
+      position: 'relative' as const,
+      height: '100%',
+      overflowY: 'auto' as const,
+      flexShrink: 0,
+    },
+    sidebarTitle: {
+      fontSize: '0.65rem',
+      textTransform: 'uppercase' as const,
+      letterSpacing: '0.1em',
+      color: fg3,
+      marginBottom: '0.5rem',
+      padding: '0 0.5rem',
+    },
+    categoryItem: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      padding: '0.4rem 0.5rem',
+      borderRadius: '4px',
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+      marginBottom: '0.1rem',
+      color: fg4,
+    },
+    categoryItemActive: {
+      background: light ? 'rgba(99,102,241,0.1)' : 'rgba(99,102,241,0.2)',
+      color: '#6366f1',
+    },
+    categoryIcon: {
+      fontSize: '1rem',
+    },
+    categoryName: {
+      flex: 1,
+      fontSize: '0.75rem',
+    },
+    categoryCount: {
+      fontSize: '0.6rem',
+      color: fg3,
+      background: surfaceSubtle,
+      padding: '0.1rem 0.3rem',
+      borderRadius: '6px',
+    },
+    main: {
+      flex: 1,
+      padding: '0.5rem 1rem',
+      overflowY: 'auto' as const,
+      minHeight: 0,
+    },
+    header: {
+      marginBottom: '5px',
+    },
+    headerTop: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '1.5rem',
+    },
+    title: {
+      fontSize: '2rem',
+      fontWeight: '700',
+      color: fg,
+    },
+    searchBar: {
+      display: 'inline-flex',
+      gap: '0.5rem',
+      marginBottom: '0.5rem',
+      alignItems: 'center',
+    },
+    searchInput: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.25rem',
+      padding: '0',
+      background: 'transparent',
+      border: 'none',
+      borderBottom: `1px solid ${border2}`,
+    },
+    input: {
+      width: '120px',
+      background: 'none',
+      border: 'none',
+      color: fg2,
+      fontSize: '0.7rem',
+      outline: 'none',
+      padding: '0.15rem 0',
+    },
+    featuredSection: {
+      marginBottom: '2rem',
+    },
+    sectionTitle: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      fontSize: '1.125rem',
+      fontWeight: '600',
+      marginBottom: '1rem',
+      color: fg,
+    },
+    featuredGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(2, 1fr)',
+      gap: '1rem',
+    },
+    featuredCard: {
+      background: light
+        ? 'linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(139,92,246,0.04) 100%)'
+        : 'linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(139,92,246,0.1) 100%)',
+      border: `1px solid ${light ? 'rgba(99,102,241,0.2)' : 'rgba(99,102,241,0.3)'}`,
+      borderRadius: '12px',
+      padding: '1.5rem',
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+    },
+    agentGrid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+      gap: '1rem',
+    },
+    agentCard: {
+      background: surface,
+      border: `1px solid ${border2}`,
+      borderRadius: '12px',
+      padding: '1.25rem',
+      cursor: 'pointer',
+      transition: 'all 0.2s ease',
+      position: 'relative' as const,
+    },
+    agentCardHover: {
+      background: surfaceHover,
+      borderColor: 'rgba(99,102,241,0.3)',
+      transform: 'translateY(-2px)',
+      boxShadow: light ? '0 4px 12px rgba(0,0,0,0.08)' : '0 4px 12px rgba(0,0,0,0.2)',
+    },
+    agentHeader: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: '0.75rem',
+    },
+    agentName: {
+      fontSize: '1rem',
+      fontWeight: '600',
+      marginBottom: '0.25rem',
+      color: fg,
+    },
+    agentVersion: {
+      fontSize: '0.75rem',
+      color: fg2,
+    },
+    trustBadge: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.25rem',
+      padding: '0.25rem 0.5rem',
+      background: light ? 'rgba(16,185,129,0.1)' : 'rgba(16,185,129,0.2)',
+      color: '#10b981',
+      borderRadius: '4px',
+      fontSize: '0.7rem',
+      fontWeight: '500',
+    },
+    agentDescription: {
+      fontSize: '0.8rem',
+      color: fg4,
+      lineHeight: '1.5',
+      marginBottom: '1rem',
+      display: '-webkit-box',
+      WebkitLineClamp: 2,
+      WebkitBoxOrient: 'vertical' as const,
+      overflow: 'hidden',
+    },
+    agentTags: {
+      display: 'flex',
+      flexWrap: 'wrap' as const,
+      gap: '0.5rem',
+      marginBottom: '1rem',
+    },
+    agentTag: {
+      padding: '0.25rem 0.5rem',
+      background: surfaceSubtle,
+      borderRadius: '4px',
+      fontSize: '0.7rem',
+      color: fg2,
+    },
+    agentFooter: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginTop: '8px',
+      paddingTop: '8px',
+      borderTop: `1px solid ${border1}`,
+    },
+    agentStats: {
+      display: 'flex',
+      gap: '1rem',
+      fontSize: '0.75rem',
+      color: fg3,
+    },
+    statItem: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.25rem',
+    },
+    runButton: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.25rem',
+      padding: '0.5rem 0.75rem',
+      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+      border: 'none',
+      borderRadius: '6px',
+      color: '#fff',
+      fontSize: '0.75rem',
+      fontWeight: '500',
+      cursor: 'pointer',
+    },
+    modalOverlay: {
+      position: 'fixed' as const,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: overlayBg,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 9999,
+      padding: '2rem',
+    },
+    modal: {
+      background: modalBg,
+      borderRadius: '12px',
+      width: '100%',
+      maxWidth: '550px',
+      maxHeight: '80vh',
+      overflow: 'auto' as const,
+      position: 'relative' as const,
+      boxShadow: light ? '0 25px 50px -12px rgba(0,0,0,0.15)' : '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+      border: light ? '1px solid rgba(0,0,0,0.1)' : 'none',
+      color: fg,
+    },
+    modalHeader: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      padding: '1.5rem',
+      borderBottom: `1px solid ${border2}`,
+    },
+    modalClose: {
+      background: 'none',
+      border: 'none',
+      color: fg2,
+      cursor: 'pointer',
+      padding: '0.5rem',
+    },
+    modalBody: {
+      padding: '1.5rem',
+    },
+    modalSection: {
+      marginBottom: '1.5rem',
+    },
+    modalSectionTitle: {
+      fontSize: '0.875rem',
+      fontWeight: '600',
+      marginBottom: '0.75rem',
+      color: fg2,
+    },
+    capabilityList: {
+      display: 'flex',
+      flexWrap: 'wrap' as const,
+      gap: '0.5rem',
+    },
+    capability: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.25rem',
+      padding: '0.375rem 0.75rem',
+      background: light ? 'rgba(99,102,241,0.06)' : 'rgba(99,102,241,0.1)',
+      border: '1px solid rgba(99,102,241,0.3)',
+      borderRadius: '6px',
+      fontSize: '0.75rem',
+      color: '#6366f1',
+    },
+    codeBlock: {
+      background: codeBlockBg,
+      borderRadius: '8px',
+      padding: '1rem',
+      fontFamily: 'monospace',
+      fontSize: '0.8rem',
+      color: '#10b981',
+      overflow: 'auto' as const,
+    },
+    executeSection: {
+      padding: '1.5rem',
+      borderTop: `1px solid ${border2}`,
+      background: codeBlockBg,
+    },
+    executeButton: {
+      width: '100%',
+      padding: '0.875rem',
+      background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+      border: 'none',
+      borderRadius: '8px',
+      color: '#fff',
+      fontSize: '0.875rem',
+      fontWeight: '600',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '0.5rem',
+    },
+    resultBox: {
+      marginTop: '1rem',
+      padding: '1rem',
+      background: codeBlockBg,
+      borderRadius: '8px',
+    },
+    statusBar: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '1rem',
+      padding: '0.75rem 1rem',
+      background: surface,
+      borderRadius: '8px',
+      marginBottom: '1.5rem',
+      fontSize: '0.8rem',
+      color: fg4,
+    },
+    statusDot: {
+      width: '8px',
+      height: '8px',
+      borderRadius: '50%',
+    },
+    emptyState: {
+      textAlign: 'center' as const,
+      padding: '4rem 2rem',
+      color: fg3,
+    },
+    skeletonCard: {
+      background: surface,
+      border: `1px solid ${border2}`,
+      borderRadius: '12px',
+      padding: '1.25rem',
+      animation: 'pulse 1.5s ease-in-out infinite',
+    },
+    skeletonLine: {
+      background: skeletonLine,
+      borderRadius: '4px',
+      animation: 'shimmer 1.5s ease-in-out infinite',
+    },
+    skeletonTitle: {
+      height: '20px',
+      width: '60%',
+      marginBottom: '8px',
+    },
+    skeletonText: {
+      height: '14px',
+      width: '40%',
+      marginBottom: '12px',
+    },
+    skeletonDescription: {
+      height: '40px',
+      width: '100%',
+      marginBottom: '12px',
+    },
+    skeletonTag: {
+      height: '24px',
+      width: '80px',
+      marginBottom: '12px',
+    },
+    skeletonFooter: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingTop: '12px',
+      borderTop: `1px solid ${border1}`,
+    },
+    skeletonStats: {
+      height: '16px',
+      width: '100px',
+    },
+    skeletonButton: {
+      height: '32px',
+      width: '70px',
+      borderRadius: '6px',
+    },
+  };
+}
 
 type SortOption = 'newest' | 'popular' | 'rating' | 'name';
 
@@ -455,6 +494,8 @@ const SORT_OPTIONS: { id: SortOption; label: string }[] = [
 
 export default function AgentMarketplacePage() {
   const navigate = useNavigate();
+  const isLight = useTheme();
+  const styles = getStyles(isLight);
   const [status, setStatus] = useState<NodeStatus | null>(null);
   const [agents, setAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -624,11 +665,11 @@ export default function AgentMarketplacePage() {
 
         <div style={{ ...styles.sidebarTitle, marginTop: '2rem' }}>Quick Links</div>
         <Link to="/network/publish" style={{ ...styles.categoryItem, textDecoration: 'none', color: 'inherit' }}>
-          <Plus size={14} color="#888" />
+          <Plus size={14} color={isLight ? '#6b7280' : '#888'} />
           <span style={styles.categoryName}>Publish Agent</span>
         </Link>
         <Link to="/network/agents" style={{ ...styles.categoryItem, textDecoration: 'none', color: 'inherit' }}>
-          <Search size={14} color="#888" />
+          <Search size={14} color={isLight ? '#6b7280' : '#888'} />
           <span style={styles.categoryName}>Agent Browser</span>
         </Link>
       </div>
@@ -639,7 +680,7 @@ export default function AgentMarketplacePage() {
         <div style={styles.header}>
           <div style={styles.headerTop}>
             <h1 style={styles.title}>🌐 DSID Network Marketplace</h1>
-            <p style={{ fontSize: '0.85rem', color: '#888', margin: '4px 0 0 0' }}>
+            <p style={{ fontSize: '0.85rem', color: isLight ? '#6b7280' : '#888', margin: '4px 0 0 0' }}>
               DSID-verified (Trust Level T3) agents only - Decentralized & cryptographically verified
             </p>
           </div>
@@ -650,14 +691,14 @@ export default function AgentMarketplacePage() {
               <div style={{ ...styles.statusDot, background: status?.running ? '#10b981' : '#ef4444' }} />
               RARA Node: {status?.running ? 'Online' : 'Offline'}
             </div>
-            <div style={{ color: '#666' }}>|</div>
+            <div style={{ color: isLight ? '#9ca3af' : '#666' }}>|</div>
             <div>{categoryCounts.all || 0} verified agents</div>
           </div>
 
           {/* Search and Sort */}
           <div style={styles.searchBar}>
             <div style={styles.searchInput}>
-              <Search size={18} color="#666" />
+              <Search size={18} color={isLight ? '#9ca3af' : '#666'} />
               <input
                 type="text"
                 placeholder="Search agents..."
@@ -676,10 +717,10 @@ export default function AgentMarketplacePage() {
                   alignItems: 'center',
                   gap: '0.5rem',
                   padding: '0.4rem 0.75rem',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  background: isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.05)',
+                  border: isLight ? '1px solid rgba(0,0,0,0.1)' : '1px solid rgba(255,255,255,0.1)',
                   borderRadius: '6px',
-                  color: '#888',
+                  color: isLight ? '#6b7280' : '#888',
                   fontSize: '0.75rem',
                   cursor: 'pointer',
                 }}
@@ -696,13 +737,13 @@ export default function AgentMarketplacePage() {
                     top: '100%',
                     right: 0,
                     marginTop: '4px',
-                    background: '#1a1a24',
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    background: isLight ? '#ffffff' : '#1a1a24',
+                    border: isLight ? '1px solid rgba(0,0,0,0.1)' : '1px solid rgba(255,255,255,0.1)',
                     borderRadius: '8px',
                     padding: '0.5rem 0',
                     minWidth: '140px',
                     zIndex: 100,
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                    boxShadow: isLight ? '0 4px 12px rgba(0,0,0,0.1)' : '0 4px 12px rgba(0,0,0,0.3)',
                   }}
                 >
                   {SORT_OPTIONS.map(option => (
@@ -715,7 +756,7 @@ export default function AgentMarketplacePage() {
                       style={{
                         padding: '0.5rem 1rem',
                         fontSize: '0.75rem',
-                        color: sortBy === option.id ? '#6366f1' : '#aaa',
+                        color: sortBy === option.id ? '#6366f1' : (isLight ? '#4b5563' : '#aaa'),
                         cursor: 'pointer',
                         background: sortBy === option.id ? 'rgba(99,102,241,0.1)' : 'transparent',
                       }}
@@ -727,7 +768,7 @@ export default function AgentMarketplacePage() {
               )}
             </div>
             
-            <span style={{ fontSize: '0.7rem', color: '#666' }}>
+<span style={{ fontSize: '0.7rem', color: isLight ? '#9ca3af' : '#666' }}>
               {filteredAgents.length} result{filteredAgents.length !== 1 ? 's' : ''}
             </span>
           </div>
@@ -867,7 +908,7 @@ export default function AgentMarketplacePage() {
                 <div style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.25rem' }}>
                   {selectedAgent.name}
                 </div>
-                <div style={{ color: '#888', fontSize: '0.875rem' }}>
+                <div style={{ color: isLight ? '#6b7280' : '#888', fontSize: '0.875rem' }}>
                   v{selectedAgent.version} • {selectedAgent.category}
                 </div>
               </div>
@@ -879,7 +920,7 @@ export default function AgentMarketplacePage() {
             <div style={styles.modalBody}>
               <div style={styles.modalSection}>
                 <div style={styles.modalSectionTitle}>Description</div>
-                <p style={{ color: '#ccc', lineHeight: '1.6', margin: 0 }}>
+                <p style={{ color: isLight ? '#4b5563' : '#ccc', lineHeight: '1.6', margin: 0 }}>
                   {selectedAgent.description}
                 </p>
               </div>
@@ -888,14 +929,14 @@ export default function AgentMarketplacePage() {
                 <div style={styles.modalSectionTitle}>Details</div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
-                    <div style={{ color: '#666', fontSize: '0.75rem', marginBottom: '0.25rem' }}>Trust Tier</div>
+                    <div style={{ color: isLight ? '#9ca3af' : '#666', fontSize: '0.75rem', marginBottom: '0.25rem' }}>Trust Tier</div>
                     <div style={styles.trustBadge}>
                       <Shield size={12} />
                       Tier {selectedAgent.trust_tier}
                     </div>
                   </div>
                   <div>
-                    <div style={{ color: '#666', fontSize: '0.75rem', marginBottom: '0.25rem' }}>Status</div>
+                    <div style={{ color: isLight ? '#9ca3af' : '#666', fontSize: '0.75rem', marginBottom: '0.25rem' }}>Status</div>
                     <div style={{ color: '#10b981', fontSize: '0.875rem' }}>
                       <CheckCircle size={14} style={{ verticalAlign: 'middle', marginRight: '0.25rem' }} />
                       {selectedAgent.status}
@@ -909,7 +950,7 @@ export default function AgentMarketplacePage() {
                 <div style={{ ...styles.codeBlock, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <code>{selectedAgent.manifest_hash.slice(0, 30)}...{selectedAgent.manifest_hash.slice(-8)}</code>
                   <button
-                    style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}
+                    style={{ background: 'none', border: 'none', color: isLight ? '#6b7280' : '#888', cursor: 'pointer' }}
                     onClick={() => navigator.clipboard.writeText(selectedAgent.manifest_hash)}
                   >
                     <Copy size={14} />
@@ -924,8 +965,8 @@ export default function AgentMarketplacePage() {
                 style={{
                   width: '100%',
                   padding: '0.75rem',
-                  background: 'rgba(0,0,0,0.3)',
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  background: isLight ? 'rgba(0,0,0,0.04)' : 'rgba(0,0,0,0.3)',
+                  border: isLight ? '1px solid rgba(0,0,0,0.1)' : '1px solid rgba(255,255,255,0.1)',
                   borderRadius: '8px',
                   color: '#10b981',
                   fontFamily: 'monospace',
@@ -961,7 +1002,7 @@ export default function AgentMarketplacePage() {
                     marginBottom: '0.5rem',
                   }}>
                     {executionResult.success ? '✅ Success' : '❌ Failed'}
-                    <span style={{ color: '#666', fontWeight: 'normal', marginLeft: '0.5rem' }}>
+                    <span style={{ color: isLight ? '#9ca3af' : '#666', fontWeight: 'normal', marginLeft: '0.5rem' }}>
                       ({executionResult.duration_ms}ms)
                     </span>
                   </div>
@@ -969,7 +1010,7 @@ export default function AgentMarketplacePage() {
                     margin: 0,
                     whiteSpace: 'pre-wrap',
                     fontSize: '0.75rem',
-                    color: '#aaa',
+                    color: isLight ? '#4b5563' : '#aaa',
                     maxHeight: '200px',
                     overflow: 'auto',
                   }}>

@@ -728,6 +728,181 @@
   justify-content: center;
 }
 
+/* ═══════ LIGHT MODE ═══════ */
+:global([data-theme='light']) .wizard {
+  background: var(--bg-primary, #fafafa);
+}
+
+:global([data-theme='light']) .progressStep::after {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .stepNumber {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .formCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .inputGroup input,
+:global([data-theme='light']) .inputGroup textarea {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .inputGroup input::placeholder,
+:global([data-theme='light']) .inputGroup textarea::placeholder {
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .typeCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .typeCard:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+:global([data-theme='light']) .typeIcon {
+  background: rgba(0, 0, 0, 0.04);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .providerRow {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .providerRow:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+:global([data-theme='light']) .providerRow.selected {
+  background: rgba(99, 102, 241, 0.06);
+  border-color: rgba(99, 102, 241, 0.2);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .modelSelect {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .modelSelect option {
+  background: #fff;
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .modeToggle {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .modeBtn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .modeBtn:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .modeBtn.active {
+  background: rgba(99, 102, 241, 0.06);
+  border-color: rgba(99, 102, 241, 0.25);
+  color: #6366f1;
+}
+
+:global([data-theme='light']) .toolCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .toolCard:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+:global([data-theme='light']) .toolIcon {
+  background: rgba(0, 0, 0, 0.04);
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .toolCheckbox {
+  color: rgba(0, 0, 0, 0.1);
+}
+
+:global([data-theme='light']) .reviewCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .reviewCard h3 {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+:global([data-theme='light']) .reviewItem {
+  border-bottom-color: rgba(0, 0, 0, 0.04);
+}
+
+:global([data-theme='light']) .navigation {
+  border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+:global([data-theme='light']) .backBtn {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .backBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .secondaryBtn {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #1D1D1F;
+}
+
+:global([data-theme='light']) .secondaryBtn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+:global([data-theme='light']) .byokRow {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+:global([data-theme='light']) .systemKeyBadge {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #9ca3af;
+}
+
+:global([data-theme='light']) .tierBadge {
+  background: rgba(0, 0, 0, 0.04);
+  color: #6b7280;
+}
+
+:global([data-theme='light']) .loadingProviders {
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #9ca3af;
+}
+
 /* ═══════ RESPONSIVE ═══════ */
 @media (max-width: 480px) {
   .wizardInner { padding: 20px 14px 14px; }

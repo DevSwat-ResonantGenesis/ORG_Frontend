@@ -267,3 +267,111 @@
   color: var(--text-secondary, #888);
   text-align: center;
 }
+
+/* ============== LIGHT MODE ============== */
+[data-theme='light'] .modal {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .header {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .title {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .closeBtn {
+  color: #6b7280;
+}
+
+[data-theme='light'] .closeBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .tabs {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .tab {
+  color: #6b7280;
+}
+
+[data-theme='light'] .tab:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='light'] .tab.active {
+  color: #6366f1;
+  background: rgba(99, 102, 241, 0.06);
+  border-bottom-color: #6366f1;
+}
+
+[data-theme='light'] .memoryCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .memoryTask {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .memorySummary {
+  color: #6b7280;
+}
+
+[data-theme='light'] .memoryTime {
+  color: #9ca3af;
+}
+
+[data-theme='light'] .projectCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .projectCard:hover {
+  border-color: #6366f1;
+}
+
+[data-theme='light'] .projectName {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .sessionCount {
+  color: #9ca3af;
+}
+
+[data-theme='light'] .projectDetail {
+  border-top-color: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme='light'] .detailHeader h3 {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .detailHeader button {
+  color: #6b7280;
+}
+
+[data-theme='light'] .contextPrompt pre {
+  background: rgba(0, 0, 0, 0.03);
+  color: #374151;
+}
+
+[data-theme='light'] .footer {
+  border-top-color: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme='light'] .loading,
+[data-theme='light'] .empty {
+  color: #6b7280;
+}
+
+[data-theme='light'] .emptyHint {
+  color: #9ca3af;
+}

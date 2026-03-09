@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getSession } from '@/utils/auth';
 import fastapiClient from '@/api/fastapiClient';
+import { useThemeStore } from '@/store/themeStore';
 
 interface MemoryEntry {
   id: string;
@@ -41,6 +42,8 @@ const formatTime = (timestamp: string): string => {
 };
 
 const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
+  const theme = useThemeStore(state => state.theme);
+  const isLight = theme === 'light';
   const [memories, setMemories] = useState<MemoryEntry[]>([]);
   const [projects, setProjects] = useState<ProjectContext[]>([]);
   const [loading, setLoading] = useState(true);
@@ -113,9 +116,9 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
         maxWidth: '600px',
         maxHeight: '85vh',
         zIndex: 99998,
-        background: 'linear-gradient(180deg, rgba(28, 28, 30, 0.98) 0%, rgba(20, 20, 22, 0.98) 100%)',
+        background: isLight ? 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%)' : 'linear-gradient(180deg, rgba(28, 28, 30, 0.98) 0%, rgba(20, 20, 22, 0.98) 100%)',
         borderRadius: '16px',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+        boxShadow: isLight ? '0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.08)' : '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
@@ -126,10 +129,10 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center', 
-          background: 'rgba(255,255,255,0.03)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          background: isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.03)',
+          borderBottom: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)',
         }}>
-          <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#fff', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: isLight ? '#1D1D1F' : '#fff', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2">
               <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.54" />
               <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.54" />
@@ -139,7 +142,7 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
           <button
             onClick={onClose}
             style={{
-              background: 'rgba(255,255,255,0.08)',
+              background: isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.08)',
               border: 'none',
               width: '28px',
               height: '28px',
@@ -153,11 +156,11 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
               transition: 'all 0.2s',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255,255,255,0.15)';
-              e.currentTarget.style.color = '#fff';
+              e.currentTarget.style.background = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.15)';
+              e.currentTarget.style.color = isLight ? '#1D1D1F' : '#fff';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+              e.currentTarget.style.background = isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.08)';
               e.currentTarget.style.color = '#888';
             }}
           >
@@ -171,26 +174,26 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
           gridTemplateColumns: 'repeat(3, 1fr)', 
           gap: '12px', 
           padding: '16px 20px',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)',
         }}>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: '#22c55e' }}>{totalMemories}</div>
-            <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase' }}>Total Memories</div>
+            <div style={{ fontSize: '11px', color: isLight ? '#6b7280' : '#888', textTransform: 'uppercase' }}>Total Memories</div>
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: '#0ea5e9' }}>{projects.length}</div>
-            <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase' }}>Projects</div>
+            <div style={{ fontSize: '11px', color: isLight ? '#6b7280' : '#888', textTransform: 'uppercase' }}>Projects</div>
           </div>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: '#8b5cf6' }}>
               {avgRelevance > 0 ? avgRelevance : (memories.length > 0 ? Math.round(memories.reduce((sum, m) => sum + (m.relevance_score || 0), 0) / memories.length * 100) : 0)}%
             </div>
-            <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase' }}>Avg Relevance</div>
+            <div style={{ fontSize: '11px', color: isLight ? '#6b7280' : '#888', textTransform: 'uppercase' }}>Avg Relevance</div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div style={{ display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ display: 'flex', borderBottom: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)' }}>
           <button
             onClick={() => setActiveTab('memories')}
             style={{
@@ -250,12 +253,12 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
                 memories.map(memory => (
                   <div key={memory.id} style={{ 
                     padding: '14px', 
-                    background: 'rgba(255,255,255,0.03)', 
+                    background: isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.03)', 
                     borderRadius: '12px',
-                    border: '1px solid rgba(255,255,255,0.06)',
+                    border: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)',
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                      <span style={{ fontSize: '11px', color: '#888' }}>{formatTime(memory.timestamp)}</span>
+                      <span style={{ fontSize: '11px', color: isLight ? '#9ca3af' : '#888' }}>{formatTime(memory.timestamp)}</span>
                       <span style={{ 
                         fontSize: '11px', 
                         padding: '3px 8px', 
@@ -266,10 +269,10 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
                         {(memory.relevance_score * 100).toFixed(0)}% relevant
                       </span>
                     </div>
-                    <div style={{ fontSize: '13px', color: '#fff', marginBottom: '8px', fontWeight: 500 }}>
+                    <div style={{ fontSize: '13px', color: isLight ? '#1D1D1F' : '#fff', marginBottom: '8px', fontWeight: 500 }}>
                       {memory.task.slice(0, 100)}{memory.task.length > 100 && '...'}
                     </div>
-                    <div style={{ fontSize: '12px', color: '#888', lineHeight: 1.5 }}>
+                    <div style={{ fontSize: '12px', color: isLight ? '#6b7280' : '#888', lineHeight: 1.5 }}>
                       {memory.response_summary}
                     </div>
                   </div>
@@ -294,26 +297,26 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
                     key={project.project_id} 
                     style={{ 
                       padding: '14px', 
-                      background: 'rgba(255,255,255,0.03)', 
+                      background: isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.03)', 
                       borderRadius: '12px',
-                      border: '1px solid rgba(255,255,255,0.06)',
+                      border: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)',
                       cursor: 'pointer',
                       transition: 'all 0.2s',
                     }}
                     onClick={() => setSelectedProject(project)}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+                      e.currentTarget.style.background = isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+                      e.currentTarget.style.background = isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.03)';
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{ fontSize: '16px' }}>📁</span>
-                        <span style={{ fontSize: '14px', fontWeight: 600, color: '#fff' }}>{project.name}</span>
+                        <span style={{ fontSize: '14px', fontWeight: 600, color: isLight ? '#1D1D1F' : '#fff' }}>{project.name}</span>
                       </div>
-                      <span style={{ fontSize: '11px', color: '#888' }}>{project.session_count} sessions</span>
+                      <span style={{ fontSize: '11px', color: isLight ? '#9ca3af' : '#888' }}>{project.session_count} sessions</span>
                     </div>
                     <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                       {project.languages.map(lang => (
@@ -354,7 +357,7 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
             padding: '20px',
           }}>
             <div style={{
-              background: 'linear-gradient(180deg, rgba(28, 28, 30, 0.98) 0%, rgba(20, 20, 22, 0.98) 100%)',
+              background: isLight ? 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%)' : 'linear-gradient(180deg, rgba(28, 28, 30, 0.98) 0%, rgba(20, 20, 22, 0.98) 100%)',
               borderRadius: '12px',
               padding: '20px',
               maxWidth: '500px',
@@ -363,7 +366,7 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
               overflow: 'auto',
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h4 style={{ margin: 0, color: '#fff', fontSize: '16px' }}>{selectedProject.name}</h4>
+                <h4 style={{ margin: 0, color: isLight ? '#1D1D1F' : '#fff', fontSize: '16px' }}>{selectedProject.name}</h4>
                 <button
                   onClick={() => setSelectedProject(null)}
                   style={{
@@ -377,11 +380,11 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
                   }}
                 >×</button>
               </div>
-              <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px' }}>Context Prompt:</div>
+              <div style={{ fontSize: '12px', color: isLight ? '#6b7280' : '#888', marginBottom: '8px' }}>Context Prompt:</div>
               <pre style={{ 
                 fontSize: '12px', 
-                color: '#ccc', 
-                background: 'rgba(0,0,0,0.3)', 
+                color: isLight ? '#374151' : '#ccc', 
+                background: isLight ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.3)', 
                 padding: '12px', 
                 borderRadius: '8px',
                 whiteSpace: 'pre-wrap',
@@ -396,13 +399,13 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
         {/* Footer */}
         <div style={{ 
           padding: '12px 20px', 
-          borderTop: '1px solid rgba(255,255,255,0.06)',
-          background: 'rgba(255,255,255,0.02)',
+          borderTop: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)',
+          background: isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.02)',
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
           fontSize: '12px',
-          color: '#888',
+          color: isLight ? '#6b7280' : '#888',
         }}>
           <span>💡</span>
           <span>Memories help agents provide personalized responses</span>
