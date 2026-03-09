@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Clock,
@@ -36,12 +36,12 @@ interface ExecutionRecord {
   workflow_id?: string;
 }
 
-const styles: Record<string, React.CSSProperties> = {
+const getStyles = (isLight: boolean): Record<string, React.CSSProperties> => ({
   container: {
     height: '100%',
     maxHeight: 'calc(100vh - 56px)',
-    background: 'linear-gradient(180deg, #0a0a0f 0%, #12121a 100%)',
-    color: '#fff',
+    background: isLight ? '#ffffff' : 'linear-gradient(180deg, #0a0a0f 0%, #12121a 100%)',
+    color: isLight ? '#1D1D1F' : '#fff',
     padding: '0.5rem 1rem',
     overflowY: 'auto',
     overflowX: 'hidden',
@@ -60,7 +60,7 @@ const styles: Record<string, React.CSSProperties> = {
     gap: '0.5rem',
   },
   subtitle: {
-    color: '#666',
+    color: isLight ? '#6b7280' : '#666',
     fontSize: '0.7rem',
   },
   statsGrid: {
@@ -69,8 +69,8 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: '0.75rem',
   },
   statCard: {
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: isLight ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.03)',
+    border: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.08)',
     borderRadius: '6px',
     padding: '0.5rem 0.75rem',
     flex: 1,
@@ -80,7 +80,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   statLabel: {
     fontSize: '0.65rem',
-    color: '#666',
+    color: isLight ? '#6b7280' : '#666',
     display: 'flex',
     alignItems: 'center',
     gap: '0.25rem',
@@ -107,10 +107,10 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: '0.25rem',
     padding: '0.25rem 0.5rem',
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: isLight ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.03)',
+    border: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.08)',
     borderRadius: '4px',
-    color: '#888',
+    color: isLight ? '#4b5563' : '#888',
     fontSize: '0.7rem',
     cursor: 'pointer',
   },
@@ -124,10 +124,10 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: '0.25rem',
     padding: '0.25rem 0.5rem',
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: isLight ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.03)',
+    border: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.08)',
     borderRadius: '4px',
-    color: '#888',
+    color: isLight ? '#4b5563' : '#888',
     fontSize: '0.7rem',
     cursor: 'pointer',
   },
@@ -138,22 +138,22 @@ const styles: Record<string, React.CSSProperties> = {
   th: {
     textAlign: 'left' as const,
     padding: '0.4rem 0.5rem',
-    borderBottom: '1px solid rgba(255,255,255,0.08)',
-    color: '#666',
+    borderBottom: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.08)',
+    color: isLight ? '#6b7280' : '#666',
     fontSize: '0.65rem',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.05em',
   },
   td: {
     padding: '0.5rem',
-    borderBottom: '1px solid rgba(255,255,255,0.08)',
+    borderBottom: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.08)',
     fontSize: '0.75rem',
-    color: '#ccc',
+    color: isLight ? '#374151' : '#ccc',
   },
   row: {
     transition: 'background 0.2s',
     cursor: 'pointer',
-    background: 'rgba(255,255,255,0.02)',
+    background: isLight ? 'rgba(0,0,0,0.01)' : 'rgba(255,255,255,0.02)',
   },
   statusBadge: {
     display: 'inline-flex',
@@ -175,7 +175,7 @@ const styles: Record<string, React.CSSProperties> = {
   hashCell: {
     fontFamily: 'monospace',
     fontSize: '0.75rem',
-    color: '#888',
+    color: isLight ? '#6b7280' : '#888',
   },
   expandedRow: {
     background: 'rgba(99,102,241,0.05)',
@@ -183,10 +183,10 @@ const styles: Record<string, React.CSSProperties> = {
   },
   expandedContent: {
     padding: '1rem',
-    background: 'rgba(0,0,0,0.2)',
+    background: isLight ? 'rgba(0,0,0,0.03)' : 'rgba(0,0,0,0.2)',
   },
   codeBlock: {
-    background: 'rgba(0,0,0,0.3)',
+    background: isLight ? 'rgba(0,0,0,0.05)' : 'rgba(0,0,0,0.3)',
     padding: '0.75rem',
     borderRadius: '6px',
     fontFamily: 'monospace',
@@ -199,12 +199,12 @@ const styles: Record<string, React.CSSProperties> = {
   emptyState: {
     textAlign: 'center' as const,
     padding: '2rem 1rem',
-    color: '#666',
+    color: isLight ? '#6b7280' : '#666',
     fontSize: '0.8rem',
   },
   chart: {
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.08)',
+    background: isLight ? 'rgba(0,0,0,0.02)' : 'rgba(255,255,255,0.03)',
+    border: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.08)',
     borderRadius: '6px',
     padding: '0.5rem 1rem',
     marginBottom: '0.5rem',
@@ -216,7 +216,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     gap: '0.25rem',
-    color: '#888',
+    color: isLight ? '#6b7280' : '#888',
   },
   chartBars: {
     display: 'flex',
@@ -239,9 +239,9 @@ const styles: Record<string, React.CSSProperties> = {
     flex: 1,
     textAlign: 'center' as const,
     fontSize: '0.65rem',
-    color: '#666',
+    color: isLight ? '#6b7280' : '#666',
   },
-};
+});
 
 import { ENV } from '../../config/env';
 
@@ -286,16 +286,9 @@ export default function ExecutionHistoryPage() {
   const [typeFilter, setTypeFilter] = useState<'all' | 'agent' | 'workflow'>('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  /* Force dark mode — restore previous theme on unmount */
-  const { theme, setTheme } = useThemeStore();
-  const savedTheme = useRef(theme);
-  useEffect(() => {
-    savedTheme.current = useThemeStore.getState().theme;
-    if (savedTheme.current !== 'dark') setTheme('dark');
-    return () => {
-      if (savedTheme.current !== 'dark') setTheme(savedTheme.current);
-    };
-  }, []);
+  const { theme } = useThemeStore();
+  const isLight = theme === 'light';
+  const styles = getStyles(isLight);
 
   // Redirect to signup if not logged in
   useEffect(() => {

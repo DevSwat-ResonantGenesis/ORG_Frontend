@@ -730,6 +730,175 @@
   color: #ef4444;
 }
 
+/* ============================================================
+   LIGHT MODE OVERRIDES
+   ============================================================ */
+[data-theme='light'] .ownerDashboard {
+  background: #ffffff;
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .pageHeader {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .logoutBtn {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #4b5563;
+}
+
+[data-theme='light'] .logoutBtn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .navTabs {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme='light'] .navTab {
+  color: #6b7280;
+}
+
+[data-theme='light'] .navTab:hover {
+  color: #374151;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='light'] .statCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .statCard:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .statValue {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .statLabel {
+  color: #6b7280;
+}
+
+[data-theme='light'] .card {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .cardTitle {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .chartPlaceholder {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #6b7280;
+}
+
+[data-theme='light'] .revenueItem {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .revenueItemLabel {
+  color: #4b5563;
+}
+
+[data-theme='light'] .revenueItemValue {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .activityItem {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme='light'] .activityItem:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme='light'] .activityText {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .activityTime {
+  color: #6b7280;
+}
+
+[data-theme='light'] .sectionTitle {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .table th {
+  color: #6b7280;
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .table td {
+  color: #1D1D1F;
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .table tr:hover td {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme='light'] .userEmail {
+  color: #6b7280;
+}
+
+[data-theme='light'] .agentCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .agentCard:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .agentName {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .agentType {
+  color: #6b7280;
+}
+
+[data-theme='light'] .agentMetrics {
+  border-top-color: rgba(0, 0, 0, 0.08);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .agentMetricValue {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .agentMetricLabel {
+  color: #6b7280;
+}
+
+[data-theme='light'] .formLabel {
+  color: #4b5563;
+}
+
+[data-theme='light'] .formInput {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .formInput:focus {
+  background: #ffffff;
+  border-color: #8b5cf6;
+}
+
+[data-theme='light'] .logoSubtext {
+  color: #6b7280;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .header {

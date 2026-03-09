@@ -3,11 +3,10 @@
  * Comprehensive dashboard for platform owner to monitor users, revenue, usage, and RARA agents
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getSessionData } from '../../utils/auth-cookies';
 import { fetchPlan } from '../../api/pricing';
-import { useThemeStore } from '@/store/themeStore';
 import styles from './OwnerDashboard.module.css';
 import V8ControlPanel from '../../components/owner/V8ControlPanel';
 import PlatformStatePhysics from '../../components/owner/PlatformStatePhysics';
@@ -460,17 +459,6 @@ const OwnerDashboard: React.FC = () => {
       setIsLoading(false);
     }
   };
-
-  /* Force dark mode on Owner Dashboard — restore previous theme on unmount */
-  const { theme, setTheme } = useThemeStore();
-  const savedTheme = useRef(theme);
-  useEffect(() => {
-    savedTheme.current = useThemeStore.getState().theme;
-    if (savedTheme.current !== 'dark') setTheme('dark');
-    return () => {
-      if (savedTheme.current !== 'dark') setTheme(savedTheme.current);
-    };
-  }, []);
 
   useEffect(() => {
     fetchDashboardData();

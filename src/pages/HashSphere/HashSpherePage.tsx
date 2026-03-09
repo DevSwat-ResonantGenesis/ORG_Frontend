@@ -42,17 +42,6 @@ const HashSpherePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const theme = useThemeStore(state => state.theme);
-  const setTheme = useThemeStore(state => state.setTheme);
-  const savedThemeRef = useRef(theme);
-
-  /* Force dark mode — restore previous theme on unmount */
-  useEffect(() => {
-    savedThemeRef.current = useThemeStore.getState().theme;
-    if (savedThemeRef.current !== 'dark') setTheme('dark');
-    return () => {
-      if (savedThemeRef.current !== 'dark') setTheme(savedThemeRef.current);
-    };
-  }, []);
 
   const postThemeToIframe = (nextTheme: 'dark' | 'light') => {
     const targetWindow = iframeRef.current?.contentWindow;
