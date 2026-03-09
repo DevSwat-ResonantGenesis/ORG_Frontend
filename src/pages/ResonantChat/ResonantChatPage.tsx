@@ -268,6 +268,17 @@ const ResonantChatPage: React.FC = () => {
   const isLoggedIn = isAuthenticated() && !!session;
   const { success, error: showError, warning, info } = useToastContext();
   const { theme, toggleTheme } = useThemeStore();
+  const isLight = theme === 'light';
+  const tc = {
+    panelBg: isLight ? '#ffffff' : '#1a1a1a',
+    panelBorder: isLight ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.12)',
+    panelShadow: isLight ? '0 8px 32px rgba(0,0,0,0.12)' : '0 8px 32px rgba(0,0,0,0.4)',
+    rowBg: isLight ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.03)',
+    muted: isLight ? '#64748b' : '#888',
+    offBg: isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.1)',
+    offBorder: isLight ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.2)',
+    offColor: isLight ? '#64748b' : '#888',
+  };
   const { setMenuItems } = useResonantChatMenu();
   
   // SECURITY: Redirect to signup if not logged in
@@ -4112,7 +4123,7 @@ const ResonantChatPage: React.FC = () => {
                               {img.revised_prompt && (
                                 <div style={{
                                   fontSize: '10px',
-                                  color: '#888',
+                                  color: tc.muted,
                                   marginTop: '4px',
                                   maxWidth: '300px',
                                   overflow: 'hidden',
@@ -4381,7 +4392,7 @@ const ResonantChatPage: React.FC = () => {
                       gap: '12px',
                       flexWrap: 'wrap',
                       fontSize: '11px',
-                      color: '#888',
+                      color: tc.muted,
                     }}>
                       <span title="Total messages in 30 days">📊 {userAnalytics.usage.total_messages} msgs</span>
                       <span title="Total conversations">💬 {userAnalytics.usage.total_conversations} chats</span>
@@ -4621,9 +4632,10 @@ const ResonantChatPage: React.FC = () => {
               maxWidth: '600px',
               maxHeight: '85vh',
               zIndex: 99998,
-              background: 'linear-gradient(180deg, rgba(28, 28, 30, 0.98) 0%, rgba(20, 20, 22, 0.98) 100%)',
+              background: isLight ? 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%)' : 'linear-gradient(180deg, rgba(28, 28, 30, 0.98) 0%, rgba(20, 20, 22, 0.98) 100%)',
               borderRadius: '16px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+              boxShadow: isLight ? '0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.08)' : '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+              color: isLight ? '#0f172a' : undefined,
               overflow: 'hidden',
               display: 'flex',
               flexDirection: 'column',
@@ -4634,10 +4646,10 @@ const ResonantChatPage: React.FC = () => {
                 display: 'flex', 
                 justifyContent: 'space-between', 
                 alignItems: 'center', 
-                background: 'rgba(255,255,255,0.03)',
-                borderBottom: '1px solid rgba(255,255,255,0.06)',
+                background: tc.rowBg,
+                borderBottom: isLight ? '1px solid rgba(0,0,0,0.06)' : '1px solid rgba(255,255,255,0.06)',
               }}>
-                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#fff', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: isLight ? '#0f172a' : '#fff', display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2">
                     <path d="M3 3v18h18" />
                     <path d="M18 17V9" />
@@ -4657,7 +4669,7 @@ const ResonantChatPage: React.FC = () => {
                       height: '28px',
                       borderRadius: '8px',
                       fontSize: '14px',
-                      color: '#888',
+                      color: tc.muted,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -4689,7 +4701,7 @@ const ResonantChatPage: React.FC = () => {
                       height: '28px',
                       borderRadius: '8px',
                       fontSize: '16px',
-                      color: '#888',
+                      color: tc.muted,
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -4724,24 +4736,24 @@ const ResonantChatPage: React.FC = () => {
                     <div style={{ marginBottom: '16px' }}>
                       <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px', textTransform: 'uppercase' }} data-v={METRICS_VERSION}>Message Info</div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: '#666' }}>Role</div>
                           <div style={{ fontSize: '14px', color: '#fff', fontWeight: 500 }}>{messageMetrics?.role || selectedMessage.role}</div>
                         </div>
-                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: '#666' }}>LLM Provider</div>
                           <div style={{ fontSize: '14px', color: '#0ea5e9', fontWeight: 500 }}>{formatProviderName(selectedMessage.llmProvider || messageMetrics?.provider || (selectedMessage.aiProvider?.startsWith('agent_') ? undefined : selectedMessage.aiProvider) || 'N/A')}</div>
                         </div>
                         {/* Model */}
                         {messageMetrics?.model && (
-                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: '#666' }}>Model</div>
                           <div style={{ fontSize: '13px', color: '#a78bfa', fontWeight: 500, fontFamily: 'monospace' }}>{messageMetrics.model}</div>
                         </div>
                         )}
                         {/* Preferred Provider (what user selected) */}
                         {messageMetrics?.preferred_provider && (
-                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: '#666' }}>Requested Provider</div>
                           <div style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 500 }}>{formatProviderName(messageMetrics.preferred_provider)}</div>
                         </div>
@@ -4760,7 +4772,7 @@ const ResonantChatPage: React.FC = () => {
                         )}
                         {/* Fallback Chain Detail */}
                         {messageMetrics?.fallback_chain && messageMetrics.fallback_chain.length > 0 && (
-                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', gridColumn: 'span 2' }}>
+                        <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px', gridColumn: 'span 2' }}>
                           <div style={{ fontSize: '11px', color: '#666', marginBottom: '6px' }}>Provider Chain</div>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                             {messageMetrics.fallback_chain.map((step, i) => (
@@ -4787,7 +4799,7 @@ const ResonantChatPage: React.FC = () => {
                         )}
                         {/* Token Usage Breakdown */}
                         {messageMetrics?.token_usage && (
-                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', gridColumn: 'span 2' }}>
+                        <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px', gridColumn: 'span 2' }}>
                           <div style={{ fontSize: '11px', color: '#666', marginBottom: '6px' }}>Token Usage</div>
                           <div style={{ display: 'flex', gap: '16px', fontSize: '12px' }}>
                             <div>
@@ -4856,13 +4868,13 @@ const ResonantChatPage: React.FC = () => {
                           </div>
                         </div>
                         {/* Token Count */}
-                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: '#666' }}>Tokens</div>
                           <div style={{ fontSize: '14px', color: '#fff', fontWeight: 500 }}>{messageMetrics?.tokens || 'N/A'}</div>
                         </div>
                         {/* Message ID - Copyable */}
                         <div 
-                          style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', cursor: 'pointer', position: 'relative' }}
+                          style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px', cursor: 'pointer', position: 'relative' }}
                           onClick={() => {
                             const id = messageMetrics?.message_id || selectedMessage?.id || '';
                             navigator.clipboard.writeText(id);
@@ -4886,7 +4898,7 @@ const ResonantChatPage: React.FC = () => {
                         {/* Hash ID - Copyable */}
                         {(messageMetrics?.hash || selectedMessage?.hash) && (
                           <div 
-                            style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', cursor: 'pointer', position: 'relative' }}
+                            style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px', cursor: 'pointer', position: 'relative' }}
                             onClick={() => {
                               const hash = messageMetrics?.hash || selectedMessage?.hash || '';
                               navigator.clipboard.writeText(hash);
@@ -4938,7 +4950,7 @@ const ResonantChatPage: React.FC = () => {
                           <div style={{ fontSize: '14px', color: '#8b5cf6', fontWeight: 500 }}>{((messageMetrics.metrics.memory_utilization || 0) * 100).toFixed(1)}%</div>
                         </div>
                         {messageMetrics.metrics.response_time_ms && (
-                          <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                          <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
                             <div style={{ fontSize: '11px', color: '#666' }}>Response Time</div>
                             <div style={{ fontSize: '14px', color: '#fff', fontWeight: 500 }}>{messageMetrics.metrics.response_time_ms}ms</div>
                           </div>
@@ -4991,7 +5003,7 @@ const ResonantChatPage: React.FC = () => {
                             {((messageMetrics.metrics.agent_feedback.satisfaction_rate || 0) * 100).toFixed(0)}%
                           </div>
                         </div>
-                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: '#666' }}>Total Feedback</div>
                           <div style={{ fontSize: '14px', color: '#fff', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{ display: 'flex', alignItems: 'center', gap: '2px', color: '#22c55e' }}>
@@ -5055,7 +5067,7 @@ const ResonantChatPage: React.FC = () => {
                             {messageMetrics.metrics.dsid.verification_status}
                           </div>
                         </div>
-                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: '#666' }}>Lineage Depth</div>
                           <div style={{ fontSize: '14px', color: '#fff', fontWeight: 500 }}>{messageMetrics.metrics.dsid.lineage_depth || 0} messages</div>
                         </div>
@@ -5077,13 +5089,13 @@ const ResonantChatPage: React.FC = () => {
                             {(((messageMetrics.metrics.enhanced_metrics.confidence || 0) * 100)).toFixed(0)}%
                           </div>
                         </div>
-                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: '#666' }}>Method</div>
                           <div style={{ fontSize: '12px', color: '#fff', fontWeight: 500, wordBreak: 'break-word' }}>
                             {messageMetrics.metrics.enhanced_metrics.calculation_method || 'N/A'}
                           </div>
                         </div>
-                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: '#666' }}>Semantic Similarity</div>
                           <div style={{ fontSize: '12px', color: '#fff', fontWeight: 500, textTransform: 'capitalize' }}>
                             {(messageMetrics.metrics.enhanced_metrics.semantic_similarity_source || 'fallback').replace(/_/g, ' ')}
@@ -5098,7 +5110,7 @@ const ResonantChatPage: React.FC = () => {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               {Object.entries(messageMetrics.metrics.enhanced_metrics.resonant_energy_breakdown).map(([k, v]) => (
                                 <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', fontSize: '11px' }}>
-                                  <span style={{ color: '#888' }}>{k.replace(/_/g, ' ')}</span>
+                                  <span style={{ color: tc.muted }}>{k.replace(/_/g, ' ')}</span>
                                   <span style={{ color: '#66cc66', fontFamily: 'monospace' }}>{((Number(v) || 0) * 100).toFixed(0)}%</span>
                                 </div>
                               ))}
@@ -5112,7 +5124,7 @@ const ResonantChatPage: React.FC = () => {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               {Object.entries(messageMetrics.metrics.enhanced_metrics.evidence_breakdown).map(([k, v]) => (
                                 <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', fontSize: '11px' }}>
-                                  <span style={{ color: '#888' }}>{k.replace(/_/g, ' ')}</span>
+                                  <span style={{ color: tc.muted }}>{k.replace(/_/g, ' ')}</span>
                                   <span style={{ color: '#3399ff', fontFamily: 'monospace' }}>{((Number(v) || 0) * 100).toFixed(0)}%</span>
                                 </div>
                               ))}
@@ -5126,7 +5138,7 @@ const ResonantChatPage: React.FC = () => {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               {Object.entries(messageMetrics.metrics.enhanced_metrics.anchor_breakdown).map(([k, v]) => (
                                 <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', fontSize: '11px' }}>
-                                  <span style={{ color: '#888' }}>{k.replace(/_/g, ' ')}</span>
+                                  <span style={{ color: tc.muted }}>{k.replace(/_/g, ' ')}</span>
                                   <span style={{ color: '#cc66cc', fontFamily: 'monospace' }}>{((Number(v) || 0) * 100).toFixed(0)}%</span>
                                 </div>
                               ))}
@@ -5140,7 +5152,7 @@ const ResonantChatPage: React.FC = () => {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               {Object.entries(messageMetrics.metrics.enhanced_metrics.coherence_breakdown).map(([k, v]) => (
                                 <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', fontSize: '11px' }}>
-                                  <span style={{ color: '#888' }}>{k.replace(/_/g, ' ')}</span>
+                                  <span style={{ color: tc.muted }}>{k.replace(/_/g, ' ')}</span>
                                   <span style={{ color: '#6366f1', fontFamily: 'monospace' }}>{((Number(v) || 0) * 100).toFixed(0)}%</span>
                                 </div>
                               ))}
@@ -5154,7 +5166,7 @@ const ResonantChatPage: React.FC = () => {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                               {Object.entries(messageMetrics.metrics.enhanced_metrics.memory_breakdown).map(([k, v]) => (
                                 <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', fontSize: '11px' }}>
-                                  <span style={{ color: '#888' }}>{k.replace(/_/g, ' ')}</span>
+                                  <span style={{ color: tc.muted }}>{k.replace(/_/g, ' ')}</span>
                                   <span style={{ color: '#14b8a6', fontFamily: 'monospace' }}>{((Number(v) || 0) * 100).toFixed(0)}%</span>
                                 </div>
                               ))}
@@ -5179,19 +5191,19 @@ const ResonantChatPage: React.FC = () => {
                             {messageMetrics.metrics.rag_verification.verified ? 'Yes' : 'No'}
                           </div>
                         </div>
-                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: '#666' }}>Support Score</div>
                           <div style={{ fontSize: '18px', color: '#fbbf24', fontWeight: 600 }}>
                             {(((messageMetrics.metrics.rag_verification.support_score || 0) * 100)).toFixed(0)}%
                           </div>
                         </div>
-                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: '#666' }}>Reason</div>
                           <div style={{ fontSize: '12px', color: '#fff', fontWeight: 500, wordBreak: 'break-word' }}>
                             {messageMetrics.metrics.rag_verification.reason || 'N/A'}
                           </div>
                         </div>
-                        <div style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: '#666' }}>Claims</div>
                           <div style={{ fontSize: '12px', color: '#fff', fontWeight: 500 }}>
                             {(messageMetrics.metrics.rag_verification.claims_supported ?? 0)} / {(messageMetrics.metrics.rag_verification.claims_checked ?? 0)}
@@ -5203,7 +5215,7 @@ const ResonantChatPage: React.FC = () => {
                         <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                           {messageMetrics.metrics.rag_verification.claim_details.slice(0, 6).map((c, idx) => (
                             <div key={idx} style={{ padding: '8px 10px', background: c.supported ? 'rgba(34, 197, 94, 0.08)' : 'rgba(239, 68, 68, 0.08)', borderRadius: '6px', borderLeft: `3px solid ${c.supported ? '#22c55e' : '#ef4444'}` }}>
-                              <div style={{ fontSize: '11px', color: '#888' }}>{c.type} • {c.support_type}</div>
+                              <div style={{ fontSize: '11px', color: tc.muted }}>{c.type} • {c.support_type}</div>
                               <div style={{ fontSize: '12px', color: '#ccc', marginTop: '2px' }}>{c.claim}</div>
                             </div>
                           ))}
@@ -5237,7 +5249,7 @@ const ResonantChatPage: React.FC = () => {
                             <div style={{ fontSize: '14px', color: messageMetrics.metrics.claim_verification.system_prompt_grounding.grounded ? '#22c55e' : '#ef4444', fontWeight: 600 }}>
                               {messageMetrics.metrics.claim_verification.system_prompt_grounding.grounded ? 'Grounded' : 'Violations Found'}
                             </div>
-                            <div style={{ fontSize: '10px', color: '#888', marginTop: '2px' }}>
+                            <div style={{ fontSize: '10px', color: tc.muted, marginTop: '2px' }}>
                               Score: {((messageMetrics.metrics.claim_verification.system_prompt_grounding.score || 0) * 100).toFixed(0)}%
                             </div>
                           </div>
@@ -5252,7 +5264,7 @@ const ResonantChatPage: React.FC = () => {
                             <div style={{ fontSize: '14px', color: (messageMetrics.metrics.claim_verification.knowledge_base.score || 0) > 0 ? '#ef4444' : '#22c55e', fontWeight: 600 }}>
                               {(messageMetrics.metrics.claim_verification.knowledge_base.score || 0) > 0 ? 'Contradictions Found' : 'No Contradictions'}
                             </div>
-                            <div style={{ fontSize: '10px', color: '#888', marginTop: '2px' }}>
+                            <div style={{ fontSize: '10px', color: tc.muted, marginTop: '2px' }}>
                               Claims checked: {messageMetrics.metrics.claim_verification.knowledge_base.claims_checked || 0}
                             </div>
                           </div>
@@ -5267,7 +5279,7 @@ const ResonantChatPage: React.FC = () => {
                             <div style={{ fontSize: '14px', color: messageMetrics.metrics.claim_verification.llm_as_judge.verdict === 'clean' ? '#22c55e' : messageMetrics.metrics.claim_verification.llm_as_judge.verdict === 'minor' ? '#fbbf24' : '#ef4444', fontWeight: 600, textTransform: 'capitalize' }}>
                               {messageMetrics.metrics.claim_verification.llm_as_judge.verdict || 'unknown'}
                             </div>
-                            <div style={{ fontSize: '10px', color: '#888', marginTop: '2px' }}>
+                            <div style={{ fontSize: '10px', color: tc.muted, marginTop: '2px' }}>
                               Score: {((messageMetrics.metrics.claim_verification.llm_as_judge.score || 0) * 100).toFixed(0)}%
                             </div>
                           </div>
@@ -5322,7 +5334,7 @@ const ResonantChatPage: React.FC = () => {
                         {messageMetrics.metrics.hallucination_details.map((flag: any, idx: number) => (
                           <div key={idx} style={{ padding: '8px 10px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '6px', borderLeft: '3px solid #ef4444' }}>
                             <div style={{ fontSize: '11px', color: '#ef4444', fontWeight: 500, textTransform: 'capitalize' }}>{flag.type}</div>
-                            <div style={{ fontSize: '12px', color: '#888', marginTop: '2px' }}>{flag.content}</div>
+                            <div style={{ fontSize: '12px', color: tc.muted, marginTop: '2px' }}>{flag.content}</div>
                             <div style={{ fontSize: '10px', color: '#666', marginTop: '4px' }}>Confidence: {((flag.confidence || 0) * 100).toFixed(0)}%</div>
                           </div>
                         ))}
@@ -5355,7 +5367,7 @@ const ResonantChatPage: React.FC = () => {
                             <div style={{ fontSize: '13px', color: '#66cc66' }}>
                               Confidence: {(selectedMessage.modules.word_representation.confidence * 100).toFixed(0)}%
                             </div>
-                            <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>
+                            <div style={{ fontSize: '11px', color: tc.muted, marginTop: '4px' }}>
                               Method: {selectedMessage.modules.word_representation.method}
                             </div>
                           </div>
@@ -5368,9 +5380,9 @@ const ResonantChatPage: React.FC = () => {
                             </div>
                             {selectedMessage.modules.word_phrase.band_distribution && (
                               <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
-                                <span style={{ fontSize: '10px', color: '#888' }}>α: {(selectedMessage.modules.word_phrase.band_distribution.alpha * 100).toFixed(0)}%</span>
-                                <span style={{ fontSize: '10px', color: '#888' }}>β: {(selectedMessage.modules.word_phrase.band_distribution.beta * 100).toFixed(0)}%</span>
-                                <span style={{ fontSize: '10px', color: '#888' }}>γ: {(selectedMessage.modules.word_phrase.band_distribution.gamma * 100).toFixed(0)}%</span>
+                                <span style={{ fontSize: '10px', color: tc.muted }}>α: {(selectedMessage.modules.word_phrase.band_distribution.alpha * 100).toFixed(0)}%</span>
+                                <span style={{ fontSize: '10px', color: tc.muted }}>β: {(selectedMessage.modules.word_phrase.band_distribution.beta * 100).toFixed(0)}%</span>
+                                <span style={{ fontSize: '10px', color: tc.muted }}>γ: {(selectedMessage.modules.word_phrase.band_distribution.gamma * 100).toFixed(0)}%</span>
                               </div>
                             )}
                           </div>
@@ -5382,7 +5394,7 @@ const ResonantChatPage: React.FC = () => {
                               Status: {selectedMessage.modules.text_processing.available ? 'Available' : 'Unavailable'}
                             </div>
                             {selectedMessage.modules.text_processing.oov_words?.length > 0 && (
-                              <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>
+                              <div style={{ fontSize: '11px', color: tc.muted, marginTop: '4px' }}>
                                 OOV Words: {selectedMessage.modules.text_processing.oov_words.join(', ')}
                               </div>
                             )}
@@ -5419,19 +5431,19 @@ const ResonantChatPage: React.FC = () => {
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '8px', fontSize: '11px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#3399ff', display: 'inline-block' }} />
-                          <span style={{ color: '#888' }}>Your Query</span>
+                          <span style={{ color: tc.muted }}>Your Query</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#66cc66', display: 'inline-block' }} />
-                          <span style={{ color: '#888' }}>AI Response</span>
+                          <span style={{ color: tc.muted }}>AI Response</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ffcc33', display: 'inline-block' }} />
-                          <span style={{ color: '#888' }}>Context Anchors</span>
+                          <span style={{ color: tc.muted }}>Context Anchors</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                           <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#cc66cc', display: 'inline-block' }} />
-                          <span style={{ color: '#888' }}>Long-term Memory</span>
+                          <span style={{ color: tc.muted }}>Long-term Memory</span>
                         </div>
                       </div>
                       <div style={{ height: '250px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.3)' }}>
@@ -5471,9 +5483,10 @@ const ResonantChatPage: React.FC = () => {
               maxWidth: '600px',
               maxHeight: '85vh',
               zIndex: 100000,
-              background: 'linear-gradient(180deg, rgba(28, 28, 30, 0.98) 0%, rgba(20, 20, 22, 0.98) 100%)',
+              background: isLight ? 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%)' : 'linear-gradient(180deg, rgba(28, 28, 30, 0.98) 0%, rgba(20, 20, 22, 0.98) 100%)',
               borderRadius: '16px',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+              boxShadow: isLight ? '0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.08)' : '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+              color: isLight ? '#0f172a' : undefined,
               overflow: 'hidden',
               display: 'flex',
               flexDirection: 'column',
@@ -5486,8 +5499,8 @@ const ResonantChatPage: React.FC = () => {
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center', 
-              background: 'rgba(255,255,255,0.03)',
-              borderBottom: '1px solid rgba(255,255,255,0.06)',
+              background: tc.rowBg,
+              borderBottom: isLight ? '1px solid rgba(0,0,0,0.06)' : '1px solid rgba(255,255,255,0.06)',
             }}>
               <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#fff', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2">
@@ -5506,7 +5519,7 @@ const ResonantChatPage: React.FC = () => {
                   height: '28px',
                   borderRadius: '8px',
                   fontSize: '16px',
-                  color: '#888',
+                  color: tc.muted,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -5536,23 +5549,23 @@ const ResonantChatPage: React.FC = () => {
             }}>
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '24px', fontWeight: 700, color: '#0ea5e9' }}>{usageStats.messages}</div>
-                <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase' }}>Messages</div>
+                <div style={{ fontSize: '11px', color: tc.muted, textTransform: 'uppercase' }}>Messages</div>
               </div>
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '24px', fontWeight: 700, color: '#8b5cf6' }}>{usageStats.tokens.toLocaleString()}</div>
-                <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase' }}>Tokens</div>
+                <div style={{ fontSize: '11px', color: tc.muted, textTransform: 'uppercase' }}>Tokens</div>
               </div>
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '24px', fontWeight: 700, color: usageStats.quality !== null ? (usageStats.quality > 0.7 ? '#22c55e' : usageStats.quality > 0.5 ? '#eab308' : '#ef4444') : '#666' }}>
                   {usageStats.quality !== null ? `${(usageStats.quality * 100).toFixed(0)}%` : 'N/A'}
                 </div>
-                <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase' }}>Quality</div>
+                <div style={{ fontSize: '11px', color: tc.muted, textTransform: 'uppercase' }}>Quality</div>
               </div>
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '24px', fontWeight: 700, color: usageStats.hallucination !== null ? (usageStats.hallucination < 0.1 ? '#22c55e' : usageStats.hallucination < 0.3 ? '#eab308' : '#ef4444') : '#666' }}>
                   {usageStats.hallucination !== null ? `${(usageStats.hallucination * 100).toFixed(0)}%` : 'N/A'}
                 </div>
-                <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase' }}>Hallucination</div>
+                <div style={{ fontSize: '11px', color: tc.muted, textTransform: 'uppercase' }}>Hallucination</div>
               </div>
             </div>
 
@@ -5568,7 +5581,7 @@ const ResonantChatPage: React.FC = () => {
                   Based on Hash Sphere resonance, semantic coherence with your conversation, and response structure quality.
                   Combines base resonance (40%), semantic similarity (25%), structural quality (20%), and sentiment alignment (15%).
                 </p>
-                <div style={{ marginTop: '8px', fontSize: '12px', color: '#888' }}>
+                <div style={{ marginTop: '8px', fontSize: '12px', color: tc.muted }}>
                   <strong>90-100%:</strong> Excellent | <strong>70-89%:</strong> Good | <strong>50-69%:</strong> Fair | <strong>&lt;50%:</strong> Poor
                 </div>
               </div>
@@ -5579,7 +5592,7 @@ const ResonantChatPage: React.FC = () => {
                   Detects potential fabrications using pattern matching for fake libraries, APIs, and statistics.
                   Now includes RAG verification - claims are checked against your stored knowledge and conversation context.
                 </p>
-                <div style={{ marginTop: '8px', fontSize: '12px', color: '#888' }}>
+                <div style={{ marginTop: '8px', fontSize: '12px', color: tc.muted }}>
                   <strong>Low:</strong> Well-grounded | <strong>Moderate:</strong> Some claims may need verification | <strong>High:</strong> Verify claims independently
                 </div>
               </div>
@@ -5590,7 +5603,7 @@ const ResonantChatPage: React.FC = () => {
                   Total tokens consumed by your conversation. Tokens are the basic units of text that AI models process.
                   Roughly 1 token ≈ 4 characters or ¾ of a word.
                 </p>
-                <div style={{ marginTop: '8px', fontSize: '12px', color: '#888' }}>
+                <div style={{ marginTop: '8px', fontSize: '12px', color: tc.muted }}>
                   Input tokens (your messages) + Output tokens (AI responses) = Total tokens
                 </div>
               </div>
@@ -5686,15 +5699,16 @@ const ResonantChatPage: React.FC = () => {
         >
           <div 
             style={{
-              background: '#121212',
+              background: tc.panelBg,
               borderRadius: '16px',
               padding: '24px',
               maxWidth: '700px',
               width: '90%',
               maxHeight: '80vh',
               overflow: 'auto',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+              border: `1px solid ${tc.panelBorder}`,
+              boxShadow: tc.panelShadow,
+              color: isLight ? '#0f172a' : undefined,
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -5716,7 +5730,7 @@ const ResonantChatPage: React.FC = () => {
               </h2>
               <button 
                 onClick={() => setShowClustersSticker(false)}
-                style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '24px' }}
+                style={{ background: 'none', border: 'none', color: tc.muted, cursor: 'pointer', fontSize: '24px' }}
               >
                 ×
               </button>
@@ -5724,7 +5738,7 @@ const ResonantChatPage: React.FC = () => {
 
             {/* Memory Anchors */}
             <div style={{ marginBottom: '24px' }}>
-              <h3 style={{ fontSize: '14px', color: '#888', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              <h3 style={{ fontSize: '14px', color: tc.muted, marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                 Memory Anchors ({memoryAnchors.length})
               </h3>
               {memoryAnchors.length > 0 ? (
@@ -5752,7 +5766,7 @@ const ResonantChatPage: React.FC = () => {
                   ))}
                 </div>
               ) : (
-                <div style={{ padding: '20px', textAlign: 'center', color: '#666', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                <div style={{ padding: '20px', textAlign: 'center', color: '#666', background: tc.rowBg, borderRadius: '8px' }}>
                   No memory anchors yet. Chat more to build context.
                 </div>
               )}
@@ -5760,7 +5774,7 @@ const ResonantChatPage: React.FC = () => {
 
             {/* Resonance Clusters */}
             <div style={{ marginBottom: '24px' }}>
-              <h3 style={{ fontSize: '14px', color: '#888', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              <h3 style={{ fontSize: '14px', color: tc.muted, marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                 Resonance Clusters ({resonanceClusters.length})
               </h3>
               {resonanceClusters.length > 0 ? (
@@ -5778,14 +5792,14 @@ const ResonantChatPage: React.FC = () => {
                       <div style={{ fontSize: '14px', fontWeight: 500, color: '#8b5cf6', marginBottom: '4px' }}>
                         {cluster.name || `Cluster ${idx + 1}`}
                       </div>
-                      <div style={{ fontSize: '12px', color: '#888' }}>
+                      <div style={{ fontSize: '12px', color: tc.muted }}>
                         {cluster.count || cluster.items?.length || 0} items
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div style={{ padding: '20px', textAlign: 'center', color: '#666', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                <div style={{ padding: '20px', textAlign: 'center', color: '#666', background: tc.rowBg, borderRadius: '8px' }}>
                   No clusters formed yet. Clusters are created as related concepts emerge in your conversations.
                 </div>
               )}
@@ -5802,14 +5816,14 @@ const ResonantChatPage: React.FC = () => {
             }}>
               <div>
                 <div style={{ fontSize: '14px', fontWeight: 500, marginBottom: '4px' }}>Hash Sphere Mode</div>
-                <div style={{ fontSize: '12px', color: '#888' }}>Use semantic hashing for context retrieval</div>
+                <div style={{ fontSize: '12px', color: tc.muted }}>Use semantic hashing for context retrieval</div>
               </div>
               <button
                 onClick={() => setUseHashSphere(!useHashSphere)}
                 style={{
                   padding: '8px 16px',
-                  background: useHashSphere ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                  border: `1px solid ${useHashSphere ? '#22c55e' : 'rgba(255, 255, 255, 0.2)'}`,
+                  background: useHashSphere ? 'rgba(34, 197, 94, 0.2)' : tc.offBg,
+                  border: `1px solid ${useHashSphere ? '#22c55e' : tc.offBorder}`,
                   borderRadius: '8px',
                   color: useHashSphere ? '#22c55e' : '#888',
                   cursor: 'pointer',
@@ -5836,14 +5850,15 @@ const ResonantChatPage: React.FC = () => {
         >
           <div 
             style={{
-              background: '#1a1a1a',
+              background: tc.panelBg,
               borderRadius: '12px',
               padding: '20px',
               width: '320px',
               maxHeight: '60vh',
               overflow: 'auto',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+              border: `1px solid ${tc.panelBorder}`,
+              boxShadow: tc.panelShadow,
+              color: isLight ? '#0f172a' : undefined,
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -5857,7 +5872,7 @@ const ResonantChatPage: React.FC = () => {
               </h2>
               <button 
                 onClick={() => setShowSettingsSticker(false)}
-                style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '24px' }}
+                style={{ background: 'none', border: 'none', color: tc.muted, cursor: 'pointer', fontSize: '24px' }}
               >
                 ×
               </button>
@@ -5865,21 +5880,21 @@ const ResonantChatPage: React.FC = () => {
 
             {/* Display Settings */}
             <div style={{ marginBottom: '24px' }}>
-              <h3 style={{ fontSize: '14px', color: '#888', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              <h3 style={{ fontSize: '14px', color: tc.muted, marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                 Display
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: tc.rowBg, borderRadius: '8px' }}>
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: 500 }}>Show Timestamps</div>
-                    <div style={{ fontSize: '12px', color: '#888' }}>Display message timestamps</div>
+                    <div style={{ fontSize: '12px', color: tc.muted }}>Display message timestamps</div>
                   </div>
                   <button
                     onClick={() => setShowTimestamps(!showTimestamps)}
                     style={{
                       padding: '6px 12px',
-                      background: showTimestamps ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                      border: `1px solid ${showTimestamps ? '#22c55e' : 'rgba(255, 255, 255, 0.2)'}`,
+                      background: showTimestamps ? 'rgba(34, 197, 94, 0.2)' : tc.offBg,
+                      border: `1px solid ${showTimestamps ? '#22c55e' : tc.offBorder}`,
                       borderRadius: '6px',
                       color: showTimestamps ? '#22c55e' : '#888',
                       cursor: 'pointer',
@@ -5889,17 +5904,17 @@ const ResonantChatPage: React.FC = () => {
                     {showTimestamps ? 'ON' : 'OFF'}
                   </button>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: tc.rowBg, borderRadius: '8px' }}>
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: 500 }}>Provider Badges</div>
-                    <div style={{ fontSize: '12px', color: '#888' }}>Show AI provider on messages</div>
+                    <div style={{ fontSize: '12px', color: tc.muted }}>Show AI provider on messages</div>
                   </div>
                   <button
                     onClick={() => setShowProviderBadges(!showProviderBadges)}
                     style={{
                       padding: '6px 12px',
-                      background: showProviderBadges ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                      border: `1px solid ${showProviderBadges ? '#22c55e' : 'rgba(255, 255, 255, 0.2)'}`,
+                      background: showProviderBadges ? 'rgba(34, 197, 94, 0.2)' : tc.offBg,
+                      border: `1px solid ${showProviderBadges ? '#22c55e' : tc.offBorder}`,
                       borderRadius: '6px',
                       color: showProviderBadges ? '#22c55e' : '#888',
                       cursor: 'pointer',
@@ -5909,17 +5924,17 @@ const ResonantChatPage: React.FC = () => {
                     {showProviderBadges ? 'ON' : 'OFF'}
                   </button>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: tc.rowBg, borderRadius: '8px' }}>
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: 500 }}>Validity Scores</div>
-                    <div style={{ fontSize: '12px', color: '#888' }}>Show quality scores on messages</div>
+                    <div style={{ fontSize: '12px', color: tc.muted }}>Show quality scores on messages</div>
                   </div>
                   <button
                     onClick={() => setShowValidityScores(!showValidityScores)}
                     style={{
                       padding: '6px 12px',
-                      background: showValidityScores ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                      border: `1px solid ${showValidityScores ? '#22c55e' : 'rgba(255, 255, 255, 0.2)'}`,
+                      background: showValidityScores ? 'rgba(34, 197, 94, 0.2)' : tc.offBg,
+                      border: `1px solid ${showValidityScores ? '#22c55e' : tc.offBorder}`,
                       borderRadius: '6px',
                       color: showValidityScores ? '#22c55e' : '#888',
                       cursor: 'pointer',
@@ -5929,17 +5944,17 @@ const ResonantChatPage: React.FC = () => {
                     {showValidityScores ? 'ON' : 'OFF'}
                   </button>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: tc.rowBg, borderRadius: '8px' }}>
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: 500 }}>Message Actions</div>
-                    <div style={{ fontSize: '12px', color: '#888' }}>Show copy, save, regenerate buttons</div>
+                    <div style={{ fontSize: '12px', color: tc.muted }}>Show copy, save, regenerate buttons</div>
                   </div>
                   <button
                     onClick={() => setShowMessageActions(!showMessageActions)}
                     style={{
                       padding: '6px 12px',
-                      background: showMessageActions ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                      border: `1px solid ${showMessageActions ? '#22c55e' : 'rgba(255, 255, 255, 0.2)'}`,
+                      background: showMessageActions ? 'rgba(34, 197, 94, 0.2)' : tc.offBg,
+                      border: `1px solid ${showMessageActions ? '#22c55e' : tc.offBorder}`,
                       borderRadius: '6px',
                       color: showMessageActions ? '#22c55e' : '#888',
                       cursor: 'pointer',
@@ -5949,17 +5964,17 @@ const ResonantChatPage: React.FC = () => {
                     {showMessageActions ? 'ON' : 'OFF'}
                   </button>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: tc.rowBg, borderRadius: '8px' }}>
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: 500 }}>Message Metrics</div>
-                    <div style={{ fontSize: '12px', color: '#888' }}>Show metrics and context buttons</div>
+                    <div style={{ fontSize: '12px', color: tc.muted }}>Show metrics and context buttons</div>
                   </div>
                   <button
                     onClick={() => setShowMessageMetrics(!showMessageMetrics)}
                     style={{
                       padding: '6px 12px',
-                      background: showMessageMetrics ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                      border: `1px solid ${showMessageMetrics ? '#22c55e' : 'rgba(255, 255, 255, 0.2)'}`,
+                      background: showMessageMetrics ? 'rgba(34, 197, 94, 0.2)' : tc.offBg,
+                      border: `1px solid ${showMessageMetrics ? '#22c55e' : tc.offBorder}`,
                       borderRadius: '6px',
                       color: showMessageMetrics ? '#22c55e' : '#888',
                       cursor: 'pointer',
@@ -5969,17 +5984,17 @@ const ResonantChatPage: React.FC = () => {
                     {showMessageMetrics ? 'ON' : 'OFF'}
                   </button>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: tc.rowBg, borderRadius: '8px' }}>
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: 500 }}>Align User Messages Right</div>
-                    <div style={{ fontSize: '12px', color: '#888' }}>Position your messages on the right side</div>
+                    <div style={{ fontSize: '12px', color: tc.muted }}>Position your messages on the right side</div>
                   </div>
                   <button
                     onClick={() => setAlignUserMessagesRight(!alignUserMessagesRight)}
                     style={{
                       padding: '6px 12px',
-                      background: alignUserMessagesRight ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                      border: `1px solid ${alignUserMessagesRight ? '#22c55e' : 'rgba(255, 255, 255, 0.2)'}`,
+                      background: alignUserMessagesRight ? 'rgba(34, 197, 94, 0.2)' : tc.offBg,
+                      border: `1px solid ${alignUserMessagesRight ? '#22c55e' : tc.offBorder}`,
                       borderRadius: '6px',
                       color: alignUserMessagesRight ? '#22c55e' : '#888',
                       cursor: 'pointer',
@@ -5989,17 +6004,17 @@ const ResonantChatPage: React.FC = () => {
                     {alignUserMessagesRight ? 'ON' : 'OFF'}
                   </button>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: tc.rowBg, borderRadius: '8px' }}>
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: 500 }}>Compact Mode</div>
-                    <div style={{ fontSize: '12px', color: '#888' }}>Reduce message spacing</div>
+                    <div style={{ fontSize: '12px', color: tc.muted }}>Reduce message spacing</div>
                   </div>
                   <button
                     onClick={() => setCompactMode(!compactMode)}
                     style={{
                       padding: '6px 12px',
-                      background: compactMode ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                      border: `1px solid ${compactMode ? '#22c55e' : 'rgba(255, 255, 255, 0.2)'}`,
+                      background: compactMode ? 'rgba(34, 197, 94, 0.2)' : tc.offBg,
+                      border: `1px solid ${compactMode ? '#22c55e' : tc.offBorder}`,
                       borderRadius: '6px',
                       color: compactMode ? '#22c55e' : '#888',
                       cursor: 'pointer',
@@ -6014,21 +6029,21 @@ const ResonantChatPage: React.FC = () => {
 
             {/* Behavior Settings */}
             <div style={{ marginBottom: '24px' }}>
-              <h3 style={{ fontSize: '14px', color: '#888', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              <h3 style={{ fontSize: '14px', color: tc.muted, marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                 Behavior
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: tc.rowBg, borderRadius: '8px' }}>
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: 500 }}>Auto Save</div>
-                    <div style={{ fontSize: '12px', color: '#888' }}>Automatically save conversations</div>
+                    <div style={{ fontSize: '12px', color: tc.muted }}>Automatically save conversations</div>
                   </div>
                   <button
                     onClick={() => setAutoSave(!autoSave)}
                     style={{
                       padding: '6px 12px',
-                      background: autoSave ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                      border: `1px solid ${autoSave ? '#22c55e' : 'rgba(255, 255, 255, 0.2)'}`,
+                      background: autoSave ? 'rgba(34, 197, 94, 0.2)' : tc.offBg,
+                      border: `1px solid ${autoSave ? '#22c55e' : tc.offBorder}`,
                       borderRadius: '6px',
                       color: autoSave ? '#22c55e' : '#888',
                       cursor: 'pointer',
@@ -6038,17 +6053,17 @@ const ResonantChatPage: React.FC = () => {
                     {autoSave ? 'ON' : 'OFF'}
                   </button>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: tc.rowBg, borderRadius: '8px' }}>
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: 500 }}>Sound Notifications</div>
-                    <div style={{ fontSize: '12px', color: '#888' }}>Play sound on new messages</div>
+                    <div style={{ fontSize: '12px', color: tc.muted }}>Play sound on new messages</div>
                   </div>
                   <button
                     onClick={() => setSoundNotifications(!soundNotifications)}
                     style={{
                       padding: '6px 12px',
-                      background: soundNotifications ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                      border: `1px solid ${soundNotifications ? '#22c55e' : 'rgba(255, 255, 255, 0.2)'}`,
+                      background: soundNotifications ? 'rgba(34, 197, 94, 0.2)' : tc.offBg,
+                      border: `1px solid ${soundNotifications ? '#22c55e' : tc.offBorder}`,
                       borderRadius: '6px',
                       color: soundNotifications ? '#22c55e' : '#888',
                       cursor: 'pointer',
@@ -6058,17 +6073,17 @@ const ResonantChatPage: React.FC = () => {
                     {soundNotifications ? 'ON' : 'OFF'}
                   </button>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: tc.rowBg, borderRadius: '8px' }}>
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: 500 }}>Keyboard Shortcuts</div>
-                    <div style={{ fontSize: '12px', color: '#888' }}>Enable keyboard shortcuts</div>
+                    <div style={{ fontSize: '12px', color: tc.muted }}>Enable keyboard shortcuts</div>
                   </div>
                   <button
                     onClick={() => setKeyboardShortcuts(!keyboardShortcuts)}
                     style={{
                       padding: '6px 12px',
-                      background: keyboardShortcuts ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                      border: `1px solid ${keyboardShortcuts ? '#22c55e' : 'rgba(255, 255, 255, 0.2)'}`,
+                      background: keyboardShortcuts ? 'rgba(34, 197, 94, 0.2)' : tc.offBg,
+                      border: `1px solid ${keyboardShortcuts ? '#22c55e' : tc.offBorder}`,
                       borderRadius: '6px',
                       color: keyboardShortcuts ? '#22c55e' : '#888',
                       cursor: 'pointer',
@@ -6091,14 +6106,14 @@ const ResonantChatPage: React.FC = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(245, 158, 11, 0.05)', borderRadius: '8px', border: '1px solid rgba(245, 158, 11, 0.15)' }}>
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: 500 }}>System Prompt Grounding</div>
-                    <div style={{ fontSize: '11px', color: '#888' }}>Check if response contradicts system instructions (free, default)</div>
+                    <div style={{ fontSize: '11px', color: tc.muted }}>Check if response contradicts system instructions (free, default)</div>
                   </div>
                   <button
                     onClick={() => { setHallucinationSystemPromptGrounding(!hallucinationSystemPromptGrounding); saveHallucinationSetting('system_prompt_grounding', !hallucinationSystemPromptGrounding); }}
                     style={{
                       padding: '6px 12px',
-                      background: hallucinationSystemPromptGrounding ? 'rgba(34, 197, 94, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                      border: `1px solid ${hallucinationSystemPromptGrounding ? '#22c55e' : 'rgba(255, 255, 255, 0.2)'}`,
+                      background: hallucinationSystemPromptGrounding ? 'rgba(34, 197, 94, 0.2)' : tc.offBg,
+                      border: `1px solid ${hallucinationSystemPromptGrounding ? '#22c55e' : tc.offBorder}`,
                       borderRadius: '6px',
                       color: hallucinationSystemPromptGrounding ? '#22c55e' : '#888',
                       cursor: 'pointer',
@@ -6116,14 +6131,14 @@ const ResonantChatPage: React.FC = () => {
                       LLM-as-Judge
                       <span style={{ fontSize: '10px', padding: '2px 6px', background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', borderRadius: '4px' }}>COSTLY</span>
                     </div>
-                    <div style={{ fontSize: '11px', color: '#888' }}>Second LLM call to verify claims (uses credits)</div>
+                    <div style={{ fontSize: '11px', color: tc.muted }}>Second LLM call to verify claims (uses credits)</div>
                   </div>
                   <button
                     onClick={() => { setHallucinationLlmJudge(!hallucinationLlmJudge); saveHallucinationSetting('llm_as_judge', !hallucinationLlmJudge); }}
                     style={{
                       padding: '6px 12px',
-                      background: hallucinationLlmJudge ? 'rgba(239, 68, 68, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                      border: `1px solid ${hallucinationLlmJudge ? '#ef4444' : 'rgba(255, 255, 255, 0.2)'}`,
+                      background: hallucinationLlmJudge ? 'rgba(239, 68, 68, 0.2)' : tc.offBg,
+                      border: `1px solid ${hallucinationLlmJudge ? '#ef4444' : tc.offBorder}`,
                       borderRadius: '6px',
                       color: hallucinationLlmJudge ? '#ef4444' : '#888',
                       cursor: 'pointer',
@@ -6138,14 +6153,14 @@ const ResonantChatPage: React.FC = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '8px', border: '1px solid rgba(139, 92, 246, 0.15)' }}>
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: 500 }}>Knowledge Base Check</div>
-                    <div style={{ fontSize: '11px', color: '#888' }}>Cross-reference against your uploaded facts/data</div>
+                    <div style={{ fontSize: '11px', color: tc.muted }}>Cross-reference against your uploaded facts/data</div>
                   </div>
                   <button
                     onClick={() => { setHallucinationKnowledgeBase(!hallucinationKnowledgeBase); saveHallucinationSetting('knowledge_base_check', !hallucinationKnowledgeBase); }}
                     style={{
                       padding: '6px 12px',
-                      background: hallucinationKnowledgeBase ? 'rgba(139, 92, 246, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-                      border: `1px solid ${hallucinationKnowledgeBase ? '#8b5cf6' : 'rgba(255, 255, 255, 0.2)'}`,
+                      background: hallucinationKnowledgeBase ? 'rgba(139, 92, 246, 0.2)' : tc.offBg,
+                      border: `1px solid ${hallucinationKnowledgeBase ? '#8b5cf6' : tc.offBorder}`,
                       borderRadius: '6px',
                       color: hallucinationKnowledgeBase ? '#8b5cf6' : '#888',
                       cursor: 'pointer',
@@ -6244,10 +6259,10 @@ const ResonantChatPage: React.FC = () => {
                     {knowledgeBaseEntries.length > 0 ? (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         {knowledgeBaseEntries.map((entry) => (
-                          <div key={entry.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 8px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px' }}>
+                          <div key={entry.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 8px', background: tc.rowBg, borderRadius: '6px' }}>
                             <div>
                               <div style={{ fontSize: '12px', fontWeight: 500 }}>{entry.title}</div>
-                              <div style={{ fontSize: '10px', color: '#888' }}>{entry.type} · {(entry.length / 1024).toFixed(1)}KB</div>
+                              <div style={{ fontSize: '10px', color: tc.muted }}>{entry.type} · {(entry.length / 1024).toFixed(1)}KB</div>
                             </div>
                             <button
                               onClick={() => deleteKnowledgeBaseEntry(entry.id)}
@@ -6270,7 +6285,7 @@ const ResonantChatPage: React.FC = () => {
 
             {/* Font Size */}
             <div style={{ marginBottom: '24px' }}>
-              <h3 style={{ fontSize: '14px', color: '#888', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              <h3 style={{ fontSize: '14px', color: tc.muted, marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                 Font Size
               </h3>
               <div style={{ display: 'flex', gap: '8px' }}>
@@ -6282,7 +6297,7 @@ const ResonantChatPage: React.FC = () => {
                       flex: 1,
                       padding: '10px',
                       background: fontSize === size ? 'rgba(14, 165, 233, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                      border: `1px solid ${fontSize === size ? '#0ea5e9' : 'rgba(255, 255, 255, 0.1)'}`,
+                      border: `1px solid ${fontSize === size ? '#0ea5e9' : tc.offBg}`,
                       borderRadius: '8px',
                       color: fontSize === size ? '#0ea5e9' : '#888',
                       cursor: 'pointer',

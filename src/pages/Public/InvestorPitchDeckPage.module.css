@@ -830,10 +830,6 @@
   background: #0a0a0a;
 }
 
-:global([data-theme="light"]) .slideDark {
-  background: #0a0a0a;
-}
-
 /* VR image slides (duplicate kept for specificity) */
 .slideVr {
   background: #000 !important;
