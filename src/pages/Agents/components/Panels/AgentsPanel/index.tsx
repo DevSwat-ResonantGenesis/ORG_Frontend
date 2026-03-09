@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAgentStore, useUIStore, selectAgents, selectSelectedAgent } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import type { Agent } from '../../../../../types';
-import { startAgentSession, stopAgentSession, deleteAgent } from '../../../../../api/agents';
-import { getSession as getAgentSession } from '../../../../../api/agentEngine';
+import { deleteAgent } from '../../../../../api/agents';
 import fastapiClient from '../../../../../api/fastapiClient';
 import { executeAgentTask } from '../../../../../api/executions';
 import { useToastContext } from '../../../../../context/ToastContext';
@@ -19,8 +18,6 @@ interface AgentsPanelProps {
   className?: string;
 }
 
-// Modal types
-type ModalType = 'run' | 'message' | 'detail' | null;
 
 interface AgentMessage {
   id: string;
@@ -54,26 +51,17 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const [chatAgentId, setChatAgentId] = useState<string | null>(null);
   const chatAgent = chatAgentId ? agents.find((a: Agent) => a.id === chatAgentId) || null : null;
 
-  // Modal state
-  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  // Detail pane state (inline, replaces sessions pane)
+  const [detailAgentId, setDetailAgentId] = useState<string | null>(null);
+  const detailAgent = detailAgentId ? agents.find((a: Agent) => a.id === detailAgentId) || null : null;
   const [agentVersions, setAgentVersions] = useState<any[]>([]);
   const [agentActivity, setAgentActivity] = useState<any[]>([]);
   const [agentBenchmarks, setAgentBenchmarks] = useState<any>(null);
-  const [modalAgentId, setModalAgentId] = useState<string | null>(null);
-  const [goalInput, setGoalInput] = useState('');
+
   const [messageInput, setMessageInput] = useState('');
   const [agentMessages, setAgentMessages] = useState<Record<string, AgentMessage[]>>({});
-  const [lastRunOutput, setLastRunOutput] = useState('');
-  const [isRunning, setIsRunning] = useState(false);
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const lastActiveElementRef = useRef<HTMLElement | null>(null);
-
-  const modalAgent = modalAgentId ? agents.find((a: Agent) => a.id === modalAgentId) || null : null;
-  const modalMessages = useMemo(() => {
-    if (!modalAgentId) return [];
-    return agentMessages[modalAgentId] || [];
-  }, [agentMessages, modalAgentId]);
 
   const pinnedSet = useMemo(() => new Set(pinnedAgentIds || []), [pinnedAgentIds]);
 
@@ -171,29 +159,19 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages, isSendingMessage]);
 
-  // Open modal
-  const openModal = useCallback((type: ModalType, agent: Agent) => {
-    lastActiveElementRef.current = (document.activeElement as HTMLElement) || null;
-    setModalAgentId(agent.id);
-    setActiveModal(type);
-    setGoalInput('');
-    setMessageInput('');
-    setError(null);
-    setIsSendingMessage(false);
-
-    if (type === 'run') {
-      setSessionStatus('idle');
-      setLastRunOutput('');
-    }
-  }, []);
-
+  // Custom event listeners for command palette integration
   useEffect(() => {
     const onOpenModal = (e: Event) => {
-      const detail = (e as CustomEvent).detail as { type?: ModalType; agentId?: string } | undefined;
+      const detail = (e as CustomEvent).detail as { type?: string; agentId?: string } | undefined;
       if (!detail?.type || !detail?.agentId) return;
-      const agent = agents.find((a) => a.id === detail.agentId);
-      if (!agent) return;
-      openModal(detail.type, agent);
+      if (detail.type === 'run') {
+        selectAgent(detail.agentId);
+        setChatAgentId(null);
+        setDetailAgentId(null);
+      } else if (detail.type === 'detail') {
+        setDetailAgentId(detail.agentId);
+        setChatAgentId(null);
+      }
     };
 
     const onToggleFavoritesFilter = () => {
@@ -216,37 +194,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
       document.removeEventListener('agentos:agents:toggleFavoritesFilter', onToggleFavoritesFilter as any);
       document.removeEventListener('agentos:agents:toggleBulkMode', onToggleBulkMode as any);
     };
-  }, [agents, openModal]);
-
-  // Close modal
-  const closeModal = useCallback(() => {
-    setActiveModal(null);
-    setModalAgentId(null);
-    setGoalInput('');
-    setMessageInput('');
-    setError(null);
-
-    // Restore focus back to the triggering element for keyboard users
-    const el = lastActiveElementRef.current;
-    if (el && typeof el.focus === 'function') {
-      setTimeout(() => el.focus(), 0);
-    }
-  }, []);
-
-  // ESC to close any modal
-  useEffect(() => {
-    if (!activeModal) return;
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        closeModal();
-      }
-    };
-
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [activeModal, closeModal]);
+  }, [agents, selectAgent]);
 
   // Panel-level shortcuts (avoid when typing)
   useEffect(() => {
@@ -276,81 +224,6 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [selectedAgent?.id, togglePinnedAgent]);
-
-  // Session state for run modal
-  const [sessionStatus, setSessionStatus] = useState<'idle' | 'starting' | 'running' | 'completed' | 'failed'>('idle');
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // Cleanup polling on unmount
-  useEffect(() => {
-    return () => {
-      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
-    };
-  }, []);
-
-  // Handle Run agent
-  const handleRunAgent = useCallback(async () => {
-    if (!modalAgent || !goalInput.trim()) return;
-
-    if (modalAgent.persisted === false) {
-      setError('This agent is not persisted on the server, so it cannot run sessions. Create the agent on the server first.');
-      return;
-    }
-    
-    setIsRunning(true);
-    setSessionStatus('starting');
-    setError(null);
-    
-    try {
-      const session = await startAgentSession(modalAgent.id, goalInput.trim());
-      setSessionId(session.id);
-      setSessionStatus('running');
-      updateAgent(modalAgent.id, { status: 'active' as const });
-      
-      // Poll for session status
-      pollIntervalRef.current = setInterval(async () => {
-        try {
-          const data = await getAgentSession(session.id);
-          if (data.status === 'completed') {
-            setSessionStatus('completed');
-            toast.success('Agent run completed');
-            const content = typeof data.final_output === 'string'
-              ? data.final_output
-              : data.final_output
-                ? JSON.stringify(data.final_output, null, 2)
-                : 'Task completed successfully.';
-            setLastRunOutput(content);
-            updateAgent(modalAgent.id, { status: 'idle' as const });
-            if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
-          } else if (data.status === 'failed') {
-            setSessionStatus('failed');
-            const msg = data.error_message || 'Agent execution failed';
-            toast.error(msg);
-            setError(msg);
-            updateAgent(modalAgent.id, { status: 'idle' as const });
-            if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
-          }
-        } catch (e) {
-          if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
-          setSessionStatus('failed');
-          toast.error('Failed to fetch agent session status. Please try again.');
-          setError('Failed to fetch agent session status. Please try again.');
-          updateAgent(modalAgent.id, { status: 'idle' as const });
-        }
-      }, 2000);
-      
-      setGoalInput('');
-    } catch (err: any) {
-      const msg = err.message || 'Failed to start agent';
-      toast.error(msg);
-      setError(msg);
-      setSessionStatus('failed');
-      console.error('Failed to start agent:', err);
-    } finally {
-      setIsRunning(false);
-    }
-  }, [modalAgent, goalInput, toast, updateAgent]);
 
   // Handle send message (inline chat pane)
   const handleSendMessage = useCallback(async () => {
@@ -414,15 +287,15 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     }
   }, [chatAgent, messageInput, isSendingMessage, toast]);
 
-  // Fetch agent versions and activity when detail modal opens
+  // Fetch agent versions and activity when detail pane opens
   useEffect(() => {
-    if (activeModal === 'detail' && modalAgent?.id) {
+    if (detailAgentId) {
       (async () => {
         try {
           const [versionsRes, activityRes, benchmarksRes] = await Promise.allSettled([
-            fastapiClient.get('/api/v1/agents/' + modalAgent.id + '/versions'),
-            fastapiClient.get('/api/v1/agents/' + modalAgent.id + '/activity?limit=5'),
-            fastapiClient.get('/api/v1/agents/' + modalAgent.id + '/benchmarks').catch(() => ({ data: null })),
+            fastapiClient.get('/api/v1/agents/' + detailAgentId + '/versions'),
+            fastapiClient.get('/api/v1/agents/' + detailAgentId + '/activity?limit=5'),
+            fastapiClient.get('/api/v1/agents/' + detailAgentId + '/benchmarks').catch(() => ({ data: null })),
           ]);
           if (versionsRes.status === 'fulfilled') setAgentVersions(versionsRes.value.data?.versions || []);
           if (activityRes.status === 'fulfilled') setAgentActivity(activityRes.value.data || []);
@@ -430,7 +303,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
         } catch { setAgentVersions([]); setAgentActivity([]); }
       })();
     }
-  }, [activeModal, modalAgent?.id]);
+  }, [detailAgentId]);
 
   // Handle agent actions
   const handleAgentAction = useCallback(async (action: 'stop' | 'pause' | 'delete', agentId: string) => {
@@ -450,7 +323,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
             await deleteAgent(agentId);
             removeAgent(agentId);
             toast.success('Agent archived');
-            closeModal();
+            setDetailAgentId(null);
           }
           break;
       }
@@ -462,7 +335,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     } finally {
       setLoadingAgentId(null);
     }
-  }, [stopAgent, pauseAgent, removeAgent, closeModal, toast]);
+  }, [stopAgent, pauseAgent, removeAgent, toast]);
 
   const copyAgentId = useCallback((id: string) => {
     (async () => {
@@ -540,7 +413,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   }, [toast]);
 
   return (
-    <div className={`${styles.panel} ${activeModal ? styles.modalOpen : ''} ${className || ''}`}>
+    <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
         <h2><Icons.Agents /> Agent Management</h2>
         
@@ -684,11 +557,11 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                       <span className={styles.loadingIndicator}>...</span>
                     ) : (
                       <>
-                        {/* Run/Play button */}
+                        {/* Run/Play button — opens sessions panel for this agent */}
                         <button 
                           className={`${styles.actionBtn} ${styles.runBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); openModal('run', agent); }}
+                          onClick={(e) => { e.stopPropagation(); selectAgent(agent.id); setChatAgentId(null); setDetailAgentId(null); }}
                           title="Run Agent"
                         >
                           <Icons.Play />
@@ -704,11 +577,11 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                           <Icons.MessageSquare />
                         </button>
                         
-                        {/* Detail button */}
+                        {/* Detail button — opens inline detail pane */}
                         <button 
                           className={`${styles.actionBtn} ${styles.detailBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); openModal('detail', agent); }}
+                          onClick={(e) => { e.stopPropagation(); setDetailAgentId(agent.id); setChatAgentId(null); }}
                           title="View Details"
                         >
                           <Icons.Info />
@@ -758,8 +631,126 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           </div>
         </div>
 
-        {/* Right pane: chat if chatAgent is set, otherwise sessions */}
-        {chatAgent ? (
+        {/* Right pane: detail > chat > sessions */}
+        {detailAgent ? (
+          <div className={styles.sessionsPane}>
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+              {/* Detail header */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', borderBottom: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}>
+                <Icons.Info />
+                <span style={{ fontWeight: 600, fontSize: 13, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{detailAgent.name} Details</span>
+                <button onClick={() => setDetailAgentId(null)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 16, padding: '2px 6px' }} title="Close details">×</button>
+              </div>
+
+              {/* Detail content */}
+              <div style={{ flex: 1, overflowY: 'auto', padding: '8px 12px' }}>
+                <div className={styles.detailHeader}>
+                  <span className={`${styles.statusDot} ${styles[detailAgent.status]}`} />
+                  <span className={`${styles.modeBadge} ${detailAgent.mode === 'unbounded' ? styles.unbounded : ''}`}>
+                    {detailAgent.mode === 'governed' ? <><Icons.Lock /> Governed</> : <><Icons.Unlock /> Unbounded</>}
+                  </span>
+                </div>
+
+                <div className={styles.agentIdSection}>
+                  <div className={styles.agentIdRow}>
+                    <span className={styles.agentIdLabel}>Agent ID</span>
+                    <div className={styles.agentIdValue}>
+                      <code>{detailAgent.id}</code>
+                      <button className={styles.copyBtn} onClick={() => copyAgentId(detailAgent.id)} title="Copy Agent ID"><Icons.Copy /></button>
+                    </div>
+                  </div>
+                  <div className={styles.agentIdRow}>
+                    <span className={styles.agentIdLabel}>Agent Hash</span>
+                    <div className={styles.agentIdValue}>
+                      <code>{detailAgent.hash || detailAgent.id}</code>
+                      <button className={styles.copyBtn} onClick={() => copyAgentHash(detailAgent)} title="Copy Agent Hash"><Icons.Copy /></button>
+                    </div>
+                  </div>
+                  <div className={styles.agentIdRow}>
+                    <span className={styles.agentIdLabel}>DSID</span>
+                    <div className={styles.agentIdValue}>
+                      <code>{detailAgent.dsid || '—'}</code>
+                      <button className={styles.copyBtn} onClick={() => copyAgentDsid(detailAgent)} title="Copy DSID" disabled={!detailAgent.dsid}><Icons.Copy /></button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.detailGrid}>
+                  <div className={styles.detailItem}><span className={styles.detailLabel}>Type</span><span className={styles.detailValue}>{detailAgent.type}</span></div>
+                  <div className={styles.detailItem}><span className={styles.detailLabel}>Status</span><span className={styles.detailValue}>{detailAgent.status}</span></div>
+                  <div className={styles.detailItem}><span className={styles.detailLabel}>Executions</span><span className={styles.detailValue}>{detailAgent.executions.toLocaleString()}</span></div>
+                  <div className={styles.detailItem}><span className={styles.detailLabel}>Cost Today</span><span className={styles.detailValue}>${detailAgent.costToday.toFixed(2)}</span></div>
+                  <div className={styles.detailItem}><span className={styles.detailLabel}>Wallet Balance</span><span className={styles.detailValue}>${detailAgent.walletBalance.toFixed(2)}</span></div>
+                  <div className={styles.detailItem}><span className={styles.detailLabel}>Risk Level</span><span className={`${styles.detailValue} ${styles[detailAgent.riskLevel]}`}>{detailAgent.riskLevel}</span></div>
+                </div>
+
+                <div className={styles.detailCapabilities}>
+                  <h4>Capabilities</h4>
+                  <div className={styles.capsList}>
+                    {detailAgent.capabilities.map((cap: string) => (
+                      <span key={cap} className={styles.capBadge}>{cap}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {agentBenchmarks && (
+                  <div className={styles.versionSection}>
+                    <h4 className={styles.sectionTitle}><Icons.TrendingUp /> Performance</h4>
+                    <div className={styles.detailGrid}>
+                      <div className={styles.detailItem}><span className={styles.detailLabel}>Avg Response</span><span className={styles.detailValue}>{agentBenchmarks.benchmarks?.avg_response_time_ms}ms</span></div>
+                      <div className={styles.detailItem}><span className={styles.detailLabel}>P95 Response</span><span className={styles.detailValue}>{agentBenchmarks.benchmarks?.p95_response_time_ms}ms</span></div>
+                      <div className={styles.detailItem}><span className={styles.detailLabel}>Success Rate</span><span className={styles.detailValue}>{agentBenchmarks.benchmarks?.success_rate}%</span></div>
+                      <div className={styles.detailItem}><span className={styles.detailLabel}>Throughput</span><span className={styles.detailValue}>{agentBenchmarks.benchmarks?.throughput_rpm} req/min</span></div>
+                      <div className={styles.detailItem}><span className={styles.detailLabel}>Rank</span><span className={styles.detailValue}>#{agentBenchmarks.comparison?.rank} of {agentBenchmarks.comparison?.total_agents}</span></div>
+                      <div className={styles.detailItem}><span className={styles.detailLabel}>vs Platform Avg</span><span className={styles.detailValue} style={{ color: (agentBenchmarks.comparison?.vs_platform_avg || 0) > 0 ? '#22c55e' : '#ef4444' }}>{(agentBenchmarks.comparison?.vs_platform_avg || 0) > 0 ? '+' : ''}{agentBenchmarks.comparison?.vs_platform_avg}%</span></div>
+                    </div>
+                  </div>
+                )}
+
+                {agentActivity.length > 0 && (
+                  <div className={styles.versionSection}>
+                    <h4 className={styles.sectionTitle}><Icons.Zap /> Recent Activity</h4>
+                    <div className={styles.versionList}>
+                      {agentActivity.slice(0, 5).map((a: any) => (
+                        <div key={a.id} className={styles.versionItem}>
+                          <span className={styles.versionNumber}>{a.action_type}</span>
+                          <span className={styles.versionChangelog}>{a.description}</span>
+                          <span className={styles.versionDate}>{a.timestamp ? new Date(a.timestamp).toLocaleTimeString() : '-'}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {agentVersions.length > 0 && (
+                  <div className={styles.versionSection}>
+                    <h4 className={styles.sectionTitle}><Icons.Code /> Version History</h4>
+                    <div className={styles.versionList}>
+                      {agentVersions.slice(0, 5).map((v: any, idx: number) => (
+                        <div key={v.version_number || idx} className={styles.versionItem}>
+                          <span className={styles.versionNumber}>v{v.version_number}</span>
+                          <span className={styles.versionHash}>{(v.agent_version_hash || '').slice(0, 12)}...</span>
+                          <span className={styles.versionDate}>{v.created_at ? new Date(v.created_at).toLocaleDateString() : '-'}</span>
+                          {v.changelog && <span className={styles.versionChangelog}>{v.changelog}</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Actions at bottom of detail pane */}
+                <div style={{ display: 'flex', gap: 8, marginTop: 12, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                  <button className={`${styles.primaryBtn} ${styles.runBtn}`} onClick={() => { selectAgent(detailAgent.id); setDetailAgentId(null); }}>
+                    <Icons.Play /> Open Sessions
+                  </button>
+                  <button className={styles.primaryBtn} onClick={() => { setChatAgentId(detailAgent.id); setDetailAgentId(null); }}>
+                    <Icons.MessageSquare /> Chat
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : chatAgent ? (
           <div className={styles.sessionsPane}>
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
               {/* Chat header */}
@@ -820,274 +811,6 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           </div>
         ) : null}
       </div>
-
-      {/* ============== MODALS ============== */}
-      
-      {/* Run Modal */}
-      {activeModal === 'run' && modalAgent && (
-        <div className={styles.modalOverlay} onClick={closeModal}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={`Run ${modalAgent.name}`}>
-            <div className={styles.modalHeader}>
-              <h3><Icons.Play /> Run {modalAgent.name}</h3>
-              <button className={styles.modalClose} onClick={closeModal}>×</button>
-            </div>
-            <div className={styles.modalBody}>
-              {error && <div className={styles.errorMsg}>{error}</div>}
-              
-              {/* Status Indicator - Compact */}
-              {sessionStatus !== 'idle' && (
-                <div className={styles.statusIndicator} data-status={sessionStatus}>
-                  <div className={styles.statusDot} />
-                  <span className={styles.statusText}>
-                    {sessionStatus === 'starting' && 'Starting agent...'}
-                    {sessionStatus === 'running' && 'Processing task...'}
-                    {sessionStatus === 'completed' && 'Completed'}
-                    {sessionStatus === 'failed' && 'Failed'}
-                  </span>
-                  {(sessionStatus === 'starting' || sessionStatus === 'running') && (
-                    <div className={styles.statusLoader} />
-                  )}
-                </div>
-              )}
-              
-              {/* Show input only when idle or failed */}
-              {(sessionStatus === 'idle' || sessionStatus === 'failed') && (
-                <div className={styles.inputGroup}>
-                  <label>What should the agent do?</label>
-                  <textarea
-                    value={goalInput}
-                    onChange={(e) => setGoalInput(e.target.value)}
-                    placeholder="Enter a goal or task for the agent..."
-                    rows={3}
-                    autoFocus
-                  />
-                </div>
-              )}
-              
-              {/* Show result when completed */}
-              {sessionStatus === 'completed' && !!lastRunOutput && (
-                <div className={styles.resultArea}>
-                  <div className={styles.resultHeader}>
-                    <Icons.CheckCircle /> Result
-                  </div>
-                  <div className={styles.resultContent}>
-                    {lastRunOutput}
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className={styles.modalFooter}>
-              <button className={styles.cancelBtn} onClick={() => {
-                if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
-                setSessionStatus('idle');
-                setLastRunOutput('');
-                closeModal();
-              }}>
-                {sessionStatus === 'completed' ? 'Close' : 'Cancel'}
-              </button>
-              {(sessionStatus === 'idle' || sessionStatus === 'failed') && (
-                <button 
-                  className={styles.primaryBtn} 
-                  onClick={handleRunAgent}
-                  disabled={!goalInput.trim() || isRunning}
-                >
-                  {isRunning ? 'Starting...' : 'Run Agent'}
-                </button>
-              )}
-              {sessionStatus === 'completed' && (
-                <button 
-                  className={styles.primaryBtn} 
-                  onClick={() => {
-                    setSessionStatus('idle');
-                    setLastRunOutput('');
-                  }}
-                >
-                  Run Another Task
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Detail Modal */}
-      {activeModal === 'detail' && modalAgent && (
-        <div className={styles.modalOverlay} onClick={closeModal}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={`${modalAgent.name} details`}>
-            <div className={styles.modalHeader}>
-              <h3><Icons.Info /> {modalAgent.name} Details</h3>
-              <button className={styles.modalClose} onClick={closeModal}>×</button>
-            </div>
-            <div className={styles.modalBody}>
-              <div className={styles.detailHeader}>
-                <span className={`${styles.statusDot} ${styles[modalAgent.status]}`} />
-                <span className={`${styles.modeBadge} ${modalAgent.mode === 'unbounded' ? styles.unbounded : ''}`}>
-                  {modalAgent.mode === 'governed' ? <><Icons.Lock /> Governed</> : <><Icons.Unlock /> Unbounded</>}
-                </span>
-              </div>
-
-              {/* Agent ID/Hash Copy Section */}
-              <div className={styles.agentIdSection}>
-                <div className={styles.agentIdRow}>
-                  <span className={styles.agentIdLabel}>Agent ID</span>
-                  <div className={styles.agentIdValue}>
-                    <code>{modalAgent.id}</code>
-                    <button 
-                      className={styles.copyBtn} 
-                      onClick={() => copyAgentId(modalAgent.id)}
-                      title="Copy Agent ID"
-                    >
-                      <Icons.Copy />
-                    </button>
-                  </div>
-                </div>
-                <div className={styles.agentIdRow}>
-                  <span className={styles.agentIdLabel}>Agent Hash</span>
-                  <div className={styles.agentIdValue}>
-                    <code>{modalAgent.hash || modalAgent.id}</code>
-                    <button 
-                      className={styles.copyBtn} 
-                      onClick={() => copyAgentHash(modalAgent)}
-                      title="Copy Agent Hash"
-                    >
-                      <Icons.Copy />
-                    </button>
-                  </div>
-                </div>
-
-                <div className={styles.agentIdRow}>
-                  <span className={styles.agentIdLabel}>DSID</span>
-                  <div className={styles.agentIdValue}>
-                    <code>{modalAgent.dsid || '—'}</code>
-                    <button 
-                      className={styles.copyBtn} 
-                      onClick={() => copyAgentDsid(modalAgent)}
-                      title="Copy DSID"
-                      disabled={!modalAgent.dsid}
-                    >
-                      <Icons.Copy />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.detailGrid}>
-                <div className={styles.detailItem}>
-                  <span className={styles.detailLabel}>Type</span>
-                  <span className={styles.detailValue}>{modalAgent.type}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <span className={styles.detailLabel}>Status</span>
-                  <span className={styles.detailValue}>{modalAgent.status}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <span className={styles.detailLabel}>Executions</span>
-                  <span className={styles.detailValue}>{modalAgent.executions.toLocaleString()}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <span className={styles.detailLabel}>Cost Today</span>
-                  <span className={styles.detailValue}>${modalAgent.costToday.toFixed(2)}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <span className={styles.detailLabel}>Wallet Balance</span>
-                  <span className={styles.detailValue}>${modalAgent.walletBalance.toFixed(2)}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <span className={styles.detailLabel}>Risk Level</span>
-                  <span className={`${styles.detailValue} ${styles[modalAgent.riskLevel]}`}>
-                    {modalAgent.riskLevel}
-                  </span>
-                </div>
-              </div>
-
-              <div className={styles.detailCapabilities}>
-                <h4>Capabilities</h4>
-                <div className={styles.capsList}>
-                  {modalAgent.capabilities.map((cap: string) => (
-                    <span key={cap} className={styles.capBadge}>{cap}</span>
-                  ))}
-                </div>
-              </div>
-              {/* Performance Benchmarks */}
-              {agentBenchmarks && (
-                <div className={styles.versionSection}>
-                  <h4 className={styles.sectionTitle}><Icons.TrendingUp /> Performance</h4>
-                  <div className={styles.detailGrid}>
-                    <div className={styles.detailItem}>
-                      <span className={styles.detailLabel}>Avg Response</span>
-                      <span className={styles.detailValue}>{agentBenchmarks.benchmarks?.avg_response_time_ms}ms</span>
-                    </div>
-                    <div className={styles.detailItem}>
-                      <span className={styles.detailLabel}>P95 Response</span>
-                      <span className={styles.detailValue}>{agentBenchmarks.benchmarks?.p95_response_time_ms}ms</span>
-                    </div>
-                    <div className={styles.detailItem}>
-                      <span className={styles.detailLabel}>Success Rate</span>
-                      <span className={styles.detailValue}>{agentBenchmarks.benchmarks?.success_rate}%</span>
-                    </div>
-                    <div className={styles.detailItem}>
-                      <span className={styles.detailLabel}>Throughput</span>
-                      <span className={styles.detailValue}>{agentBenchmarks.benchmarks?.throughput_rpm} req/min</span>
-                    </div>
-                    <div className={styles.detailItem}>
-                      <span className={styles.detailLabel}>Rank</span>
-                      <span className={styles.detailValue}>#{agentBenchmarks.comparison?.rank} of {agentBenchmarks.comparison?.total_agents}</span>
-                    </div>
-                    <div className={styles.detailItem}>
-                      <span className={styles.detailLabel}>vs Platform Avg</span>
-                      <span className={styles.detailValue} style={{ color: (agentBenchmarks.comparison?.vs_platform_avg || 0) > 0 ? '#22c55e' : '#ef4444' }}>
-                        {(agentBenchmarks.comparison?.vs_platform_avg || 0) > 0 ? '+' : ''}{agentBenchmarks.comparison?.vs_platform_avg}%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Recent Activity */}
-              {agentActivity.length > 0 && (
-                <div className={styles.versionSection}>
-                  <h4 className={styles.sectionTitle}><Icons.Zap /> Recent Activity</h4>
-                  <div className={styles.versionList}>
-                    {agentActivity.slice(0, 5).map((a: any) => (
-                      <div key={a.id} className={styles.versionItem}>
-                        <span className={styles.versionNumber}>{a.action_type}</span>
-                        <span className={styles.versionChangelog}>{a.description}</span>
-                        <span className={styles.versionDate}>{a.timestamp ? new Date(a.timestamp).toLocaleTimeString() : '-'}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Version History */}
-              {agentVersions.length > 0 && (
-                <div className={styles.versionSection}>
-                  <h4 className={styles.sectionTitle}><Icons.Code /> Version History</h4>
-                  <div className={styles.versionList}>
-                    {agentVersions.slice(0, 5).map((v: any, idx: number) => (
-                      <div key={v.version_number || idx} className={styles.versionItem}>
-                        <span className={styles.versionNumber}>v{v.version_number}</span>
-                        <span className={styles.versionHash}>{(v.agent_version_hash || '').slice(0, 12)}...</span>
-                        <span className={styles.versionDate}>{v.created_at ? new Date(v.created_at).toLocaleDateString() : '-'}</span>
-                        {v.changelog && <span className={styles.versionChangelog}>{v.changelog}</span>}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className={styles.modalFooter}>
-              <button className={styles.cancelBtn} onClick={closeModal}>Close</button>
-              <button 
-                className={`${styles.primaryBtn} ${styles.runBtn}`}
-                onClick={() => { closeModal(); openModal('run', modalAgent); }}
-              >
-                <Icons.Play /> Run Agent
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
