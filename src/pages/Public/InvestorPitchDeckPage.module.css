@@ -11,10 +11,145 @@
   overflow-x: clip;
 }
 
-/* Force dark appearance regardless of theme — this is a presentation */
+/* Force dark appearance regardless of theme — this is a presentation.
+   Must use !important to override global themes.css nuclear rules like:
+   [data-theme="light"] * { background-color: inherit !important; }
+   [data-theme="light"] h1,h2,...,div,span,p { color: #111827 !important; } */
+:global([data-theme="light"]) .page,
+:global([data-theme="light"]) .page * {
+  background-color: transparent !important;
+}
+
 :global([data-theme="light"]) .page {
-  background: #0a0a0a;
-  color: #e5e7eb;
+  background: #0a0a0a !important;
+  color: #e5e7eb !important;
+}
+
+:global([data-theme="light"]) .page h1,
+:global([data-theme="light"]) .page h2,
+:global([data-theme="light"]) .page h3,
+:global([data-theme="light"]) .page h4,
+:global([data-theme="light"]) .page p,
+:global([data-theme="light"]) .page span,
+:global([data-theme="light"]) .page div,
+:global([data-theme="light"]) .page label {
+  color: inherit !important;
+}
+
+:global([data-theme="light"]) .slide {
+  color: #e5e7eb !important;
+}
+
+:global([data-theme="light"]) .slideDark {
+  background: #0a0a0a !important;
+}
+
+:global([data-theme="light"]) .slideVr {
+  background: #000 !important;
+}
+
+:global([data-theme="light"]) .section {
+  background-color: transparent !important;
+}
+
+:global([data-theme="light"]) .sectionTitle {
+  color: #f8fafc !important;
+}
+
+:global([data-theme="light"]) .sectionLead {
+  color: rgba(226, 232, 240, 0.72) !important;
+}
+
+:global([data-theme="light"]) .card {
+  background: rgba(2, 6, 23, 0.48) !important;
+  border-color: rgba(148, 163, 184, 0.14) !important;
+}
+
+:global([data-theme="light"]) .cardTitle {
+  color: rgba(248, 250, 252, 0.95) !important;
+}
+
+:global([data-theme="light"]) .cardBody {
+  color: rgba(226, 232, 240, 0.72) !important;
+}
+
+:global([data-theme="light"]) .vrImage {
+  opacity: 1 !important;
+}
+
+:global([data-theme="light"]) .workflowPanel {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #e5e7eb !important;
+}
+
+:global([data-theme="light"]) .workflowTitle {
+  color: #f8fafc !important;
+}
+
+:global([data-theme="light"]) .workflowSubtitle {
+  color: rgba(226, 232, 240, 0.7) !important;
+}
+
+:global([data-theme="light"]) .workflowStep {
+  background: transparent !important;
+}
+
+:global([data-theme="light"]) .workflowStepNum {
+  color: #60a5fa !important;
+}
+
+:global([data-theme="light"]) .workflowStepBody strong {
+  color: #f1f5f9 !important;
+}
+
+:global([data-theme="light"]) .workflowStepBody span {
+  color: rgba(226, 232, 240, 0.65) !important;
+}
+
+:global([data-theme="light"]) .footerCtaInner {
+  background: rgba(2, 6, 23, 0.65) !important;
+  border-color: rgba(148, 163, 184, 0.14) !important;
+}
+
+:global([data-theme="light"]) .footerCtaTitle {
+  color: #f8fafc !important;
+}
+
+:global([data-theme="light"]) .footerCtaBody {
+  color: rgba(226, 232, 240, 0.72) !important;
+}
+
+:global([data-theme="light"]) .vrQuote {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+:global([data-theme="light"]) .vrQuote strong {
+  color: #60a5fa !important;
+}
+
+:global([data-theme="light"]) .badge {
+  background: rgba(15, 23, 42, 0.55) !important;
+  border-color: rgba(59, 130, 246, 0.25) !important;
+  color: rgba(248, 250, 252, 0.85) !important;
+}
+
+:global([data-theme="light"]) .vrTitle {
+  color: #fff !important;
+}
+
+:global([data-theme="light"]) .ctaPrimary {
+  color: #fff !important;
+  background: #2563eb !important;
+}
+
+:global([data-theme="light"]) .slideDot {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  background: transparent !important;
+}
+
+:global([data-theme="light"]) .slideDotActive {
+  background: #60a5fa !important;
+  border-color: #60a5fa !important;
 }
 
 .main {

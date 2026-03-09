@@ -39,8 +39,9 @@ const InvestorPitchDeckPage = () => {
     return () => { document.body.style.overflow = prev; };
   }, []);
 
-  /* Force dark theme on mount — pitch deck is always a dark presentation */
-  useEffect(() => {
+  /* Force dark theme on mount — pitch deck is always a dark presentation.
+     useLayoutEffect fires synchronously before paint so no light-mode flash. */
+  useLayoutEffect(() => {
     const html = document.documentElement;
     const prevTheme = html.getAttribute('data-theme');
     html.setAttribute('data-theme', 'dark');
