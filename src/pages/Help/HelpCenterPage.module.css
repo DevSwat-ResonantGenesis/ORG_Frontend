@@ -568,21 +568,43 @@
 }
 
 /* Search Input — fully transparent, absolutely no box/stroke */
-.searchInput {
+.searchInput,
+.searchInput:focus,
+.searchInput:active,
+.searchInput:hover,
+.searchBar input,
+.searchBar input:focus,
+.searchBar input:active,
+.searchBar input:hover {
   flex: 1;
-  border: none !important;
+  border: 0 none transparent !important;
+  border-style: none !important;
+  border-width: 0 !important;
+  border-color: transparent !important;
   background: transparent !important;
+  background-color: transparent !important;
   font-size: 15px;
   color: #f1f5f9;
-  outline: none !important;
+  outline: 0 none transparent !important;
+  outline-style: none !important;
+  outline-width: 0 !important;
   box-shadow: none !important;
+  -webkit-box-shadow: none !important;
   padding: 0;
-  -webkit-appearance: none;
-  appearance: none;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  border-radius: 0 !important;
 }
 
-[data-theme='light'] .searchInput {
+[data-theme='light'] .searchInput,
+[data-theme='light'] .searchBar input {
   color: #0f172a;
+  border: 0 none transparent !important;
+  border-color: transparent !important;
+  outline: 0 none transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 .searchInput::placeholder {
@@ -592,12 +614,6 @@
 
 [data-theme='light'] .searchInput::placeholder {
   color: #b0b8c4;
-}
-
-.searchInput:focus {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
 }
 
 /* Shortcut badge — no box, just dim text */
