@@ -282,13 +282,58 @@ const InvestorPitchDeckPage = () => {
       </Helmet>
 
       <main className={styles.main}>
-        {/* SLIDE 0 — VR1 fullscreen image */}
+        {/* SLIDE 0 — VR1 fullscreen image + parallax sphere overlay */}
         <div className={`${styles.slide} ${currentSlide === 0 ? styles.slideActive : ''}`}>
           <img
             src="/images/investorpitch/VR1.jpg"
             alt="ResonantGenesis VR interface — IDE VibeCoding in San Francisco"
             className={styles.vrImage}
           />
+          <div className={styles.vrOverlay}>
+            <div className={styles.parallax} aria-hidden="true">
+              <Suspense fallback={null}>
+                <div ref={sphereRef} className={styles.parallaxInner}>
+                  <div ref={sphereLayerRef} className={styles.sphereLayer}>
+                    {isReactSnap ? null : <ThreeParticleSphere />}
+                  </div>
+                </div>
+              </Suspense>
+            </div>
+
+            {!prefersReducedMotion && traces.length > 0 && heroSize.width > 0 && heroSize.height > 0 && (
+              <svg
+                className={styles.noodleOverlay}
+                aria-hidden="true"
+                width="100%"
+                height="100%"
+                viewBox={`0 0 ${heroSize.width} ${heroSize.height}`}
+                preserveAspectRatio="none"
+              >
+                {traces.flatMap((trace, traceIdx) =>
+                  trace.points.map((pt, idx) => (
+                    (() => {
+                      const t = trace.points.length <= 1 ? 1 : idx / (trace.points.length - 1);
+                      const size = trace.nodeSize + (trace.endNodeSize - trace.nodeSize) * t;
+                      return (
+                    <rect
+                      key={`vr-${traceIdx}-${idx}`}
+                      className={styles.nodeParticleTools}
+                      x={pt.x - size / 2}
+                      y={pt.y - size / 2}
+                      width={size}
+                      height={size}
+                      rx={0.9}
+                      ry={0.9}
+                      opacity={trace.nodeOpacity}
+                      style={{ animationDelay: `${trace.baseDelayMs + idx * trace.stepDelayMs}ms` }}
+                    />
+                      );
+                    })()
+                  ))
+                )}
+              </svg>
+            )}
+          </div>
         </div>
 
         {/* SLIDE 1 — Hero Section */}
