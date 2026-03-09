@@ -89,17 +89,37 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
     setIsLoading(true);
     setError(null);
     try {
-      const [systemCaps, customCaps, toolsRes] = await Promise.all([
+      // Use Promise.allSettled so one failure doesn't block everything
+      const [systemResult, customResult, toolsResult] = await Promise.allSettled([
         capabilitiesApi.getAgentCapabilities(selectedAgent.id),
         capabilitiesApi.getCustomCapabilities(selectedAgent.id),
-        fastapiClient.get('/api/v1/agents/tools').catch(() => ({ data: [] })),
+        fastapiClient.get('/api/v1/agents/available-tools').catch(() => 
+          fastapiClient.get('/api/v1/agents/tools')
+        ),
       ]);
-      setSystemCapabilities(systemCaps as any);
-      setCustomCapabilities(customCaps as any);
-      if (toolsRes.data) setPlatformTools(toolsRes.data);
+      
+      if (systemResult.status === 'fulfilled') {
+        setSystemCapabilities(systemResult.value as any);
+      } else {
+        setSystemCapabilities([]);
+      }
+      
+      if (customResult.status === 'fulfilled') {
+        setCustomCapabilities(customResult.value as any);
+      } else {
+        setCustomCapabilities([]);
+      }
+      
+      if (toolsResult.status === 'fulfilled') {
+        const data = (toolsResult.value as any)?.data ?? toolsResult.value;
+        setPlatformTools(Array.isArray(data) ? data : []);
+      } else {
+        setPlatformTools([]);
+      }
+      
       setSelectedCapabilities(new Set());
     } catch (err: any) {
-      console.error('Failed to fetch custom capabilities:', err);
+      console.error('Failed to fetch capabilities:', err);
       setError(err.message || 'Failed to load capabilities');
     } finally {
       setIsLoading(false);
@@ -114,11 +134,14 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
   const capabilities = [...systemCapabilities, ...customCapabilities];
   const allTools: any[] = [...capabilities, ...platformTools.map((t: any) => ({
     id: t.id || t.name,
-    name: t.name,
+    name: t.display_name || t.name?.replace(/_/g, ' ').replace(/\./g, ' ') || t.name,
     description: t.description || '',
-    category: t.category || 'platform',
+    category: t.category || 'tool',
     enabled: true,
     system: true,
+    risk_level: t.risk_level,
+    requires_approval: t.requires_approval,
+    byok_provider: t.byok_provider,
     tags: t.tags || [],
     permissions: t.permissions || [],
     cooldown: 0,
@@ -608,6 +631,16 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
 
               <h4>{cap.name}</h4>
               <p>{cap.description}</p>
+              {cap.byok_provider && (
+                <span style={{ fontSize: 11, color: '#f59e0b', display: 'inline-block', marginBottom: 4 }}>
+                  🔑 Requires {cap.byok_provider} API key (BYOK)
+                </span>
+              )}
+              {cap.risk_level && cap.risk_level !== 'low' && (
+                <span style={{ fontSize: 11, color: cap.risk_level === 'high' ? '#ef4444' : '#f59e0b', display: 'inline-block', marginBottom: 4, marginLeft: 8 }}>
+                  ⚠ {cap.risk_level} risk
+                </span>
+              )}
 
               {/* Usage Stats */}
               <div className={styles.usageStats}>

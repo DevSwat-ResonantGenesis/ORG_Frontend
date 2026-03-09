@@ -1142,17 +1142,40 @@ const ResonantChatPage: React.FC = () => {
     loadConversations();
     loadMemories();
     
-    // Load available agents from API
-    fetch('/resonant-chat/agents/list')
+    // Load available agents from Agent Engine API (real user agents)
+    fetch('/api/v1/agents?limit=50')
       .then(res => res.json())
       .then(data => {
-        if (data.agents && Array.isArray(data.agents)) {
-          setAvailableAgents(data.agents.map((a: any) => ({ hash: a.id, name: a.name })));
+        const agentsList = data?.agents || data?.items || data?.data || (Array.isArray(data) ? data : []);
+        if (Array.isArray(agentsList) && agentsList.length > 0) {
+          setAvailableAgents(agentsList.map((a: any) => ({
+            hash: a.agent_public_hash || a.id,
+            name: a.name || 'Agent',
+          })));
         } else {
-          logger.warn('Invalid agents data received:', data);
+          // Fallback to chat service routing agents
+          fetch('/resonant-chat/agents/list')
+            .then(res2 => res2.json())
+            .then(data2 => {
+              if (data2.agents && Array.isArray(data2.agents)) {
+                setAvailableAgents(data2.agents.map((a: any) => ({ hash: a.id, name: a.name })));
+              }
+            })
+            .catch(() => {});
         }
       })
-      .catch(err => logger.error('Failed to load agents', err));
+      .catch(err => {
+        logger.error('Failed to load agents from Agent Engine', err);
+        // Fallback to chat service
+        fetch('/resonant-chat/agents/list')
+          .then(res => res.json())
+          .then(data => {
+            if (data.agents && Array.isArray(data.agents)) {
+              setAvailableAgents(data.agents.map((a: any) => ({ hash: a.id, name: a.name })));
+            }
+          })
+          .catch(() => {});
+      });
     
     // Load teams from API (fallback to listAgentTeams if needed)
     fetch('/resonant-chat/teams')

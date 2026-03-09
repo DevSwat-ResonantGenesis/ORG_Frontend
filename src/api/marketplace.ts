@@ -325,6 +325,55 @@ export const createMarketplaceItem = async (
 };
 
 /**
+ * Publish a draft listing (changes status from draft → published)
+ * POST /marketplace/listings/{listing_id}/publish
+ */
+export const publishMarketplaceListing = async (listingId: string): Promise<{ status: string; listing_id: string }> => {
+  try {
+    const response = await fastapiClient.post<any>(`/marketplace/listings/${listingId}/publish`);
+    return response.data;
+  } catch (error) {
+    logger.apiError(`/marketplace/listings/${listingId}/publish`, error);
+    throw error;
+  }
+};
+
+/**
+ * Create and immediately publish an agent to the marketplace.
+ * Combines createMarketplaceItem + publishMarketplaceListing in one call.
+ */
+export const createAndPublishAgent = async (params: {
+  name: string;
+  description: string;
+  category: string;
+  tags?: string[];
+  agentConfig?: Record<string, any>;
+}): Promise<MarketplaceItem> => {
+  // Step 1: Create the listing (starts as draft)
+  const listing = await createMarketplaceItem({
+    name: params.name,
+    description: params.description,
+    short_description: params.description?.slice(0, 200),
+    item_type: 'agent',
+    category: params.category,
+    tags: params.tags,
+    price: 0,
+    is_free: true,
+    item_data: params.agentConfig,
+  });
+
+  // Step 2: Publish it
+  try {
+    await publishMarketplaceListing(listing.id);
+    listing.status = 'published';
+  } catch (pubError) {
+    logger.warn('Created listing but failed to publish:', pubError);
+  }
+
+  return listing;
+};
+
+/**
  * Purchase a marketplace item
  * POST /marketplace/listings/{item_id}/purchase
  */

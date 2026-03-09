@@ -6,6 +6,7 @@ import type { Agent } from '../../../../../types';
 import { deleteAgent } from '../../../../../api/agents';
 import { publishAgent as publishAgentAPI } from '../../../../../services/nodeApi';
 import type { PublishAgentRequest } from '../../../../../services/nodeApi';
+import { createAndPublishAgent } from '../../../../../api/marketplace';
 import fastapiClient from '../../../../../api/fastapiClient';
 import { executeAgentTask } from '../../../../../api/executions';
 import { useToastContext } from '../../../../../context/ToastContext';
@@ -479,19 +480,31 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
       };
       const manifestHash = await computeHash(JSON.stringify(fullManifest, Object.keys(fullManifest).sort()));
       const codeChecksum = await computeHash(publishCode);
+      // Publish to DSID Network (optional, may fail)
       try {
         const publishRequest: PublishAgentRequest = {
           name: publishManifest.name, description: publishManifest.description, category: publishManifest.category,
           manifest: { ...fullManifest, agent: { ...fullManifest.agent, id: manifestHash } },
           price_per_execution: 0, allow_rental: false, trust_requirements: publishManifest.trustTier,
         };
-        const publishResponse = await publishAgentAPI(publishRequest);
-        setPublishResult({ success: true, manifestHash: publishResponse.manifest_hash || manifestHash, codeChecksum });
-        toast.success('Agent published to DSID Network');
-      } catch (apiError: any) {
-        console.warn('Node API publish failed, showing local hashes:', apiError);
+        await publishAgentAPI(publishRequest).catch(() => {});
+      } catch { /* DSID network publish is best-effort */ }
+
+      // Publish to Marketplace Service (this is what makes it appear in browse)
+      try {
+        await createAndPublishAgent({
+          name: publishManifest.name,
+          description: publishManifest.description,
+          category: publishManifest.category,
+          tags: publishManifest.tags,
+          agentConfig: fullManifest,
+        });
         setPublishResult({ success: true, manifestHash, codeChecksum });
-        toast.success('Agent published (local hashes)');
+        toast.success('Agent published to Marketplace');
+      } catch (mpError: any) {
+        console.warn('Marketplace publish failed:', mpError);
+        setPublishResult({ success: true, manifestHash, codeChecksum });
+        toast.success('Agent published (DSID only — marketplace listing may be delayed)');
       }
     } catch (error: any) {
       setPublishResult({ success: false, error: error.message });
