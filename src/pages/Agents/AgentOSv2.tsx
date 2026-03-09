@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, memo, useEffect, useCallback, useState, useRef } from 'react';
 import { useUIStore, useAgentStore, useExecutionStore, useEconomyStore } from '../../stores';
-import { Sidebar } from './components/Shell';
+// Sidebar removed — all panels now inline in AgentsPanel
 import { PanelErrorBoundary, PanelSkeleton, Icons } from './components/shared';
 import { Header } from '../../components/layout/Header/Header';
 import { listAgents } from '../../api/agents';
@@ -11,36 +11,8 @@ import styles from './AgentOSv2.module.css';
 import { CommandPalette } from '../../components/IDE/CommandPalette';
 import type { Command } from '../../components/IDE/CommandPalette';
 
-// ============== LAZY LOADED PANELS ==============
-// Each panel is loaded only when needed
-
+// All panels now inline in AgentsPanel — only AgentsPanel is loaded here
 const AgentsPanel = lazy(() => import('./components/Panels/AgentsPanel'));
-const SessionsPanel = lazy(() => import('./components/Panels/SessionsPanel'));
-// FactoryPanel removed — factory is now inline in AgentsPanel
-const EconomyPanel = lazy(() => import('./components/Panels/EconomyPanel'));
-// ExecutionPanel removed — now inline in AgentsPanel
-const WorkflowPanel = lazy(() => import('./components/Panels/WorkflowPanel'));
-const SettingsPanel = lazy(() => import('./components/Panels/SettingsPanel'));
-const MonitorPanel = lazy(() => import('./components/Panels/MonitorPanel'));
-// ChatPanel removed — chat is now inline in AgentsPanel
-const AuditPanel = lazy(() => import('./components/Panels/AuditPanel'));
-const GovernancePanel = lazy(() => import('./components/Panels/GovernancePanel'));
-// MemoryPanel removed — now inline in AgentsPanel
-const CapabilitiesPanel = lazy(() => import('./components/Panels/CapabilitiesPanel'));
-const GoalsPanel = lazy(() => import('./components/Panels/GoalsPanel'));
-const DebugPanel = lazy(() => import('./components/Panels/DebugPanel'));
-// UtilityPanel removed — now inline in AgentsPanel
-const NegotiationPanel = lazy(() => import('./components/Panels/NegotiationPanel'));
-const ExternalPanel = lazy(() => import('./components/Panels/ExternalPanel'));
-
-// Placeholder panels - will be replaced as they are extracted
-const PlaceholderPanel: React.FC<{ name: string }> = memo(({ name }) => (
-  <div className={styles.placeholderPanel}>
-    <h2>{name}</h2>
-    <p>This panel is being migrated to the new architecture.</p>
-    <p>Enterprise Readiness: In Progress</p>
-  </div>
-));
 
 // AgentOS toolbar removed - now integrated into global Header component
 
@@ -161,8 +133,6 @@ const MetricsFooter: React.FC = memo(() => {
 
 const AgentOSv2: React.FC = () => {
   const isEmbedded = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('embed') === '1';
-  const activeSection = useUIStore((state) => state.activeSection);
-  const sidebarCollapsed = useUIStore((state) => state.sidebarCollapsed);
   const setAgents = useAgentStore((state) => state.setAgents);
   const setLoading = useAgentStore((state) => state.setLoading);
   const updateAgent = useAgentStore((state) => state.updateAgent);
@@ -257,19 +227,6 @@ const AgentOSv2: React.FC = () => {
   // Cmd/Ctrl+K opens Agents command palette
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      // Quick panel navigation: Ctrl+1-9
-      if (e.ctrlKey && !e.metaKey && !e.shiftKey) {
-        const panelMap: Record<string, string> = {
-          '1': 'agents', '2': 'sessions', '3': 'workflow', '4': 'execution',
-          '5': 'goals', '6': 'memory', '7': 'governance', '8': 'audit', '9': 'monitor',
-        };
-        if (panelMap[e.key]) {
-          e.preventDefault();
-          useUIStore.getState().setActiveSection(panelMap[e.key] as any);
-          return;
-        }
-      }
-
       const isInputField =
         e.target instanceof HTMLInputElement ||
         e.target instanceof HTMLTextAreaElement ||
@@ -299,29 +256,12 @@ const AgentOSv2: React.FC = () => {
       { id: 'agents:details', label: canRun ? 'Open Selected Agent Details' : 'Open Selected Agent Details (select one first)', category: 'Agents' },
       { id: 'agents:toggle-favorites', label: 'Toggle Favorites Filter', category: 'Agents' },
       { id: 'agents:toggle-bulk', label: 'Toggle Bulk Mode', category: 'Agents' },
-      { id: 'nav:agents', label: 'Go to Agents', category: 'Navigate' },
-      { id: 'nav:sessions', label: 'Go to Sessions', category: 'Navigate' },
-      // Factory removed from sidebar — now inline in AgentsPanel
-      { id: 'nav:workflow', label: 'Go to Workflows', category: 'Navigate' },
-      // execution now inline in AgentsPanel
-      { id: 'nav:goals', label: 'Go to Goals', category: 'Navigate' },
-      // memory now inline in AgentsPanel
-      { id: 'nav:governance', label: 'Go to Governance', category: 'Navigate' },
-      { id: 'nav:audit', label: 'Go to Audit', category: 'Navigate' },
-      { id: 'nav:monitor', label: 'Go to Monitor', category: 'Navigate' },
-      { id: 'nav:settings', label: 'Go to Settings', category: 'Navigate' },
-      { id: 'nav:economy', label: 'Go to Economy', category: 'Navigate' },
-      { id: 'nav:debug', label: 'Go to Debug', category: 'Navigate' },
-      { id: 'nav:capabilities', label: 'Go to Capabilities', category: 'Navigate' },
-      { id: 'nav:negotiation', label: 'Go to Negotiation', category: 'Navigate' },
-      { id: 'nav:external', label: 'Go to External', category: 'Navigate' },
-      // utility now inline in AgentsPanel
+      // All navigation now handled via inline panel icons in AgentsPanel header
     ];
   }, [selectedAgentId]);
 
   const onCommandSelect = useCallback((cmd: Command) => {
     if (cmd.id === 'agents:create') {
-      useUIStore.getState().setActiveSection('agents');
       document.dispatchEvent(new CustomEvent('agentos:agents:openFactory'));
     }
 
@@ -343,66 +283,20 @@ const AgentOSv2: React.FC = () => {
       document.dispatchEvent(new CustomEvent('agentos:agents:toggleBulkMode'));
     }
 
-    // Navigation commands
-    if (cmd.id.startsWith('nav:')) {
-      const section = cmd.id.replace('nav:', '');
-      useUIStore.getState().setActiveSection(section as any);
-    }
   }, [selectedAgentId]);
-
-  // Render the appropriate panel based on active section
-  const renderPanel = () => {
-    switch (activeSection) {
-      case 'agents':
-        return <AgentsPanel />;
-      case 'sessions':
-        return <SessionsPanel />;
-      // factory is now inline in AgentsPanel
-      case 'economy':
-        return <EconomyPanel />;
-      case 'capabilities':
-        return <CapabilitiesPanel />;
-      // utility is now inline in AgentsPanel
-      case 'goals':
-        return <GoalsPanel />;
-      // execution is now inline in AgentsPanel
-      // memory is now inline in AgentsPanel
-      case 'negotiation':
-        return <NegotiationPanel />;
-      case 'governance':
-        return <GovernancePanel />;
-      case 'audit':
-        return <AuditPanel />;
-      case 'debug':
-        return <DebugPanel />;
-      case 'workflow':
-        return <WorkflowPanel />;
-      // chat is now inline in AgentsPanel
-      case 'monitor':
-        return <MonitorPanel />;
-      case 'external':
-        return <ExternalPanel />;
-      case 'settings':
-        return <SettingsPanel />;
-      default:
-        return <PlaceholderPanel name="Unknown Panel" />;
-    }
-  };
 
   return (
     <>
       {!isEmbedded && <Header />}
       <div className={`${styles.agentOS} ${isEmbedded ? styles.embedded : ''}`}>
-        <Sidebar />
-        
-        <div className={`${styles.mainWrapper} ${sidebarCollapsed ? styles.expanded : ''}`}>
+        <div className={styles.mainWrapper} style={{ marginLeft: 0, width: '100%' }}>
           <div style={{ position: 'absolute', top: '8px', right: '16px', zIndex: 100 }}>
             <NotificationBell />
           </div>
           <main className={styles.mainContent}>
             <PanelErrorBoundary>
               <Suspense fallback={<PanelSkeleton />}>
-                {renderPanel()}
+                <AgentsPanel />
               </Suspense>
             </PanelErrorBoundary>
           </main>
