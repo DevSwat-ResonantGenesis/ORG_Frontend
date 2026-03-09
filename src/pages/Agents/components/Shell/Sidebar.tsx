@@ -7,10 +7,7 @@ import styles from './Sidebar.module.css';
 const SIDEBAR_SECTIONS: { id: SidebarSection; label: string; icon: React.ReactNode }[] = [
   { id: 'agents', label: 'Agents', icon: <Icons.Agents /> },
   { id: 'capabilities', label: 'Capabilities', icon: <Icons.Capabilities /> },
-  { id: 'utility', label: 'Utility', icon: <Icons.Execution /> },
   { id: 'goals', label: 'Goals', icon: <Icons.Goals /> },
-  { id: 'execution', label: 'Execution', icon: <Icons.Execution /> },
-  { id: 'memory', label: 'Memory', icon: <Icons.Memory /> },
   { id: 'economy', label: 'Economy', icon: <Icons.Economy /> },
   { id: 'negotiation', label: 'Negotiation', icon: <Icons.Negotiation /> },
   { id: 'governance', label: 'Governance', icon: <Icons.Governance /> },

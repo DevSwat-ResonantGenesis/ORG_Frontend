@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import React, { memo, useState, useCallback, useRef, useEffect, useMemo, lazy, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAgentStore, useUIStore, selectAgents, selectSelectedAgent } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
@@ -11,6 +11,9 @@ import { executeAgentTask } from '../../../../../api/executions';
 import { useToastContext } from '../../../../../context/ToastContext';
 import { SessionsPanel } from '../SessionsPanel';
 import { FactoryPanel } from '../FactoryPanel';
+const ExecutionPanel = lazy(() => import('../ExecutionPanel'));
+const UtilityPanel = lazy(() => import('../UtilityPanel'));
+const MemoryPanel = lazy(() => import('../MemoryPanel'));
 import styles from './AgentsPanel.module.css';
 
 // ============== AGENTS PANEL ==============
@@ -63,6 +66,10 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
   // Factory pane state (inline, replaces sessions pane)
   const [showFactory, setShowFactory] = useState(false);
+
+  // Inline sub-panel state (execution, utility, memory)
+  const [inlinePanel, setInlinePanel] = useState<{ type: 'execution' | 'utility' | 'memory'; agentId: string } | null>(null);
+  const inlinePanelAgent = inlinePanel ? agents.find((a: Agent) => a.id === inlinePanel.agentId) || null : null;
 
   // Publish pane state (inline, replaces sessions pane)
   const [publishAgentId, setPublishAgentId] = useState<string | null>(null);
@@ -206,6 +213,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
       setChatAgentId(null);
       setDetailAgentId(null);
       setPublishAgentId(null);
+      setInlinePanel(null);
     };
 
     document.addEventListener('agentos:agents:openModal', onOpenModal as any);
@@ -532,7 +540,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
         <div className={styles.headerMeta}>
           <span className={styles.countPill}>{filteredAgents.length}</span>
-          <button className={styles.toolbarBtn} type="button" onClick={() => { setShowFactory(true); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); }} title="Create agent">
+          <button className={styles.toolbarBtn} type="button" onClick={() => { setShowFactory(true); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setInlinePanel(null); }} title="Create agent">
             <Icons.Plus /> Create
           </button>
           <button
@@ -635,7 +643,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         <button 
                           className={`${styles.actionBtn} ${styles.runBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); selectAgent(agent.id); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
+                          onClick={(e) => { e.stopPropagation(); selectAgent(agent.id); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); }}
                           title="Run Agent"
                         >
                           <Icons.Play />
@@ -645,7 +653,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         <button 
                           className={`${styles.actionBtn} ${styles.messageBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); setChatAgentId(agent.id); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); setMessageInput(''); setError(null); }}
+                          onClick={(e) => { e.stopPropagation(); setChatAgentId(agent.id); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); setMessageInput(''); setError(null); }}
                           title="Message Agent"
                         >
                           <Icons.MessageSquare />
@@ -655,12 +663,42 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         <button 
                           className={`${styles.actionBtn} ${styles.detailBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); setDetailAgentId(agent.id); setChatAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
+                          onClick={(e) => { e.stopPropagation(); setDetailAgentId(agent.id); setChatAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); }}
                           title="View Details"
                         >
                           <Icons.Info />
                         </button>
                         
+                        {/* Execution button */}
+                        <button 
+                          className={`${styles.actionBtn} ${styles.detailBtn}`}
+                          disabled={bulkMode}
+                          onClick={(e) => { e.stopPropagation(); setInlinePanel({ type: 'execution', agentId: agent.id }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
+                          title="Execution Monitor"
+                        >
+                          <Icons.Execution />
+                        </button>
+
+                        {/* Utility button */}
+                        <button 
+                          className={`${styles.actionBtn} ${styles.detailBtn}`}
+                          disabled={bulkMode}
+                          onClick={(e) => { e.stopPropagation(); setInlinePanel({ type: 'utility', agentId: agent.id }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
+                          title="Utility Analytics"
+                        >
+                          <Icons.TrendingUp />
+                        </button>
+
+                        {/* Memory button */}
+                        <button 
+                          className={`${styles.actionBtn} ${styles.detailBtn}`}
+                          disabled={bulkMode}
+                          onClick={(e) => { e.stopPropagation(); setInlinePanel({ type: 'memory', agentId: agent.id }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
+                          title="Agent Memory"
+                        >
+                          <Icons.Memory />
+                        </button>
+
                         {/* Clone button */}
                         <button 
                           className={`${styles.actionBtn} ${styles.detailBtn}`}
@@ -675,7 +713,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         <button 
                           className={`${styles.actionBtn} ${styles.detailBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); setPublishAgentId(agent.id); setChatAgentId(null); setDetailAgentId(null); setShowFactory(false); setPublishManifest(prev => ({ ...prev, name: agent.name, description: '', category: agent.type || 'utility', tags: [] })); setPublishResult(null); }}
+                          onClick={(e) => { e.stopPropagation(); setPublishAgentId(agent.id); setChatAgentId(null); setDetailAgentId(null); setShowFactory(false); setInlinePanel(null); setPublishManifest(prev => ({ ...prev, name: agent.name, description: '', category: agent.type || 'utility', tags: [] })); setPublishResult(null); }}
                           title="Publish to DSID Network"
                         >
                           <Icons.Upload />
@@ -705,7 +743,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           </div>
         </div>
 
-        {/* Right pane: factory > publish > detail > chat > sessions */}
+        {/* Right pane: factory > inlinePanel > publish > detail > chat > sessions */}
         {showFactory ? (
           <div className={styles.sessionsPane}>
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
@@ -719,6 +757,26 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
               {/* Factory content */}
               <div style={{ flex: 1, overflow: 'hidden' }}>
                 <FactoryPanel />
+              </div>
+            </div>
+          </div>
+        ) : inlinePanel && inlinePanelAgent ? (
+          <div className={styles.sessionsPane}>
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+              {/* Inline panel header */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', borderBottom: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}>
+                {inlinePanel.type === 'execution' ? <Icons.Execution /> : inlinePanel.type === 'utility' ? <Icons.TrendingUp /> : <Icons.Memory />}
+                <span style={{ fontWeight: 600, fontSize: 13, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {inlinePanel.type === 'execution' ? 'Execution Monitor' : inlinePanel.type === 'utility' ? 'Utility Analytics' : 'Agent Memory'} — {inlinePanelAgent.name}
+                </span>
+                <button onClick={() => setInlinePanel(null)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 16, padding: '2px 6px' }} title="Close">×</button>
+              </div>
+
+              {/* Inline panel content */}
+              <div style={{ flex: 1, overflow: 'hidden' }}>
+                <Suspense fallback={<div style={{ padding: 16, color: '#888', fontSize: 12 }}>Loading…</div>}>
+                  {inlinePanel.type === 'execution' ? <ExecutionPanel /> : inlinePanel.type === 'utility' ? <UtilityPanel /> : <MemoryPanel />}
+                </Suspense>
               </div>
             </div>
           </div>

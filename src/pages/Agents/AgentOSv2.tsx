@@ -18,18 +18,18 @@ const AgentsPanel = lazy(() => import('./components/Panels/AgentsPanel'));
 const SessionsPanel = lazy(() => import('./components/Panels/SessionsPanel'));
 // FactoryPanel removed — factory is now inline in AgentsPanel
 const EconomyPanel = lazy(() => import('./components/Panels/EconomyPanel'));
-const ExecutionPanel = lazy(() => import('./components/Panels/ExecutionPanel'));
+// ExecutionPanel removed — now inline in AgentsPanel
 const WorkflowPanel = lazy(() => import('./components/Panels/WorkflowPanel'));
 const SettingsPanel = lazy(() => import('./components/Panels/SettingsPanel'));
 const MonitorPanel = lazy(() => import('./components/Panels/MonitorPanel'));
 // ChatPanel removed — chat is now inline in AgentsPanel
 const AuditPanel = lazy(() => import('./components/Panels/AuditPanel'));
 const GovernancePanel = lazy(() => import('./components/Panels/GovernancePanel'));
-const MemoryPanel = lazy(() => import('./components/Panels/MemoryPanel'));
+// MemoryPanel removed — now inline in AgentsPanel
 const CapabilitiesPanel = lazy(() => import('./components/Panels/CapabilitiesPanel'));
 const GoalsPanel = lazy(() => import('./components/Panels/GoalsPanel'));
 const DebugPanel = lazy(() => import('./components/Panels/DebugPanel'));
-const UtilityPanel = lazy(() => import('./components/Panels/UtilityPanel'));
+// UtilityPanel removed — now inline in AgentsPanel
 const NegotiationPanel = lazy(() => import('./components/Panels/NegotiationPanel'));
 const ExternalPanel = lazy(() => import('./components/Panels/ExternalPanel'));
 
@@ -303,9 +303,9 @@ const AgentOSv2: React.FC = () => {
       { id: 'nav:sessions', label: 'Go to Sessions', category: 'Navigate' },
       // Factory removed from sidebar — now inline in AgentsPanel
       { id: 'nav:workflow', label: 'Go to Workflows', category: 'Navigate' },
-      { id: 'nav:execution', label: 'Go to Execution', category: 'Navigate' },
+      // execution now inline in AgentsPanel
       { id: 'nav:goals', label: 'Go to Goals', category: 'Navigate' },
-      { id: 'nav:memory', label: 'Go to Memory', category: 'Navigate' },
+      // memory now inline in AgentsPanel
       { id: 'nav:governance', label: 'Go to Governance', category: 'Navigate' },
       { id: 'nav:audit', label: 'Go to Audit', category: 'Navigate' },
       { id: 'nav:monitor', label: 'Go to Monitor', category: 'Navigate' },
@@ -315,7 +315,7 @@ const AgentOSv2: React.FC = () => {
       { id: 'nav:capabilities', label: 'Go to Capabilities', category: 'Navigate' },
       { id: 'nav:negotiation', label: 'Go to Negotiation', category: 'Navigate' },
       { id: 'nav:external', label: 'Go to External', category: 'Navigate' },
-      { id: 'nav:utility', label: 'Go to Utility', category: 'Navigate' },
+      // utility now inline in AgentsPanel
     ];
   }, [selectedAgentId]);
 
@@ -362,14 +362,11 @@ const AgentOSv2: React.FC = () => {
         return <EconomyPanel />;
       case 'capabilities':
         return <CapabilitiesPanel />;
-      case 'utility':
-        return <UtilityPanel />;
+      // utility is now inline in AgentsPanel
       case 'goals':
         return <GoalsPanel />;
-      case 'execution':
-        return <ExecutionPanel />;
-      case 'memory':
-        return <MemoryPanel />;
+      // execution is now inline in AgentsPanel
+      // memory is now inline in AgentsPanel
       case 'negotiation':
         return <NegotiationPanel />;
       case 'governance':
