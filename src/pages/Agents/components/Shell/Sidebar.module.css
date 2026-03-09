@@ -134,6 +134,52 @@
   color: #0ea5e9;
 }
 
+/* ============== LIGHT MODE ============== */
+[data-theme='light'] .sidebar {
+  background: rgba(0, 0, 0, 0.02);
+  border-right-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .sidebarHeader {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .logo {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .collapseBtn {
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #6b7280;
+}
+
+[data-theme='light'] .collapseBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .navItem {
+  color: #4b5563;
+}
+
+[data-theme='light'] .navItem:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .navItem.active {
+  background: rgba(14, 165, 233, 0.1);
+  color: #0ea5e9;
+}
+
+[data-theme='light'] .sidebarFooter {
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .version {
+  color: #9ca3af;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
   .sidebar {

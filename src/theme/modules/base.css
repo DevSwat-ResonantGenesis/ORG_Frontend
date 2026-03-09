@@ -128,10 +128,23 @@ html::-webkit-scrollbar-thumb:hover {
   color: var(--text-primary) !important;
 }
 
-/* Nuclear color:inherit rule removed — was forcing browser to evaluate
-   expensive :not() selectors on every element during every repaint,
-   causing severe typing lag and animation slowdown platform-wide.
-   Pages handle their own text colors via CSS modules and theme tokens. */
+/* Light mode: force dark text on all elements so white-on-white never happens.
+   Uses .ide-container class override instead of expensive :not() pseudo-selectors.
+   The IDE resets its own colors below with higher specificity. */
+[data-theme='light'] h1, [data-theme='light'] h2, [data-theme='light'] h3,
+[data-theme='light'] h4, [data-theme='light'] h5, [data-theme='light'] h6,
+[data-theme='light'] p, [data-theme='light'] span, [data-theme='light'] div,
+[data-theme='light'] label, [data-theme='light'] a, [data-theme='light'] li,
+[data-theme='light'] td, [data-theme='light'] th, [data-theme='light'] dt,
+[data-theme='light'] dd, [data-theme='light'] button, [data-theme='light'] input,
+[data-theme='light'] select, [data-theme='light'] textarea {
+  color: inherit;
+}
+
+/* IDE container stays dark — override the above with higher specificity */
+.ide-container, .ide-container * {
+  color: revert;
+}
 
 /* Lists Spacing - Standardized Vertical Rhythm */
 ul:not([class*="_"]),

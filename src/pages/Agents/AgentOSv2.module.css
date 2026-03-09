@@ -227,6 +227,77 @@
   }
 }
 
+/* ============== LIGHT MODE ============== */
+[data-theme='light'] .agentOS {
+  background: #ffffff;
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .agentOSToolbar {
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .agentOSLabel {
+  border-right-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .searchBar {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .searchBar input {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .searchBar input::placeholder {
+  color: #9ca3af;
+}
+
+[data-theme='light'] .headerStat {
+  color: #6b7280;
+}
+
+[data-theme='light'] .headerTime {
+  color: #6b7280;
+}
+
+[data-theme='light'] .headerBtn {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #6b7280;
+}
+
+[data-theme='light'] .headerBtn:hover {
+  background: rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #0ea5e9;
+}
+
+[data-theme='light'] .metricsFooter {
+  background: rgba(0, 0, 0, 0.02);
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .metricValue {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .metricLabel {
+  color: #6b7280;
+}
+
+[data-theme='light'] .placeholderPanel {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #6b7280;
+}
+
+[data-theme='light'] .placeholderPanel h2 {
+  color: #374151;
+}
+
 @media (max-width: 768px) {
   .mainWrapper {
     margin-left: 0;
