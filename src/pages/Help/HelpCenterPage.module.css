@@ -61,6 +61,11 @@
   overflow: visible !important;
 }
 
+.fixedBg canvas,
+.fixedBg div {
+  background-image: unset !important;
+}
+
 .heroParallaxInner {
   width: 100%;
   height: 100%;
@@ -149,31 +154,12 @@
   transition: background 200ms ease;
 }
 
-/* Subtle backdrop when scrolled */
-.stickySearch::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.35);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  opacity: 0;
-  transition: opacity 200ms ease;
-  z-index: -1;
-  pointer-events: none;
-}
-
-[data-theme='light'] .stickySearch::before {
-  background: rgba(250, 251, 252, 0.35);
-}
-
 .stickySearchInner {
   max-width: 900px;
 }
 
-/* Backdrop visible when stuck at top */
-.stickySearchStuck::before {
-  opacity: 1;
+.stickySearchStuck {
+  z-index: 10;
 }
 
 /* Hero Title — matches home page hero title */

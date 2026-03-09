@@ -253,8 +253,37 @@ const HelpCenterPage: React.FC = () => {
     setHelpTheme(nextHelpTheme);
     applyDomTheme(nextHelpTheme);
 
+    // Force ALL parent backgrounds to transparent so the fixed sphere shows through.
+    // The global theme system (base.css, MainLayout.css) sets solid backgrounds with !important
+    // on html, body, #root, .main-layout-wrapper, .main-content — override them all.
+    const els = [
+      document.documentElement,
+      document.body,
+      document.getElementById('root'),
+      document.querySelector('.main-layout-wrapper'),
+      document.querySelector('.main-content'),
+      document.querySelector('.main-content-area'),
+    ].filter(Boolean) as HTMLElement[];
+
+    const saved: { el: HTMLElement; bg: string }[] = els.map(el => ({
+      el,
+      bg: el.style.background,
+    }));
+
+    els.forEach(el => {
+      el.style.setProperty('background', 'transparent', 'important');
+    });
+
     return () => {
       applyDomTheme(previousTheme);
+      // Restore original backgrounds
+      saved.forEach(({ el, bg }) => {
+        if (bg) {
+          el.style.background = bg;
+        } else {
+          el.style.removeProperty('background');
+        }
+      });
     };
   }, []);
 
