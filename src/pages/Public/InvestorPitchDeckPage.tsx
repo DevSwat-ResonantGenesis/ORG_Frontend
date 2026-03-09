@@ -284,7 +284,7 @@ const InvestorPitchDeckPage = () => {
 
       <main className={styles.main}>
         {/* SLIDE 0 — VR1 fullscreen image + parallax sphere overlay */}
-        <div className={`${styles.slide} ${currentSlide === 0 ? styles.slideActive : ''}`}>
+        <div className={`${styles.slide} ${styles.slideVr} ${currentSlide === 0 ? styles.slideActive : ''}`}>
           <img
             src="/images/investorpitch/VR1.jpg"
             alt="ResonantGenesis VR interface — IDE VibeCoding in San Francisco"
@@ -440,7 +440,7 @@ const InvestorPitchDeckPage = () => {
         </div>
 
         {/* SLIDE 2 — VR2 fullscreen image */}
-        <div className={`${styles.slide} ${currentSlide === 2 ? styles.slideActive : ''}`}>
+        <div className={`${styles.slide} ${styles.slideVr} ${currentSlide === 2 ? styles.slideActive : ''}`}>
           <img
             src="/images/investorpitch/VR2.jpg"
             alt="ResonantGenesis VR interface — street view coding experience"
@@ -508,7 +508,7 @@ const InvestorPitchDeckPage = () => {
         </div>
 
         {/* SLIDE 5 — Platform Workflow (VR3 background) */}
-        <div className={`${styles.slide} ${currentSlide === 5 ? styles.slideActive : ''}`}>
+        <div className={`${styles.slide} ${styles.slideVr} ${currentSlide === 5 ? styles.slideActive : ''}`}>
           <img
             src="/images/investorpitch/VR3.jpg"
             alt="ResonantGenesis VR interface — street view coding"

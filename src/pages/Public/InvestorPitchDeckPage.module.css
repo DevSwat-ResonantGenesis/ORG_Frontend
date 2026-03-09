@@ -892,12 +892,18 @@
   background: #f8fafc;
 }
 
-/* VR image slides */
+/* VR image slides — always dark so photos show in any theme */
+.slideVr {
+  background: #000;
+}
+
 .vrImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
+  position: relative;
+  z-index: 0;
 }
 
 /* Parallax overlay on VR image */
