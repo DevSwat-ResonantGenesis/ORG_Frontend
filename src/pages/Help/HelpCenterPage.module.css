@@ -38,7 +38,7 @@
   right: -10%;
   width: 70vw;
   height: 100vh;
-  z-index: 0;
+  z-index: 200;
   pointer-events: none;
   overflow: visible;
   display: flex;
@@ -169,7 +169,7 @@
 
 /* Spacer to push content below the fixed search bar (only when searching) */
 .searchSpacer {
-  height: 100px;
+  height: 0;
 }
 
 /* Hero Title — matches home page hero title */
