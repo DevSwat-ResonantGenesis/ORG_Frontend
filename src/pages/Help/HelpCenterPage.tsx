@@ -277,6 +277,16 @@ const HelpCenterPage: React.FC = () => {
       el.style.setProperty('background-color', 'transparent', 'important');
     });
 
+    // Override CSS variables so ANY element using var(--bg-primary) etc gets transparent
+    const root = document.documentElement;
+    const varNames = [
+      '--bg-primary', '--bg-secondary', '--bg-tertiary',
+      '--bg', '--color-bg-root',
+      '--surface', '--surface-elevated', '--surface-hover',
+    ];
+    const savedVars = varNames.map(v => ({ name: v, value: root.style.getPropertyValue(v) }));
+    varNames.forEach(v => root.style.setProperty(v, 'transparent'));
+
     return () => {
       applyDomTheme(previousTheme);
       saved.forEach(({ el, bg, bgc }) => {
@@ -284,6 +294,14 @@ const HelpCenterPage: React.FC = () => {
         el.style.removeProperty('background-color');
         if (bg) el.style.background = bg;
         if (bgc) el.style.backgroundColor = bgc;
+      });
+      // Restore CSS variables
+      savedVars.forEach(({ name, value }) => {
+        if (value) {
+          root.style.setProperty(name, value);
+        } else {
+          root.style.removeProperty(name);
+        }
       });
     };
   }, []);
