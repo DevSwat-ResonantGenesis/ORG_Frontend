@@ -106,6 +106,20 @@
   z-index: 1;
   box-sizing: border-box;
   flex-direction: column;
+  transition: padding 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hero.heroSearching {
+  padding-top: calc(var(--header-height, 56px) + 16px);
+  padding-bottom: 24px;
+}
+
+.hero.heroSearching .heroIntro {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
 }
 
 /* Hero Content — above sphere */
@@ -131,6 +145,12 @@
   flex-direction: column;
   justify-content: center;
   padding-top: clamp(20px, 5vh, 84px);
+  max-height: 300px;
+  opacity: 1;
+  transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity 0.3s ease,
+    padding 0.4s ease,
+    margin 0.4s ease;
 }
 
 @media (min-width: 1024px) {

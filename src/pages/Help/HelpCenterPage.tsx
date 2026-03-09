@@ -337,7 +337,7 @@ const HelpCenterPage: React.FC = () => {
       </div>
 
       {/* Hero — title + subtitle + search + hashtags all together */}
-      <section className={styles.hero}>
+      <section className={`${styles.hero} ${searchQuery ? styles.heroSearching : ''}`}>
         <div className={styles.heroContent}>
           <div className={styles.heroIntro}>
             <h1 className={styles.heroTitle}>Help Center</h1>
