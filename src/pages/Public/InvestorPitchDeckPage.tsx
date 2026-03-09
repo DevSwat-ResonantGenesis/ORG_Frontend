@@ -26,30 +26,57 @@ const InvestorPitchDeckPage = () => {
   const [animate, setAnimate] = useState(false);
   const [scrollCentered, setScrollCentered] = useState(false);
   const [heroPadLeft, setHeroPadLeft] = useState<number | null>(null);
-  const [vrVisible, setVrVisible] = useState<Record<number, boolean>>({});
+  const [vrVisible, setVrVisible] = useState<Record<number, boolean>>({ 0: true });
   const vrSlideRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [heroVisible, setHeroVisible] = useState(false);
+  const [sectionsVisible, setSectionsVisible] = useState<Record<number, boolean>>({});
+  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
 
   const setVrRef = useCallback((index: number) => (el: HTMLDivElement | null) => {
     vrSlideRefs.current[index] = el;
   }, []);
 
+  const setSectionRef = useCallback((index: number) => (el: HTMLElement | null) => {
+    sectionRefs.current[index] = el;
+  }, []);
+
+  /* Observe VR slides, hero, and sections for fade-in */
   useEffect(() => {
-    const slides = vrSlideRefs.current.filter(Boolean) as HTMLDivElement[];
-    if (slides.length === 0) return;
+    const allTargets: { el: Element; type: string; idx: number }[] = [];
+
+    vrSlideRefs.current.forEach((el, idx) => {
+      if (el) allTargets.push({ el, type: 'vr', idx });
+    });
+
+    if (heroRef.current) allTargets.push({ el: heroRef.current, type: 'hero', idx: 0 });
+
+    sectionRefs.current.forEach((el, idx) => {
+      if (el) allTargets.push({ el, type: 'section', idx });
+    });
+
+    if (allTargets.length === 0) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          const idx = slides.indexOf(entry.target as HTMLDivElement);
-          if (idx !== -1 && entry.isIntersecting) {
-            setVrVisible((prev) => ({ ...prev, [idx]: true }));
+          if (!entry.isIntersecting) return;
+          const target = allTargets.find((t) => t.el === entry.target);
+          if (!target) return;
+          if (target.type === 'vr') {
+            setVrVisible((prev) => ({ ...prev, [target.idx]: true }));
+          } else if (target.type === 'hero') {
+            setHeroVisible(true);
+          } else if (target.type === 'section') {
+            setSectionsVisible((prev) => ({ ...prev, [target.idx]: true }));
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.12 }
     );
-    slides.forEach((s) => observer.observe(s));
+
+    allTargets.forEach((t) => observer.observe(t.el));
     return () => observer.disconnect();
-  }, []);
+  }, [animate]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -250,7 +277,22 @@ const InvestorPitchDeckPage = () => {
       </Helmet>
 
       <main className={styles.main}>
-        <section ref={heroRef} className={styles.hero} style={heroPadLeft != null ? { paddingLeft: heroPadLeft } : undefined}>
+        {/* VR1 — fullscreen immersive image FIRST */}
+        <div className={styles.vrShowcase}>
+          <div
+            ref={setVrRef(0)}
+            className={`${styles.vrSlide} ${vrVisible[0] ? styles.vrVisible : ''}`}
+          >
+            <img
+              src="/images/investorpitch/VR1.png"
+              alt="ResonantGenesis VR interface — IDE VibeCoding in San Francisco"
+              className={styles.vrImage}
+            />
+          </div>
+        </div>
+
+        {/* Hero Section */}
+        <section ref={heroRef} className={`${styles.hero} ${heroVisible ? styles.heroVisible : ''}`} style={heroPadLeft != null ? { paddingLeft: heroPadLeft } : undefined}>
           <div className={styles.parallax} aria-hidden="true">
             <Suspense fallback={null}>
               <div ref={sphereRef} className={styles.parallaxInner}>
@@ -349,19 +391,8 @@ const InvestorPitchDeckPage = () => {
           </div>
         </section>
 
-        {/* VR Showcase — Apple-style fullscreen immersive images */}
+        {/* VR2 — fullscreen immersive image after hero */}
         <div className={styles.vrShowcase}>
-          <div
-            ref={setVrRef(0)}
-            className={`${styles.vrSlide} ${vrVisible[0] ? styles.vrVisible : ''}`}
-          >
-            <img
-              src="/images/investorpitch/VR1.png"
-              alt="ResonantGenesis VR interface — IDE VibeCoding in San Francisco"
-              className={styles.vrImage}
-              loading="lazy"
-            />
-          </div>
           <div
             ref={setVrRef(1)}
             className={`${styles.vrSlide} ${vrVisible[1] ? styles.vrVisible : ''}`}
@@ -375,7 +406,7 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        <section className={styles.section}>
+        <section ref={setSectionRef(0)} className={`${styles.section} ${sectionsVisible[0] ? styles.sectionVisible : ''}`}>
           <div className={styles.sectionInner}>
             <h2 className={styles.sectionTitle}>The problem</h2>
             <p className={styles.sectionLead}>
@@ -405,7 +436,7 @@ const InvestorPitchDeckPage = () => {
           </div>
         </section>
 
-        <section className={styles.section}>
+        <section ref={setSectionRef(1)} className={`${styles.section} ${sectionsVisible[1] ? styles.sectionVisible : ''}`}>
           <div className={styles.sectionInner}>
             <h2 className={styles.sectionTitle}>The solution</h2>
             <p className={styles.sectionLead}>
@@ -430,7 +461,7 @@ const InvestorPitchDeckPage = () => {
           </div>
         </section>
 
-        <section className={styles.section}>
+        <section ref={setSectionRef(2)} className={`${styles.section} ${sectionsVisible[2] ? styles.sectionVisible : ''}`}>
           <div className={styles.sectionInner}>
             <h2 className={styles.sectionTitle}>Business model</h2>
             <p className={styles.sectionLead}>
