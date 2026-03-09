@@ -385,6 +385,42 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
                 <p>No active executions</p>
               </div>
             )}
+
+            {/* Show recent history when no active executions */}
+            {displayExecutions.filter(e => e.status === 'running').length === 0 &&
+              displayExecutions.filter(e => e.status === 'completed' || e.status === 'failed').length > 0 && (
+              <>
+                <h3 style={{ marginTop: 16 }}>Recent History</h3>
+                {displayExecutions.filter(e => e.status === 'completed' || e.status === 'failed').slice(0, 5).map(exec => (
+                  <div key={exec.id} className={styles.executionCard}>
+                    <div className={styles.execHeader}>
+                      <span className={`${styles.statusDot} ${getStatusColor(exec.status)}`} />
+                      <span className={styles.execAgent}>{getAgentName(exec.agentId)}</span>
+                      <span className={`${styles.statusBadge} ${getStatusColor(exec.status)}`}>
+                        {exec.status.toUpperCase()}
+                      </span>
+                    </div>
+                    {exec.error && (
+                      <div className={styles.errorMessage}>
+                        <Icons.AlertTriangle /> {exec.error}
+                      </div>
+                    )}
+                    <div className={styles.execMeta}>
+                      <span><Icons.Clock /> {formatDuration(exec.metrics.durationMs)}</span>
+                      <span><Icons.Zap /> {exec.metrics.tokensUsed} tokens</span>
+                      <span><Icons.DollarSign /> ${exec.metrics.costUsd.toFixed(3)}</span>
+                    </div>
+                  </div>
+                ))}
+                <button
+                  className={styles.primaryBtn}
+                  style={{ marginTop: 8, width: '100%' }}
+                  onClick={() => setActiveView('history')}
+                >
+                  View All History
+                </button>
+              </>
+            )}
           </div>
         )}
 
@@ -445,6 +481,12 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
                 </div>
               </div>
             ))}
+            {displayExecutions.filter(e => e.status === 'completed' || e.status === 'failed').length === 0 && (
+              <div className={styles.emptyState}>
+                <Icons.Clock />
+                <p>No execution history yet</p>
+              </div>
+            )}
           </div>
         )}
 
