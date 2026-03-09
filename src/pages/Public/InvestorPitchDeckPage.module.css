@@ -859,34 +859,36 @@
 }
 
 /* ============================================================
-   Sticky Presentation Slides — each section pins to viewport
+   Fixed Fullscreen Slides — scroll-hijacked presentation
    ============================================================ */
-.slideOuter {
-  position: relative;
-  height: 100vh;
-}
-
-.slideInner {
-  position: sticky;
+.slide {
+  position: fixed;
   top: 0;
+  left: 0;
+  width: 100%;
   height: 100vh;
-  width: 100%;
-  overflow: hidden;
-  will-change: opacity;
-}
-
-.slideContent {
-  width: 100%;
-  height: 100%;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
 }
 
-.slideContent.slideActive {
+.slide.slideActive {
   opacity: 1;
+  pointer-events: auto;
+  z-index: 3;
+}
+
+.slideDark {
+  background: #0a0a0a;
+}
+
+:global([data-theme="light"]) .slideDark {
+  background: #f8fafc;
 }
 
 /* VR image slides */
@@ -897,26 +899,50 @@
   object-position: center;
 }
 
-/* Content slides — dark background so they cover images */
-.slideContentSection {
-  width: 100%;
-  height: 100%;
+/* Slide navigation dots */
+.slideNav {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px clamp(18px, 4vw, 56px);
-  box-sizing: border-box;
-  background: #0a0a0a;
-  opacity: 0;
-  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  flex-direction: column;
+  gap: 10px;
 }
 
-.slideContentSection.slideActive {
-  opacity: 1;
+.slideDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.3s, border-color 0.3s, transform 0.3s;
 }
 
-[data-theme='light'] .slideContentSection {
-  background: #f8fafc;
+.slideDot:hover {
+  border-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.3);
+}
+
+.slideDotActive {
+  background: #60a5fa;
+  border-color: #60a5fa;
+}
+
+:global([data-theme="light"]) .slideDot {
+  border-color: rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="light"]) .slideDot:hover {
+  border-color: rgba(0, 0, 0, 0.6);
+}
+
+:global([data-theme="light"]) .slideDotActive {
+  background: #2563eb;
+  border-color: #2563eb;
 }
 
 :global([data-theme="light"]) .parallax {
