@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import styles from './InvestorPitchDeckPage.module.css';
@@ -26,6 +26,30 @@ const InvestorPitchDeckPage = () => {
   const [animate, setAnimate] = useState(false);
   const [scrollCentered, setScrollCentered] = useState(false);
   const [heroPadLeft, setHeroPadLeft] = useState<number | null>(null);
+  const [vrVisible, setVrVisible] = useState<Record<number, boolean>>({});
+  const vrSlideRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const setVrRef = useCallback((index: number) => (el: HTMLDivElement | null) => {
+    vrSlideRefs.current[index] = el;
+  }, []);
+
+  useEffect(() => {
+    const slides = vrSlideRefs.current.filter(Boolean) as HTMLDivElement[];
+    if (slides.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const idx = slides.indexOf(entry.target as HTMLDivElement);
+          if (idx !== -1 && entry.isIntersecting) {
+            setVrVisible((prev) => ({ ...prev, [idx]: true }));
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    slides.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -324,6 +348,32 @@ const InvestorPitchDeckPage = () => {
             <div aria-hidden="true" />
           </div>
         </section>
+
+        {/* VR Showcase — Apple-style fullscreen immersive images */}
+        <div className={styles.vrShowcase}>
+          <div
+            ref={setVrRef(0)}
+            className={`${styles.vrSlide} ${vrVisible[0] ? styles.vrVisible : ''}`}
+          >
+            <img
+              src="/images/investorpitch/VR1.png"
+              alt="ResonantGenesis VR interface — IDE VibeCoding in San Francisco"
+              className={styles.vrImage}
+              loading="lazy"
+            />
+          </div>
+          <div
+            ref={setVrRef(1)}
+            className={`${styles.vrSlide} ${vrVisible[1] ? styles.vrVisible : ''}`}
+          >
+            <img
+              src="/images/investorpitch/VR2.png"
+              alt="ResonantGenesis VR interface — street view coding experience"
+              className={styles.vrImage}
+              loading="lazy"
+            />
+          </div>
+        </div>
 
         <section className={styles.section}>
           <div className={styles.sectionInner}>
