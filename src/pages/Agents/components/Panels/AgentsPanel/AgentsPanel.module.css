@@ -1189,7 +1189,7 @@
 }
 
 [data-theme='light'] .panelHeader {
-  border-bottom-color: #e5e7eb;
+  border-bottom: none;
 }
 
 [data-theme='light'] .panelHeader h2 {
@@ -1197,7 +1197,7 @@
 }
 
 [data-theme='light'] .panelToolbar {
-  border-bottom-color: #e5e7eb;
+  border-bottom: none;
 }
 
 [data-theme='light'] .splitContainer {
@@ -1210,27 +1210,29 @@
 
 /* --- Header Controls --- */
 [data-theme='light'] .countPill {
-  border: 1px solid #d1d5db;
+  border: none;
   background: transparent;
-  color: #374151;
+  color: #6b7280;
 }
 
 [data-theme='light'] .toolbarBtn {
-  border: 1px solid #d1d5db;
+  border: none;
   background: transparent;
-  color: #374151;
+  color: #9ca3af;
 }
 
 [data-theme='light'] .toolbarBtn:hover {
-  background: #f3f4f6;
-  border-color: #9ca3af;
+  background: transparent;
   color: #111827;
 }
 
 [data-theme='light'] .searchBox input {
-  background: #ffffff;
-  border: 1px solid #d1d5db;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
   color: #111827;
+  padding-left: 0;
 }
 
 [data-theme='light'] .searchBox input::placeholder {
@@ -1238,26 +1240,31 @@
 }
 
 [data-theme='light'] .searchBox input:focus {
-  border-color: #0ea5e9;
-  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
+  border-bottom-color: #0ea5e9;
+  box-shadow: none;
+  outline: none;
 }
 
 [data-theme='light'] .clearBtn {
-  border: 1px solid #d1d5db;
+  border: none;
   background: transparent;
-  color: #6b7280;
+  color: #9ca3af;
 }
 
 [data-theme='light'] .clearBtn:hover {
-  background: #f3f4f6;
+  background: transparent;
   color: #111827;
 }
 
 [data-theme='light'] .filterSelect {
-  background: #ffffff !important;
-  border: 1px solid #d1d5db !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  border-radius: 0 !important;
   color: #111827 !important;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 4px center !important;
 }
 
 /* --- Bulk Mode --- */

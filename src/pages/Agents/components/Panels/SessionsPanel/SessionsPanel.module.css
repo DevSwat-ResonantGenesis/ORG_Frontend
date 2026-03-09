@@ -543,41 +543,51 @@
 }
 
 /* ============== LIGHT MODE ============== */
+
+/* --- Layout --- */
 [data-theme='light'] .panel {
   background: #ffffff;
 }
 
 [data-theme='light'] .panelHeader {
-  border-bottom-color: rgba(0, 0, 0, 0.08);
+  border-bottom: none;
 }
 
 [data-theme='light'] .panelHeader h2 {
-  color: #1D1D1F;
+  color: #111827;
 }
 
+/* --- Stats Bar --- */
 [data-theme='light'] .statsBar {
-  background: rgba(14, 165, 233, 0.06);
-  border-color: rgba(14, 165, 233, 0.15);
-  color: #4b5563;
+  background: transparent;
+  border: none;
+  color: #6b7280;
 }
 
 [data-theme='light'] .statsBar strong {
-  color: #1D1D1F;
+  color: #111827;
 }
 
+/* --- Session Card --- */
 [data-theme='light'] .sessionCard {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  border: 1px solid #f3f4f6;
+  box-shadow: none;
 }
 
 [data-theme='light'] .sessionCard:hover {
-  background: rgba(0, 0, 0, 0.04);
-  border-color: rgba(0, 0, 0, 0.12);
+  background: #ffffff;
+  border-color: #93c5fd;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 [data-theme='light'] .sessionCard.selected {
-  background: rgba(14, 165, 233, 0.08);
-  border-color: rgba(14, 165, 233, 0.3);
+  background: #f0f9ff;
+  border-color: #0ea5e9;
+}
+
+[data-theme='light'] .sessionHeader {
+  color: #111827;
 }
 
 [data-theme='light'] .sessionStatus {
@@ -585,49 +595,65 @@
 }
 
 [data-theme='light'] .sessionGoal {
-  color: #1D1D1F;
+  color: #111827;
 }
 
 [data-theme='light'] .sessionMeta {
-  color: #6b7280;
+  color: #9ca3af;
 }
 
+[data-theme='light'] .sessionMeta span {
+  color: #9ca3af;
+}
+
+/* --- Sessions List --- */
 [data-theme='light'] .sessionsList {
-  border-right-color: rgba(0, 0, 0, 0.08);
+  border-right-color: #f3f4f6;
 }
 
 [data-theme='light'] .sessionsList h3 {
   color: #6b7280;
 }
 
+/* --- Session Detail --- */
 [data-theme='light'] .sessionDetail {
-  color: #1D1D1F;
+  color: #111827;
 }
 
 [data-theme='light'] .detailHeader h3 {
-  color: #1D1D1F;
+  color: #111827;
+}
+
+[data-theme='light'] .statusBadge {
+  color: #ffffff;
 }
 
 [data-theme='light'] .goalDisplay {
-  background: rgba(14, 165, 233, 0.06);
-  color: #1D1D1F;
+  background: #f0f9ff;
+  border: none;
+  color: #111827;
 }
 
+/* --- Step Card --- */
 [data-theme='light'] .stepCard {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.08);
-  color: #1D1D1F;
+  background: #ffffff;
+  border: 1px solid #f3f4f6;
+  color: #111827;
 }
 
-[data-theme='light'] .stepReasoning,
-[data-theme='light'] .stepTool {
-  background: rgba(0, 0, 0, 0.03);
-  color: #374151;
+[data-theme='light'] .stepCard.needsApproval {
+  border-color: #fde68a;
+  background: #fffbeb;
 }
 
-[data-theme='light'] .stepTool pre {
-  background: rgba(0, 0, 0, 0.05);
-  color: #374151;
+[data-theme='light'] .stepIcon {
+  background: transparent;
+  color: #0ea5e9;
+}
+
+[data-theme='light'] .stepType {
+  background: transparent;
+  color: #6b7280;
 }
 
 [data-theme='light'] .stepNumber {
@@ -635,18 +661,106 @@
 }
 
 [data-theme='light'] .stepDuration {
-  color: #6b7280;
+  color: #9ca3af;
 }
 
+[data-theme='light'] .stepReasoning,
+[data-theme='light'] .stepTool {
+  background: #fafafa;
+  color: #374151;
+}
+
+[data-theme='light'] .stepTool pre {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* --- Cancel Session --- */
+[data-theme='light'] .cancelSessionBtn {
+  background: transparent;
+  color: #dc2626;
+}
+
+[data-theme='light'] .cancelSessionBtn:hover {
+  background: #fef2f2;
+}
+
+/* --- Safety Warning --- */
+[data-theme='light'] .safetyWarning {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* --- Approval Actions --- */
+[data-theme='light'] .approvalActions {
+  border-top-color: #f3f4f6;
+  color: #d97706;
+}
+
+[data-theme='light'] .approveBtn {
+  background: transparent;
+  color: #16a34a;
+}
+
+[data-theme='light'] .approveBtn:hover {
+  background: #f0fdf4;
+}
+
+[data-theme='light'] .rejectBtn {
+  background: transparent;
+  color: #dc2626;
+}
+
+[data-theme='light'] .rejectBtn:hover {
+  background: #fef2f2;
+}
+
+/* --- Final Output / Error --- */
+[data-theme='light'] .finalOutput {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+[data-theme='light'] .finalOutput h4 {
+  color: #16a34a;
+}
+
+[data-theme='light'] .errorOutput {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+[data-theme='light'] .errorOutput h4 {
+  color: #dc2626;
+}
+
+/* --- Error Banner --- */
+[data-theme='light'] .errorBanner {
+  background: #fef2f2;
+  border-bottom-color: #fca5a5;
+  color: #dc2626;
+}
+
+/* --- Empty States --- */
 [data-theme='light'] .noSessions,
 [data-theme='light'] .noSteps,
 [data-theme='light'] .loading {
-  color: #6b7280;
+  color: #9ca3af;
 }
 
 [data-theme='light'] .emptyState,
 [data-theme='light'] .noSelection {
-  color: #6b7280;
+  color: #9ca3af;
+}
+
+/* --- New Session Form --- */
+[data-theme='light'] .newSessionForm {
+  background: transparent;
+  border-bottom: none;
+}
+
+[data-theme='light'] .newSessionForm h3 {
+  color: #111827;
 }
 
 [data-theme='light'] .formGroup label {
@@ -654,32 +768,25 @@
 }
 
 [data-theme='light'] .formGroup textarea {
-  background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.12);
-  color: #1D1D1F;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #111827;
+}
+
+[data-theme='light'] .formGroup textarea:focus {
+  border-bottom-color: #0ea5e9;
 }
 
 [data-theme='light'] .cancelBtn {
-  border-color: rgba(0, 0, 0, 0.12);
+  border: none;
+  background: transparent;
   color: #6b7280;
 }
 
 [data-theme='light'] .cancelBtn:hover {
-  background: rgba(0, 0, 0, 0.04);
-  color: #1D1D1F;
-}
-
-[data-theme='light'] .newSessionForm {
-  background: rgba(14, 165, 233, 0.04);
-  border-bottom-color: rgba(14, 165, 233, 0.1);
-}
-
-[data-theme='light'] .newSessionForm h3 {
-  color: #1D1D1F;
-}
-
-[data-theme='light'] .approvalActions {
-  border-top-color: rgba(0, 0, 0, 0.08);
+  color: #111827;
 }
 
 [data-theme='light'] .hint {

@@ -550,7 +550,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
         </div>
 
         {/* Panel navigation icons — replaces sidebar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 2, padding: '0 4px', borderLeft: '1px solid rgba(255,255,255,0.08)', borderRight: '1px solid rgba(255,255,255,0.08)', margin: '0 4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 2, padding: '0 4px', margin: '0 4px' }}>
           {([
             { type: 'capabilities', icon: <Icons.Capabilities />, label: 'Capabilities' },
             { type: 'goals', icon: <Icons.Goals />, label: 'Goals' },
