@@ -16,7 +16,7 @@ import type { Command } from '../../components/IDE/CommandPalette';
 
 const AgentsPanel = lazy(() => import('./components/Panels/AgentsPanel'));
 const SessionsPanel = lazy(() => import('./components/Panels/SessionsPanel'));
-const FactoryPanel = lazy(() => import('./components/Panels/FactoryPanel'));
+// FactoryPanel removed — factory is now inline in AgentsPanel
 const EconomyPanel = lazy(() => import('./components/Panels/EconomyPanel'));
 const ExecutionPanel = lazy(() => import('./components/Panels/ExecutionPanel'));
 const WorkflowPanel = lazy(() => import('./components/Panels/WorkflowPanel'));
@@ -301,7 +301,7 @@ const AgentOSv2: React.FC = () => {
       { id: 'agents:toggle-bulk', label: 'Toggle Bulk Mode', category: 'Agents' },
       { id: 'nav:agents', label: 'Go to Agents', category: 'Navigate' },
       { id: 'nav:sessions', label: 'Go to Sessions', category: 'Navigate' },
-      { id: 'nav:factory', label: 'Go to Factory', category: 'Navigate' },
+      // Factory removed from sidebar — now inline in AgentsPanel
       { id: 'nav:workflow', label: 'Go to Workflows', category: 'Navigate' },
       { id: 'nav:execution', label: 'Go to Execution', category: 'Navigate' },
       { id: 'nav:goals', label: 'Go to Goals', category: 'Navigate' },
@@ -321,7 +321,8 @@ const AgentOSv2: React.FC = () => {
 
   const onCommandSelect = useCallback((cmd: Command) => {
     if (cmd.id === 'agents:create') {
-      useUIStore.getState().setActiveSection('factory');
+      useUIStore.getState().setActiveSection('agents');
+      document.dispatchEvent(new CustomEvent('agentos:agents:openFactory'));
     }
 
     if (cmd.id === 'agents:run') {
@@ -356,8 +357,7 @@ const AgentOSv2: React.FC = () => {
         return <AgentsPanel />;
       case 'sessions':
         return <SessionsPanel />;
-      case 'factory':
-        return <FactoryPanel />;
+      // factory is now inline in AgentsPanel
       case 'economy':
         return <EconomyPanel />;
       case 'capabilities':

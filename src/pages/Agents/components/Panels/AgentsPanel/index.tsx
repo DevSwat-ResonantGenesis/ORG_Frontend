@@ -10,6 +10,7 @@ import fastapiClient from '../../../../../api/fastapiClient';
 import { executeAgentTask } from '../../../../../api/executions';
 import { useToastContext } from '../../../../../context/ToastContext';
 import { SessionsPanel } from '../SessionsPanel';
+import { FactoryPanel } from '../FactoryPanel';
 import styles from './AgentsPanel.module.css';
 
 // ============== AGENTS PANEL ==============
@@ -59,6 +60,9 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const [agentVersions, setAgentVersions] = useState<any[]>([]);
   const [agentActivity, setAgentActivity] = useState<any[]>([]);
   const [agentBenchmarks, setAgentBenchmarks] = useState<any>(null);
+
+  // Factory pane state (inline, replaces sessions pane)
+  const [showFactory, setShowFactory] = useState(false);
 
   // Publish pane state (inline, replaces sessions pane)
   const [publishAgentId, setPublishAgentId] = useState<string | null>(null);
@@ -197,11 +201,20 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
       });
     };
 
+    const onOpenFactory = () => {
+      setShowFactory(true);
+      setChatAgentId(null);
+      setDetailAgentId(null);
+      setPublishAgentId(null);
+    };
+
     document.addEventListener('agentos:agents:openModal', onOpenModal as any);
+    document.addEventListener('agentos:agents:openFactory', onOpenFactory as any);
     document.addEventListener('agentos:agents:toggleFavoritesFilter', onToggleFavoritesFilter as any);
     document.addEventListener('agentos:agents:toggleBulkMode', onToggleBulkMode as any);
     return () => {
       document.removeEventListener('agentos:agents:openModal', onOpenModal as any);
+      document.removeEventListener('agentos:agents:openFactory', onOpenFactory as any);
       document.removeEventListener('agentos:agents:toggleFavoritesFilter', onToggleFavoritesFilter as any);
       document.removeEventListener('agentos:agents:toggleBulkMode', onToggleBulkMode as any);
     };
@@ -519,7 +532,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
         <div className={styles.headerMeta}>
           <span className={styles.countPill}>{filteredAgents.length}</span>
-          <button className={styles.toolbarBtn} type="button" onClick={() => setActiveSection('factory')} title="Create agent">
+          <button className={styles.toolbarBtn} type="button" onClick={() => { setShowFactory(true); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); }} title="Create agent">
             <Icons.Plus /> Create
           </button>
           <button
@@ -622,7 +635,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         <button 
                           className={`${styles.actionBtn} ${styles.runBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); selectAgent(agent.id); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); }}
+                          onClick={(e) => { e.stopPropagation(); selectAgent(agent.id); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
                           title="Run Agent"
                         >
                           <Icons.Play />
@@ -632,7 +645,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         <button 
                           className={`${styles.actionBtn} ${styles.messageBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); setChatAgentId(agent.id); setDetailAgentId(null); setPublishAgentId(null); setMessageInput(''); setError(null); }}
+                          onClick={(e) => { e.stopPropagation(); setChatAgentId(agent.id); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); setMessageInput(''); setError(null); }}
                           title="Message Agent"
                         >
                           <Icons.MessageSquare />
@@ -642,7 +655,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         <button 
                           className={`${styles.actionBtn} ${styles.detailBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); setDetailAgentId(agent.id); setChatAgentId(null); setPublishAgentId(null); }}
+                          onClick={(e) => { e.stopPropagation(); setDetailAgentId(agent.id); setChatAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
                           title="View Details"
                         >
                           <Icons.Info />
@@ -662,7 +675,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         <button 
                           className={`${styles.actionBtn} ${styles.detailBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); setPublishAgentId(agent.id); setChatAgentId(null); setDetailAgentId(null); setPublishManifest(prev => ({ ...prev, name: agent.name, description: '', category: agent.type || 'utility', tags: [] })); setPublishResult(null); }}
+                          onClick={(e) => { e.stopPropagation(); setPublishAgentId(agent.id); setChatAgentId(null); setDetailAgentId(null); setShowFactory(false); setPublishManifest(prev => ({ ...prev, name: agent.name, description: '', category: agent.type || 'utility', tags: [] })); setPublishResult(null); }}
                           title="Publish to DSID Network"
                         >
                           <Icons.Upload />
@@ -692,8 +705,24 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           </div>
         </div>
 
-        {/* Right pane: publish > detail > chat > sessions */}
-        {publishAgent ? (
+        {/* Right pane: factory > publish > detail > chat > sessions */}
+        {showFactory ? (
+          <div className={styles.sessionsPane}>
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+              {/* Factory header */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', borderBottom: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}>
+                <Icons.Factory />
+                <span style={{ fontWeight: 600, fontSize: 13, flex: 1 }}>Create Agent</span>
+                <button onClick={() => setShowFactory(false)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 16, padding: '2px 6px' }} title="Close">×</button>
+              </div>
+
+              {/* Factory content */}
+              <div style={{ flex: 1, overflow: 'hidden' }}>
+                <FactoryPanel />
+              </div>
+            </div>
+          </div>
+        ) : publishAgent ? (
           <div className={styles.sessionsPane}>
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
               {/* Publish header */}
