@@ -2057,7 +2057,8 @@ const ResonantChatPage: React.FC = () => {
       'scan again', 'rescan', 're-scan',
     ];
     const hasCvIntent = cvKeywords.some(k => msgLower.includes(k)) || msgLower.includes('github.com/');
-    if (hasCvIntent) {
+    const cvSkillEnabled = enabledSkillIds.includes('code_visualizer');
+    if (hasCvIntent && cvSkillEnabled) {
       setSplitAutoOpenRequest({ requestId: Date.now(), tab: 'visualizer' });
       if (!splitViewEnabled) {
         setSplitViewEnabled(true);
@@ -2168,7 +2169,7 @@ const ResonantChatPage: React.FC = () => {
         use_rag: useHashSphere ? false : true, // If Hash Sphere is enabled, RAG is optional
         agent_hash: (!selectedTeamId) ? selectedAgentHash || undefined : undefined,
         teamId: selectedTeamId || undefined,
-        enabled_skill_ids: enabledSkillIds.length > 0 ? enabledSkillIds : undefined,
+        enabled_skill_ids: enabledSkillIds,
       });
 
       // Handle tool results (e.g., navigation, Code Visualizer)
