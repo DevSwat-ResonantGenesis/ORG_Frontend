@@ -432,9 +432,9 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
         <div style={{
           position: 'absolute', inset: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transform: isActive ? 'scale(0.52)' : 'scale(0.48)',
+          transform: isActive ? 'scale(0.45)' : 'scale(0.45)',
           filter: (status === 'listening') ? 'hue-rotate(90deg)' : 'none',
-          transition: 'transform 1.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s, filter 0.8s ease',
+          transition: 'transform 1s cubic-bezier(0.4,0,0.2,1), opacity 0.5s, filter 0.8s ease',
           animation: isActive ? 'voiceSphereBreath 3s ease-in-out infinite' : 'none',
           opacity: isActive ? 1 : 0.85,
           pointerEvents: 'none',
@@ -572,8 +572,8 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
       {/* Keyframes */}
       <style>{`
         @keyframes voiceSphereBreath {
-          0%, 100% { transform: scale(1); }
-          50%      { transform: scale(1.1); }
+          0%, 100% { transform: scale(0.45); }
+          50%      { transform: scale(0.50); }
         }
         @keyframes voiceBreathe {
           0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
