@@ -263,44 +263,25 @@ const HelpCenterPage: React.FC = () => {
       document.querySelector('.main-layout-wrapper'),
       document.querySelector('.main-content'),
       document.querySelector('.main-content-area'),
-      document.querySelector('.page-wrapper'),
     ].filter(Boolean) as HTMLElement[];
 
-    const saved = els.map(el => ({
+    const saved: { el: HTMLElement; bg: string }[] = els.map(el => ({
       el,
       bg: el.style.background,
-      bgc: el.style.backgroundColor,
     }));
 
     els.forEach(el => {
       el.style.setProperty('background', 'transparent', 'important');
-      el.style.setProperty('background-color', 'transparent', 'important');
     });
-
-    // Override CSS variables so ANY element using var(--bg-primary) etc gets transparent
-    const root = document.documentElement;
-    const varNames = [
-      '--bg-primary', '--bg-secondary', '--bg-tertiary',
-      '--bg', '--color-bg-root',
-      '--surface', '--surface-elevated', '--surface-hover',
-    ];
-    const savedVars = varNames.map(v => ({ name: v, value: root.style.getPropertyValue(v) }));
-    varNames.forEach(v => root.style.setProperty(v, 'transparent'));
 
     return () => {
       applyDomTheme(previousTheme);
-      saved.forEach(({ el, bg, bgc }) => {
-        el.style.removeProperty('background');
-        el.style.removeProperty('background-color');
-        if (bg) el.style.background = bg;
-        if (bgc) el.style.backgroundColor = bgc;
-      });
-      // Restore CSS variables
-      savedVars.forEach(({ name, value }) => {
-        if (value) {
-          root.style.setProperty(name, value);
+      // Restore original backgrounds
+      saved.forEach(({ el, bg }) => {
+        if (bg) {
+          el.style.background = bg;
         } else {
-          root.style.removeProperty(name);
+          el.style.removeProperty('background');
         }
       });
     };

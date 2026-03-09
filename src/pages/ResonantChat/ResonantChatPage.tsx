@@ -260,38 +260,7 @@ interface Message {
 const ResonantChatPage: React.FC = () => {
   useEffect(() => {
     document.body.classList.add('resonant-chat-page');
-
-    // Force ALL parent backgrounds to transparent — same as Help Center
-    const bgEls = [
-      document.documentElement,
-      document.body,
-      document.getElementById('root'),
-      document.querySelector('.main-layout-wrapper'),
-      document.querySelector('.main-content'),
-      document.querySelector('.main-content-area'),
-      document.querySelector('.page-wrapper'),
-    ].filter(Boolean) as HTMLElement[];
-
-    const savedBgs = bgEls.map(el => ({
-      el,
-      bg: el.style.background,
-      bgc: el.style.backgroundColor,
-    }));
-
-    bgEls.forEach(el => {
-      el.style.setProperty('background', 'transparent', 'important');
-      el.style.setProperty('background-color', 'transparent', 'important');
-    });
-
-    return () => {
-      document.body.classList.remove('resonant-chat-page');
-      savedBgs.forEach(({ el, bg, bgc }) => {
-        el.style.removeProperty('background');
-        el.style.removeProperty('background-color');
-        if (bg) el.style.background = bg;
-        if (bgc) el.style.backgroundColor = bgc;
-      });
-    };
+    return () => document.body.classList.remove('resonant-chat-page');
   }, []);
   const navigate = useNavigate();
   const location = useLocation();

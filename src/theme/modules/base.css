@@ -4,7 +4,7 @@
    ============================================================ */
 
 html {
-  background: transparent !important;
+  background: var(--color-bg-root, var(--bg-primary)) !important;
 
   height: 100%;
   margin: 0;
@@ -18,8 +18,8 @@ html {
 }
 
 body {
-  /* Transparent — let pages control their own backgrounds */
-  background: transparent !important;
+  /* Light mode: Pearl white, Dark mode: Dark */
+  background: var(--color-bg-root, var(--bg-primary)) !important;
   color: var(--text-primary) !important;
   /* Modern, readable system font stack */
   font-family: var(--font-sans);
@@ -108,7 +108,8 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 #root {
-  background: transparent !important;
+  /* Light mode: Pearl white, Dark mode: Dark */
+  background: var(--color-bg-root, var(--bg-primary)) !important;
   min-height: 100dvh;
 }
 
@@ -117,12 +118,18 @@ html::-webkit-scrollbar-thumb:hover {
    Global consistency rules to ensure proper styling across the app
    ============================================================ */
 
+/* Remove any conflicting styles */
+* {
+  background-image: none !important;
+}
+
 /* Ensure proper inheritance */
 .page-container,
 .page-section,
 .card,
 .page-card {
-  background: transparent !important;
+  /* Light mode: Pearl white, Dark mode: Dark */
+  background: var(--bg-primary) !important;
   color: var(--text-primary) !important;
 }
 
