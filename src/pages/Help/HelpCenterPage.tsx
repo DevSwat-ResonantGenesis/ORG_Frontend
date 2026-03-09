@@ -263,26 +263,27 @@ const HelpCenterPage: React.FC = () => {
       document.querySelector('.main-layout-wrapper'),
       document.querySelector('.main-content'),
       document.querySelector('.main-content-area'),
+      document.querySelector('.page-wrapper'),
     ].filter(Boolean) as HTMLElement[];
 
-    const saved: { el: HTMLElement; bg: string }[] = els.map(el => ({
+    const saved = els.map(el => ({
       el,
       bg: el.style.background,
+      bgc: el.style.backgroundColor,
     }));
 
     els.forEach(el => {
       el.style.setProperty('background', 'transparent', 'important');
+      el.style.setProperty('background-color', 'transparent', 'important');
     });
 
     return () => {
       applyDomTheme(previousTheme);
-      // Restore original backgrounds
-      saved.forEach(({ el, bg }) => {
-        if (bg) {
-          el.style.background = bg;
-        } else {
-          el.style.removeProperty('background');
-        }
+      saved.forEach(({ el, bg, bgc }) => {
+        el.style.removeProperty('background');
+        el.style.removeProperty('background-color');
+        if (bg) el.style.background = bg;
+        if (bgc) el.style.backgroundColor = bgc;
       });
     };
   }, []);
