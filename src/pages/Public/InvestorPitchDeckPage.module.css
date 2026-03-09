@@ -49,11 +49,6 @@
   color: #475569;
 }
 
-:global([data-theme="light"]) .badge {
-  background: rgba(241, 245, 249, 0.65);
-  border-color: rgba(59, 130, 246, 0.15);
-  color: #334155;
-}
 
 :global([data-theme="light"]) .footerCta {
   background: radial-gradient(900px 480px at 15% 15%, rgba(37, 99, 235, 0.08), transparent),
@@ -77,30 +72,54 @@
   color: #fff;
 }
 
-:global([data-theme="light"]) .workflowPanel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  border-color: rgba(148, 163, 184, 0.25);
+/* Workflow panel sits on VR photo — text stays white in any theme */
+/* Badge on VR slides — also stays light in any theme */
+/* VR slide overlays — force white text in light mode */
+:global([data-theme="light"]) .vrTitle {
+  color: #fff;
+}
+
+:global([data-theme="light"]) .vrQuote {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+:global([data-theme="light"]) .vrQuote strong {
+  color: #60a5fa;
 }
 
 :global([data-theme="light"]) .workflowTitle {
-  color: #0f172a;
+  color: #fff;
 }
 
 :global([data-theme="light"]) .workflowSubtitle {
-  color: #475569;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 :global([data-theme="light"]) .workflowStepNum {
-  color: #2563eb;
+  color: #60a5fa;
 }
 
 :global([data-theme="light"]) .workflowStepBody strong {
-  color: #0f172a;
+  color: #fff;
 }
 
 :global([data-theme="light"]) .workflowStepBody span {
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+:global([data-theme="light"]) .workflowPanel {
+  background: transparent;
+}
+
+:global([data-theme="light"]) .workflowStep {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:global([data-theme="light"]) .badge {
+  background: rgba(15, 23, 42, 0.55);
+  border-color: rgba(59, 130, 246, 0.25);
+  color: rgba(248, 250, 252, 0.85);
 }
 
 :global([data-theme="light"]) .slideDot {

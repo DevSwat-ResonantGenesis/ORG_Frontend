@@ -1502,3 +1502,24 @@
 [data-theme='dark'] .accountMenuSectionTitle {
   color: #666;
 }
+
+/* ============================================================
+   Investor Pitch Deck — force white header over VR photos
+   ============================================================ */
+:global(.pitch-deck-active) .logo {
+  color: #fff !important;
+}
+
+:global(.pitch-deck-active) .navButton {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+:global(.pitch-deck-active) .navButton:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+:global(.pitch-deck-active) .navButtonActive {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}

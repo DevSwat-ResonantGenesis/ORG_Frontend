@@ -31,12 +31,17 @@ const InvestorPitchDeckPage = () => {
   const transitioning = useRef(false);
   const touchStartY = useRef(0);
 
-  /* Lock body scroll on mount, restore on unmount */
+  /* Lock body scroll on mount, restore on unmount.
+     Also add body class so the header can detect this page. */
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    document.body.classList.add('pitch-deck-active');
     window.scrollTo(0, 0);
-    return () => { document.body.style.overflow = prev; };
+    return () => {
+      document.body.style.overflow = prev;
+      document.body.classList.remove('pitch-deck-active');
+    };
   }, []);
 
 
