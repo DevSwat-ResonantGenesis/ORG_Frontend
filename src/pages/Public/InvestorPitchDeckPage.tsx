@@ -26,7 +26,7 @@ const InvestorPitchDeckPage = () => {
   const [animate, setAnimate] = useState(false);
   const [scrollCentered, setScrollCentered] = useState(false);
   const [heroPadLeft, setHeroPadLeft] = useState<number | null>(null);
-  const TOTAL_SLIDES = 8;
+  const TOTAL_SLIDES = 7;
   const [currentSlide, setCurrentSlide] = useState(0);
   const transitioning = useRef(false);
   const touchStartY = useRef(0);
@@ -423,13 +423,68 @@ const InvestorPitchDeckPage = () => {
           </section>
         </div>
 
-        {/* SLIDE 2 — VR2 fullscreen image */}
+        {/* SLIDE 2 — Platform Workflow (VR3 background) */}
         <div className={`${styles.slide} ${styles.slideVr} ${currentSlide === 2 ? styles.slideActive : ''}`}>
           <img
-            src="/images/investorpitch/VR2.jpg"
-            alt="ResonantGenesis VR interface — street view coding experience"
+            src="/images/investorpitch/VR3.jpg"
+            alt="ResonantGenesis VR interface — street view coding"
             className={styles.vrImage}
           />
+          <div className={styles.workflowOverlay}>
+            <div className={styles.workflowPanel}>
+              <h2 className={styles.workflowTitle}>The Platform Workflow</h2>
+              <p className={styles.workflowSubtitle}>One ecosystem. Every capability an AI team needs.</p>
+              <div className={styles.workflowSteps}>
+                <div className={`${styles.workflowStep} ${currentSlide === 2 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '0.2s' }}>
+                  <span className={styles.workflowStepNum}>01</span>
+                  <div className={styles.workflowStepBody}>
+                    <strong>AGI Neural Hub</strong>
+                    <span>Conversational AI that plans, reasons, and acts autonomously</span>
+                  </div>
+                </div>
+                <div className={styles.workflowConnector} />
+                <div className={`${styles.workflowStep} ${currentSlide === 2 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '0.5s' }}>
+                  <span className={styles.workflowStepNum}>02</span>
+                  <div className={styles.workflowStepBody}>
+                    <strong>AI Agent Studio</strong>
+                    <span>Create, configure & deploy autonomous agents</span>
+                  </div>
+                </div>
+                <div className={styles.workflowConnector} />
+                <div className={`${styles.workflowStep} ${currentSlide === 2 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '0.8s' }}>
+                  <span className={styles.workflowStepNum}>03</span>
+                  <div className={styles.workflowStepBody}>
+                    <strong>SAST & Dependency Graph</strong>
+                    <span>Full-stack architecture observability & remediation</span>
+                  </div>
+                </div>
+                <div className={styles.workflowConnector} />
+                <div className={`${styles.workflowStep} ${currentSlide === 2 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '1.1s' }}>
+                  <span className={styles.workflowStepNum}>04</span>
+                  <div className={styles.workflowStepBody}>
+                    <strong>Invariants SIM</strong>
+                    <span>Constraint simulation & economic safety modeling</span>
+                  </div>
+                </div>
+                <div className={styles.workflowConnector} />
+                <div className={`${styles.workflowStep} ${currentSlide === 2 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '1.4s' }}>
+                  <span className={styles.workflowStepNum}>05</span>
+                  <div className={styles.workflowStepBody}>
+                    <strong>Resonant IDE</strong>
+                    <span>In-browser development with split-view AI assistance</span>
+                  </div>
+                </div>
+                <div className={styles.workflowConnector} />
+                <div className={`${styles.workflowStep} ${currentSlide === 2 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '1.7s' }}>
+                  <span className={styles.workflowStepNum}>06</span>
+                  <div className={styles.workflowStepBody}>
+                    <strong>Marketplace</strong>
+                    <span>Publish & monetize T3-verified agents</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* SLIDE 3 — The problem */}
@@ -464,99 +519,23 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 4 — The solution */}
-        <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 4 ? styles.slideActive : ''}`}>
-          <div className={styles.section}>
-            <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>The solution</h2>
-              <p className={styles.sectionLead}>
-                ResonantGenesis is an agent infrastructure layer that turns autonomy into an engineered system—observable, governed, and resilient.
-              </p>
-              <div className={styles.twoCol}>
-                <div>
-                  <h3 className={styles.cardTitle}>Core pillars</h3>
-                  <ul className={styles.list}>
-                    <li>Resonant memory with encryption, access boundaries, and provenance.</li>
-                    <li>Invariant-based constraints simulation for tool execution and safety policies.</li>
-                    <li>Evidence graphs for explainability, audit, and post-incident forensics.</li>
-                    <li>Full-stack observability for prompts, tools, dependencies, and latency/cost.</li>
-                  </ul>
-                </div>
-                <blockquote className={styles.quote}>
-                  <strong>Thesis:</strong> The winners in agentic AI won't just have better models.
-                  They'll have better infrastructure—memory, constraints, and governance that can survive production.
-                </blockquote>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* SLIDE 5 — Platform Workflow (VR3 background) */}
-        <div className={`${styles.slide} ${styles.slideVr} ${currentSlide === 5 ? styles.slideActive : ''}`}>
+        {/* SLIDE 4 — VR2 + Thesis quote */}
+        <div className={`${styles.slide} ${styles.slideVr} ${currentSlide === 4 ? styles.slideActive : ''}`}>
           <img
-            src="/images/investorpitch/VR3.jpg"
-            alt="ResonantGenesis VR interface — street view coding"
+            src="/images/investorpitch/VR2.jpg"
+            alt="ResonantGenesis VR interface — street view coding experience"
             className={styles.vrImage}
           />
-          <div className={styles.workflowOverlay}>
-            <div className={styles.workflowPanel}>
-              <h2 className={styles.workflowTitle}>The Platform Workflow</h2>
-              <p className={styles.workflowSubtitle}>One ecosystem. Every capability an AI team needs.</p>
-              <div className={styles.workflowSteps}>
-                <div className={`${styles.workflowStep} ${currentSlide === 5 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '0.2s' }}>
-                  <span className={styles.workflowStepNum}>01</span>
-                  <div className={styles.workflowStepBody}>
-                    <strong>AGI Neural Hub</strong>
-                    <span>Conversational AI that plans, reasons, and acts autonomously</span>
-                  </div>
-                </div>
-                <div className={styles.workflowConnector} />
-                <div className={`${styles.workflowStep} ${currentSlide === 5 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '0.5s' }}>
-                  <span className={styles.workflowStepNum}>02</span>
-                  <div className={styles.workflowStepBody}>
-                    <strong>AI Agent Studio</strong>
-                    <span>Create, configure & deploy autonomous agents</span>
-                  </div>
-                </div>
-                <div className={styles.workflowConnector} />
-                <div className={`${styles.workflowStep} ${currentSlide === 5 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '0.8s' }}>
-                  <span className={styles.workflowStepNum}>03</span>
-                  <div className={styles.workflowStepBody}>
-                    <strong>SAST & Dependency Graph</strong>
-                    <span>Full-stack architecture observability & remediation</span>
-                  </div>
-                </div>
-                <div className={styles.workflowConnector} />
-                <div className={`${styles.workflowStep} ${currentSlide === 5 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '1.1s' }}>
-                  <span className={styles.workflowStepNum}>04</span>
-                  <div className={styles.workflowStepBody}>
-                    <strong>Invariants SIM</strong>
-                    <span>Constraint simulation & economic safety modeling</span>
-                  </div>
-                </div>
-                <div className={styles.workflowConnector} />
-                <div className={`${styles.workflowStep} ${currentSlide === 5 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '1.4s' }}>
-                  <span className={styles.workflowStepNum}>05</span>
-                  <div className={styles.workflowStepBody}>
-                    <strong>Resonant IDE</strong>
-                    <span>In-browser development with split-view AI assistance</span>
-                  </div>
-                </div>
-                <div className={styles.workflowConnector} />
-                <div className={`${styles.workflowStep} ${currentSlide === 5 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '1.7s' }}>
-                  <span className={styles.workflowStepNum}>06</span>
-                  <div className={styles.workflowStepBody}>
-                    <strong>Marketplace</strong>
-                    <span>Publish & monetize T3-verified agents</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className={styles.vrQuoteOverlay}>
+            <p className={styles.vrQuote}>
+              <strong>Thesis:</strong> The winners in agentic AI won't just have better models.
+              They'll have better infrastructure—memory, constraints, and governance that can survive production.
+            </p>
           </div>
         </div>
 
-        {/* SLIDE 6 — Business model */}
-        <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 6 ? styles.slideActive : ''}`}>
+        {/* SLIDE 5 — Business model */}
+        <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 5 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}>Business model</h2>
@@ -587,8 +566,8 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 7 — Let's talk (footer CTA) */}
-        <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 7 ? styles.slideActive : ''}`}>
+        {/* SLIDE 6 — Let's talk (footer CTA) */}
+        <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 6 ? styles.slideActive : ''}`}>
           <section className={styles.footerCta}>
             <div className={styles.footerCtaInner}>
               <h2 className={styles.footerCtaTitle}>Let's talk</h2>
