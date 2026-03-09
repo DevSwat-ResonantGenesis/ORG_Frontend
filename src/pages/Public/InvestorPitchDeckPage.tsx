@@ -290,6 +290,17 @@ const InvestorPitchDeckPage = () => {
             alt="ResonantGenesis VR interface — IDE VibeCoding in San Francisco"
             className={styles.vrImage}
           />
+          <div className={styles.vrTitleOverlay}>
+            <div className={styles.badgeRow}>
+              <span className={styles.badge}>Investor Pitch Deck</span>
+              <span className={styles.badge}>2026: AI systems, compliance, and autonomy</span>
+            </div>
+            <h1 className={styles.vrTitle}>
+              Own your agent stack.
+              <br />
+              Govern it end-to-end. Execute.
+            </h1>
+          </div>
           <div className={styles.vrOverlay}>
             <div className={styles.parallax} aria-hidden="true">
               <Suspense fallback={null}>
@@ -386,17 +397,6 @@ const InvestorPitchDeckPage = () => {
 
             <div className={styles.heroGrid}>
               <div className={styles.heroContent}>
-                <div className={styles.badgeRow}>
-                  <span className={styles.badge}>Investor Pitch Deck</span>
-                  <span className={styles.badge}>2026: AI systems, compliance, and autonomy</span>
-                </div>
-
-                <h1 className={styles.title}>
-                  Own your agent stack.
-                  <br />
-                  Govern it end-to-end. Execute.
-                </h1>
-
                 <p className={styles.subtitle}>
                   ResonantGenesis is sovereign infrastructure for autonomous agents: governed memory, invariant-based constraint simulation, and full-stack observability—so teams can ship agentic products that are safe, auditable, and controllable.
                 </p>
@@ -416,22 +416,6 @@ const InvestorPitchDeckPage = () => {
                   </div>
                 </div>
 
-                <div className={styles.ctaRow}>
-                  <button type="button" className={styles.ctaPrimary} onClick={() => navigate('/request-access')}>
-                    <span>Request Access</span>
-                    <span aria-hidden="true">→</span>
-                  </button>
-
-                  <button
-                    ref={anchorRef}
-                    type="button"
-                    className={`${styles.ctaSecondary} ${styles.anchorButton}`}
-                    onClick={() => navigate('/pricing')}
-                  >
-                    <span>Pricing</span>
-                    <span aria-hidden="true">↗</span>
-                  </button>
-                </div>
               </div>
 
               <div aria-hidden="true" />
