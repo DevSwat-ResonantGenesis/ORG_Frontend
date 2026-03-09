@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  background: linear-gradient(135deg, #fafbfc 0%, #f5f7fa 100%);
+  background: transparent;
   color: #0f172a;
   overflow-x: clip;
   padding: 0;
@@ -17,7 +17,7 @@
 }
 
 [data-theme='dark'] .helpCenterPage {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background: transparent;
   color: #f1f5f9;
 }
 
@@ -154,9 +154,9 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   opacity: 0;
   transition: opacity 200ms ease;
   z-index: -1;
@@ -164,7 +164,7 @@
 }
 
 [data-theme='light'] .stickySearch::before {
-  background: rgba(250, 251, 252, 0.75);
+  background: rgba(250, 251, 252, 0.35);
 }
 
 .stickySearchInner {
@@ -464,7 +464,7 @@
 .featuredCard {
   text-align: left;
   border: none;
-  background: rgba(0, 0, 0, 0.02);
+  background: transparent;
   border-radius: 14px;
   padding: 20px;
   cursor: pointer;
@@ -473,16 +473,16 @@
 }
 
 [data-theme='dark'] .featuredCard {
-  background: rgba(255, 255, 255, 0.04);
+  background: transparent;
 }
 
 .featuredCard:hover {
   transform: translateY(-2px);
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 [data-theme='dark'] .featuredCard:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .featuredCardTop {
@@ -725,7 +725,7 @@
 }
 
 .articleCard {
-  background: rgba(0, 0, 0, 0.02);
+  background: transparent;
   border: none;
   border-radius: 14px;
   padding: 18px;
@@ -738,16 +738,16 @@
 }
 
 [data-theme='dark'] .articleCard {
-  background: rgba(255, 255, 255, 0.04);
+  background: transparent;
 }
 
 .articleCard:hover {
   transform: translateY(-1px);
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 [data-theme='dark'] .articleCard:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .articleCard h3 {
@@ -845,7 +845,7 @@
 
 .sidebarCard {
   padding: 20px;
-  background: rgba(0, 0, 0, 0.02);
+  background: transparent;
   border-radius: 14px;
   border: none;
   margin-bottom: 16px;
@@ -853,7 +853,7 @@
 }
 
 [data-theme='dark'] .sidebarCard {
-  background: rgba(255, 255, 255, 0.04);
+  background: transparent;
 }
 
 .sidebarCard:last-child {

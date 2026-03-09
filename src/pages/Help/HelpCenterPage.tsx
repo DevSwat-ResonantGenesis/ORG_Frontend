@@ -336,23 +336,25 @@ const HelpCenterPage: React.FC = () => {
         </Suspense>
       </div>
 
-      {/* Hero — title + subtitle */}
-      <section className={styles.hero}>
-        <div className={styles.heroContent}>
-          <div className={styles.heroIntro}>
-            <h1 className={styles.heroTitle}>Help Center</h1>
-            <p className={styles.heroSubtitle}>
-              Tutorials and documentation for ResonantGenesis — aligned to the current stack.
-            </p>
+      {/* Hero — title + subtitle (hidden when searching so search bar moves to top) */}
+      {!searchQuery && (
+        <section className={styles.hero}>
+          <div className={styles.heroContent}>
+            <div className={styles.heroIntro}>
+              <h1 className={styles.heroTitle}>Help Center</h1>
+              <p className={styles.heroSubtitle}>
+                Tutorials and documentation for ResonantGenesis — aligned to the current stack.
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Sentinel — used by IntersectionObserver to detect sticky state */}
       <div ref={sentinelRef} style={{ height: 1, marginTop: -1 }} />
 
       {/* Sticky Search Bar — floats at top on scroll */}
-      <div className={`${styles.stickySearch} ${isStuck ? styles.stickySearchStuck : ''}`}>
+      <div className={`${styles.stickySearch} ${(isStuck || searchQuery) ? styles.stickySearchStuck : ''}`}>
         <div className={styles.stickySearchInner}>
           <div className={styles.searchBar}>
             <SearchIcon size={18} />
