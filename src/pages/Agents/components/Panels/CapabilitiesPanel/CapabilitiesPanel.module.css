@@ -11,38 +11,67 @@
 
 .panelHeader {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
+  gap: 10px;
+  padding: 8px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(0, 0, 0, 0.2);
 }
 
 .panelHeader h2 {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: #fff;
+  white-space: nowrap;
+}
+
+.panelHeader h2 svg {
+  width: 14px;
+  height: 14px;
+}
+
+.exportBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #888;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: auto;
+}
+
+.exportBtn:hover {
+  color: #0ea5e9;
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.exportBtn svg {
+  width: 11px;
+  height: 11px;
 }
 
 .agentSelector select {
-  padding: 6px 12px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
-  color: #fff;
-  font-size: 12px;
-  min-width: 200px;
+  padding: 3px 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: inherit;
+  font-size: 10px;
+  max-width: 180px;
   cursor: pointer;
-  transition: all 0.2s;
+  text-overflow: ellipsis;
 }
 
-.agentSelector select:hover {
-  border-color: rgba(168, 85, 247, 0.4);
-  background: rgba(0, 0, 0, 0.5);
+.agentSelector select:focus {
+  outline: none;
+  border-color: rgba(14, 165, 233, 0.5);
 }
 
 .panelContent {
@@ -170,8 +199,8 @@
 }
 
 .selectCheckbox {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   cursor: pointer;
   accent-color: #a855f7;
 }
@@ -354,11 +383,20 @@
 }
 
 .configItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
   font-size: 10px;
   color: #888;
   padding: 2px 6px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 4px;
+}
+
+.configItem svg {
+  width: 10px;
+  height: 10px;
+  opacity: 0.6;
 }
 
 /* Last Used */
@@ -378,7 +416,11 @@
 
 .actionBtn {
   flex: 1;
-  padding: 5px 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px 6px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 4px;
@@ -387,6 +429,11 @@
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
+}
+
+.actionBtn svg {
+  width: 10px;
+  height: 10px;
 }
 
 .actionBtn:hover {
@@ -860,6 +907,326 @@
 .submitBtn svg {
   width: 16px;
   height: 16px;
+}
+
+/* ============== LIGHT MODE ============== */
+
+[data-theme='light'] .panel {
+  background: #ffffff;
+}
+
+[data-theme='light'] .panelHeader {
+  border-bottom: none;
+}
+
+[data-theme='light'] .panelHeader h2 {
+  color: #111827;
+}
+
+[data-theme='light'] .exportBtn {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+}
+
+[data-theme='light'] .exportBtn:hover {
+  color: #0ea5e9;
+}
+
+[data-theme='light'] .agentSelector select {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #111827;
+}
+
+/* --- Analytics --- */
+[data-theme='light'] .analyticCard {
+  background: transparent;
+  border: none;
+}
+
+[data-theme='light'] .analyticValue {
+  color: #111827;
+}
+
+[data-theme='light'] .analyticLabel {
+  color: #6b7280;
+}
+
+/* --- Filters --- */
+[data-theme='light'] .categoryTab {
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+}
+
+[data-theme='light'] .categoryTab:hover {
+  color: #374151;
+  background: transparent;
+}
+
+[data-theme='light'] .categoryTab.active {
+  color: #7c3aed;
+  background: #f5f3ff;
+  border: none;
+}
+
+[data-theme='light'] .searchInput {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #111827;
+}
+
+[data-theme='light'] .searchInput:focus {
+  border-bottom-color: #7c3aed;
+}
+
+/* --- Capability Cards --- */
+[data-theme='light'] .capabilityCard {
+  background: #ffffff;
+  border: 1px solid #f3f4f6;
+}
+
+[data-theme='light'] .capabilityCard:hover {
+  background: #ffffff;
+  border-color: #c4b5fd;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .capabilityCard.enabled {
+  border-color: #bbf7d0;
+  background: #ffffff;
+}
+
+[data-theme='light'] .capabilityCard.selected {
+  border-color: #c4b5fd;
+  background: #faf5ff;
+}
+
+[data-theme='light'] .capabilityCard h4 {
+  color: #111827;
+}
+
+[data-theme='light'] .capabilityCard p {
+  color: #6b7280;
+}
+
+[data-theme='light'] .usageValue {
+  color: #111827;
+}
+
+[data-theme='light'] .usageLabel {
+  color: #9ca3af;
+}
+
+[data-theme='light'] .configItem {
+  background: transparent;
+  color: #9ca3af;
+}
+
+[data-theme='light'] .modeBadge {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* --- Card Actions --- */
+[data-theme='light'] .cardActions {
+  border-top-color: #f3f4f6;
+}
+
+[data-theme='light'] .actionBtn {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  color: #6b7280;
+}
+
+[data-theme='light'] .actionBtn:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+[data-theme='light'] .actionBtn.deleteBtn:hover {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+/* --- Permissions --- */
+[data-theme='light'] .permLabel {
+  color: #9ca3af;
+}
+
+[data-theme='light'] .permBadge {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* --- Banners --- */
+[data-theme='light'] .successBanner {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #16a34a;
+}
+
+[data-theme='light'] .errorBanner {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+[data-theme='light'] .loadingBanner {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #2563eb;
+}
+
+/* --- Bulk Toolbar --- */
+[data-theme='light'] .bulkToolbar {
+  background: #f5f3ff;
+  border-color: #c4b5fd;
+}
+
+[data-theme='light'] .bulkBtn {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+[data-theme='light'] .bulkBtn:hover {
+  background: #f3f4f6;
+}
+
+/* --- Add Section --- */
+[data-theme='light'] .addSection {
+  border-top-color: #f3f4f6;
+}
+
+/* --- Test Results --- */
+[data-theme='light'] .testSuccess {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #16a34a;
+}
+
+[data-theme='light'] .testFail {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+/* --- Last Used --- */
+[data-theme='light'] .lastUsed {
+  color: #9ca3af;
+}
+
+/* --- Modal --- */
+[data-theme='light'] .modal {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='light'] .modalContent {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme='light'] .modalHeader {
+  border-bottom-color: #f3f4f6;
+}
+
+[data-theme='light'] .modalHeader h3 {
+  color: #111827;
+}
+
+[data-theme='light'] .closeBtn {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  color: #9ca3af;
+}
+
+[data-theme='light'] .closeBtn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+[data-theme='light'] .formSection {
+  background: transparent;
+  border: 1px solid #f3f4f6;
+}
+
+[data-theme='light'] .sectionTitle {
+  color: #7c3aed;
+}
+
+[data-theme='light'] .formGroup label {
+  color: #6b7280;
+}
+
+[data-theme='light'] .input,
+[data-theme='light'] .textarea {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #111827;
+}
+
+[data-theme='light'] .input:focus,
+[data-theme='light'] .textarea:focus {
+  border-bottom-color: #7c3aed;
+  background: transparent;
+  box-shadow: none;
+}
+
+[data-theme='light'] .input::placeholder,
+[data-theme='light'] .textarea::placeholder {
+  color: #d1d5db;
+}
+
+[data-theme='light'] .select {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #111827;
+}
+
+[data-theme='light'] .select:focus {
+  border-bottom-color: #7c3aed;
+  box-shadow: none;
+}
+
+[data-theme='light'] .select option {
+  background: #ffffff;
+  color: #111827;
+}
+
+[data-theme='light'] .modalFooter {
+  border-top-color: #f3f4f6;
+}
+
+[data-theme='light'] .cancelBtn {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  color: #6b7280;
+}
+
+[data-theme='light'] .cancelBtn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* --- Toggle (keep green in both modes) --- */
+[data-theme='light'] .slider {
+  background-color: #d1d5db;
+}
+
+[data-theme='light'] .toggle input:checked + .slider {
+  background-color: #22c55e;
 }
 
 /* Responsive */

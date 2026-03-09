@@ -465,10 +465,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
         <h2><Icons.Capabilities /> Capabilities</h2>
-        <button
-          onClick={exportCapabilities}
-          style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(14,165,233,0.15)', border: '1px solid rgba(14,165,233,0.3)', borderRadius: '6px', color: '#0ea5e9', fontSize: '11px', cursor: 'pointer', transition: 'all 0.2s' }}
-        >
+        <button onClick={exportCapabilities} className={styles.exportBtn}>
           <Icons.Download /> Export
         </button>
         <div className={styles.agentSelector}>
@@ -641,12 +638,12 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
 
               {/* Config Info */}
               <div className={styles.configInfo}>
-                {cap.timeout && <span className={styles.configItem}>⏱ {cap.timeout}s</span>}
-                {cap.rateLimit && <span className={styles.configItem}>🔄 {cap.rateLimit}/min</span>}
+                {cap.timeout && <span className={styles.configItem}><Icons.Clock /> {cap.timeout}s</span>}
+                {cap.rateLimit && <span className={styles.configItem}><Icons.Repeat /> {cap.rateLimit}/min</span>}
                 {cap.costPerCall !== undefined && cap.costPerCall > 0 && (
-                  <span className={styles.configItem}>💰 ${cap.costPerCall.toFixed(3)}</span>
+                  <span className={styles.configItem}><Icons.DollarSign /> ${cap.costPerCall.toFixed(3)}</span>
                 )}
-                {cap.apiEndpoint && <span className={styles.configItem}>🔗 API</span>}
+                {cap.apiEndpoint && <span className={styles.configItem}><Icons.Link /> API</span>}
               </div>
 
               {/* Permissions */}
@@ -672,7 +669,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
                   disabled={testingCapability === cap.id || cap.category !== 'custom'}
                   title="Test Capability"
                 >
-                  {testingCapability === cap.id ? '⏳' : '▶️'} Test
+                  {testingCapability === cap.id ? <Icons.Clock /> : <Icons.Play />} Test
                 </button>
                 <button 
                   className={styles.actionBtn} 
@@ -680,14 +677,14 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
                   disabled={cap.category !== 'custom'}
                   title="Edit"
                 >
-                  ✏️ Edit
+                  <Icons.Edit /> Edit
                 </button>
                 <button 
                   className={styles.actionBtn} 
                   onClick={() => handleDuplicateCapability(cap)}
                   title="Duplicate"
                 >
-                  📋 Copy
+                  <Icons.Copy /> Copy
                 </button>
                 {cap.category === 'custom' && (
                   <button 
@@ -695,7 +692,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
                     onClick={() => handleDeleteCapability(cap.id)}
                     title="Delete"
                   >
-                    🗑️
+                    <Icons.Trash />
                   </button>
                 )}
               </div>
@@ -703,7 +700,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
               {/* Test Result */}
               {testingCapability === cap.id && testResult && (
                 <div className={`${styles.testResult} ${testResult.success ? styles.testSuccess : styles.testFail}`}>
-                  {testResult.success ? '✅' : '❌'} {testResult.message}
+                  {testResult.success ? <Icons.CheckCircle /> : <Icons.XCircle />} {testResult.message}
                   {testResult.latency && <span> ({testResult.latency}ms)</span>}
                 </div>
               )}

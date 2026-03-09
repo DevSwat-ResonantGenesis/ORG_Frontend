@@ -236,45 +236,54 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
 
   return (
     <div className={`${styles.panel} ${className || ''}`}>
+      {/* Compact Header Row */}
       <div className={styles.panelHeader}>
         <h2><Icons.Execution /> Execution Monitor</h2>
-        <button
-          onClick={exportExecutions}
-          style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(14,165,233,0.15)', border: '1px solid rgba(14,165,233,0.3)', borderRadius: '6px', color: '#0ea5e9', fontSize: '11px', cursor: 'pointer', transition: 'all 0.2s' }}
-        >
-          <Icons.Download /> Export
-        </button>
-        <div className={styles.agentSelector}>
-          <select 
-            value={selectedAgentId || ''} 
-            onChange={e => setSelectedAgentId(e.target.value)}
-          >
-            <option value="">Select Agent</option>
-            {agents.map(agent => (
-              <option key={agent.id} value={agent.id}>{agent.name}</option>
-            ))}
-          </select>
-        </div>
-        <div className={styles.viewTabs}>
-          {(['active', 'live', 'history', 'queue', 'metrics', 'triggers'] as ViewMode[]).map(view => (
-            <button
-              key={view}
-              className={`${styles.viewTab} ${activeView === view ? styles.active : ''}`}
-              onClick={() => setActiveView(view)}
+        <div className={styles.headerControls}>
+          <div className={styles.agentSelector}>
+            <select 
+              value={selectedAgentId || ''} 
+              onChange={e => setSelectedAgentId(e.target.value)}
             >
-              {view === 'live' && (
-                <>
-                  <Icons.Activity />
-                  Live Workflow
-                </>
-              )}
-              {view !== 'live' && view.charAt(0).toUpperCase() + view.slice(1)}
-              {view === 'active' && runningExecutions.length > 0 && (
-                <span className={styles.badge}>{runningExecutions.length}</span>
-              )}
-            </button>
-          ))}
+              <option value="">Select Agent</option>
+              {agents.map(agent => (
+                <option key={agent.id} value={agent.id}>{agent.name}</option>
+              ))}
+            </select>
+          </div>
+          <select
+            value={execStatusFilter}
+            onChange={e => setExecStatusFilter(e.target.value)}
+            className={styles.statusFilter}
+          >
+            <option value="all">All Status</option>
+            <option value="running">Running</option>
+            <option value="completed">Completed</option>
+            <option value="failed">Failed</option>
+            <option value="queued">Queued</option>
+          </select>
+          <button onClick={exportExecutions} className={styles.exportBtn}>
+            <Icons.Download /> Export
+          </button>
         </div>
+      </div>
+
+      {/* Tab Bar */}
+      <div className={styles.tabBar}>
+        {(['active', 'live', 'history', 'queue', 'metrics', 'triggers'] as ViewMode[]).map(view => (
+          <button
+            key={view}
+            className={`${styles.viewTab} ${activeView === view ? styles.active : ''}`}
+            onClick={() => setActiveView(view)}
+          >
+            {view === 'active' && <><Icons.Activity /> Active {runningExecutions.length > 0 && <span className={styles.badge}>{runningExecutions.length}</span>}</>}
+            {view === 'live' && <><Icons.Eye /> Live</>}
+            {view === 'history' && <><Icons.Clock /> History</>}
+            {view === 'queue' && <><Icons.Clock /> Queue</>}
+            {view === 'metrics' && <><Icons.TrendingUp /> Metrics</>}
+            {view === 'triggers' && <><Icons.Zap /> Triggers</>}
+          </button>
+        ))}
       </div>
 
       <div className={styles.panelContent}>
@@ -292,25 +301,6 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
             <span>Loading executions...</span>
           </div>
         )}
-
-        {/* Filter Bar */}
-        <div style={{ display: 'flex', gap: '8px', padding: '0 12px 8px', alignItems: 'center' }}>
-          <select value={execStatusFilter} onChange={e => setExecStatusFilter(e.target.value)}
-            style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#e2e8f0', fontSize: '11px' }}>
-            <option value="all">All Status</option>
-            <option value="running">Running</option>
-            <option value="completed">Completed</option>
-            <option value="failed">Failed</option>
-            <option value="queued">Queued</option>
-          </select>
-          <input
-            type="text"
-            placeholder="Search executions..."
-            value={execSearchTerm}
-            onChange={e => setExecSearchTerm(e.target.value)}
-            style={{ flex: 1, padding: '4px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#e2e8f0', fontSize: '11px' }}
-          />
-        </div>
 
         {/* Stats Bar */}
         <div className={styles.statsBar}>
@@ -590,7 +580,7 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
               <div className={styles.emptyState}>
                 <Icons.Zap />
                 <p>No triggers configured</p>
-                <p style={{ fontSize: '12px', color: '#666' }}>Create triggers to automate agent execution</p>
+                <p className={styles.emptyHint}>Create triggers to automate agent execution</p>
               </div>
             )}
           </div>
