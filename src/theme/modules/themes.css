@@ -159,9 +159,9 @@ html[data-theme="light"] {
   /* Light gray text */
   --chart-grid: #E5E7EB !important;
   /* Light grid lines */
-  background: #FFFFFF !important;
+  background: #FFFFFF;
   /* Pure pearl white */
-  color: #111827 !important;
+  color: #111827;
   color-scheme: light;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
@@ -175,35 +175,26 @@ html[data-theme="light"] {
    This nuclear rule was breaking every page by overriding module-scoped CSS. */
 
 [data-theme="light"] body {
-  background: #FFFFFF !important;
-  /* Pure pearl white */
-  color: #111827 !important;
-}
-
-[data-theme="light"] html {
-  background: #FFFFFF !important;
-  /* Pure pearl white */
+  background: #FFFFFF;
+  color: #111827;
 }
 
 [data-theme="light"] #root {
-  background: #FFFFFF !important;
-  /* Pure pearl white */
+  background: #FFFFFF;
 }
 
 [data-theme="light"] .page-container {
-  background: #FFFFFF !important;
-  /* Pure pearl white */
+  background: #FFFFFF;
 }
 
-/* page-wrapper and main-content backgrounds removed — pages handle their own */
-
+/* Card overrides — no !important so module CSS can override */
 [data-theme="light"] .card,
 [data-theme="light"] .page-card,
 [data-theme="light"] .kpi-card,
 [data-theme="light"] .chart-card {
-  background: #FFFFFF !important;
-  border-color: #E5E7EB !important;
-  color: #111827 !important;
+  background: #FFFFFF;
+  border-color: #E5E7EB;
+  color: #111827;
 }
 
 /* Removed nuclear element-level color overrides — pages handle their own via CSS modules.
