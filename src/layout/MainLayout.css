@@ -3,20 +3,20 @@
 @media (max-width: 768px) {
   html,
   body {
-    background-color: var(--color-bg-root, var(--bg-primary)) !important;
-    background: var(--color-bg-root, var(--bg-primary)) !important;
+    background-color: transparent !important;
+    background: transparent !important;
   }
 
   html[data-theme='dark'],
   body[data-theme='dark'] {
-    background-color: #0a0a0a !important;
-    background: #0a0a0a !important;
+    background-color: transparent !important;
+    background: transparent !important;
   }
 
   html[data-theme='light'],
   body[data-theme='light'] {
-    background-color: #ffffff !important;
-    background: #ffffff !important;
+    background-color: transparent !important;
+    background: transparent !important;
   }
 
   html.landingPageNoScroll,
@@ -24,7 +24,7 @@
     height: 100%;
     overflow: hidden;
     overscroll-behavior: none;
-    background: var(--color-bg-root, var(--bg-primary));
+    background: transparent;
   }
 
   body.landingPageNoScroll {
@@ -38,7 +38,7 @@
 .main-layout-wrapper {
   display: flex;
   flex-direction: column;
-  background: var(--color-bg-root, var(--bg-primary));
+  background: transparent;
   min-height: 100vh;
   width: 100%;
   overflow-x: clip;
@@ -179,7 +179,7 @@
     min-height: 100dvh;
     max-height: 100dvh;
     overflow: hidden;
-    background: var(--color-bg-root, var(--bg-primary));
+    background: transparent;
   }
 }
 
@@ -188,6 +188,7 @@
 @media (min-width: 1024px) {
   .main-content-area:not(:has(.idePageContainer)) {
     transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent;
   }
 
   .main-content-area.content-full:not(:has(.idePageContainer)) {
@@ -232,7 +233,7 @@
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden;
-  background: var(--color-bg-root, var(--bg-primary));
+  background: transparent;
 
   box-sizing: border-box;
 
@@ -249,14 +250,14 @@
     max-height: 100dvh !important;
     overflow: hidden !important;
     overscroll-behavior: none;
-    background: var(--color-bg-root, var(--bg-primary));
+    background: transparent;
   }
 }
 
 /* EXCLUDE IDE PAGE - IDE has its own layout */
 .main-content:not(.landing-page-content):not(:has(.idePageContainer)) {
   padding: 0;
-  background: var(--color-bg-root);
+  background: transparent;
   flex: 1;
   height: auto;
   min-height: 100dvh;
