@@ -390,7 +390,7 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
 
   const isLight = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light';
   const isActive = status === 'listening' || status === 'speaking' || status === 'processing';
-  const sphereSize = isActive ? 260 : 220;
+  const sphereSize = isActive ? 160 : 140;
 
   return (
     <div style={{
@@ -428,12 +428,13 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
         }}
         onClick={handleToggleListen}
       >
-        {/* Actual 3D Parallax Sphere */}
+        {/* Actual 3D Parallax Sphere — scaled down 2x, green hue when listening */}
         <div style={{
           position: 'absolute', inset: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transform: isActive ? 'scale(1.08)' : 'scale(1)',
-          transition: 'transform 1.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s',
+          transform: isActive ? 'scale(0.52)' : 'scale(0.48)',
+          filter: (status === 'listening') ? 'hue-rotate(90deg)' : 'none',
+          transition: 'transform 1.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s, filter 0.8s ease',
           animation: isActive ? 'voiceSphereBreath 3s ease-in-out infinite' : 'none',
           opacity: isActive ? 1 : 0.85,
           pointerEvents: 'none',
