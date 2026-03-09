@@ -338,7 +338,7 @@ const InvestorPitchDeckPage = () => {
 
         {/* SLIDE 1 — Hero Section */}
         <div className={`${styles.slide} ${currentSlide === 1 ? styles.slideActive : ''}`}>
-          <section ref={heroRef} className={styles.hero} style={heroPadLeft != null ? { paddingLeft: heroPadLeft } : undefined}>
+          <section ref={heroRef} className={styles.hero}>
             <div className={styles.parallax} aria-hidden="true">
               <Suspense fallback={null}>
                 <div ref={sphereRef} className={styles.parallaxInner}>
