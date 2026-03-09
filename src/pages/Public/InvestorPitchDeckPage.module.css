@@ -535,26 +535,9 @@
 }
 
 .section {
-  padding: 72px clamp(18px, 4vw, 56px);
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.section.sectionVisible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Hero also fades in */
-.hero {
-  opacity: 0;
-  transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.heroVisible {
-  opacity: 1;
+  padding: 0;
+  max-width: 1120px;
+  width: 100%;
 }
 
 .sectionInner {
@@ -876,36 +859,64 @@
 }
 
 /* ============================================================
-   VR Showcase — Apple-style fullscreen immersive images
+   Sticky Presentation Slides — each section pins to viewport
    ============================================================ */
-.vrShowcase {
+.slideOuter {
   position: relative;
-  z-index: 5;
-  overflow: hidden;
-}
-
-.vrSlide {
-  position: relative;
-  width: 100%;
   height: 100vh;
-  overflow: hidden;
 }
 
+.slideInner {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  will-change: opacity;
+}
+
+.slideContent {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.slideContent.slideActive {
+  opacity: 1;
+}
+
+/* VR image slides */
 .vrImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
-  transform: scale(1.02);
-  opacity: 0;
-  transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    transform 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  will-change: transform, opacity;
 }
 
-.vrSlide.vrVisible .vrImage {
+/* Content slides — dark background so they cover images */
+.slideContentSection {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px clamp(18px, 4vw, 56px);
+  box-sizing: border-box;
+  background: #0a0a0a;
+  opacity: 0;
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.slideContentSection.slideActive {
   opacity: 1;
-  transform: scale(1);
+}
+
+[data-theme='light'] .slideContentSection {
+  background: #f8fafc;
 }
 
 :global([data-theme="light"]) .parallax {

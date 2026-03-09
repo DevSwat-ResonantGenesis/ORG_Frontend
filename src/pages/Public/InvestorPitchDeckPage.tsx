@@ -26,55 +26,28 @@ const InvestorPitchDeckPage = () => {
   const [animate, setAnimate] = useState(false);
   const [scrollCentered, setScrollCentered] = useState(false);
   const [heroPadLeft, setHeroPadLeft] = useState<number | null>(null);
-  const [vrVisible, setVrVisible] = useState<Record<number, boolean>>({ 0: true });
-  const vrSlideRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [heroVisible, setHeroVisible] = useState(false);
-  const [sectionsVisible, setSectionsVisible] = useState<Record<number, boolean>>({});
-  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+  const [slideActive, setSlideActive] = useState<Record<number, boolean>>({ 0: true });
+  const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const setVrRef = useCallback((index: number) => (el: HTMLDivElement | null) => {
-    vrSlideRefs.current[index] = el;
+  const setSlideRef = useCallback((index: number) => (el: HTMLDivElement | null) => {
+    slideRefs.current[index] = el;
   }, []);
 
-  const setSectionRef = useCallback((index: number) => (el: HTMLElement | null) => {
-    sectionRefs.current[index] = el;
-  }, []);
-
-  /* Observe VR slides, hero, and sections for fade-in */
+  /* Observe slides for sticky presentation fade-in */
   useEffect(() => {
-    const allTargets: { el: Element; type: string; idx: number }[] = [];
-
-    vrSlideRefs.current.forEach((el, idx) => {
-      if (el) allTargets.push({ el, type: 'vr', idx });
-    });
-
-    if (heroRef.current) allTargets.push({ el: heroRef.current, type: 'hero', idx: 0 });
-
-    sectionRefs.current.forEach((el, idx) => {
-      if (el) allTargets.push({ el, type: 'section', idx });
-    });
-
-    if (allTargets.length === 0) return;
-
+    const slides = slideRefs.current.filter(Boolean) as HTMLDivElement[];
+    if (slides.length === 0) return;
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          const target = allTargets.find((t) => t.el === entry.target);
-          if (!target) return;
-          if (target.type === 'vr') {
-            setVrVisible((prev) => ({ ...prev, [target.idx]: true }));
-          } else if (target.type === 'hero') {
-            setHeroVisible(true);
-          } else if (target.type === 'section') {
-            setSectionsVisible((prev) => ({ ...prev, [target.idx]: true }));
-          }
+          const idx = slides.indexOf(entry.target as HTMLDivElement);
+          if (idx === -1) return;
+          setSlideActive((prev) => ({ ...prev, [idx]: entry.isIntersecting }));
         });
       },
-      { threshold: 0.12 }
+      { threshold: 0.3 }
     );
-
-    allTargets.forEach((t) => observer.observe(t.el));
+    slides.forEach((s) => observer.observe(s));
     return () => observer.disconnect();
   }, [animate]);
 
@@ -274,250 +247,281 @@ const InvestorPitchDeckPage = () => {
           content="ResonantGenesis investor pitch deck: sovereign agent infrastructure with governed memory, constraint simulation, and full-stack observability."
         />
         <link rel="canonical" href="https://resonantgenesis.xyz/investor-pitch-deck" />
+        <link rel="preload" as="image" href="/images/investorpitch/VR1.jpg" />
+        <link rel="preload" as="image" href="/images/investorpitch/VR2.jpg" />
       </Helmet>
 
       <main className={styles.main}>
-        {/* VR1 — fullscreen immersive image FIRST */}
-        <div className={styles.vrShowcase}>
-          <div
-            ref={setVrRef(0)}
-            className={`${styles.vrSlide} ${vrVisible[0] ? styles.vrVisible : ''}`}
-          >
-            <img
-              src="/images/investorpitch/VR1.png"
-              alt="ResonantGenesis VR interface — IDE VibeCoding in San Francisco"
-              className={styles.vrImage}
-            />
+        {/* SLIDE 1 — VR1 fullscreen image */}
+        <div ref={setSlideRef(0)} className={styles.slideOuter}>
+          <div className={styles.slideInner}>
+            <div className={`${styles.slideContent} ${slideActive[0] ? styles.slideActive : ''}`}>
+              <img
+                src="/images/investorpitch/VR1.jpg"
+                alt="ResonantGenesis VR interface — IDE VibeCoding in San Francisco"
+                className={styles.vrImage}
+              />
+            </div>
           </div>
         </div>
 
-        {/* Hero Section */}
-        <section ref={heroRef} className={`${styles.hero} ${heroVisible ? styles.heroVisible : ''}`} style={heroPadLeft != null ? { paddingLeft: heroPadLeft } : undefined}>
-          <div className={styles.parallax} aria-hidden="true">
-            <Suspense fallback={null}>
-              <div ref={sphereRef} className={styles.parallaxInner}>
-                <div ref={sphereLayerRef} className={styles.sphereLayer}>
-                  {isReactSnap ? null : <ThreeParticleSphere />}
-                </div>
-              </div>
-            </Suspense>
-          </div>
-
-          {!prefersReducedMotion && traces.length > 0 && heroSize.width > 0 && heroSize.height > 0 && (
-            <svg
-              className={styles.noodleOverlay}
-              aria-hidden="true"
-              width="100%"
-              height="100%"
-              viewBox={`0 0 ${heroSize.width} ${heroSize.height}`}
-              preserveAspectRatio="none"
-            >
-              {traces.flatMap((trace, traceIdx) =>
-                trace.points.map((pt, idx) => (
-                  (() => {
-                    const t = trace.points.length <= 1 ? 1 : idx / (trace.points.length - 1);
-                    const size = trace.nodeSize + (trace.endNodeSize - trace.nodeSize) * t;
-                    return (
-                  <rect
-                    key={`${traceIdx}-${idx}`}
-                    className={styles.nodeParticleTools}
-                    x={pt.x - size / 2}
-                    y={pt.y - size / 2}
-                    width={size}
-                    height={size}
-                    rx={0.9}
-                    ry={0.9}
-                    opacity={trace.nodeOpacity}
-                    style={{ animationDelay: `${trace.baseDelayMs + idx * trace.stepDelayMs}ms` }}
-                  />
-                    );
-                  })()
-                ))
-              )}
-            </svg>
-          )}
-
-          <div className={styles.heroGrid}>
-            <div className={styles.heroContent}>
-              <div className={styles.badgeRow}>
-                <span className={styles.badge}>Investor Pitch Deck</span>
-                <span className={styles.badge}>2026: AI systems, compliance, and autonomy</span>
+        {/* SLIDE 2 — Hero Section */}
+        <div ref={setSlideRef(1)} className={styles.slideOuter}>
+          <div className={styles.slideInner}>
+            <section ref={heroRef} className={`${styles.hero} ${slideActive[1] ? '' : ''}`} style={heroPadLeft != null ? { paddingLeft: heroPadLeft } : undefined}>
+              <div className={styles.parallax} aria-hidden="true">
+                <Suspense fallback={null}>
+                  <div ref={sphereRef} className={styles.parallaxInner}>
+                    <div ref={sphereLayerRef} className={styles.sphereLayer}>
+                      {isReactSnap ? null : <ThreeParticleSphere />}
+                    </div>
+                  </div>
+                </Suspense>
               </div>
 
-              <h1 className={styles.title}>
-                Own your agent stack.
-                <br />
-                Govern it end-to-end. Execute.
-              </h1>
-
-              <p className={styles.subtitle}>
-                ResonantGenesis is sovereign infrastructure for autonomous agents: governed memory, invariant-based constraint simulation, and full-stack observability—so teams can ship agentic products that are safe, auditable, and controllable.
-              </p>
-
-              <div className={styles.heroMetrics}>
-                <div className={styles.metricCard}>
-                  <p className={styles.metricValue}>Governed Memory</p>
-                  <p className={styles.metricLabel}>Encrypted, attributable, retrievable</p>
-                </div>
-                <div className={styles.metricCard}>
-                  <p className={styles.metricValue}>Constraints SIM</p>
-                  <p className={styles.metricLabel}>Invariants for actions and risk</p>
-                </div>
-                <div className={styles.metricCard}>
-                  <p className={styles.metricValue}>Evidence Graphs</p>
-                  <p className={styles.metricLabel}>Explainability & audit trails</p>
-                </div>
-              </div>
-
-              <div className={styles.ctaRow}>
-                <button type="button" className={styles.ctaPrimary} onClick={() => navigate('/request-access')}>
-                  <span>Request Access</span>
-                  <span aria-hidden="true">→</span>
-                </button>
-
-                <button
-                  ref={anchorRef}
-                  type="button"
-                  className={`${styles.ctaSecondary} ${styles.anchorButton}`}
-                  onClick={() => navigate('/pricing')}
+              {!prefersReducedMotion && traces.length > 0 && heroSize.width > 0 && heroSize.height > 0 && (
+                <svg
+                  className={styles.noodleOverlay}
+                  aria-hidden="true"
+                  width="100%"
+                  height="100%"
+                  viewBox={`0 0 ${heroSize.width} ${heroSize.height}`}
+                  preserveAspectRatio="none"
                 >
-                  <span>Pricing</span>
-                  <span aria-hidden="true">↗</span>
-                </button>
+                  {traces.flatMap((trace, traceIdx) =>
+                    trace.points.map((pt, idx) => (
+                      (() => {
+                        const t = trace.points.length <= 1 ? 1 : idx / (trace.points.length - 1);
+                        const size = trace.nodeSize + (trace.endNodeSize - trace.nodeSize) * t;
+                        return (
+                      <rect
+                        key={`${traceIdx}-${idx}`}
+                        className={styles.nodeParticleTools}
+                        x={pt.x - size / 2}
+                        y={pt.y - size / 2}
+                        width={size}
+                        height={size}
+                        rx={0.9}
+                        ry={0.9}
+                        opacity={trace.nodeOpacity}
+                        style={{ animationDelay: `${trace.baseDelayMs + idx * trace.stepDelayMs}ms` }}
+                      />
+                        );
+                      })()
+                    ))
+                  )}
+                </svg>
+              )}
+
+              <div className={styles.heroGrid}>
+                <div className={styles.heroContent}>
+                  <div className={styles.badgeRow}>
+                    <span className={styles.badge}>Investor Pitch Deck</span>
+                    <span className={styles.badge}>2026: AI systems, compliance, and autonomy</span>
+                  </div>
+
+                  <h1 className={styles.title}>
+                    Own your agent stack.
+                    <br />
+                    Govern it end-to-end. Execute.
+                  </h1>
+
+                  <p className={styles.subtitle}>
+                    ResonantGenesis is sovereign infrastructure for autonomous agents: governed memory, invariant-based constraint simulation, and full-stack observability—so teams can ship agentic products that are safe, auditable, and controllable.
+                  </p>
+
+                  <div className={styles.heroMetrics}>
+                    <div className={styles.metricCard}>
+                      <p className={styles.metricValue}>Governed Memory</p>
+                      <p className={styles.metricLabel}>Encrypted, attributable, retrievable</p>
+                    </div>
+                    <div className={styles.metricCard}>
+                      <p className={styles.metricValue}>Constraints SIM</p>
+                      <p className={styles.metricLabel}>Invariants for actions and risk</p>
+                    </div>
+                    <div className={styles.metricCard}>
+                      <p className={styles.metricValue}>Evidence Graphs</p>
+                      <p className={styles.metricLabel}>Explainability & audit trails</p>
+                    </div>
+                  </div>
+
+                  <div className={styles.ctaRow}>
+                    <button type="button" className={styles.ctaPrimary} onClick={() => navigate('/request-access')}>
+                      <span>Request Access</span>
+                      <span aria-hidden="true">→</span>
+                    </button>
+
+                    <button
+                      ref={anchorRef}
+                      type="button"
+                      className={`${styles.ctaSecondary} ${styles.anchorButton}`}
+                      onClick={() => navigate('/pricing')}
+                    >
+                      <span>Pricing</span>
+                      <span aria-hidden="true">↗</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div aria-hidden="true" />
               </div>
-            </div>
-
-            <div aria-hidden="true" />
-          </div>
-        </section>
-
-        {/* VR2 — fullscreen immersive image after hero */}
-        <div className={styles.vrShowcase}>
-          <div
-            ref={setVrRef(1)}
-            className={`${styles.vrSlide} ${vrVisible[1] ? styles.vrVisible : ''}`}
-          >
-            <img
-              src="/images/investorpitch/VR2.png"
-              alt="ResonantGenesis VR interface — street view coding experience"
-              className={styles.vrImage}
-              loading="lazy"
-            />
+            </section>
           </div>
         </div>
 
-        <section ref={setSectionRef(0)} className={`${styles.section} ${sectionsVisible[0] ? styles.sectionVisible : ''}`}>
-          <div className={styles.sectionInner}>
-            <h2 className={styles.sectionTitle}>The problem</h2>
-            <p className={styles.sectionLead}>
-              AI teams can ship demos fast, but production-grade autonomy is blocked by three realities: memory safety, action safety, and governance.
-            </p>
+        {/* SLIDE 3 — VR2 fullscreen image */}
+        <div ref={setSlideRef(2)} className={styles.slideOuter}>
+          <div className={styles.slideInner}>
+            <div className={`${styles.slideContent} ${slideActive[2] ? styles.slideActive : ''}`}>
+              <img
+                src="/images/investorpitch/VR2.jpg"
+                alt="ResonantGenesis VR interface — street view coding experience"
+                className={styles.vrImage}
+              />
+            </div>
+          </div>
+        </div>
 
-            <div className={styles.cardsGrid}>
-              <div className={styles.card}>
-                <h3 className={styles.cardTitle}>Agents break silently</h3>
-                <p className={styles.cardBody}>
-                  When tools, prompts, or dependencies change, behavior drifts. Without traces and invariants, failures are discovered after damage.
-                </p>
-              </div>
-              <div className={styles.card}>
-                <h3 className={styles.cardTitle}>Governance is bolted on</h3>
-                <p className={styles.cardBody}>
-                  Compliance requirements are growing. Teams need explainability, audit logs, and policy controls built into the platform.
-                </p>
-              </div>
-              <div className={styles.card}>
-                <h3 className={styles.cardTitle}>Memory is a liability</h3>
-                <p className={styles.cardBody}>
-                  Long-term memory can leak secrets, amplify hallucinations, and create unclear provenance—unless it’s encrypted, scoped, and attributable.
-                </p>
+        {/* SLIDE 4 — The problem */}
+        <div ref={setSlideRef(3)} className={styles.slideOuter}>
+          <div className={styles.slideInner}>
+            <div className={`${styles.slideContentSection} ${slideActive[3] ? styles.slideActive : ''}`}>
+              <div className={styles.section}>
+                <div className={styles.sectionInner}>
+                  <h2 className={styles.sectionTitle}>The problem</h2>
+                  <p className={styles.sectionLead}>
+                    AI teams can ship demos fast, but production-grade autonomy is blocked by three realities: memory safety, action safety, and governance.
+                  </p>
+
+                  <div className={styles.cardsGrid}>
+                    <div className={styles.card}>
+                      <h3 className={styles.cardTitle}>Agents break silently</h3>
+                      <p className={styles.cardBody}>
+                        When tools, prompts, or dependencies change, behavior drifts. Without traces and invariants, failures are discovered after damage.
+                      </p>
+                    </div>
+                    <div className={styles.card}>
+                      <h3 className={styles.cardTitle}>Governance is bolted on</h3>
+                      <p className={styles.cardBody}>
+                        Compliance requirements are growing. Teams need explainability, audit logs, and policy controls built into the platform.
+                      </p>
+                    </div>
+                    <div className={styles.card}>
+                      <h3 className={styles.cardTitle}>Memory is a liability</h3>
+                      <p className={styles.cardBody}>
+                        Long-term memory can leak secrets, amplify hallucinations, and create unclear provenance—unless it's encrypted, scoped, and attributable.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        <section ref={setSectionRef(1)} className={`${styles.section} ${sectionsVisible[1] ? styles.sectionVisible : ''}`}>
-          <div className={styles.sectionInner}>
-            <h2 className={styles.sectionTitle}>The solution</h2>
-            <p className={styles.sectionLead}>
-              ResonantGenesis is an agent infrastructure layer that turns autonomy into an engineered system—observable, governed, and resilient.
-            </p>
+        {/* SLIDE 5 — The solution */}
+        <div ref={setSlideRef(4)} className={styles.slideOuter}>
+          <div className={styles.slideInner}>
+            <div className={`${styles.slideContentSection} ${slideActive[4] ? styles.slideActive : ''}`}>
+              <div className={styles.section}>
+                <div className={styles.sectionInner}>
+                  <h2 className={styles.sectionTitle}>The solution</h2>
+                  <p className={styles.sectionLead}>
+                    ResonantGenesis is an agent infrastructure layer that turns autonomy into an engineered system—observable, governed, and resilient.
+                  </p>
 
-            <div className={styles.twoCol}>
-              <div>
-                <h3 className={styles.cardTitle}>Core pillars</h3>
-                <ul className={styles.list}>
-                  <li>Resonant memory with encryption, access boundaries, and provenance.</li>
-                  <li>Invariant-based constraints simulation for tool execution and safety policies.</li>
-                  <li>Evidence graphs for explainability, audit, and post-incident forensics.</li>
-                  <li>Full-stack observability for prompts, tools, dependencies, and latency/cost.</li>
-                </ul>
-              </div>
-              <blockquote className={styles.quote}>
-                <strong>Thesis:</strong> The winners in agentic AI won’t just have better models.
-                They’ll have better infrastructure—memory, constraints, and governance that can survive production.
-              </blockquote>
-            </div>
-          </div>
-        </section>
-
-        <section ref={setSectionRef(2)} className={`${styles.section} ${sectionsVisible[2] ? styles.sectionVisible : ''}`}>
-          <div className={styles.sectionInner}>
-            <h2 className={styles.sectionTitle}>Business model</h2>
-            <p className={styles.sectionLead}>
-              Usage-based platform with premium governance and enterprise control plane.
-            </p>
-
-            <div className={styles.cardsGrid}>
-              <div className={styles.card}>
-                <h3 className={styles.cardTitle}>Self-serve</h3>
-                <p className={styles.cardBody}>
-                  Developers start with a hosted experience to ship MVP agents fast.
-                </p>
-              </div>
-              <div className={styles.card}>
-                <h3 className={styles.cardTitle}>Team & compliance</h3>
-                <p className={styles.cardBody}>
-                  Add policy controls, audit trails, and org management as teams scale.
-                </p>
-              </div>
-              <div className={styles.card}>
-                <h3 className={styles.cardTitle}>Enterprise</h3>
-                <p className={styles.cardBody}>
-                  Advanced governance, incident controls, dedicated support, and deployment options.
-                </p>
+                  <div className={styles.twoCol}>
+                    <div>
+                      <h3 className={styles.cardTitle}>Core pillars</h3>
+                      <ul className={styles.list}>
+                        <li>Resonant memory with encryption, access boundaries, and provenance.</li>
+                        <li>Invariant-based constraints simulation for tool execution and safety policies.</li>
+                        <li>Evidence graphs for explainability, audit, and post-incident forensics.</li>
+                        <li>Full-stack observability for prompts, tools, dependencies, and latency/cost.</li>
+                      </ul>
+                    </div>
+                    <blockquote className={styles.quote}>
+                      <strong>Thesis:</strong> The winners in agentic AI won't just have better models.
+                      They'll have better infrastructure—memory, constraints, and governance that can survive production.
+                    </blockquote>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        <section className={styles.footerCta}>
-          <div className={styles.footerCtaInner}>
-            <h2 className={styles.footerCtaTitle}>Let’s talk</h2>
-            <p className={styles.footerCtaBody}>
-              If you’re investing in durable infrastructure for autonomous AI, we’re building the missing layer: governed memory + constraints + observability.
-              Reach out to discuss the roadmap, security posture, and go-to-market.
-            </p>
-            <div className={styles.ctaRow}>
-              <button
-                type="button"
-                className={styles.ctaPrimary}
-                onClick={() => navigate('/signup')}
-              >
-                <span>Request Investor Access</span>
-                <span aria-hidden="true">→</span>
-              </button>
-              <button
-                type="button"
-                className={styles.ctaSecondary}
-                onClick={() => navigate('/contact')}
-              >
-                <span>Contact</span>
-                <span aria-hidden="true">↗</span>
-              </button>
+        {/* SLIDE 6 — Business model */}
+        <div ref={setSlideRef(5)} className={styles.slideOuter}>
+          <div className={styles.slideInner}>
+            <div className={`${styles.slideContentSection} ${slideActive[5] ? styles.slideActive : ''}`}>
+              <div className={styles.section}>
+                <div className={styles.sectionInner}>
+                  <h2 className={styles.sectionTitle}>Business model</h2>
+                  <p className={styles.sectionLead}>
+                    Usage-based platform with premium governance and enterprise control plane.
+                  </p>
+
+                  <div className={styles.cardsGrid}>
+                    <div className={styles.card}>
+                      <h3 className={styles.cardTitle}>Self-serve</h3>
+                      <p className={styles.cardBody}>
+                        Developers start with a hosted experience to ship MVP agents fast.
+                      </p>
+                    </div>
+                    <div className={styles.card}>
+                      <h3 className={styles.cardTitle}>Team & compliance</h3>
+                      <p className={styles.cardBody}>
+                        Add policy controls, audit trails, and org management as teams scale.
+                      </p>
+                    </div>
+                    <div className={styles.card}>
+                      <h3 className={styles.cardTitle}>Enterprise</h3>
+                      <p className={styles.cardBody}>
+                        Advanced governance, incident controls, dedicated support, and deployment options.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </section>
+        </div>
+
+        {/* SLIDE 7 — Let's talk (footer CTA) */}
+        <div ref={setSlideRef(6)} className={styles.slideOuter}>
+          <div className={styles.slideInner}>
+            <div className={`${styles.slideContentSection} ${slideActive[6] ? styles.slideActive : ''}`}>
+              <section className={styles.footerCta}>
+                <div className={styles.footerCtaInner}>
+                  <h2 className={styles.footerCtaTitle}>Let's talk</h2>
+                  <p className={styles.footerCtaBody}>
+                    If you're investing in durable infrastructure for autonomous AI, we're building the missing layer: governed memory + constraints + observability.
+                    Reach out to discuss the roadmap, security posture, and go-to-market.
+                  </p>
+                  <div className={styles.ctaRow}>
+                    <button
+                      type="button"
+                      className={styles.ctaPrimary}
+                      onClick={() => navigate('/signup')}
+                    >
+                      <span>Request Investor Access</span>
+                      <span aria-hidden="true">→</span>
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.ctaSecondary}
+                      onClick={() => navigate('/contact')}
+                    >
+                      <span>Contact</span>
+                      <span aria-hidden="true">↗</span>
+                    </button>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   );
