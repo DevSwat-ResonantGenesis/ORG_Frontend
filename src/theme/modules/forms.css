@@ -4,9 +4,9 @@
    ============================================================ */
 
 /* Global form inputs - excluding resonant chat settings inputs and chat input bar */
-input:not(.resonant-chat-settings-input):not([data-chat-input]),
-textarea:not([data-chat-input]),
-select:not(.resonant-chat-settings-select) {
+input:not(.resonant-chat-settings-input):not([data-chat-input]):not([class*="_"]),
+textarea:not([data-chat-input]):not([class*="_"]),
+select:not(.resonant-chat-settings-select):not([class*="_"]) {
   font-family: inherit;
   font-size: inherit;
   border: none;

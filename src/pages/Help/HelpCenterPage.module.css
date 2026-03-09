@@ -158,7 +158,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(10, 10, 10, 0.7);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   opacity: 0;
@@ -228,30 +228,7 @@
   outline: none !important;
 }
 
-/* Animated blue bottom line — matches header top line */
-.searchBar::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(59, 130, 246, 0.5),
-    rgba(14, 165, 233, 0.6),
-    rgba(59, 130, 246, 0.5),
-    transparent
-  );
-  background-size: 200% 100%;
-  animation: searchLineShimmer 3s ease-in-out infinite;
-}
-
-@keyframes searchLineShimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+/* Blue shimmer line removed — clean minimal search */
 
 .searchBar svg {
   color: rgba(148, 163, 184, 0.6);
@@ -333,7 +310,7 @@
 .heroSearchItem {
   appearance: none;
   border: none;
-  background: rgba(255, 255, 255, 0.04);
+  background: transparent;
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -347,16 +324,16 @@
 }
 
 .heroSearchItem:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 [data-theme='light'] .heroSearchItem {
-  background: rgba(0, 0, 0, 0.02);
+  background: transparent;
   color: #0f172a;
 }
 
 [data-theme='light'] .heroSearchItem:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .heroSearchItem svg {
