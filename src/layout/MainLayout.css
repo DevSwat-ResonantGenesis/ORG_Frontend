@@ -38,7 +38,7 @@
 .main-layout-wrapper {
   display: flex;
   flex-direction: column;
-  background: var(--color-bg-root, var(--bg-primary));
+  background: transparent;
   min-height: 100vh;
   width: 100%;
   overflow-x: clip;
@@ -256,7 +256,7 @@
 /* EXCLUDE IDE PAGE - IDE has its own layout */
 .main-content:not(.landing-page-content):not(:has(.idePageContainer)) {
   padding: 0;
-  background: var(--color-bg-root);
+  background: transparent;
   flex: 1;
   height: auto;
   min-height: 100dvh;

@@ -95,9 +95,7 @@ html[data-theme="dark"] {
 
 [data-theme='dark'] body,
 [data-theme='dark'] #root,
-[data-theme='dark'] .page-container,
-[data-theme='dark'] .page-wrapper,
-[data-theme='dark'] .main-content {
+[data-theme='dark'] .page-container {
   background: var(--color-bg-root, var(--bg-primary)) !important;
   /* Use new token system */
 }
@@ -198,11 +196,7 @@ html[data-theme="light"] {
   /* Pure pearl white */
 }
 
-[data-theme="light"] .page-wrapper,
-[data-theme="light"] .main-content {
-  background: #FFFFFF !important;
-  /* Pure pearl white */
-}
+/* page-wrapper and main-content backgrounds removed — pages handle their own */
 
 [data-theme="light"] .card,
 [data-theme="light"] .page-card,
@@ -238,9 +232,7 @@ html[data-theme="light"] {
 
 [data-theme="light"] body,
 [data-theme="light"] #root,
-[data-theme="light"] .page-container,
-[data-theme="light"] .page-wrapper,
-[data-theme="light"] .main-content {
+[data-theme="light"] .page-container {
   background: #FFFFFF !important;
 }
 
