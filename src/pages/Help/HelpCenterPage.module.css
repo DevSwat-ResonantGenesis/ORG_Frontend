@@ -97,8 +97,8 @@
 .hero {
   display: flex;
   align-items: flex-start;
-  justify-content: center;
-  padding: calc(var(--header-height, 56px) + 20px) 24px 80px;
+  justify-content: flex-start;
+  padding: calc(var(--header-height, 56px) + 18vh) 24px 80px;
   min-height: 100vh;
   margin: 0;
   background: transparent;
