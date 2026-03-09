@@ -5,13 +5,13 @@
 
 .pricingPage {
   min-height: 100vh;
-  background: linear-gradient(135deg, #fafbfc 0%, #f5f7fa 100%);
+  background: transparent;
   color: #0f172a;
   padding-bottom: 80px;
 }
 
 [data-theme='dark'] .pricingPage {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background: transparent;
   color: #f1f5f9;
 }
 
