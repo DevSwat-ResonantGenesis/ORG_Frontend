@@ -7,6 +7,7 @@ import { getSession as getAgentSession } from '../../../../../api/agentEngine';
 import fastapiClient from '../../../../../api/fastapiClient';
 import { executeAgentTask } from '../../../../../api/executions';
 import { useToastContext } from '../../../../../context/ToastContext';
+import { SessionsPanel } from '../SessionsPanel';
 import styles from './AgentsPanel.module.css';
 
 // ============== AGENTS PANEL ==============
@@ -591,149 +592,161 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
         </div>
       </div>
 
-      {bulkMode && (
-        <div className={styles.panelToolbar}>
-          <div className={styles.bulkBar}>
-            <span className={styles.bulkCount}>{bulkSelectedCount} selected</span>
-            <button className={styles.bulkBtn} type="button" onClick={bulkSelectAll}>Select all</button>
-            <button className={styles.bulkBtn} type="button" onClick={bulkSelectNone}>None</button>
-            <button className={styles.bulkDangerBtn} type="button" onClick={bulkDelete} disabled={bulkSelectedCount === 0}>Archive</button>
+      <div className={styles.splitContainer}>
+        {/* Left pane: agents grid */}
+        <div className={`${styles.agentsPane} ${selectedAgent ? styles.hasSessions : ''}`}>
+          {bulkMode && (
+            <div className={styles.panelToolbar}>
+              <div className={styles.bulkBar}>
+                <span className={styles.bulkCount}>{bulkSelectedCount} selected</span>
+                <button className={styles.bulkBtn} type="button" onClick={bulkSelectAll}>Select all</button>
+                <button className={styles.bulkBtn} type="button" onClick={bulkSelectNone}>None</button>
+                <button className={styles.bulkDangerBtn} type="button" onClick={bulkDelete} disabled={bulkSelectedCount === 0}>Archive</button>
+              </div>
+            </div>
+          )}
+
+          <div className={styles.panelContent}>
+            <div className={styles.agentsGrid}>
+              {isLoadingAgents && (
+                <div className={styles.emptyState}>
+                  <Icons.Refresh />
+                  <p>Loading agents…</p>
+                </div>
+              )}
+              {filteredAgents.map((agent: Agent) => (
+                <div 
+                  key={agent.id} 
+                  className={`${styles.agentCard} ${selectedAgent?.id === agent.id ? styles.selected : ''}`}
+                  onClick={() => selectAgent(agent.id)}
+                >
+                  {/* Status indicator bar */}
+                  <div className={`${styles.statusBar} ${styles[agent.status]}`} />
+                  
+                  {/* Card header with icon and name */}
+                  <div className={styles.cardHeader}>
+                    <div className={styles.agentIcon}>
+                      <Icons.Agents />
+                    </div>
+                    <div className={styles.agentInfo}>
+                      <h3>{agent.name}</h3>
+                      <span className={styles.typeBadge}>{agent.type}</span>
+                    </div>
+
+                    <div className={styles.cardTopActions}>
+                      {bulkMode && (
+                        <button
+                          className={`${styles.pinBtn} ${selectedIds.has(agent.id) ? styles.pinActive : ''}`}
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); toggleSelectId(agent.id); }}
+                          title={selectedIds.has(agent.id) ? 'Deselect' : 'Select'}
+                        >
+                          <input className={styles.bulkCheckbox} type="checkbox" readOnly checked={selectedIds.has(agent.id)} />
+                        </button>
+                      )}
+
+                      <button
+                        className={`${styles.pinBtn} ${pinnedSet.has(agent.id) ? styles.pinActive : ''}`}
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); if (typeof togglePinnedAgent === 'function') togglePinnedAgent(agent.id); }}
+                        title={pinnedSet.has(agent.id) ? 'Unpin (favorite)' : 'Pin (favorite)'}
+                      >
+                        {pinnedSet.has(agent.id) ? <Icons.StarFilled /> : <Icons.Star />}
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Stats row */}
+                  <div className={styles.cardStats}>
+                    <div className={styles.stat}>
+                      <Icons.Zap />
+                      <span>{agent.executions}</span>
+                    </div>
+                    <div className={styles.stat}>
+                      <Icons.DollarSign />
+                      <span>${agent.costToday.toFixed(2)}</span>
+                    </div>
+                    <div className={`${styles.modeBadge} ${agent.mode === 'unbounded' ? styles.unbounded : ''}`}>
+                      {agent.mode === 'governed' ? <Icons.Lock /> : <Icons.Unlock />}
+                    </div>
+                  </div>
+                  
+                  {/* Action buttons - Run, Message, Detail, Delete */}
+                  <div className={styles.cardActions}>
+                    {loadingAgentId === agent.id ? (
+                      <span className={styles.loadingIndicator}>...</span>
+                    ) : (
+                      <>
+                        {/* Run/Play button */}
+                        <button 
+                          className={`${styles.actionBtn} ${styles.runBtn}`}
+                          disabled={bulkMode}
+                          onClick={(e) => { e.stopPropagation(); openModal('run', agent); }}
+                          title="Run Agent"
+                        >
+                          <Icons.Play />
+                        </button>
+                        
+                        {/* Message button */}
+                        <button 
+                          className={`${styles.actionBtn} ${styles.messageBtn}`}
+                          disabled={bulkMode}
+                          onClick={(e) => { e.stopPropagation(); openModal('message', agent); }}
+                          title="Message Agent"
+                        >
+                          <Icons.MessageSquare />
+                        </button>
+                        
+                        {/* Detail button */}
+                        <button 
+                          className={`${styles.actionBtn} ${styles.detailBtn}`}
+                          disabled={bulkMode}
+                          onClick={(e) => { e.stopPropagation(); openModal('detail', agent); }}
+                          title="View Details"
+                        >
+                          <Icons.Info />
+                        </button>
+                        
+                        {/* Clone button */}
+                        <button 
+                          className={`${styles.actionBtn} ${styles.detailBtn}`}
+                          disabled={bulkMode}
+                          onClick={(e) => { e.stopPropagation(); handleCloneAgent(agent); }}
+                          title="Clone Agent"
+                        >
+                          <Icons.Copy />
+                        </button>
+                        
+                        {/* Archive button */}
+                        <button 
+                          className={`${styles.actionBtn} ${styles.deleteBtn}`}
+                          disabled={bulkMode}
+                          onClick={(e) => { e.stopPropagation(); handleAgentAction('delete', agent.id); }}
+                          title="Archive"
+                        >
+                          <Icons.Trash />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+              {!isLoadingAgents && filteredAgents.length === 0 && (
+                <div className={styles.emptyState}>
+                  <Icons.Agents />
+                  <p>No agents found</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      )}
 
-      <div className={styles.panelContent}>
-        <div className={styles.agentsGrid}>
-          {isLoadingAgents && (
-            <div className={styles.emptyState}>
-              <Icons.Refresh />
-              <p>Loading agents…</p>
-            </div>
-          )}
-          {filteredAgents.map((agent: Agent) => (
-            <div 
-              key={agent.id} 
-              className={`${styles.agentCard} ${selectedAgent?.id === agent.id ? styles.selected : ''}`}
-              onClick={() => selectAgent(agent.id)}
-            >
-              {/* Status indicator bar */}
-              <div className={`${styles.statusBar} ${styles[agent.status]}`} />
-              
-              {/* Card header with icon and name */}
-              <div className={styles.cardHeader}>
-                <div className={styles.agentIcon}>
-                  <Icons.Agents />
-                </div>
-                <div className={styles.agentInfo}>
-                  <h3>{agent.name}</h3>
-                  <span className={styles.typeBadge}>{agent.type}</span>
-                </div>
-
-                <div className={styles.cardTopActions}>
-                  {bulkMode && (
-                    <button
-                      className={`${styles.pinBtn} ${selectedIds.has(agent.id) ? styles.pinActive : ''}`}
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); toggleSelectId(agent.id); }}
-                      title={selectedIds.has(agent.id) ? 'Deselect' : 'Select'}
-                    >
-                      <input className={styles.bulkCheckbox} type="checkbox" readOnly checked={selectedIds.has(agent.id)} />
-                    </button>
-                  )}
-
-                  <button
-                    className={`${styles.pinBtn} ${pinnedSet.has(agent.id) ? styles.pinActive : ''}`}
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); if (typeof togglePinnedAgent === 'function') togglePinnedAgent(agent.id); }}
-                    title={pinnedSet.has(agent.id) ? 'Unpin (favorite)' : 'Pin (favorite)'}
-                  >
-                    {pinnedSet.has(agent.id) ? <Icons.StarFilled /> : <Icons.Star />}
-                  </button>
-                </div>
-              </div>
-              
-              {/* Stats row */}
-              <div className={styles.cardStats}>
-                <div className={styles.stat}>
-                  <Icons.Zap />
-                  <span>{agent.executions}</span>
-                </div>
-                <div className={styles.stat}>
-                  <Icons.DollarSign />
-                  <span>${agent.costToday.toFixed(2)}</span>
-                </div>
-                <div className={`${styles.modeBadge} ${agent.mode === 'unbounded' ? styles.unbounded : ''}`}>
-                  {agent.mode === 'governed' ? <Icons.Lock /> : <Icons.Unlock />}
-                </div>
-              </div>
-              
-              {/* Action buttons - Run, Message, Detail, Delete */}
-              <div className={styles.cardActions}>
-                {loadingAgentId === agent.id ? (
-                  <span className={styles.loadingIndicator}>...</span>
-                ) : (
-                  <>
-                    {/* Run/Play button */}
-                    <button 
-                      className={`${styles.actionBtn} ${styles.runBtn}`}
-                      disabled={bulkMode}
-                      onClick={(e) => { e.stopPropagation(); openModal('run', agent); }}
-                      title="Run Agent"
-                    >
-                      <Icons.Play />
-                    </button>
-                    
-                    {/* Message button */}
-                    <button 
-                      className={`${styles.actionBtn} ${styles.messageBtn}`}
-                      disabled={bulkMode}
-                      onClick={(e) => { e.stopPropagation(); openModal('message', agent); }}
-                      title="Message Agent"
-                    >
-                      <Icons.MessageSquare />
-                    </button>
-                    
-                    {/* Detail button */}
-                    <button 
-                      className={`${styles.actionBtn} ${styles.detailBtn}`}
-                      disabled={bulkMode}
-                      onClick={(e) => { e.stopPropagation(); openModal('detail', agent); }}
-                      title="View Details"
-                    >
-                      <Icons.Info />
-                    </button>
-                    
-                    {/* Clone button */}
-                    <button 
-                      className={`${styles.actionBtn} ${styles.detailBtn}`}
-                      disabled={bulkMode}
-                      onClick={(e) => { e.stopPropagation(); handleCloneAgent(agent); }}
-                      title="Clone Agent"
-                    >
-                      <Icons.Copy />
-                    </button>
-                    
-                    {/* Archive button */}
-                    <button 
-                      className={`${styles.actionBtn} ${styles.deleteBtn}`}
-                      disabled={bulkMode}
-                      onClick={(e) => { e.stopPropagation(); handleAgentAction('delete', agent.id); }}
-                      title="Archive"
-                    >
-                      <Icons.Trash />
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
-          {!isLoadingAgents && filteredAgents.length === 0 && (
-            <div className={styles.emptyState}>
-              <Icons.Agents />
-              <p>No agents found</p>
-            </div>
-          )}
-        </div>
+        {/* Right pane: sessions for selected agent */}
+        {selectedAgent && (
+          <div className={styles.sessionsPane}>
+            <SessionsPanel />
+          </div>
+        )}
       </div>
 
       {/* ============== MODALS ============== */}

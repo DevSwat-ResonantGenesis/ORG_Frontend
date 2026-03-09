@@ -541,3 +541,147 @@
   color: #e2e8f0;
   margin-right: 4px;
 }
+
+/* ============== LIGHT MODE ============== */
+[data-theme='light'] .panel {
+  background: #ffffff;
+}
+
+[data-theme='light'] .panelHeader {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .panelHeader h2 {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .statsBar {
+  background: rgba(14, 165, 233, 0.06);
+  border-color: rgba(14, 165, 233, 0.15);
+  color: #4b5563;
+}
+
+[data-theme='light'] .statsBar strong {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .sessionCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .sessionCard:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme='light'] .sessionCard.selected {
+  background: rgba(14, 165, 233, 0.08);
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+[data-theme='light'] .sessionStatus {
+  color: #6b7280;
+}
+
+[data-theme='light'] .sessionGoal {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .sessionMeta {
+  color: #6b7280;
+}
+
+[data-theme='light'] .sessionsList {
+  border-right-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .sessionsList h3 {
+  color: #6b7280;
+}
+
+[data-theme='light'] .sessionDetail {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .detailHeader h3 {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .goalDisplay {
+  background: rgba(14, 165, 233, 0.06);
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .stepCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .stepReasoning,
+[data-theme='light'] .stepTool {
+  background: rgba(0, 0, 0, 0.03);
+  color: #374151;
+}
+
+[data-theme='light'] .stepTool pre {
+  background: rgba(0, 0, 0, 0.05);
+  color: #374151;
+}
+
+[data-theme='light'] .stepNumber {
+  color: #6b7280;
+}
+
+[data-theme='light'] .stepDuration {
+  color: #6b7280;
+}
+
+[data-theme='light'] .noSessions,
+[data-theme='light'] .noSteps,
+[data-theme='light'] .loading {
+  color: #6b7280;
+}
+
+[data-theme='light'] .emptyState,
+[data-theme='light'] .noSelection {
+  color: #6b7280;
+}
+
+[data-theme='light'] .formGroup label {
+  color: #6b7280;
+}
+
+[data-theme='light'] .formGroup textarea {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .cancelBtn {
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #6b7280;
+}
+
+[data-theme='light'] .cancelBtn:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .newSessionForm {
+  background: rgba(14, 165, 233, 0.04);
+  border-bottom-color: rgba(14, 165, 233, 0.1);
+}
+
+[data-theme='light'] .newSessionForm h3 {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .approvalActions {
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme='light'] .hint {
+  color: #9ca3af;
+}

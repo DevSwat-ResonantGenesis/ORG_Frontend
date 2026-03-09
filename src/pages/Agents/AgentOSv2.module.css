@@ -278,6 +278,15 @@
 [data-theme='light'] .metricsFooter {
   background: rgba(0, 0, 0, 0.02);
   border-top-color: rgba(0, 0, 0, 0.08);
+  backdrop-filter: none;
+}
+
+[data-theme='light'] .metricItem {
+  color: #1D1D1F;
+}
+
+[data-theme='light'] .metricItem svg {
+  color: #0284c7;
 }
 
 [data-theme='light'] .metricValue {

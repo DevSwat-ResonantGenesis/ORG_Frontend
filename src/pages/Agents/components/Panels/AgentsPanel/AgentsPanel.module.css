@@ -9,6 +9,47 @@
   overflow: hidden;
 }
 
+/* Split layout: agents left, sessions right */
+.splitContainer {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.agentsPane {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  transition: flex 0.3s ease;
+}
+
+.agentsPane.hasSessions {
+  flex: 0 0 340px;
+  max-width: 340px;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sessionsPane {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .splitContainer {
+    flex-direction: column;
+  }
+  .agentsPane.hasSessions {
+    flex: 0 0 auto;
+    max-width: 100%;
+    max-height: 200px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+}
+
 .modalOpen .cardTopActions,
 .modalOpen .cardActions {
   visibility: hidden;
@@ -1400,6 +1441,10 @@
   background: rgba(0, 0, 0, 0.03);
   border-color: rgba(0, 0, 0, 0.1);
   color: #1D1D1F;
+}
+
+[data-theme='light'] .agentsPane.hasSessions {
+  border-right-color: rgba(0, 0, 0, 0.08);
 }
 
 /* Responsive */
