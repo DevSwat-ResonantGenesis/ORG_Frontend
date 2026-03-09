@@ -39,6 +39,17 @@ const InvestorPitchDeckPage = () => {
     return () => { document.body.style.overflow = prev; };
   }, []);
 
+  /* Force dark theme on mount — pitch deck is always a dark presentation */
+  useEffect(() => {
+    const html = document.documentElement;
+    const prevTheme = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', 'dark');
+    return () => {
+      if (prevTheme) html.setAttribute('data-theme', prevTheme);
+      else html.removeAttribute('data-theme');
+    };
+  }, []);
+
   /* Scroll-hijack: wheel + touch events change slide, no page scroll */
   useEffect(() => {
     const go = (dir: 1 | -1) => {
@@ -269,7 +280,7 @@ const InvestorPitchDeckPage = () => {
   const isReactSnap = typeof navigator !== 'undefined' && navigator.userAgent === 'ReactSnap';
 
   return (
-    <div className={`${styles.page}${animate ? ` ${styles.animate}` : ''}${scrollCentered ? ` ${styles.parallaxCentered}` : ''}`}>
+    <div data-theme="dark" className={`${styles.page}${animate ? ` ${styles.animate}` : ''}${scrollCentered ? ` ${styles.parallaxCentered}` : ''}`}>
       <Helmet>
         <title>Investor Pitch Deck – ResonantGenesis</title>
         <meta
@@ -349,78 +360,39 @@ const InvestorPitchDeckPage = () => {
         </div>
 
         {/* SLIDE 1 — Hero Section */}
-        <div className={`${styles.slide} ${currentSlide === 1 ? styles.slideActive : ''}`}>
-          <section ref={heroRef} className={styles.hero}>
-            <div className={styles.parallax} aria-hidden="true">
-              <Suspense fallback={null}>
-                <div ref={sphereRef} className={styles.parallaxInner}>
-                  <div ref={sphereLayerRef} className={styles.sphereLayer}>
-                    {isReactSnap ? null : <ThreeParticleSphere />}
-                  </div>
+        <div ref={heroRef} className={`${styles.slide} ${styles.slideDark} ${currentSlide === 1 ? styles.slideActive : ''}`}>
+          <div className={styles.parallax} aria-hidden="true">
+            <Suspense fallback={null}>
+              <div ref={sphereRef} className={styles.parallaxInner}>
+                <div ref={sphereLayerRef} className={styles.sphereLayer}>
+                  {isReactSnap ? null : <ThreeParticleSphere />}
                 </div>
-              </Suspense>
-            </div>
-
-            {!prefersReducedMotion && traces.length > 0 && heroSize.width > 0 && heroSize.height > 0 && (
-              <svg
-                className={styles.noodleOverlay}
-                aria-hidden="true"
-                width="100%"
-                height="100%"
-                viewBox={`0 0 ${heroSize.width} ${heroSize.height}`}
-                preserveAspectRatio="none"
-              >
-                {traces.flatMap((trace, traceIdx) =>
-                  trace.points.map((pt, idx) => (
-                    (() => {
-                      const t = trace.points.length <= 1 ? 1 : idx / (trace.points.length - 1);
-                      const size = trace.nodeSize + (trace.endNodeSize - trace.nodeSize) * t;
-                      return (
-                    <rect
-                      key={`${traceIdx}-${idx}`}
-                      className={styles.nodeParticleTools}
-                      x={pt.x - size / 2}
-                      y={pt.y - size / 2}
-                      width={size}
-                      height={size}
-                      rx={0.9}
-                      ry={0.9}
-                      opacity={trace.nodeOpacity}
-                      style={{ animationDelay: `${trace.baseDelayMs + idx * trace.stepDelayMs}ms` }}
-                    />
-                      );
-                    })()
-                  ))
-                )}
-              </svg>
-            )}
-
-            <div className={styles.heroGrid}>
-              <div className={styles.heroContent}>
-                <p className={styles.subtitle}>
-                  ResonantGenesis is sovereign infrastructure for autonomous agents: governed memory, invariant-based constraint simulation, and full-stack observability—so teams can ship agentic products that are safe, auditable, and controllable.
-                </p>
-
-                <div className={styles.heroMetrics}>
-                  <div className={styles.metricCard}>
-                    <p className={styles.metricValue}>Governed Memory</p>
-                    <p className={styles.metricLabel}>Encrypted, attributable, retrievable</p>
-                  </div>
-                  <div className={styles.metricCard}>
-                    <p className={styles.metricValue}>Constraints SIM</p>
-                    <p className={styles.metricLabel}>Invariants for actions and risk</p>
-                  </div>
-                  <div className={styles.metricCard}>
-                    <p className={styles.metricValue}>Evidence Graphs</p>
-                    <p className={styles.metricLabel}>Explainability & audit trails</p>
-                  </div>
-                </div>
-
               </div>
+            </Suspense>
+          </div>
 
-              <div aria-hidden="true" />
+          <div className={styles.section}>
+            <div className={styles.sectionInner}>
+              <p className={styles.sectionLead}>
+                ResonantGenesis is sovereign infrastructure for autonomous agents: governed memory, invariant-based constraint simulation, and full-stack observability—so teams can ship agentic products that are safe, auditable, and controllable.
+              </p>
+
+              <div className={styles.cardsGrid}>
+                <div className={styles.card}>
+                  <h3 className={styles.cardTitle}>Governed Memory</h3>
+                  <p className={styles.cardBody}>Encrypted, attributable, retrievable</p>
+                </div>
+                <div className={styles.card}>
+                  <h3 className={styles.cardTitle}>Constraints SIM</h3>
+                  <p className={styles.cardBody}>Invariants for actions and risk</p>
+                </div>
+                <div className={styles.card}>
+                  <h3 className={styles.cardTitle}>Evidence Graphs</h3>
+                  <p className={styles.cardBody}>Explainability & audit trails</p>
+                </div>
+              </div>
             </div>
-          </section>
+          </div>
         </div>
 
         {/* SLIDE 2 — Platform Workflow (VR3 background) */}
