@@ -42,7 +42,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<'all' | 'core' | 'tool' | 'integration' | 'custom'>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [inlineView, setInlineView] = useState<'list' | 'add' | 'edit'>('list');
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [newCapability, setNewCapability] = useState({
     name: '',
@@ -68,7 +68,6 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedCapabilities, setSelectedCapabilities] = useState<Set<string>>(new Set());
-  const [showEditModal, setShowEditModal] = useState(false);
   const [editingCapability, setEditingCapability] = useState<Capability | null>(null);
   const [editCapability, setEditCapability] = useState({
     name: '',
@@ -104,6 +103,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
       setError(err.message || 'Failed to load capabilities');
     } finally {
       setIsLoading(false);
+      setInlineView('list');
     }
   }, [selectedAgent?.id]);
 
@@ -193,7 +193,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
       setSuccessMessage(`Capability "${updated.name}" updated`);
       setTimeout(() => setSuccessMessage(null), 3000);
 
-      setShowEditModal(false);
+      setInlineView('list');
       setEditingCapability(null);
     } catch (err: any) {
       setError(err.message || 'Failed to update capability');
@@ -239,7 +239,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
       requiredPermissions: ((cap as any).requiredPermissions || cap.required_permissions || []).join(', '),
       enabled: cap.enabled,
     });
-    setShowEditModal(true);
+    setInlineView('edit');
   };
 
   // Test capability
@@ -302,7 +302,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
       costPerCall: cap.costPerCall?.toString() || '',
       tags: '',
     });
-    setShowAddModal(true);
+    setInlineView('add');
   };
 
   // Toggle selection
@@ -442,7 +442,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
         costPerCall: '',
         tags: '',
       });
-      setShowAddModal(false);
+      setInlineView('list');
     } catch (err: any) {
       setError(err.message || 'Failed to add capability');
       setTimeout(() => setError(null), 3000);
@@ -465,6 +465,11 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
         <h2><Icons.Capabilities /> Capabilities</h2>
+        {inlineView === 'list' && (
+          <button className={styles.addHeaderBtn} onClick={() => setInlineView('add')} title="Add Custom Capability">
+            <Icons.Plus />
+          </button>
+        )}
         <button onClick={exportCapabilities} className={styles.exportBtn}>
           <Icons.Download /> Export
         </button>
@@ -484,7 +489,7 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
         </div>
       </div>
 
-      <div className={styles.panelContent}>
+      {inlineView === 'list' && <div className={styles.panelContent}>
         {/* Success Message */}
         {successMessage && (
           <div className={styles.successBanner}>
@@ -708,298 +713,281 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
           ))}
         </div>
 
-        {/* Add Custom */}
-        <div className={styles.addSection}>
-          <button className={styles.addBtn} onClick={() => setShowAddModal(true)}>
-            <Icons.Plus /> Add Custom Capability
-          </button>
-        </div>
-      </div>
+      </div>}
 
-      {/* Add Custom Capability Modal */}
-      {showAddModal && (
-        <div className={styles.modal} onClick={() => setShowAddModal(false)}>
-          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h3>Add Custom Capability</h3>
-              <button className={styles.closeBtn} onClick={() => setShowAddModal(false)}>
-                <Icons.X />
-              </button>
-            </div>
-            <div className={styles.modalBody}>
-              {/* Basic Info Section */}
-              <div className={styles.formSection}>
-                <h4 className={styles.sectionTitle}>Basic Information</h4>
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label>Capability Name *</label>
-                    <input
-                      type="text"
-                      value={newCapability.name}
-                      onChange={e => setNewCapability({ ...newCapability, name: e.target.value })}
-                      placeholder="e.g., Twitter Integration"
-                      className={styles.input}
-                    />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Type</label>
-                    <select
-                      value={newCapability.type}
-                      onChange={e => setNewCapability({ ...newCapability, type: e.target.value as any })}
-                      className={styles.select}
-                    >
-                      <option value="action">Action</option>
-                      <option value="tool">Tool</option>
-                      <option value="integration">Integration</option>
-                      <option value="workflow">Workflow</option>
-                    </select>
-                  </div>
-                </div>
-                <div className={styles.formGroup}>
-                  <label>Description</label>
-                  <textarea
-                    value={newCapability.description}
-                    onChange={e => setNewCapability({ ...newCapability, description: e.target.value })}
-                    placeholder="Describe what this capability does..."
-                    className={styles.textarea}
-                    rows={2}
-                  />
-                </div>
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label>Tags (comma-separated)</label>
-                    <input
-                      type="text"
-                      value={newCapability.tags}
-                      onChange={e => setNewCapability({ ...newCapability, tags: e.target.value })}
-                      placeholder="e.g., social, automation"
-                      className={styles.input}
-                    />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Required Permissions</label>
-                    <input
-                      type="text"
-                      value={newCapability.requiredPermissions}
-                      onChange={e => setNewCapability({ ...newCapability, requiredPermissions: e.target.value })}
-                      placeholder="e.g., network, api"
-                      className={styles.input}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Execution Settings Section */}
-              <div className={styles.formSection}>
-                <h4 className={styles.sectionTitle}>Execution Settings</h4>
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label>Execution Mode</label>
-                    <select
-                      value={newCapability.executionMode}
-                      onChange={e => setNewCapability({ ...newCapability, executionMode: e.target.value as any })}
-                      className={styles.select}
-                    >
-                      <option value="sync">Synchronous</option>
-                      <option value="async">Asynchronous</option>
-                      <option value="streaming">Streaming</option>
-                    </select>
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Timeout (seconds)</label>
-                    <input
-                      type="number"
-                      value={newCapability.timeout}
-                      onChange={e => setNewCapability({ ...newCapability, timeout: e.target.value })}
-                      placeholder="30"
-                      className={styles.input}
-                    />
-                  </div>
-                </div>
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label>Retry Policy</label>
-                    <select
-                      value={newCapability.retryPolicy}
-                      onChange={e => setNewCapability({ ...newCapability, retryPolicy: e.target.value as any })}
-                      className={styles.select}
-                    >
-                      <option value="none">No Retry</option>
-                      <option value="linear">Linear Backoff</option>
-                      <option value="exponential">Exponential Backoff</option>
-                    </select>
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Max Retries</label>
-                    <input
-                      type="number"
-                      value={newCapability.maxRetries}
-                      onChange={e => setNewCapability({ ...newCapability, maxRetries: e.target.value })}
-                      placeholder="3"
-                      className={styles.input}
-                    />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Rate Limit (calls/min)</label>
-                    <input
-                      type="number"
-                      value={newCapability.rateLimit}
-                      onChange={e => setNewCapability({ ...newCapability, rateLimit: e.target.value })}
-                      placeholder="60"
-                      className={styles.input}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* API/Integration Settings */}
-              <div className={styles.formSection}>
-                <h4 className={styles.sectionTitle}>API / Integration</h4>
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label>API Endpoint</label>
-                    <input
-                      type="text"
-                      value={newCapability.apiEndpoint}
-                      onChange={e => setNewCapability({ ...newCapability, apiEndpoint: e.target.value })}
-                      placeholder="https://api.example.com/v1/action"
-                      className={styles.input}
-                    />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Auth Type</label>
-                    <select
-                      value={newCapability.authType}
-                      onChange={e => setNewCapability({ ...newCapability, authType: e.target.value as any })}
-                      className={styles.select}
-                    >
-                      <option value="none">None</option>
-                      <option value="api_key">API Key</option>
-                      <option value="bearer">Bearer Token</option>
-                      <option value="oauth2">OAuth 2.0</option>
-                    </select>
-                  </div>
-                </div>
-                <div className={styles.formGroup}>
-                  <label>Webhook URL (for async callbacks)</label>
-                  <input
-                    type="text"
-                    value={newCapability.webhookUrl}
-                    onChange={e => setNewCapability({ ...newCapability, webhookUrl: e.target.value })}
-                    placeholder="https://your-server.com/webhook"
-                    className={styles.input}
-                  />
-                </div>
-              </div>
-
-              {/* Schema Settings */}
-              <div className={styles.formSection}>
-                <h4 className={styles.sectionTitle}>Input/Output Schema (JSON)</h4>
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label>Input Schema</label>
-                    <textarea
-                      value={newCapability.inputSchema}
-                      onChange={e => setNewCapability({ ...newCapability, inputSchema: e.target.value })}
-                      placeholder='{"type": "object", "properties": {...}}'
-                      className={styles.textarea}
-                      rows={2}
-                    />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Output Schema</label>
-                    <textarea
-                      value={newCapability.outputSchema}
-                      onChange={e => setNewCapability({ ...newCapability, outputSchema: e.target.value })}
-                      placeholder='{"type": "object", "properties": {...}}'
-                      className={styles.textarea}
-                      rows={2}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Cost Settings */}
-              <div className={styles.formSection}>
-                <h4 className={styles.sectionTitle}>Cost & Billing</h4>
-                <div className={styles.formGroup} style={{ maxWidth: '200px' }}>
-                  <label>Cost per Call (USD)</label>
-                  <input
-                    type="number"
-                    step="0.001"
-                    value={newCapability.costPerCall}
-                    onChange={e => setNewCapability({ ...newCapability, costPerCall: e.target.value })}
-                    placeholder="0.00"
-                    className={styles.input}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className={styles.modalFooter}>
-              <button className={styles.cancelBtn} onClick={() => setShowAddModal(false)}>
-                Cancel
-              </button>
-              <button className={styles.submitBtn} onClick={handleAddCapability}>
-                <Icons.Plus /> Add Capability
-              </button>
-            </div>
+      {/* ====== INLINE ADD CAPABILITY FORM ====== */}
+      {inlineView === 'add' && (
+        <div className={styles.inlineForm}>
+          <div className={styles.inlineFormHeader}>
+            <h3 className={styles.inlineFormTitle}><Icons.Plus /> New Capability</h3>
+            <button className={styles.inlineFormClose} onClick={() => setInlineView('list')}>
+              <Icons.X />
+            </button>
           </div>
-        </div>
-      )}
 
-      {/* Edit Custom Capability Modal */}
-      {showEditModal && editingCapability && (
-        <div
-          className={styles.modal}
-          onClick={() => {
-            setShowEditModal(false);
-            setEditingCapability(null);
-          }}
-        >
-          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h3>Edit Custom Capability</h3>
-              <button
-                className={styles.closeBtn}
-                onClick={() => {
-                  setShowEditModal(false);
-                  setEditingCapability(null);
-                }}
-              >
-                <Icons.X />
-              </button>
-            </div>
-            <div className={styles.modalBody}>
-              <div className={styles.formSection}>
-                <h4 className={styles.sectionTitle}>Basic Information</h4>
+          <div className={styles.inlineFormBody}>
+            {/* Basic Info */}
+            <div className={styles.formSection}>
+              <h4 className={styles.sectionTitle}>Basic Information</h4>
+              <div className={styles.formRow}>
                 <div className={styles.formGroup}>
                   <label>Capability Name *</label>
                   <input
                     type="text"
-                    value={editCapability.name}
-                    onChange={e => setEditCapability({ ...editCapability, name: e.target.value })}
+                    value={newCapability.name}
+                    onChange={e => setNewCapability({ ...newCapability, name: e.target.value })}
+                    placeholder="e.g., Twitter Integration"
                     className={styles.input}
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Description</label>
-                  <textarea
-                    value={editCapability.description}
-                    onChange={e => setEditCapability({ ...editCapability, description: e.target.value })}
-                    className={styles.textarea}
-                    rows={2}
+                  <label>Type</label>
+                  <select
+                    value={newCapability.type}
+                    onChange={e => setNewCapability({ ...newCapability, type: e.target.value as any })}
+                    className={styles.select}
+                  >
+                    <option value="action">Action</option>
+                    <option value="tool">Tool</option>
+                    <option value="integration">Integration</option>
+                    <option value="workflow">Workflow</option>
+                  </select>
+                </div>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Description</label>
+                <textarea
+                  value={newCapability.description}
+                  onChange={e => setNewCapability({ ...newCapability, description: e.target.value })}
+                  placeholder="Describe what this capability does..."
+                  className={styles.textarea}
+                  rows={2}
+                />
+              </div>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>Tags (comma-separated)</label>
+                  <input
+                    type="text"
+                    value={newCapability.tags}
+                    onChange={e => setNewCapability({ ...newCapability, tags: e.target.value })}
+                    placeholder="e.g., social, automation"
+                    className={styles.input}
                   />
                 </div>
                 <div className={styles.formGroup}>
                   <label>Required Permissions</label>
                   <input
                     type="text"
-                    value={editCapability.requiredPermissions}
-                    onChange={e => setEditCapability({ ...editCapability, requiredPermissions: e.target.value })}
+                    value={newCapability.requiredPermissions}
+                    onChange={e => setNewCapability({ ...newCapability, requiredPermissions: e.target.value })}
+                    placeholder="e.g., network, api"
+                    className={styles.input}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Execution Settings */}
+            <div className={styles.formSection}>
+              <h4 className={styles.sectionTitle}>Execution Settings</h4>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>Execution Mode</label>
+                  <select
+                    value={newCapability.executionMode}
+                    onChange={e => setNewCapability({ ...newCapability, executionMode: e.target.value as any })}
+                    className={styles.select}
+                  >
+                    <option value="sync">Synchronous</option>
+                    <option value="async">Asynchronous</option>
+                    <option value="streaming">Streaming</option>
+                  </select>
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Timeout (seconds)</label>
+                  <input
+                    type="number"
+                    value={newCapability.timeout}
+                    onChange={e => setNewCapability({ ...newCapability, timeout: e.target.value })}
+                    placeholder="30"
+                    className={styles.input}
+                  />
+                </div>
+              </div>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>Retry Policy</label>
+                  <select
+                    value={newCapability.retryPolicy}
+                    onChange={e => setNewCapability({ ...newCapability, retryPolicy: e.target.value as any })}
+                    className={styles.select}
+                  >
+                    <option value="none">No Retry</option>
+                    <option value="linear">Linear Backoff</option>
+                    <option value="exponential">Exponential Backoff</option>
+                  </select>
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Max Retries</label>
+                  <input
+                    type="number"
+                    value={newCapability.maxRetries}
+                    onChange={e => setNewCapability({ ...newCapability, maxRetries: e.target.value })}
+                    placeholder="3"
                     className={styles.input}
                   />
                 </div>
                 <div className={styles.formGroup}>
+                  <label>Rate Limit (calls/min)</label>
+                  <input
+                    type="number"
+                    value={newCapability.rateLimit}
+                    onChange={e => setNewCapability({ ...newCapability, rateLimit: e.target.value })}
+                    placeholder="60"
+                    className={styles.input}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* API / Integration */}
+            <div className={styles.formSection}>
+              <h4 className={styles.sectionTitle}>API / Integration</h4>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>API Endpoint</label>
+                  <input
+                    type="text"
+                    value={newCapability.apiEndpoint}
+                    onChange={e => setNewCapability({ ...newCapability, apiEndpoint: e.target.value })}
+                    placeholder="https://api.example.com/v1/action"
+                    className={styles.input}
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Auth Type</label>
+                  <select
+                    value={newCapability.authType}
+                    onChange={e => setNewCapability({ ...newCapability, authType: e.target.value as any })}
+                    className={styles.select}
+                  >
+                    <option value="none">None</option>
+                    <option value="api_key">API Key</option>
+                    <option value="bearer">Bearer Token</option>
+                    <option value="oauth2">OAuth 2.0</option>
+                  </select>
+                </div>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Webhook URL (for async callbacks)</label>
+                <input
+                  type="text"
+                  value={newCapability.webhookUrl}
+                  onChange={e => setNewCapability({ ...newCapability, webhookUrl: e.target.value })}
+                  placeholder="https://your-server.com/webhook"
+                  className={styles.input}
+                />
+              </div>
+            </div>
+
+            {/* Schema */}
+            <div className={styles.formSection}>
+              <h4 className={styles.sectionTitle}>Input/Output Schema (JSON)</h4>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label>Input Schema</label>
+                  <textarea
+                    value={newCapability.inputSchema}
+                    onChange={e => setNewCapability({ ...newCapability, inputSchema: e.target.value })}
+                    placeholder='{"type": "object", "properties": {...}}'
+                    className={styles.textarea}
+                    rows={2}
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Output Schema</label>
+                  <textarea
+                    value={newCapability.outputSchema}
+                    onChange={e => setNewCapability({ ...newCapability, outputSchema: e.target.value })}
+                    placeholder='{"type": "object", "properties": {...}}'
+                    className={styles.textarea}
+                    rows={2}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Cost */}
+            <div className={styles.formSection}>
+              <h4 className={styles.sectionTitle}>Cost & Billing</h4>
+              <div className={styles.formGroup}>
+                <label>Cost per Call (USD)</label>
+                <input
+                  type="number"
+                  step="0.001"
+                  value={newCapability.costPerCall}
+                  onChange={e => setNewCapability({ ...newCapability, costPerCall: e.target.value })}
+                  placeholder="0.00"
+                  className={styles.input}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.inlineFormFooter}>
+            <button className={styles.cancelBtn} onClick={() => setInlineView('list')}>
+              Cancel
+            </button>
+            <button className={styles.submitBtn} onClick={handleAddCapability} disabled={isLoading}>
+              {isLoading ? 'Adding...' : 'Add Capability'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ====== INLINE EDIT CAPABILITY FORM ====== */}
+      {inlineView === 'edit' && editingCapability && (
+        <div className={styles.inlineForm}>
+          <div className={styles.inlineFormHeader}>
+            <h3 className={styles.inlineFormTitle}><Icons.Edit /> Edit Capability</h3>
+            <button className={styles.inlineFormClose} onClick={() => { setInlineView('list'); setEditingCapability(null); }}>
+              <Icons.X />
+            </button>
+          </div>
+
+          <div className={styles.inlineFormBody}>
+            <div className={styles.formSection}>
+              <h4 className={styles.sectionTitle}>Basic Information</h4>
+              <div className={styles.formGroup}>
+                <label>Capability Name *</label>
+                <input
+                  type="text"
+                  value={editCapability.name}
+                  onChange={e => setEditCapability({ ...editCapability, name: e.target.value })}
+                  className={styles.input}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Description</label>
+                <textarea
+                  value={editCapability.description}
+                  onChange={e => setEditCapability({ ...editCapability, description: e.target.value })}
+                  className={styles.textarea}
+                  rows={2}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Required Permissions</label>
+                <input
+                  type="text"
+                  value={editCapability.requiredPermissions}
+                  onChange={e => setEditCapability({ ...editCapability, requiredPermissions: e.target.value })}
+                  className={styles.input}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <div className={styles.toggleRow}>
                   <label className={styles.toggle}>
                     <input
                       type="checkbox"
@@ -1007,25 +995,20 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
                       onChange={e => setEditCapability({ ...editCapability, enabled: e.target.checked })}
                     />
                     <span className={styles.slider}></span>
-                    <span style={{ marginLeft: 8 }}>Enabled</span>
                   </label>
+                  <span className={styles.toggleLabel}>Enabled</span>
                 </div>
               </div>
             </div>
-            <div className={styles.modalFooter}>
-              <button
-                className={styles.cancelBtn}
-                onClick={() => {
-                  setShowEditModal(false);
-                  setEditingCapability(null);
-                }}
-              >
-                Cancel
-              </button>
-              <button className={styles.submitBtn} onClick={handleUpdateCapability}>
-                Save Changes
-              </button>
-            </div>
+          </div>
+
+          <div className={styles.inlineFormFooter}>
+            <button className={styles.cancelBtn} onClick={() => { setInlineView('list'); setEditingCapability(null); }}>
+              Cancel
+            </button>
+            <button className={styles.submitBtn} onClick={handleUpdateCapability} disabled={isLoading}>
+              {isLoading ? 'Saving...' : 'Save Changes'}
+            </button>
           </div>
         </div>
       )}
