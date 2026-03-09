@@ -171,9 +171,8 @@ html[data-theme="light"] {
   --color-bg-root: #FFFFFF !important;
 }
 
-[data-theme="light"] * {
-  background-color: inherit !important;
-}
+/* Removed: [data-theme="light"] * { background-color: inherit !important; }
+   This nuclear rule was breaking every page by overriding module-scoped CSS. */
 
 [data-theme="light"] body {
   background: #FFFFFF !important;
@@ -207,46 +206,5 @@ html[data-theme="light"] {
   color: #111827 !important;
 }
 
-[data-theme="light"] h1,
-[data-theme="light"] h2,
-[data-theme="light"] h3,
-[data-theme="light"] h4,
-[data-theme="light"] h5,
-[data-theme="light"] h6,
-[data-theme="light"] p,
-[data-theme="light"] span,
-[data-theme="light"] div,
-[data-theme="light"] label {
-  color: #111827 !important;
-}
-
-[data-theme="light"] .text-700,
-[data-theme="light"] .text-secondary {
-  color: #374151 !important;
-}
-
-[data-theme="light"] .text-500,
-[data-theme="light"] .text-muted {
-  color: #6B7280 !important;
-}
-
-[data-theme="light"] body,
-[data-theme="light"] #root,
-[data-theme="light"] .page-container {
-  background: #FFFFFF !important;
-}
-
-[data-theme="light"] h1,
-[data-theme="light"] h2,
-[data-theme="light"] h3,
-[data-theme="light"] h4,
-[data-theme="light"] h5,
-[data-theme="light"] h6,
-[data-theme="light"] .text-h1,
-[data-theme="light"] .text-h2,
-[data-theme="light"] .text-h3,
-[data-theme="light"] .text-h4,
-[data-theme="light"] .text-h5,
-[data-theme="light"] .text-h6 {
-  color: #111827 !important;
-}
+/* Removed nuclear element-level color overrides — pages handle their own via CSS modules.
+   Kept CSS custom properties (--text-900 etc.) so pages can opt in. */
