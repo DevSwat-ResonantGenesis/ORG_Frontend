@@ -35,6 +35,8 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
   
   const [activeView, setActiveView] = useState<ViewMode>('list');
   const [workflowStats, setWorkflowStats] = useState<any>(null);
+  const [panelError, setPanelError] = useState<string | null>(null);
+  const [isWorking, setIsWorking] = useState(false);
 
   const handleExportWorkflows = () => {
     const exportData = { exported_at: new Date().toISOString(), workflows, stats: workflowStats };
@@ -187,8 +189,8 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
     };
 
     (async () => {
-      setLoading(true);
-      setError(null);
+      setIsWorking(true);
+      setPanelError(null);
       try {
         const created = await workflowsApi.createWorkflow({
           name: draft.name,
@@ -208,12 +210,14 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
         selectWorkflow(uiCreated.id);
         setActiveView('builder');
       } catch (e: any) {
-        setError(e?.message || 'Failed to create workflow');
+        const msg = e?.response?.data?.detail || e?.message || 'Failed to create workflow';
+        setPanelError(msg);
+        setTimeout(() => setPanelError(null), 7000);
       } finally {
-        setLoading(false);
+        setIsWorking(false);
       }
     })();
-  }, [addWorkflow, apiToUiWorkflow, newWorkflowName, selectWorkflow, setActiveView, setError, setLoading]);
+  }, [addWorkflow, apiToUiWorkflow, newWorkflowName, selectWorkflow, setActiveView]);
 
   const handleValidateWorkflow = useCallback((workflowId: string) => {
     const ok = validateWorkflow(workflowId);
@@ -505,8 +509,8 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
 
   const handleUseTemplate = useCallback((template: typeof workflowTemplates[0]) => {
     (async () => {
-      setLoading(true);
-      setError(null);
+      setIsWorking(true);
+      setPanelError(null);
       try {
         const created = await workflowsApi.createWorkflow({
           name: template.name,
@@ -525,12 +529,14 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
         selectWorkflow(uiCreated.id);
         setActiveView('builder');
       } catch (e: any) {
-        setError(e?.message || 'Failed to create workflow from template');
+        const msg = e?.response?.data?.detail || e?.message || 'Failed to create workflow from template';
+        setPanelError(msg);
+        setTimeout(() => setPanelError(null), 7000);
       } finally {
-        setLoading(false);
+        setIsWorking(false);
       }
     })();
-  }, [addWorkflow, apiToUiWorkflow, selectWorkflow, setActiveView, setError, setLoading]);
+  }, [addWorkflow, apiToUiWorkflow, selectWorkflow, setActiveView]);
 
   return (
     <div className={`${styles.panel} ${className || ''}`}>
@@ -553,6 +559,21 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
       </div>
 
       <div className={styles.panelContent}>
+        {/* Error Banner */}
+        {panelError && (
+          <div style={{ padding: '8px 12px', margin: '8px 0', background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '6px', color: '#f87171', fontSize: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>{panelError}</span>
+            <button onClick={() => setPanelError(null)} style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '14px' }}>&times;</button>
+          </div>
+        )}
+
+        {/* Working Indicator */}
+        {isWorking && (
+          <div style={{ padding: '6px 12px', margin: '8px 0', background: 'rgba(59,130,246,0.15)', border: '1px solid rgba(59,130,246,0.3)', borderRadius: '6px', color: '#60a5fa', fontSize: '12px' }}>
+            Working...
+          </div>
+        )}
+
         {/* List View */}
         {activeView === 'list' && (
           <>
