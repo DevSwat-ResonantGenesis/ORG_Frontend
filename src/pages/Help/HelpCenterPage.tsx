@@ -350,11 +350,11 @@ const HelpCenterPage: React.FC = () => {
         </section>
       )}
 
-      {/* Spacer for fixed search bar */}
-      <div className={styles.searchSpacer} />
+      {/* Spacer only when searching (search bar becomes fixed) */}
+      {searchQuery && <div className={styles.searchSpacer} />}
 
-      {/* Fixed Search Bar — always visible below header */}
-      <div className={styles.stickySearch}>
+      {/* Search Bar — normal position by default, fixed at top when typing */}
+      <div className={`${styles.stickySearch} ${searchQuery ? styles.stickySearchFixed : ''}`}>
         <div className={styles.stickySearchInner}>
           <div className={styles.searchBar}>
             <SearchIcon size={18} />
