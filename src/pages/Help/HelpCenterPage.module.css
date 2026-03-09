@@ -24,7 +24,7 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 48px 24px 0;
   width: 100%;
   box-sizing: border-box;
 }
@@ -422,7 +422,7 @@
 
 /* Content moves to top when searching */
 .introSearching {
-  padding-top: calc(var(--header-height, 56px) + 20px) !important;
+  padding-top: 8px !important;
   justify-content: flex-start;
 }
 
@@ -485,29 +485,26 @@
 
 .featuredCard {
   text-align: left;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  background: #ffffff;
+  border: none;
+  background: rgba(0, 0, 0, 0.02);
   border-radius: 14px;
   padding: 20px;
   cursor: pointer;
-  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  transition: transform 200ms ease, background 200ms ease;
   box-shadow: none;
 }
 
 [data-theme='dark'] .featuredCard {
-  border-color: rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.04);
 }
 
 .featuredCard:hover {
   transform: translateY(-2px);
-  border-color: rgba(59, 130, 246, 0.3);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 [data-theme='dark'] .featuredCard:hover {
-  border-color: rgba(96, 165, 250, 0.3);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .featuredCardTop {
@@ -671,16 +668,16 @@
   gap: 8px;
   margin-bottom: 28px;
   padding-bottom: 20px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: none;
 }
 
 [data-theme='dark'] .categoryFilters {
-  border-bottom-color: rgba(255, 255, 255, 0.06);
+  border-bottom-color: transparent;
 }
 
 .categoryFilter {
   padding: 8px 16px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: none;
   background: transparent;
   border-radius: 8px;
   font-size: 14px;
@@ -691,12 +688,10 @@
 }
 
 [data-theme='dark'] .categoryFilter {
-  border-color: rgba(255, 255, 255, 0.08);
   color: rgba(148, 163, 184, 0.8);
 }
 
 .categoryFilter:hover {
-  border-color: #3b82f6;
   color: #3b82f6;
 }
 
@@ -712,7 +707,6 @@
 
 .categoryFilter.active {
   background: #3b82f6;
-  border-color: #3b82f6;
   color: white;
 }
 
@@ -753,12 +747,12 @@
 }
 
 .articleCard {
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(0, 0, 0, 0.02);
+  border: none;
   border-radius: 14px;
   padding: 18px;
   cursor: pointer;
-  transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+  transition: transform 200ms ease, background 200ms ease;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -766,19 +760,16 @@
 }
 
 [data-theme='dark'] .articleCard {
-  border-color: rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.04);
 }
 
 .articleCard:hover {
   transform: translateY(-1px);
-  border-color: rgba(59, 130, 246, 0.25);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 [data-theme='dark'] .articleCard:hover {
-  border-color: rgba(96, 165, 250, 0.25);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .articleCard h3 {
@@ -876,15 +867,14 @@
 
 .sidebarCard {
   padding: 20px;
-  background: #ffffff;
+  background: rgba(0, 0, 0, 0.02);
   border-radius: 14px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: none;
   margin-bottom: 16px;
   box-shadow: none;
 }
 
 [data-theme='dark'] .sidebarCard {
-  border-color: rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.04);
 }
 
