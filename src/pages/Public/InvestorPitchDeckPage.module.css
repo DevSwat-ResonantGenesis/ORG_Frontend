@@ -827,6 +827,14 @@
   color: #475569;
 }
 
+:global([data-theme="light"]) .hero {
+  background: transparent;
+}
+
+:global([data-theme="light"]) .heroContent {
+  background: transparent;
+}
+
 :global([data-theme="light"]) .parallax {
   opacity: 0.7;
 }
@@ -834,4 +842,5 @@
 :global([data-theme="light"]) .heroGrid {
   position: relative;
   z-index: 3;
+  background: transparent;
 }

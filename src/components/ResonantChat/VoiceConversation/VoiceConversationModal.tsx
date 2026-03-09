@@ -384,56 +384,132 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
     error: errorMsg || 'Error',
   }[status];
 
+  const isLight = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light';
+  const isActive = status === 'listening' || status === 'speaking' || status === 'processing';
+  const sphereSize = isActive ? 200 : 160;
+  const particleCount = 48;
+
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 9999,
-      background: 'rgba(0,0,0,0.85)',
-      backdropFilter: 'blur(12px)',
+      background: isLight ? 'rgba(248,250,252,0.92)' : 'rgba(5,7,11,0.92)',
+      backdropFilter: 'blur(20px)',
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      gap: '2rem',
+      gap: '1.5rem',
     }}>
-      {/* Close */}
-      <button onClick={onClose} style={{
-        position: 'absolute', top: '1.5rem', right: '1.5rem',
-        background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%',
-        width: 40, height: 40, cursor: 'pointer', color: '#fff', fontSize: '1.25rem',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}>✕</button>
-
       {/* Title */}
       <div style={{ textAlign: 'center' }}>
-        <h2 style={{ color: '#fff', margin: 0, fontSize: '1.4rem', fontWeight: 700, letterSpacing: '0.05em' }}>
+        <h2 style={{
+          color: isLight ? '#0f172a' : '#f8fafc', margin: 0,
+          fontSize: '1.4rem', fontWeight: 700, letterSpacing: '0.02em',
+        }}>
           Voice Conversation
         </h2>
-        <p style={{ color: '#888', margin: '0.4rem 0 0 0', fontSize: '0.85rem' }}>
+        <p style={{
+          color: isLight ? '#64748b' : '#64748b',
+          margin: '0.4rem 0 0 0', fontSize: '0.85rem',
+        }}>
           Real-time voice · Powered by Resonant Genesis
         </p>
       </div>
 
-      {/* Pulse orb */}
-      <div style={{ position: 'relative', width: 120, height: 120, cursor: 'pointer' }} onClick={handleToggleListen}>
-        {/* Ripple rings */}
-        {(status === 'listening' || status === 'speaking') && [0, 1, 2].map(i => (
-          <div key={i} style={{
-            position: 'absolute', inset: 0, borderRadius: '50%',
-            border: `2px solid ${pulseColor}`,
-            opacity: 0.5 - i * 0.15,
-            animation: `voiceRipple 1.5s ease-out ${i * 0.4}s infinite`,
-            transform: 'scale(1)',
+      {/* Sphere + Mic container */}
+      <div
+        style={{
+          position: 'relative',
+          width: sphereSize + 80,
+          height: sphereSize + 80,
+          cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          transition: 'all 0.6s cubic-bezier(0.4,0,0.2,1)',
+        }}
+        onClick={handleToggleListen}
+      >
+        {/* Particle ring — orbiting dots like parallax sphere */}
+        {Array.from({ length: particleCount }).map((_, i) => {
+          const angle = (i / particleCount) * Math.PI * 2;
+          const radius = sphereSize / 2 + 8;
+          const size = 2 + Math.random() * 2.5;
+          const delay = (i / particleCount) * 4;
+          return (
+            <div
+              key={`p-${i}`}
+              style={{
+                position: 'absolute',
+                width: size, height: size, borderRadius: '50%',
+                background: isActive ? pulseColor : (isLight ? '#3b82f6' : '#60a5fa'),
+                left: '50%', top: '50%',
+                transform: `translate(-50%, -50%) rotate(${angle}rad) translateX(${radius}px)`,
+                opacity: isActive ? 0.7 + Math.sin(angle * 3) * 0.3 : 0.35,
+                animation: isActive
+                  ? `voiceOrbit 4s linear ${delay}s infinite, voiceParticlePulse 2s ease-in-out ${delay * 0.5}s infinite`
+                  : `voiceOrbitSlow 12s linear ${delay}s infinite`,
+                transformOrigin: `${-radius + size / 2}px 0`,
+                transition: 'opacity 0.5s, background 0.5s',
+                boxShadow: isActive ? `0 0 6px ${pulseColor}88` : 'none',
+              }}
+            />
+          );
+        })}
+
+        {/* Breathing ring — expands/shrinks when listening */}
+        {isActive && [0, 1, 2].map(i => (
+          <div key={`ring-${i}`} style={{
+            position: 'absolute',
+            left: '50%', top: '50%',
+            width: sphereSize + i * 30,
+            height: sphereSize + i * 30,
+            borderRadius: '50%',
+            border: `1.5px solid ${pulseColor}`,
+            opacity: 0.35 - i * 0.1,
+            transform: 'translate(-50%, -50%)',
+            animation: `voiceBreathe 2.5s ease-in-out ${i * 0.3}s infinite`,
           }} />
         ))}
-        {/* Main orb */}
+
+        {/* Wireframe sphere shell */}
         <div style={{
-          width: 120, height: 120, borderRadius: '50%',
-          background: `radial-gradient(circle, ${pulseColor}33 0%, ${pulseColor}11 70%)`,
-          border: `2px solid ${pulseColor}`,
+          position: 'absolute',
+          left: '50%', top: '50%',
+          width: sphereSize, height: sphereSize,
+          borderRadius: '50%',
+          transform: 'translate(-50%, -50%)',
+          border: `1.5px solid ${isActive ? `${pulseColor}44` : (isLight ? '#3b82f633' : '#60a5fa33')}`,
+          background: `radial-gradient(circle at 35% 35%, ${isActive ? `${pulseColor}18` : (isLight ? '#3b82f60d' : '#60a5fa0d')} 0%, transparent 70%)`,
+          transition: 'all 0.5s',
+          boxShadow: isActive
+            ? `0 0 60px ${pulseColor}22, inset 0 0 40px ${pulseColor}11`
+            : `0 0 30px ${isLight ? '#3b82f60a' : '#60a5fa0a'}`,
+        }} />
+
+        {/* Inner glow core */}
+        <div style={{
+          position: 'absolute',
+          left: '50%', top: '50%',
+          width: sphereSize * 0.5, height: sphereSize * 0.5,
+          borderRadius: '50%',
+          transform: 'translate(-50%, -50%)',
+          background: `radial-gradient(circle, ${isActive ? `${pulseColor}30` : (isLight ? '#3b82f618' : '#60a5fa18')} 0%, transparent 70%)`,
+          animation: isActive ? 'voiceCoreGlow 2s ease-in-out infinite' : 'none',
+          transition: 'background 0.5s',
+        }} />
+
+        {/* Mic icon — always centered */}
+        <div style={{
+          position: 'relative', zIndex: 2,
+          width: 56, height: 56, borderRadius: '50%',
+          background: isActive
+            ? `radial-gradient(circle, ${pulseColor}25 0%, transparent 70%)`
+            : 'transparent',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           transition: 'all 0.3s',
-          boxShadow: status === 'listening' ? `0 0 40px ${pulseColor}66` : 'none',
         }}>
-          {/* Mic icon */}
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke={pulseColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            {status === 'listening' || listening ? (
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+            stroke={isActive ? pulseColor : (isLight ? '#3b82f6' : '#60a5fa')}
+            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            style={{ transition: 'stroke 0.3s' }}
+          >
+            {listening ? (
               <rect x="9" y="9" width="6" height="6" rx="1" fill={pulseColor} />
             ) : (
               <>
@@ -447,8 +523,29 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
         </div>
       </div>
 
+      {/* Voice waveform — trace lines when speaking/processing */}
+      {(status === 'speaking' || status === 'processing') && (
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          gap: 3, height: 32,
+        }}>
+          {Array.from({ length: 24 }).map((_, i) => (
+            <div key={`bar-${i}`} style={{
+              width: 2.5, borderRadius: 2,
+              background: status === 'speaking' ? '#8b5cf6' : '#f59e0b',
+              animation: `voiceBar 0.8s ease-in-out ${i * 0.05}s infinite alternate`,
+              opacity: 0.7,
+            }} />
+          ))}
+        </div>
+      )}
+
       {/* Status label */}
-      <p style={{ color: pulseColor, margin: 0, fontSize: '0.95rem', fontWeight: 500, letterSpacing: '0.05em' }}>
+      <p style={{
+        color: isActive ? pulseColor : (isLight ? '#475569' : '#94a3b8'),
+        margin: 0, fontSize: '0.95rem', fontWeight: 500, letterSpacing: '0.03em',
+        transition: 'color 0.3s',
+      }}>
         {statusLabel}
       </p>
 
@@ -467,12 +564,16 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
               <div style={{
                 maxWidth: '80%',
                 background: t.role === 'user'
-                  ? 'rgba(99,102,241,0.25)'
-                  : 'rgba(255,255,255,0.08)',
-                border: `1px solid ${t.role === 'user' ? '#6366f144' : '#ffffff1a'}`,
+                  ? (isLight ? 'rgba(59,130,246,0.12)' : 'rgba(99,102,241,0.25)')
+                  : (isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.08)'),
+                border: `1px solid ${t.role === 'user'
+                  ? (isLight ? '#3b82f622' : '#6366f144')
+                  : (isLight ? '#0000000a' : '#ffffff1a')}`,
                 borderRadius: t.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                 padding: '0.6rem 1rem',
-                color: t.partial ? '#aaa' : '#fff',
+                color: t.partial
+                  ? (isLight ? '#94a3b8' : '#aaa')
+                  : (isLight ? '#0f172a' : '#f8fafc'),
                 fontSize: '0.9rem',
                 lineHeight: 1.5,
                 fontStyle: t.partial ? 'italic' : 'normal',
@@ -485,11 +586,47 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
         </div>
       )}
 
-      {/* Ripple keyframes */}
+      {/* Close button — below text */}
+      <button onClick={onClose} style={{
+        marginTop: '0.5rem',
+        background: isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.08)',
+        border: `1px solid ${isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.12)'}`,
+        borderRadius: 12,
+        padding: '10px 28px',
+        cursor: 'pointer',
+        color: isLight ? '#475569' : '#94a3b8',
+        fontSize: '0.85rem', fontWeight: 500,
+        display: 'flex', alignItems: 'center', gap: 8,
+        transition: 'all 0.2s',
+      }}>
+        <span style={{ fontSize: '1rem' }}>✕</span> End Session
+      </button>
+
+      {/* Keyframes */}
       <style>{`
-        @keyframes voiceRipple {
-          0%   { transform: scale(1); opacity: 0.5; }
-          100% { transform: scale(2.2); opacity: 0; }
+        @keyframes voiceOrbit {
+          0%   { transform: translate(-50%, -50%) rotate(0deg) translateX(${sphereSize / 2 + 8}px); }
+          100% { transform: translate(-50%, -50%) rotate(360deg) translateX(${sphereSize / 2 + 8}px); }
+        }
+        @keyframes voiceOrbitSlow {
+          0%   { transform: translate(-50%, -50%) rotate(0deg) translateX(${sphereSize / 2 + 8}px); }
+          100% { transform: translate(-50%, -50%) rotate(360deg) translateX(${sphereSize / 2 + 8}px); }
+        }
+        @keyframes voiceBreathe {
+          0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.35; }
+          50%      { transform: translate(-50%, -50%) scale(1.12); opacity: 0.15; }
+        }
+        @keyframes voiceCoreGlow {
+          0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+          50%      { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+        }
+        @keyframes voiceBar {
+          0%   { height: 4px; }
+          100% { height: ${24 + Math.random() * 8}px; }
+        }
+        @keyframes voiceParticlePulse {
+          0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) rotate(var(--a)) translateX(var(--r)) scale(1); }
+          50%      { opacity: 0.9; transform: translate(-50%, -50%) rotate(var(--a)) translateX(var(--r)) scale(1.5); }
         }
       `}</style>
     </div>
