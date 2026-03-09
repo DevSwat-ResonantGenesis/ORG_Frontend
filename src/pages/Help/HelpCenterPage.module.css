@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  background: transparent;
+  background: linear-gradient(135deg, #fafbfc 0%, #f5f7fa 100%);
   color: #0f172a;
   overflow-x: clip;
   padding: 0;
@@ -17,7 +17,7 @@
 }
 
 [data-theme='dark'] .helpCenterPage {
-  background: transparent;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   color: #f1f5f9;
 }
 
@@ -59,11 +59,6 @@
   height: 100%;
   pointer-events: none;
   overflow: visible !important;
-}
-
-.fixedBg canvas,
-.fixedBg div {
-  background-image: unset !important;
 }
 
 .heroParallaxInner {
@@ -154,12 +149,31 @@
   transition: background 200ms ease;
 }
 
+/* Subtle backdrop when scrolled */
+.stickySearch::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  opacity: 0;
+  transition: opacity 200ms ease;
+  z-index: -1;
+  pointer-events: none;
+}
+
+[data-theme='light'] .stickySearch::before {
+  background: rgba(250, 251, 252, 0.75);
+}
+
 .stickySearchInner {
   max-width: 900px;
 }
 
-.stickySearchStuck {
-  z-index: 10;
+/* Backdrop visible when stuck at top */
+.stickySearchStuck::before {
+  opacity: 1;
 }
 
 /* Hero Title — matches home page hero title */
@@ -450,7 +464,7 @@
 .featuredCard {
   text-align: left;
   border: none;
-  background: transparent;
+  background: rgba(0, 0, 0, 0.02);
   border-radius: 14px;
   padding: 20px;
   cursor: pointer;
@@ -459,16 +473,16 @@
 }
 
 [data-theme='dark'] .featuredCard {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .featuredCard:hover {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 [data-theme='dark'] .featuredCard:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .featuredCardTop {
@@ -568,43 +582,21 @@
 }
 
 /* Search Input — fully transparent, absolutely no box/stroke */
-.searchInput,
-.searchInput:focus,
-.searchInput:active,
-.searchInput:hover,
-.searchBar input,
-.searchBar input:focus,
-.searchBar input:active,
-.searchBar input:hover {
+.searchInput {
   flex: 1;
-  border: 0 none transparent !important;
-  border-style: none !important;
-  border-width: 0 !important;
-  border-color: transparent !important;
+  border: none !important;
   background: transparent !important;
-  background-color: transparent !important;
   font-size: 15px;
   color: #f1f5f9;
-  outline: 0 none transparent !important;
-  outline-style: none !important;
-  outline-width: 0 !important;
+  outline: none !important;
   box-shadow: none !important;
-  -webkit-box-shadow: none !important;
   padding: 0;
-  -webkit-appearance: none !important;
-  -moz-appearance: none !important;
-  appearance: none !important;
-  border-radius: 0 !important;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-[data-theme='light'] .searchInput,
-[data-theme='light'] .searchBar input {
+[data-theme='light'] .searchInput {
   color: #0f172a;
-  border: 0 none transparent !important;
-  border-color: transparent !important;
-  outline: 0 none transparent !important;
-  background: transparent !important;
-  box-shadow: none !important;
 }
 
 .searchInput::placeholder {
@@ -614,6 +606,12 @@
 
 [data-theme='light'] .searchInput::placeholder {
   color: #b0b8c4;
+}
+
+.searchInput:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Shortcut badge — no box, just dim text */
@@ -727,7 +725,7 @@
 }
 
 .articleCard {
-  background: transparent;
+  background: rgba(0, 0, 0, 0.02);
   border: none;
   border-radius: 14px;
   padding: 18px;
@@ -740,16 +738,16 @@
 }
 
 [data-theme='dark'] .articleCard {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .articleCard:hover {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 [data-theme='dark'] .articleCard:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .articleCard h3 {
@@ -847,7 +845,7 @@
 
 .sidebarCard {
   padding: 20px;
-  background: transparent;
+  background: rgba(0, 0, 0, 0.02);
   border-radius: 14px;
   border: none;
   margin-bottom: 16px;
@@ -855,7 +853,7 @@
 }
 
 [data-theme='dark'] .sidebarCard {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .sidebarCard:last-child {

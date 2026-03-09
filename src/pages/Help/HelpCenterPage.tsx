@@ -253,37 +253,8 @@ const HelpCenterPage: React.FC = () => {
     setHelpTheme(nextHelpTheme);
     applyDomTheme(nextHelpTheme);
 
-    // Force ALL parent backgrounds to transparent so the fixed sphere shows through.
-    // The global theme system (base.css, MainLayout.css) sets solid backgrounds with !important
-    // on html, body, #root, .main-layout-wrapper, .main-content — override them all.
-    const els = [
-      document.documentElement,
-      document.body,
-      document.getElementById('root'),
-      document.querySelector('.main-layout-wrapper'),
-      document.querySelector('.main-content'),
-      document.querySelector('.main-content-area'),
-    ].filter(Boolean) as HTMLElement[];
-
-    const saved: { el: HTMLElement; bg: string }[] = els.map(el => ({
-      el,
-      bg: el.style.background,
-    }));
-
-    els.forEach(el => {
-      el.style.setProperty('background', 'transparent', 'important');
-    });
-
     return () => {
       applyDomTheme(previousTheme);
-      // Restore original backgrounds
-      saved.forEach(({ el, bg }) => {
-        if (bg) {
-          el.style.background = bg;
-        } else {
-          el.style.removeProperty('background');
-        }
-      });
     };
   }, []);
 
@@ -365,25 +336,23 @@ const HelpCenterPage: React.FC = () => {
         </Suspense>
       </div>
 
-      {/* Hero — title + subtitle (hidden when searching so search bar moves to top) */}
-      {!searchQuery && (
-        <section className={styles.hero}>
-          <div className={styles.heroContent}>
-            <div className={styles.heroIntro}>
-              <h1 className={styles.heroTitle}>Help Center</h1>
-              <p className={styles.heroSubtitle}>
-                Tutorials and documentation for ResonantGenesis — aligned to the current stack.
-              </p>
-            </div>
+      {/* Hero — title + subtitle */}
+      <section className={styles.hero}>
+        <div className={styles.heroContent}>
+          <div className={styles.heroIntro}>
+            <h1 className={styles.heroTitle}>Help Center</h1>
+            <p className={styles.heroSubtitle}>
+              Tutorials and documentation for ResonantGenesis — aligned to the current stack.
+            </p>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* Sentinel — used by IntersectionObserver to detect sticky state */}
       <div ref={sentinelRef} style={{ height: 1, marginTop: -1 }} />
 
       {/* Sticky Search Bar — floats at top on scroll */}
-      <div className={`${styles.stickySearch} ${(isStuck || searchQuery) ? styles.stickySearchStuck : ''}`}>
+      <div className={`${styles.stickySearch} ${isStuck ? styles.stickySearchStuck : ''}`}>
         <div className={styles.stickySearchInner}>
           <div className={styles.searchBar}>
             <SearchIcon size={18} />
