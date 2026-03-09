@@ -381,13 +381,156 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
   };
 
   const workflowTemplates = [
-    { id: 't1', name: 'Data Pipeline', iconType: 'refresh', description: 'ETL workflow for data processing', nodes: 5 },
-    { id: 't2', name: 'Customer Support', iconType: 'external', description: 'Automated support ticket handling', nodes: 8 },
-    { id: 't3', name: 'Content Generation', iconType: 'edit', description: 'Multi-step content creation', nodes: 6 },
-    { id: 't4', name: 'Research Assistant', iconType: 'search', description: 'Research and analysis workflow', nodes: 7 },
-    { id: 't5', name: 'Code Review', iconType: 'code', description: 'Automated code review pipeline', nodes: 4 },
-    { id: 't6', name: 'Report Generator', iconType: 'barChart', description: 'Automated report generation', nodes: 5 },
+    {
+      id: 't1', name: 'Data Pipeline', iconType: 'refresh', description: 'ETL workflow for data processing',
+      templateNodes: [
+        { id: 'start', type: 'start', label: 'Start', position: { x: 50, y: 200 }, config: {} },
+        { id: 'extract', type: 'api', label: 'Extract Data', position: { x: 200, y: 200 }, config: { endpoint: '' } },
+        { id: 'transform', type: 'transform', label: 'Transform', position: { x: 350, y: 200 }, config: {} },
+        { id: 'validate', type: 'condition', label: 'Validate', position: { x: 500, y: 200 }, config: { condition: 'data.valid === true' } },
+        { id: 'load', type: 'api', label: 'Load Data', position: { x: 650, y: 200 }, config: { endpoint: '' } },
+        { id: 'end', type: 'end', label: 'End', position: { x: 800, y: 200 }, config: {} },
+      ],
+      templateEdges: [
+        { id: 'e1', source: 'start', target: 'extract' },
+        { id: 'e2', source: 'extract', target: 'transform' },
+        { id: 'e3', source: 'transform', target: 'validate' },
+        { id: 'e4', source: 'validate', target: 'load' },
+        { id: 'e5', source: 'load', target: 'end' },
+      ],
+    },
+    {
+      id: 't2', name: 'Customer Support', iconType: 'external', description: 'Automated support ticket handling',
+      templateNodes: [
+        { id: 'start', type: 'start', label: 'Ticket Received', position: { x: 50, y: 200 }, config: {} },
+        { id: 'classify', type: 'agent', label: 'Classify Ticket', position: { x: 200, y: 200 }, config: {} },
+        { id: 'priority', type: 'condition', label: 'Check Priority', position: { x: 350, y: 200 }, config: { condition: 'priority === "high"' } },
+        { id: 'escalate', type: 'agent', label: 'Escalate', position: { x: 500, y: 100 }, config: {} },
+        { id: 'autoReply', type: 'agent', label: 'Auto Reply', position: { x: 500, y: 300 }, config: {} },
+        { id: 'resolve', type: 'agent', label: 'Resolve', position: { x: 650, y: 200 }, config: {} },
+        { id: 'notify', type: 'api', label: 'Notify Customer', position: { x: 800, y: 200 }, config: {} },
+        { id: 'end', type: 'end', label: 'End', position: { x: 950, y: 200 }, config: {} },
+      ],
+      templateEdges: [
+        { id: 'e1', source: 'start', target: 'classify' },
+        { id: 'e2', source: 'classify', target: 'priority' },
+        { id: 'e3', source: 'priority', target: 'escalate' },
+        { id: 'e4', source: 'priority', target: 'autoReply' },
+        { id: 'e5', source: 'escalate', target: 'resolve' },
+        { id: 'e6', source: 'autoReply', target: 'resolve' },
+        { id: 'e7', source: 'resolve', target: 'notify' },
+        { id: 'e8', source: 'notify', target: 'end' },
+      ],
+    },
+    {
+      id: 't3', name: 'Content Generation', iconType: 'edit', description: 'Multi-step content creation',
+      templateNodes: [
+        { id: 'start', type: 'start', label: 'Start', position: { x: 50, y: 200 }, config: {} },
+        { id: 'research', type: 'agent', label: 'Research Topic', position: { x: 200, y: 200 }, config: {} },
+        { id: 'outline', type: 'agent', label: 'Create Outline', position: { x: 350, y: 200 }, config: {} },
+        { id: 'draft', type: 'agent', label: 'Write Draft', position: { x: 500, y: 200 }, config: {} },
+        { id: 'review', type: 'agent', label: 'Review & Edit', position: { x: 650, y: 200 }, config: {} },
+        { id: 'publish', type: 'api', label: 'Publish', position: { x: 800, y: 200 }, config: {} },
+        { id: 'end', type: 'end', label: 'End', position: { x: 950, y: 200 }, config: {} },
+      ],
+      templateEdges: [
+        { id: 'e1', source: 'start', target: 'research' },
+        { id: 'e2', source: 'research', target: 'outline' },
+        { id: 'e3', source: 'outline', target: 'draft' },
+        { id: 'e4', source: 'draft', target: 'review' },
+        { id: 'e5', source: 'review', target: 'publish' },
+        { id: 'e6', source: 'publish', target: 'end' },
+      ],
+    },
+    {
+      id: 't4', name: 'Research Assistant', iconType: 'search', description: 'Research and analysis workflow',
+      templateNodes: [
+        { id: 'start', type: 'start', label: 'Start', position: { x: 50, y: 200 }, config: {} },
+        { id: 'query', type: 'agent', label: 'Parse Query', position: { x: 200, y: 200 }, config: {} },
+        { id: 'search', type: 'api', label: 'Web Search', position: { x: 350, y: 100 }, config: {} },
+        { id: 'dbSearch', type: 'api', label: 'DB Search', position: { x: 350, y: 300 }, config: {} },
+        { id: 'merge', type: 'transform', label: 'Merge Results', position: { x: 500, y: 200 }, config: {} },
+        { id: 'analyze', type: 'agent', label: 'Analyze', position: { x: 650, y: 200 }, config: {} },
+        { id: 'summarize', type: 'agent', label: 'Summarize', position: { x: 800, y: 200 }, config: {} },
+        { id: 'end', type: 'end', label: 'End', position: { x: 950, y: 200 }, config: {} },
+      ],
+      templateEdges: [
+        { id: 'e1', source: 'start', target: 'query' },
+        { id: 'e2', source: 'query', target: 'search' },
+        { id: 'e3', source: 'query', target: 'dbSearch' },
+        { id: 'e4', source: 'search', target: 'merge' },
+        { id: 'e5', source: 'dbSearch', target: 'merge' },
+        { id: 'e6', source: 'merge', target: 'analyze' },
+        { id: 'e7', source: 'analyze', target: 'summarize' },
+        { id: 'e8', source: 'summarize', target: 'end' },
+      ],
+    },
+    {
+      id: 't5', name: 'Code Review', iconType: 'code', description: 'Automated code review pipeline',
+      templateNodes: [
+        { id: 'start', type: 'start', label: 'PR Opened', position: { x: 50, y: 200 }, config: {} },
+        { id: 'fetch', type: 'api', label: 'Fetch Diff', position: { x: 200, y: 200 }, config: {} },
+        { id: 'lint', type: 'agent', label: 'Lint & Style', position: { x: 350, y: 200 }, config: {} },
+        { id: 'security', type: 'agent', label: 'Security Scan', position: { x: 500, y: 200 }, config: {} },
+        { id: 'comment', type: 'api', label: 'Post Review', position: { x: 650, y: 200 }, config: {} },
+        { id: 'end', type: 'end', label: 'End', position: { x: 800, y: 200 }, config: {} },
+      ],
+      templateEdges: [
+        { id: 'e1', source: 'start', target: 'fetch' },
+        { id: 'e2', source: 'fetch', target: 'lint' },
+        { id: 'e3', source: 'lint', target: 'security' },
+        { id: 'e4', source: 'security', target: 'comment' },
+        { id: 'e5', source: 'comment', target: 'end' },
+      ],
+    },
+    {
+      id: 't6', name: 'Report Generator', iconType: 'barChart', description: 'Automated report generation',
+      templateNodes: [
+        { id: 'start', type: 'start', label: 'Start', position: { x: 50, y: 200 }, config: {} },
+        { id: 'gather', type: 'api', label: 'Gather Data', position: { x: 200, y: 200 }, config: {} },
+        { id: 'process', type: 'transform', label: 'Process', position: { x: 350, y: 200 }, config: {} },
+        { id: 'generate', type: 'agent', label: 'Generate Report', position: { x: 500, y: 200 }, config: {} },
+        { id: 'deliver', type: 'api', label: 'Deliver', position: { x: 650, y: 200 }, config: {} },
+        { id: 'end', type: 'end', label: 'End', position: { x: 800, y: 200 }, config: {} },
+      ],
+      templateEdges: [
+        { id: 'e1', source: 'start', target: 'gather' },
+        { id: 'e2', source: 'gather', target: 'process' },
+        { id: 'e3', source: 'process', target: 'generate' },
+        { id: 'e4', source: 'generate', target: 'deliver' },
+        { id: 'e5', source: 'deliver', target: 'end' },
+      ],
+    },
   ];
+
+  const handleUseTemplate = useCallback((template: typeof workflowTemplates[0]) => {
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const created = await workflowsApi.createWorkflow({
+          name: template.name,
+          description: template.description,
+          trigger_type: 'manual',
+          trigger_config: {
+            ui_graph: { nodes: template.templateNodes, edges: template.templateEdges },
+            ui_status: 'draft',
+            ui_published_at: null,
+          },
+          steps: [],
+        });
+
+        const uiCreated = apiToUiWorkflow(created);
+        addWorkflow(uiCreated);
+        selectWorkflow(uiCreated.id);
+        setActiveView('builder');
+      } catch (e: any) {
+        setError(e?.message || 'Failed to create workflow from template');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [addWorkflow, apiToUiWorkflow, selectWorkflow, setActiveView, setError, setLoading]);
 
   return (
     <div className={`${styles.panel} ${className || ''}`}>
@@ -567,9 +710,9 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
                   <h4>{template.name}</h4>
                   <p>{template.description}</p>
                   <div className={styles.templateMeta}>
-                    <span>{template.nodes} nodes</span>
+                    <span>{template.templateNodes.length} nodes</span>
                   </div>
-                  <button className={styles.useTemplateBtn}>
+                  <button className={styles.useTemplateBtn} onClick={() => handleUseTemplate(template)}>
                     Use Template
                   </button>
                 </div>
