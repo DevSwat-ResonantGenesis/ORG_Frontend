@@ -1,6 +1,7 @@
 import React, { Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { useThemeStore } from '@/store/themeStore';
 import styles from './InvestorPitchDeckPage.module.css';
 
 const ThreeParticleSphere = React.lazy(() => import('@/components/features/landing/ThreeParticleSphere'));
@@ -33,6 +34,17 @@ const InvestorPitchDeckPage = () => {
 
   /* Lock body scroll on mount, restore on unmount.
      Also add body class so the header can detect this page. */
+  /* Force dark mode on this page — restore previous theme on unmount */
+  const { theme, setTheme } = useThemeStore();
+  const savedTheme = useRef(theme);
+  useEffect(() => {
+    savedTheme.current = useThemeStore.getState().theme;
+    if (savedTheme.current !== 'dark') setTheme('dark');
+    return () => {
+      if (savedTheme.current !== 'dark') setTheme(savedTheme.current);
+    };
+  }, []);
+
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
