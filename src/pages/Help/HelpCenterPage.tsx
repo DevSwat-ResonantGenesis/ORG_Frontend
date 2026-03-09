@@ -350,11 +350,8 @@ const HelpCenterPage: React.FC = () => {
         </section>
       )}
 
-      {/* Spacer only when searching (search bar becomes fixed) */}
-      {searchQuery && <div className={styles.searchSpacer} />}
-
-      {/* Search Bar — normal position by default, fixed at top when typing */}
-      <div className={`${styles.stickySearch} ${searchQuery ? styles.stickySearchFixed : ''}`}>
+      {/* Search Bar — stays in normal flow, dropdown pushes content down */}
+      <div className={styles.stickySearch}>
         <div className={styles.stickySearchInner}>
           <div className={styles.searchBar}>
             <SearchIcon size={18} />

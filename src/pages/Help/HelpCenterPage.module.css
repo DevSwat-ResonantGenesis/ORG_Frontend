@@ -24,7 +24,7 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 48px 24px 0;
+  padding: 80px 24px 0;
   width: 100%;
   box-sizing: border-box;
 }
@@ -147,21 +147,7 @@
   background: transparent;
 }
 
-/* When user is typing — pin to top like header */
-.stickySearchFixed {
-  position: fixed;
-  top: var(--header-height, 56px);
-  left: 0;
-  right: 0;
-  z-index: 100;
-  background: rgba(10, 10, 10, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-
-[data-theme='light'] .stickySearchFixed {
-  background: rgba(255, 255, 255, 0.85);
-}
+/* Search bar stays in normal flow — dropdown pushes content down */
 
 .stickySearchInner {
   max-width: 900px;
@@ -220,7 +206,30 @@
   outline: none !important;
 }
 
-/* Blue shimmer line removed — clean minimal search */
+/* Animated blue bottom line — matches header top line */
+.searchBar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(59, 130, 246, 0.5),
+    rgba(14, 165, 233, 0.6),
+    rgba(59, 130, 246, 0.5),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: searchLineShimmer 3s ease-in-out infinite;
+}
+
+@keyframes searchLineShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 
 .searchBar svg {
   color: rgba(148, 163, 184, 0.6);
