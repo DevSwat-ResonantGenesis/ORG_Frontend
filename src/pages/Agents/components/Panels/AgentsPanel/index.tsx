@@ -50,6 +50,10 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const [bulkMode, setBulkMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   
+  // Chat pane state (inline, replaces sessions pane)
+  const [chatAgentId, setChatAgentId] = useState<string | null>(null);
+  const chatAgent = chatAgentId ? agents.find((a: Agent) => a.id === chatAgentId) || null : null;
+
   // Modal state
   const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [agentVersions, setAgentVersions] = useState<any[]>([]);
@@ -161,10 +165,11 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     exitBulkMode();
   }, [bulkSelectedCount, exitBulkMode, removeAgent, selectedIds, toast]);
 
-  // Scroll to bottom of messages
+  // Scroll to bottom of messages (inline chat pane)
+  const chatMessages = chatAgentId ? (agentMessages[chatAgentId] || []) : [];
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [modalMessages, isSendingMessage]);
+  }, [chatMessages, isSendingMessage]);
 
   // Open modal
   const openModal = useCallback((type: ModalType, agent: Agent) => {
@@ -347,11 +352,11 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     }
   }, [modalAgent, goalInput, toast, updateAgent]);
 
-  // Handle send message
+  // Handle send message (inline chat pane)
   const handleSendMessage = useCallback(async () => {
-    if (!modalAgent || !messageInput.trim() || isSendingMessage) return;
+    if (!chatAgent || !messageInput.trim() || isSendingMessage) return;
 
-    if (modalAgent.persisted === false) {
+    if (chatAgent.persisted === false) {
       setError('This agent is not persisted on the server, so it cannot receive messages. Create the agent on the server first.');
       return;
     }
@@ -366,14 +371,14 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
     setAgentMessages(prev => ({
       ...prev,
-      [modalAgent.id]: [...(prev[modalAgent.id] || []), userMessage],
+      [chatAgent.id]: [...(prev[chatAgent.id] || []), userMessage],
     }));
     setMessageInput('');
     setError(null);
     setIsSendingMessage(true);
 
     try {
-      const result = await executeAgentTask(modalAgent.id, content, { mode: 'chat' });
+      const result = await executeAgentTask(chatAgent.id, content, { mode: 'chat' });
       const outputText = typeof result?.output === 'string'
         ? result.output
         : result?.output
@@ -388,7 +393,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
       };
       setAgentMessages(prev => ({
         ...prev,
-        [modalAgent.id]: [...(prev[modalAgent.id] || []), agentReply],
+        [chatAgent.id]: [...(prev[chatAgent.id] || []), agentReply],
       }));
     } catch (err: any) {
       const msg = err?.message || 'Failed to send message. Please try again.';
@@ -402,12 +407,12 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
       };
       setAgentMessages(prev => ({
         ...prev,
-        [modalAgent.id]: [...(prev[modalAgent.id] || []), errorReply],
+        [chatAgent.id]: [...(prev[chatAgent.id] || []), errorReply],
       }));
     } finally {
       setIsSendingMessage(false);
     }
-  }, [modalAgent, messageInput, isSendingMessage, toast]);
+  }, [chatAgent, messageInput, isSendingMessage, toast]);
 
   // Fetch agent versions and activity when detail modal opens
   useEffect(() => {
@@ -689,11 +694,11 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                           <Icons.Play />
                         </button>
                         
-                        {/* Message button */}
+                        {/* Message button — opens inline chat pane */}
                         <button 
                           className={`${styles.actionBtn} ${styles.messageBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); openModal('message', agent); }}
+                          onClick={(e) => { e.stopPropagation(); setChatAgentId(agent.id); setMessageInput(''); setError(null); }}
                           title="Message Agent"
                         >
                           <Icons.MessageSquare />
@@ -753,12 +758,67 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           </div>
         </div>
 
-        {/* Right pane: sessions for selected agent */}
-        {selectedAgent && (
+        {/* Right pane: chat if chatAgent is set, otherwise sessions */}
+        {chatAgent ? (
+          <div className={styles.sessionsPane}>
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+              {/* Chat header */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', borderBottom: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}>
+                <Icons.MessageSquare />
+                <span style={{ fontWeight: 600, fontSize: 13, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Chat with {chatAgent.name}</span>
+                <button onClick={() => setChatAgentId(null)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 16, padding: '2px 6px' }} title="Close chat">×</button>
+              </div>
+
+              {/* Messages area */}
+              <div className={styles.messagesArea} style={{ flex: 1, overflowY: 'auto', padding: '8px 12px' }}>
+                {(agentMessages[chatAgent.id] || []).length === 0 && (
+                  <div className={styles.emptyMessages}>
+                    <Icons.MessageSquare />
+                    <p>Start a conversation with {chatAgent.name}</p>
+                  </div>
+                )}
+                {(agentMessages[chatAgent.id] || []).map((msg) => (
+                  <div key={msg.id} className={`${styles.message} ${styles[msg.role]}`}>
+                    <div className={styles.messageContent}>{msg.content}</div>
+                    <div className={styles.messageTime}>{msg.timestamp.toLocaleTimeString()}</div>
+                  </div>
+                ))}
+                {isSendingMessage && (
+                  <div className={`${styles.message} ${styles.agent} ${styles.thinkingMessage}`}>
+                    <div className={styles.thinkingRow}>
+                      <span className={styles.thinkingSpinner} aria-hidden="true" />
+                      <span className={styles.thinkingText}>Thinking...</span>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Message input */}
+              <div className={styles.messageInputArea} style={{ flexShrink: 0, padding: '8px 12px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                <input
+                  type="text"
+                  value={messageInput}
+                  onChange={(e) => setMessageInput(e.target.value)}
+                  placeholder="Type a message..."
+                  disabled={isSendingMessage}
+                  onKeyDown={(e) => e.key === 'Enter' && !isSendingMessage && handleSendMessage()}
+                />
+                <button
+                  className={styles.sendBtn}
+                  onClick={handleSendMessage}
+                  disabled={!messageInput.trim() || isSendingMessage}
+                >
+                  {isSendingMessage ? <span className={styles.sendSpinner} aria-hidden="true" /> : <Icons.Send />}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : selectedAgent ? (
           <div className={styles.sessionsPane}>
             <SessionsPanel />
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* ============== MODALS ============== */}
@@ -845,66 +905,6 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   Run Another Task
                 </button>
               )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Message Modal */}
-      {activeModal === 'message' && modalAgent && (
-        <div className={styles.modalOverlay} onClick={closeModal}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={`Chat with ${modalAgent.name}`}>
-            <div className={styles.modalHeader}>
-              <h3><Icons.MessageSquare /> Chat with {modalAgent.name}</h3>
-              <button className={styles.modalClose} onClick={closeModal}>×</button>
-            </div>
-            <div className={styles.modalBody}>
-              {error && <div className={styles.errorMsg}>{error}</div>}
-              {/* Messages area */}
-              <div className={styles.messagesArea}>
-                {modalMessages.length === 0 && (
-                  <div className={styles.emptyMessages}>
-                    <Icons.MessageSquare />
-                    <p>Start a conversation with {modalAgent.name}</p>
-                  </div>
-                )}
-                {modalMessages.map((msg) => (
-                  <div key={msg.id} className={`${styles.message} ${styles[msg.role]}`}>
-                    <div className={styles.messageContent}>{msg.content}</div>
-                    <div className={styles.messageTime}>
-                      {msg.timestamp.toLocaleTimeString()}
-                    </div>
-                  </div>
-                ))}
-                {isSendingMessage && (
-                  <div className={`${styles.message} ${styles.agent} ${styles.thinkingMessage}`}>
-                    <div className={styles.thinkingRow}>
-                      <span className={styles.thinkingSpinner} aria-hidden="true" />
-                      <span className={styles.thinkingText}>Thinking...</span>
-                    </div>
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-              
-              {/* Message input */}
-              <div className={styles.messageInputArea}>
-                <input
-                  type="text"
-                  value={messageInput}
-                  onChange={(e) => setMessageInput(e.target.value)}
-                  placeholder="Type a message..."
-                  disabled={isSendingMessage}
-                  onKeyDown={(e) => e.key === 'Enter' && !isSendingMessage && handleSendMessage()}
-                />
-                <button 
-                  className={styles.sendBtn}
-                  onClick={handleSendMessage}
-                  disabled={!messageInput.trim() || isSendingMessage}
-                >
-                  {isSendingMessage ? <span className={styles.sendSpinner} aria-hidden="true" /> : <Icons.Send />}
-                </button>
-              </div>
             </div>
           </div>
         </div>

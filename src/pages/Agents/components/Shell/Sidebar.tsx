@@ -18,7 +18,7 @@ const SIDEBAR_SECTIONS: { id: SidebarSection; label: string; icon: React.ReactNo
   { id: 'audit', label: 'Audit', icon: <Icons.Audit /> },
   { id: 'debug', label: 'Debug', icon: <Icons.Health /> },
   { id: 'workflow', label: 'Workflow', icon: <Icons.Fork /> },
-  { id: 'chat', label: 'Chat', icon: <Icons.User /> },
+  
   { id: 'monitor', label: 'Monitor', icon: <Icons.Health /> },
   { id: 'external', label: 'External', icon: <Icons.External /> },
   { id: 'settings', label: 'Settings', icon: <Icons.Settings /> },

@@ -22,7 +22,7 @@ const ExecutionPanel = lazy(() => import('./components/Panels/ExecutionPanel'));
 const WorkflowPanel = lazy(() => import('./components/Panels/WorkflowPanel'));
 const SettingsPanel = lazy(() => import('./components/Panels/SettingsPanel'));
 const MonitorPanel = lazy(() => import('./components/Panels/MonitorPanel'));
-const ChatPanel = lazy(() => import('./components/Panels/ChatPanel'));
+// ChatPanel removed — chat is now inline in AgentsPanel
 const AuditPanel = lazy(() => import('./components/Panels/AuditPanel'));
 const GovernancePanel = lazy(() => import('./components/Panels/GovernancePanel'));
 const MemoryPanel = lazy(() => import('./components/Panels/MemoryPanel'));
@@ -261,7 +261,7 @@ const AgentOSv2: React.FC = () => {
       if (e.ctrlKey && !e.metaKey && !e.shiftKey) {
         const panelMap: Record<string, string> = {
           '1': 'agents', '2': 'sessions', '3': 'workflow', '4': 'execution',
-          '5': 'goals', '6': 'memory', '7': 'chat', '8': 'governance', '9': 'audit',
+          '5': 'goals', '6': 'memory', '7': 'governance', '8': 'audit', '9': 'monitor',
         };
         if (panelMap[e.key]) {
           e.preventDefault();
@@ -306,7 +306,6 @@ const AgentOSv2: React.FC = () => {
       { id: 'nav:execution', label: 'Go to Execution', category: 'Navigate' },
       { id: 'nav:goals', label: 'Go to Goals', category: 'Navigate' },
       { id: 'nav:memory', label: 'Go to Memory', category: 'Navigate' },
-      { id: 'nav:chat', label: 'Go to Chat', category: 'Navigate' },
       { id: 'nav:governance', label: 'Go to Governance', category: 'Navigate' },
       { id: 'nav:audit', label: 'Go to Audit', category: 'Navigate' },
       { id: 'nav:monitor', label: 'Go to Monitor', category: 'Navigate' },
@@ -381,8 +380,7 @@ const AgentOSv2: React.FC = () => {
         return <DebugPanel />;
       case 'workflow':
         return <WorkflowPanel />;
-      case 'chat':
-        return <ChatPanel />;
+      // chat is now inline in AgentsPanel
       case 'monitor':
         return <MonitorPanel />;
       case 'external':
