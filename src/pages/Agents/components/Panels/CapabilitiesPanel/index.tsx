@@ -585,16 +585,6 @@ const CapabilitiesPanelComponent: React.FC<CapabilitiesPanelProps> = ({ classNam
         <div className={styles.capabilitiesGrid}>
           {filteredCapabilities.map(cap => (
             <div key={cap.id} className={`${styles.capabilityCard} ${cap.enabled ? styles.enabled : ''} ${selectedCapabilities.has(cap.id) ? styles.selected : ''}`}>
-              {/* Selection Checkbox */}
-              <div className={styles.cardSelection}>
-                <input 
-                  type="checkbox" 
-                  checked={selectedCapabilities.has(cap.id)}
-                  onChange={() => toggleSelection(cap.id)}
-                  disabled={cap.category !== 'custom'}
-                  className={styles.selectCheckbox}
-                />
-              </div>
 
               <div className={styles.capHeader}>
                 <div className={styles.capBadges}>
