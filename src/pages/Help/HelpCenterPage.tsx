@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../components/ui';
 import { useThemeStore } from '../../store/themeStore';
@@ -15,6 +15,8 @@ import {
 import { goToContact } from '../../utils/navigation';
 
 import styles from './HelpCenterPage.module.css';
+
+const ThreeParticleSphere = lazy(() => import('@/components/features/landing/ThreeParticleSphere'));
 
 interface Article {
   id: string;
@@ -311,29 +313,40 @@ const HelpCenterPage: React.FC = () => {
 
   return (
     <div className={styles.helpCenterPage}>
-      <div className={styles.container}>
-        <div className={styles.hero}>
-          <button className={styles.themeToggle} onClick={toggleHelpTheme}>
-            {helpTheme === 'dark' ? '☀️' : '🌙'}
-          </button>
-          <h1 className={styles.heroTitle}>Help Center</h1>
-          <p className={styles.heroSubtitle}>
-            Tutorials and documentation for ResonantGenesis — aligned to the current stack.
-          </p>
-          <div className={styles.searchBar}>
-            <SearchIcon size={18} />
-            <input
-              ref={searchInputRef}
-              type="text"
-              placeholder="Search tutorials..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={styles.searchInput}
-            />
-            <span className={styles.searchShortcut}>⌘K</span>
-          </div>
+      {/* Hero — full-width, matches home page structure exactly */}
+      <section className={styles.hero}>
+        {/* Parallax Background — 3D Particle Sphere */}
+        <div className={styles.heroParallax} aria-hidden="true">
+          <Suspense fallback={<div className={styles.parallaxPlaceholder} />}>
+            <div className={styles.heroParallaxInner}>
+              <ThreeParticleSphere />
+            </div>
+          </Suspense>
         </div>
 
+        <div className={styles.heroContent}>
+          <div className={styles.heroIntro}>
+            <h1 className={styles.heroTitle}>Help Center</h1>
+            <p className={styles.heroSubtitle}>
+              Tutorials and documentation for ResonantGenesis — aligned to the current stack.
+            </p>
+            <div className={styles.searchBar}>
+              <SearchIcon size={18} />
+              <input
+                ref={searchInputRef}
+                type="text"
+                placeholder="Search tutorials..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={styles.searchInput}
+              />
+              <span className={styles.searchShortcut}>⌘K</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className={styles.container}>
         <div className={styles.contentBody}>
           <div className={styles.contentMain}>
             {searchQuery === '' && selectedCategory === null && featuredTopics.length > 0 && (
