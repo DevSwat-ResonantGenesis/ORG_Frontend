@@ -157,6 +157,33 @@ const articles: Article[] = [
     tags: ['agents', 'factory', 'wizard', 'advanced', 'providers'],
     readingTime: 12
   },
+  {
+    id: '32',
+    title: 'Agent Sessions vs Chat',
+    description: 'Understand the two ways to interact with agents — autonomous sessions (persistent, background) vs synchronous chat (immediate, frontend-only). Endpoints, behavior, and when to use each.',
+    category: 'Core Stack',
+    path: '/help/core/agent-sessions-vs-chat',
+    tags: ['agents', 'sessions', 'chat', 'execute', 'api', 'autonomous'],
+    readingTime: 8
+  },
+  {
+    id: '33',
+    title: 'Agent Management',
+    description: 'Agent card actions (run, message, detail, clone, publish, archive), right pane panels, lifecycle statuses, bulk operations, filtering, sorting, and keyboard shortcuts.',
+    category: 'Core Stack',
+    path: '/help/core/agent-management',
+    tags: ['agents', 'management', 'actions', 'lifecycle', 'bulk'],
+    readingTime: 7
+  },
+  {
+    id: '34',
+    title: 'Agent API Reference',
+    description: 'Complete API reference for agent CRUD, sessions, chat execute, metadata, providers, tools, autonomy, and wallet endpoints.',
+    category: 'Developers',
+    path: '/help/developers/agent-api-reference',
+    tags: ['agents', 'api', 'sessions', 'execute', 'endpoints', 'reference'],
+    readingTime: 10
+  },
   // Marketplace
   {
     id: '9',

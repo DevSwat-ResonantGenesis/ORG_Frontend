@@ -999,6 +999,538 @@ Settings are saved per-user and persist across sessions.
 - [Hash Sphere Memory](/help/core/hash-sphere-memory) - How memory and retrieval works
 - [Synthetic Neural Memory](/help/core/synthetic-neural-memory) - The memory system behind context coherence
   `,
+  'agent-sessions-vs-chat': `
+# Agent Sessions vs Chat
+
+Understanding the two ways to interact with agents in Agent Studio — and when to use each.
+
+---
+
+## Overview
+
+Agent Studio provides two distinct interaction modes for every agent:
+
+- **Sessions** — autonomous background task execution
+- **Chat** — synchronous back-and-forth conversation
+
+Both connect to the same backend (\`agent_engine_service\`), but they use different API endpoints and have fundamentally different behavior.
+
+---
+
+## Sessions (Autonomous Tasks)
+
+### What It Is
+
+A **session** is a persistent, autonomous task. You give the agent a goal, and it works on it independently — using reasoning loops, tool calls, and multi-step execution.
+
+### API Endpoint
+
+\`\`\`http
+POST /api/v1/agents/{agent_id}/sessions
+{
+  "goal": "Research the latest trends in quantum computing and write a summary report"
+}
+\`\`\`
+
+### Behavior
+
+- **Fire-and-forget**: You submit a goal, then the agent works in the background
+- **Multi-step execution**: The agent can loop, reason, call tools, and chain actions
+- **Polled for status**: The frontend polls \`GET /api/v1/sessions/{session_id}\` every 2 seconds to check progress
+- **Persistent**: Sessions are stored in the database with full history
+- **Tracked**: Appears in the Sessions panel with status, loop count, token usage, and timestamps
+
+### Session Lifecycle
+
+1. **Starting** — Session created, agent initializing
+2. **Running** — Agent is actively working (reasoning, tool calls, loops)
+3. **Completed** — Agent finished the task, final output available
+4. **Failed** — Something went wrong (error message available)
+
+### What Gets Tracked
+
+- Session ID
+- Agent ID
+- Goal / task description
+- Status (running / completed / failed)
+- Number of reasoning loops
+- Token usage (input + output)
+- Start time and completion time
+- Final output / result
+- Error message (if failed)
+
+### When to Use Sessions
+
+- Long-running research tasks
+- Multi-step workflows (gather data → analyze → write report)
+- Tasks that require tool use (web search, code execution, API calls)
+- Background processing while you do other work
+- Any task where you want a tracked, auditable result
+
+---
+
+## Chat (Synchronous Messaging)
+
+### What It Is
+
+**Chat** is a direct, real-time conversation with the agent. You send a message, wait for the response, and see it immediately — like chatting with ChatGPT.
+
+### API Endpoint
+
+\`\`\`http
+POST /api/v1/agents/{agent_id}/execute
+{
+  "mode": "chat",
+  "input": "What are the key differences between REST and GraphQL?"
+}
+\`\`\`
+
+### Behavior
+
+- **Synchronous**: You send a message and wait for the reply
+- **Single request-response**: No background processing or polling
+- **Not persistent**: Messages are stored in frontend state only — lost on page refresh
+- **No session created**: Nothing appears in the Sessions panel
+- **Immediate feedback**: Response comes back in the same HTTP request
+
+### What Gets Tracked
+
+- Nothing in the database
+- Messages exist only in browser memory
+- Conversation history is lost on page refresh or navigation
+
+### When to Use Chat
+
+- Quick questions and answers
+- Brainstorming and exploration
+- Testing agent behavior before running a full session
+- Casual conversation that doesn't need to be saved
+- Getting immediate feedback without waiting for background processing
+
+---
+
+## Side-by-Side Comparison
+
+### Architecture
+
+- **Sessions**: POST \`/api/v1/agents/{agent_id}/sessions\` → creates persistent DB record → agent runs autonomously → poll for result
+- **Chat**: POST \`/api/v1/agents/{agent_id}/execute\` → synchronous processing → immediate response → no DB record
+
+### Key Differences
+
+- **Endpoint**: Sessions use \`/sessions\`, Chat uses \`/execute\`
+- **Mode**: Sessions are autonomous tasks, Chat is synchronous conversation
+- **Persistent**: Sessions are stored in the database, Chat is frontend-only
+- **Background**: Sessions run in the background (polled), Chat waits for reply
+- **History**: Sessions are fully tracked, Chat is lost on refresh
+- **Tool Use**: Sessions can chain multiple tool calls, Chat is single request-response
+- **Duration**: Sessions can run for minutes, Chat responds in seconds
+
+### Think of It As
+
+- **Sessions** = Giving the agent a task to go work on (like assigning a ticket)
+- **Chat** = Talking to the agent directly (like a quick conversation)
+
+---
+
+## How to Access Each Mode
+
+### Sessions
+
+1. Open **Agent Studio** (\`/agents\`)
+2. Click the **Play button** on any agent card
+3. The **Sessions panel** opens in the right pane
+4. Click **Start New Session** and enter a goal
+5. Monitor progress in the session list
+
+### Chat
+
+1. Open **Agent Studio** (\`/agents\`)
+2. Click the **Message button** (speech bubble icon) on any agent card
+3. The **Chat pane** opens in the right pane
+4. Type a message and press Enter
+5. Response appears immediately
+
+---
+
+## Related Articles
+
+- [Agent Studio & Factory](/help/core/agent-studio) — Full guide to creating and managing agents
+- [Agent Management](/help/core/agent-management) — Agent card actions and lifecycle
+- [API Reference](/help/developers/api-reference) — Developer reference for all endpoints
+  `,
+  'agent-management': `
+# Agent Management
+
+Everything you need to know about managing agents in Agent Studio — actions, lifecycle, inline panels, and the agent card interface.
+
+---
+
+## Agent Cards
+
+Every agent in Agent Studio is displayed as a **card** in the left pane. Each card shows:
+
+- **Agent name** and type badge
+- **Status indicator** (idle, active, paused, error)
+- **Mode badge** (Governed or Unbounded)
+- **Action buttons** along the bottom
+
+---
+
+## Agent Card Actions
+
+Each agent card has a row of action buttons:
+
+### Play (Run)
+
+Selects the agent and opens the **Sessions panel** in the right pane. From there you can start new autonomous sessions, view running sessions, and check completed results.
+
+### Message (Chat)
+
+Opens the **inline Chat pane** in the right pane. Send synchronous messages to the agent and receive immediate responses. Chat history is maintained per-agent during your browser session (lost on refresh).
+
+### Info (Details)
+
+Opens the **inline Detail pane** in the right pane showing comprehensive agent information:
+
+- **Identity**: Agent ID, Hash, DSID with copy buttons
+- **Status & Mode**: Current status and governance mode
+- **Stats**: Type, executions count, cost today, wallet balance, risk level
+- **Capabilities**: List of enabled tools and permissions
+- **Performance Benchmarks**: Average response time, P95 latency, success rate, throughput, platform ranking
+- **Recent Activity**: Last 5 actions with timestamps
+- **Version History**: Version numbers, hashes, dates, and changelogs
+
+From the detail pane you can also quickly jump to **Open Sessions** or **Chat**.
+
+### Copy (Clone)
+
+Creates a duplicate of the agent with " (Clone)" appended to the name. The cloned agent is a fully independent copy with its own ID.
+
+### Upload (Publish)
+
+Opens the **Publish to DSID Network** page with the agent's details pre-filled. Allows you to publish the agent to the decentralized network marketplace.
+
+### Trash (Archive)
+
+Archives the agent. It will be hidden from the list but preserved on the blockchain. Requires confirmation before proceeding.
+
+---
+
+## Right Pane Priority
+
+The right pane displays one panel at a time, with this priority order:
+
+1. **Detail pane** — if you clicked Info on an agent
+2. **Chat pane** — if you clicked Message on an agent
+3. **Sessions panel** — if an agent is selected (via Play or card click)
+
+Each pane has a close button (×) that dismisses it and falls back to the next priority level.
+
+---
+
+## Agent Lifecycle
+
+### Statuses
+
+- **idle** — Agent is ready, not currently running any tasks
+- **active** — Agent is currently executing a session or task
+- **paused** — Agent execution is temporarily suspended
+- **error** — Agent encountered a problem
+
+### Actions
+
+- **Start** — Begin a new session (via Sessions panel)
+- **Stop** — Terminate a running session
+- **Pause** — Temporarily suspend execution
+- **Archive** — Soft-delete the agent (preserved on chain)
+
+---
+
+## Bulk Operations
+
+Press **X** to toggle bulk mode. In bulk mode:
+
+- Checkboxes appear on each agent card
+- Select multiple agents
+- Use **Select All** to select every visible agent
+- **Bulk Archive** to archive all selected agents at once
+
+---
+
+## Filtering & Sorting
+
+### Filters
+
+- **All** — Show all agents
+- **Favorites** — Show only pinned/favorited agents
+- **Status filters** — Filter by idle, active, paused, error
+
+### Sorting
+
+- **Name** — Alphabetical
+- **Status** — By current status
+- **Executions** — By total execution count
+- **Cost** — By today's spending
+
+Pinned (favorited) agents always float to the top regardless of sort order.
+
+### Search
+
+Use the search bar to filter agents by name. Supports real-time filtering as you type.
+
+---
+
+## Keyboard Shortcuts
+
+- **X** — Toggle bulk selection mode
+- **F** — Toggle favorite/pin for the selected agent
+
+---
+
+## Related Articles
+
+- [Agent Sessions vs Chat](/help/core/agent-sessions-vs-chat) — When to use sessions vs chat
+- [Agent Studio & Factory](/help/core/agent-studio) — Creating agents with Wizard and Advanced panels
+- [API Reference](/help/developers/api-reference) — Developer reference for all endpoints
+  `,
+  'agent-api-reference': `
+# Agent API Reference
+
+Complete API reference for agent operations. All endpoints are accessed through the gateway and route to \`agent_engine_service\`.
+
+---
+
+## Authentication
+
+All requests require authentication via one of:
+
+- **Cookie**: \`rg_access_token\` HttpOnly cookie (browser sessions)
+- **Bearer Token**: \`Authorization: Bearer <token>\` header
+- **API Key**: \`Authorization: RG-<key>\` header
+
+The gateway validates the token and injects identity headers (\`x-user-id\`, \`x-user-role\`, \`x-org-id\`) to downstream services.
+
+---
+
+## Agent CRUD
+
+### Create Agent
+
+\`\`\`http
+POST /api/v1/agents
+{
+  "name": "Research Assistant",
+  "type": "researcher",
+  "description": "Autonomous research agent",
+  "system_prompt": "You are a research assistant...",
+  "model": "gpt-4o",
+  "temperature": 0.7,
+  "max_tokens": 4096,
+  "tools": ["web_search", "code_exec"]
+}
+\`\`\`
+
+### List Agents
+
+\`\`\`http
+GET /api/v1/agents
+\`\`\`
+
+### Get Agent
+
+\`\`\`http
+GET /api/v1/agents/{agent_id}
+\`\`\`
+
+### Delete Agent
+
+\`\`\`http
+DELETE /api/v1/agents/{agent_id}
+\`\`\`
+
+---
+
+## Sessions (Autonomous Tasks)
+
+### Start Session
+
+Creates a persistent, autonomous session. The agent works on the goal in the background.
+
+\`\`\`http
+POST /api/v1/agents/{agent_id}/sessions
+{
+  "goal": "Research quantum computing trends and write a summary"
+}
+\`\`\`
+
+**Response:**
+
+\`\`\`http
+{
+  "id": "session-uuid",
+  "agent_id": "agent-uuid",
+  "status": "starting",
+  "goal": "Research quantum computing trends...",
+  "created_at": "2026-03-09T20:00:00Z"
+}
+\`\`\`
+
+### Get Session
+
+Poll this endpoint to check session progress.
+
+\`\`\`http
+GET /api/v1/sessions/{session_id}
+\`\`\`
+
+**Response:**
+
+\`\`\`http
+{
+  "id": "session-uuid",
+  "agent_id": "agent-uuid",
+  "status": "completed",
+  "goal": "Research quantum computing trends...",
+  "final_output": "Here is the summary report...",
+  "loop_count": 5,
+  "tokens_used": 12450,
+  "created_at": "2026-03-09T20:00:00Z",
+  "completed_at": "2026-03-09T20:02:30Z"
+}
+\`\`\`
+
+### Stop Session
+
+Terminate a running session.
+
+\`\`\`http
+POST /api/v1/sessions/{session_id}/stop
+\`\`\`
+
+### List Sessions
+
+\`\`\`http
+GET /api/v1/agents/{agent_id}/sessions
+\`\`\`
+
+---
+
+## Chat (Synchronous Execute)
+
+### Execute Task (Chat Mode)
+
+Sends a single synchronous message. Response is immediate — no session is created.
+
+\`\`\`http
+POST /api/v1/agents/{agent_id}/execute
+{
+  "mode": "chat",
+  "input": "What is the difference between REST and GraphQL?"
+}
+\`\`\`
+
+**Response:**
+
+\`\`\`http
+{
+  "output": "REST and GraphQL differ in several key ways...",
+  "tokens_used": 850,
+  "execution_time_ms": 2340
+}
+\`\`\`
+
+---
+
+## Agent Metadata
+
+### Get Agent Versions
+
+\`\`\`http
+GET /api/v1/agents/{agent_id}/versions
+\`\`\`
+
+### Get Agent Activity
+
+\`\`\`http
+GET /api/v1/agents/{agent_id}/activity?limit=5
+\`\`\`
+
+### Get Agent Benchmarks
+
+\`\`\`http
+GET /api/v1/agents/{agent_id}/benchmarks
+\`\`\`
+
+---
+
+## Provider & Tool Catalog
+
+### List Providers
+
+\`\`\`http
+GET /api/v1/agents/providers
+\`\`\`
+
+### List Tools
+
+\`\`\`http
+GET /api/v1/agents/tools
+\`\`\`
+
+### List Custom Tools
+
+\`\`\`http
+GET /api/v1/agents/tools/custom
+\`\`\`
+
+### Create Custom Tool
+
+\`\`\`http
+POST /api/v1/agents/tools/custom
+{
+  "name": "my-tool",
+  "url": "https://api.example.com/action",
+  "method": "POST",
+  "risk_level": "low",
+  "approval_required": false,
+  "parameters_schema": {}
+}
+\`\`\`
+
+---
+
+## Autonomy & Wallet
+
+### Set Autonomy Mode
+
+\`\`\`http
+POST /api/v1/autonomy/mode/{agent_id}
+{
+  "mode": "governed"
+}
+\`\`\`
+
+### Create Wallet
+
+\`\`\`http
+POST /api/v1/wallets/{agent_id}
+{
+  "initial_balance": 100,
+  "daily_limit": 25,
+  "transaction_limit": 10,
+  "monthly_limit": 500
+}
+\`\`\`
+
+---
+
+## Related Articles
+
+- [Agent Sessions vs Chat](/help/core/agent-sessions-vs-chat) — When to use sessions vs chat
+- [Agent Management](/help/core/agent-management) — Agent card actions and lifecycle
+- [Agent Studio & Factory](/help/core/agent-studio) — Creating agents with Wizard and Advanced panels
+  `,
   'best-practices': `
 # Security Best Practices
 
