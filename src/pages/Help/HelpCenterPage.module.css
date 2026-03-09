@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  background: linear-gradient(135deg, #fafbfc 0%, #f5f7fa 100%);
+  background: transparent;
   color: #0f172a;
   overflow-x: clip;
   padding: 0;
@@ -17,7 +17,7 @@
 }
 
 [data-theme='dark'] .helpCenterPage {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background: transparent;
   color: #f1f5f9;
 }
 
@@ -1022,7 +1022,7 @@
 }
 
 .faqItem {
-  background: #ffffff;
+  background: transparent;
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 12px;
   overflow: hidden;
@@ -1030,7 +1030,7 @@
 }
 
 [data-theme='dark'] .faqItem {
-  background: rgba(255, 255, 255, 0.04);
+  background: transparent;
   border-color: rgba(255, 255, 255, 0.08);
 }
 
