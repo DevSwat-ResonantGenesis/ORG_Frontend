@@ -28,7 +28,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   font-feature-settings: "kern" 1, "liga" 1;
-  transition: background-color var(--transition-base), color var(--transition-base);
+  /* transition removed — was causing slow typing & animations */
 }
 
 /* Remove default margins - EXCLUDE IDE and all its descendants */

@@ -9,7 +9,7 @@
   background-color: var(--bg-primary);
   color: var(--text-primary);
   padding-top: 64px; /* Header height */
-  transition: background-color var(--transition-base), color var(--transition-base);
+  /* transition removed — was causing slow typing & animations */
 }
 
 /* ============================================================

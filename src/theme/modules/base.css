@@ -27,7 +27,7 @@ body {
   font-size: 16px;
   font-weight: 400;
   letter-spacing: -0.01em;
-  transition: background 0.3s ease, color 0.3s ease !important;
+  /* transition removed — was causing slow typing & animations platform-wide */
   margin: 0 !important;
   padding: 0 !important;
   min-height: 100vh;
@@ -128,21 +128,10 @@ html::-webkit-scrollbar-thumb:hover {
   color: var(--text-primary) !important;
 }
 
-/* Ensure text never disappears */
-/* Exclude IDE container and all its descendants - let Monaco Editor and IDE components handle their own colors */
-:not(.ide-container):not(.ide-container *) h1,
-:not(.ide-container):not(.ide-container *) h2,
-:not(.ide-container):not(.ide-container *) h3,
-:not(.ide-container):not(.ide-container *) h4,
-:not(.ide-container):not(.ide-container *) h5,
-:not(.ide-container):not(.ide-container *) h6,
-:not(.ide-container):not(.ide-container *) p,
-:not(.ide-container):not(.ide-container *) span,
-:not(.ide-container):not(.ide-container *) div,
-:not(.ide-container):not(.ide-container *) label,
-:not(.ide-container):not(.ide-container *) a {
-  color: inherit !important;
-}
+/* Nuclear color:inherit rule removed — was forcing browser to evaluate
+   expensive :not() selectors on every element during every repaint,
+   causing severe typing lag and animation slowdown platform-wide.
+   Pages handle their own text colors via CSS modules and theme tokens. */
 
 /* Lists Spacing - Standardized Vertical Rhythm */
 ul:not([class*="_"]),
