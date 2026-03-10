@@ -16,14 +16,20 @@ const HomeNew = () => {
     <div className={styles.page}>
       {/* SEO meta tags */}
       <Helmet>
-        <title>ResonantGenesis – Autonomous Agent Infrastructure</title>
-        <meta name="description" content="Build and operate autonomous agents with a unified stack for action, synthetic neural memory, invariant-based constraint simulation, and full-stack architecture observability. Ship reliable agent systems with governance, security, and remediation built in." />
+        <title>ResonantGenesis — Agentic AI SaaS Platform</title>
+        <meta name="description" content="ResonantGenesis — full-stack Agentic AI SaaS platform. ~550K lines of production code, 30 microservices, 9 proprietary IP systems, 85+ routes. Multi-agent orchestration, governed memory, physics-based state simulation, and complete billing infrastructure. Production-deployed and available for acquisition." />
         <link rel="canonical" href="https://resonantgenesis.xyz/" />
-        <meta property="og:title" content="ResonantGenesis – Autonomous Agent Infrastructure" />
-        <meta property="og:description" content="AGI Neural Hub + Synthetic Neural Memory + Invariants SIM + SAST & Dependency Graph Analysis—an end-to-end platform for autonomous action, memory, constraints, and full-stack observability." />
+        <meta property="og:title" content="ResonantGenesis — Agentic AI SaaS Platform" />
+        <meta property="og:description" content="Full-stack Agentic AI platform: ~550K lines of production code, 30 microservices, 9 proprietary IP systems. Multi-agent orchestration, governed memory, physics-based state simulation, and complete SaaS billing. Production-deployed and available for acquisition." />
         <meta property="og:url" content="https://resonantgenesis.xyz/" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonantgenesis.xyz/images/showcase/step5-homepage.png" />
+        <meta property="og:image" content="https://resonantgenesis.xyz/images/investorpitch/VR1.jpg" />
+        <meta property="og:image:width" content="1408" />
+        <meta property="og:image:height" content="768" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="ResonantGenesis — Agentic AI SaaS Platform" />
+        <meta name="twitter:description" content="Full-stack Agentic AI platform: ~550K lines of production code, 30 microservices, 9 proprietary IP systems. Production-deployed and available for acquisition." />
+        <meta name="twitter:image" content="https://resonantgenesis.xyz/images/investorpitch/VR1.jpg" />
         <script type="application/ld+json">
           {`
             {
