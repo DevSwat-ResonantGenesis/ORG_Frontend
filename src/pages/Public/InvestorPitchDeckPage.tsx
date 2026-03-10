@@ -372,7 +372,7 @@ const InvestorPitchDeckPage = () => {
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>01</span>Executive summary</h2>
               <p className={styles.sectionLead}>
-                ResonantGenesis is a production-deployed, full-stack Agentic AI SaaS platform available for acquisition as a complete code and IP asset. Every component described in this document is implemented in source code and running in production at dev-swat.com. This is not a prototype or mockup.
+                ResonantGenesis is a production-deployed, full-stack Agentic AI SaaS platform available for acquisition as a complete code and IP asset. Every component described in this document is implemented in source code and running in production at dev-swat.com and resonantgenesis.xyz. This is not a prototype or mockup.
               </p>
               <p className={styles.wpText}>
                 The platform comprises ~550,000 source lines of code (SLOC) across 30 Python FastAPI microservices, 662 React components, and 85+ frontend routes. Infrastructure includes 33 Docker containers orchestrated via docker-compose.unified.yml, DigitalOcean Managed PostgreSQL with database-per-service design, Redis for caching/sessions/pub-sub, and Nginx for SSL termination and reverse proxying. 178 registered users in production.
@@ -426,7 +426,7 @@ const InvestorPitchDeckPage = () => {
                       <tr><td>Frontend routes</td><td>85+ pages</td></tr>
                       <tr><td>API client files</td><td>97</td></tr>
                       <tr><td>Registered users</td><td>178 (production)</td></tr>
-                      <tr><td>Live domain</td><td>dev-swat.com (active SSL)</td></tr>
+                      <tr><td>Live domains</td><td>dev-swat.com &amp; resonantgenesis.xyz (active SSL)</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -825,7 +825,7 @@ const InvestorPitchDeckPage = () => {
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>08</span>Production status &amp; implementation</h2>
               <p className={styles.sectionLead}>
-                Live at dev-swat.com (IP: 134.199.221.149) with 178 registered users, 0 paying (pre-revenue). Single DigitalOcean droplet + managed DB. Services auto-restart on failure.
+                Live at dev-swat.com &amp; resonantgenesis.xyz (IP: 134.199.221.149) with 178 registered users, 0 paying (pre-revenue). Two parallel domains serving the same platform. Single DigitalOcean droplet + managed DB. Services auto-restart on failure.
               </p>
 
               <div className={styles.wpTwoCol}>
@@ -873,7 +873,7 @@ const InvestorPitchDeckPage = () => {
                   <table className={styles.wpTable}>
                     <thead><tr><th>Item</th><th>Status</th></tr></thead>
                     <tbody>
-                      <tr><td>Domain</td><td>dev-swat.com (active SSL)</td></tr>
+                      <tr><td>Domains</td><td>dev-swat.com &amp; resonantgenesis.xyz (active SSL)</td></tr>
                       <tr><td>Registered users</td><td>178</td></tr>
                       <tr><td>Paying users</td><td>0 (pre-revenue)</td></tr>
                       <tr><td>Containers running</td><td>33</td></tr>
@@ -952,7 +952,7 @@ const InvestorPitchDeckPage = () => {
                     <li><strong>Complete deployment runbook</strong> — Docker Compose, Nginx config, database setup, environment variables</li>
                     <li><strong>PLATFORM_SALE_REPORT.md</strong> — 873-line comprehensive technical audit (the source for this document)</li>
                     <li><strong>All documentation</strong> — 31K lines of .md files (backend) + 4K lines (frontend) + 500 lines .txt</li>
-                    <li><strong>Domain transfer</strong> — dev-swat.com and/or resonantgenesis.xyz (negotiable)</li>
+                    <li><strong>Domain transfer</strong> — Both dev-swat.com and resonantgenesis.xyz included (both active, same server)</li>
                     <li><strong>Infrastructure handoff</strong> — DigitalOcean droplet, managed DB, DNS, SSL certificates</li>
                   </ul>
 
