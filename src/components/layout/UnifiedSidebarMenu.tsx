@@ -352,18 +352,17 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             </button>
 
             <button
-              className={`${styles.usmItem} ${location.pathname === '/api-keys' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/api-keys'); onClose(); }}
+              className={`${styles.usmItem} ${location.pathname === '/investor-pitch-deck' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/investor-pitch-deck'); onClose(); }}
             >
               <span className={styles.usmIcon}>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M10 6C10 4.5 9 3 7 3C5 3 3.5 4.5 3.5 6.5C3.5 8.5 5 10 7 10H13" strokeLinecap="round" strokeLinejoin="round" />
-                  <circle cx="7" cy="6.5" r="1.5" />
-                  <path d="M11 10V13M13 10V12" strokeLinecap="round" />
+                  <rect x="2" y="3" width="12" height="10" rx="1" />
+                  <path d="M5 7L7 9L11 5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>API Keys</span>
-              {location.pathname === '/api-keys' && <span className={styles.usmActiveIndicator} />}
+              <span className={styles.usmLabel}>Investor Pitch Deck</span>
+              {location.pathname === '/investor-pitch-deck' && <span className={styles.usmActiveIndicator} />}
             </button>
           </div>
 
@@ -408,21 +407,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   </span>
                   <span className={styles.usmLabel}>Dashboard</span>
                   {location.pathname === '/dashboard' && <span className={styles.usmActiveIndicator} />}
-                </button>
-
-                <button
-                  className={`${styles.usmItem} ${location.pathname === '/billing' ? styles.usmActive : ''}`}
-                  onClick={() => { navigate('/billing'); onClose(); }}
-                >
-                  <span className={styles.usmIcon}>
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <rect x="2" y="4" width="12" height="8" rx="1" />
-                      <path d="M2 7H14" strokeLinecap="round" />
-                      <path d="M5 10H8" strokeLinecap="round" />
-                    </svg>
-                  </span>
-                  <span className={styles.usmLabel}>Payment</span>
-                  {location.pathname === '/billing' && <span className={styles.usmActiveIndicator} />}
                 </button>
 
                 <button

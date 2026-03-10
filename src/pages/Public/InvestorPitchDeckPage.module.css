@@ -1294,3 +1294,300 @@
   border-color: #60a5fa;
 }
 
+/* ============================================================
+   MOBILE RESPONSIVE — Pitch Deck
+   ============================================================ */
+
+/* Slide nav dots — smaller, tighter on mobile */
+@media (max-width: 768px) {
+  .slideNav {
+    right: 8px;
+    gap: 6px;
+  }
+
+  .slideDot {
+    width: 7px;
+    height: 7px;
+  }
+
+  /* Slides — tighter padding on mobile */
+  .slideDark {
+    padding: calc(var(--header-height, 60px) + 10px) 14px 24px;
+  }
+
+  /* Section titles */
+  .sectionTitle {
+    font-size: 20px;
+    padding-bottom: 10px;
+  }
+
+  .sectionNum {
+    font-size: 12px;
+    padding: 2px 8px;
+    margin-right: 8px;
+  }
+
+  .sectionLead {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-top: 12px;
+  }
+
+  /* Cards grid — single column on mobile */
+  .cardsGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  .cardTitle {
+    font-size: 14px;
+  }
+
+  .cardBody {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  /* Two-column layouts — stack on mobile */
+  .twoCol,
+  .wpTwoCol {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* Whitepaper text */
+  .wpSubtitle {
+    font-size: 13px;
+    margin: 14px 0 6px;
+  }
+
+  .wpText {
+    font-size: 12px;
+  }
+
+  .wpList {
+    font-size: 12px;
+    padding-left: 14px;
+  }
+
+  /* Tables — scrollable horizontally */
+  .wpTable {
+    font-size: 11px;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .wpTable th {
+    font-size: 9px;
+    padding: 3px 6px;
+    white-space: nowrap;
+  }
+
+  .wpTable td {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+
+  .wpTable td:first-child {
+    white-space: normal;
+    min-width: 100px;
+  }
+
+  /* CV metrics grid — 2 columns on mobile */
+  .cvMetricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .cvMetricCard {
+    padding: 8px 10px;
+  }
+
+  .cvMetricValue {
+    font-size: 15px;
+  }
+
+  .cvMetricLabel {
+    font-size: 9px;
+  }
+
+  /* Screenshot grid — single column */
+  .screenshotGrid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Hero metrics */
+  .heroMetrics {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Codebase grid */
+  .codebaseGrid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  /* VR overlays */
+  .vrTitle {
+    font-size: clamp(22px, 5vw, 36px);
+    max-width: 90%;
+  }
+
+  .vrTitleOverlay {
+    padding: 0 16px;
+  }
+
+  .vrTitleOverlay .badgeRow {
+    left: 16px;
+    top: calc(var(--header-height, 60px) + 10px);
+  }
+
+  .badge {
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+
+  .vrQuote {
+    font-size: clamp(14px, 3.5vw, 18px);
+    max-width: 100%;
+  }
+
+  .vrQuoteOverlay {
+    padding: 0 16px clamp(32px, 6vh, 64px);
+  }
+
+  /* Workflow overlay on VR3 */
+  .workflowOverlay {
+    padding: 0 16px;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.5) 65%, transparent 100%);
+    align-items: flex-start;
+    padding-top: calc(var(--header-height, 60px) + 16px);
+  }
+
+  .workflowPanel {
+    max-width: 100%;
+  }
+
+  .workflowTitle {
+    font-size: clamp(20px, 4.5vw, 32px);
+  }
+
+  .workflowSubtitle {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .workflowStep {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .workflowStepNum {
+    font-size: 10px;
+    padding: 2px 5px;
+  }
+
+  .workflowStepBody strong {
+    font-size: 13px;
+  }
+
+  .workflowStepBody span {
+    font-size: 11px;
+  }
+
+  .workflowConnector {
+    height: 6px;
+    margin-left: 20px;
+  }
+
+  /* Footer CTA */
+  .footerCta {
+    padding: 40px 14px 56px;
+  }
+
+  .footerCtaInner {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+
+  .footerCtaTitle {
+    font-size: 18px;
+  }
+
+  .footerCtaBody {
+    font-size: 13px;
+  }
+
+  /* CTA buttons */
+  .ctaRow {
+    margin-top: 20px;
+    flex-direction: column;
+  }
+
+  .ctaPrimary,
+  .ctaSecondary {
+    padding: 10px 14px;
+    font-size: 13px;
+    border-radius: 12px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Parallax sphere — hide on small mobile for performance */
+  .parallax {
+    opacity: 0.4;
+    width: 100vw;
+    right: -30%;
+  }
+
+  /* Report grid rows */
+  .reportRow {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  /* Switch panel (hero tabs) */
+  .switchTabs {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .switchTab {
+    font-size: 14px;
+  }
+
+  /* Social row */
+  .socialRow {
+    gap: 12px;
+    margin-top: 16px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 380px) {
+  .slideDark {
+    padding: calc(var(--header-height, 60px) + 8px) 10px 20px;
+  }
+
+  .sectionTitle {
+    font-size: 17px;
+  }
+
+  .cvMetricsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .badge {
+    font-size: 10px;
+    padding: 4px 6px;
+  }
+}
+
