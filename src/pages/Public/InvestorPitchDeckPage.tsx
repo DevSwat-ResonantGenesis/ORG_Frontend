@@ -451,16 +451,20 @@ const InvestorPitchDeckPage = () => {
                   <table className={styles.wpTable}>
                     <thead><tr><th>CV Metric</th><th>Value</th></tr></thead>
                     <tbody>
+                      <tr><td>Total nodes mapped</td><td>30,119</td></tr>
                       <tr><td>Files scanned</td><td>1,714</td></tr>
                       <tr><td>Services detected</td><td>40</td></tr>
                       <tr><td>Functions mapped</td><td>17,773</td></tr>
+                      <tr><td>Classes mapped</td><td>6,184</td></tr>
                       <tr><td>API endpoints indexed</td><td>4,384</td></tr>
+                      <tr><td>External services</td><td>24</td></tr>
                       <tr><td>Inter-service connections</td><td>59,160</td></tr>
-                      <tr><td>Broken connections</td><td>1,043 (1.76% error rate)</td></tr>
+                      <tr><td>Broken connections</td><td>1,043 (1.76% — all broken imports)</td></tr>
+                      <tr><td>Pipelines auto-detected</td><td>6</td></tr>
                     </tbody>
                   </table>
                   <p className={styles.wpText}>
-                    The 40-service count includes sub-services (rabbit_content_service, rabbit_vote_service, rabbit_moderation_service, etc.) that the manual audit groups as "rabbit_api_service (+4)". The 1.76% broken connection rate in a 685K-line codebase demonstrates structural integrity — the vast majority of cross-service calls resolve correctly.
+                    The 40-service count includes sub-services (rabbit_content_service, rabbit_vote_service, rabbit_moderation_service, rabbit_community_service) that the manual audit groups as "rabbit_api_service (+4)", plus utility dirs (scripts, shared, contracts, agents, performance_tests, node). All 1,043 broken connections are unresolved Python imports — 348 unique missing targets, primarily cross-service references (economic_state, disd_message, cache modules). Estimated fix: 2–3 engineer-days.
                   </p>
                 </div>
               </div>
@@ -651,19 +655,20 @@ const InvestorPitchDeckPage = () => {
                     Frontend has dedicated provider client files: openai.ts, anthropic.ts, groq.ts, gemini.ts, mistral.ts, cohere.ts — with unified router. 97 total API client files mapping to every backend service.
                   </p>
 
-                  <h3 className={styles.wpSubtitle}>Resonant Chat pipeline (14-stage)</h3>
+                  <h3 className={styles.wpSubtitle}>6 pipelines auto-detected by Code Visualizer</h3>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>Pipeline</th><th>Nodes</th><th>Connections</th><th>Scope</th></tr></thead>
+                    <tbody>
+                      <tr><td>agent_execution</td><td>8,482</td><td>17,078</td><td>Agent CRUD, versioning, teams, voting, debate, chaining, autonomous planning, safety rules, marketplace</td></tr>
+                      <tr><td>chat_flow</td><td>3,752</td><td>7,611</td><td>68-module AI pipeline, skill execution, evidence graphs, hallucination detection, LLM provider routing</td></tr>
+                      <tr><td>billing_flow</td><td>2,187</td><td>4,764</td><td>Stripe subscriptions, credits, usage tracking, invoices, referrals, economic integration</td></tr>
+                      <tr><td>memory_pipeline</td><td>1,940</td><td>4,032</td><td>Semantic memory universe, embeddings, clustering, anchoring, user_memory_service + memory_service</td></tr>
+                      <tr><td>user_login</td><td>594</td><td>862</td><td>Rate limiting, login notifications, MFA, OAuth, JWT, session management, device tracking</td></tr>
+                      <tr><td>user_registration</td><td>—</td><td>—</td><td>Registration flow, email verification, RARA economic state creation, initial credit grant</td></tr>
+                    </tbody>
+                  </table>
                   <p className={styles.wpText}>
-                    Unlike single-step prompt→LLM apps, every message passes through a 14-stage processing pipeline: (1) Text preprocessing → (2) Tokenization → (3) Intent identification → (4) Skill detection &amp; routing → (5) Context assembly (memory, history, personality) → (6) Provider selection &amp; failover → (7) LLM inference with streaming SSE → (8) Evidence graph construction → (9) Hallucination detection → (10) Cross-validation → (11) Causal reasoning audit → (12) Response post-processing → (13) Memory anchoring &amp; embedding → (14) Credit deduction &amp; usage tracking. Each stage is a separate module in chat_service/app/services/.
-                  </p>
-
-                  <h3 className={styles.wpSubtitle}>Agent Engine pipeline</h3>
-                  <p className={styles.wpText}>
-                    7-stage lifecycle: (1) Agent creation with capability manifest → (2) Registration with safety rules &amp; economic budgets → (3) Scheduling via workflow or trigger → (4) Execution with autonomous planning &amp; error correction → (5) Real-time monitoring via owner dashboard → (6) Self-improvement feedback loop → (7) Termination with audit log. 13 database tables. Supports voting, debate, and chaining between agent teams.
-                  </p>
-
-                  <h3 className={styles.wpSubtitle}>Hash Sphere pipeline</h3>
-                  <p className={styles.wpText}>
-                    6-stage physics simulation: (1) Data ingestion → HashNode creation (position, velocity, mass, charge, spin, energy) → (2) Force computation (attraction, repulsion, resonance, gravity, electromagnetic) → (3) Invariant verification (conservation laws) → (4) State snapshot &amp; hash anchoring via DSID-P → (5) 3D visualization endpoint (Three.js frontend) → (6) Cluster classification &amp; entity extraction. 11 node types: data, agent, user, service, model, memory, transaction, policy, anchor, cluster, embedding.
+                    The agent_execution pipeline is the largest (8,482 nodes, 17,078 connections) spanning agent_engine_service + auth_service agent CRUD + blockchain economic integration. The chat_flow pipeline (3,752 nodes) encompasses all 68 intelligence modules, 9 skills, and cross-service calls to code_visualizer, memory, and agent_engine.
                   </p>
                 </div>
               </div>
@@ -925,21 +930,42 @@ const InvestorPitchDeckPage = () => {
 
                   <h3 className={styles.wpSubtitle}>System health &amp; optimization roadmap</h3>
                   <p className={styles.wpText}>
-                    Code Visualizer static analysis identified 1,043 broken connections out of 59,160 total (1.76% error rate). Breakdown by category:
+                    Code Visualizer static analysis identified 1,043 broken connections out of 59,160 total (1.76% error rate). All 1,043 are unresolved Python imports — cross-service module references that the static analyzer cannot resolve at scan time. 348 unique missing targets.
                   </p>
                   <table className={styles.wpTable}>
-                    <thead><tr><th>Issue type</th><th>Count</th><th>Day-1 fix</th></tr></thead>
+                    <thead><tr><th>Service (source)</th><th>Broken imports</th><th>Top missing targets</th></tr></thead>
                     <tbody>
-                      <tr><td>Invalid endpoints</td><td>349</td><td>Route registration audit — mostly stale/deprecated paths</td></tr>
-                      <tr><td>Unresolved dependencies</td><td>341</td><td>Import path corrections and service URL env vars</td></tr>
-                      <tr><td>Missing imports</td><td>201</td><td>Add missing Python imports (already identified by CV)</td></tr>
-                      <tr><td>Circular dependencies</td><td>102</td><td>Refactor shared models into common packages</td></tr>
-                      <tr><td>Unknown services</td><td>50</td><td>Docker Compose service name alignment</td></tr>
+                      <tr><td>root (test files, scripts)</td><td>524</td><td>chat_service.app.db, chat_service.app.models — cross-service test imports</td></tr>
+                      <tr><td>rara_service</td><td>131</td><td>economic_state.UserEconomicState, disd_message.DISDMessage — shared models</td></tr>
+                      <tr><td>billing_service</td><td>82</td><td>economic_state, cache.get_cache, auth.AuthContext</td></tr>
+                      <tr><td>agent_engine_service</td><td>75</td><td>revocation_manager_redis, quorum_authority, deps.get_db</td></tr>
+                      <tr><td>auth_service</td><td>65</td><td>crypto.encrypt_api_key, qrcode, sessions, economic_integration</td></tr>
+                      <tr><td>cascade_control_plane</td><td>32</td><td>platform_tools.auth, monitoring_agents</td></tr>
+                      <tr><td>chat_service</td><td>29</td><td>deps modules, skill internal imports</td></tr>
+                      <tr><td>gateway</td><td>25</td><td>auth modules, rate limiter backends</td></tr>
+                      <tr><td>All other services</td><td>80</td><td>Various cross-service shared module references</td></tr>
                     </tbody>
                   </table>
                   <p className={styles.wpText}>
-                    In a codebase with 17,773 functions and 4,384 endpoints, a 1.76% broken connection rate is structurally sound. The CV tool itself provides the exact file paths and line numbers for every broken connection — the buyer receives a pre-built remediation checklist. Estimated fix time: 2–3 engineer-days for the full list.
+                    The majority (524/1,043) are in root-level test files importing across service boundaries — these are not production issues. The remaining 519 are cross-service shared module references (economic_state, disd_message, auth, cache) that resolve at Docker runtime via Python path configuration but appear broken to static analysis. The CV tool provides exact file paths and line numbers for every broken import — the buyer receives a pre-built remediation checklist.
                   </p>
+
+                  <h3 className={styles.wpSubtitle}>Per-service CV stats (top 10 by functions)</h3>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>Service</th><th>Files</th><th>Functions</th><th>Classes</th><th>Endpoints</th></tr></thead>
+                    <tbody>
+                      <tr><td>agent_engine_service</td><td>157</td><td>3,486</td><td>1,214</td><td>646</td></tr>
+                      <tr><td>blockchain_service</td><td>55</td><td>2,640</td><td>1,264</td><td>988</td></tr>
+                      <tr><td>chat_service</td><td>100</td><td>1,884</td><td>500</td><td>226</td></tr>
+                      <tr><td>v8_api_service</td><td>15</td><td>1,336</td><td>442</td><td>28</td></tr>
+                      <tr><td>rara_service</td><td>30</td><td>1,170</td><td>266</td><td>148</td></tr>
+                      <tr><td>billing_service</td><td>49</td><td>1,096</td><td>306</td><td>174</td></tr>
+                      <tr><td>gateway</td><td>62</td><td>724</td><td>258</td><td>1,048</td></tr>
+                      <tr><td>code_visualizer_service</td><td>22</td><td>664</td><td>194</td><td>56</td></tr>
+                      <tr><td>auth_service</td><td>41</td><td>638</td><td>198</td><td>204</td></tr>
+                      <tr><td>memory_service</td><td>32</td><td>566</td><td>206</td><td>120</td></tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
