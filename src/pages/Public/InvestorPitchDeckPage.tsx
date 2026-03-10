@@ -573,7 +573,7 @@ PostgreSQL (DigitalOcean Managed) + Redis (shared cache/pub-sub)`}
                 <tr><th>Component</th><th>Details</th></tr>
               </thead>
               <tbody>
-                <tr><td><strong>Server</strong></td><td>DigitalOcean Droplet (134.199.221.149)</td></tr>
+                <tr><td><strong>Server</strong></td><td>DigitalOcean Droplet</td></tr>
                 <tr><td><strong>Database</strong></td><td>DigitalOcean Managed PostgreSQL — separate DATABASE_URL per service</td></tr>
                 <tr><td><strong>Cache</strong></td><td>Redis shared instance for caching, sessions, pub-sub</td></tr>
                 <tr><td><strong>Web Server</strong></td><td>Nginx — SSL termination, static file serving, reverse proxy to gateway:8001</td></tr>
