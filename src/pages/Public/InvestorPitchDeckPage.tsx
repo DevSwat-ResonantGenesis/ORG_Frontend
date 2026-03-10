@@ -459,12 +459,13 @@ const InvestorPitchDeckPage = () => {
                       <tr><td>API endpoints indexed</td><td>4,384</td></tr>
                       <tr><td>External services</td><td>24</td></tr>
                       <tr><td>Inter-service connections</td><td>59,160</td></tr>
-                      <tr><td>Broken connections</td><td>1,043 (1.76% — all broken imports)</td></tr>
+                      <tr><td>Broken connections (raw)</td><td>1,043 reported</td></tr>
+                      <tr><td>Broken (cross-verified)</td><td>508 truly broken (51.3% were false positives)</td></tr>
                       <tr><td>Pipelines auto-detected</td><td>6</td></tr>
                     </tbody>
                   </table>
                   <p className={styles.wpText}>
-                    The 40-service count includes sub-services (rabbit_content_service, rabbit_vote_service, rabbit_moderation_service, rabbit_community_service) that the manual audit groups as "rabbit_api_service (+4)", plus utility dirs (scripts, shared, contracts, agents, performance_tests, node). All 1,043 broken connections are unresolved Python imports — 348 unique missing targets, primarily cross-service references (economic_state, disd_message, cache modules). Estimated fix: 2–3 engineer-days.
+                    Cross-verified against actual filesystem: of 1,043 "broken" imports reported by CV, 426 are false positives (relative imports where target file exists next to source), 100 are pip/stdlib packages, 9 are same-service cross-directory. 508 are truly unresolved — primarily cross-service references and missing shared modules (platform_tools: 20 refs, disd_message: 44, economic_state: 29). CV accuracy bug: cannot resolve Python relative imports. Full remediation plan in CODEBASE_REMEDIATION_PLAN.md. Estimated fix: 2–3 engineer-days for real issues + 3–5 days for CV import resolution improvement.
                   </p>
                 </div>
               </div>
