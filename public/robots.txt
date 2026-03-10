@@ -1,4 +1,25 @@
 User-agent: *
 Allow: /
 
+# Block authenticated-only routes from indexing
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /admin
+Disallow: /owner-dashboard
+Disallow: /resonant-chat
+Disallow: /ide
+Disallow: /build
+Disallow: /ai-audit
+Disallow: /ai-review
+Disallow: /finance
+Disallow: /ml/
+Disallow: /control-plane
+Disallow: /connect-profiles
+Disallow: /api-keys
+Disallow: /auth/oauth/callback
+Disallow: /verify-email
+Disallow: /reset-password
+
+# Sitemaps for both domains
 Sitemap: https://resonantgenesis.xyz/sitemap.xml
+Sitemap: https://dev-swat.com/sitemap.xml
