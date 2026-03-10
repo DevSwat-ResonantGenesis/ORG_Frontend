@@ -292,9 +292,24 @@ const InvestorPitchDeckPage = () => {
         <title>Investor Pitch Deck – ResonantGenesis</title>
         <meta
           name="description"
-          content="ResonantGenesis investor pitch deck: sovereign agent infrastructure with governed memory, constraint simulation, and full-stack observability."
+          content="ResonantGenesis investor pitch deck: ~550K lines of production code, 30 microservices, 9 proprietary IP systems. Full-stack Agentic AI SaaS platform available for acquisition."
         />
         <link rel="canonical" href="https://resonantgenesis.xyz/investor-pitch-deck" />
+
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Investor Pitch Deck – ResonantGenesis" />
+        <meta property="og:description" content="~550K lines of production code. 30 microservices. 9 proprietary IP systems. Full-stack Agentic AI SaaS platform — production-deployed, available for acquisition. Built solo in 4 months." />
+        <meta property="og:url" content="https://resonantgenesis.xyz/investor-pitch-deck" />
+        <meta property="og:image" content="https://resonantgenesis.xyz/images/investorpitch/VR1.jpg" />
+        <meta property="og:site_name" content="ResonantGenesis" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Investor Pitch Deck – ResonantGenesis" />
+        <meta name="twitter:description" content="~550K lines of production code. 30 microservices. 9 proprietary IP systems. Full-stack Agentic AI SaaS platform — production-deployed, available for acquisition." />
+        <meta name="twitter:image" content="https://resonantgenesis.xyz/images/investorpitch/VR1.jpg" />
+
         <link rel="preload" as="image" href="/images/investorpitch/VR1.jpg" />
         <link rel="preload" as="image" href="/images/investorpitch/VR2.jpg" />
         <link rel="preload" as="image" href="/images/investorpitch/VR3.jpg" />
