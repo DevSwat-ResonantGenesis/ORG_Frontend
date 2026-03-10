@@ -1616,3 +1616,8 @@
   color: #fff !important;
   background: rgba(255, 255, 255, 0.1) !important;
 }
+
+/* Hide theme toggle on investor pitch deck page */
+:global(.pitch-deck-active) .mobileThemeToggleSlot {
+  display: none !important;
+}

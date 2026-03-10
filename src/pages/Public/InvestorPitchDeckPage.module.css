@@ -983,6 +983,34 @@
   max-width: 78ch;
 }
 
+/* Social links row */
+.socialRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(2, 6, 23, 0.4);
+  color: rgba(226, 232, 240, 0.7);
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  text-decoration: none;
+}
+
+.socialLink:hover {
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.4);
+  background: rgba(59, 130, 246, 0.08);
+}
+
 /* ============================================================
    DARK MODE OVERRIDES (base styles are now light mode)
    ============================================================ */

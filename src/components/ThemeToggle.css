@@ -188,5 +188,10 @@ button.theme-toggle-icon-only {
   will-change: transform !important; /* Optimize for interactions */
 }
 
+/* Hide theme toggle on investor pitch deck page */
+.pitch-deck-active .theme-toggle-icon-only {
+  display: none !important;
+}
+
 /* Ensure header actions container doesn't block */
 

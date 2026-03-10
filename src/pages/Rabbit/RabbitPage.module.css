@@ -683,3 +683,24 @@
     min-width: 36px;
   }
 }
+
+/* ── Social footer ── */
+.socialFooter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 16px 0;
+  border-top: 1px solid var(--border-primary, rgba(148, 163, 184, 0.12));
+}
+
+.socialFooter a {
+  color: var(--text-tertiary, rgba(148, 163, 184, 0.5));
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.socialFooter a:hover {
+  color: var(--text-primary, #f1f5f9);
+}
