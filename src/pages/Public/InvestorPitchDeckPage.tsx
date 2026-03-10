@@ -408,20 +408,20 @@ const InvestorPitchDeckPage = () => {
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}>Platform scale</h2>
               <p className={styles.sectionLead}>
-                Production-deployed full-stack Agentic AI SaaS. Every component described here is implemented in code and running live.
+                ~550,000 source lines of code across 30 microservices, 662 React components, and 85+ pages. Every component is implemented and running in production.
               </p>
               <div className={styles.cardsGrid}>
                 <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>685,000 lines of code</h3>
-                  <p className={styles.cardBody}>30 microservices, mostly Python FastAPI. React 18 frontend with 85+ pages, TypeScript, CSS Modules.</p>
+                  <h3 className={styles.cardTitle}>~550K SLOC</h3>
+                  <p className={styles.cardBody}>~209K Python backend (30 FastAPI services, 843 files). ~250K TypeScript/React frontend (662 components, 97 API clients). ~91K CSS Modules.</p>
                 </div>
                 <div className={styles.card}>
                   <h3 className={styles.cardTitle}>33 Docker containers</h3>
-                  <p className={styles.cardBody}>docker-compose.unified.yml orchestrating all services. Server designed for Kubernetes. Database-per-service architecture.</p>
+                  <p className={styles.cardBody}>docker-compose.unified.yml. Kubernetes-ready architecture. Database-per-service design. Health checks on every service. Nginx SSL reverse proxy.</p>
                 </div>
                 <div className={styles.card}>
                   <h3 className={styles.cardTitle}>80+ database tables</h3>
-                  <p className={styles.cardBody}>DigitalOcean Managed PostgreSQL with separate DATABASE_URL per service. Redis for caching, sessions, pub-sub.</p>
+                  <p className={styles.cardBody}>DigitalOcean Managed PostgreSQL with separate DATABASE_URL per service. Alembic migrations across 14 services. Redis for caching, sessions, pub-sub.</p>
                 </div>
               </div>
             </div>
@@ -528,22 +528,22 @@ const InvestorPitchDeckPage = () => {
         <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 5 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>Architecture</h2>
+              <h2 className={styles.sectionTitle}>Architecture &amp; services</h2>
               <p className={styles.sectionLead}>
-                30 backend microservices. Multi-provider LLM integration with automatic failover across OpenAI, Anthropic, Groq, Gemini, Mistral, Cohere.
+                30 FastAPI microservices. 6 LLM providers with smart failover: OpenAI, Anthropic, Groq, Gemini, Mistral, Cohere. Bring-your-own-key supported.
               </p>
               <div className={styles.cardsGrid}>
                 <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>ResonantChat Pipeline</h3>
-                  <p className={styles.cardBody}>68 intelligence modules: hallucination detection, evidence graphs, RAG, debate engine, personality DNA, autonomous planning, multi-provider failover.</p>
+                  <h3 className={styles.cardTitle}>68-module AI pipeline</h3>
+                  <p className={styles.cardBody}>Hallucination detection, evidence graphs, RAG, debate engine, causal reasoning, personality DNA, autonomous planning, narrative continuity, cross-validation, thought branching.</p>
                 </div>
                 <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Agent Orchestration</h3>
-                  <p className={styles.cardBody}>Agent voting, debate, chaining, team composition, autonomous planning with error correction, self-improving agents, A/B testing.</p>
+                  <h3 className={styles.cardTitle}>Agent engine (13 tables)</h3>
+                  <p className={styles.cardBody}>Agent creation, versioning, teams, voting, debate, chaining, autonomous planning with error correction, safety rules, economic budgets. Full CRUD + marketplace rental.</p>
                 </div>
                 <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Code Visualizer</h3>
-                  <p className={styles.cardBody}>Scans GitHub repos, generates interactive dependency graphs, traces function calls, governance reports, AI code reviews. Persistent storage.</p>
+                  <h3 className={styles.cardTitle}>Code Visualizer (20+ endpoints)</h3>
+                  <p className={styles.cardBody}>Scans GitHub repos, dependency graphs, function tracing, governance reports, AI code reviews, codebase comparison. Persistent saved analyses with per-plan storage limits.</p>
                 </div>
               </div>
             </div>
@@ -571,20 +571,20 @@ const InvestorPitchDeckPage = () => {
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}>Unique intellectual property</h2>
               <p className={styles.sectionLead}>
-                9 proprietary systems that cannot be replicated by wrapping an LLM API.
+                10 proprietary systems built from scratch — not wrappers around existing APIs. Custom blockchain, physics engine, ML embeddings, governance layer.
               </p>
               <div className={styles.cardsGrid}>
                 <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>DSID-P Protocol</h3>
-                  <p className={styles.cardBody}>Decentralized State Identity Protocol: custom blockchain for immutable hash anchoring, audit trails, merkle roots, cryptographic state verification.</p>
+                  <h3 className={styles.cardTitle}>DSID-P Protocol (8 tables)</h3>
+                  <p className={styles.cardBody}>Decentralized State Identity Protocol: blocks, transactions, merkle roots, hash anchoring, audit entries, state snapshots. Immutable cryptographic verification.</p>
                 </div>
                 <div className={styles.card}>
                   <h3 className={styles.cardTitle}>Hash Sphere / State Physics</h3>
-                  <p className={styles.cardBody}>Physics-based state management using 3D coordinates, forces, spin, energy, and conservation invariants. Unique concept in AI infrastructure.</p>
+                  <p className={styles.cardBody}>Physics-based state management: 3D coordinates, forces (attraction/repulsion/resonance/gravity), spin, energy, conservation invariants. Unique in AI infrastructure.</p>
                 </div>
                 <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Semantic Memory Universe</h3>
-                  <p className={styles.cardBody}>Per-user semantic memory space with embedding retrieval, clustering, anchoring, decay rates, importance scoring, and 3D visualization.</p>
+                  <h3 className={styles.cardTitle}>RARA Governance Layer</h3>
+                  <p className={styles.cardBody}>Resonant Autonomous Runtime Architecture: capability manifests, mutation proposals, agent budgets, governance decisions, explainability artifacts, invariant verification.</p>
                 </div>
               </div>
             </div>
@@ -597,25 +597,25 @@ const InvestorPitchDeckPage = () => {
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}>Business model</h2>
               <p className={styles.sectionLead}>
-                Usage-based platform with premium governance and enterprise control plane.
+                5 revenue streams ready to generate income. Complete Stripe integration with subscriptions, credits, marketplace, and referral system.
               </p>
               <div className={styles.cardsGrid}>
                 <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Self-serve</h3>
+                  <h3 className={styles.cardTitle}>Stripe subscriptions (4 tiers)</h3>
                   <p className={styles.cardBody}>
-                    Developers start with a hosted experience to ship MVP agents fast.
+                    Free (1,000 credits on signup), Plus, Pro, Enterprise. Checkout sessions, webhooks, billing portal, invoice generation. 45+ billing endpoints.
                   </p>
                 </div>
                 <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Team & compliance</h3>
+                  <h3 className={styles.cardTitle}>Credits + marketplace</h3>
                   <p className={styles.cardBody}>
-                    Add policy controls, audit trails, and org management as teams scale.
+                    Per-operation credit deduction tracked by service, provider, model, tokens, latency. Credit packs, API products. Agent marketplace purchases + rentals.
                   </p>
                 </div>
                 <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Enterprise</h3>
+                  <h3 className={styles.cardTitle}>Referral system</h3>
                   <p className={styles.cardBody}>
-                    Advanced governance, incident controls, dedicated support, and deployment options.
+                    5,000 credits for referrer, 2,000 for referred. Usage analytics dashboard, transaction history, billing breakdown. Ready to charge from day one.
                   </p>
                 </div>
               </div>
@@ -623,26 +623,26 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 9 — Monetization & Infrastructure */}
+        {/* SLIDE 9 — Security & Multi-tenant */}
         <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 9 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>Monetization & infrastructure</h2>
+              <h2 className={styles.sectionTitle}>Security &amp; multi-tenant</h2>
               <p className={styles.sectionLead}>
-                Complete SaaS billing stack with Stripe. Credits, subscriptions, usage tracking, marketplace, referral system.
+                Enterprise-grade auth with 80+ endpoints. Multi-tenant organizations with role-based access, plan-based feature gating, and 9-page enterprise control plane.
               </p>
               <div className={styles.cardsGrid}>
                 <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Full billing stack</h3>
-                  <p className={styles.cardBody}>Stripe subscriptions + credit system + per-operation cost tracking + marketplace purchases + referral system (5,000/2,000 credits).</p>
+                  <h3 className={styles.cardTitle}>Auth (10 DB tables)</h3>
+                  <p className={styles.cardBody}>OAuth (Google/GitHub), MFA (TOTP + backup codes), JWT + HttpOnly cookies, AES-encrypted API keys, rate limiting, account lockout, bcrypt hashing, session management.</p>
                 </div>
                 <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Multi-tenant architecture</h3>
-                  <p className={styles.cardBody}>Organizations with roles (admin, member, owner, platform_owner), per-org API keys, plan-based feature gating, enterprise control plane.</p>
+                  <h3 className={styles.cardTitle}>Multi-tenant (4 roles)</h3>
+                  <p className={styles.cardBody}>Organizations: admin, member, owner, platform_owner. Per-org API keys, per-user LLM provider keys. Plan-based feature gating. Enterprise control plane with 9 dashboards.</p>
                 </div>
                 <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Security</h3>
-                  <p className={styles.cardBody}>OAuth + MFA (TOTP), AES-encrypted API keys, JWT auth, rate limiting, account lockout, bcrypt hashing, Docker-isolated sandboxed execution.</p>
+                  <h3 className={styles.cardTitle}>Sandboxed execution</h3>
+                  <p className={styles.cardBody}>Docker-isolated code execution. Multi-language sandbox runner. Gateway auth middleware on all non-public routes. Audit logging with IP/user-agent tracking. CORS per-service.</p>
                 </div>
               </div>
             </div>
@@ -655,20 +655,20 @@ const InvestorPitchDeckPage = () => {
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}>Production deployment</h2>
               <p className={styles.sectionLead}>
-                Live at dev-swat.com with 178 registered users. DigitalOcean infrastructure designed for Kubernetes migration.
+                Live at dev-swat.com with 178 registered users. Kubernetes-ready architecture on DigitalOcean. Complete CI/CD via GitHub Actions.
               </p>
               <div className={styles.cardsGrid}>
                 <div className={styles.card}>
                   <h3 className={styles.cardTitle}>33 Docker containers</h3>
-                  <p className={styles.cardBody}>docker-compose.unified.yml. Nginx SSL termination, reverse proxy. SQLAlchemy connection pooling (QueuePool + NullPool). Health checks on every service.</p>
+                  <p className={styles.cardBody}>docker-compose.unified.yml. Nginx SSL termination + reverse proxy. SQLAlchemy QueuePool (critical) + NullPool (non-critical). Health checks + auto-restart on every service.</p>
                 </div>
                 <div className={styles.card}>
                   <h3 className={styles.cardTitle}>Database per service</h3>
-                  <p className={styles.cardBody}>DigitalOcean Managed PostgreSQL with separate DATABASE_URL per service. Redis shared instance. Persistent volumes for models and blockchain data.</p>
+                  <p className={styles.cardBody}>DigitalOcean Managed PostgreSQL with separate DATABASE_URL per service. Alembic migrations across 14 services. Redis shared instance. Persistent volumes for models + blockchain data.</p>
                 </div>
                 <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>178 registered users</h3>
-                  <p className={styles.cardBody}>Production-deployed and serving real users. GitHub Actions CI/CD. Frontend: npm build → rsync to Nginx. Domain: dev-swat.com (active SSL).</p>
+                  <h3 className={styles.cardTitle}>What's included</h3>
+                  <p className={styles.cardBody}>Full source code (both repos), 30-day transition support, 3-day live trial, complete deployment runbook, PLATFORM_SALE_REPORT.md technical audit. $50K–$150K negotiable.</p>
                 </div>
               </div>
             </div>
@@ -679,10 +679,9 @@ const InvestorPitchDeckPage = () => {
         <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 11 ? styles.slideActive : ''}`}>
           <section className={styles.footerCta}>
             <div className={styles.footerCtaInner}>
-              <h2 className={styles.footerCtaTitle}>Let's talk</h2>
+              <h2 className={styles.footerCtaTitle}>Acquire ResonantGenesis</h2>
               <p className={styles.footerCtaBody}>
-                If you're investing in durable infrastructure for autonomous AI, we're building the missing layer: governed memory + constraints + observability.
-                Reach out to discuss the roadmap, security posture, and go-to-market.
+                ~550K source lines of production code. 30 microservices. 10 unique IP assets. Full Stripe billing. 178 users. Built solo — needs a team to take to market. Asking $50K–$150K. Acqui-hire, white-label, partial stake open.
               </p>
               <div className={styles.ctaRow}>
                 <button

@@ -97,17 +97,23 @@ export interface UsersResponse {
 }
 
 export interface PlatformAnalytics {
-  credits_consumed: number;
-  api_calls_30d: number;
-  api_calls_24h: number;
-  conversion_rate: number;
-  total_users: number;
-  active_users_24h: number;
-  paid_users: number;
-  revenue_30d: number;
-  avg_response_time_ms: number;
-  error_rate_24h: number;
-  active_connections: number;
+  credits_consumed: number | null;
+  api_calls_30d: number | null;
+  api_calls_24h: number | null;
+  conversion_rate: number | null;
+  total_users: number | null;
+  active_users_24h: number | null;
+  paid_users: number | null;
+  paying_users?: number | null;
+  revenue_30d: number | null;
+  mrr?: number | null;
+  total_credits_purchased?: number | null;
+  credits_balance?: number | null;
+  active_subscriptions?: number | null;
+  billing_status?: string | null;
+  avg_response_time_ms: number | null;
+  error_rate_24h: number | null;
+  active_connections: number | null;
   timestamp: string;
 }
 

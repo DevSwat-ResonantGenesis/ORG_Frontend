@@ -121,9 +121,9 @@ interface User {
   email: string;
   plan: 'developer' | 'plus' | 'enterprise';
   status: 'active' | 'inactive' | 'warning';
-  creditsUsed: number;
-  creditsTotal: number;
-  revenue: number;
+  creditsUsed: number | null;
+  creditsTotal: number | null;
+  revenue: number | null;
   lastActive: string;
   signupDate: string;
 }
@@ -141,14 +141,14 @@ interface RARAAgent {
 }
 
 interface PlatformStats {
-  totalUsers: number;
-  activeUsers: number;
-  totalRevenue: number;
-  mrr: number;
-  creditsConsumed: number;
-  apiCalls: number;
+  totalUsers: number | null;
+  activeUsers: number | null;
+  totalRevenue: number | null;
+  mrr: number | null;
+  creditsConsumed: number | null;
+  apiCalls: number | null;
   avgSessionTime: string;
-  conversionRate: number;
+  conversionRate: number | null;
 }
 
 import { ENV } from '../../config/env';
@@ -158,21 +158,17 @@ const API_BASE = ENV.apiUrl;
 
 // Default empty data
 const defaultStats: PlatformStats = {
-  totalUsers: 0,
-  activeUsers: 0,
-  totalRevenue: 0,
-  mrr: 0,
-  creditsConsumed: 0,
-  apiCalls: 0,
+  totalUsers: null,
+  activeUsers: null,
+  totalRevenue: null,
+  mrr: null,
+  creditsConsumed: null,
+  apiCalls: null,
   avgSessionTime: '0m',
-  conversionRate: 0,
+  conversionRate: null,
 };
 
-const defaultAgents: RARAAgent[] = [
-  { id: '1', name: 'CodeGuard-Alpha', type: 'Code Maintenance', status: 'active', tasksCompleted: 0, uptime: '99.9%', cpu: 0, memory: 0, lastTask: 'Initializing...' },
-  { id: '2', name: 'SecuritySentinel', type: 'Security Audit', status: 'idle', tasksCompleted: 0, uptime: '99.8%', cpu: 0, memory: 0, lastTask: 'Waiting...' },
-  { id: '3', name: 'DeployBot-Prime', type: 'Deployment', status: 'idle', tasksCompleted: 0, uptime: '98.5%', cpu: 0, memory: 0, lastTask: 'Waiting...' },
-];
+const defaultAgents: RARAAgent[] = [];
 
 type TabType = 'overview' | 'users' | 'revenue' | 'agents' | 'monitoring' | 'settings' | 'state-physics' | 'system' | 'v8' | 'control' | 'chat-skills';
 
@@ -185,20 +181,20 @@ interface ServiceHealth {
 }
 
 interface AuthMetrics {
-  loginSuccess: number;
-  loginFailed: number;
-  registrations: number;
-  mfaEnabled: number;
-  activeSessions: number;
+  loginSuccess: number | null;
+  loginFailed: number | null;
+  registrations: number | null;
+  mfaEnabled: number | null;
+  activeSessions: number | null;
 }
 
 interface BillingMetrics {
-  subscriptionsActive: number;
-  paymentsSuccess: number;
-  paymentsFailed: number;
-  webhooksProcessed: number;
-  checkoutStarted: number;
-  checkoutCompleted: number;
+  subscriptionsActive: number | null;
+  paymentsSuccess: number | null;
+  paymentsFailed: number | null;
+  webhooksProcessed: number | null;
+  checkoutStarted: number | null;
+  checkoutCompleted: number | null;
 }
 
 const OwnerDashboard: React.FC = () => {
@@ -224,20 +220,20 @@ const OwnerDashboard: React.FC = () => {
   const [realV8, setRealV8] = useState<V8Data | null>(null);
 
   const [authMetrics, setAuthMetrics] = useState<AuthMetrics>({
-    loginSuccess: 0,
-    loginFailed: 0,
-    registrations: 0,
-    mfaEnabled: 0,
-    activeSessions: 0,
+    loginSuccess: null,
+    loginFailed: null,
+    registrations: null,
+    mfaEnabled: null,
+    activeSessions: null,
   });
 
   const [billingMetrics, setBillingMetrics] = useState<BillingMetrics>({
-    subscriptionsActive: 0,
-    paymentsSuccess: 0,
-    paymentsFailed: 0,
-    webhooksProcessed: 0,
-    checkoutStarted: 0,
-    checkoutCompleted: 0,
+    subscriptionsActive: null,
+    paymentsSuccess: null,
+    paymentsFailed: null,
+    webhooksProcessed: null,
+    checkoutStarted: null,
+    checkoutCompleted: null,
   });
 
   // Chat Skills state
@@ -261,7 +257,8 @@ const OwnerDashboard: React.FC = () => {
     const ownerToken = localStorage.getItem('owner_token');
     const sessionToken = localStorage.getItem('access_token');
     const authToken = ownerToken || sessionToken;
-    const isSuperuser = sessionData?.is_superuser || sessionData?.role === 'platform_owner';
+    const sessionRole = sessionData?.role ? String(sessionData.role) : '';
+    const isSuperuser = Boolean(sessionData?.is_superuser) || sessionRole === 'platform_owner';
     
     // Allow access if superuser OR has owner_token
     if (!authToken && !isSuperuser) {
@@ -276,20 +273,23 @@ const OwnerDashboard: React.FC = () => {
       if (statsRes.ok) {
         const statsData = await statsRes.json();
         setStats({
-          totalUsers: statsData.total_users || 0,
-          activeUsers: statsData.active_users || 0,
-          totalRevenue: statsData.total_revenue || 0,
-          mrr: statsData.mrr || 0,
-          creditsConsumed: statsData.credits_consumed || 0,
-          apiCalls: statsData.api_calls || 0,
-          avgSessionTime: '0m',
-          conversionRate: statsData.conversion_rate || 0,
+          totalUsers: statsData.total_users ?? null,
+          activeUsers: statsData.active_users ?? null,
+          totalRevenue: statsData.total_revenue ?? null,
+          mrr: statsData.mrr ?? null,
+          creditsConsumed: statsData.credits_consumed ?? null,
+          apiCalls: statsData.api_calls ?? null,
+          avgSessionTime: statsData.avg_session_time ?? 'N/A',
+          conversionRate: statsData.conversion_rate ?? null,
         });
       }
 
-      // Fetch users from system endpoint (direct DB query, no JWT needed)
+      // Fetch users from system endpoint (direct DB query) with auth-service fallback
       try {
         const sysUsersData = await getPlatformUsers();
+        if (sysUsersData.error) {
+          throw new Error(sysUsersData.error);
+        }
         if (sysUsersData.users && sysUsersData.users.length > 0) {
           const mappedUsers: User[] = sysUsersData.users.map((u: any) => ({
             id: u.id,
@@ -298,9 +298,9 @@ const OwnerDashboard: React.FC = () => {
             username: u.username || '',
             plan: u.is_superuser ? 'enterprise' as const : 'developer' as const,
             status: (u.status || (u.is_active ? 'active' : 'inactive')) as 'active' | 'inactive' | 'warning',
-            creditsUsed: 0,
-            creditsTotal: 1000,
-            revenue: 0,
+            creditsUsed: null,
+            creditsTotal: null,
+            revenue: null,
             lastActive: u.last_login_at || 'Never',
             signupDate: u.created_at ? u.created_at.split('T')[0] : 'N/A',
             mfaEnabled: u.mfa_enabled || false,
@@ -308,6 +308,8 @@ const OwnerDashboard: React.FC = () => {
             lastLoginAt: u.last_login_at ? u.last_login_at.split('T')[0] : null,
           }));
           setUsers(mappedUsers);
+        } else {
+          throw new Error('Gateway users endpoint returned no users');
         }
       } catch (e) {
         console.warn('System users endpoint not available, trying auth endpoint:', e);
@@ -324,9 +326,9 @@ const OwnerDashboard: React.FC = () => {
             username: u.username || '',
             plan: 'developer' as const,
             status: (u.status || (u.is_active ? 'active' : 'inactive')) as 'active' | 'inactive' | 'warning',
-            creditsUsed: 0,
-            creditsTotal: 1000,
-            revenue: 0,
+            creditsUsed: null,
+            creditsTotal: null,
+            revenue: null,
             lastActive: u.last_login_at || 'Never',
             signupDate: u.created_at ? u.created_at.split('T')[0] : 'N/A',
             mfaEnabled: u.mfa_enabled || false,
@@ -363,12 +365,12 @@ const OwnerDashboard: React.FC = () => {
         if (billingRes.ok) {
           const billingData = await billingRes.json();
           setBillingMetrics({
-            subscriptionsActive: billingData.subscriptions_active || 0,
-            paymentsSuccess: billingData.payments_success || 0,
-            paymentsFailed: billingData.payments_failed || 0,
-            webhooksProcessed: billingData.webhooks_processed || 0,
-            checkoutStarted: billingData.checkout_started || 0,
-            checkoutCompleted: billingData.checkout_completed || 0,
+            subscriptionsActive: billingData.subscriptions_active ?? null,
+            paymentsSuccess: billingData.payments_success ?? null,
+            paymentsFailed: billingData.payments_failed ?? null,
+            webhooksProcessed: billingData.webhooks_processed ?? null,
+            checkoutStarted: billingData.checkout_started ?? null,
+            checkoutCompleted: billingData.checkout_completed ?? null,
           });
         }
       } catch (e) {
@@ -383,11 +385,11 @@ const OwnerDashboard: React.FC = () => {
         if (authMetricsRes.ok) {
           const authData = await authMetricsRes.json();
           setAuthMetrics({
-            loginSuccess: authData.login_success || 0,
-            loginFailed: authData.login_failed || 0,
-            registrations: authData.registrations || 0,
-            mfaEnabled: authData.mfa_enabled || 0,
-            activeSessions: authData.active_sessions || 0,
+            loginSuccess: authData.login_success ?? null,
+            loginFailed: authData.login_failed ?? null,
+            registrations: authData.registrations ?? null,
+            mfaEnabled: authData.mfa_enabled ?? null,
+            activeSessions: authData.active_sessions ?? null,
           });
         }
       } catch (e) {
@@ -422,11 +424,13 @@ const OwnerDashboard: React.FC = () => {
           // Update stats with real analytics data
           setStats(prev => ({
             ...prev,
-            totalUsers: analyticsData.total_users || prev.totalUsers,
-            activeUsers: analyticsData.active_users_24h || prev.activeUsers,
-            creditsConsumed: analyticsData.credits_consumed || prev.creditsConsumed,
-            apiCalls: analyticsData.api_calls_30d || prev.apiCalls,
-            conversionRate: analyticsData.conversion_rate || prev.conversionRate,
+            totalUsers: analyticsData.total_users ?? prev.totalUsers,
+            activeUsers: analyticsData.active_users_24h ?? prev.activeUsers,
+            totalRevenue: analyticsData.revenue_30d ?? prev.totalRevenue,
+            mrr: analyticsData.mrr ?? prev.mrr,
+            creditsConsumed: analyticsData.credits_consumed ?? prev.creditsConsumed,
+            apiCalls: analyticsData.api_calls_30d ?? prev.apiCalls,
+            conversionRate: analyticsData.conversion_rate ?? prev.conversionRate,
           }));
         }
         if (activityData) setRealActivity(activityData);
@@ -462,6 +466,10 @@ const OwnerDashboard: React.FC = () => {
 
   useEffect(() => {
     fetchDashboardData();
+    const intervalId = window.setInterval(() => {
+      fetchDashboardData();
+    }, 30000);
+    return () => window.clearInterval(intervalId);
   }, []);
 
   const handleRefresh = async () => {
@@ -664,50 +672,60 @@ const OwnerDashboard: React.FC = () => {
     return map[status] || styles.agentStatusIdle;
   };
 
+  const formatMetric = (value: number | null | undefined) => (
+    value == null ? '—' : value.toLocaleString()
+  );
+
+  const formatCurrencyMetric = (value: number | null | undefined) => (
+    value == null ? '—' : `$${value.toLocaleString()}`
+  );
+
   const renderOverview = () => (
     <>
       <div className={styles.statsGrid}>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconBlue}`}><UsersIcon /></div>
-            {realAnalytics && <span style={{ fontSize: '12px', color: '#64748b' }}>Live from DB</span>}
+            <span style={{ fontSize: '12px', color: '#64748b' }}>
+              {(realAnalytics?.total_users ?? stats.totalUsers) != null ? 'Live from backend' : 'Unavailable'}
+            </span>
           </div>
-          <div className={styles.statValue}>{(realAnalytics?.total_users ?? stats.totalUsers).toLocaleString()}</div>
+          <div className={styles.statValue}>{formatMetric(realAnalytics?.total_users ?? stats.totalUsers)}</div>
           <div className={styles.statLabel}>Total Users</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconGreen}`}><ActivityIcon /></div>
           </div>
-          <div className={styles.statValue}>{(realAnalytics?.active_users_24h ?? stats.activeUsers).toLocaleString()}</div>
+          <div className={styles.statValue}>{formatMetric(realAnalytics?.active_users_24h ?? stats.activeUsers)}</div>
           <div className={styles.statLabel}>Active Users (24h)</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconPurple}`}><DollarIcon /></div>
           </div>
-          <div className={styles.statValue}>${(realAnalytics?.revenue_30d ?? stats.mrr).toLocaleString()}</div>
+          <div className={styles.statValue}>{formatCurrencyMetric(realAnalytics?.revenue_30d ?? stats.totalRevenue)}</div>
           <div className={styles.statLabel}>Revenue (30d)</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconOrange}`}><CpuIcon /></div>
           </div>
-          <div className={styles.statValue}>{(realAnalytics?.credits_consumed ?? stats.creditsConsumed).toLocaleString()}</div>
+          <div className={styles.statValue}>{formatMetric(realAnalytics?.credits_consumed ?? stats.creditsConsumed)}</div>
           <div className={styles.statLabel}>Credits Consumed</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconCyan}`}><ServerIcon /></div>
           </div>
-          <div className={styles.statValue}>{(realAnalytics?.api_calls_30d ?? stats.apiCalls).toLocaleString()}</div>
+          <div className={styles.statValue}>{formatMetric(realAnalytics?.api_calls_30d ?? stats.apiCalls)}</div>
           <div className={styles.statLabel}>API Calls (30d)</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconRed}`}><TrendingUpIcon /></div>
           </div>
-          <div className={styles.statValue}>{realAnalytics?.active_connections ?? 0}</div>
+          <div className={styles.statValue}>{formatMetric(realAnalytics?.active_connections)}</div>
           <div className={styles.statLabel}>Active Connections</div>
         </div>
       </div>
@@ -718,20 +736,23 @@ const OwnerDashboard: React.FC = () => {
           <div style={{ height: '200px', display: 'flex', alignItems: 'flex-end', gap: '8px', padding: '20px 0' }}>
             {/* Real billing metrics visualization */}
             {(() => {
-              const totalRev = realAnalytics?.revenue_30d ?? stats.totalRevenue ?? 0;
-              const creditsUsed = realAnalytics?.credits_consumed ?? stats.creditsConsumed ?? 0;
-              const creditsPurchased = (realAnalytics as any)?.total_credits_purchased ?? 0;
-              const creditsBalance = (realAnalytics as any)?.credits_balance ?? 0;
-              const payingUsers = (realAnalytics as any)?.paying_users ?? 0;
-              const apiCalls = realAnalytics?.api_calls_30d ?? stats.apiCalls ?? 0;
+              const totalRev = realAnalytics?.revenue_30d ?? stats.totalRevenue;
+              const creditsUsed = realAnalytics?.credits_consumed ?? stats.creditsConsumed;
+              const creditsPurchased = realAnalytics?.total_credits_purchased;
+              const creditsBalance = realAnalytics?.credits_balance;
+              const payingUsers = realAnalytics?.paying_users ?? realAnalytics?.paid_users;
+              const apiCalls = realAnalytics?.api_calls_30d ?? stats.apiCalls;
               const items = [
-                { label: 'Revenue', value: totalRev, display: `$${totalRev.toLocaleString()}` },
-                { label: 'Purchased', value: creditsPurchased, display: `${(creditsPurchased / 1000).toFixed(0)}k` },
-                { label: 'Used', value: creditsUsed, display: `${(creditsUsed / 1000).toFixed(0)}k` },
-                { label: 'Balance', value: creditsBalance, display: `${(creditsBalance / 1000).toFixed(0)}k` },
-                { label: 'Paying', value: payingUsers, display: String(payingUsers) },
-                { label: 'API Calls', value: apiCalls, display: apiCalls.toLocaleString() },
-              ];
+                { label: 'Revenue', value: totalRev, display: formatCurrencyMetric(totalRev) },
+                { label: 'Purchased', value: creditsPurchased, display: formatMetric(creditsPurchased) },
+                { label: 'Used', value: creditsUsed, display: formatMetric(creditsUsed) },
+                { label: 'Balance', value: creditsBalance, display: formatMetric(creditsBalance) },
+                { label: 'Paying', value: payingUsers, display: formatMetric(payingUsers) },
+                { label: 'API Calls', value: apiCalls, display: formatMetric(apiCalls) },
+              ].filter((item): item is { label: string; value: number; display: string } => item.value != null);
+              if (!items.length) {
+                return <div style={{ color: '#64748b', width: '100%', textAlign: 'center' }}>No live revenue metrics available</div>;
+              }
               const maxVal = Math.max(...items.map(it => it.value), 1);
               return items.map((item, i) => (
                 <div key={item.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
@@ -761,15 +782,15 @@ const OwnerDashboard: React.FC = () => {
           <div className={styles.revenueBreakdown} style={{ marginTop: '16px' }}>
             <div className={styles.revenueItem}>
               <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#8b5cf6' }} />Total Revenue</span>
-              <span className={styles.revenueItemValue}>${(realAnalytics?.revenue_30d ?? stats.totalRevenue ?? 0).toLocaleString()}</span>
+              <span className={styles.revenueItemValue}>{formatCurrencyMetric(realAnalytics?.revenue_30d ?? stats.totalRevenue)}</span>
             </div>
             <div className={styles.revenueItem}>
               <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#3b82f6' }} />Credits Purchased</span>
-              <span className={styles.revenueItemValue}>{((realAnalytics as any)?.total_credits_purchased ?? 0).toLocaleString()}</span>
+              <span className={styles.revenueItemValue}>{formatMetric(realAnalytics?.total_credits_purchased)}</span>
             </div>
             <div className={styles.revenueItem}>
               <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Credits Balance</span>
-              <span className={styles.revenueItemValue}>{((realAnalytics as any)?.credits_balance ?? 0).toLocaleString()}</span>
+              <span className={styles.revenueItemValue}>{formatMetric(realAnalytics?.credits_balance)}</span>
             </div>
           </div>
         </div>
@@ -823,8 +844,8 @@ const OwnerDashboard: React.FC = () => {
                       </div>
                     </td>
                     <td><span className={`${styles.badge} ${getBadgeClass(user.plan)}`}>{user.plan}</span></td>
-                    <td>{user.creditsUsed} / {user.creditsTotal}</td>
-                    <td>${user.revenue}/mo</td>
+                    <td>{user.creditsUsed != null && user.creditsTotal != null ? `${user.creditsUsed} / ${user.creditsTotal}` : '—'}</td>
+                    <td>{user.revenue != null ? `$${user.revenue}/mo` : '—'}</td>
                     <td><span className={`${styles.statusDot} ${getStatusClass(user.status)}`} />{user.status}</td>
                   </tr>
                 ))}
@@ -977,13 +998,13 @@ const OwnerDashboard: React.FC = () => {
   const renderRevenue = () => (
     <>
       <div className={styles.statsGrid}>
-        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconGreen}`}><DollarIcon /></div></div><div className={styles.statValue}>${stats.totalRevenue.toLocaleString()}</div><div className={styles.statLabel}>Total Revenue</div></div>
-        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconPurple}`}><DollarIcon /></div></div><div className={styles.statValue}>${stats.mrr.toLocaleString()}</div><div className={styles.statLabel}>MRR</div></div>
-        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconBlue}`}><UsersIcon /></div></div><div className={styles.statValue}>{users.filter(u => u.plan !== 'developer').length}</div><div className={styles.statLabel}>Paying Customers</div></div>
+        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconGreen}`}><DollarIcon /></div></div><div className={styles.statValue}>{formatCurrencyMetric(realAnalytics?.revenue_30d ?? stats.totalRevenue)}</div><div className={styles.statLabel}>Total Revenue</div></div>
+        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconPurple}`}><DollarIcon /></div></div><div className={styles.statValue}>{formatCurrencyMetric(realAnalytics?.mrr ?? stats.mrr)}</div><div className={styles.statLabel}>MRR</div></div>
+        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconBlue}`}><UsersIcon /></div></div><div className={styles.statValue}>{formatMetric(realAnalytics?.paying_users ?? realAnalytics?.paid_users)}</div><div className={styles.statLabel}>Paying Customers</div></div>
       </div>
       <div className={styles.cardsGrid}>
-        <div className={styles.card}><h3 className={styles.cardTitle}>Revenue by Plan</h3><div className={styles.chartPlaceholder}>Pie chart</div></div>
-        <div className={styles.card}><h3 className={styles.cardTitle}>Revenue Trend</h3><div className={styles.chartPlaceholder}>Line chart</div></div>
+        <div className={styles.card}><h3 className={styles.cardTitle}>Revenue by Plan</h3><div className={styles.chartPlaceholder}>No live revenue-by-plan dataset available</div></div>
+        <div className={styles.card}><h3 className={styles.cardTitle}>Revenue Trend</h3><div className={styles.chartPlaceholder}>No live revenue trend dataset available</div></div>
       </div>
     </>
   );
@@ -1196,31 +1217,31 @@ const OwnerDashboard: React.FC = () => {
               <span className={styles.revenueItemLabel}>
                 <span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Login Success
               </span>
-              <span className={styles.revenueItemValue}>{authMetrics.loginSuccess.toLocaleString()}</span>
+              <span className={styles.revenueItemValue}>{formatMetric(authMetrics.loginSuccess)}</span>
             </div>
             <div className={styles.revenueItem}>
               <span className={styles.revenueItemLabel}>
                 <span className={styles.revenueItemDot} style={{ background: '#ef4444' }} />Login Failed
               </span>
-              <span className={styles.revenueItemValue}>{authMetrics.loginFailed.toLocaleString()}</span>
+              <span className={styles.revenueItemValue}>{formatMetric(authMetrics.loginFailed)}</span>
             </div>
             <div className={styles.revenueItem}>
               <span className={styles.revenueItemLabel}>
                 <span className={styles.revenueItemDot} style={{ background: '#3b82f6' }} />Registrations
               </span>
-              <span className={styles.revenueItemValue}>{authMetrics.registrations.toLocaleString()}</span>
+              <span className={styles.revenueItemValue}>{formatMetric(authMetrics.registrations)}</span>
             </div>
             <div className={styles.revenueItem}>
               <span className={styles.revenueItemLabel}>
                 <span className={styles.revenueItemDot} style={{ background: '#8b5cf6' }} />MFA Enabled Users
               </span>
-              <span className={styles.revenueItemValue}>{authMetrics.mfaEnabled.toLocaleString()}</span>
+              <span className={styles.revenueItemValue}>{formatMetric(authMetrics.mfaEnabled)}</span>
             </div>
             <div className={styles.revenueItem}>
               <span className={styles.revenueItemLabel}>
                 <span className={styles.revenueItemDot} style={{ background: '#06b6d4' }} />Active Sessions
               </span>
-              <span className={styles.revenueItemValue}>{authMetrics.activeSessions.toLocaleString()}</span>
+              <span className={styles.revenueItemValue}>{formatMetric(authMetrics.activeSessions)}</span>
             </div>
           </div>
           <div style={{ marginTop: '16px', fontSize: '12px', color: '#64748b' }}>
@@ -1235,34 +1256,34 @@ const OwnerDashboard: React.FC = () => {
               <span className={styles.revenueItemLabel}>
                 <span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Active Subscriptions
               </span>
-              <span className={styles.revenueItemValue}>{billingMetrics.subscriptionsActive.toLocaleString()}</span>
+              <span className={styles.revenueItemValue}>{formatMetric(billingMetrics.subscriptionsActive)}</span>
             </div>
             <div className={styles.revenueItem}>
               <span className={styles.revenueItemLabel}>
                 <span className={styles.revenueItemDot} style={{ background: '#3b82f6' }} />Payments Success
               </span>
-              <span className={styles.revenueItemValue}>{billingMetrics.paymentsSuccess.toLocaleString()}</span>
+              <span className={styles.revenueItemValue}>{formatMetric(billingMetrics.paymentsSuccess)}</span>
             </div>
             <div className={styles.revenueItem}>
               <span className={styles.revenueItemLabel}>
                 <span className={styles.revenueItemDot} style={{ background: '#ef4444' }} />Payments Failed
               </span>
-              <span className={styles.revenueItemValue}>{billingMetrics.paymentsFailed.toLocaleString()}</span>
+              <span className={styles.revenueItemValue}>{formatMetric(billingMetrics.paymentsFailed)}</span>
             </div>
             <div className={styles.revenueItem}>
               <span className={styles.revenueItemLabel}>
                 <span className={styles.revenueItemDot} style={{ background: '#8b5cf6' }} />Webhooks Processed
               </span>
-              <span className={styles.revenueItemValue}>{billingMetrics.webhooksProcessed.toLocaleString()}</span>
+              <span className={styles.revenueItemValue}>{formatMetric(billingMetrics.webhooksProcessed)}</span>
             </div>
             <div className={styles.revenueItem}>
               <span className={styles.revenueItemLabel}>
                 <span className={styles.revenueItemDot} style={{ background: '#f59e0b' }} />Checkout Conversion
               </span>
               <span className={styles.revenueItemValue}>
-                {billingMetrics.checkoutStarted > 0 
+                {billingMetrics.checkoutStarted != null && billingMetrics.checkoutCompleted != null && billingMetrics.checkoutStarted > 0
                   ? `${((billingMetrics.checkoutCompleted / billingMetrics.checkoutStarted) * 100).toFixed(1)}%`
-                  : '0%'
+                  : '—'
                 }
               </span>
             </div>
@@ -1463,7 +1484,7 @@ const OwnerDashboard: React.FC = () => {
           <div className={styles.statHeader}>
             <div className={`${styles.statIcon} ${styles.statIconGreen}`}><ServerIcon /></div>
           </div>
-          <div className={styles.statValue}>{realServices?.online || 0}/{realServices?.total || 0}</div>
+          <div className={styles.statValue}>{realServices ? `${realServices.healthy}/${realServices.total}` : '—'}</div>
           <div className={styles.statLabel}>Services Online</div>
         </div>
         <div className={styles.statCard}>
@@ -1491,7 +1512,7 @@ const OwnerDashboard: React.FC = () => {
 
       <div className={styles.cardsGrid}>
         <div className={styles.card}>
-          <h3 className={styles.cardTitle}><ServerIcon /> Live Service Health ({realServices?.healthy || 0} healthy / {realServices?.total || 0} total)</h3>
+          <h3 className={styles.cardTitle}><ServerIcon /> Live Service Health ({realServices ? `${realServices.healthy} healthy / ${realServices.total} total` : 'unavailable'})</h3>
           <div className={styles.revenueBreakdown}>
             {realServices?.services?.map(svc => (
               <div key={svc.key} className={styles.revenueItem}>
@@ -1618,10 +1639,17 @@ const OwnerDashboard: React.FC = () => {
       const ownerToken = localStorage.getItem('owner_token');
       const sessionToken = localStorage.getItem('access_token');
       const authToken = ownerToken || sessionToken;
-      const res = await fetch(`${API_BASE}/skills/list`, {
-        headers: { 'Authorization': `Bearer ${authToken}` },
-      });
-      if (!res.ok) throw new Error(`Failed to fetch skills: ${res.status}`);
+      const headers: Record<string, string> = {};
+      if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+      const res = await fetch(`${API_BASE}/skills/list`, { headers });
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        throw new Error(`Failed to fetch skills: ${res.status} ${text.slice(0, 100)}`);
+      }
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error(`Skills endpoint returned non-JSON response (${contentType})`);
+      }
       const data = await res.json();
       setChatSkills(data.skills || []);
     } catch (err: any) {
