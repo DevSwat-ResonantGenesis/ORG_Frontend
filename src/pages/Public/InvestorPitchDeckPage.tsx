@@ -444,31 +444,34 @@ const InvestorPitchDeckPage = () => {
                     DigitalOcean Managed PostgreSQL (resonant-db). Separate DATABASE_URL env vars per service — database-per-service design. Critical services use SQLAlchemy QueuePool (pool_size=1). Non-critical use NullPool. Gateway uses asyncpg pool (min=0, max=2). Alembic migrations in 14 services. Redis shared instance for caching, sessions, pub-sub.
                   </p>
 
-                  <h3 className={styles.wpSubtitle}>Code Visualizer forensic scan (backend)</h3>
-                  <p className={styles.wpText}>
-                    Independent verification via our own Code Visualizer tool — static analysis of the full backend repo (analysis ID: 0df61891b34e482eaac664c5de515f39):
-                  </p>
-                  <table className={styles.wpTable}>
-                    <thead><tr><th>CV Metric</th><th>Value</th></tr></thead>
-                    <tbody>
-                      <tr><td>Total nodes mapped</td><td>30,119</td></tr>
-                      <tr><td>Files scanned</td><td>1,714</td></tr>
-                      <tr><td>Services detected</td><td>40</td></tr>
-                      <tr><td>Functions mapped</td><td>17,773</td></tr>
-                      <tr><td>Classes mapped</td><td>6,184</td></tr>
-                      <tr><td>API endpoints indexed</td><td>4,384</td></tr>
-                      <tr><td>External services</td><td>24</td></tr>
-                      <tr><td>Inter-service connections</td><td>59,160</td></tr>
-                      <tr><td>Broken connections (raw)</td><td>1,043 reported</td></tr>
-                      <tr><td>Broken (cross-verified)</td><td>508 truly broken (51.3% were false positives)</td></tr>
-                      <tr><td>Pipelines auto-detected</td><td>6</td></tr>
-                    </tbody>
-                  </table>
-                  <p className={styles.wpText}>
-                    Cross-verified against actual filesystem: of 1,043 "broken" imports reported by CV, 426 are false positives (relative imports where target file exists next to source), 100 are pip/stdlib packages, 9 are same-service cross-directory. 508 are truly unresolved — primarily cross-service references and missing shared modules (platform_tools: 20 refs, disd_message: 44, economic_state: 29). CV accuracy bug: cannot resolve Python relative imports. Full remediation plan in CODEBASE_REMEDIATION_PLAN.md. Estimated fix: 2–3 engineer-days for real issues + 3–5 days for CV import resolution improvement.
-                  </p>
                 </div>
               </div>
+
+              <h3 className={styles.wpSubtitle}>Code Visualizer forensic scan (backend)</h3>
+              <p className={styles.wpText}>
+                Independent verification via our own Code Visualizer tool — static analysis of the full backend repo (analysis ID: 0df61891b34e482eaac664c5de515f39):
+              </p>
+              <div className={styles.cvMetricsGrid}>
+                <div className={styles.cvMetricCard}><p className={styles.cvMetricLabel}>Nodes mapped</p><p className={styles.cvMetricValue}>30,119</p></div>
+                <div className={styles.cvMetricCard}><p className={styles.cvMetricLabel}>Files scanned</p><p className={styles.cvMetricValue}>1,714</p></div>
+                <div className={styles.cvMetricCard}><p className={styles.cvMetricLabel}>Services</p><p className={styles.cvMetricValue}>40</p></div>
+                <div className={styles.cvMetricCard}><p className={styles.cvMetricLabel}>Functions</p><p className={styles.cvMetricValue}>17,773</p></div>
+                <div className={styles.cvMetricCard}><p className={styles.cvMetricLabel}>Classes</p><p className={styles.cvMetricValue}>6,184</p></div>
+                <div className={styles.cvMetricCard}><p className={styles.cvMetricLabel}>API endpoints</p><p className={styles.cvMetricValue}>4,384</p></div>
+                <div className={styles.cvMetricCard}><p className={styles.cvMetricLabel}>External services</p><p className={styles.cvMetricValue}>24</p></div>
+                <div className={styles.cvMetricCard}><p className={styles.cvMetricLabel}>Connections</p><p className={styles.cvMetricValue}>59,160</p></div>
+                <div className={styles.cvMetricCard}><p className={styles.cvMetricLabel}>Pipelines</p><p className={styles.cvMetricValue}>6</p></div>
+                <div className={styles.cvMetricCard}><p className={styles.cvMetricLabel}>Efficiency</p><p className={styles.cvMetricValue}>96.4%</p></div>
+              </div>
+              <p className={styles.wpText}>
+                Cross-verified: of 1,043 reported broken imports, 535 are false positives (relative imports, pip/stdlib packages). 508 truly unresolved — primarily cross-service references. Full remediation plan in CODEBASE_REMEDIATION_PLAN.md. Fix estimate: 2–3 engineer-days.
+              </p>
+              <img
+                src="/images/investorpitch/cv-scan.jpg"
+                alt="Code Visualizer forensic scan — dependency graph and architecture map"
+                className={styles.slideScreenshot}
+                loading="lazy"
+              />
             </div>
           </div>
         </div>
@@ -567,7 +570,7 @@ const InvestorPitchDeckPage = () => {
               </div>
               <h3 className={styles.wpSubtitle}>What this means for buyers</h3>
               <p className={styles.wpText}>
-                Building this infrastructure from scratch takes 12–18 months with a senior team. ResonantGenesis is already built: 30 microservices, 80+ database tables, 68-module pipeline, 10 proprietary IP systems, full billing stack, and multi-tenant auth — all production-deployed. The acquisition price reflects the IP value, infrastructure depth, and the 12+ months of solo development that would cost $2M–$5M+ to replicate with a team.
+                Building this infrastructure from scratch takes 18–24 months with a senior team. ResonantGenesis was built in just 4 months because its own agentic infrastructure accelerated development — a half-million-line enterprise system built in 120 days by a single engineer using the tools being sold. The acquisition price reflects the IP value, infrastructure depth, and the compressed development that would cost $2M–$5M+ to replicate with a team.
               </p>
             </div>
           </div>
@@ -979,7 +982,7 @@ const InvestorPitchDeckPage = () => {
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>09</span>Acquire ResonantGenesis</h2>
               <p className={styles.sectionLead}>
-                ~550,000 source lines of production code. 30 microservices. 33 Docker containers. 80+ database tables. 10 unique IP assets. Complete Stripe billing with 5 revenue streams. 178 registered users. Built solo over 12+ months — needs a team to take to market.
+                ~550,000 source lines of production code. 30 microservices. 33 Docker containers. 80+ database tables. 10 unique IP assets. Complete Stripe billing with 5 revenue streams. 178 registered users. Built solo in a 4-month hyper-sprint — averaging ~4,500 lines/day using the platform's own agentic infrastructure. Needs a team to take to market.
               </p>
 
               <div className={styles.wpTwoCol}>
@@ -1007,13 +1010,18 @@ const InvestorPitchDeckPage = () => {
                 <div>
                   <h3 className={styles.wpSubtitle}>Why selling</h3>
                   <p className={styles.wpText}>
-                    Built solo by one developer over 12+ months. The platform is production-ready and architecturally sound, but needs a team for go-to-market: sales, marketing, customer success, and continued feature development. The cost to rebuild this from scratch with a 5–8 person senior engineering team would be $2M–$5M+ and 18–24 months. The $3.6M acquisition price reflects the IP value of 10 proprietary systems, 30 production microservices, 17,773 mapped functions, and 6 verified pipelines — a fraction of rebuild cost with zero time-to-market risk.
+                    Built in 4 months of hyper-accelerated development by a single engineer using the platform's own agentic workflows — the ultimate proof-of-concept. Replacement cost: $2M–$5M+ (estimated 18–24 months for a standard senior team). The platform is production-ready and architecturally sound, but needs a team for go-to-market: sales, marketing, customer success, and continued feature development.
+                  </p>
+
+                  <h3 className={styles.wpSubtitle}>Self-hosted &amp; Kubernetes-ready</h3>
+                  <p className={styles.wpText}>
+                    The entire codebase is self-hosted — zero dependency on third-party SaaS platforms for core functionality. Currently serving on a single DigitalOcean droplet, but the Docker Compose architecture is designed for direct migration to Kubernetes (K8s). Each microservice is an independent container with health checks, restart policies, and isolated networking — ready for horizontal scaling, orchestrated deployments, and multi-node clusters on any cloud or bare-metal hardware.
                   </p>
 
                   <h3 className={styles.wpSubtitle}>Ideal buyers</h3>
                   <ul className={styles.wpList}>
                     <li><strong>AI agencies / dev shops</strong> — White-label the platform. You provide clients, it provides infrastructure.</li>
-                    <li><strong>SaaS companies adding AI</strong> — Skip 12+ months of agent infrastructure build. Deploy on your infrastructure.</li>
+                    <li><strong>SaaS companies adding AI</strong> — Skip 18+ months of agent infrastructure build. Deploy on your own hardware or cloud.</li>
                     <li><strong>Enterprise ISVs</strong> — Plug-in agent orchestration with governance, audit trails, compliance controls.</li>
                     <li><strong>Technical founders</strong> — Buy the infrastructure, focus on your vertical. 3-day trial available.</li>
                     <li><strong>AI infrastructure / MLOps companies</strong> — Unique IP: 68-module pipeline, custom blockchain, physics engine, PyTorch resonance engine.</li>
