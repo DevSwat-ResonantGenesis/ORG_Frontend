@@ -19,6 +19,7 @@ import {
   ActivityFeed,
   QuickActions,
 } from '../../components/dashboard';
+import { TrialBanner } from '../../components/features/TrialBanner/TrialBanner';
 import styles from './NewUserDashboard.module.css';
 
 const NewUserDashboard: React.FC = () => {
@@ -82,6 +83,9 @@ const NewUserDashboard: React.FC = () => {
 
   return (
     <div className={styles.dashboard}>
+      {/* 1-Week Unlimited Trial Banner */}
+      <TrialBanner onUpgrade={handleUpgrade} />
+
       {/* Alerts */}
       {data.alerts && Array.isArray(data.alerts) && data.alerts.length > 0 && (
         <AlertBanner 

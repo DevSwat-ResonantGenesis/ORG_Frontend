@@ -129,6 +129,71 @@ export const fetchAvailableProviders = async (): Promise<{
   }
 };
 
+// ============================================
+// Trial Status (1-week unlimited trial)
+// ============================================
+export interface TrialStatus {
+  isTrialUser: boolean;
+  isExpired: boolean;
+  daysRemaining: number;
+  expiresAt: string | null;
+  hasApiKey: boolean;
+  requiresUpgrade: boolean;
+}
+
+export const fetchTrialStatus = async (): Promise<TrialStatus> => {
+  try {
+    // Get auth token from cookies
+    const getCookie = (name: string) => {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? match[2] : null;
+    };
+    const token = getCookie('rg_access') || getCookie('access_token');
+    
+    if (!token) {
+      return { isTrialUser: false, isExpired: false, daysRemaining: 0, expiresAt: null, hasApiKey: false, requiresUpgrade: false };
+    }
+
+    const res = await fastapiClient.post('/auth/verify', { token });
+    const data = res.data;
+    
+    const trialActive = data?.trial_active === true;
+    const trialExpiresAt = data?.trial_expires_at || null;
+    const unlimitedCredits = data?.unlimited_credits === true;
+    
+    let daysRemaining = 0;
+    let isExpired = false;
+    
+    if (trialExpiresAt) {
+      const now = new Date();
+      const expires = new Date(trialExpiresAt);
+      const diffMs = expires.getTime() - now.getTime();
+      daysRemaining = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+      isExpired = diffMs <= 0;
+    }
+    
+    // Check if user has any API keys
+    let hasApiKey = false;
+    try {
+      const keysRes = await fastapiClient.get('/user/api-keys');
+      const keys = keysRes.data?.keys || keysRes.data || [];
+      hasApiKey = Array.isArray(keys) && keys.length > 0;
+    } catch { /* ignore */ }
+    
+    return {
+      isTrialUser: trialActive || (unlimitedCredits && !!trialExpiresAt),
+      isExpired,
+      daysRemaining,
+      expiresAt: trialExpiresAt,
+      hasApiKey,
+      requiresUpgrade: isExpired && !hasApiKey,
+    };
+  } catch (err) {
+    console.error('Failed to fetch trial status:', err);
+    return { isTrialUser: false, isExpired: false, daysRemaining: 0, expiresAt: null, hasApiKey: false, requiresUpgrade: false };
+  }
+};
+
 export const API_KEY_PROVIDERS = [
   { id: 'github', name: 'GitHub (PAT)', placeholder: 'ghp_...', helpUrl: 'https://github.com/settings/tokens', models: [] },
   { id: 'openai', name: 'OpenAI', placeholder: 'sk-proj-...', helpUrl: 'https://platform.openai.com/api-keys', models: ['gpt-4o', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'] },

@@ -296,7 +296,7 @@ const OwnerDashboard: React.FC = () => {
             name: u.full_name || u.email.split('@')[0],
             email: u.email,
             username: u.username || '',
-            plan: u.is_superuser ? 'enterprise' as const : 'developer' as const,
+            plan: u.is_superuser ? 'enterprise' as const : u.unlimited_credits ? 'plus' as const : 'developer' as const,
             status: (u.status || (u.is_active ? 'active' : 'inactive')) as 'active' | 'inactive' | 'warning',
             creditsUsed: null,
             creditsTotal: null,
@@ -306,6 +306,11 @@ const OwnerDashboard: React.FC = () => {
             mfaEnabled: u.mfa_enabled || false,
             emailVerified: u.email_verified || false,
             lastLoginAt: u.last_login_at ? u.last_login_at.split('T')[0] : null,
+            unlimitedCredits: u.unlimited_credits || false,
+            trialStatus: u.trial_status || null,
+            trialExpiresAt: u.trial_expires_at || null,
+            chatCount: u.chat_count || 0,
+            messageCount: u.message_count || 0,
           }));
           setUsers(mappedUsers);
         } else {
@@ -900,12 +905,12 @@ const OwnerDashboard: React.FC = () => {
               <tr>
                 <th>Email</th>
                 <th>Username</th>
-                <th>Full Name</th>
                 <th>Status</th>
-                <th>MFA</th>
-                <th>Email Verified</th>
+                <th>Email</th>
+                <th>Trial</th>
+                <th>Usage</th>
                 <th>Last Login</th>
-                <th>Signup Date</th>
+                <th>Signup</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -914,25 +919,42 @@ const OwnerDashboard: React.FC = () => {
                 <tr key={user.id}>
                   <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>{user.email}</td>
                   <td>{(user as any).username || '-'}</td>
-                  <td>{user.name || '-'}</td>
                   <td>
                     <span className={`${styles.statusDot} ${getStatusClass(user.status)}`} />
                     {user.status}
-                  </td>
-                  <td>
-                    <span style={{ 
-                      color: (user as any).mfaEnabled ? '#10b981' : '#64748b',
-                      fontWeight: (user as any).mfaEnabled ? 'bold' : 'normal'
-                    }}>
-                      {(user as any).mfaEnabled ? '✓ Yes' : 'No'}
-                    </span>
+                    {(user as any).unlimitedCredits && <span style={{ marginLeft: '4px', fontSize: '10px', color: '#a78bfa' }}>∞</span>}
                   </td>
                   <td>
                     <span style={{ 
                       color: (user as any).emailVerified ? '#10b981' : '#f59e0b',
-                      fontWeight: (user as any).emailVerified ? 'bold' : 'normal'
+                      fontWeight: (user as any).emailVerified ? 'bold' : 'normal',
+                      fontSize: '11px',
                     }}>
-                      {(user as any).emailVerified ? '✓ Yes' : 'Pending'}
+                      {(user as any).emailVerified ? '✓ Verified' : '⏳ Pending'}
+                    </span>
+                  </td>
+                  <td>
+                    {(user as any).trialStatus ? (
+                      <span style={{
+                        fontSize: '10px',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        background: (user as any).trialStatus.startsWith('active') ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                        color: (user as any).trialStatus.startsWith('active') ? '#6ee7b7' : '#fca5a5',
+                      }}>
+                        {(user as any).trialStatus}
+                      </span>
+                    ) : (
+                      <span style={{ fontSize: '10px', color: '#64748b' }}>—</span>
+                    )}
+                  </td>
+                  <td style={{ fontSize: '11px' }}>
+                    <span style={{ color: (user as any).chatCount > 0 ? '#10b981' : '#64748b' }}>
+                      {(user as any).chatCount || 0} chats
+                    </span>
+                    <span style={{ color: '#475569', margin: '0 2px' }}>·</span>
+                    <span style={{ color: (user as any).messageCount > 0 ? '#3b82f6' : '#64748b' }}>
+                      {(user as any).messageCount || 0} msgs
                     </span>
                   </td>
                   <td style={{ fontSize: '11px', color: '#94a3b8' }}>

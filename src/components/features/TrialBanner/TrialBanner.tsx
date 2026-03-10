@@ -64,7 +64,7 @@ export const TrialBanner: React.FC<TrialBannerProps> = ({
           <div className={styles.expiredIcon}>⏰</div>
           <h2>Your Free Trial Has Expired</h2>
           <p>
-            Your 14-day free trial has ended. To continue using ResonantGenesis,
+            Your 7-day free trial has ended. To continue using ResonantGenesis,
             please upgrade to a paid plan.
           </p>
           <div className={styles.expiredFeatures}>
