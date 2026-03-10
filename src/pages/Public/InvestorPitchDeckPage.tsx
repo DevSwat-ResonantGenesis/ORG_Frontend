@@ -27,7 +27,7 @@ const InvestorPitchDeckPage = () => {
   const [animate, setAnimate] = useState(false);
   const [scrollCentered, setScrollCentered] = useState(false);
   const [heroPadLeft, setHeroPadLeft] = useState<number | null>(null);
-  const TOTAL_SLIDES = 12;
+  const TOTAL_SLIDES = 15;
   const [currentSlide, setCurrentSlide] = useState(0);
   const transitioning = useRef(false);
   const touchStartY = useRef(0);
@@ -466,6 +466,18 @@ const InvestorPitchDeckPage = () => {
               <p className={styles.wpText}>
                 Cross-verified: of 1,043 reported broken imports, 535 are false positives (relative imports, pip/stdlib packages). 508 truly unresolved — primarily cross-service references. Full remediation plan in CODEBASE_REMEDIATION_PLAN.md. Fix estimate: 2–3 engineer-days.
               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* SLIDE 3 — CV Scan Screenshot */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentCyan} ${currentSlide === 3 ? styles.slideActive : ''}`}>
+          <div className={styles.section}>
+            <div className={styles.sectionInner}>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>02b</span>Code Visualizer — forensic scan</h2>
+              <p className={styles.sectionLead}>
+                Visual output from the Code Visualizer static analysis tool scanning the full backend repository. Interactive dependency graph mapping all 30,119 nodes and 59,160 inter-service connections.
+              </p>
               <img
                 src="/images/investorpitch/cv-scan.jpg"
                 alt="Code Visualizer forensic scan — dependency graph and architecture map"
@@ -476,8 +488,8 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 3 — Platform Workflow (VR3 background) */}
-        <div className={`${styles.slide} ${styles.slideVr} ${currentSlide === 3 ? styles.slideActive : ''}`}>
+        {/* SLIDE 4 — Platform Workflow (VR3 background) */}
+        <div className={`${styles.slide} ${styles.slideVr} ${currentSlide === 4 ? styles.slideActive : ''}`}>
           <img
             src="/images/investorpitch/VR3.jpg"
             alt="ResonantGenesis VR interface — street view coding"
@@ -488,7 +500,7 @@ const InvestorPitchDeckPage = () => {
               <h2 className={styles.workflowTitle}>The Platform Workflow</h2>
               <p className={styles.workflowSubtitle}>One ecosystem. Every capability an AI team needs.</p>
               <div className={styles.workflowSteps}>
-                <div className={`${styles.workflowStep} ${currentSlide === 3 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '0.2s' }}>
+                <div className={`${styles.workflowStep} ${currentSlide === 4 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '0.2s' }}>
                   <span className={styles.workflowStepNum}>01</span>
                   <div className={styles.workflowStepBody}>
                     <strong>AGI Neural Hub</strong>
@@ -496,7 +508,7 @@ const InvestorPitchDeckPage = () => {
                   </div>
                 </div>
                 <div className={styles.workflowConnector} />
-                <div className={`${styles.workflowStep} ${currentSlide === 3 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '0.5s' }}>
+                <div className={`${styles.workflowStep} ${currentSlide === 4 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '0.5s' }}>
                   <span className={styles.workflowStepNum}>02</span>
                   <div className={styles.workflowStepBody}>
                     <strong>AI Agent Studio</strong>
@@ -504,7 +516,7 @@ const InvestorPitchDeckPage = () => {
                   </div>
                 </div>
                 <div className={styles.workflowConnector} />
-                <div className={`${styles.workflowStep} ${currentSlide === 3 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '0.8s' }}>
+                <div className={`${styles.workflowStep} ${currentSlide === 4 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '0.8s' }}>
                   <span className={styles.workflowStepNum}>03</span>
                   <div className={styles.workflowStepBody}>
                     <strong>SAST & Dependency Graph</strong>
@@ -512,7 +524,7 @@ const InvestorPitchDeckPage = () => {
                   </div>
                 </div>
                 <div className={styles.workflowConnector} />
-                <div className={`${styles.workflowStep} ${currentSlide === 3 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '1.1s' }}>
+                <div className={`${styles.workflowStep} ${currentSlide === 4 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '1.1s' }}>
                   <span className={styles.workflowStepNum}>04</span>
                   <div className={styles.workflowStepBody}>
                     <strong>Invariants SIM</strong>
@@ -520,7 +532,7 @@ const InvestorPitchDeckPage = () => {
                   </div>
                 </div>
                 <div className={styles.workflowConnector} />
-                <div className={`${styles.workflowStep} ${currentSlide === 3 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '1.4s' }}>
+                <div className={`${styles.workflowStep} ${currentSlide === 4 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '1.4s' }}>
                   <span className={styles.workflowStepNum}>05</span>
                   <div className={styles.workflowStepBody}>
                     <strong>Resonant IDE</strong>
@@ -528,7 +540,7 @@ const InvestorPitchDeckPage = () => {
                   </div>
                 </div>
                 <div className={styles.workflowConnector} />
-                <div className={`${styles.workflowStep} ${currentSlide === 3 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '1.7s' }}>
+                <div className={`${styles.workflowStep} ${currentSlide === 4 ? styles.workflowStepAnim : ''}`} style={{ animationDelay: '1.7s' }}>
                   <span className={styles.workflowStepNum}>06</span>
                   <div className={styles.workflowStepBody}>
                     <strong>Marketplace</strong>
@@ -540,8 +552,8 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 4 — The problem */}
-        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentRed} ${currentSlide === 4 ? styles.slideActive : ''}`}>
+        {/* SLIDE 5 — The problem */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentRed} ${currentSlide === 5 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>03</span>The problem</h2>
@@ -576,13 +588,13 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 5 — Architecture & Services */}
-        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentPurple} ${currentSlide === 5 ? styles.slideActive : ''}`}>
+        {/* SLIDE 6 — Architecture: Core & Supporting Services */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentPurple} ${currentSlide === 6 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>04</span>Architecture &amp; backend services</h2>
               <p className={styles.sectionLead}>
-                30 FastAPI microservices with central API Gateway. 6 LLM providers with smart failover (OpenAI, Anthropic, Groq, Gemini, Mistral, Cohere). Bring-your-own-key supported. All services containerized with Docker, health-checked, auto-restart on failure.
+                30 FastAPI microservices with central API Gateway. All services containerized with Docker, health-checked, auto-restart on failure. Bring-your-own-key supported.
               </p>
 
               <div className={styles.wpTwoCol}>
@@ -603,7 +615,9 @@ const InvestorPitchDeckPage = () => {
                       <tr><td>rara_service</td><td>0</td><td>RARA governance: capability manifests, mutation proposals, agent budgets, explainability artifacts</td></tr>
                     </tbody>
                   </table>
+                </div>
 
+                <div>
                   <h3 className={styles.wpSubtitle}>Supporting services</h3>
                   <table className={styles.wpTable}>
                     <thead><tr><th>Service</th><th>Purpose</th></tr></thead>
@@ -624,7 +638,21 @@ const InvestorPitchDeckPage = () => {
                     </tbody>
                   </table>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
+        {/* SLIDE 7 — Architecture: AI Pipeline & LLM Providers */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentPurple} ${currentSlide === 7 ? styles.slideActive : ''}`}>
+          <div className={styles.section}>
+            <div className={styles.sectionInner}>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>04b</span>AI pipeline &amp; LLM providers</h2>
+              <p className={styles.sectionLead}>
+                68-module intelligence pipeline with 6 LLM providers. Each module is a standalone Python file — not prompt engineering. Smart failover, streaming SSE, and bring-your-own-key support across all providers.
+              </p>
+
+              <div className={styles.wpTwoCol}>
                 <div>
                   <h3 className={styles.wpSubtitle}>68-module AI intelligence pipeline</h3>
                   <p className={styles.wpText}>
@@ -635,7 +663,9 @@ const InvestorPitchDeckPage = () => {
                   <p className={styles.wpText}>
                     6 providers with auto-failover: OpenAI, Anthropic, Groq, Gemini, Mistral, Cohere. BYOK supported. Streaming SSE. 97 frontend API client files with dedicated per-provider clients.
                   </p>
+                </div>
 
+                <div>
                   <h3 className={styles.wpSubtitle}>6 pipelines auto-detected by Code Visualizer</h3>
                   <table className={styles.wpTable}>
                     <thead><tr><th>Pipeline</th><th>Nodes</th><th>Connections</th></tr></thead>
@@ -654,8 +684,8 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 6 — VR2 + Thesis quote */}
-        <div className={`${styles.slide} ${styles.slideVr} ${currentSlide === 6 ? styles.slideActive : ''}`}>
+        {/* SLIDE 8 — VR2 + Thesis quote */}
+        <div className={`${styles.slide} ${styles.slideVr} ${currentSlide === 8 ? styles.slideActive : ''}`}>
           <img
             src="/images/investorpitch/VR2.jpg"
             alt="ResonantGenesis VR interface — street view coding experience"
@@ -669,8 +699,8 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 7 — Unique IP */}
-        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentGreen} ${currentSlide === 7 ? styles.slideActive : ''}`}>
+        {/* SLIDE 9 — Unique IP */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentGreen} ${currentSlide === 9 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>05</span>Unique intellectual property</h2>
@@ -708,8 +738,8 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 8 — Business model & billing */}
-        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentAmber} ${currentSlide === 8 ? styles.slideActive : ''}`}>
+        {/* SLIDE 10 — Business model & billing */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentAmber} ${currentSlide === 10 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>06</span>Monetization &amp; billing infrastructure</h2>
@@ -759,8 +789,8 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 9 — Frontend & Technology Stack */}
-        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentPink} ${currentSlide === 9 ? styles.slideActive : ''}`}>
+        {/* SLIDE 11 — Frontend & Technology Stack */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentPink} ${currentSlide === 11 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>07</span>Frontend &amp; technology stack</h2>
@@ -782,6 +812,11 @@ const InvestorPitchDeckPage = () => {
                     <li><strong>ML Ops:</strong> Training jobs (list/create/detail), model versions, worker monitor, evaluation drift</li>
                     <li><strong>Enterprise control plane (9 pages):</strong> Overview, semantics, trust, governance, compliance, security, performance, live execution, guided scenarios</li>
                   </ul>
+
+                  <h3 className={styles.wpSubtitle}>Frontend API clients (97 files)</h3>
+                  <p className={styles.wpText}>
+                    Each file maps to a backend service: auth, billing, blockchain, chat, code, cognitive, compliance, crypto, dashboard, evidence, governance, hashSphere, llm, marketplace, memory, metrics, mfa, ml, notifications, org, predictions, skills, storage, sso, system, teams, universe, usage, workflow, workspace. Multi-LLM provider clients: openai.ts, anthropic.ts, groq.ts, gemini.ts, mistral.ts, cohere.ts + unified router.
+                  </p>
                 </div>
                 <div>
                   <h3 className={styles.wpSubtitle}>Technology stack</h3>
@@ -808,19 +843,14 @@ const InvestorPitchDeckPage = () => {
                       <tr><td>ML</td><td>PyTorch (V8 engine)</td></tr>
                     </tbody>
                   </table>
-
-                  <h3 className={styles.wpSubtitle}>Frontend API clients (97 files)</h3>
-                  <p className={styles.wpText}>
-                    Each file maps to a backend service: auth, billing, blockchain, chat, code, cognitive, compliance, crypto, dashboard, evidence, governance, hashSphere, llm, marketplace, memory, metrics, mfa, ml, notifications, org, predictions, skills, storage, sso, system, teams, universe, usage, workflow, workspace. Multi-LLM provider clients: openai.ts, anthropic.ts, groq.ts, gemini.ts, mistral.ts, cohere.ts + unified router.
-                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* SLIDE 10 — Production & Implementation Status */}
-        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentCyan} ${currentSlide === 10 ? styles.slideActive : ''}`}>
+        {/* SLIDE 12 — Production Status: Implementation */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentCyan} ${currentSlide === 12 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>08</span>Production status &amp; implementation</h2>
@@ -851,7 +881,8 @@ const InvestorPitchDeckPage = () => {
                     <li>Gateway auth middleware with public path exemptions</li>
                     <li>Redis caching, Nginx reverse proxy with SSL</li>
                   </ul>
-
+                </div>
+                <div>
                   <h3 className={styles.wpSubtitle}>Implemented — needs testing/polish</h3>
                   <ul className={styles.wpList}>
                     <li>Rabbit social platform (communities, posts, comments, votes)</li>
@@ -867,8 +898,7 @@ const InvestorPitchDeckPage = () => {
                     <li>State Physics / Hash Sphere engine</li>
                     <li>User Memory Universe (semantic space, clustering)</li>
                   </ul>
-                </div>
-                <div>
+
                   <h3 className={styles.wpSubtitle}>Production status</h3>
                   <table className={styles.wpTable}>
                     <thead><tr><th>Item</th><th>Status</th></tr></thead>
@@ -883,12 +913,23 @@ const InvestorPitchDeckPage = () => {
                       <tr><td>Frontend deploy</td><td>npm build → rsync → nginx reload</td></tr>
                     </tbody>
                   </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-                  <h3 className={styles.wpSubtitle}>Infrastructure</h3>
-                  <p className={styles.wpText}>
-                    Docker Compose: 33 containers on app-network bridge. Health checks (HTTP GET /health) on every service. restart: unless-stopped. Persistent volumes: v8_data, v8_model, build_projects, blockchain_node_data. Nginx serves React static build from /var/www/frontend/, reverse-proxies API to gateway:8001.
-                  </p>
+        {/* SLIDE 13 — Production Status: Infrastructure & Stats */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentCyan} ${currentSlide === 13 ? styles.slideActive : ''}`}>
+          <div className={styles.section}>
+            <div className={styles.sectionInner}>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>08b</span>Infrastructure &amp; service metrics</h2>
+              <p className={styles.sectionLead}>
+                Docker Compose: 33 containers on app-network bridge. Health checks on every service. Persistent volumes: v8_data, v8_model, build_projects, blockchain_node_data. Nginx serves React static build, reverse-proxies API to gateway:8001.
+              </p>
 
+              <div className={styles.wpTwoCol}>
+                <div>
                   <h3 className={styles.wpSubtitle}>Service line counts (top 10)</h3>
                   <table className={styles.wpTable}>
                     <thead><tr><th>Service</th><th>Python lines</th></tr></thead>
@@ -905,12 +946,8 @@ const InvestorPitchDeckPage = () => {
                       <tr><td>ed_service</td><td>4,397</td></tr>
                     </tbody>
                   </table>
-
-                  <h3 className={styles.wpSubtitle}>System health</h3>
-                  <p className={styles.wpText}>
-                    59,160 inter-service connections mapped. 1.76% error rate (1,043 unresolved imports — mostly cross-service refs that resolve at Docker runtime). Pre-built remediation checklist included. See Slide 02 for full CV forensic breakdown.
-                  </p>
-
+                </div>
+                <div>
                   <h3 className={styles.wpSubtitle}>Per-service CV stats (top 10)</h3>
                   <table className={styles.wpTable}>
                     <thead><tr><th>Service</th><th>Files</th><th>Functions</th><th>Classes</th><th>Endpoints</th></tr></thead>
@@ -929,12 +966,17 @@ const InvestorPitchDeckPage = () => {
                   </table>
                 </div>
               </div>
+
+              <h3 className={styles.wpSubtitle}>System health</h3>
+              <p className={styles.wpText}>
+                59,160 inter-service connections mapped. 1.76% error rate (1,043 unresolved imports — mostly cross-service refs that resolve at Docker runtime). Pre-built remediation checklist included. See Slide 02 for full CV forensic breakdown.
+              </p>
             </div>
           </div>
         </div>
 
-        {/* SLIDE 11 — Acquisition Terms */}
-        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentBlue} ${currentSlide === 11 ? styles.slideActive : ''}`}>
+        {/* SLIDE 14 — Acquisition Terms */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentBlue} ${currentSlide === 14 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>09</span>Acquire ResonantGenesis</h2>
