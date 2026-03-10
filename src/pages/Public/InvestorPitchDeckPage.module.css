@@ -1525,3 +1525,67 @@
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50% { transform: translateX(-50%) translateY(6px); }
 }
+
+/* VR image break sections within the whitepaper */
+.wpVrBreak {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 500px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.wpVrBreakImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+}
+
+.wpVrWorkflowOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 clamp(24px, 5vw, 80px);
+  z-index: 2;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.35) 55%, transparent 100%);
+}
+
+.wpVrQuoteOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 0 clamp(24px, 5vw, 80px) clamp(48px, 8vh, 100px);
+  z-index: 2;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.2) 40%, transparent 70%);
+}
+
+.wpVrQuoteText {
+  max-width: 640px;
+  font-size: clamp(16px, 2vw, 22px);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.5;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
+}
+
+.wpVrQuoteText strong {
+  color: #60a5fa;
+  font-weight: 700;
+}

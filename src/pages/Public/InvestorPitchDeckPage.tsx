@@ -297,6 +297,42 @@ PostgreSQL (DigitalOcean Managed) + Redis (shared cache/pub-sub)`}
           </div>
         </section>
 
+        {/* ── VR3 BREAK — Platform Workflow ── */}
+        <section className={styles.wpVrBreak}>
+          <img
+            src="/images/investorpitch/VR3.jpg"
+            alt="ResonantGenesis VR interface — street view coding"
+            className={styles.wpVrBreakImage}
+          />
+          <div className={styles.wpVrWorkflowOverlay}>
+            <div className={styles.workflowPanel}>
+              <h2 className={styles.workflowTitle}>The Platform Workflow</h2>
+              <p className={styles.workflowSubtitle}>One ecosystem. Every capability an AI team needs.</p>
+              <div className={styles.workflowSteps}>
+                {[
+                  { num: '01', title: 'AGI Neural Hub', sub: 'Conversational AI that plans, reasons, and acts autonomously' },
+                  { num: '02', title: 'AI Agent Studio', sub: 'Create, configure & deploy autonomous agents' },
+                  { num: '03', title: 'SAST & Dependency Graph', sub: 'Full-stack architecture observability & remediation' },
+                  { num: '04', title: 'Invariants SIM', sub: 'Constraint simulation & economic safety modeling' },
+                  { num: '05', title: 'Resonant IDE', sub: 'In-browser development with split-view AI assistance' },
+                  { num: '06', title: 'Marketplace', sub: 'Publish & monetize T3-verified agents' },
+                ].map((step, i) => (
+                  <React.Fragment key={step.num}>
+                    {i > 0 && <div className={styles.workflowConnector} />}
+                    <div className={styles.workflowStep} style={{ opacity: 1, transform: 'none' }}>
+                      <span className={styles.workflowStepNum}>{step.num}</span>
+                      <div className={styles.workflowStepBody}>
+                        <strong>{step.title}</strong>
+                        <span>{step.sub}</span>
+                      </div>
+                    </div>
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── 05 ALL 30 SERVICES ── */}
         <section className={styles.wpSection} id="services">
           <div className={styles.wpInner}>
@@ -457,6 +493,21 @@ PostgreSQL (DigitalOcean Managed) + Redis (shared cache/pub-sub)`}
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* ── VR2 BREAK — Thesis Quote ── */}
+        <section className={styles.wpVrBreak}>
+          <img
+            src="/images/investorpitch/VR2.jpg"
+            alt="ResonantGenesis VR interface — street view coding experience"
+            className={styles.wpVrBreakImage}
+          />
+          <div className={styles.wpVrQuoteOverlay}>
+            <p className={styles.wpVrQuoteText}>
+              <strong>Thesis:</strong> The winners in agentic AI won&apos;t just have better models.
+              They&apos;ll have better infrastructure&mdash;memory, constraints, and governance that can survive production.
+            </p>
           </div>
         </section>
 
