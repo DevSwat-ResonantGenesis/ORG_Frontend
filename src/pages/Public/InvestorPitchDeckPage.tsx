@@ -27,7 +27,7 @@ const InvestorPitchDeckPage = () => {
   const [animate, setAnimate] = useState(false);
   const [scrollCentered, setScrollCentered] = useState(false);
   const [heroPadLeft, setHeroPadLeft] = useState<number | null>(null);
-  const TOTAL_SLIDES = 15;
+  const TOTAL_SLIDES = 19;
   const [currentSlide, setCurrentSlide] = useState(0);
   const transitioning = useRef(false);
   const touchStartY = useRef(0);
@@ -447,9 +447,17 @@ const InvestorPitchDeckPage = () => {
                 </div>
               </div>
 
-              <h3 className={styles.wpSubtitle}>Code Visualizer forensic scan (backend)</h3>
-              <p className={styles.wpText}>
-                Independent verification via our own Code Visualizer tool — static analysis of the full backend repo (analysis ID: 0df61891b34e482eaac664c5de515f39):
+            </div>
+          </div>
+        </div>
+
+        {/* SLIDE 3 — Code Analysis & Contribution Evidence */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentCyan} ${currentSlide === 3 ? styles.slideActive : ''}`}>
+          <div className={styles.section}>
+            <div className={styles.sectionInner}>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>02b</span>Code analysis &amp; contribution evidence</h2>
+              <p className={styles.sectionLead}>
+                Independent verification via Code Visualizer static analysis (analysis ID: 0df61891b34e482eaac664c5de515f39). Cross-verified with GitHub contribution history across both repositories.
               </p>
               <div className={styles.cvMetricsGrid}>
                 <div className={styles.cvMetricCard}><p className={styles.cvMetricLabel}>Nodes mapped</p><p className={styles.cvMetricValue}>30,119</p></div>
@@ -463,27 +471,39 @@ const InvestorPitchDeckPage = () => {
                 <div className={styles.cvMetricCard}><p className={styles.cvMetricLabel}>Pipelines</p><p className={styles.cvMetricValue}>6</p></div>
                 <div className={styles.cvMetricCard}><p className={styles.cvMetricLabel}>Efficiency</p><p className={styles.cvMetricValue}>96.4%</p></div>
               </div>
-              <p className={styles.wpText}>
-                Cross-verified: of 1,043 reported broken imports, 535 are false positives (relative imports, pip/stdlib packages). 508 truly unresolved — primarily cross-service references. Full remediation plan in CODEBASE_REMEDIATION_PLAN.md. Fix estimate: 2–3 engineer-days.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* SLIDE 3 — CV Scan Screenshot */}
-        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentCyan} ${currentSlide === 3 ? styles.slideActive : ''}`}>
-          <div className={styles.section}>
-            <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>02b</span>Code Visualizer — forensic scan</h2>
-              <p className={styles.sectionLead}>
-                Visual output from the Code Visualizer static analysis tool scanning the full backend repository. Interactive dependency graph mapping all 30,119 nodes and 59,160 inter-service connections.
-              </p>
-              <img
-                src="/images/investorpitch/cv-scan.jpg"
-                alt="Code Visualizer forensic scan — dependency graph and architecture map"
-                className={styles.slideScreenshot}
-                loading="lazy"
-              />
+              <div className={styles.wpTwoCol}>
+                <div>
+                  <h3 className={styles.wpSubtitle}>Code Visualizer dependency graph</h3>
+                  <img
+                    src="/images/investorpitch/cv-scan.jpg"
+                    alt="Code Visualizer forensic scan — dependency graph and architecture map"
+                    className={styles.slideScreenshot}
+                    loading="lazy"
+                    style={{ marginTop: 6 }}
+                  />
+                </div>
+                <div>
+                  <h3 className={styles.wpSubtitle}>GitHub contribution history</h3>
+                  <div className={styles.screenshotGrid}>
+                    <div>
+                      <img src="/images/investorpitch/github/backend%20contributions1.png" alt="Backend contributions" loading="lazy" />
+                      <p className={styles.screenshotCaption}>Backend repo contributions</p>
+                    </div>
+                    <div>
+                      <img src="/images/investorpitch/github/frontend%20contribution%201.png" alt="Frontend contributions" loading="lazy" />
+                      <p className={styles.screenshotCaption}>Frontend repo contributions</p>
+                    </div>
+                    <div>
+                      <img src="/images/investorpitch/github/backend%20commits%20quantityes%20.png" alt="Backend commits" loading="lazy" />
+                      <p className={styles.screenshotCaption}>Backend commit frequency</p>
+                    </div>
+                    <div>
+                      <img src="/images/investorpitch/github/frontend%20commit%20quantities.png" alt="Frontend commits" loading="lazy" />
+                      <p className={styles.screenshotCaption}>Frontend commit frequency</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -699,25 +719,22 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 9 — Unique IP */}
+        {/* SLIDE 9 — Unique IP Part 1 */}
         <div className={`${styles.slide} ${styles.slideDark} ${styles.accentGreen} ${currentSlide === 9 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>05</span>Unique intellectual property</h2>
               <p className={styles.sectionLead}>
-                10 proprietary systems built from scratch — based solely on code analysis. These are not wrappers around existing APIs. Each system has its own service, database models, and endpoints.
+                9 proprietary systems built from scratch — not wrappers around existing APIs. Each has its own service, database models, and endpoints.
               </p>
-
               <div className={styles.wpTwoCol}>
                 <div>
                   <table className={styles.wpTable}>
                     <thead><tr><th>#</th><th>System</th><th>Detail</th></tr></thead>
                     <tbody>
                       <tr><td>1</td><td>ResonantChat Pipeline</td><td>68 service modules: hallucination detection, evidence graphs, cross-validation, causal reasoning, debate engine, personality DNA, autonomous planning with error correction, narrative continuity, thought branching, multi-timeline tracking. Each module is a separate Python file.</td></tr>
-                      <tr><td>2</td><td>Code Visualizer</td><td>Full code analysis engine: scans GitHub repos, generates interactive dependency graphs, traces function calls, produces governance reports, runs AI-powered code reviews. Persistence with per-user storage limits. 20+ endpoints.</td></tr>
+                      <tr><td>2</td><td>Code Visualizer</td><td>Full code analysis engine: scans GitHub repos, generates interactive dependency graphs, traces function calls, produces governance reports, runs AI-powered code reviews. Per-user persistence with storage limits. 20+ endpoints.</td></tr>
                       <tr><td>3</td><td>DSID-P Protocol</td><td>Decentralized State Identity Protocol — custom blockchain: DSID records, HashNode graph, Block/BlockTransaction with merkle roots, TransactionGraph, AuditEntry (immutable), StateSnapshot, AnchorRecord. 8 database tables.</td></tr>
-                      <tr><td>4</td><td>Hash Sphere / State Physics</td><td>Physics-based state management: HashNode (position x/y/z, velocity, mass, charge, spin, energy, hash), HashEdge (weight, force type: attraction/repulsion/resonance/gravity/electromagnetic), Invariant (conservation laws). Node types: data, agent, user, service, model, memory, transaction, policy, anchor, cluster, embedding.</td></tr>
-                      <tr><td>5</td><td>V8 Resonance Engine</td><td>Custom PyTorch embedding engine: token → embedding vector → 3D coordinates (x,y,z) + resonance radius + spin + energy. Spatial cluster classification (alpha/beta/gamma). Trainable from corpus with vocabulary and forbidden word filtering. Flask + PyTorch. Web UI with Three.js 3D sphere.</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -725,11 +742,8 @@ const InvestorPitchDeckPage = () => {
                   <table className={styles.wpTable}>
                     <thead><tr><th>#</th><th>System</th><th>Detail</th></tr></thead>
                     <tbody>
-                      <tr><td>6</td><td>Modular Skill System</td><td>9 built-in skills with auto-detection from message intent, per-user enable/disable: code_visualizer, web_search, image_generation, memory_search, memory_library, agents_os, state_physics, ide_workspace, rabbit_post.</td></tr>
-                      <tr><td>7</td><td>Multi-Agent Orchestration</td><td>Agent voting, debate, chaining, team composition, autonomous planning with error correction, self-improving agents, A/B testing. 13 database tables. Full marketplace rental system.</td></tr>
-                      <tr><td>8</td><td>Semantic Memory Universe</td><td>Per-user semantic memory space: MemoryNode (embedding, importance, decay, position), MemoryEdge (connections with type/strength), MemoryCluster, UserMemoryUniverse. Embedding-based retrieval, clustering, anchoring, 3D visualization endpoint.</td></tr>
-                      <tr><td>9</td><td>Full SaaS Billing Stack</td><td>Stripe: Subscription/CreditBalance/CreditTransaction/UsageRecord/Invoice/PaymentMethod/PricingPlan/Coupon (8 tables). 45+ endpoints. Credit deduction per-operation tracked by service/provider/model/tokens/latency. 5 revenue streams.</td></tr>
-                      <tr><td>10</td><td>RARA Governance Layer</td><td>Resonant Autonomous Runtime Architecture: CapabilityManifest, MutationRequest/Result, AgentBudget, GovernanceDecision, ExplainabilityArtifact, InvariantCheckResult. 9 capability types: code_generation, data_analysis, web_search, file_management, api_integration, blockchain_ops, ml_training, agent_creation, system_admin.</td></tr>
+                      <tr><td>4</td><td>Hash Sphere / State Physics</td><td>N-body physics constraint simulation for system state. HashNode: 3D position, velocity, mass (economic weight), charge (trust polarity), temperature (activity), spin, energy, trust_score. HashEdge: weighted force connections. PhysicsEngine: gravity, repulsion, springs, entropy forces. EntropyEngine: perturbations, decay, asymmetry seeding. Conservation invariants: mass, energy, identity uniqueness, causality, trust bounds. 8 node types. Populated from live user data.</td></tr>
+                      <tr><td>5</td><td>Semantic Memory Universe</td><td>Per-user semantic memory space — independent service from State Physics. MemoryNode (embedding vector, importance, decay rate, 3D position), MemoryEdge (typed connections with strength), MemoryCluster, UserMemoryUniverse. Dual memory engine: short-term + long-term with hybrid ranking. Embedding-based retrieval, resonance clustering, anchoring, 3D visualization. AES-encrypted storage.</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -738,47 +752,94 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 10 — Business model & billing */}
-        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentAmber} ${currentSlide === 10 ? styles.slideActive : ''}`}>
+        {/* SLIDE 10 — Unique IP Part 2 */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentGreen} ${currentSlide === 10 ? styles.slideActive : ''}`}>
+          <div className={styles.section}>
+            <div className={styles.sectionInner}>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>05b</span>Unique IP — continued</h2>
+              <p className={styles.sectionLead}>
+                Modular skill system, multi-agent orchestration, complete SaaS billing stack, and autonomous governance layer.
+              </p>
+              <div className={styles.wpTwoCol}>
+                <div>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>#</th><th>System</th><th>Detail</th></tr></thead>
+                    <tbody>
+                      <tr><td>6</td><td>Modular Skill System</td><td>9 built-in skills with auto-detection from message intent, per-user enable/disable: code_visualizer, web_search, image_generation, memory_search, memory_library, agents_os, state_physics, ide_workspace, rabbit_post.</td></tr>
+                      <tr><td>7</td><td>Multi-Agent Orchestration</td><td>Agent voting, debate, chaining, team composition, autonomous planning with error correction, self-improving agents, A/B testing. 13 database tables. Full marketplace rental system.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>#</th><th>System</th><th>Detail</th></tr></thead>
+                    <tbody>
+                      <tr><td>8</td><td>Full SaaS Billing Stack</td><td>Stripe: Subscription/CreditBalance/CreditTransaction/UsageRecord/Invoice/PaymentMethod/PricingPlan/Coupon (8 tables). 45+ endpoints. Credit deduction per-operation tracked by service/provider/model/tokens/latency. 5 revenue streams.</td></tr>
+                      <tr><td>9</td><td>RARA Governance Layer</td><td>Resonant Autonomous Runtime Architecture: CapabilityManifest, MutationRequest/Result, AgentBudget, GovernanceDecision, ExplainabilityArtifact, InvariantCheckResult. 9 capability types including code_generation, data_analysis, web_search, file_management, api_integration, blockchain_ops, ml_training, agent_creation, system_admin.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* SLIDE 11 — Revenue & Billing */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentAmber} ${currentSlide === 11 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>06</span>Monetization &amp; billing infrastructure</h2>
               <p className={styles.sectionLead}>
-                Complete SaaS billing stack with Stripe. 8 database tables (Subscription, CreditBalance, CreditTransaction, UsageRecord, Invoice, PaymentMethod, PricingPlan, Coupon). 45+ billing endpoints. Revenue calculated only from transactions with stripe_payment_intent_id (real Stripe payments).
+                Complete SaaS billing stack with Stripe. 8 database tables. 45+ billing endpoints. Revenue from real Stripe payments only.
               </p>
-
               <div className={styles.wpTwoCol}>
                 <div>
                   <h3 className={styles.wpSubtitle}>5 revenue streams (code-supported)</h3>
                   <ul className={styles.wpList}>
-                    <li><strong>Subscription plans</strong> — Stripe recurring billing via /checkout/subscription. 4 tiers: Free/Developer (1,000 credits on signup), Plus, Pro, Enterprise. Checkout sessions, webhooks, billing portal, invoice generation.</li>
-                    <li><strong>Credit packs</strong> — One-time credit purchases via /checkout/credits. Per-operation credit deduction tracked by service, operation, tokens_used, provider, model, latency_ms. Credit transaction types: purchase, bonus, deduction, refund, rollover, period_grant, referral_reward.</li>
+                    <li><strong>Subscription plans</strong> — Stripe recurring billing. 4 tiers: Free/Developer (1,000 credits), Plus, Pro, Enterprise. Checkout sessions, webhooks, billing portal, invoice generation.</li>
+                    <li><strong>Credit packs</strong> — One-time purchases. Per-operation credit deduction tracked by service, operation, tokens, provider, model, latency.</li>
                     <li><strong>API product subscriptions</strong> — API access tiers via /checkout/api-product.</li>
-                    <li><strong>Agent marketplace</strong> — AgentPurchase model for marketplace transactions. Agent listing, versioning, purchase records, reviews, usage stats, publisher profiles.</li>
-                    <li><strong>Referral system</strong> — 5,000 credits for referrer, 2,000 for referred (tx_type: referral_reward). Period grants and rollover logic implemented.</li>
+                    <li><strong>Agent marketplace</strong> — Agent listing, versioning, purchase records, reviews, usage stats.</li>
+                    <li><strong>Referral system</strong> — 5,000 credits for referrer, 2,000 for referred. Period grants and rollover logic.</li>
                   </ul>
-
+                </div>
+                <div>
                   <h3 className={styles.wpSubtitle}>Billing endpoints (45+)</h3>
                   <p className={styles.wpText}>
-                    Subscriptions: GET/POST /subscription, cancel, reactivate, change-plan. Credits: GET /credits (balance), POST /credits/purchase, /deduct, /bonus, /refund, GET /credits/transactions, /balance/&#123;user_id&#125;. Usage: POST /usage/record, GET /usage/summary, /metrics, /tokens/history, /providers, /activity, /history, /limits, /export, /breakdown. Invoices: GET /invoices, /invoices/&#123;id&#125;, /invoices/stats, /invoices/&#123;id&#125;/pdf. Stripe: POST /webhook/stripe, /stripe/checkout, /checkout/subscription, /checkout/credits. Portal: POST /portal (Stripe customer portal). Pricing: GET /pricing, /pricing/plans, /pricing/credit-packs, /pricing/credit-costs.
+                    Subscriptions: GET/POST /subscription, cancel, reactivate, change-plan. Credits: GET /credits, POST /purchase, /deduct, /bonus, /refund. Usage: POST /usage/record, GET /summary, /metrics, /tokens/history, /providers, /activity, /limits, /export. Invoices: GET /invoices, /stats, /pdf. Stripe: POST /webhook, /checkout/subscription, /checkout/credits. Portal: POST /portal. Pricing: GET /pricing, /plans, /credit-packs, /credit-costs.
                   </p>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* SLIDE 12 — Auth & Security */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentAmber} ${currentSlide === 12 ? styles.slideActive : ''}`}>
+          <div className={styles.section}>
+            <div className={styles.sectionInner}>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>06b</span>Auth service &amp; security</h2>
+              <p className={styles.sectionLead}>
+                Enterprise-grade authentication with 10 database tables and 80+ endpoints. Multi-factor authentication, OAuth/SSO, organization management, and comprehensive security controls.
+              </p>
+              <div className={styles.wpTwoCol}>
                 <div>
                   <h3 className={styles.wpSubtitle}>Auth service (10 DB tables, 80+ endpoints)</h3>
                   <p className={styles.wpText}>
                     Tables: User, Organization, OrgMembership, ApiKey, UserApiKey, RefreshToken, TrustedDevice, PasswordResetToken, Agent, AgentApiKey.
                   </p>
                   <ul className={styles.wpList}>
-                    <li><strong>Registration/Login</strong> — /auth/register, /auth/login — password strength validation (8+ chars, uppercase, lowercase, digit, special). Account lockout after failed attempts.</li>
-                    <li><strong>OAuth/SSO</strong> — /oauth/google/login, /oauth/github/login, SAML SSO initiate/callback stubs.</li>
-                    <li><strong>MFA</strong> — /auth/mfa/setup, /verify, /disable, /backup-codes/regenerate — TOTP-based with backup codes.</li>
-                    <li><strong>Token management</strong> — JWT access tokens + HttpOnly cookie refresh tokens. Configurable token expiry.</li>
-                    <li><strong>Organization management</strong> — Roles: admin, member, owner, platform_owner. Per-org API keys. Per-user LLM provider keys (OpenAI, Anthropic, Groq, Google, Mistral, Cohere).</li>
+                    <li><strong>Registration/Login</strong> — Password strength validation, account lockout after failed attempts.</li>
+                    <li><strong>OAuth/SSO</strong> — Google, GitHub login. SAML SSO stubs.</li>
+                    <li><strong>MFA</strong> — TOTP setup/verify/disable with backup codes.</li>
+                    <li><strong>Token management</strong> — JWT access tokens + HttpOnly cookie refresh tokens.</li>
+                    <li><strong>Organization management</strong> — 4 roles: admin, member, owner, platform_owner. Per-org API keys. Per-user LLM provider keys.</li>
                     <li><strong>Session management</strong> — List, revoke individual, revoke all. Trusted device CRUD.</li>
-                    <li><strong>Agent settings</strong> — Full CRUD per-user agents: create, update, delete, list, share, import/export, templates, per-agent API keys, memory settings, restrictions.</li>
-                    <li><strong>Identity</strong> — /auth/identity returns crypto_hash and user_hash for blockchain anchoring (SHA-256).</li>
+                    <li><strong>Agent settings</strong> — Full CRUD: create, update, delete, list, share, import/export, templates.</li>
+                    <li><strong>Identity</strong> — crypto_hash and user_hash for blockchain anchoring (SHA-256).</li>
                   </ul>
-
+                </div>
+                <div>
                   <h3 className={styles.wpSubtitle}>Security features</h3>
                   <p className={styles.wpText}>
                     Bcrypt password hashing. JWT with configurable expiry. HttpOnly secure cookies (SameSite=lax). Rate limiting on login, register, password reset, token refresh. Account lockout. Audit logging with client IP/user-agent tracking. AES-encrypted API key storage. Crypto identity generation (SHA-256). Docker-isolated sandboxed code execution. Gateway auth middleware on all non-public routes. CORS per-service.
@@ -789,50 +850,69 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 11 — Frontend & Technology Stack */}
-        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentPink} ${currentSlide === 11 ? styles.slideActive : ''}`}>
+        {/* SLIDE 13 — Frontend Routes & API Clients */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentPink} ${currentSlide === 13 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>07</span>Frontend &amp; technology stack</h2>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>07</span>Frontend &amp; routes</h2>
               <p className={styles.sectionLead}>
-                React 18 + TypeScript frontend with 662 components, 85+ routes, 97 API client files, CSS Modules (91K SLOC). Multi-LLM provider support with dedicated client files per provider. Full page inventory from router/index.tsx.
+                React 18 + TypeScript frontend with 662 components, 85+ routes, 97 API client files, CSS Modules (91K SLOC). Full page inventory from router/index.tsx.
               </p>
-
               <div className={styles.wpTwoCol}>
                 <div>
                   <h3 className={styles.wpSubtitle}>Frontend page inventory (85+ routes)</h3>
                   <ul className={styles.wpList}>
                     <li><strong>Public (no auth):</strong> Landing, signup, login, pricing, enterprise, community, contact, API docs, DSID-P overview, validation tool, LLM scanner, investor pitch deck, state physics demo, resonant memory, code visualizer, rabbit social</li>
-                    <li><strong>Core authenticated:</strong> Resonant Chat (primary), user dashboard, plus/enterprise/owner dashboards, profile, settings, organization, predictions, evidence graphs</li>
-                    <li><strong>Agent OS:</strong> Agent OS v2, individual agent dashboards, agent teams (create/edit/dashboard), autonomous agent dashboard, agent browser, publish, templates</li>
+                    <li><strong>Core authenticated:</strong> Resonant Chat, user dashboard, plus/enterprise/owner dashboards, profile, settings, organization, predictions, evidence graphs</li>
+                    <li><strong>Agent OS:</strong> Agent OS v2, agent dashboards, agent teams, autonomous agent dashboard, agent browser, publish, templates</li>
                     <li><strong>Marketplace:</strong> NFT/Agent marketplace, item detail, installations, purchases</li>
-                    <li><strong>Dev tools:</strong> Web IDE, project builder, AI chat console v2, V8 engine panel, Hash Sphere test/fullscreen</li>
+                    <li><strong>Dev tools:</strong> Web IDE, project builder, AI chat console v2, Hash Sphere test/fullscreen</li>
                     <li><strong>Admin:</strong> System dashboard, user management, feature flags</li>
                     <li><strong>Finance:</strong> Invoices, reports, credits &amp; refunds</li>
-                    <li><strong>ML Ops:</strong> Training jobs (list/create/detail), model versions, worker monitor, evaluation drift</li>
+                    <li><strong>ML Ops:</strong> Training jobs, model versions, worker monitor, evaluation drift</li>
                     <li><strong>Enterprise control plane (9 pages):</strong> Overview, semantics, trust, governance, compliance, security, performance, live execution, guided scenarios</li>
                   </ul>
-
+                </div>
+                <div>
                   <h3 className={styles.wpSubtitle}>Frontend API clients (97 files)</h3>
                   <p className={styles.wpText}>
                     Each file maps to a backend service: auth, billing, blockchain, chat, code, cognitive, compliance, crypto, dashboard, evidence, governance, hashSphere, llm, marketplace, memory, metrics, mfa, ml, notifications, org, predictions, skills, storage, sso, system, teams, universe, usage, workflow, workspace. Multi-LLM provider clients: openai.ts, anthropic.ts, groq.ts, gemini.ts, mistral.ts, cohere.ts + unified router.
                   </p>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* SLIDE 14 — Technology Stack */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentPink} ${currentSlide === 14 ? styles.slideActive : ''}`}>
+          <div className={styles.section}>
+            <div className={styles.sectionInner}>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>07b</span>Technology stack</h2>
+              <p className={styles.sectionLead}>
+                Full-stack architecture spanning frontend, backend, database, containerization, payments, AI/ML, and authentication — all production-deployed and self-hosted.
+              </p>
+              <div className={styles.wpTwoCol}>
                 <div>
-                  <h3 className={styles.wpSubtitle}>Technology stack</h3>
                   <table className={styles.wpTable}>
                     <thead><tr><th>Layer</th><th>Technology</th></tr></thead>
                     <tbody>
                       <tr><td>Frontend</td><td>React 18 + TypeScript, Vite build</td></tr>
                       <tr><td>Styling</td><td>CSS Modules (91K SLOC)</td></tr>
-                      <tr><td>3D</td><td>Three.js (Hash Sphere, V8 visualization)</td></tr>
+                      <tr><td>3D</td><td>Three.js (Hash Sphere visualization)</td></tr>
                       <tr><td>Router</td><td>React Router v6 (createBrowserRouter)</td></tr>
                       <tr><td>Backend</td><td>FastAPI (Python 3.11)</td></tr>
-                      <tr><td>V8 Engine</td><td>Flask + PyTorch</td></tr>
                       <tr><td>Blockchain</td><td>Node.js</td></tr>
                       <tr><td>Database</td><td>PostgreSQL (DO Managed)</td></tr>
                       <tr><td>Cache</td><td>Redis (shared instance)</td></tr>
                       <tr><td>ORM</td><td>SQLAlchemy 2.0 (async)</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>Layer</th><th>Technology</th></tr></thead>
+                    <tbody>
                       <tr><td>Direct DB</td><td>asyncpg (gateway only)</td></tr>
                       <tr><td>Migrations</td><td>Alembic (14 services)</td></tr>
                       <tr><td>Containers</td><td>Docker + Docker Compose</td></tr>
@@ -840,7 +920,7 @@ const InvestorPitchDeckPage = () => {
                       <tr><td>Payments</td><td>Stripe (checkout, webhooks, portal)</td></tr>
                       <tr><td>LLM</td><td>OpenAI, Anthropic, Groq, Gemini, Mistral, Cohere, Ollama</td></tr>
                       <tr><td>OAuth</td><td>Google, GitHub</td></tr>
-                      <tr><td>ML</td><td>PyTorch (V8 engine)</td></tr>
+                      <tr><td>ML</td><td>PyTorch</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -849,8 +929,8 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 12 — Production Status: Implementation */}
-        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentCyan} ${currentSlide === 12 ? styles.slideActive : ''}`}>
+        {/* SLIDE 15 — Production Status: Implementation */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentCyan} ${currentSlide === 15 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>08</span>Production status &amp; implementation</h2>
@@ -919,8 +999,8 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 13 — Production Status: Infrastructure & Stats */}
-        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentCyan} ${currentSlide === 13 ? styles.slideActive : ''}`}>
+        {/* SLIDE 16 — Infrastructure & Metrics */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentCyan} ${currentSlide === 16 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>08b</span>Infrastructure &amp; service metrics</h2>
@@ -975,29 +1055,29 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 14 — Acquisition Terms */}
-        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentBlue} ${currentSlide === 14 ? styles.slideActive : ''}`}>
+        {/* SLIDE 17 — Acquire: What's Included */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentBlue} ${currentSlide === 17 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>09</span>Acquire ResonantGenesis</h2>
               <p className={styles.sectionLead}>
-                ~550,000 source lines of production code. 30 microservices. 33 Docker containers. 80+ database tables. 10 unique IP assets. Complete Stripe billing with 5 revenue streams. 178 registered users. Built solo in a 4-month hyper-sprint — averaging ~4,500 lines/day using the platform's own agentic infrastructure. Needs a team to take to market.
+                ~550,000 source lines of production code. 30 microservices. 33 Docker containers. 80+ database tables. 9 unique IP assets. Complete Stripe billing with 5 revenue streams. 178 registered users. Built solo in 4 months — averaging ~4,500 lines/day using the platform's own agentic infrastructure.
               </p>
-
               <div className={styles.wpTwoCol}>
                 <div>
                   <h3 className={styles.wpSubtitle}>What's included</h3>
                   <ul className={styles.wpList}>
-                    <li><strong>Full source code</strong> — Both repositories (genesis2026_production_backend + genesis2026_frontend), complete git history</li>
+                    <li><strong>Full source code</strong> — Both repositories (backend + frontend), complete git history</li>
                     <li><strong>30-day transition support</strong> — Architecture walkthrough, deployment guidance, codebase orientation</li>
                     <li><strong>3-day unlimited live trial</strong> — Full access to production environment before committing</li>
                     <li><strong>Complete deployment runbook</strong> — Docker Compose, Nginx config, database setup, environment variables</li>
-                    <li><strong>PLATFORM_SALE_REPORT.md</strong> — 873-line comprehensive technical audit (the source for this document)</li>
-                    <li><strong>All documentation</strong> — 31K lines of .md files (backend) + 4K lines (frontend) + 500 lines .txt</li>
-                    <li><strong>Domain transfer</strong> — Both dev-swat.com and resonantgenesis.xyz included (both active, same server)</li>
+                    <li><strong>PLATFORM_SALE_REPORT.md</strong> — 873-line comprehensive technical audit</li>
+                    <li><strong>All documentation</strong> — 31K lines of .md files (backend) + 4K lines (frontend)</li>
+                    <li><strong>Domain transfer</strong> — dev-swat.com and resonantgenesis.xyz (both active)</li>
                     <li><strong>Infrastructure handoff</strong> — DigitalOcean droplet, managed DB, DNS, SSL certificates</li>
                   </ul>
-
+                </div>
+                <div>
                   <h3 className={styles.wpSubtitle}>Deal structures open</h3>
                   <ul className={styles.wpList}>
                     <li><strong>Full asset sale</strong> — $3,600,000</li>
@@ -1005,27 +1085,37 @@ const InvestorPitchDeckPage = () => {
                     <li><strong>White-label licensing</strong> — License the platform for your brand/vertical</li>
                     <li><strong>Partial stake + revenue share</strong> — Co-ownership with aligned incentives</li>
                   </ul>
-                </div>
-                <div>
-                  <h3 className={styles.wpSubtitle}>Why selling</h3>
-                  <p className={styles.wpText}>
-                    Built in 4 months of hyper-accelerated development by a single engineer using the platform's own agentic workflows — the ultimate proof-of-concept. Replacement cost: $2M–$5M+ (estimated 18–24 months for a standard senior team). The platform is production-ready and architecturally sound, but needs a team for go-to-market: sales, marketing, customer success, and continued feature development.
-                  </p>
 
                   <h3 className={styles.wpSubtitle}>Self-hosted &amp; Kubernetes-ready</h3>
                   <p className={styles.wpText}>
-                    The entire codebase is self-hosted — zero dependency on third-party SaaS platforms for core functionality. Currently serving on a single DigitalOcean droplet, but the Docker Compose architecture is designed for direct migration to Kubernetes (K8s). Each microservice is an independent container with health checks, restart policies, and isolated networking — ready for horizontal scaling, orchestrated deployments, and multi-node clusters on any cloud or bare-metal hardware.
+                    Zero dependency on third-party SaaS for core functionality. Docker Compose architecture designed for direct migration to Kubernetes. Each microservice is an independent container with health checks, restart policies, and isolated networking — ready for horizontal scaling on any cloud or bare-metal hardware.
                   </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
+        {/* SLIDE 18 — Why Selling & Ideal Buyers */}
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentBlue} ${currentSlide === 18 ? styles.slideActive : ''}`}>
+          <div className={styles.section}>
+            <div className={styles.sectionInner}>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>09b</span>Why selling &amp; ideal buyers</h2>
+              <p className={styles.sectionLead}>
+                Built in 4 months by a single engineer using the platform's own agentic workflows — the ultimate proof-of-concept. Replacement cost: $2M–$5M+ (18–24 months for a standard senior team). Production-ready, needs a team for go-to-market.
+              </p>
+              <div className={styles.wpTwoCol}>
+                <div>
                   <h3 className={styles.wpSubtitle}>Ideal buyers</h3>
                   <ul className={styles.wpList}>
                     <li><strong>AI agencies / dev shops</strong> — White-label the platform. You provide clients, it provides infrastructure.</li>
                     <li><strong>SaaS companies adding AI</strong> — Skip 18+ months of agent infrastructure build. Deploy on your own hardware or cloud.</li>
                     <li><strong>Enterprise ISVs</strong> — Plug-in agent orchestration with governance, audit trails, compliance controls.</li>
                     <li><strong>Technical founders</strong> — Buy the infrastructure, focus on your vertical. 3-day trial available.</li>
-                    <li><strong>AI infrastructure / MLOps companies</strong> — Unique IP: 68-module pipeline, custom blockchain, physics engine, PyTorch resonance engine.</li>
+                    <li><strong>AI infrastructure / MLOps companies</strong> — Unique IP: 68-module pipeline, custom blockchain, physics engine.</li>
                   </ul>
-
+                </div>
+                <div>
                   <h3 className={styles.wpSubtitle}>Report generation</h3>
                   <p className={styles.wpText}>
                     This document was generated by analyzing every service directory, models.py, routers.py, main.py, skills_registry.py, docker-compose.unified.yml, and router/index.tsx in the codebase. All claims are grounded in actual source code inspection. No external claims or assumptions were made.

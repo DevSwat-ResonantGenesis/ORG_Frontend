@@ -678,11 +678,11 @@
 
 .sectionTitle {
   margin: 0;
-  font-size: 36px;
+  font-size: 28px;
   font-weight: 750;
   letter-spacing: -0.025em;
   color: #f8fafc;
-  padding-bottom: 10px;
+  padding-bottom: 8px;
   border-bottom: 2px solid rgba(59, 130, 246, 0.35);
 }
 
@@ -721,11 +721,11 @@
 .accentPink .sectionNum { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
 
 .sectionLead {
-  margin: 12px 0 0;
+  margin: 10px 0 0;
   color: rgba(226, 232, 240, 0.82);
   max-width: 100%;
-  line-height: 1.6;
-  font-size: 17px;
+  line-height: 1.55;
+  font-size: 14.5px;
   font-weight: 450;
 }
 
@@ -735,8 +735,8 @@
 }
 
 .wpSubtitle {
-  margin: 16px 0 6px;
-  font-size: 17px;
+  margin: 14px 0 5px;
+  font-size: 14px;
   font-weight: 700;
   color: rgba(248, 250, 252, 0.95);
   letter-spacing: -0.01em;
@@ -746,16 +746,16 @@
 
 .wpText {
   margin: 4px 0 0;
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 12.5px;
+  line-height: 1.55;
   color: rgba(226, 232, 240, 0.72);
 }
 
 .wpList {
-  margin: 6px 0 0;
-  padding-left: 18px;
-  font-size: 14.5px;
-  line-height: 1.55;
+  margin: 5px 0 0;
+  padding-left: 16px;
+  font-size: 12.5px;
+  line-height: 1.5;
   color: rgba(226, 232, 240, 0.72);
 }
 
@@ -777,8 +777,8 @@
 
 .wpTable th {
   text-align: left;
-  padding: 5px 10px;
-  font-size: 12px;
+  padding: 4px 8px;
+  font-size: 10px;
   font-weight: 650;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -787,11 +787,11 @@
 }
 
 .wpTable td {
-  padding: 4px 10px;
+  padding: 3px 8px;
   color: rgba(226, 232, 240, 0.78);
   border-bottom: 1px solid rgba(148, 163, 184, 0.06);
-  font-size: 13.5px;
-  line-height: 1.5;
+  font-size: 11.5px;
+  line-height: 1.45;
 }
 
 .wpTable td:first-child {
@@ -804,7 +804,7 @@
 .wpTwoCol {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 24px;
   margin-top: 10px;
 }
 
@@ -825,15 +825,15 @@
 
 .cvMetricLabel {
   margin: 0;
-  font-size: 12px;
+  font-size: 10px;
   color: rgba(226, 232, 240, 0.55);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .cvMetricValue {
-  margin: 4px 0 0;
-  font-size: 24px;
+  margin: 3px 0 0;
+  font-size: 18px;
   font-weight: 700;
   color: rgba(248, 250, 252, 0.92);
 }
@@ -853,6 +853,27 @@
   display: block;
 }
 
+.screenshotGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.screenshotGrid img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  display: block;
+}
+
+.screenshotCaption {
+  margin: 4px 0 0;
+  font-size: 10.5px;
+  color: rgba(226, 232, 240, 0.5);
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .wpTwoCol {
     grid-template-columns: 1fr;
@@ -860,10 +881,10 @@
 }
 
 .cardsGrid {
-  margin-top: 16px;
+  margin-top: 14px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  gap: 16px;
 }
 
 @media (max-width: 1023px) {
@@ -873,7 +894,7 @@
 }
 
 .card {
-  padding: 14px 14px 12px;
+  padding: 14px 16px 12px;
   border-radius: 14px;
   background: rgba(2, 6, 23, 0.55);
   border: 1px solid rgba(148, 163, 184, 0.18);
@@ -886,16 +907,16 @@
 
 .cardTitle {
   margin: 0;
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 650;
   color: rgba(248, 250, 252, 0.95);
 }
 
 .cardBody {
-  margin: 6px 0 0;
+  margin: 5px 0 0;
   color: rgba(226, 232, 240, 0.72);
-  line-height: 1.55;
-  font-size: 14.5px;
+  line-height: 1.5;
+  font-size: 12.5px;
 }
 
 .twoCol {
