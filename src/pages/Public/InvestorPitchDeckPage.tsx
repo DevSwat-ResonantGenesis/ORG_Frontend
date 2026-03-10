@@ -366,38 +366,37 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 1 — Hero Section */}
+        {/* SLIDE 1 — Executive Summary */}
         <div ref={heroRef} className={`${styles.slide} ${styles.slideDark} ${currentSlide === 1 ? styles.slideActive : ''}`}>
-          <div className={styles.parallax} aria-hidden="true">
-            <Suspense fallback={null}>
-              <div ref={sphereRef} className={styles.parallaxInner}>
-                <div ref={sphereLayerRef} className={styles.sphereLayer}>
-                  {isReactSnap ? null : <ThreeParticleSphere />}
-                </div>
-              </div>
-            </Suspense>
-          </div>
-
           <div className={styles.section}>
             <div className={styles.sectionInner}>
+              <h2 className={styles.sectionTitle}>Executive summary</h2>
               <p className={styles.sectionLead}>
-                ResonantGenesis is sovereign infrastructure for autonomous agents: governed memory, invariant-based constraint simulation, and full-stack observability—so teams can ship agentic products that are safe, auditable, and controllable.
+                ResonantGenesis is a production-deployed, full-stack Agentic AI SaaS platform available for acquisition as a complete code and IP asset. Every component described in this document is implemented in source code and running in production at dev-swat.com. This is not a prototype or mockup.
+              </p>
+              <p className={styles.wpText}>
+                The platform comprises ~550,000 source lines of code (SLOC) across 30 Python FastAPI microservices, 662 React components, and 85+ frontend routes. Infrastructure includes 33 Docker containers orchestrated via docker-compose.unified.yml, DigitalOcean Managed PostgreSQL with database-per-service design, Redis for caching/sessions/pub-sub, and Nginx for SSL termination and reverse proxying. 178 registered users in production.
               </p>
 
               <div className={styles.cardsGrid}>
                 <div className={styles.card}>
                   <h3 className={styles.cardTitle}>Governed Memory</h3>
-                  <p className={styles.cardBody}>Encrypted, attributable, retrievable</p>
+                  <p className={styles.cardBody}>Per-user semantic memory universe with embedding-based retrieval, clustering, anchoring, decay rates, importance scoring, and 3D visualization. Dual memory engine: short-term + long-term with hybrid ranking. AES-encrypted API key storage. IP-encrypted neural-somatic hash memory.</p>
                 </div>
                 <div className={styles.card}>
                   <h3 className={styles.cardTitle}>Constraints SIM</h3>
-                  <p className={styles.cardBody}>Invariants for actions and risk</p>
+                  <p className={styles.cardBody}>Hash Sphere / State Physics engine: physics-based state management using 3D coordinates, forces (attraction/repulsion/resonance/gravity/electromagnetic), spin, energy, and conservation invariants. System state represented as nodes in a 3D sphere with force edges.</p>
                 </div>
                 <div className={styles.card}>
                   <h3 className={styles.cardTitle}>Evidence Graphs</h3>
-                  <p className={styles.cardBody}>Explainability & audit trails</p>
+                  <p className={styles.cardBody}>68-module intelligence pipeline with hallucination detection, evidence graph construction linking claims to sources, cross-validation, causal reasoning, source citations. DSID-P protocol for immutable hash anchoring and audit trails with 8 database tables.</p>
                 </div>
               </div>
+
+              <h3 className={styles.wpSubtitle}>Core differentiators</h3>
+              <p className={styles.wpText}>
+                10 proprietary IP systems built from scratch — not wrappers around existing APIs. Includes a custom blockchain protocol (DSID-P), physics-based state engine (Hash Sphere), PyTorch ML embeddings engine (V8), RARA governance layer for autonomous agent operations, 68-module AI chat pipeline, modular skill system with 9 built-in skills, multi-agent orchestration with voting/debate/chaining, semantic memory universe, full SaaS billing stack with 5 revenue streams, and enterprise-grade multi-tenant architecture with 4 role levels.
+              </p>
             </div>
           </div>
         </div>
@@ -408,20 +407,42 @@ const InvestorPitchDeckPage = () => {
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}>Platform scale</h2>
               <p className={styles.sectionLead}>
-                ~550,000 source lines of code across 30 microservices, 662 React components, and 85+ pages. Every component is implemented and running in production.
+                Generated from codebase analysis — zero assumptions, all claims grounded in source code. Active SLOC excludes blank lines, comments, auto-generated migrations, and ~25K lines of identified dead/backup code.
               </p>
-              <div className={styles.cardsGrid}>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>~550K SLOC</h3>
-                  <p className={styles.cardBody}>~209K Python backend (30 FastAPI services, 843 files). ~250K TypeScript/React frontend (662 components, 97 API clients). ~91K CSS Modules.</p>
+
+              <div className={styles.wpTwoCol}>
+                <div>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+                    <tbody>
+                      <tr><td>Active SLOC (total)</td><td>~550,000 lines</td></tr>
+                      <tr><td>Backend Python SLOC</td><td>~209,000 (843 files)</td></tr>
+                      <tr><td>Frontend TS/React SLOC</td><td>~250,000 (662 components)</td></tr>
+                      <tr><td>Frontend CSS SLOC</td><td>~91,000 (CSS Modules)</td></tr>
+                      <tr><td>Raw lines (wc -l)</td><td>685,000</td></tr>
+                      <tr><td>Backend microservices</td><td>30 Python FastAPI</td></tr>
+                      <tr><td>Docker containers</td><td>33 (production)</td></tr>
+                      <tr><td>Database tables</td><td>80+ across 14 services</td></tr>
+                      <tr><td>Frontend routes</td><td>85+ pages</td></tr>
+                      <tr><td>API client files</td><td>97</td></tr>
+                      <tr><td>Registered users</td><td>178 (production)</td></tr>
+                      <tr><td>Live domain</td><td>dev-swat.com (active SSL)</td></tr>
+                    </tbody>
+                  </table>
                 </div>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>33 Docker containers</h3>
-                  <p className={styles.cardBody}>docker-compose.unified.yml. Kubernetes-ready architecture. Database-per-service design. Health checks on every service. Nginx SSL reverse proxy.</p>
-                </div>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>80+ database tables</h3>
-                  <p className={styles.cardBody}>DigitalOcean Managed PostgreSQL with separate DATABASE_URL per service. Alembic migrations across 14 services. Redis for caching, sessions, pub-sub.</p>
+                <div>
+                  <h3 className={styles.wpSubtitle}>Code audit breakdown</h3>
+                  <p className={styles.wpText}>
+                    Non-code removed from raw total: ~89K blank lines, ~22K comment-only lines, ~2K __init__.py / alembic boilerplate. Dead code identified: 44 backup "-2025" files (~19K lines) and 4 orphan pages (~6K lines). Only ~3.6% of the codebase is deletable dead code.
+                  </p>
+                  <h3 className={styles.wpSubtitle}>Architecture type</h3>
+                  <p className={styles.wpText}>
+                    Microservices architecture with central API Gateway. All services are Python FastAPI applications containerized with Docker, orchestrated via Docker Compose on DigitalOcean. Communication: Browser → Nginx (443/80) → Gateway (8001) → Internal Services (8000/8080/8091/8093/9001). All inter-service communication is HTTP over Docker internal network (app-network). WebSocket connections supported for real-time chat and provider status.
+                  </p>
+                  <h3 className={styles.wpSubtitle}>Database architecture</h3>
+                  <p className={styles.wpText}>
+                    DigitalOcean Managed PostgreSQL (resonant-db). Separate DATABASE_URL env vars per service — database-per-service design. Critical services use SQLAlchemy QueuePool (pool_size=1). Non-critical use NullPool. Gateway uses asyncpg pool (min=0, max=2). Alembic migrations in 14 services. Redis shared instance for caching, sessions, pub-sub.
+                  </p>
                 </div>
               </div>
             </div>
@@ -498,28 +519,32 @@ const InvestorPitchDeckPage = () => {
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}>The problem</h2>
               <p className={styles.sectionLead}>
-                AI teams can ship demos fast, but production-grade autonomy is blocked by three realities: memory safety, action safety, and governance.
+                AI teams can ship demos in days but production-grade autonomy is blocked by three systemic realities that compound at scale: memory safety, action safety, and governance. Most "AI platforms" are thin wrappers around a single LLM API with no durable infrastructure underneath.
               </p>
               <div className={styles.cardsGrid}>
                 <div className={styles.card}>
                   <h3 className={styles.cardTitle}>Agents break silently</h3>
                   <p className={styles.cardBody}>
-                    When tools, prompts, or dependencies change, behavior drifts. Without traces and invariants, failures are discovered after damage.
+                    When tools, prompts, or dependencies change, behavior drifts. Without execution traces, invariant checks, and evidence graphs, failures are discovered only after damage. No cross-validation. No causal reasoning audit. No multi-timeline tracking to detect when a conversation thread diverged from expected behavior.
                   </p>
                 </div>
                 <div className={styles.card}>
                   <h3 className={styles.cardTitle}>Governance is bolted on</h3>
                   <p className={styles.cardBody}>
-                    Compliance requirements are growing. Teams need explainability, audit logs, and policy controls built into the platform.
+                    EU AI Act, SOC 2, HIPAA — compliance requirements are growing. Teams need explainability artifacts, immutable audit logs, policy controls, capability manifests, and mutation proposals built into the platform from day one. Bolting them on after launch means rewriting your entire agent execution layer. ResonantGenesis has RARA governance and DSID-P audit trails as core primitives.
                   </p>
                 </div>
                 <div className={styles.card}>
                   <h3 className={styles.cardTitle}>Memory is a liability</h3>
                   <p className={styles.cardBody}>
-                    Long-term memory can leak secrets, amplify hallucinations, and create unclear provenance—unless it's encrypted, scoped, and attributable.
+                    Long-term memory can leak secrets, amplify hallucinations, and create unclear provenance. Most platforms have no memory architecture at all — or store raw conversation logs with no encryption, no decay rates, no importance scoring, no clustering, no anchoring. ResonantGenesis provides per-user semantic memory universes with embedding-based retrieval, dual memory engines, and 3D visualization.
                   </p>
                 </div>
               </div>
+              <h3 className={styles.wpSubtitle}>What this means for buyers</h3>
+              <p className={styles.wpText}>
+                Building this infrastructure from scratch takes 12–18 months with a senior team. ResonantGenesis is already built: 30 microservices, 80+ database tables, 68-module pipeline, 10 proprietary IP systems, full billing stack, and multi-tenant auth — all production-deployed. The acquisition cost ($50K–$150K) represents a fraction of the build cost and eliminates the time-to-market risk entirely.
+              </p>
             </div>
           </div>
         </div>
@@ -528,22 +553,84 @@ const InvestorPitchDeckPage = () => {
         <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 5 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>Architecture &amp; services</h2>
+              <h2 className={styles.sectionTitle}>Architecture &amp; backend services</h2>
               <p className={styles.sectionLead}>
-                30 FastAPI microservices. 6 LLM providers with smart failover: OpenAI, Anthropic, Groq, Gemini, Mistral, Cohere. Bring-your-own-key supported.
+                30 FastAPI microservices with central API Gateway. 6 LLM providers with smart failover (OpenAI, Anthropic, Groq, Gemini, Mistral, Cohere). Bring-your-own-key supported. All services containerized with Docker, health-checked, auto-restart on failure.
               </p>
-              <div className={styles.cardsGrid}>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>68-module AI pipeline</h3>
-                  <p className={styles.cardBody}>Hallucination detection, evidence graphs, RAG, debate engine, causal reasoning, personality DNA, autonomous planning, narrative continuity, cross-validation, thought branching.</p>
+
+              <div className={styles.wpTwoCol}>
+                <div>
+                  <h3 className={styles.wpSubtitle}>Core services</h3>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>Service</th><th>DB tables</th><th>Detail</th></tr></thead>
+                    <tbody>
+                      <tr><td>auth_service</td><td>10</td><td>User auth, OAuth (Google/GitHub), MFA (TOTP), JWT, API keys, orgs, roles, sessions, 80+ endpoints</td></tr>
+                      <tr><td>billing_service</td><td>8</td><td>Stripe subscriptions, credits, usage tracking, invoices, referrals, payment methods, 45+ endpoints</td></tr>
+                      <tr><td>chat_service</td><td>8</td><td>Primary AI chat interface, 68 intelligence modules, 40+ endpoints, skills system, evidence graphs</td></tr>
+                      <tr><td>agent_engine_service</td><td>13</td><td>Agent CRUD, versioning, teams, sessions, plans, tools, safety rules, workflows, marketplace rental</td></tr>
+                      <tr><td>blockchain_service</td><td>8</td><td>DSID-P protocol: blocks, transactions, merkle roots, hash anchoring, audit entries, state snapshots</td></tr>
+                      <tr><td>memory_service</td><td>5</td><td>Semantic memory with embeddings, chunking, anchoring, resonance clustering</td></tr>
+                      <tr><td>code_visualizer</td><td>1</td><td>GitHub repo scanning, dependency graphs, function tracing, governance reports, AI code reviews, 20+ endpoints</td></tr>
+                      <tr><td>llm_service</td><td>0</td><td>Unified LLM provider abstraction, automatic failover, streaming SSE, user key passthrough</td></tr>
+                      <tr><td>gateway</td><td>0</td><td>Central reverse proxy, auth middleware, JWT validation, API key verification, system metrics</td></tr>
+                      <tr><td>rara_service</td><td>0</td><td>RARA governance: capability manifests, mutation proposals, agent budgets, explainability artifacts</td></tr>
+                    </tbody>
+                  </table>
+
+                  <h3 className={styles.wpSubtitle}>Supporting services</h3>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>Service</th><th>Purpose</th></tr></thead>
+                    <tbody>
+                      <tr><td>state_physics_service</td><td>Hash Sphere engine — 3D coordinates, forces, spin, energy, invariants</td></tr>
+                      <tr><td>user_memory_service</td><td>Per-user semantic memory universe, embeddings, clustering, 3D visualization</td></tr>
+                      <tr><td>v8_api_service</td><td>PyTorch resonance engine — token → 3D coordinates + spin + energy</td></tr>
+                      <tr><td>cognitive_service</td><td>Anomaly detection, clustering, workflow triggering from system patterns</td></tr>
+                      <tr><td>crypto_service</td><td>Wallet management, token economics, payment processing (8 tables)</td></tr>
+                      <tr><td>marketplace_service</td><td>Agent marketplace — publish, discover, purchase, review (7 tables)</td></tr>
+                      <tr><td>ml_service</td><td>ML model registry, training jobs, inference endpoints (9 tables)</td></tr>
+                      <tr><td>notification_service</td><td>Multi-channel notifications: in_app, email, push, SMS (2 tables)</td></tr>
+                      <tr><td>workflow_service</td><td>Visual workflow builder — create, run, monitor multi-step automations (4 tables)</td></tr>
+                      <tr><td>ed_service / ide_service</td><td>Execution environments, file management, terminal, code execution</td></tr>
+                      <tr><td>storage_service</td><td>S3-compatible file storage with presigned URLs, batch upload</td></tr>
+                      <tr><td>sandbox_runner_service</td><td>Docker-isolated sandboxed code execution, multi-language</td></tr>
+                      <tr><td>rabbit_api_service (+4)</td><td>Social platform: communities, posts, comments, voting + content/vote/moderation sub-services</td></tr>
+                    </tbody>
+                  </table>
                 </div>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Agent engine (13 tables)</h3>
-                  <p className={styles.cardBody}>Agent creation, versioning, teams, voting, debate, chaining, autonomous planning with error correction, safety rules, economic budgets. Full CRUD + marketplace rental.</p>
-                </div>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Code Visualizer (20+ endpoints)</h3>
-                  <p className={styles.cardBody}>Scans GitHub repos, dependency graphs, function tracing, governance reports, AI code reviews, codebase comparison. Persistent saved analyses with per-plan storage limits.</p>
+
+                <div>
+                  <h3 className={styles.wpSubtitle}>68-module AI intelligence pipeline</h3>
+                  <p className={styles.wpText}>
+                    The chat_service contains 68 Python service modules implementing the full AI pipeline. Each module is a separate Python file — not prompt engineering. Key modules:
+                  </p>
+                  <ul className={styles.wpList}>
+                    <li><strong>hallucination_detector.py</strong> — Detects hallucinated content in AI responses</li>
+                    <li><strong>evidence_graph.py</strong> — Builds evidence graphs linking claims to sources</li>
+                    <li><strong>rag_engine.py</strong> — Retrieval-Augmented Generation from knowledge base</li>
+                    <li><strong>debate_engine.py</strong> — Multi-agent debate for exploring perspectives</li>
+                    <li><strong>causal_reasoning.py</strong> — Causal inference chains</li>
+                    <li><strong>autonomous_planner.py</strong> — Multi-step planning for autonomous agents</li>
+                    <li><strong>autonomous_error_correction.py</strong> — Self-correcting agent responses</li>
+                    <li><strong>personality_dna.py</strong> — Agent personality profiling</li>
+                    <li><strong>narrative_continuity_engine.py</strong> — Maintains coherence across conversations</li>
+                    <li><strong>thought_branching.py</strong> — Branching thought exploration</li>
+                    <li><strong>multi_timeline_engine.py</strong> — Multi-timeline conversation tracking</li>
+                    <li><strong>cross_validation.py</strong> — Cross-validates claims across sources</li>
+                    <li><strong>dual_memory_engine.py</strong> — Short-term + long-term memory</li>
+                    <li><strong>neural_gravity_engine.py</strong> — Neural gravity for context weighting</li>
+                    <li><strong>adaptive_agent_allocator.py</strong> — Dynamic agent allocation</li>
+                    <li><strong>self_improving_agent.py</strong> — Self-improvement feedback loops</li>
+                    <li><strong>ab_testing.py</strong> — A/B testing framework for chat responses</li>
+                    <li><strong>skill_executor.py</strong> — Executes 9 built-in skills (code_visualizer, web_search, image_generation, memory_search, memory_library, agents_os, state_physics, ide_workspace, rabbit_post)</li>
+                  </ul>
+
+                  <h3 className={styles.wpSubtitle}>LLM provider integration</h3>
+                  <p className={styles.wpText}>
+                    6 providers with automatic failover: OpenAI (GPT-4, GPT-3.5), Anthropic (Claude 3.5 Sonnet, Claude 3 Haiku), Groq, Google Gemini, Mistral, Cohere. User API key passthrough — bring-your-own-key supported. Automatic fallback: preferred → user keys → platform keys. Streaming SSE support. Context adaptation between provider formats.
+                  </p>
+                  <p className={styles.wpText}>
+                    Frontend has dedicated provider client files: openai.ts, anthropic.ts, groq.ts, gemini.ts, mistral.ts, cohere.ts — with unified router. 97 total API client files mapping to every backend service.
+                  </p>
                 </div>
               </div>
             </div>
@@ -571,51 +658,83 @@ const InvestorPitchDeckPage = () => {
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}>Unique intellectual property</h2>
               <p className={styles.sectionLead}>
-                10 proprietary systems built from scratch — not wrappers around existing APIs. Custom blockchain, physics engine, ML embeddings, governance layer.
+                10 proprietary systems built from scratch — based solely on code analysis. These are not wrappers around existing APIs. Each system has its own service, database models, and endpoints.
               </p>
-              <div className={styles.cardsGrid}>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>DSID-P Protocol (8 tables)</h3>
-                  <p className={styles.cardBody}>Decentralized State Identity Protocol: blocks, transactions, merkle roots, hash anchoring, audit entries, state snapshots. Immutable cryptographic verification.</p>
+
+              <div className={styles.wpTwoCol}>
+                <div>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>#</th><th>System</th><th>Detail</th></tr></thead>
+                    <tbody>
+                      <tr><td>1</td><td>ResonantChat Pipeline</td><td>68 service modules: hallucination detection, evidence graphs, cross-validation, causal reasoning, debate engine, personality DNA, autonomous planning with error correction, narrative continuity, thought branching, multi-timeline tracking. Each module is a separate Python file.</td></tr>
+                      <tr><td>2</td><td>Code Visualizer</td><td>Full code analysis engine: scans GitHub repos, generates interactive dependency graphs, traces function calls, produces governance reports, runs AI-powered code reviews. Persistence with per-user storage limits. 20+ endpoints.</td></tr>
+                      <tr><td>3</td><td>DSID-P Protocol</td><td>Decentralized State Identity Protocol — custom blockchain: DSID records, HashNode graph, Block/BlockTransaction with merkle roots, TransactionGraph, AuditEntry (immutable), StateSnapshot, AnchorRecord. 8 database tables.</td></tr>
+                      <tr><td>4</td><td>Hash Sphere / State Physics</td><td>Physics-based state management: HashNode (position x/y/z, velocity, mass, charge, spin, energy, hash), HashEdge (weight, force type: attraction/repulsion/resonance/gravity/electromagnetic), Invariant (conservation laws). Node types: data, agent, user, service, model, memory, transaction, policy, anchor, cluster, embedding.</td></tr>
+                      <tr><td>5</td><td>V8 Resonance Engine</td><td>Custom PyTorch embedding engine: token → embedding vector → 3D coordinates (x,y,z) + resonance radius + spin + energy. Spatial cluster classification (alpha/beta/gamma). Trainable from corpus with vocabulary and forbidden word filtering. Flask + PyTorch. Web UI with Three.js 3D sphere.</td></tr>
+                    </tbody>
+                  </table>
                 </div>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Hash Sphere / State Physics</h3>
-                  <p className={styles.cardBody}>Physics-based state management: 3D coordinates, forces (attraction/repulsion/resonance/gravity), spin, energy, conservation invariants. Unique in AI infrastructure.</p>
-                </div>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>RARA Governance Layer</h3>
-                  <p className={styles.cardBody}>Resonant Autonomous Runtime Architecture: capability manifests, mutation proposals, agent budgets, governance decisions, explainability artifacts, invariant verification.</p>
+                <div>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>#</th><th>System</th><th>Detail</th></tr></thead>
+                    <tbody>
+                      <tr><td>6</td><td>Modular Skill System</td><td>9 built-in skills with auto-detection from message intent, per-user enable/disable: code_visualizer, web_search, image_generation, memory_search, memory_library, agents_os, state_physics, ide_workspace, rabbit_post.</td></tr>
+                      <tr><td>7</td><td>Multi-Agent Orchestration</td><td>Agent voting, debate, chaining, team composition, autonomous planning with error correction, self-improving agents, A/B testing. 13 database tables. Full marketplace rental system.</td></tr>
+                      <tr><td>8</td><td>Semantic Memory Universe</td><td>Per-user semantic memory space: MemoryNode (embedding, importance, decay, position), MemoryEdge (connections with type/strength), MemoryCluster, UserMemoryUniverse. Embedding-based retrieval, clustering, anchoring, 3D visualization endpoint.</td></tr>
+                      <tr><td>9</td><td>Full SaaS Billing Stack</td><td>Stripe: Subscription/CreditBalance/CreditTransaction/UsageRecord/Invoice/PaymentMethod/PricingPlan/Coupon (8 tables). 45+ endpoints. Credit deduction per-operation tracked by service/provider/model/tokens/latency. 5 revenue streams.</td></tr>
+                      <tr><td>10</td><td>RARA Governance Layer</td><td>Resonant Autonomous Runtime Architecture: CapabilityManifest, MutationRequest/Result, AgentBudget, GovernanceDecision, ExplainabilityArtifact, InvariantCheckResult. 9 capability types: code_generation, data_analysis, web_search, file_management, api_integration, blockchain_ops, ml_training, agent_creation, system_admin.</td></tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* SLIDE 8 — Business model */}
+        {/* SLIDE 8 — Business model & billing */}
         <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 8 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>Business model</h2>
+              <h2 className={styles.sectionTitle}>Monetization &amp; billing infrastructure</h2>
               <p className={styles.sectionLead}>
-                5 revenue streams ready to generate income. Complete Stripe integration with subscriptions, credits, marketplace, and referral system.
+                Complete SaaS billing stack with Stripe. 8 database tables (Subscription, CreditBalance, CreditTransaction, UsageRecord, Invoice, PaymentMethod, PricingPlan, Coupon). 45+ billing endpoints. Revenue calculated only from transactions with stripe_payment_intent_id (real Stripe payments).
               </p>
-              <div className={styles.cardsGrid}>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Stripe subscriptions (4 tiers)</h3>
-                  <p className={styles.cardBody}>
-                    Free (1,000 credits on signup), Plus, Pro, Enterprise. Checkout sessions, webhooks, billing portal, invoice generation. 45+ billing endpoints.
+
+              <div className={styles.wpTwoCol}>
+                <div>
+                  <h3 className={styles.wpSubtitle}>5 revenue streams (code-supported)</h3>
+                  <ul className={styles.wpList}>
+                    <li><strong>Subscription plans</strong> — Stripe recurring billing via /checkout/subscription. 4 tiers: Free/Developer (1,000 credits on signup), Plus, Pro, Enterprise. Checkout sessions, webhooks, billing portal, invoice generation.</li>
+                    <li><strong>Credit packs</strong> — One-time credit purchases via /checkout/credits. Per-operation credit deduction tracked by service, operation, tokens_used, provider, model, latency_ms. Credit transaction types: purchase, bonus, deduction, refund, rollover, period_grant, referral_reward.</li>
+                    <li><strong>API product subscriptions</strong> — API access tiers via /checkout/api-product.</li>
+                    <li><strong>Agent marketplace</strong> — AgentPurchase model for marketplace transactions. Agent listing, versioning, purchase records, reviews, usage stats, publisher profiles.</li>
+                    <li><strong>Referral system</strong> — 5,000 credits for referrer, 2,000 for referred (tx_type: referral_reward). Period grants and rollover logic implemented.</li>
+                  </ul>
+
+                  <h3 className={styles.wpSubtitle}>Billing endpoints (45+)</h3>
+                  <p className={styles.wpText}>
+                    Subscriptions: GET/POST /subscription, cancel, reactivate, change-plan. Credits: GET /credits (balance), POST /credits/purchase, /deduct, /bonus, /refund, GET /credits/transactions, /balance/&#123;user_id&#125;. Usage: POST /usage/record, GET /usage/summary, /metrics, /tokens/history, /providers, /activity, /history, /limits, /export, /breakdown. Invoices: GET /invoices, /invoices/&#123;id&#125;, /invoices/stats, /invoices/&#123;id&#125;/pdf. Stripe: POST /webhook/stripe, /stripe/checkout, /checkout/subscription, /checkout/credits. Portal: POST /portal (Stripe customer portal). Pricing: GET /pricing, /pricing/plans, /pricing/credit-packs, /pricing/credit-costs.
                   </p>
                 </div>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Credits + marketplace</h3>
-                  <p className={styles.cardBody}>
-                    Per-operation credit deduction tracked by service, provider, model, tokens, latency. Credit packs, API products. Agent marketplace purchases + rentals.
+                <div>
+                  <h3 className={styles.wpSubtitle}>Auth service (10 DB tables, 80+ endpoints)</h3>
+                  <p className={styles.wpText}>
+                    Tables: User, Organization, OrgMembership, ApiKey, UserApiKey, RefreshToken, TrustedDevice, PasswordResetToken, Agent, AgentApiKey.
                   </p>
-                </div>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Referral system</h3>
-                  <p className={styles.cardBody}>
-                    5,000 credits for referrer, 2,000 for referred. Usage analytics dashboard, transaction history, billing breakdown. Ready to charge from day one.
+                  <ul className={styles.wpList}>
+                    <li><strong>Registration/Login</strong> — /auth/register, /auth/login — password strength validation (8+ chars, uppercase, lowercase, digit, special). Account lockout after failed attempts.</li>
+                    <li><strong>OAuth/SSO</strong> — /oauth/google/login, /oauth/github/login, SAML SSO initiate/callback stubs.</li>
+                    <li><strong>MFA</strong> — /auth/mfa/setup, /verify, /disable, /backup-codes/regenerate — TOTP-based with backup codes.</li>
+                    <li><strong>Token management</strong> — JWT access tokens + HttpOnly cookie refresh tokens. Configurable token expiry.</li>
+                    <li><strong>Organization management</strong> — Roles: admin, member, owner, platform_owner. Per-org API keys. Per-user LLM provider keys (OpenAI, Anthropic, Groq, Google, Mistral, Cohere).</li>
+                    <li><strong>Session management</strong> — List, revoke individual, revoke all. Trusted device CRUD.</li>
+                    <li><strong>Agent settings</strong> — Full CRUD per-user agents: create, update, delete, list, share, import/export, templates, per-agent API keys, memory settings, restrictions.</li>
+                    <li><strong>Identity</strong> — /auth/identity returns crypto_hash and user_hash for blockchain anchoring (SHA-256).</li>
+                  </ul>
+
+                  <h3 className={styles.wpSubtitle}>Security features</h3>
+                  <p className={styles.wpText}>
+                    Bcrypt password hashing. JWT with configurable expiry. HttpOnly secure cookies (SameSite=lax). Rate limiting on login, register, password reset, token refresh. Account lockout. Audit logging with client IP/user-agent tracking. AES-encrypted API key storage. Crypto identity generation (SHA-256). Docker-isolated sandboxed code execution. Gateway auth middleware on all non-public routes. CORS per-service.
                   </p>
                 </div>
               </div>
@@ -623,66 +742,211 @@ const InvestorPitchDeckPage = () => {
           </div>
         </div>
 
-        {/* SLIDE 9 — Security & Multi-tenant */}
+        {/* SLIDE 9 — Frontend & Technology Stack */}
         <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 9 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>Security &amp; multi-tenant</h2>
+              <h2 className={styles.sectionTitle}>Frontend &amp; technology stack</h2>
               <p className={styles.sectionLead}>
-                Enterprise-grade auth with 80+ endpoints. Multi-tenant organizations with role-based access, plan-based feature gating, and 9-page enterprise control plane.
+                React 18 + TypeScript frontend with 662 components, 85+ routes, 97 API client files, CSS Modules (91K SLOC). Multi-LLM provider support with dedicated client files per provider. Full page inventory from router/index.tsx.
               </p>
-              <div className={styles.cardsGrid}>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Auth (10 DB tables)</h3>
-                  <p className={styles.cardBody}>OAuth (Google/GitHub), MFA (TOTP + backup codes), JWT + HttpOnly cookies, AES-encrypted API keys, rate limiting, account lockout, bcrypt hashing, session management.</p>
+
+              <div className={styles.wpTwoCol}>
+                <div>
+                  <h3 className={styles.wpSubtitle}>Frontend page inventory (85+ routes)</h3>
+                  <ul className={styles.wpList}>
+                    <li><strong>Public (no auth):</strong> Landing, signup, login, pricing, enterprise, community, contact, API docs, DSID-P overview, validation tool, LLM scanner, investor pitch deck, state physics demo, resonant memory, code visualizer, rabbit social</li>
+                    <li><strong>Core authenticated:</strong> Resonant Chat (primary), user dashboard, plus/enterprise/owner dashboards, profile, settings, organization, predictions, evidence graphs</li>
+                    <li><strong>Agent OS:</strong> Agent OS v2, individual agent dashboards, agent teams (create/edit/dashboard), autonomous agent dashboard, agent browser, publish, templates</li>
+                    <li><strong>Marketplace:</strong> NFT/Agent marketplace, item detail, installations, purchases</li>
+                    <li><strong>Dev tools:</strong> Web IDE, project builder, AI chat console v2, V8 engine panel, Hash Sphere test/fullscreen</li>
+                    <li><strong>Admin:</strong> System dashboard, user management, feature flags</li>
+                    <li><strong>Finance:</strong> Invoices, reports, credits &amp; refunds</li>
+                    <li><strong>ML Ops:</strong> Training jobs (list/create/detail), model versions, worker monitor, evaluation drift</li>
+                    <li><strong>Enterprise control plane (9 pages):</strong> Overview, semantics, trust, governance, compliance, security, performance, live execution, guided scenarios</li>
+                  </ul>
                 </div>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Multi-tenant (4 roles)</h3>
-                  <p className={styles.cardBody}>Organizations: admin, member, owner, platform_owner. Per-org API keys, per-user LLM provider keys. Plan-based feature gating. Enterprise control plane with 9 dashboards.</p>
-                </div>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Sandboxed execution</h3>
-                  <p className={styles.cardBody}>Docker-isolated code execution. Multi-language sandbox runner. Gateway auth middleware on all non-public routes. Audit logging with IP/user-agent tracking. CORS per-service.</p>
+                <div>
+                  <h3 className={styles.wpSubtitle}>Technology stack</h3>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>Layer</th><th>Technology</th></tr></thead>
+                    <tbody>
+                      <tr><td>Frontend</td><td>React 18 + TypeScript, Vite build</td></tr>
+                      <tr><td>Styling</td><td>CSS Modules (91K SLOC)</td></tr>
+                      <tr><td>3D</td><td>Three.js (Hash Sphere, V8 visualization)</td></tr>
+                      <tr><td>Router</td><td>React Router v6 (createBrowserRouter)</td></tr>
+                      <tr><td>Backend</td><td>FastAPI (Python 3.11)</td></tr>
+                      <tr><td>V8 Engine</td><td>Flask + PyTorch</td></tr>
+                      <tr><td>Blockchain</td><td>Node.js</td></tr>
+                      <tr><td>Database</td><td>PostgreSQL (DO Managed)</td></tr>
+                      <tr><td>Cache</td><td>Redis (shared instance)</td></tr>
+                      <tr><td>ORM</td><td>SQLAlchemy 2.0 (async)</td></tr>
+                      <tr><td>Direct DB</td><td>asyncpg (gateway only)</td></tr>
+                      <tr><td>Migrations</td><td>Alembic (14 services)</td></tr>
+                      <tr><td>Containers</td><td>Docker + Docker Compose</td></tr>
+                      <tr><td>Web Server</td><td>Nginx (SSL, reverse proxy)</td></tr>
+                      <tr><td>Payments</td><td>Stripe (checkout, webhooks, portal)</td></tr>
+                      <tr><td>LLM</td><td>OpenAI, Anthropic, Groq, Gemini, Mistral, Cohere, Ollama</td></tr>
+                      <tr><td>OAuth</td><td>Google, GitHub</td></tr>
+                      <tr><td>ML</td><td>PyTorch (V8 engine)</td></tr>
+                    </tbody>
+                  </table>
+
+                  <h3 className={styles.wpSubtitle}>Frontend API clients (97 files)</h3>
+                  <p className={styles.wpText}>
+                    Each file maps to a backend service: auth, billing, blockchain, chat, code, cognitive, compliance, crypto, dashboard, evidence, governance, hashSphere, llm, marketplace, memory, metrics, mfa, ml, notifications, org, predictions, skills, storage, sso, system, teams, universe, usage, workflow, workspace. Multi-LLM provider clients: openai.ts, anthropic.ts, groq.ts, gemini.ts, mistral.ts, cohere.ts + unified router.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* SLIDE 10 — Infrastructure detail */}
+        {/* SLIDE 10 — Production & Implementation Status */}
         <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 10 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>Production deployment</h2>
+              <h2 className={styles.sectionTitle}>Production status &amp; implementation</h2>
               <p className={styles.sectionLead}>
-                Live at dev-swat.com with 178 registered users. Kubernetes-ready architecture on DigitalOcean. Complete CI/CD via GitHub Actions.
+                Live at dev-swat.com (IP: 134.199.221.149) with 178 registered users, 0 paying (pre-revenue). Single DigitalOcean droplet + managed DB. Services auto-restart on failure.
               </p>
-              <div className={styles.cardsGrid}>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>33 Docker containers</h3>
-                  <p className={styles.cardBody}>docker-compose.unified.yml. Nginx SSL termination + reverse proxy. SQLAlchemy QueuePool (critical) + NullPool (non-critical). Health checks + auto-restart on every service.</p>
+
+              <div className={styles.wpTwoCol}>
+                <div>
+                  <h3 className={styles.wpSubtitle}>Fully implemented &amp; verified in production</h3>
+                  <ul className={styles.wpList}>
+                    <li>User registration, login, OAuth (Google/GitHub)</li>
+                    <li>JWT authentication with cookies and token refresh</li>
+                    <li>MFA (TOTP) setup and verification with backup codes</li>
+                    <li>Password reset flow with email</li>
+                    <li>Organization management with 4 roles</li>
+                    <li>AI chat with multi-provider LLM routing</li>
+                    <li>Conversation CRUD (create, list, archive, delete)</li>
+                    <li>9 chat skills with auto-detection</li>
+                    <li>Credit system (balance, deduction, transaction history)</li>
+                    <li>Stripe integration (checkout sessions, webhooks)</li>
+                    <li>Code Visualizer (GitHub scan, analysis, dependency graphs, persistence)</li>
+                    <li>Billing dashboard with usage metrics</li>
+                    <li>User API key management (bring-your-own-key)</li>
+                    <li>Agent CRUD (create, configure, share, template, export/import)</li>
+                    <li>Owner dashboard with live system analytics</li>
+                    <li>Docker-based production deployment (33 containers)</li>
+                    <li>Gateway auth middleware with public path exemptions</li>
+                    <li>Redis caching, Nginx reverse proxy with SSL</li>
+                  </ul>
+
+                  <h3 className={styles.wpSubtitle}>Implemented — needs testing/polish</h3>
+                  <ul className={styles.wpList}>
+                    <li>Rabbit social platform (communities, posts, comments, votes)</li>
+                    <li>V8 Engine (PyTorch embeddings, 3D resonance, retraining)</li>
+                    <li>Agent Teams (creation, workflow, rental)</li>
+                    <li>Marketplace (listings, purchases, reviews)</li>
+                    <li>Workflow engine (definition, execution, event sourcing)</li>
+                    <li>Autonomous agent execution (planning, error correction)</li>
+                    <li>Hallucination detection and evidence graphs</li>
+                    <li>Knowledge base (upload, RAG retrieval)</li>
+                    <li>Notification service (multi-channel)</li>
+                    <li>Blockchain/DSID-P (hash anchoring, blocks, audit)</li>
+                    <li>State Physics / Hash Sphere engine</li>
+                    <li>User Memory Universe (semantic space, clustering)</li>
+                  </ul>
                 </div>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>Database per service</h3>
-                  <p className={styles.cardBody}>DigitalOcean Managed PostgreSQL with separate DATABASE_URL per service. Alembic migrations across 14 services. Redis shared instance. Persistent volumes for models + blockchain data.</p>
-                </div>
-                <div className={styles.card}>
-                  <h3 className={styles.cardTitle}>What's included</h3>
-                  <p className={styles.cardBody}>Full source code (both repos), 30-day transition support, 3-day live trial, complete deployment runbook, PLATFORM_SALE_REPORT.md technical audit. $50K–$150K negotiable.</p>
+                <div>
+                  <h3 className={styles.wpSubtitle}>Production status</h3>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>Item</th><th>Status</th></tr></thead>
+                    <tbody>
+                      <tr><td>Domain</td><td>dev-swat.com (active SSL)</td></tr>
+                      <tr><td>Registered users</td><td>178</td></tr>
+                      <tr><td>Paying users</td><td>0 (pre-revenue)</td></tr>
+                      <tr><td>Containers running</td><td>33</td></tr>
+                      <tr><td>Database</td><td>DO Managed PostgreSQL</td></tr>
+                      <tr><td>Uptime</td><td>Auto-restart on failure</td></tr>
+                      <tr><td>CI/CD</td><td>GitHub Actions</td></tr>
+                      <tr><td>Frontend deploy</td><td>npm build → rsync → nginx reload</td></tr>
+                    </tbody>
+                  </table>
+
+                  <h3 className={styles.wpSubtitle}>Infrastructure</h3>
+                  <p className={styles.wpText}>
+                    Docker Compose: 33 containers on app-network bridge. Health checks (HTTP GET /health) on every service. restart: unless-stopped. Persistent volumes: v8_data, v8_model, build_projects, blockchain_node_data. Nginx serves React static build from /var/www/frontend/, reverse-proxies API to gateway:8001.
+                  </p>
+
+                  <h3 className={styles.wpSubtitle}>Service line counts (top 10)</h3>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>Service</th><th>Python lines</th></tr></thead>
+                    <tbody>
+                      <tr><td>agent_engine_service</td><td>54,608</td></tr>
+                      <tr><td>blockchain_service</td><td>38,043</td></tr>
+                      <tr><td>chat_service</td><td>37,712</td></tr>
+                      <tr><td>billing_service</td><td>17,112</td></tr>
+                      <tr><td>gateway</td><td>16,712</td></tr>
+                      <tr><td>rara_service</td><td>14,663</td></tr>
+                      <tr><td>auth_service</td><td>12,280</td></tr>
+                      <tr><td>memory_service</td><td>11,626</td></tr>
+                      <tr><td>code_visualizer</td><td>9,738</td></tr>
+                      <tr><td>ed_service</td><td>4,397</td></tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* SLIDE 11 — Let's talk (footer CTA) */}
+        {/* SLIDE 11 — Acquisition Terms */}
         <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 11 ? styles.slideActive : ''}`}>
-          <section className={styles.footerCta}>
-            <div className={styles.footerCtaInner}>
-              <h2 className={styles.footerCtaTitle}>Acquire ResonantGenesis</h2>
-              <p className={styles.footerCtaBody}>
-                ~550K source lines of production code. 30 microservices. 10 unique IP assets. Full Stripe billing. 178 users. Built solo — needs a team to take to market. Asking $50K–$150K. Acqui-hire, white-label, partial stake open.
+          <div className={styles.section}>
+            <div className={styles.sectionInner}>
+              <h2 className={styles.sectionTitle}>Acquire ResonantGenesis</h2>
+              <p className={styles.sectionLead}>
+                ~550,000 source lines of production code. 30 microservices. 33 Docker containers. 80+ database tables. 10 unique IP assets. Complete Stripe billing with 5 revenue streams. 178 registered users. Built solo over 12+ months — needs a team to take to market.
               </p>
+
+              <div className={styles.wpTwoCol}>
+                <div>
+                  <h3 className={styles.wpSubtitle}>What's included</h3>
+                  <ul className={styles.wpList}>
+                    <li><strong>Full source code</strong> — Both repositories (genesis2026_production_backend + genesis2026_frontend), complete git history</li>
+                    <li><strong>30-day transition support</strong> — Architecture walkthrough, deployment guidance, codebase orientation</li>
+                    <li><strong>3-day unlimited live trial</strong> — Full access to production environment before committing</li>
+                    <li><strong>Complete deployment runbook</strong> — Docker Compose, Nginx config, database setup, environment variables</li>
+                    <li><strong>PLATFORM_SALE_REPORT.md</strong> — 873-line comprehensive technical audit (the source for this document)</li>
+                    <li><strong>All documentation</strong> — 31K lines of .md files (backend) + 4K lines (frontend) + 500 lines .txt</li>
+                    <li><strong>Domain transfer</strong> — dev-swat.com and/or resonantgenesis.xyz (negotiable)</li>
+                    <li><strong>Infrastructure handoff</strong> — DigitalOcean droplet, managed DB, DNS, SSL certificates</li>
+                  </ul>
+
+                  <h3 className={styles.wpSubtitle}>Deal structures open</h3>
+                  <ul className={styles.wpList}>
+                    <li><strong>Full asset sale</strong> — $50,000–$150,000 (negotiable based on structure)</li>
+                    <li><strong>Acqui-hire</strong> — Code + founder joins the team</li>
+                    <li><strong>White-label licensing</strong> — License the platform for your brand/vertical</li>
+                    <li><strong>Partial stake + revenue share</strong> — Co-ownership with aligned incentives</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className={styles.wpSubtitle}>Why selling</h3>
+                  <p className={styles.wpText}>
+                    Built solo by one developer over 12+ months. The platform is production-ready and architecturally sound, but needs a team for go-to-market: sales, marketing, customer success, and continued feature development. The cost to rebuild this from scratch with a 3-5 person team would be $500K–$1M+ and 12–18 months. The acquisition price reflects the pre-revenue status while preserving the IP and infrastructure value.
+                  </p>
+
+                  <h3 className={styles.wpSubtitle}>Ideal buyers</h3>
+                  <ul className={styles.wpList}>
+                    <li><strong>AI agencies / dev shops</strong> — White-label the platform. You provide clients, it provides infrastructure.</li>
+                    <li><strong>SaaS companies adding AI</strong> — Skip 12+ months of agent infrastructure build. Deploy on your infrastructure.</li>
+                    <li><strong>Enterprise ISVs</strong> — Plug-in agent orchestration with governance, audit trails, compliance controls.</li>
+                    <li><strong>Technical founders</strong> — Buy the infrastructure, focus on your vertical. 3-day trial available.</li>
+                    <li><strong>AI infrastructure / MLOps companies</strong> — Unique IP: 68-module pipeline, custom blockchain, physics engine, PyTorch resonance engine.</li>
+                  </ul>
+
+                  <h3 className={styles.wpSubtitle}>Report generation</h3>
+                  <p className={styles.wpText}>
+                    This document was generated by analyzing every service directory, models.py, routers.py, main.py, skills_registry.py, docker-compose.unified.yml, and router/index.tsx in the codebase. All claims are grounded in actual source code inspection. No external claims or assumptions were made.
+                  </p>
+                </div>
+              </div>
+
               <div className={styles.ctaRow}>
                 <button
                   type="button"
@@ -702,7 +966,7 @@ const InvestorPitchDeckPage = () => {
                 </button>
               </div>
             </div>
-          </section>
+          </div>
         </div>
 
         {/* Slide indicator dots */}

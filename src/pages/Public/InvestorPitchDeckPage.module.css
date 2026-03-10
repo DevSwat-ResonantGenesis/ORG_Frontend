@@ -678,23 +678,107 @@
 
 .sectionTitle {
   margin: 0;
-  font-size: 28px;
+  font-size: 26px;
   letter-spacing: -0.02em;
   color: #f8fafc;
 }
 
 .sectionLead {
-  margin: 12px 0 0;
+  margin: 10px 0 0;
   color: rgba(226, 232, 240, 0.72);
-  max-width: 74ch;
-  line-height: 1.7;
+  max-width: 100%;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* Dense whitepaper paragraph blocks */
+.wpBlock {
+  margin-top: 18px;
+}
+
+.wpSubtitle {
+  margin: 18px 0 6px;
+  font-size: 15px;
+  font-weight: 650;
+  color: rgba(248, 250, 252, 0.92);
+  letter-spacing: -0.01em;
+}
+
+.wpText {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(226, 232, 240, 0.72);
+}
+
+.wpList {
+  margin: 6px 0 0;
+  padding-left: 16px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(226, 232, 240, 0.72);
+}
+
+.wpList li {
+  margin-bottom: 2px;
+}
+
+.wpList strong {
+  color: rgba(248, 250, 252, 0.88);
+}
+
+/* Inline data table for slides */
+.wpTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.wpTable th {
+  text-align: left;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(226, 232, 240, 0.55);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.wpTable td {
+  padding: 4px 10px;
+  color: rgba(226, 232, 240, 0.78);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.wpTable td:first-child {
+  color: rgba(248, 250, 252, 0.88);
+  font-weight: 550;
+  white-space: nowrap;
+}
+
+/* Two-column dense layout */
+.wpTwoCol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 14px;
+}
+
+@media (max-width: 768px) {
+  .wpTwoCol {
+    grid-template-columns: 1fr;
+  }
 }
 
 .cardsGrid {
-  margin-top: 26px;
+  margin-top: 18px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 12px;
 }
 
 @media (max-width: 1023px) {
@@ -704,23 +788,24 @@
 }
 
 .card {
-  padding: 18px 18px 16px;
-  border-radius: 18px;
+  padding: 14px 14px 12px;
+  border-radius: 14px;
   background: rgba(2, 6, 23, 0.48);
   border: 1px solid rgba(148, 163, 184, 0.14);
 }
 
 .cardTitle {
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
+  font-weight: 650;
   color: rgba(248, 250, 252, 0.95);
 }
 
 .cardBody {
-  margin: 10px 0 0;
+  margin: 6px 0 0;
   color: rgba(226, 232, 240, 0.72);
-  line-height: 1.65;
-  font-size: 14px;
+  line-height: 1.55;
+  font-size: 12.5px;
 }
 
 .twoCol {
@@ -815,8 +900,21 @@
   pointer-events: none;
   transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  overflow: hidden;
+}
+
+/* Text slides: allow internal scrolling for dense whitepaper content */
+.slideDark {
+  overflow-y: auto;
+  align-items: flex-start;
+  padding: calc(var(--header-height, 60px) + 24px) clamp(24px, 5vw, 80px) 48px;
+}
+
+/* VR image slides stay fixed/centered */
+.slideVr {
+  align-items: center;
   overflow: hidden;
 }
 
@@ -826,6 +924,7 @@
   z-index: 3;
 }
 
+/* slideDark bg — padding/overflow set above in .slideDark block */
 .slideDark {
   background: #0a0a0a;
 }
