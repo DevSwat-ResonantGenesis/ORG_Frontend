@@ -61,7 +61,6 @@ const IP_ITEMS = [
   { title: 'Code Visualizer Engine', desc: 'Full code analysis engine: scans GitHub repos, generates interactive dependency graphs, traces function calls, produces governance reports, AI-powered code reviews. Persistent storage with per-user limits.' },
   { title: 'DSID-P Protocol', desc: 'Decentralized State Identity Protocol: custom blockchain-like system for immutable hash anchoring, audit trails, merkle roots, and cryptographic state verification.' },
   { title: 'Hash Sphere / State Physics', desc: 'Physics-based state management using 3D coordinates, forces (attraction/repulsion/resonance/gravity/electromagnetic), spin, energy, and conservation invariants. Unique concept.' },
-  { title: 'V8 Resonance Engine', desc: 'Custom PyTorch-based embedding engine mapping tokens to 3D resonance coordinates with spin and energy values. Trainable from corpus with Three.js 3D visualization.' },
   { title: 'Modular Skill System', desc: '9 built-in chat skills with auto-detection from message intent: Code Visualizer, Web Search, Image Generation, Memory Search, Memory Library, Agents OS, State Physics, IDE Workspace, Rabbit Post.' },
   { title: 'Multi-Agent Orchestration', desc: 'Agent voting, debate engine, chaining, team composition, autonomous planning with error correction, self-improving agents, A/B testing, dynamic team composition.' },
   { title: 'Semantic Memory Universe', desc: 'Per-user semantic memory space with embedding-based retrieval, clustering, anchoring, decay rates, importance scoring, and 3D visualization of the memory graph.' },
@@ -99,27 +98,23 @@ const InvestorPitchDeckPage = () => {
         <img src="/images/investorpitch/VR1.jpg" alt="ResonantGenesis platform" className={styles.wpHeroImage} />
         <div className={styles.wpHeroGrad} />
         <div className={styles.wpHeroContent}>
-          <div className={styles.wpHeroBadge}>Technical Whitepaper & Acquisition Brief</div>
+          <div className={styles.wpHeroBadge}>Sovereign Infrastructure for Autonomous Agents</div>
           <h1 className={styles.wpHeroTitle}>ResonantGenesis</h1>
           <p className={styles.wpHeroSub}>
-            Full-stack Agentic AI platform. 30 microservices. 685,000 lines of code. Production-deployed. Available for acquisition.
+            Governed memory, invariant-based constraint simulation, and full-stack observability—so teams can ship agentic products that are safe, auditable, and controllable.
           </p>
-          <div className={styles.wpHeroMetrics}>
-            <div className={styles.wpHeroMetricCard}>
-              <p className={styles.wpHeroMetricVal}>685K</p>
-              <p className={styles.wpHeroMetricLbl}>Lines of Code</p>
+          <div className={styles.wpHeroCards}>
+            <div className={styles.wpHeroCard}>
+              <h3 className={styles.wpHeroCardTitle}>Governed Memory</h3>
+              <p className={styles.wpHeroCardBody}>Encrypted, attributable, retrievable</p>
             </div>
-            <div className={styles.wpHeroMetricCard}>
-              <p className={styles.wpHeroMetricVal}>30</p>
-              <p className={styles.wpHeroMetricLbl}>Microservices</p>
+            <div className={styles.wpHeroCard}>
+              <h3 className={styles.wpHeroCardTitle}>Constraints SIM</h3>
+              <p className={styles.wpHeroCardBody}>Invariants for actions and risk</p>
             </div>
-            <div className={styles.wpHeroMetricCard}>
-              <p className={styles.wpHeroMetricVal}>85+</p>
-              <p className={styles.wpHeroMetricLbl}>Frontend Pages</p>
-            </div>
-            <div className={styles.wpHeroMetricCard}>
-              <p className={styles.wpHeroMetricVal}>80+</p>
-              <p className={styles.wpHeroMetricLbl}>Database Tables</p>
+            <div className={styles.wpHeroCard}>
+              <h3 className={styles.wpHeroCardTitle}>Evidence Graphs</h3>
+              <p className={styles.wpHeroCardBody}>Explainability & audit trails</p>
             </div>
           </div>
         </div>
@@ -152,6 +147,25 @@ const InvestorPitchDeckPage = () => {
               autonomous agent creation and orchestration, code analysis tools, a custom physics-based state engine,
               blockchain-based identity anchoring, and a complete SaaS billing stack with Stripe integration.
             </p>
+            
+            <div className={styles.wpHeroMetrics}>
+              <div className={styles.wpHeroMetricCard}>
+                <p className={styles.wpHeroMetricVal}>685K</p>
+                <p className={styles.wpHeroMetricLbl}>Lines of Code</p>
+              </div>
+              <div className={styles.wpHeroMetricCard}>
+                <p className={styles.wpHeroMetricVal}>30</p>
+                <p className={styles.wpHeroMetricLbl}>Microservices</p>
+              </div>
+              <div className={styles.wpHeroMetricCard}>
+                <p className={styles.wpHeroMetricVal}>85+</p>
+                <p className={styles.wpHeroMetricLbl}>Frontend Pages</p>
+              </div>
+              <div className={styles.wpHeroMetricCard}>
+                <p className={styles.wpHeroMetricVal}>80+</p>
+                <p className={styles.wpHeroMetricLbl}>Database Tables</p>
+              </div>
+            </div>
             <p className={styles.wpText}>
               The platform is live at <span className={styles.wpHighlight}>dev-swat.com</span> with{' '}
               <span className={styles.wpHighlight}>178 registered users</span> and{' '}
@@ -573,8 +587,8 @@ PostgreSQL (DigitalOcean Managed) + Redis (shared cache/pub-sub)`}
                 <tr><th>Component</th><th>Details</th></tr>
               </thead>
               <tbody>
-                <tr><td><strong>Server</strong></td><td>DigitalOcean Droplet</td></tr>
-                <tr><td><strong>Database</strong></td><td>DigitalOcean Managed PostgreSQL — separate DATABASE_URL per service</td></tr>
+                <tr><td><strong>Server</strong></td><td>DigitalOcean Droplet (designed for Kubernetes)</td></tr>
+                <tr><td><strong>Database</strong></td><td>DigitalOcean Managed PostgreSQL — separate DATABASE_URL per service (database-per-service design)</td></tr>
                 <tr><td><strong>Cache</strong></td><td>Redis shared instance for caching, sessions, pub-sub</td></tr>
                 <tr><td><strong>Web Server</strong></td><td>Nginx — SSL termination, static file serving, reverse proxy to gateway:8001</td></tr>
                 <tr><td><strong>Containers</strong></td><td>33 Docker containers via docker-compose.unified.yml</td></tr>
