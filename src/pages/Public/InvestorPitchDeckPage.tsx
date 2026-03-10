@@ -410,7 +410,7 @@ const InvestorPitchDeckPage = () => {
 
               <h3 className={styles.wpSubtitle}>Core differentiators</h3>
               <p className={styles.wpText}>
-                10 proprietary IP systems built from scratch — not wrappers around existing APIs. Includes a custom blockchain protocol (DSID-P), physics-based state engine (Hash Sphere), PyTorch ML embeddings engine (V8), RARA governance layer for autonomous agent operations, 68-module AI chat pipeline, modular skill system with 9 built-in skills, multi-agent orchestration with voting/debate/chaining, semantic memory universe, full SaaS billing stack with 5 revenue streams, and enterprise-grade multi-tenant architecture with 4 role levels.
+                9 proprietary IP systems built from scratch — not wrappers around existing APIs. Includes a custom blockchain protocol (DSID-P), physics-based state engine (Hash Sphere), RARA governance layer for autonomous agent operations, 68-module AI chat pipeline, modular skill system with 9 built-in skills, multi-agent orchestration with voting/debate/chaining, semantic memory universe, full SaaS billing stack with 5 revenue streams, and enterprise-grade multi-tenant architecture with 4 role levels.
               </p>
             </div>
           </div>
@@ -659,7 +659,6 @@ const InvestorPitchDeckPage = () => {
                     <tbody>
                       <tr><td>state_physics_service</td><td>Hash Sphere engine — 3D coordinates, forces, spin, energy, invariants</td></tr>
                       <tr><td>user_memory_service</td><td>Per-user semantic memory universe, embeddings, clustering, 3D visualization</td></tr>
-                      <tr><td>v8_api_service</td><td>PyTorch resonance engine — token → 3D coordinates + spin + energy</td></tr>
                       <tr><td>cognitive_service</td><td>Anomaly detection, clustering, workflow triggering from system patterns</td></tr>
                       <tr><td>crypto_service</td><td>Wallet management, token economics, payment processing (8 tables)</td></tr>
                       <tr><td>marketplace_service</td><td>Agent marketplace — publish, discover, purchase, review (7 tables)</td></tr>
@@ -981,7 +980,6 @@ const InvestorPitchDeckPage = () => {
                   <h3 className={styles.wpSubtitle}>Implemented — needs testing/polish</h3>
                   <ul className={styles.wpList}>
                     <li>Rabbit social platform (communities, posts, comments, votes)</li>
-                    <li>V8 Engine (PyTorch embeddings, 3D resonance, retraining)</li>
                     <li>Agent Teams (creation, workflow, rental)</li>
                     <li>Marketplace (listings, purchases, reviews)</li>
                     <li>Workflow engine (definition, execution, event sourcing)</li>
@@ -1020,7 +1018,7 @@ const InvestorPitchDeckPage = () => {
             <div className={styles.sectionInner}>
               <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>08b</span>Infrastructure &amp; service metrics</h2>
               <p className={styles.sectionLead}>
-                Docker Compose: 33 containers on app-network bridge. Health checks on every service. Persistent volumes: v8_data, v8_model, build_projects, blockchain_node_data. Nginx serves React static build, reverse-proxies API to gateway:8001.
+                Docker Compose: 33 containers on app-network bridge. Health checks on every service. Persistent volumes: build_projects, blockchain_node_data. Nginx serves React static build, reverse-proxies API to gateway:8001.
               </p>
 
               <div className={styles.wpTwoCol}>
@@ -1050,7 +1048,6 @@ const InvestorPitchDeckPage = () => {
                       <tr><td>agent_engine_service</td><td>157</td><td>3,486</td><td>1,214</td><td>646</td></tr>
                       <tr><td>blockchain_service</td><td>55</td><td>2,640</td><td>1,264</td><td>988</td></tr>
                       <tr><td>chat_service</td><td>100</td><td>1,884</td><td>500</td><td>226</td></tr>
-                      <tr><td>v8_api_service</td><td>15</td><td>1,336</td><td>442</td><td>28</td></tr>
                       <tr><td>rara_service</td><td>30</td><td>1,170</td><td>266</td><td>148</td></tr>
                       <tr><td>billing_service</td><td>49</td><td>1,096</td><td>306</td><td>174</td></tr>
                       <tr><td>gateway</td><td>62</td><td>724</td><td>258</td><td>1,048</td></tr>
