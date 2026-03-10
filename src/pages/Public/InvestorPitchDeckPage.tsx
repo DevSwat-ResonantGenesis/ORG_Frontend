@@ -73,6 +73,8 @@ const InvestorPitchDeckPage = () => {
   const { theme, setTheme } = useThemeStore();
   const savedTheme = useRef(theme);
 
+  const bodyRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     savedTheme.current = useThemeStore.getState().theme;
     if (savedTheme.current !== 'dark') setTheme('dark');
@@ -84,45 +86,53 @@ const InvestorPitchDeckPage = () => {
     };
   }, []);
 
+  /* Fade-in sections as they enter the viewport */
+  useEffect(() => {
+    const body = bodyRef.current;
+    if (!body) return;
+    const sections = body.querySelectorAll('section');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add(styles.wpSectionVisible);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className={styles.wpPage}>
       <Helmet>
-        <title>Technical Whitepaper & Acquisition Brief – ResonantGenesis</title>
-        <meta name="description" content="ResonantGenesis: 685K-line full-stack Agentic AI platform. 30 microservices, 85+ pages, production-deployed. Technical whitepaper for acquisition." />
+        <title>Investor Pitch Deck – ResonantGenesis</title>
+        <meta name="description" content="ResonantGenesis: sovereign agent infrastructure with governed memory, constraint simulation, and full-stack observability." />
         <link rel="canonical" href="https://resonantgenesis.xyz/investor-pitch-deck" />
         <link rel="preload" as="image" href="/images/investorpitch/VR1.jpg" />
       </Helmet>
 
       {/* ═══════════════════════════════ HERO ═══════════════════════════════ */}
       <section className={styles.wpHero}>
-        <img src="/images/investorpitch/VR1.jpg" alt="ResonantGenesis platform" className={styles.wpHeroImage} />
+        <img src="/images/investorpitch/VR1.jpg" alt="ResonantGenesis VR interface — IDE VibeCoding in San Francisco" className={styles.wpHeroImage} />
         <div className={styles.wpHeroGrad} />
         <div className={styles.wpHeroContent}>
-          <div className={styles.wpHeroBadge}>Sovereign Infrastructure for Autonomous Agents</div>
-          <h1 className={styles.wpHeroTitle}>ResonantGenesis</h1>
-          <p className={styles.wpHeroSub}>
-            Governed memory, invariant-based constraint simulation, and full-stack observability—so teams can ship agentic products that are safe, auditable, and controllable.
-          </p>
-          <div className={styles.wpHeroCards}>
-            <div className={styles.wpHeroCard}>
-              <h3 className={styles.wpHeroCardTitle}>Governed Memory</h3>
-              <p className={styles.wpHeroCardBody}>Encrypted, attributable, retrievable</p>
-            </div>
-            <div className={styles.wpHeroCard}>
-              <h3 className={styles.wpHeroCardTitle}>Constraints SIM</h3>
-              <p className={styles.wpHeroCardBody}>Invariants for actions and risk</p>
-            </div>
-            <div className={styles.wpHeroCard}>
-              <h3 className={styles.wpHeroCardTitle}>Evidence Graphs</h3>
-              <p className={styles.wpHeroCardBody}>Explainability & audit trails</p>
-            </div>
+          <div className={styles.wpHeroBadgeRow}>
+            <span className={styles.wpHeroBadge}>Investor Pitch Deck</span>
+            <span className={styles.wpHeroBadge}>2026: AI systems, compliance, and autonomy</span>
           </div>
+          <h1 className={styles.wpHeroTitle}>
+            Own your agent stack.<br />
+            Govern it end-to-end. Execute.
+          </h1>
         </div>
         <div className={styles.wpScrollHint}>Scroll to explore</div>
       </section>
 
       {/* ═══════════════════════════════ BODY ═══════════════════════════════ */}
-      <div className={styles.wpBody}>
+      <div className={styles.wpBody} ref={bodyRef}>
 
         {/* ── 01 EXECUTIVE SUMMARY ── */}
         <section className={styles.wpSection} id="summary">

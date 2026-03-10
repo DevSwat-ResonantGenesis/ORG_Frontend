@@ -1089,7 +1089,7 @@
 .wpHeroGrad {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.55) 60%, #0a0a0a 100%);
+  background: linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.6) 85%, #0a0a0a 100%);
   z-index: 1;
 }
 
@@ -1098,6 +1098,15 @@
   z-index: 3;
   padding: 0 clamp(24px, 5vw, 80px);
   max-width: 800px;
+  margin-top: auto;
+  margin-bottom: clamp(80px, 12vh, 160px);
+}
+
+.wpHeroBadgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 28px;
 }
 
 .wpHeroBadge {
@@ -1106,23 +1115,21 @@
   gap: 8px;
   padding: 7px 14px;
   border-radius: 999px;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(96, 165, 250, 0.3);
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(14px);
   font-size: 12px;
   font-weight: 600;
-  color: rgba(96, 165, 250, 0.95);
+  color: rgba(255, 255, 255, 0.85);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
-  margin-bottom: 20px;
 }
 
 .wpHeroTitle {
-  font-size: clamp(36px, 5.5vw, 68px);
+  font-size: clamp(36px, 5.5vw, 72px);
   font-weight: 800;
   color: #fff;
-  line-height: 1.06;
-  margin: 0 0 16px;
+  line-height: 1.08;
+  margin: 0;
   letter-spacing: -0.03em;
   text-shadow: 0 2px 32px rgba(0,0,0,0.5);
 }
@@ -1175,6 +1182,14 @@
 .wpSection {
   padding: 72px clamp(24px, 5vw, 80px);
   border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+  opacity: 0;
+  transform: translateY(48px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wpSectionVisible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .wpSectionAlt {
@@ -1480,6 +1495,9 @@
   text-align: center;
   padding: 80px clamp(24px, 5vw, 80px);
   background: radial-gradient(600px 350px at 50% 40%, rgba(37, 99, 235, 0.12), transparent);
+  opacity: 0;
+  transform: translateY(48px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .wpCtaTitle {
@@ -1536,6 +1554,9 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  opacity: 0;
+  transform: translateY(48px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .wpVrBreakImage {
