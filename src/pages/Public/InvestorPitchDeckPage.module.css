@@ -678,17 +678,55 @@
 
 .sectionTitle {
   margin: 0;
-  font-size: 26px;
-  letter-spacing: -0.02em;
+  font-size: 30px;
+  font-weight: 750;
+  letter-spacing: -0.025em;
   color: #f8fafc;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(59, 130, 246, 0.35);
 }
 
+/* Section number badge — prepended via data-num attr */
+.sectionNum {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}
+
+/* Accent colors for different slide categories */
+.accentBlue .sectionTitle { border-bottom-color: rgba(59, 130, 246, 0.5); }
+.accentBlue .sectionNum { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+
+.accentPurple .sectionTitle { border-bottom-color: rgba(139, 92, 246, 0.5); }
+.accentPurple .sectionNum { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+
+.accentGreen .sectionTitle { border-bottom-color: rgba(34, 197, 94, 0.5); }
+.accentGreen .sectionNum { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+
+.accentAmber .sectionTitle { border-bottom-color: rgba(245, 158, 11, 0.5); }
+.accentAmber .sectionNum { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+
+.accentRed .sectionTitle { border-bottom-color: rgba(239, 68, 68, 0.5); }
+.accentRed .sectionNum { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+.accentCyan .sectionTitle { border-bottom-color: rgba(6, 182, 212, 0.5); }
+.accentCyan .sectionNum { background: rgba(6, 182, 212, 0.2); color: #22d3ee; }
+
+.accentPink .sectionTitle { border-bottom-color: rgba(236, 72, 153, 0.5); }
+.accentPink .sectionNum { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
+
 .sectionLead {
-  margin: 10px 0 0;
-  color: rgba(226, 232, 240, 0.72);
+  margin: 12px 0 0;
+  color: rgba(226, 232, 240, 0.82);
   max-width: 100%;
-  line-height: 1.6;
-  font-size: 14px;
+  line-height: 1.65;
+  font-size: 14.5px;
+  font-weight: 450;
 }
 
 /* Dense whitepaper paragraph blocks */
@@ -697,11 +735,13 @@
 }
 
 .wpSubtitle {
-  margin: 18px 0 6px;
+  margin: 20px 0 6px;
   font-size: 15px;
-  font-weight: 650;
-  color: rgba(248, 250, 252, 0.92);
+  font-weight: 700;
+  color: rgba(248, 250, 252, 0.95);
   letter-spacing: -0.01em;
+  padding-left: 10px;
+  border-left: 3px solid rgba(59, 130, 246, 0.4);
 }
 
 .wpText {
@@ -788,10 +828,15 @@
 }
 
 .card {
-  padding: 14px 14px 12px;
+  padding: 16px 16px 14px;
   border-radius: 14px;
-  background: rgba(2, 6, 23, 0.48);
-  border: 1px solid rgba(148, 163, 184, 0.14);
+  background: rgba(2, 6, 23, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  transition: border-color 0.2s;
+}
+
+.card:hover {
+  border-color: rgba(59, 130, 246, 0.35);
 }
 
 .cardTitle {

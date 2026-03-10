@@ -367,10 +367,10 @@ const InvestorPitchDeckPage = () => {
         </div>
 
         {/* SLIDE 1 — Executive Summary */}
-        <div ref={heroRef} className={`${styles.slide} ${styles.slideDark} ${currentSlide === 1 ? styles.slideActive : ''}`}>
+        <div ref={heroRef} className={`${styles.slide} ${styles.slideDark} ${styles.accentBlue} ${currentSlide === 1 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>Executive summary</h2>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>01</span>Executive summary</h2>
               <p className={styles.sectionLead}>
                 ResonantGenesis is a production-deployed, full-stack Agentic AI SaaS platform available for acquisition as a complete code and IP asset. Every component described in this document is implemented in source code and running in production at dev-swat.com. This is not a prototype or mockup.
               </p>
@@ -402,10 +402,10 @@ const InvestorPitchDeckPage = () => {
         </div>
 
         {/* SLIDE 2 — Platform Scale */}
-        <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 2 ? styles.slideActive : ''}`}>
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentCyan} ${currentSlide === 2 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>Platform scale</h2>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>02</span>Platform scale &amp; code audit</h2>
               <p className={styles.sectionLead}>
                 Generated from codebase analysis — zero assumptions, all claims grounded in source code. Active SLOC excludes blank lines, comments, auto-generated migrations, and ~25K lines of identified dead/backup code.
               </p>
@@ -537,10 +537,10 @@ const InvestorPitchDeckPage = () => {
         </div>
 
         {/* SLIDE 4 — The problem */}
-        <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 4 ? styles.slideActive : ''}`}>
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentRed} ${currentSlide === 4 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>The problem</h2>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>03</span>The problem</h2>
               <p className={styles.sectionLead}>
                 AI teams can ship demos in days but production-grade autonomy is blocked by three systemic realities that compound at scale: memory safety, action safety, and governance. Most "AI platforms" are thin wrappers around a single LLM API with no durable infrastructure underneath.
               </p>
@@ -566,17 +566,17 @@ const InvestorPitchDeckPage = () => {
               </div>
               <h3 className={styles.wpSubtitle}>What this means for buyers</h3>
               <p className={styles.wpText}>
-                Building this infrastructure from scratch takes 12–18 months with a senior team. ResonantGenesis is already built: 30 microservices, 80+ database tables, 68-module pipeline, 10 proprietary IP systems, full billing stack, and multi-tenant auth — all production-deployed. The acquisition cost ($50K–$150K) represents a fraction of the build cost and eliminates the time-to-market risk entirely.
+                Building this infrastructure from scratch takes 12–18 months with a senior team. ResonantGenesis is already built: 30 microservices, 80+ database tables, 68-module pipeline, 10 proprietary IP systems, full billing stack, and multi-tenant auth — all production-deployed. The acquisition price reflects the IP value, infrastructure depth, and the 12+ months of solo development that would cost $2M–$5M+ to replicate with a team.
               </p>
             </div>
           </div>
         </div>
 
         {/* SLIDE 5 — Architecture & Services */}
-        <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 5 ? styles.slideActive : ''}`}>
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentPurple} ${currentSlide === 5 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>Architecture &amp; backend services</h2>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>04</span>Architecture &amp; backend services</h2>
               <p className={styles.sectionLead}>
                 30 FastAPI microservices with central API Gateway. 6 LLM providers with smart failover (OpenAI, Anthropic, Groq, Gemini, Mistral, Cohere). Bring-your-own-key supported. All services containerized with Docker, health-checked, auto-restart on failure.
               </p>
@@ -692,10 +692,10 @@ const InvestorPitchDeckPage = () => {
         </div>
 
         {/* SLIDE 7 — Unique IP */}
-        <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 7 ? styles.slideActive : ''}`}>
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentGreen} ${currentSlide === 7 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>Unique intellectual property</h2>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>05</span>Unique intellectual property</h2>
               <p className={styles.sectionLead}>
                 10 proprietary systems built from scratch — based solely on code analysis. These are not wrappers around existing APIs. Each system has its own service, database models, and endpoints.
               </p>
@@ -731,10 +731,10 @@ const InvestorPitchDeckPage = () => {
         </div>
 
         {/* SLIDE 8 — Business model & billing */}
-        <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 8 ? styles.slideActive : ''}`}>
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentAmber} ${currentSlide === 8 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>Monetization &amp; billing infrastructure</h2>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>06</span>Monetization &amp; billing infrastructure</h2>
               <p className={styles.sectionLead}>
                 Complete SaaS billing stack with Stripe. 8 database tables (Subscription, CreditBalance, CreditTransaction, UsageRecord, Invoice, PaymentMethod, PricingPlan, Coupon). 45+ billing endpoints. Revenue calculated only from transactions with stripe_payment_intent_id (real Stripe payments).
               </p>
@@ -782,10 +782,10 @@ const InvestorPitchDeckPage = () => {
         </div>
 
         {/* SLIDE 9 — Frontend & Technology Stack */}
-        <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 9 ? styles.slideActive : ''}`}>
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentPink} ${currentSlide === 9 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>Frontend &amp; technology stack</h2>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>07</span>Frontend &amp; technology stack</h2>
               <p className={styles.sectionLead}>
                 React 18 + TypeScript frontend with 662 components, 85+ routes, 97 API client files, CSS Modules (91K SLOC). Multi-LLM provider support with dedicated client files per provider. Full page inventory from router/index.tsx.
               </p>
@@ -842,10 +842,10 @@ const InvestorPitchDeckPage = () => {
         </div>
 
         {/* SLIDE 10 — Production & Implementation Status */}
-        <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 10 ? styles.slideActive : ''}`}>
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentCyan} ${currentSlide === 10 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>Production status &amp; implementation</h2>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>08</span>Production status &amp; implementation</h2>
               <p className={styles.sectionLead}>
                 Live at dev-swat.com (IP: 134.199.221.149) with 178 registered users, 0 paying (pre-revenue). Single DigitalOcean droplet + managed DB. Services auto-restart on failure.
               </p>
@@ -973,10 +973,10 @@ const InvestorPitchDeckPage = () => {
         </div>
 
         {/* SLIDE 11 — Acquisition Terms */}
-        <div className={`${styles.slide} ${styles.slideDark} ${currentSlide === 11 ? styles.slideActive : ''}`}>
+        <div className={`${styles.slide} ${styles.slideDark} ${styles.accentBlue} ${currentSlide === 11 ? styles.slideActive : ''}`}>
           <div className={styles.section}>
             <div className={styles.sectionInner}>
-              <h2 className={styles.sectionTitle}>Acquire ResonantGenesis</h2>
+              <h2 className={styles.sectionTitle}><span className={styles.sectionNum}>09</span>Acquire ResonantGenesis</h2>
               <p className={styles.sectionLead}>
                 ~550,000 source lines of production code. 30 microservices. 33 Docker containers. 80+ database tables. 10 unique IP assets. Complete Stripe billing with 5 revenue streams. 178 registered users. Built solo over 12+ months — needs a team to take to market.
               </p>
@@ -997,7 +997,7 @@ const InvestorPitchDeckPage = () => {
 
                   <h3 className={styles.wpSubtitle}>Deal structures open</h3>
                   <ul className={styles.wpList}>
-                    <li><strong>Full asset sale</strong> — $50,000–$150,000 (negotiable based on structure)</li>
+                    <li><strong>Full asset sale</strong> — $3,600,000</li>
                     <li><strong>Acqui-hire</strong> — Code + founder joins the team</li>
                     <li><strong>White-label licensing</strong> — License the platform for your brand/vertical</li>
                     <li><strong>Partial stake + revenue share</strong> — Co-ownership with aligned incentives</li>
@@ -1006,7 +1006,7 @@ const InvestorPitchDeckPage = () => {
                 <div>
                   <h3 className={styles.wpSubtitle}>Why selling</h3>
                   <p className={styles.wpText}>
-                    Built solo by one developer over 12+ months. The platform is production-ready and architecturally sound, but needs a team for go-to-market: sales, marketing, customer success, and continued feature development. The cost to rebuild this from scratch with a 3-5 person team would be $500K–$1M+ and 12–18 months. The acquisition price reflects the pre-revenue status while preserving the IP and infrastructure value.
+                    Built solo by one developer over 12+ months. The platform is production-ready and architecturally sound, but needs a team for go-to-market: sales, marketing, customer success, and continued feature development. The cost to rebuild this from scratch with a 5–8 person senior engineering team would be $2M–$5M+ and 18–24 months. The $3.6M acquisition price reflects the IP value of 10 proprietary systems, 30 production microservices, 17,773 mapped functions, and 6 verified pipelines — a fraction of rebuild cost with zero time-to-market risk.
                   </p>
 
                   <h3 className={styles.wpSubtitle}>Ideal buyers</h3>
