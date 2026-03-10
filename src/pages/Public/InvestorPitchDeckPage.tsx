@@ -57,8 +57,13 @@ const InvestorPitchDeckPage = () => {
   }, []);
 
 
-  /* Scroll-hijack: wheel + touch events change slide, no page scroll */
+  /* Scroll-hijack: wheel + touch events change slide, no page scroll.
+     For scrollable slides (.slideDark): only advance when content is
+     scrolled to the very end (bottom → next, top → prev).
+     For non-scrollable slides (VR images): advance immediately. */
   useEffect(() => {
+    const SCROLL_EDGE_PX = 8; // tolerance pixels for "at the edge"
+
     const go = (dir: 1 | -1) => {
       if (transitioning.current) return;
       setCurrentSlide((prev) => {
@@ -66,14 +71,51 @@ const InvestorPitchDeckPage = () => {
         if (next < 0 || next >= TOTAL_SLIDES) return prev;
         transitioning.current = true;
         setTimeout(() => { transitioning.current = false; }, 900);
+        // Reset scroll of the incoming slide to top
+        requestAnimationFrame(() => {
+          const slides = document.querySelectorAll('[class*="slide"]');
+          slides.forEach((s) => {
+            if (s.classList.toString().includes('slideDark')) {
+              (s as HTMLElement).scrollTop = 0;
+            }
+          });
+        });
         return next;
       });
     };
 
+    /** Find the currently active slide element */
+    const getActiveSlide = (): HTMLElement | null => {
+      const el = document.querySelector('[class*="slideActive"][class*="slide"]') as HTMLElement | null;
+      return el;
+    };
+
+    /** Check if a slide has scrollable overflow content */
+    const isScrollable = (el: HTMLElement): boolean => {
+      return el.scrollHeight > el.clientHeight + SCROLL_EDGE_PX;
+    };
+
+    const isAtBottom = (el: HTMLElement): boolean => {
+      return el.scrollTop + el.clientHeight >= el.scrollHeight - SCROLL_EDGE_PX;
+    };
+
+    const isAtTop = (el: HTMLElement): boolean => {
+      return el.scrollTop <= SCROLL_EDGE_PX;
+    };
+
     const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
       if (Math.abs(e.deltaY) < 15) return;
-      go(e.deltaY > 0 ? 1 : -1);
+      const dir: 1 | -1 = e.deltaY > 0 ? 1 : -1;
+      const slide = getActiveSlide();
+
+      if (slide && isScrollable(slide)) {
+        // Let native scroll happen inside the slide content
+        if (dir === 1 && !isAtBottom(slide)) return;
+        if (dir === -1 && !isAtTop(slide)) return;
+      }
+
+      e.preventDefault();
+      go(dir);
     };
 
     const onTouchStart = (e: TouchEvent) => {
@@ -83,12 +125,30 @@ const InvestorPitchDeckPage = () => {
     const onTouchEnd = (e: TouchEvent) => {
       const diff = touchStartY.current - e.changedTouches[0].clientY;
       if (Math.abs(diff) < 40) return;
-      go(diff > 0 ? 1 : -1);
+      const dir: 1 | -1 = diff > 0 ? 1 : -1;
+      const slide = getActiveSlide();
+
+      if (slide && isScrollable(slide)) {
+        // Only change slide when the user has scrolled to the edge
+        if (dir === 1 && !isAtBottom(slide)) return;
+        if (dir === -1 && !isAtTop(slide)) return;
+      }
+
+      go(dir);
     };
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(1); }
-      if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); go(-1); }
+      const slide = getActiveSlide();
+      if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+        if (slide && isScrollable(slide) && !isAtBottom(slide)) return;
+        e.preventDefault();
+        go(1);
+      }
+      if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        if (slide && isScrollable(slide) && !isAtTop(slide)) return;
+        e.preventDefault();
+        go(-1);
+      }
     };
 
     window.addEventListener('wheel', onWheel, { passive: false });
