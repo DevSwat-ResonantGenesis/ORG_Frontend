@@ -575,7 +575,7 @@
 }
 
 .ctaRow {
-  margin-top: 26px;
+  margin-top: 32px;
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -669,6 +669,7 @@
   padding: 0;
   max-width: 1440px;
   width: 100%;
+  margin: auto 0;
 }
 
 .sectionInner {
@@ -682,7 +683,7 @@
   font-weight: 750;
   letter-spacing: -0.025em;
   color: #f8fafc;
-  padding-bottom: 8px;
+  padding-bottom: 14px;
   border-bottom: 2px solid rgba(59, 130, 246, 0.35);
 }
 
@@ -721,7 +722,7 @@
 .accentPink .sectionNum { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
 
 .sectionLead {
-  margin: 10px 0 0;
+  margin: 18px 0 0;
   color: rgba(226, 232, 240, 0.82);
   max-width: 100%;
   line-height: 1.55;
@@ -735,7 +736,7 @@
 }
 
 .wpSubtitle {
-  margin: 14px 0 5px;
+  margin: 20px 0 8px;
   font-size: 14px;
   font-weight: 700;
   color: rgba(248, 250, 252, 0.95);
@@ -745,14 +746,14 @@
 }
 
 .wpText {
-  margin: 4px 0 0;
+  margin: 8px 0 0;
   font-size: 12.5px;
   line-height: 1.55;
   color: rgba(226, 232, 240, 0.72);
 }
 
 .wpList {
-  margin: 5px 0 0;
+  margin: 8px 0 0;
   padding-left: 16px;
   font-size: 12.5px;
   line-height: 1.5;
@@ -760,7 +761,7 @@
 }
 
 .wpList li {
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 
 .wpList strong {
@@ -805,7 +806,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
-  margin-top: 10px;
+  margin-top: 18px;
 }
 
 /* Full-width metric grid for CV stats etc */
@@ -881,7 +882,7 @@
 }
 
 .cardsGrid {
-  margin-top: 14px;
+  margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
