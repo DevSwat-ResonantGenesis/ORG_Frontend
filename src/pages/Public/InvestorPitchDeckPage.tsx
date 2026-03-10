@@ -628,52 +628,26 @@ const InvestorPitchDeckPage = () => {
                 <div>
                   <h3 className={styles.wpSubtitle}>68-module AI intelligence pipeline</h3>
                   <p className={styles.wpText}>
-                    The chat_service contains 68 Python service modules implementing the full AI pipeline. Each module is a separate Python file — not prompt engineering. Key modules:
+                    68 Python service modules in chat_service — each a separate file, not prompt engineering. Key modules: hallucination_detector, evidence_graph, rag_engine, debate_engine, causal_reasoning, autonomous_planner, autonomous_error_correction, personality_dna, narrative_continuity_engine, thought_branching, multi_timeline_engine, cross_validation, dual_memory_engine, neural_gravity_engine, adaptive_agent_allocator, self_improving_agent, ab_testing, skill_executor (9 built-in skills).
                   </p>
-                  <ul className={styles.wpList}>
-                    <li><strong>hallucination_detector.py</strong> — Detects hallucinated content in AI responses</li>
-                    <li><strong>evidence_graph.py</strong> — Builds evidence graphs linking claims to sources</li>
-                    <li><strong>rag_engine.py</strong> — Retrieval-Augmented Generation from knowledge base</li>
-                    <li><strong>debate_engine.py</strong> — Multi-agent debate for exploring perspectives</li>
-                    <li><strong>causal_reasoning.py</strong> — Causal inference chains</li>
-                    <li><strong>autonomous_planner.py</strong> — Multi-step planning for autonomous agents</li>
-                    <li><strong>autonomous_error_correction.py</strong> — Self-correcting agent responses</li>
-                    <li><strong>personality_dna.py</strong> — Agent personality profiling</li>
-                    <li><strong>narrative_continuity_engine.py</strong> — Maintains coherence across conversations</li>
-                    <li><strong>thought_branching.py</strong> — Branching thought exploration</li>
-                    <li><strong>multi_timeline_engine.py</strong> — Multi-timeline conversation tracking</li>
-                    <li><strong>cross_validation.py</strong> — Cross-validates claims across sources</li>
-                    <li><strong>dual_memory_engine.py</strong> — Short-term + long-term memory</li>
-                    <li><strong>neural_gravity_engine.py</strong> — Neural gravity for context weighting</li>
-                    <li><strong>adaptive_agent_allocator.py</strong> — Dynamic agent allocation</li>
-                    <li><strong>self_improving_agent.py</strong> — Self-improvement feedback loops</li>
-                    <li><strong>ab_testing.py</strong> — A/B testing framework for chat responses</li>
-                    <li><strong>skill_executor.py</strong> — Executes 9 built-in skills (code_visualizer, web_search, image_generation, memory_search, memory_library, agents_os, state_physics, ide_workspace, rabbit_post)</li>
-                  </ul>
 
                   <h3 className={styles.wpSubtitle}>LLM provider integration</h3>
                   <p className={styles.wpText}>
-                    6 providers with automatic failover: OpenAI (GPT-4, GPT-3.5), Anthropic (Claude 3.5 Sonnet, Claude 3 Haiku), Groq, Google Gemini, Mistral, Cohere. User API key passthrough — bring-your-own-key supported. Automatic fallback: preferred → user keys → platform keys. Streaming SSE support. Context adaptation between provider formats.
-                  </p>
-                  <p className={styles.wpText}>
-                    Frontend has dedicated provider client files: openai.ts, anthropic.ts, groq.ts, gemini.ts, mistral.ts, cohere.ts — with unified router. 97 total API client files mapping to every backend service.
+                    6 providers with auto-failover: OpenAI, Anthropic, Groq, Gemini, Mistral, Cohere. BYOK supported. Streaming SSE. 97 frontend API client files with dedicated per-provider clients.
                   </p>
 
                   <h3 className={styles.wpSubtitle}>6 pipelines auto-detected by Code Visualizer</h3>
                   <table className={styles.wpTable}>
-                    <thead><tr><th>Pipeline</th><th>Nodes</th><th>Connections</th><th>Scope</th></tr></thead>
+                    <thead><tr><th>Pipeline</th><th>Nodes</th><th>Connections</th></tr></thead>
                     <tbody>
-                      <tr><td>agent_execution</td><td>8,482</td><td>17,078</td><td>Agent CRUD, versioning, teams, voting, debate, chaining, autonomous planning, safety rules, marketplace</td></tr>
-                      <tr><td>chat_flow</td><td>3,752</td><td>7,611</td><td>68-module AI pipeline, skill execution, evidence graphs, hallucination detection, LLM provider routing</td></tr>
-                      <tr><td>billing_flow</td><td>2,187</td><td>4,764</td><td>Stripe subscriptions, credits, usage tracking, invoices, referrals, economic integration</td></tr>
-                      <tr><td>memory_pipeline</td><td>1,940</td><td>4,032</td><td>Semantic memory universe, embeddings, clustering, anchoring, user_memory_service + memory_service</td></tr>
-                      <tr><td>user_login</td><td>594</td><td>862</td><td>Rate limiting, login notifications, MFA, OAuth, JWT, session management, device tracking</td></tr>
-                      <tr><td>user_registration</td><td>—</td><td>—</td><td>Registration flow, email verification, RARA economic state creation, initial credit grant</td></tr>
+                      <tr><td>agent_execution</td><td>8,482</td><td>17,078</td></tr>
+                      <tr><td>chat_flow</td><td>3,752</td><td>7,611</td></tr>
+                      <tr><td>billing_flow</td><td>2,187</td><td>4,764</td></tr>
+                      <tr><td>memory_pipeline</td><td>1,940</td><td>4,032</td></tr>
+                      <tr><td>user_login</td><td>594</td><td>862</td></tr>
+                      <tr><td>user_registration</td><td>—</td><td>—</td></tr>
                     </tbody>
                   </table>
-                  <p className={styles.wpText}>
-                    The agent_execution pipeline is the largest (8,482 nodes, 17,078 connections) spanning agent_engine_service + auth_service agent CRUD + blockchain economic integration. The chat_flow pipeline (3,752 nodes) encompasses all 68 intelligence modules, 9 skills, and cross-service calls to code_visualizer, memory, and agent_engine.
-                  </p>
                 </div>
               </div>
             </div>
@@ -932,29 +906,12 @@ const InvestorPitchDeckPage = () => {
                     </tbody>
                   </table>
 
-                  <h3 className={styles.wpSubtitle}>System health &amp; optimization roadmap</h3>
+                  <h3 className={styles.wpSubtitle}>System health</h3>
                   <p className={styles.wpText}>
-                    Code Visualizer static analysis identified 1,043 broken connections out of 59,160 total (1.76% error rate). All 1,043 are unresolved Python imports — cross-service module references that the static analyzer cannot resolve at scan time. 348 unique missing targets.
-                  </p>
-                  <table className={styles.wpTable}>
-                    <thead><tr><th>Service (source)</th><th>Broken imports</th><th>Top missing targets</th></tr></thead>
-                    <tbody>
-                      <tr><td>root (test files, scripts)</td><td>524</td><td>chat_service.app.db, chat_service.app.models — cross-service test imports</td></tr>
-                      <tr><td>rara_service</td><td>131</td><td>economic_state.UserEconomicState, disd_message.DISDMessage — shared models</td></tr>
-                      <tr><td>billing_service</td><td>82</td><td>economic_state, cache.get_cache, auth.AuthContext</td></tr>
-                      <tr><td>agent_engine_service</td><td>75</td><td>revocation_manager_redis, quorum_authority, deps.get_db</td></tr>
-                      <tr><td>auth_service</td><td>65</td><td>crypto.encrypt_api_key, qrcode, sessions, economic_integration</td></tr>
-                      <tr><td>cascade_control_plane</td><td>32</td><td>platform_tools.auth, monitoring_agents</td></tr>
-                      <tr><td>chat_service</td><td>29</td><td>deps modules, skill internal imports</td></tr>
-                      <tr><td>gateway</td><td>25</td><td>auth modules, rate limiter backends</td></tr>
-                      <tr><td>All other services</td><td>80</td><td>Various cross-service shared module references</td></tr>
-                    </tbody>
-                  </table>
-                  <p className={styles.wpText}>
-                    The majority (524/1,043) are in root-level test files importing across service boundaries — these are not production issues. The remaining 519 are cross-service shared module references (economic_state, disd_message, auth, cache) that resolve at Docker runtime via Python path configuration but appear broken to static analysis. The CV tool provides exact file paths and line numbers for every broken import — the buyer receives a pre-built remediation checklist.
+                    59,160 inter-service connections mapped. 1.76% error rate (1,043 unresolved imports — mostly cross-service refs that resolve at Docker runtime). Pre-built remediation checklist included. See Slide 02 for full CV forensic breakdown.
                   </p>
 
-                  <h3 className={styles.wpSubtitle}>Per-service CV stats (top 10 by functions)</h3>
+                  <h3 className={styles.wpSubtitle}>Per-service CV stats (top 10)</h3>
                   <table className={styles.wpTable}>
                     <thead><tr><th>Service</th><th>Files</th><th>Functions</th><th>Classes</th><th>Endpoints</th></tr></thead>
                     <tbody>
