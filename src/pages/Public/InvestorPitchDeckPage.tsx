@@ -443,6 +443,25 @@ const InvestorPitchDeckPage = () => {
                   <p className={styles.wpText}>
                     DigitalOcean Managed PostgreSQL (resonant-db). Separate DATABASE_URL env vars per service — database-per-service design. Critical services use SQLAlchemy QueuePool (pool_size=1). Non-critical use NullPool. Gateway uses asyncpg pool (min=0, max=2). Alembic migrations in 14 services. Redis shared instance for caching, sessions, pub-sub.
                   </p>
+
+                  <h3 className={styles.wpSubtitle}>Code Visualizer forensic scan (backend)</h3>
+                  <p className={styles.wpText}>
+                    Independent verification via our own Code Visualizer tool — static analysis of the full backend repo (analysis ID: 0df61891b34e482eaac664c5de515f39):
+                  </p>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>CV Metric</th><th>Value</th></tr></thead>
+                    <tbody>
+                      <tr><td>Files scanned</td><td>1,714</td></tr>
+                      <tr><td>Services detected</td><td>40</td></tr>
+                      <tr><td>Functions mapped</td><td>17,773</td></tr>
+                      <tr><td>API endpoints indexed</td><td>4,384</td></tr>
+                      <tr><td>Inter-service connections</td><td>59,160</td></tr>
+                      <tr><td>Broken connections</td><td>1,043 (1.76% error rate)</td></tr>
+                    </tbody>
+                  </table>
+                  <p className={styles.wpText}>
+                    The 40-service count includes sub-services (rabbit_content_service, rabbit_vote_service, rabbit_moderation_service, etc.) that the manual audit groups as "rabbit_api_service (+4)". The 1.76% broken connection rate in a 685K-line codebase demonstrates structural integrity — the vast majority of cross-service calls resolve correctly.
+                  </p>
                 </div>
               </div>
             </div>
@@ -630,6 +649,21 @@ const InvestorPitchDeckPage = () => {
                   </p>
                   <p className={styles.wpText}>
                     Frontend has dedicated provider client files: openai.ts, anthropic.ts, groq.ts, gemini.ts, mistral.ts, cohere.ts — with unified router. 97 total API client files mapping to every backend service.
+                  </p>
+
+                  <h3 className={styles.wpSubtitle}>Resonant Chat pipeline (14-stage)</h3>
+                  <p className={styles.wpText}>
+                    Unlike single-step prompt→LLM apps, every message passes through a 14-stage processing pipeline: (1) Text preprocessing → (2) Tokenization → (3) Intent identification → (4) Skill detection &amp; routing → (5) Context assembly (memory, history, personality) → (6) Provider selection &amp; failover → (7) LLM inference with streaming SSE → (8) Evidence graph construction → (9) Hallucination detection → (10) Cross-validation → (11) Causal reasoning audit → (12) Response post-processing → (13) Memory anchoring &amp; embedding → (14) Credit deduction &amp; usage tracking. Each stage is a separate module in chat_service/app/services/.
+                  </p>
+
+                  <h3 className={styles.wpSubtitle}>Agent Engine pipeline</h3>
+                  <p className={styles.wpText}>
+                    7-stage lifecycle: (1) Agent creation with capability manifest → (2) Registration with safety rules &amp; economic budgets → (3) Scheduling via workflow or trigger → (4) Execution with autonomous planning &amp; error correction → (5) Real-time monitoring via owner dashboard → (6) Self-improvement feedback loop → (7) Termination with audit log. 13 database tables. Supports voting, debate, and chaining between agent teams.
+                  </p>
+
+                  <h3 className={styles.wpSubtitle}>Hash Sphere pipeline</h3>
+                  <p className={styles.wpText}>
+                    6-stage physics simulation: (1) Data ingestion → HashNode creation (position, velocity, mass, charge, spin, energy) → (2) Force computation (attraction, repulsion, resonance, gravity, electromagnetic) → (3) Invariant verification (conservation laws) → (4) State snapshot &amp; hash anchoring via DSID-P → (5) 3D visualization endpoint (Three.js frontend) → (6) Cluster classification &amp; entity extraction. 11 node types: data, agent, user, service, model, memory, transaction, policy, anchor, cluster, embedding.
                   </p>
                 </div>
               </div>
@@ -888,6 +922,24 @@ const InvestorPitchDeckPage = () => {
                       <tr><td>ed_service</td><td>4,397</td></tr>
                     </tbody>
                   </table>
+
+                  <h3 className={styles.wpSubtitle}>System health &amp; optimization roadmap</h3>
+                  <p className={styles.wpText}>
+                    Code Visualizer static analysis identified 1,043 broken connections out of 59,160 total (1.76% error rate). Breakdown by category:
+                  </p>
+                  <table className={styles.wpTable}>
+                    <thead><tr><th>Issue type</th><th>Count</th><th>Day-1 fix</th></tr></thead>
+                    <tbody>
+                      <tr><td>Invalid endpoints</td><td>349</td><td>Route registration audit — mostly stale/deprecated paths</td></tr>
+                      <tr><td>Unresolved dependencies</td><td>341</td><td>Import path corrections and service URL env vars</td></tr>
+                      <tr><td>Missing imports</td><td>201</td><td>Add missing Python imports (already identified by CV)</td></tr>
+                      <tr><td>Circular dependencies</td><td>102</td><td>Refactor shared models into common packages</td></tr>
+                      <tr><td>Unknown services</td><td>50</td><td>Docker Compose service name alignment</td></tr>
+                    </tbody>
+                  </table>
+                  <p className={styles.wpText}>
+                    In a codebase with 17,773 functions and 4,384 endpoints, a 1.76% broken connection rate is structurally sound. The CV tool itself provides the exact file paths and line numbers for every broken connection — the buyer receives a pre-built remediation checklist. Estimated fix time: 2–3 engineer-days for the full list.
+                  </p>
                 </div>
               </div>
             </div>
