@@ -365,7 +365,7 @@ export const badgeStyles = {
 export const layoutStyles = {
   page: {
     minHeight: '100vh',
-    background: 'linear-gradient(180deg, #050508 0%, #0a0a0f 50%, #12121a 100%)',
+    background: 'linear-gradient(180deg, #050505 0%, #0a0a0a 50%, #121212 100%)',
     color: '#fff',
   } as React.CSSProperties,
   
@@ -385,7 +385,7 @@ export const layoutStyles = {
     alignItems: 'center',
     padding: '1rem 2rem',
     borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-    background: 'rgba(5, 5, 8, 0.8)',
+    background: 'rgba(10, 10, 10, 0.8)',
     backdropFilter: 'blur(12px)',
   } as React.CSSProperties,
 };

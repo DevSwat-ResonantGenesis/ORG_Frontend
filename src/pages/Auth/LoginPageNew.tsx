@@ -22,7 +22,7 @@ const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties>
   container: {
     minHeight: '100vh',
     background: theme === 'dark' 
-      ? 'linear-gradient(180deg, #0a0a0f 0%, #12121a 100%)'
+      ? 'linear-gradient(180deg, #0a0a0a 0%, #121212 100%)'
       : 'linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%)',
     color: theme === 'dark' ? '#fff' : '#1a1a1a',
     display: 'flex',

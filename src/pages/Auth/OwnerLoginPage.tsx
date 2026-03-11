@@ -49,7 +49,7 @@ const API_BASE = ENV.apiUrl;
 const styles: Record<string, React.CSSProperties> = {
   container: {
     minHeight: '100vh',
-    background: 'linear-gradient(135deg, #0a0a0f 0%, #1a0a0f 50%, #0a0a0f 100%)',
+    background: 'linear-gradient(135deg, #0a0a0a 0%, #121212 50%, #0a0a0a 100%)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
