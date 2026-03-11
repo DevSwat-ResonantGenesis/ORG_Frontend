@@ -1366,12 +1366,6 @@
     gap: 16px;
   }
 
-  /* Make table containers scrollable horizontally on mobile */
-  .wpTwoCol > div {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
   /* Whitepaper text */
   .wpSubtitle {
     font-size: 13px;
@@ -1387,31 +1381,33 @@
     padding-left: 14px;
   }
 
-  /* Tables — natural width, scrollable in parent container */
+  /* Tables — constrain to viewport, wrap all text */
   .wpTable {
     font-size: 11px;
-    min-width: 340px;
-    width: max-content;
+    table-layout: fixed;
+    width: 100%;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .wpTable th {
-    font-size: 10px;
-    padding: 4px 8px;
-    white-space: nowrap;
-    color: rgba(226, 232, 240, 0.85);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 9px;
+    padding: 3px 6px;
+    white-space: normal;
+    word-break: break-word;
   }
 
   .wpTable td {
     font-size: 11px;
-    padding: 3px 8px;
-    white-space: nowrap;
+    padding: 3px 6px;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .wpTable td:first-child {
-    white-space: nowrap;
+    white-space: normal;
+    min-width: unset;
   }
 
   /* CV metrics grid — 2 columns on mobile */
