@@ -1095,12 +1095,15 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                 )}
 
                 {/* Actions at bottom of detail pane */}
-                <div style={{ display: 'flex', gap: 8, marginTop: 12, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                <div style={{ display: 'flex', gap: 8, marginTop: 12, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.08)', flexWrap: 'wrap' }}>
                   <button className={`${styles.primaryBtn} ${styles.runBtn}`} onClick={() => { selectAgent(detailAgent.id); setDetailAgentId(null); }}>
                     <Icons.Play /> Open Sessions
                   </button>
                   <button className={styles.primaryBtn} onClick={() => { setChatAgentId(detailAgent.id); setDetailAgentId(null); }}>
                     <Icons.MessageSquare /> Chat
+                  </button>
+                  <button className={styles.primaryBtn} onClick={() => { selectAgent(detailAgent.id); setInlinePanel({ type: 'settings', agentId: detailAgent.id }); setDetailAgentId(null); setChatAgentId(null); setPublishAgentId(null); setShowFactory(false); }}>
+                    <Icons.Settings /> Configure
                   </button>
                 </div>
               </div>

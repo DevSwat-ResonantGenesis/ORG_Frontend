@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState, useEffect, useCallback } from 'react';
 import { useUIStore, useSessionStore, useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import fastapiClient from '../../../../../api/fastapiClient';
@@ -7,34 +7,84 @@ import * as autonomyApi from '../../../../../api/autonomy';
 import styles from './SettingsPanel.module.css';
 
 // ============== SETTINGS PANEL ==============
-// Contract: reads [session, network, ui], writes [network, ui]
-// Forbidden: [execution, economy]
+// Per-agent configuration editor + autonomy controls
+// Connects to PATCH /api/v1/agents/:agentId for saving
 
-type SettingsTab = 'general' | 'appearance' | 'autonomy' | 'api' | 'developer' | 'security' | 'notifications' | 'advanced';
+type SettingsTab = 'config' | 'tools' | 'autonomy' | 'advanced';
 
 interface SettingsPanelProps {
   className?: string;
 }
 
+const PROVIDER_OPTIONS = [
+  { value: 'openai', label: 'OpenAI' },
+  { value: 'anthropic', label: 'Anthropic' },
+  { value: 'google', label: 'Google' },
+  { value: 'mistral', label: 'Mistral' },
+  { value: 'groq', label: 'Groq' },
+  { value: 'together', label: 'Together AI' },
+  { value: 'openrouter', label: 'OpenRouter' },
+];
+
+const MODEL_OPTIONS: Record<string, string[]> = {
+  openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo-preview', 'gpt-4', 'gpt-3.5-turbo', 'o1-preview', 'o1-mini'],
+  anthropic: ['claude-3-5-sonnet-20241022', 'claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307'],
+  google: ['gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro'],
+  mistral: ['mistral-large-latest', 'mistral-medium-latest', 'mistral-small-latest'],
+  groq: ['llama-3.1-70b-versatile', 'llama-3.1-8b-instant', 'mixtral-8x7b-32768'],
+  together: ['meta-llama/Llama-3.1-70B-Instruct', 'meta-llama/Llama-3.1-8B-Instruct'],
+  openrouter: ['openai/gpt-4o', 'anthropic/claude-3.5-sonnet', 'google/gemini-pro-1.5'],
+};
+
+const TOOL_CATALOG = [
+  'web_search', 'code_execution', 'file_access', 'vision', 'image_generation',
+  'memory_read', 'memory_write', 'api_call', 'email_send', 'slack_send',
+  'discord_send', 'github_access', 'database_query', 'browser_automation',
+  'pdf_parse', 'spreadsheet', 'calendar', 'webhook_trigger',
+];
+
 const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => {
-  const theme = useUIStore(state => state.theme);
-  const setTheme = useUIStore(state => state.setTheme);
-  const userId = useSessionStore(state => state.userId);
   const roles = useSessionStore(state => state.roles);
   const selectedAgentId = useAgentStore(state => state.selectedAgentId);
   const agents = useAgentStore(state => state.agents);
+  const updateAgentInStore = useAgentStore(state => state.updateAgent);
+  const updateAgentConfigInStore = useAgentStore(state => state.updateAgentConfig);
   const selectedAgent = agents.find(a => a.id === selectedAgentId);
-  
-  const [activeTab, setActiveTab] = useState<SettingsTab>('general');
-  const [apiKeys, setApiKeys] = useState<any[]>([]);
+
+  const [activeTab, setActiveTab] = useState<SettingsTab>('config');
+  const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saved' | 'error'>('idle');
   const [autonomyMode, setAutonomyMode] = useState<AutonomyMode>('governed');
   const [autonomyStatus, setAutonomyStatus] = useState<autonomyApi.AutonomyStatus | null>(null);
   const [autonomyLoading, setAutonomyLoading] = useState(false);
 
-  // Check if user can switch to unbounded mode (admin only)
+  // Editable agent fields
+  const [editName, setEditName] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [editSystemPrompt, setEditSystemPrompt] = useState('');
+  const [editProvider, setEditProvider] = useState('openai');
+  const [editModel, setEditModel] = useState('gpt-4o');
+  const [editTemperature, setEditTemperature] = useState(0.7);
+  const [editMaxTokens, setEditMaxTokens] = useState(4096);
+  const [editTools, setEditTools] = useState<string[]>([]);
+
+  // Load agent config when selected agent changes
+  useEffect(() => {
+    if (selectedAgent) {
+      setEditName(selectedAgent.name || '');
+      setEditDescription(selectedAgent.description || '');
+      setEditSystemPrompt(selectedAgent.config?.systemPrompt || '');
+      setEditProvider(selectedAgent.config?.provider || selectedAgent.provider || 'openai');
+      setEditModel(selectedAgent.config?.model || selectedAgent.model || 'gpt-4o');
+      setEditTemperature(selectedAgent.config?.temperature ?? 0.7);
+      setEditMaxTokens(selectedAgent.config?.maxTokens ?? 4096);
+      setEditTools(selectedAgent.capabilities || selectedAgent.tools || []);
+      setSaveStatus('idle');
+    }
+  }, [selectedAgent?.id]);
+
   const canSwitchToUnbounded = roles.includes('admin') || roles.includes('superadmin');
 
-  // Fetch autonomy status on mount
   useEffect(() => {
     const fetchAutonomyStatus = async () => {
       try {
@@ -47,7 +97,6 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
     fetchAutonomyStatus();
   }, []);
 
-  // Handle autonomy mode change
   const handleAutonomyModeChange = async (newMode: AutonomyMode): Promise<void> => {
     setAutonomyLoading(true);
     try {
@@ -57,89 +106,86 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
         await autonomyApi.stopAutonomy();
       }
       setAutonomyMode(newMode);
-      // Refresh status
       const status = await autonomyApi.getAutonomyStatus();
       setAutonomyStatus(status);
     } finally {
       setAutonomyLoading(false);
     }
   };
-  const [settings, setSettings] = useState({
-    // General
-    language: 'en',
-    timezone: 'UTC',
-    dateFormat: 'MM/DD/YYYY',
-    
-    // Appearance
-    theme: theme,
-    sidebarPosition: 'left',
-    compactMode: false,
-    animations: true,
-    
-    // API
-    apiEndpoint: 'https://api.resonant.network',
-    apiKey: '••••••••••••••••',
-    rateLimit: 1000,
-    timeout: 30000,
-    
-    // Security
-    mfaEnabled: false,
-    sessionTimeout: 60,
-    ipWhitelist: '',
-    
-    // Notifications
-    emailNotifications: true,
-    pushNotifications: false,
-    slackIntegration: false,
-    webhookUrl: '',
-    
-    // Advanced
-    debugMode: false,
-    telemetry: true,
-    experimentalFeatures: false,
-  });
 
-  // Fetch developer API keys from backend
-  useEffect(() => {
-    if (activeTab === 'developer') {
-      fastapiClient.get('/api/v1/developer/keys')
-        .then(res => setApiKeys(res.data || []))
-        .catch(() => {});
-    }
-  }, [activeTab]);
-
-  const handleRegenerateKey = async () => {
+  // Save agent config to backend
+  const handleSave = useCallback(async () => {
+    if (!selectedAgent) return;
+    setSaving(true);
+    setSaveStatus('idle');
     try {
-      const res = await fastapiClient.post('/api/v1/developer/keys', { name: 'New API Key', permissions: ['read', 'write'] });
-      if (res.data) {
-        setApiKeys(prev => [...prev, res.data]);
-        updateSetting('apiKey', res.data.key);
-      }
-    } catch (err) { console.error('Failed to create API key:', err); }
-  };
-
-  const updateSetting = (key: string, value: unknown) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
-    if (key === 'theme' && (value === 'dark' || value === 'light')) {
-      setTheme(value);
+      await fastapiClient.patch(`/api/v1/agents/${selectedAgent.id}`, {
+        name: editName,
+        description: editDescription,
+        system_prompt: editSystemPrompt,
+        model: editModel,
+        temperature: editTemperature,
+        max_tokens: editMaxTokens,
+        tools: editTools,
+      });
+      // Update local store
+      updateAgentInStore(selectedAgent.id, {
+        name: editName,
+        description: editDescription,
+        capabilities: editTools,
+        provider: editProvider,
+        model: editModel,
+      });
+      updateAgentConfigInStore(selectedAgent.id, {
+        provider: editProvider,
+        model: editModel,
+        systemPrompt: editSystemPrompt,
+        temperature: editTemperature,
+        maxTokens: editMaxTokens,
+      });
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    } catch (err) {
+      console.error('Failed to save agent config:', err);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    } finally {
+      setSaving(false);
     }
-  };
+  }, [selectedAgent, editName, editDescription, editSystemPrompt, editProvider, editModel, editTemperature, editMaxTokens, editTools, updateAgentInStore, updateAgentConfigInStore]);
+
+  const toggleTool = useCallback((tool: string) => {
+    setEditTools(prev => prev.includes(tool) ? prev.filter(t => t !== tool) : [...prev, tool]);
+  }, []);
 
   const tabs: { id: SettingsTab; label: string; icon: React.ReactNode }[] = [
-    { id: 'general', label: 'General', icon: <Icons.Settings /> },
-    { id: 'appearance', label: 'Appearance', icon: <Icons.Eye /> },
-    { id: 'autonomy', label: 'Autonomy Mode', icon: <Icons.Zap /> },
-    { id: 'api', label: 'API & Integrations', icon: <Icons.Plug /> },
-    { id: 'security', label: 'Security', icon: <Icons.Shield /> },
-    { id: 'notifications', label: 'Notifications', icon: <Icons.Alert /> },
-    { id: 'developer', label: 'Developer', icon: <Icons.Terminal /> },
+    { id: 'config', label: 'Agent Config', icon: <Icons.Settings /> },
+    { id: 'tools', label: 'Tools', icon: <Icons.Plug /> },
+    { id: 'autonomy', label: 'Autonomy', icon: <Icons.Zap /> },
     { id: 'advanced', label: 'Advanced', icon: <Icons.Code /> },
   ];
+
+  // No agent selected
+  if (!selectedAgent) {
+    return (
+      <div className={`${styles.panel} ${className || ''}`}>
+        <div className={styles.panelHeader}>
+          <h2><Icons.Settings /> Agent Settings</h2>
+        </div>
+        <div className={styles.panelContent}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 20px', textAlign: 'center', color: '#64748b' }}>
+            <Icons.Settings />
+            <p style={{ marginTop: 12, fontSize: 13 }}>Select an agent from the list to configure its settings.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
-        <h2><Icons.Settings /> Settings</h2>
+        <h2><Icons.Settings /> {selectedAgent.name} Settings</h2>
       </div>
 
       <div className={styles.panelContent}>
@@ -160,71 +206,149 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
 
           {/* Content */}
           <div className={styles.settingsContent}>
-            {/* General Settings */}
-            {activeTab === 'general' && (
+            {/* Agent Config */}
+            {activeTab === 'config' && (
               <div className={styles.settingsSection}>
-                <h3>General Settings</h3>
-                
+                <h3>Agent Configuration</h3>
+                <p className={styles.sectionDesc}>Edit your agent's core settings. Changes are saved to the server.</p>
+
                 <div className={styles.settingItem}>
                   <div className={styles.settingInfo}>
-                    <label>Language</label>
-                    <span>Select your preferred language</span>
+                    <label>Name</label>
+                    <span>Display name for this agent</span>
                   </div>
-                  <select 
-                    value={settings.language}
-                    onChange={e => updateSetting('language', e.target.value)}
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={e => setEditName(e.target.value)}
+                    placeholder="Agent name"
+                  />
+                </div>
+
+                <div className={styles.settingItem}>
+                  <div className={styles.settingInfo}>
+                    <label>Description</label>
+                    <span>What this agent does</span>
+                  </div>
+                  <input
+                    type="text"
+                    value={editDescription}
+                    onChange={e => setEditDescription(e.target.value)}
+                    placeholder="Brief description of the agent"
+                  />
+                </div>
+
+                <div className={styles.settingItem} style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+                  <div className={styles.settingInfo}>
+                    <label>System Prompt</label>
+                    <span>Instructions that define the agent's behavior</span>
+                  </div>
+                  <textarea
+                    value={editSystemPrompt}
+                    onChange={e => setEditSystemPrompt(e.target.value)}
+                    placeholder="You are a helpful assistant that..."
+                    rows={6}
+                    style={{ width: '100%', marginTop: 8, padding: '10px 12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: '#e2e8f0', fontSize: 12, fontFamily: 'monospace', resize: 'vertical', minHeight: 100 }}
+                  />
+                </div>
+
+                <div className={styles.settingItem}>
+                  <div className={styles.settingInfo}>
+                    <label>Provider</label>
+                    <span>AI model provider</span>
+                  </div>
+                  <select
+                    value={editProvider}
+                    onChange={e => { setEditProvider(e.target.value); const models = MODEL_OPTIONS[e.target.value]; if (models && models.length > 0) setEditModel(models[0]); }}
                   >
-                    <option value="en">English</option>
-                    <option value="es">Spanish</option>
-                    <option value="fr">French</option>
-                    <option value="de">German</option>
-                    <option value="zh">Chinese</option>
-                    <option value="ja">Japanese</option>
+                    {PROVIDER_OPTIONS.map(p => (
+                      <option key={p.value} value={p.value}>{p.label}</option>
+                    ))}
                   </select>
                 </div>
 
                 <div className={styles.settingItem}>
                   <div className={styles.settingInfo}>
-                    <label>Timezone</label>
-                    <span>Your local timezone for timestamps</span>
+                    <label>Model</label>
+                    <span>Specific model to use</span>
                   </div>
-                  <select 
-                    value={settings.timezone}
-                    onChange={e => updateSetting('timezone', e.target.value)}
+                  <select
+                    value={editModel}
+                    onChange={e => setEditModel(e.target.value)}
                   >
-                    <option value="UTC">UTC</option>
-                    <option value="America/New_York">Eastern Time</option>
-                    <option value="America/Los_Angeles">Pacific Time</option>
-                    <option value="Europe/London">London</option>
-                    <option value="Asia/Tokyo">Tokyo</option>
+                    {(MODEL_OPTIONS[editProvider] || []).map(m => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
                   </select>
                 </div>
 
                 <div className={styles.settingItem}>
                   <div className={styles.settingInfo}>
-                    <label>Date Format</label>
-                    <span>How dates are displayed</span>
+                    <label>Temperature: {editTemperature.toFixed(2)}</label>
+                    <span>Creativity (0 = precise, 1 = creative)</span>
                   </div>
-                  <select 
-                    value={settings.dateFormat}
-                    onChange={e => updateSetting('dateFormat', e.target.value)}
-                  >
-                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
-                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
-                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
-                  </select>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 200 }}>
+                    <span style={{ fontSize: 10, color: '#64748b' }}>0</span>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.05"
+                      value={editTemperature}
+                      onChange={e => setEditTemperature(parseFloat(e.target.value))}
+                      style={{ flex: 1 }}
+                    />
+                    <span style={{ fontSize: 10, color: '#64748b' }}>1</span>
+                  </div>
                 </div>
 
-                <div className={styles.userInfo}>
-                  <h4>Account Information</h4>
-                  <div className={styles.infoRow}>
-                    <span>User ID:</span>
-                    <code>{userId || 'Not logged in'}</code>
+                <div className={styles.settingItem}>
+                  <div className={styles.settingInfo}>
+                    <label>Max Tokens</label>
+                    <span>Maximum response length</span>
                   </div>
-                  <div className={styles.infoRow}>
-                    <span>Roles:</span>
-                    <code>{roles.join(', ') || 'None'}</code>
-                  </div>
+                  <input
+                    type="number"
+                    value={editMaxTokens}
+                    onChange={e => setEditMaxTokens(parseInt(e.target.value) || 4096)}
+                    min={256}
+                    max={128000}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Tools */}
+            {activeTab === 'tools' && (
+              <div className={styles.settingsSection}>
+                <h3>Tools & Capabilities</h3>
+                <p className={styles.sectionDesc}>Enable or disable tools that this agent can use.</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+                  {TOOL_CATALOG.map(tool => {
+                    const active = editTools.includes(tool);
+                    return (
+                      <button
+                        key={tool}
+                        onClick={() => toggleTool(tool)}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: 6,
+                          padding: '6px 12px', borderRadius: 6, fontSize: 11, cursor: 'pointer',
+                          background: active ? 'rgba(14,165,233,0.15)' : 'rgba(255,255,255,0.04)',
+                          border: `1px solid ${active ? 'rgba(14,165,233,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                          color: active ? '#38bdf8' : '#94a3b8',
+                          fontWeight: active ? 600 : 400,
+                        }}
+                      >
+                        <span style={{ width: 14, height: 14, borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', background: active ? 'rgba(14,165,233,0.3)' : 'rgba(255,255,255,0.06)', fontSize: 10 }}>
+                          {active ? '\u2713' : ''}
+                        </span>
+                        {tool.replace(/_/g, ' ')}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div style={{ marginTop: 16, fontSize: 11, color: '#64748b' }}>
+                  {editTools.length} tool{editTools.length !== 1 ? 's' : ''} enabled
                 </div>
               </div>
             )}
@@ -236,8 +360,7 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
                 <p className={styles.sectionDesc}>
                   Control how agents operate in your organization. GOVERNED mode is recommended for production use.
                 </p>
-                
-                {/* Mode Switcher Component */}
+
                 <ModeSwitcher
                   agentId={selectedAgent?.id || 'system'}
                   currentMode={autonomyMode}
@@ -245,7 +368,6 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
                   onModeChange={handleAutonomyModeChange}
                 />
 
-                {/* Autonomy System Status */}
                 <div className={styles.autonomyStatus}>
                   <h4>System Status</h4>
                   {autonomyStatus ? (
@@ -274,18 +396,17 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
                   )}
                 </div>
 
-                {/* Quick Actions */}
                 <div className={styles.quickActions}>
                   <h4>Quick Actions</h4>
                   <div className={styles.actionButtons}>
-                    <button 
+                    <button
                       className={styles.actionBtn}
                       onClick={() => autonomyApi.startAutonomy()}
                       disabled={autonomyLoading || autonomyStatus?.running}
                     >
                       <Icons.Play /> Start Autonomy
                     </button>
-                    <button 
+                    <button
                       className={`${styles.actionBtn} ${styles.stopBtn}`}
                       onClick={() => autonomyApi.stopAutonomy()}
                       disabled={autonomyLoading || !autonomyStatus?.running}
@@ -297,340 +418,48 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
               </div>
             )}
 
-            {/* Appearance Settings */}
-            {activeTab === 'appearance' && (
-              <div className={styles.settingsSection}>
-                <h3>Appearance</h3>
-                
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>Theme</label>
-                    <span>Choose your color theme</span>
-                  </div>
-                  <div className={styles.themeSelector}>
-                    {(['dark', 'light', 'system'] as const).map(t => (
-                      <button
-                        key={t}
-                        className={`${styles.themeBtn} ${settings.theme === t ? styles.active : ''}`}
-                        onClick={() => updateSetting('theme', t)}
-                      >
-                        {t.charAt(0).toUpperCase() + t.slice(1)}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>Compact Mode</label>
-                    <span>Reduce spacing for more content</span>
-                  </div>
-                  <label className={styles.toggle}>
-                    <input 
-                      type="checkbox"
-                      checked={settings.compactMode}
-                      onChange={e => updateSetting('compactMode', e.target.checked)}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </div>
-
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>Animations</label>
-                    <span>Enable UI animations</span>
-                  </div>
-                  <label className={styles.toggle}>
-                    <input 
-                      type="checkbox"
-                      checked={settings.animations}
-                      onChange={e => updateSetting('animations', e.target.checked)}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </div>
-              </div>
-            )}
-
-            {/* API Settings */}
-            {activeTab === 'api' && (
-              <div className={styles.settingsSection}>
-                <h3>API & Integrations</h3>
-                
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>API Endpoint</label>
-                    <span>Backend API URL</span>
-                  </div>
-                  <input 
-                    type="text"
-                    value={settings.apiEndpoint}
-                    onChange={e => updateSetting('apiEndpoint', e.target.value)}
-                  />
-                </div>
-
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>API Key</label>
-                    <span>Your API authentication key</span>
-                  </div>
-                  <div className={styles.apiKeyField}>
-                    <input 
-                      type="password"
-                      value={settings.apiKey}
-                      onChange={e => updateSetting('apiKey', e.target.value)}
-                    />
-                    <button className={styles.regenerateBtn} onClick={handleRegenerateKey}>Regenerate</button>
-                  </div>
-                </div>
-
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>Rate Limit</label>
-                    <span>Requests per minute</span>
-                  </div>
-                  <input 
-                    type="number"
-                    value={settings.rateLimit}
-                    onChange={e => updateSetting('rateLimit', parseInt(e.target.value))}
-                  />
-                </div>
-
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>Request Timeout</label>
-                    <span>Timeout in milliseconds</span>
-                  </div>
-                  <input 
-                    type="number"
-                    value={settings.timeout}
-                    onChange={e => updateSetting('timeout', parseInt(e.target.value))}
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Security Settings */}
-            {activeTab === 'security' && (
-              <div className={styles.settingsSection}>
-                <h3>Security</h3>
-                
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>Two-Factor Authentication</label>
-                    <span>Add an extra layer of security</span>
-                  </div>
-                  <label className={styles.toggle}>
-                    <input 
-                      type="checkbox"
-                      checked={settings.mfaEnabled}
-                      onChange={e => updateSetting('mfaEnabled', e.target.checked)}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </div>
-
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>Session Timeout</label>
-                    <span>Auto-logout after inactivity (minutes)</span>
-                  </div>
-                  <input 
-                    type="number"
-                    value={settings.sessionTimeout}
-                    onChange={e => updateSetting('sessionTimeout', parseInt(e.target.value))}
-                  />
-                </div>
-
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>IP Whitelist</label>
-                    <span>Allowed IP addresses (comma separated)</span>
-                  </div>
-                  <input 
-                    type="text"
-                    value={settings.ipWhitelist}
-                    onChange={e => updateSetting('ipWhitelist', e.target.value)}
-                    placeholder="e.g., 192.168.1.1, 10.0.0.0/8"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Notifications Settings */}
-            {activeTab === 'notifications' && (
-              <div className={styles.settingsSection}>
-                <h3>Notifications</h3>
-                
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>Email Notifications</label>
-                    <span>Receive updates via email</span>
-                  </div>
-                  <label className={styles.toggle}>
-                    <input 
-                      type="checkbox"
-                      checked={settings.emailNotifications}
-                      onChange={e => updateSetting('emailNotifications', e.target.checked)}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </div>
-
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>Push Notifications</label>
-                    <span>Browser push notifications</span>
-                  </div>
-                  <label className={styles.toggle}>
-                    <input 
-                      type="checkbox"
-                      checked={settings.pushNotifications}
-                      onChange={e => updateSetting('pushNotifications', e.target.checked)}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </div>
-
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>Slack Integration</label>
-                    <span>Send notifications to Slack</span>
-                  </div>
-                  <label className={styles.toggle}>
-                    <input 
-                      type="checkbox"
-                      checked={settings.slackIntegration}
-                      onChange={e => updateSetting('slackIntegration', e.target.checked)}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </div>
-
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>Webhook URL</label>
-                    <span>Custom webhook for notifications</span>
-                  </div>
-                  <input 
-                    type="text"
-                    value={settings.webhookUrl}
-                    onChange={e => updateSetting('webhookUrl', e.target.value)}
-                    placeholder="https://..."
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Developer API Keys */}
-            {activeTab === 'developer' && (
-              <div className={styles.settingsSection}>
-                <h3>Developer API Keys</h3>
-                <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '12px' }}>Manage API keys for programmatic access to the platform.</p>
-                <button className={styles.saveBtn} onClick={handleRegenerateKey} style={{ marginBottom: '16px', padding: '8px 16px' }}>
-                  <Icons.Plus /> Create New Key
-                </button>
-                {apiKeys.length === 0 && (
-                  <div style={{ padding: '20px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}>No API keys yet. Create one to get started.</div>
-                )}
-                {apiKeys.map((key: any) => (
-                  <div key={key.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', marginBottom: '8px' }}>
-                    <div>
-                      <div style={{ fontWeight: 600, color: '#e2e8f0', fontSize: '13px' }}>{key.name}</div>
-                      <code style={{ fontSize: '11px', color: '#94a3b8' }}>{key.key?.slice(0, 20)}...</code>
-                      <div style={{ fontSize: '10px', color: '#64748b', marginTop: '2px' }}>
-                        Created: {key.created_at ? new Date(key.created_at).toLocaleDateString() : 'N/A'} | Permissions: {(key.permissions || []).join(', ')}
-                      </div>
-                    </div>
-                    <button style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '6px', color: '#ef4444', padding: '4px 10px', fontSize: '11px', cursor: 'pointer' }}
-                      onClick={async () => {
-                        if (!confirm('Revoke this key?')) return;
-                        try {
-                          await fastapiClient.delete('/api/v1/developer/keys/' + key.id);
-                          setApiKeys((prev: any) => prev.filter((k: any) => k.id !== key.id));
-                        } catch { console.error('Failed to revoke key'); }
-                      }}>
-                      Revoke
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Advanced Settings */}
+            {/* Advanced */}
             {activeTab === 'advanced' && (
               <div className={styles.settingsSection}>
                 <h3>Advanced</h3>
-                
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>Debug Mode</label>
-                    <span>Enable verbose logging</span>
-                  </div>
-                  <label className={styles.toggle}>
-                    <input 
-                      type="checkbox"
-                      checked={settings.debugMode}
-                      onChange={e => updateSetting('debugMode', e.target.checked)}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </div>
 
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>Telemetry</label>
-                    <span>Send anonymous usage data</span>
+                <div className={styles.userInfo}>
+                  <h4>Agent Info</h4>
+                  <div className={styles.infoRow}>
+                    <span>Agent ID:</span>
+                    <code>{selectedAgent.id}</code>
                   </div>
-                  <label className={styles.toggle}>
-                    <input 
-                      type="checkbox"
-                      checked={settings.telemetry}
-                      onChange={e => updateSetting('telemetry', e.target.checked)}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </div>
-
-                <div className={styles.settingItem}>
-                  <div className={styles.settingInfo}>
-                    <label>Experimental Features</label>
-                    <span>Enable beta features</span>
+                  <div className={styles.infoRow}>
+                    <span>Hash:</span>
+                    <code>{selectedAgent.hash || '—'}</code>
                   </div>
-                  <label className={styles.toggle}>
-                    <input 
-                      type="checkbox"
-                      checked={settings.experimentalFeatures}
-                      onChange={e => updateSetting('experimentalFeatures', e.target.checked)}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
+                  <div className={styles.infoRow}>
+                    <span>Status:</span>
+                    <code>{selectedAgent.status}</code>
+                  </div>
+                  <div className={styles.infoRow}>
+                    <span>Type:</span>
+                    <code>{selectedAgent.type}</code>
+                  </div>
+                  <div className={styles.infoRow}>
+                    <span>Created:</span>
+                    <code>{selectedAgent.createdAt ? new Date(selectedAgent.createdAt).toLocaleString() : '—'}</code>
+                  </div>
                 </div>
 
                 <div className={styles.dangerZone}>
                   <h4>Danger Zone</h4>
-                  <button className={styles.dangerBtn} onClick={() => {
-                    if (confirm('Are you sure you want to clear all local data? This cannot be undone.')) {
-                      localStorage.clear();
-                      sessionStorage.clear();
-                      window.location.reload();
+                  <button className={styles.dangerBtn} onClick={async () => {
+                    if (!confirm(`Archive agent "${selectedAgent.name}"? It will be hidden but preserved.`)) return;
+                    try {
+                      await fastapiClient.delete(`/api/v1/agents/${selectedAgent.id}`);
+                      const { removeAgent } = useAgentStore.getState();
+                      removeAgent(selectedAgent.id);
+                    } catch (err) {
+                      console.error('Failed to archive agent:', err);
                     }
                   }}>
-                    <Icons.Trash /> Clear All Data
-                  </button>
-                  <button className={styles.dangerBtn} onClick={() => {
-                    if (confirm('Reset all settings to defaults?')) {
-                      setSettings({
-                        theme: 'dark', language: 'en', fontSize: 14, showLineNumbers: true,
-                        autoSave: true, autoSaveInterval: 30, notifications: true, sounds: false,
-                        animations: true, apiEndpoint: '/api/v1', apiKey: '', rateLimit: 60,
-                        timeout: 30000, mfaEnabled: false, sessionTimeout: 30, ipWhitelist: '',
-                        emailNotifications: true, pushNotifications: false, slackIntegration: false,
-                        webhookUrl: '', debugMode: false, telemetry: true, experimentalFeatures: false,
-                      } as any);
-                    }
-                  }}>
-                    <Icons.XCircle /> Reset to Defaults
+                    <Icons.Trash /> Archive Agent
                   </button>
                 </div>
               </div>
@@ -638,12 +467,13 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
 
             {/* Save Button */}
             <div className={styles.saveSection}>
-              <button className={styles.saveBtn} onClick={() => {
-                localStorage.setItem('agentOS_settings', JSON.stringify(settings));
-                const btn = document.activeElement as HTMLButtonElement;
-                if (btn) { btn.textContent = '✓ Saved!'; setTimeout(() => { btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Save Changes'; }, 1500); }
-              }}>
-                <Icons.Check /> Save Changes
+              <button
+                className={styles.saveBtn}
+                onClick={handleSave}
+                disabled={saving}
+                style={saveStatus === 'saved' ? { background: 'rgba(34,197,94,0.2)', borderColor: 'rgba(34,197,94,0.4)', color: '#22c55e' } : saveStatus === 'error' ? { background: 'rgba(239,68,68,0.2)', borderColor: 'rgba(239,68,68,0.4)', color: '#ef4444' } : undefined}
+              >
+                {saving ? 'Saving...' : saveStatus === 'saved' ? '\u2713 Saved!' : saveStatus === 'error' ? '\u2717 Error — try again' : <><Icons.Check /> Save Changes</>}
               </button>
             </div>
           </div>
