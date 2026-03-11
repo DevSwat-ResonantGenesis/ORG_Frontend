@@ -48,7 +48,15 @@ const faqs: FAQ[] = [
   },
   {
     question: 'Where do I manage API keys?',
-    answer: 'Go to API Keys and add your provider keys. You can manage and rotate keys anytime.'
+    answer: 'Go to Connect Profiles (/connect-profiles) to add API keys, webhook URLs, and connect external services like GitHub, Discord, Slack, OpenAI, and 20+ more integrations. All keys are encrypted and stored securely.'
+  },
+  {
+    question: 'How do I connect Discord or other external services?',
+    answer: 'Go to /connect-profiles, find the service you want, click Connect, and enter your API key or webhook URL. For Discord, create a webhook in your Discord server settings (Server Settings → Integrations → Webhooks → New Webhook), copy the URL, and paste it on the Connect Profiles page.'
+  },
+  {
+    question: 'How do I create an agent?',
+    answer: 'You can create agents in two ways: (1) Through Resonant Chat — enable the Agents OS skill in the input bar and ask "Create a [name] agent", or (2) Go directly to /agents and click Create Agent. After creation, configure the agent from its dashboard at /agents/:agentId.'
   },
   {
     question: 'What is the recommended stack?',
@@ -183,6 +191,15 @@ const articles: Article[] = [
     path: '/help/developers/agent-api-reference',
     tags: ['agents', 'api', 'sessions', 'execute', 'endpoints', 'reference'],
     readingTime: 10
+  },
+  {
+    id: '35',
+    title: 'Connect Profiles & Agent Setup',
+    description: 'Step-by-step guide to connecting external services (Discord, GitHub, Slack, etc.) and creating AI agents that use those connections.',
+    category: 'Getting Started',
+    path: '/help/getting-started/connect-profiles-agent-setup',
+    tags: ['connect', 'profiles', 'webhook', 'discord', 'github', 'agent', 'setup', 'integration'],
+    readingTime: 8
   },
   // Marketplace
   {

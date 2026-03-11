@@ -1612,6 +1612,150 @@ Essential security guidelines for using ResonantGenesis safely and effectively.
 - [Compliance Overview](/help/security/compliance)
 - [Contact Security Team](/contact)
   `,
+  'connect-profiles-agent-setup': `
+# Connect Profiles & Agent Setup
+
+Complete guide to connecting external services and setting up agents on ResonantGenesis.
+
+## Overview
+
+ResonantGenesis lets you connect 25+ external services (GitHub, Discord, Slack, OpenAI, Stripe, and more) and create AI agents that can use those connections. This guide covers the full workflow from connecting a service to creating and configuring an agent.
+
+## Step 1: Connect Your Profiles
+
+Navigate to **/connect-profiles** from the sidebar or top navigation.
+
+The Connect Profiles page shows all available integrations organized by category:
+
+- **Version Control** — GitHub, GitLab, Bitbucket
+- **AI & Intelligence** — OpenAI, Anthropic Claude, HuggingFace, Openclaw
+- **Cloud & Hosting** — DigitalOcean, Vercel, Netlify, Railway
+- **Productivity** — Slack, Discord, Notion, Google Calendar, Google Drive
+- **Design** — Figma
+- **Databases** — Supabase, MongoDB Atlas
+- **Payments** — Stripe
+- **Communication** — Twilio, SendGrid
+- **Automation** — Zapier, n8n
+- **Monitoring** — Sentry, Datadog
+
+### How to Connect a Service
+
+1. Go to **/connect-profiles**
+2. Find the service you want (use the search bar to filter)
+3. Click the **Connect** button on the service card
+4. Enter the required credentials (API key, webhook URL, or access token)
+5. Click **Connect [Service Name]** to save
+
+All credentials are encrypted and stored securely on the server.
+
+## Step 2: Discord Webhook Setup (Example)
+
+Discord is one of the most common integrations. Here's how to set it up:
+
+### Create a Discord Webhook
+
+1. Open your Discord server
+2. Go to **Server Settings** → **Integrations** → **Webhooks**
+3. Click **New Webhook**
+4. Give it a name (e.g., "ResonantGenesis Alerts")
+5. Select the channel where you want notifications
+6. Click **Copy Webhook URL**
+
+The URL looks like: \`https://discord.com/api/webhooks/123456789/abcdef...\`
+
+### Connect Discord on ResonantGenesis
+
+1. Go to **/connect-profiles**
+2. Find **Discord** in the Productivity category
+3. Click **Connect**
+4. Paste your webhook URL in the input field
+5. Click **Connect Discord**
+
+Your Discord is now connected. Agents and build notifications will be sent to your channel.
+
+## Step 3: Create an Agent
+
+Navigate to **/agents** (AgentOS workspace) to create agents.
+
+### Using Resonant Chat (Recommended)
+
+1. Open Resonant Chat
+2. Enable the **Agents OS** skill in the input bar skills toggle
+3. Type your request, e.g.: "Create a Webhook agent that monitors Discord events"
+4. The chat will create the agent with appropriate tools and configuration
+5. The agent appears in the split view panel on the right
+
+### Using Agent Studio Directly
+
+1. Go to **/agents**
+2. Click the **+ Create Agent** button
+3. Choose **Wizard** (guided) or **Advanced** (manual) mode
+4. Fill in: Name, Description, System Prompt, Tools, Provider/Model
+5. Click **Create**
+
+## Step 4: Configure Your Agent
+
+After creation, configure the agent from its dashboard:
+
+1. Go to **/agents** and click on your agent card
+2. In the agent dashboard you can:
+   - Edit the system prompt and description
+   - Change the AI provider and model
+   - Add or remove tools
+   - Set temperature, max tokens, and other parameters
+   - View execution logs and metrics
+   - Start/stop the agent
+
+## Step 5: Run Your Agent
+
+Agents can be run in two modes:
+
+### Autonomous Sessions (Background)
+- Click the **Play** button on the agent card
+- The agent runs autonomously in the background
+- It processes tasks based on its system prompt and tools
+- View results in the agent dashboard
+
+### Chat Execute (Interactive)
+- Click the **Message** button on the agent card
+- Chat directly with the agent
+- Send specific instructions and get immediate responses
+- Good for testing and ad-hoc tasks
+
+## Connecting Agents to External Services
+
+Once you've connected services at **/connect-profiles**, your agents can use those connections:
+
+- **Discord**: Send notifications, alerts, and reports to Discord channels
+- **GitHub**: Push code, create PRs, manage repos
+- **Slack**: Send messages and notifications to Slack channels
+- **Stripe**: Process payments and manage subscriptions
+- **Zapier/n8n**: Trigger automation workflows
+
+## Troubleshooting
+
+### Agent not connecting to a service?
+- Verify the service is connected at **/connect-profiles** (green "Connected" badge)
+- Check that the API key or webhook URL is correct
+- Try disconnecting and reconnecting the service
+
+### Agent created with wrong name?
+- Go to the agent dashboard at **/agents/:agentId**
+- Click the edit/settings button to rename
+- Or ask Resonant Chat: "Rename my agent to [New Name]"
+
+### Need help?
+- Ask Resonant Chat — it has full knowledge of all platform pages and setup workflows
+- Visit **/help** for more guides
+- Contact support at contact@resonantgenesis.xyz
+
+## Related Articles
+
+- [Agent Studio & Factory](/help/core/agent-studio) — Full guide to creating agents
+- [Agent Management](/help/core/agent-management) — Agent actions and lifecycle
+- [Agent API Reference](/help/developers/agent-api-reference) — Complete API reference
+- [API Keys](/help/account/api-keys) — Managing provider API keys
+  `,
 };
 
 const HelpArticlePage: React.FC = () => {
