@@ -1381,28 +1381,33 @@
     padding-left: 14px;
   }
 
-  /* Tables — scrollable horizontally */
+  /* Tables — constrain to viewport, wrap all text */
   .wpTable {
     font-size: 11px;
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    table-layout: fixed;
+    width: 100%;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .wpTable th {
     font-size: 9px;
     padding: 3px 6px;
-    white-space: nowrap;
+    white-space: normal;
+    word-break: break-word;
   }
 
   .wpTable td {
     font-size: 11px;
     padding: 3px 6px;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .wpTable td:first-child {
     white-space: normal;
-    min-width: 100px;
+    min-width: unset;
   }
 
   /* CV metrics grid — 2 columns on mobile */
@@ -1570,10 +1575,11 @@
     font-size: 14px;
   }
 
-  /* Social row */
+  /* Social row — centered on mobile */
   .socialRow {
     gap: 12px;
     margin-top: 16px;
+    justify-content: center;
   }
 }
 
