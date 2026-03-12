@@ -58,6 +58,10 @@ function communityInitial(name: string): string {
   return name.charAt(0).toUpperCase();
 }
 
+function displaySlug(slug: string): string {
+  return slug.replace(/^r\//, '');
+}
+
 async function apiFetch<T>(path: string, opts?: RequestInit): Promise<T> {
   const res = await fetch(`${API}${path}`, {
     credentials: 'include',
@@ -66,6 +70,9 @@ async function apiFetch<T>(path: string, opts?: RequestInit): Promise<T> {
   });
   if (!res.ok) {
     const text = await res.text().catch(() => '');
+    if (res.status === 401 || text.includes('Missing x-user-id')) {
+      throw new Error('Please log in to perform this action.');
+    }
     throw new Error(text || `HTTP ${res.status}`);
   }
   return res.json();
@@ -318,7 +325,7 @@ const RabbitPage: React.FC = () => {
                   >
                     <div className={styles.communityAvatar}>{communityInitial(c.name)}</div>
                     <div style={{ overflow: 'hidden' }}>
-                      <div className={styles.communityName}>r/{c.slug}</div>
+                      <div className={styles.communityName}>r/{displaySlug(c.slug)}</div>
                       {c.description && <div className={styles.communityDesc}>{c.description}</div>}
                     </div>
                   </button>
@@ -360,7 +367,7 @@ const RabbitPage: React.FC = () => {
               <div className={styles.feedHeader}>
                 <div>
                   <div className={styles.feedTitle}>
-                    {selectedCommunity ? `r/${selectedCommunity.slug}` : 'Rabbit Feed'}
+                    {selectedCommunity ? `r/${displaySlug(selectedCommunity.slug)}` : 'Rabbit Feed'}
                   </div>
                   <div className={styles.feedSubtitle}>
                     {selectedCommunity
@@ -438,7 +445,7 @@ const RabbitPage: React.FC = () => {
                     {searchResults !== null
                       ? `No posts matching "${searchQuery}"`
                       : selectedSlug
-                        ? `Be the first to post in r/${selectedSlug}!`
+                        ? `Be the first to post in r/${displaySlug(selectedSlug)}!`
                         : 'Create a community and start posting!'}
                   </div>
                 </div>
@@ -541,7 +548,7 @@ const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, onCr
   return (
     <div className={styles.inlineCreatePost}>
       <div className={styles.inlineCreateHeader}>
-        <span className={styles.inlineCreateTitle}>Create post in r/{communitySlug}</span>
+        <span className={styles.inlineCreateTitle}>Create post in r/{displaySlug(communitySlug)}</span>
       </div>
 
       {/* Tabs */}
@@ -656,7 +663,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, localVote, onVote, onClick, o
       <div className={styles.postMeta}>
         {post.community_slug && (
           <span className={styles.postCommunity} onClick={(e) => { e.stopPropagation(); onCommunityClick(); }}>
-            r/{post.community_slug}
+            r/{displaySlug(post.community_slug)}
           </span>
         )}
         <span>•</span>
@@ -710,7 +717,7 @@ const PostDetailView: React.FC<PostDetailProps> = ({
     </button>
     <div className={styles.postDetail}>
       <div className={styles.postMeta} style={{ marginBottom: 8 }}>
-        {communitySlug && <span className={styles.postCommunity}>r/{communitySlug}</span>}
+        {communitySlug && <span className={styles.postCommunity}>r/{displaySlug(communitySlug)}</span>}
         <span>•</span>
         <span className={styles.postAuthor}>u/{post.author_user_id.slice(0, 8)}</span>
         <span>•</span>
