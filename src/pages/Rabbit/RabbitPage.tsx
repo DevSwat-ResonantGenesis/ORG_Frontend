@@ -39,6 +39,8 @@ interface Comment {
   is_removed_by_mod: boolean;
 }
 
+type SortMode = 'new' | 'top' | 'hot';
+
 const API = '/api/v1/rabbit';
 
 /* ── Helpers ── */
@@ -60,6 +62,44 @@ function communityInitial(name: string): string {
 
 function displaySlug(slug: string): string {
   return slug.replace(/^r\//, '');
+}
+
+function hotScore(post: Post): number {
+  const age = (Date.now() - new Date(post.created_at).getTime()) / 3600000;
+  return (post.vote_score + post.comment_count * 2) / Math.pow(age + 2, 1.5);
+}
+
+function sortPosts(posts: Post[], mode: SortMode): Post[] {
+  const sorted = [...posts];
+  switch (mode) {
+    case 'new': return sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    case 'top': return sorted.sort((a, b) => b.vote_score - a.vote_score);
+    case 'hot': return sorted.sort((a, b) => hotScore(b) - hotScore(a));
+    default: return sorted;
+  }
+}
+
+interface CommentNode extends Comment {
+  depth: number;
+}
+
+function buildCommentTree(comments: Comment[]): CommentNode[] {
+  const childrenMap = new Map<number | null, Comment[]>();
+  comments.forEach(c => {
+    const key = c.parent_comment_id;
+    if (!childrenMap.has(key)) childrenMap.set(key, []);
+    childrenMap.get(key)!.push(c);
+  });
+  const result: CommentNode[] = [];
+  const walk = (parentId: number | null, depth: number) => {
+    const kids = childrenMap.get(parentId) || [];
+    kids.forEach(c => {
+      result.push({ ...c, depth });
+      walk(c.id, depth + 1);
+    });
+  };
+  walk(null, 0);
+  return result;
 }
 
 async function apiFetch<T>(path: string, opts?: RequestInit): Promise<T> {
@@ -124,6 +164,37 @@ const ImageIcon = () => (
   </svg>
 );
 
+const ShareIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M4 8V13H12V8" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M8 2V10" strokeLinecap="round" />
+    <path d="M5 5L8 2L11 5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const TrashIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M3 4H13" strokeLinecap="round" />
+    <path d="M6 4V3C6 2.4 6.4 2 7 2H9C9.6 2 10 2.4 10 3V4" />
+    <path d="M4 4L5 14H11L12 4" strokeLinejoin="round" />
+  </svg>
+);
+
+const ReplyIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M6 8L2 5L6 2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M2 5H10C12.2 5 14 6.8 14 9V14" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const LinkIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M6.5 9.5L9.5 6.5" strokeLinecap="round" />
+    <path d="M9 4L11 2C12.1 0.9 13.9 0.9 15 2C16.1 3.1 16.1 4.9 15 6L13 8" strokeLinecap="round" />
+    <path d="M7 12L5 14C3.9 15.1 2.1 15.1 1 14C-0.1 12.9 -0.1 11.1 1 10L3 8" strokeLinecap="round" />
+  </svg>
+);
+
 /* ═══════════════════════════════════════════════
    Main RabbitPage Component
    ═══════════════════════════════════════════════ */
@@ -134,7 +205,9 @@ const RabbitPage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [localVotes, setLocalVotes] = useState<Record<string, number>>({}); // user's votes: "post:id" => -1|0|1
+  const [localVotes, setLocalVotes] = useState<Record<string, number>>({});
+  const [sortMode, setSortMode] = useState<SortMode>('hot');
+  const [copiedLink, setCopiedLink] = useState(false);
 
   const [loadingCommunities, setLoadingCommunities] = useState(true);
   const [loadingPosts, setLoadingPosts] = useState(false);
@@ -144,6 +217,7 @@ const RabbitPage: React.FC = () => {
   const [showCreatePost, setShowCreatePost] = useState(false);
 
   const [newCommentBody, setNewCommentBody] = useState('');
+  const [replyTo, setReplyTo] = useState<number | null>(null);
   const [submittingComment, setSubmittingComment] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -230,8 +304,13 @@ const RabbitPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedPost) fetchComments(selectedPost.id);
-    else setComments([]);
+    if (selectedPost) {
+      fetchComments(selectedPost.id);
+      setReplyTo(null);
+      setNewCommentBody('');
+    } else {
+      setComments([]);
+    }
   }, [selectedPost, fetchComments]);
 
   /* ── Vote handler ── */
@@ -270,16 +349,17 @@ const RabbitPage: React.FC = () => {
     }
   };
 
-  /* ── Submit comment ── */
-  const handleSubmitComment = async () => {
+  /* ── Submit comment (supports reply) ── */
+  const handleSubmitComment = async (parentId?: number | null) => {
     if (!selectedPost || !newCommentBody.trim()) return;
     setSubmittingComment(true);
     try {
       await apiFetch<Comment>(`/posts/${selectedPost.id}/comments`, {
         method: 'POST',
-        body: JSON.stringify({ body: newCommentBody.trim() }),
+        body: JSON.stringify({ body: newCommentBody.trim(), parent_comment_id: parentId || null }),
       });
       setNewCommentBody('');
+      setReplyTo(null);
       fetchComments(selectedPost.id);
       setSelectedPost(prev => prev ? { ...prev, comment_count: prev.comment_count + 1 } : prev);
       setPosts(prev => prev.map(p =>
@@ -292,12 +372,51 @@ const RabbitPage: React.FC = () => {
     }
   };
 
+  /* ── Delete post ── */
+  const handleDeletePost = async (postId: number) => {
+    if (!confirm('Delete this post?')) return;
+    try {
+      await apiFetch(`/posts/${postId}`, { method: 'DELETE' });
+      setPosts(prev => prev.filter(p => p.id !== postId));
+      if (selectedPost?.id === postId) setSelectedPost(null);
+    } catch (e: any) {
+      setError(e.message || 'Failed to delete post');
+    }
+  };
+
+  /* ── Delete comment ── */
+  const handleDeleteComment = async (commentId: number) => {
+    if (!confirm('Delete this comment?')) return;
+    try {
+      await apiFetch(`/comments/${commentId}`, { method: 'DELETE' });
+      setComments(prev => prev.filter(c => c.id !== commentId));
+      if (selectedPost) {
+        setSelectedPost(prev => prev ? { ...prev, comment_count: Math.max(0, prev.comment_count - 1) } : prev);
+        setPosts(prev => prev.map(p =>
+          p.id === selectedPost.id ? { ...p, comment_count: Math.max(0, p.comment_count - 1) } : p
+        ));
+      }
+    } catch (e: any) {
+      setError(e.message || 'Failed to delete comment');
+    }
+  };
+
+  /* ── Share / copy link ── */
+  const handleShare = (postId: number) => {
+    const url = `${window.location.origin}/rabbit?post=${postId}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    }).catch(() => {});
+  };
+
   /* ── Select community ── */
   const handleSelectCommunity = (slug: string) => {
     setSelectedSlug(prev => (prev === slug ? null : slug));
   };
 
-  const displayPosts = searchResults !== null ? searchResults : posts;
+  const rawPosts = searchResults !== null ? searchResults : posts;
+  const displayPosts = sortPosts(rawPosts, sortMode);
 
   /* ═══════════════════════════════════
      RENDER
@@ -340,6 +459,26 @@ const RabbitPage: React.FC = () => {
               <PlusIcon /> Create Community
             </button>
           </div>
+
+          {/* Community Info Panel */}
+          {selectedCommunity && (
+            <div className={styles.sidebarCard}>
+              <div className={styles.communityInfoTitle}>r/{displaySlug(selectedCommunity.slug)}</div>
+              <div className={styles.communityInfoDesc}>{selectedCommunity.description || 'A community on Rabbit'}</div>
+              <div className={styles.communityInfoStats}>
+                <div className={styles.communityInfoStat}>
+                  <span className={styles.communityInfoStatValue}>{posts.length}</span>
+                  <span className={styles.communityInfoStatLabel}>Posts</span>
+                </div>
+                <div className={styles.communityInfoStat}>
+                  <span className={styles.communityInfoStatValue}>
+                    {new Date(selectedCommunity.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                  </span>
+                  <span className={styles.communityInfoStatLabel}>Created</span>
+                </div>
+              </div>
+            </div>
+          )}
         </aside>
 
         {/* ── MAIN FEED ── */}
@@ -353,6 +492,7 @@ const RabbitPage: React.FC = () => {
               loadingComments={loadingComments}
               localVotes={localVotes}
               newCommentBody={newCommentBody}
+              replyTo={replyTo}
               submittingComment={submittingComment}
               error={error}
               onBack={() => setSelectedPost(null)}
@@ -360,6 +500,11 @@ const RabbitPage: React.FC = () => {
               onCommentChange={setNewCommentBody}
               onSubmitComment={handleSubmitComment}
               onClearError={() => setError(null)}
+              onDeletePost={handleDeletePost}
+              onDeleteComment={handleDeleteComment}
+              onShare={handleShare}
+              onReplyTo={setReplyTo}
+              copiedLink={copiedLink}
             />
           ) : (
             <>
@@ -376,37 +521,55 @@ const RabbitPage: React.FC = () => {
                   </div>
                 </div>
                 <div className={styles.feedActions}>
-                  {selectedSlug && (
-                    <button className={styles.btnPrimary} onClick={() => setShowCreatePost(true)}>
-                      <PlusIcon /> New Post
+                  <button className={styles.btnPrimary} onClick={() => setShowCreatePost(true)}>
+                    <PlusIcon /> New Post
+                  </button>
+                </div>
+              </div>
+
+              {/* Sort Tabs + Search */}
+              <div className={styles.feedToolbar}>
+                <div className={styles.sortTabs}>
+                  {(['hot', 'new', 'top'] as SortMode[]).map(mode => (
+                    <button
+                      key={mode}
+                      className={`${styles.sortTab} ${sortMode === mode ? styles.sortTabActive : ''}`}
+                      onClick={() => setSortMode(mode)}
+                    >
+                      {mode === 'hot' && '🔥 '}
+                      {mode === 'new' && '🕐 '}
+                      {mode === 'top' && '⬆ '}
+                      {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                    </button>
+                  ))}
+                </div>
+                <div className={styles.searchBar}>
+                  <SearchIcon />
+                  <input
+                    className={styles.searchInput}
+                    placeholder="Search posts..."
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                  />
+                  {searchQuery && (
+                    <button className={styles.searchClear} onClick={() => { setSearchQuery(''); setSearchResults(null); }}>
+                      &times;
                     </button>
                   )}
                 </div>
               </div>
 
-              {/* Search Bar */}
-              <div className={styles.searchBar}>
-                <SearchIcon />
-                <input
-                  className={styles.searchInput}
-                  placeholder="Search posts..."
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                />
-                {searchQuery && (
-                  <button className={styles.searchClear} onClick={() => { setSearchQuery(''); setSearchResults(null); }}>
-                    &times;
-                  </button>
-                )}
-              </div>
-
               {/* Inline Create Post Form */}
-              {showCreatePost && selectedSlug ? (
+              {showCreatePost ? (
                 <InlineCreatePost
                   communitySlug={selectedSlug}
+                  communities={communities}
                   onCreated={(p) => {
                     setPosts(prev => [p, ...prev]);
                     setShowCreatePost(false);
+                    if (p.community_slug && p.community_slug !== selectedSlug) {
+                      setSelectedSlug(p.community_slug);
+                    }
                   }}
                   onCancel={() => setShowCreatePost(false)}
                 />
@@ -461,6 +624,9 @@ const RabbitPage: React.FC = () => {
                       const slug = post.community_slug;
                       if (slug) setSelectedSlug(slug);
                     }}
+                    onShare={() => handleShare(post.id)}
+                    onDelete={() => handleDeletePost(post.id)}
+                    copiedLink={copiedLink}
                   />
                 ))
               )}
@@ -488,7 +654,7 @@ const RabbitPage: React.FC = () => {
         </a>
       </div>
 
-      {/* ── Create Community Modal (kept as modal since it's less frequent) ── */}
+      {/* ── Create Community Modal ── */}
       {showCreateCommunity && (
         <CreateCommunityModal
           onClose={() => setShowCreateCommunity(false)}
@@ -507,33 +673,39 @@ const RabbitPage: React.FC = () => {
    Inline Create Post (in-feed, not modal)
    ═══════════════════════════════════ */
 interface InlineCreatePostProps {
-  communitySlug: string;
+  communitySlug: string | null;
+  communities: Community[];
   onCreated: (p: Post) => void;
   onCancel: () => void;
 }
 
-const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, onCreated, onCancel }) => {
+const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, communities, onCreated, onCancel }) => {
   const [activeTab, setActiveTab] = useState<'text' | 'image' | 'link'>('text');
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+  const [linkUrl, setLinkUrl] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [chosenSlug, setChosenSlug] = useState(communitySlug || '');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { titleRef.current?.focus(); }, []);
 
+  const effectiveSlug = communitySlug || chosenSlug;
+  const effectiveBody = activeTab === 'link' ? linkUrl.trim() || null : body.trim() || null;
+
   const handleSubmit = async () => {
-    if (!title.trim()) return;
+    if (!title.trim() || !effectiveSlug) return;
     setSubmitting(true);
     setError(null);
     try {
       const p = await apiFetch<Post>('/posts', {
         method: 'POST',
         body: JSON.stringify({
-          community_slug: communitySlug,
+          community_slug: effectiveSlug,
           title: title.trim(),
-          body: body.trim() || null,
+          body: effectiveBody,
           image_url: imageUrl.trim() || null,
         }),
       });
@@ -548,8 +720,24 @@ const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, onCr
   return (
     <div className={styles.inlineCreatePost}>
       <div className={styles.inlineCreateHeader}>
-        <span className={styles.inlineCreateTitle}>Create post in r/{displaySlug(communitySlug)}</span>
+        <span className={styles.inlineCreateTitle}>
+          {effectiveSlug ? `Create post in r/${displaySlug(effectiveSlug)}` : 'Create a new post'}
+        </span>
       </div>
+
+      {/* Community picker (shown only if no community is pre-selected) */}
+      {!communitySlug && (
+        <select
+          className={styles.inlineInput}
+          value={chosenSlug}
+          onChange={e => setChosenSlug(e.target.value)}
+        >
+          <option value="">Choose a community...</option>
+          {communities.map(c => (
+            <option key={c.slug} value={c.slug}>r/{displaySlug(c.slug)} — {c.name}</option>
+          ))}
+        </select>
+      )}
 
       {/* Tabs */}
       <div className={styles.createTabs}>
@@ -561,7 +749,7 @@ const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, onCr
           >
             {tab === 'text' && 'Text'}
             {tab === 'image' && <><ImageIcon /> Image</>}
-            {tab === 'link' && 'Link'}
+            {tab === 'link' && <><LinkIcon /> Link</>}
           </button>
         ))}
       </div>
@@ -609,8 +797,8 @@ const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, onCr
         <input
           className={styles.inlineInput}
           placeholder="Paste a URL..."
-          value={body}
-          onChange={e => setBody(e.target.value)}
+          value={linkUrl}
+          onChange={e => setLinkUrl(e.target.value)}
         />
       )}
 
@@ -618,9 +806,9 @@ const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, onCr
         <button className={styles.btnSecondary} onClick={onCancel}>Cancel</button>
         <button
           className={styles.btnPrimary}
-          disabled={submitting || !title.trim()}
+          disabled={submitting || !title.trim() || !effectiveSlug}
           onClick={handleSubmit}
-          style={{ opacity: submitting || !title.trim() ? 0.5 : 1 }}
+          style={{ opacity: submitting || !title.trim() || !effectiveSlug ? 0.5 : 1 }}
         >
           {submitting ? 'Posting…' : 'Post'}
         </button>
@@ -638,9 +826,12 @@ interface PostCardProps {
   onVote: (v: 1 | -1) => void;
   onClick: () => void;
   onCommunityClick: () => void;
+  onShare: () => void;
+  onDelete: () => void;
+  copiedLink: boolean;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, localVote, onVote, onClick, onCommunityClick }) => (
+const PostCard: React.FC<PostCardProps> = ({ post, localVote, onVote, onClick, onCommunityClick, onShare, onDelete, copiedLink }) => (
   <div className={styles.postCard}>
     <div className={styles.postVoteSidebar}>
       <button
@@ -682,6 +873,16 @@ const PostCard: React.FC<PostCardProps> = ({ post, localVote, onVote, onClick, o
         <button className={styles.postFooterBtn} onClick={onClick}>
           <CommentIcon /> {post.comment_count} Comment{post.comment_count !== 1 ? 's' : ''}
         </button>
+        <button className={styles.postFooterBtn} onClick={(e) => { e.stopPropagation(); onShare(); }}>
+          <ShareIcon /> {copiedLink ? 'Copied!' : 'Share'}
+        </button>
+        <button
+          className={`${styles.postFooterBtn} ${styles.postFooterBtnDanger}`}
+          onClick={(e) => { e.stopPropagation(); onDelete(); }}
+          title="Delete (your posts only)"
+        >
+          <TrashIcon />
+        </button>
       </div>
     </div>
   </div>
@@ -697,128 +898,200 @@ interface PostDetailProps {
   loadingComments: boolean;
   localVotes: Record<string, number>;
   newCommentBody: string;
+  replyTo: number | null;
   submittingComment: boolean;
   error: string | null;
   onBack: () => void;
   onVote: (type: 'post' | 'comment', id: number, v: 1 | -1) => void;
   onCommentChange: (v: string) => void;
-  onSubmitComment: () => void;
+  onSubmitComment: (parentId?: number | null) => void;
   onClearError: () => void;
+  onDeletePost: (id: number) => void;
+  onDeleteComment: (id: number) => void;
+  onShare: (id: number) => void;
+  onReplyTo: (id: number | null) => void;
+  copiedLink: boolean;
 }
 
 const PostDetailView: React.FC<PostDetailProps> = ({
   post, communitySlug, comments, loadingComments, localVotes,
-  newCommentBody, submittingComment, error,
+  newCommentBody, replyTo, submittingComment, error,
   onBack, onVote, onCommentChange, onSubmitComment, onClearError,
-}) => (
-  <>
-    <button className={styles.backBtn} onClick={onBack}>
-      <BackIcon /> Back to feed
-    </button>
-    <div className={styles.postDetail}>
-      <div className={styles.postMeta} style={{ marginBottom: 8 }}>
-        {communitySlug && <span className={styles.postCommunity}>r/{displaySlug(communitySlug)}</span>}
-        <span>•</span>
-        <span className={styles.postAuthor}>u/{post.author_user_id.slice(0, 8)}</span>
-        <span>•</span>
-        <span className={styles.timeAgo}>{timeAgo(post.created_at)}</span>
-        {post.is_locked && <span style={{ color: '#f59e0b', fontWeight: 600 }}>Locked</span>}
-      </div>
-      <div className={styles.postDetailTitle}>{post.title}</div>
-      {post.body && <div className={styles.postDetailBody}>{post.body}</div>}
-      {post.image_url && (
-        <div className={styles.postDetailImage}>
-          <img src={post.image_url} alt="" loading="lazy" />
+  onDeletePost, onDeleteComment, onShare, onReplyTo, copiedLink,
+}) => {
+  const commentTree = useMemo(() => buildCommentTree(comments), [comments]);
+
+  return (
+    <>
+      <button className={styles.backBtn} onClick={onBack}>
+        <BackIcon /> Back to feed
+      </button>
+      <div className={styles.postDetail}>
+        <div className={styles.postMeta} style={{ marginBottom: 8 }}>
+          {communitySlug && <span className={styles.postCommunity}>r/{displaySlug(communitySlug)}</span>}
+          <span>•</span>
+          <span className={styles.postAuthor}>u/{post.author_user_id.slice(0, 8)}</span>
+          <span>•</span>
+          <span className={styles.timeAgo}>{timeAgo(post.created_at)}</span>
+          {post.is_locked && <span style={{ color: '#f59e0b', fontWeight: 600 }}>Locked</span>}
         </div>
-      )}
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-        <button
-          className={`${styles.voteBtn} ${(localVotes[`post:${post.id}`] ?? 0) === 1 ? styles.voteBtnUpActive : ''}`}
-          onClick={() => onVote('post', post.id, 1)}
-        >
-          <UpArrow active={(localVotes[`post:${post.id}`] ?? 0) === 1} />
-        </button>
-        <span className={styles.voteCount}>{post.vote_score}</span>
-        <button
-          className={`${styles.voteBtn} ${(localVotes[`post:${post.id}`] ?? 0) === -1 ? styles.voteBtnDownActive : ''}`}
-          onClick={() => onVote('post', post.id, -1)}
-        >
-          <DownArrow active={(localVotes[`post:${post.id}`] ?? 0) === -1} />
-        </button>
-      </div>
-
-      {/* Comments */}
-      <div className={styles.commentsSection}>
-        <div className={styles.commentsTitle}>
-          {comments.length} Comment{comments.length !== 1 ? 's' : ''}
-        </div>
-
-        {!post.is_locked && (
-          <div className={styles.commentBox}>
-            {error && (
-              <div className={styles.error} onClick={onClearError} style={{ cursor: 'pointer' }}>
-                {error} (click to dismiss)
-              </div>
-            )}
-            <textarea
-              className={styles.commentTextarea}
-              placeholder="Write a comment..."
-              value={newCommentBody}
-              onChange={e => onCommentChange(e.target.value)}
-            />
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <button
-                className={styles.btnPrimary}
-                disabled={submittingComment || !newCommentBody.trim()}
-                onClick={onSubmitComment}
-                style={{ opacity: submittingComment || !newCommentBody.trim() ? 0.5 : 1 }}
-              >
-                {submittingComment ? 'Posting…' : 'Comment'}
-              </button>
-            </div>
+        <div className={styles.postDetailTitle}>{post.title}</div>
+        {post.body && <div className={styles.postDetailBody}>{post.body}</div>}
+        {post.image_url && (
+          <div className={styles.postDetailImage}>
+            <img src={post.image_url} alt="" loading="lazy" />
           </div>
         )}
 
-        {loadingComments ? (
-          <div className={styles.loading}>
-            <span className={styles.spinner} /> Loading comments…
+        <div className={styles.postDetailActions}>
+          <button
+            className={`${styles.voteBtn} ${(localVotes[`post:${post.id}`] ?? 0) === 1 ? styles.voteBtnUpActive : ''}`}
+            onClick={() => onVote('post', post.id, 1)}
+          >
+            <UpArrow active={(localVotes[`post:${post.id}`] ?? 0) === 1} />
+          </button>
+          <span className={styles.voteCount}>{post.vote_score}</span>
+          <button
+            className={`${styles.voteBtn} ${(localVotes[`post:${post.id}`] ?? 0) === -1 ? styles.voteBtnDownActive : ''}`}
+            onClick={() => onVote('post', post.id, -1)}
+          >
+            <DownArrow active={(localVotes[`post:${post.id}`] ?? 0) === -1} />
+          </button>
+          <span className={styles.actionDivider} />
+          <button className={styles.postFooterBtn} onClick={() => onShare(post.id)}>
+            <ShareIcon /> {copiedLink ? 'Copied!' : 'Share'}
+          </button>
+          <button
+            className={`${styles.postFooterBtn} ${styles.postFooterBtnDanger}`}
+            onClick={() => onDeletePost(post.id)}
+            title="Delete (your posts only)"
+          >
+            <TrashIcon /> Delete
+          </button>
+        </div>
+
+        {/* Comments */}
+        <div className={styles.commentsSection}>
+          <div className={styles.commentsTitle}>
+            {comments.length} Comment{comments.length !== 1 ? 's' : ''}
           </div>
-        ) : comments.length === 0 ? (
-          <div className={styles.noComments}>No comments yet. Be the first!</div>
-        ) : (
-          comments.map(c => (
-            <div key={c.id} className={styles.commentItem} style={{ marginLeft: c.parent_comment_id ? 24 : 0 }}>
-              <div className={styles.commentMeta}>
-                <span className={styles.commentAuthor}>u/{c.author_user_id.slice(0, 8)}</span>
-                {' • '}
-                <span className={styles.timeAgo}>{timeAgo(c.created_at)}</span>
-              </div>
-              <div className={styles.commentBody}>{c.body}</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+
+          {/* Top-level comment box */}
+          {!post.is_locked && replyTo === null && (
+            <div className={styles.commentBox}>
+              {error && (
+                <div className={styles.error} onClick={onClearError} style={{ cursor: 'pointer' }}>
+                  {error} (click to dismiss)
+                </div>
+              )}
+              <textarea
+                className={styles.commentTextarea}
+                placeholder="Write a comment..."
+                value={newCommentBody}
+                onChange={e => onCommentChange(e.target.value)}
+              />
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <button
-                  className={`${styles.voteBtn} ${(localVotes[`comment:${c.id}`] ?? 0) === 1 ? styles.voteBtnUpActive : ''}`}
-                  onClick={() => onVote('comment', c.id, 1)}
-                  style={{ width: 24, height: 24 }}
+                  className={styles.btnPrimary}
+                  disabled={submittingComment || !newCommentBody.trim()}
+                  onClick={() => onSubmitComment(null)}
+                  style={{ opacity: submittingComment || !newCommentBody.trim() ? 0.5 : 1 }}
                 >
-                  <UpArrow active={(localVotes[`comment:${c.id}`] ?? 0) === 1} />
-                </button>
-                <span className={styles.voteCount} style={{ fontSize: 11 }}>{localVotes[`comment:${c.id}`] ?? 0}</span>
-                <button
-                  className={`${styles.voteBtn} ${(localVotes[`comment:${c.id}`] ?? 0) === -1 ? styles.voteBtnDownActive : ''}`}
-                  onClick={() => onVote('comment', c.id, -1)}
-                  style={{ width: 24, height: 24 }}
-                >
-                  <DownArrow active={(localVotes[`comment:${c.id}`] ?? 0) === -1} />
+                  {submittingComment ? 'Posting…' : 'Comment'}
                 </button>
               </div>
             </div>
-          ))
-        )}
+          )}
+
+          {loadingComments ? (
+            <div className={styles.loading}>
+              <span className={styles.spinner} /> Loading comments…
+            </div>
+          ) : comments.length === 0 ? (
+            <div className={styles.noComments}>No comments yet. Be the first!</div>
+          ) : (
+            commentTree.map(c => (
+              <div key={c.id} className={styles.commentItem} style={{ marginLeft: Math.min(c.depth, 5) * 24 }}>
+                {c.depth > 0 && <div className={styles.commentThreadLine} />}
+                <div className={styles.commentMeta}>
+                  <span className={styles.commentAuthor}>u/{c.author_user_id.slice(0, 8)}</span>
+                  {' • '}
+                  <span className={styles.timeAgo}>{timeAgo(c.created_at)}</span>
+                  {c.is_removed_by_mod && <span style={{ color: '#ef4444', fontSize: 11 }}>[removed]</span>}
+                </div>
+                <div className={styles.commentBody}>{c.body}</div>
+                <div className={styles.commentActions}>
+                  <button
+                    className={`${styles.voteBtn} ${(localVotes[`comment:${c.id}`] ?? 0) === 1 ? styles.voteBtnUpActive : ''}`}
+                    onClick={() => onVote('comment', c.id, 1)}
+                    style={{ width: 24, height: 24 }}
+                  >
+                    <UpArrow active={(localVotes[`comment:${c.id}`] ?? 0) === 1} />
+                  </button>
+                  <span className={styles.voteCount} style={{ fontSize: 11 }}>{localVotes[`comment:${c.id}`] ?? 0}</span>
+                  <button
+                    className={`${styles.voteBtn} ${(localVotes[`comment:${c.id}`] ?? 0) === -1 ? styles.voteBtnDownActive : ''}`}
+                    onClick={() => onVote('comment', c.id, -1)}
+                    style={{ width: 24, height: 24 }}
+                  >
+                    <DownArrow active={(localVotes[`comment:${c.id}`] ?? 0) === -1} />
+                  </button>
+                  {!post.is_locked && (
+                    <button
+                      className={styles.postFooterBtn}
+                      onClick={() => onReplyTo(replyTo === c.id ? null : c.id)}
+                      style={{ marginLeft: 4 }}
+                    >
+                      <ReplyIcon /> Reply
+                    </button>
+                  )}
+                  <button
+                    className={`${styles.postFooterBtn} ${styles.postFooterBtnDanger}`}
+                    onClick={() => onDeleteComment(c.id)}
+                    title="Delete (your comments only)"
+                  >
+                    <TrashIcon />
+                  </button>
+                </div>
+
+                {/* Inline reply box */}
+                {replyTo === c.id && (
+                  <div className={styles.commentBox} style={{ marginTop: 8, marginLeft: 24 }}>
+                    {error && (
+                      <div className={styles.error} onClick={onClearError} style={{ cursor: 'pointer' }}>
+                        {error} (click to dismiss)
+                      </div>
+                    )}
+                    <textarea
+                      className={styles.commentTextarea}
+                      placeholder={`Reply to u/${c.author_user_id.slice(0, 8)}...`}
+                      value={newCommentBody}
+                      onChange={e => onCommentChange(e.target.value)}
+                      autoFocus
+                    />
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 6 }}>
+                      <button className={styles.btnSecondary} onClick={() => { onReplyTo(null); onCommentChange(''); }}>
+                        Cancel
+                      </button>
+                      <button
+                        className={styles.btnPrimary}
+                        disabled={submittingComment || !newCommentBody.trim()}
+                        onClick={() => onSubmitComment(c.id)}
+                        style={{ opacity: submittingComment || !newCommentBody.trim() ? 0.5 : 1 }}
+                      >
+                        {submittingComment ? 'Posting…' : 'Reply'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
       </div>
-    </div>
-  </>
-);
+    </>
+  );
+};
 
 /* ═══════════════════════════════════
    Create Community Modal

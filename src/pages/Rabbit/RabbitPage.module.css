@@ -687,15 +687,6 @@
   border-color: #6366f1;
 }
 
-.commentItem {
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border, #27272a);
-}
-
-.commentItem:last-child {
-  border-bottom: none;
-}
-
 .commentMeta {
   font-size: 12px;
   color: var(--text-muted, #a1a1aa);
@@ -891,6 +882,182 @@
     padding: 8px 4px;
     min-width: 36px;
   }
+
+  .feedToolbar {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sortTabs {
+    width: 100%;
+  }
+
+  .sortTab {
+    flex: 1;
+    text-align: center;
+    padding: 8px 8px;
+    font-size: 12px;
+  }
+
+  .postDetailActions {
+    flex-wrap: wrap;
+  }
+}
+
+/* ── Feed Toolbar (sort + search) ── */
+.feedToolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.feedToolbar .searchBar {
+  flex: 1;
+}
+
+.sortTabs {
+  display: flex;
+  gap: 0;
+  background: var(--card-bg, #18181b);
+  border: 1px solid var(--border, #27272a);
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.sortTab {
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted, #a1a1aa);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.sortTab:hover {
+  color: var(--text, #e4e4e7);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.sortTabActive {
+  color: #6366f1;
+  background: rgba(99, 102, 241, 0.1);
+  font-weight: 600;
+}
+
+/* ── Community Info Panel ── */
+.communityInfoTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text, #e4e4e7);
+  margin-bottom: 4px;
+}
+
+.communityInfoDesc {
+  font-size: 13px;
+  color: var(--text-muted, #a1a1aa);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.communityInfoStats {
+  display: flex;
+  gap: 16px;
+}
+
+.communityInfoStat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.communityInfoStatValue {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text, #e4e4e7);
+}
+
+.communityInfoStatLabel {
+  font-size: 11px;
+  color: var(--text-muted, #71717a);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Post Detail Actions Bar ── */
+.postDetailActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--border, #27272a);
+  border-bottom: 1px solid var(--border, #27272a);
+}
+
+.actionDivider {
+  width: 1px;
+  height: 18px;
+  background: var(--border, #3f3f46);
+  margin: 0 4px;
+}
+
+/* ── Comment Thread Line ── */
+.commentThreadLine {
+  position: absolute;
+  left: -12px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border, #3f3f46);
+  border-radius: 1px;
+}
+
+.commentItem {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border, #27272a);
+  position: relative;
+}
+
+.commentItem:last-child {
+  border-bottom: none;
+}
+
+/* ── Comment Actions ── */
+.commentActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+/* ── Danger button modifier ── */
+.postFooterBtnDanger {
+  opacity: 0.4;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+.postFooterBtnDanger:hover {
+  opacity: 1;
+  color: #ef4444 !important;
+}
+
+/* ── Select dropdown styling ── */
+select.inlineInput {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%23a1a1aa' stroke-width='2'%3E%3Cpath d='M3 5L6 8L9 5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+select.inlineInput option {
+  background: #18181b;
+  color: #e4e4e7;
 }
 
 /* ── Social footer ── */
