@@ -107,6 +107,7 @@ function buildCommentTree(comments: Comment[]): CommentNode[] {
 function normalizeImageUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (url.startsWith('/api/v1/rabbit/images/')) return url;
   if (url.startsWith('/api/v1/storage/download/')) return url;
   if (url.startsWith('/api/storage/download/')) return url;
   if (url.startsWith('/storage/download/')) return `/api/v1${url}`;
@@ -931,10 +932,8 @@ const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, comm
     setError(null);
     try {
       const formData = new FormData();
-      const key = `rabbit/images/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
       formData.append('file', file);
-      formData.append('key', key);
-      const res = await fetch('/api/v1/storage/upload', {
+      const res = await fetch('/api/v1/rabbit/images/upload', {
         method: 'POST',
         credentials: 'include',
         body: formData,
@@ -944,7 +943,7 @@ const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, comm
         throw new Error(text || `Upload failed (HTTP ${res.status})`);
       }
       const data = await res.json();
-      setImageUrl(`/api/storage/download/${key}`);
+      setImageUrl(data.url);
     } catch (e: any) {
       setError(e.message || 'Image upload failed');
     } finally {
