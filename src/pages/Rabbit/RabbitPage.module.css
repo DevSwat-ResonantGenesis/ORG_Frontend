@@ -1208,7 +1208,19 @@ select.inlineInput option {
   font-size: 16px;
   font-weight: 700;
   color: var(--text, #e4e4e7);
+  margin-bottom: 4px;
+}
+
+.profileRole {
+  font-size: 11px;
+  color: var(--accent, #7c3aed);
+  background: rgba(124, 58, 237, 0.12);
+  padding: 2px 8px;
+  border-radius: 10px;
+  display: inline-block;
   margin-bottom: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
 }
 
 .profileStatsGrid {

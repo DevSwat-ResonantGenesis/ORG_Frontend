@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './RabbitPage.module.css';
 import { useAuth } from '../../security/auth/AuthProvider';
-import { getSessionData } from '../../utils/auth-cookies';
 
 /* ── Types matching backend schemas ── */
 interface Community {
@@ -299,31 +298,37 @@ const ShareDropdown: React.FC<ShareDropdownProps> = ({ postId, postTitle, onClos
 /* ═══════════════════════════════════════════════
    Main RabbitPage Component
    ═══════════════════════════════════════════════ */
+interface UserProfile {
+  id: string;
+  email: string;
+  username: string | null;
+  full_name: string | null;
+  role: string | null;
+}
+
 const RabbitPage: React.FC = () => {
-  /* ── Auth: resolve real userId from multiple sources ── */
+  /* ── Auth: fetch real user profile from backend API only ── */
   const { userId: authUserId } = useAuth();
-  const [resolvedUserId, setResolvedUserId] = useState<string | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    // 1. Try useAuth first
-    if (authUserId) { setResolvedUserId(authUserId); return; }
-    // 2. Try session cookie
-    try {
-      const session = getSessionData();
-      if (session?.userId) { setResolvedUserId(session.userId); return; }
-    } catch { /* ignore */ }
-    // 3. Fallback: call /auth/me API
-    fetch('/api/v1/auth/me', { credentials: 'include' })
+    fetch('/auth/me', { credentials: 'include' })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
-        if (data?.id || data?.user_id) {
-          setResolvedUserId(data.id || data.user_id);
+        if (data?.id) {
+          setUserProfile({
+            id: data.id,
+            email: data.email || '',
+            username: data.username || data.full_name || data.email?.split('@')[0] || null,
+            full_name: data.full_name || null,
+            role: data.role || null,
+          });
         }
       })
       .catch(() => {});
-  }, [authUserId]);
+  }, []);
 
-  const userId = resolvedUserId;
+  const userId = userProfile?.id || authUserId || null;
 
   /* ── State ── */
   const [communities, setCommunities] = useState<Community[]>([]);
@@ -763,7 +768,8 @@ const RabbitPage: React.FC = () => {
                   <UserIcon />
                 </div>
               </div>
-              <div className={styles.profileName}>{userId ? `u/${userId.slice(0, 8)}` : 'Guest'}</div>
+              <div className={styles.profileName}>{userProfile ? (userProfile.username || userProfile.email.split('@')[0]) : 'Guest'}</div>
+              {userProfile?.role && <div className={styles.profileRole}>{userProfile.role}</div>}
               <div className={styles.profileStatsGrid}>
                 <div className={styles.profileStat}>
                   <span className={styles.profileStatValue}>{userKarma}</span>
