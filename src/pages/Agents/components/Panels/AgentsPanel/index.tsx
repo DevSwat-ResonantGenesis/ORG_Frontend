@@ -1100,6 +1100,119 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   </div>
                 </div>
 
+                {detailAgent.agent_source === 'openclaw' && (
+                  <div className={styles.versionSection}>
+                    <h4 className={styles.sectionTitle} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', padding: '2px 8px', borderRadius: 6, fontSize: 10, fontWeight: 700, color: '#1a1a2e' }}>OpenClaw</span>
+                      Federation
+                    </h4>
+                    <div className={styles.detailGrid}>
+                      <div className={styles.detailItem}>
+                        <span className={styles.detailLabel}>Source</span>
+                        <span className={styles.detailValue} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <span style={{ width: 6, height: 6, borderRadius: '50%', background: detailAgent.openclaw_config?.connection_status === 'online' ? '#22c55e' : detailAgent.openclaw_config?.connection_status === 'degraded' ? '#f59e0b' : '#ef4444' }} />
+                          {detailAgent.openclaw_config?.connection_status || 'unknown'}
+                        </span>
+                      </div>
+                      <div className={styles.detailItem}>
+                        <span className={styles.detailLabel}>Memory Mode</span>
+                        <span className={styles.detailValue}>{detailAgent.openclaw_config?.memory_mode || 'cloud'}</span>
+                      </div>
+                      {detailAgent.openclaw_config?.hardware?.gpu && (
+                        <div className={styles.detailItem}>
+                          <span className={styles.detailLabel}>GPU</span>
+                          <span className={styles.detailValue}>{detailAgent.openclaw_config.hardware.gpu}</span>
+                        </div>
+                      )}
+                      {detailAgent.openclaw_config?.hardware?.cpu && (
+                        <div className={styles.detailItem}>
+                          <span className={styles.detailLabel}>CPU</span>
+                          <span className={styles.detailValue}>{detailAgent.openclaw_config.hardware.cpu}</span>
+                        </div>
+                      )}
+                      {detailAgent.openclaw_config?.hardware?.ram && (
+                        <div className={styles.detailItem}>
+                          <span className={styles.detailLabel}>RAM</span>
+                          <span className={styles.detailValue}>{detailAgent.openclaw_config.hardware.ram}</span>
+                        </div>
+                      )}
+                      {detailAgent.openclaw_config?.endpoint_url && (
+                        <div className={styles.detailItem}>
+                          <span className={styles.detailLabel}>Endpoint</span>
+                          <span className={styles.detailValue} style={{ fontSize: 9, wordBreak: 'break-all' }}>{detailAgent.openclaw_config.endpoint_url}</span>
+                        </div>
+                      )}
+                      {detailAgent.openclaw_config?.last_heartbeat && (
+                        <div className={styles.detailItem}>
+                          <span className={styles.detailLabel}>Last Heartbeat</span>
+                          <span className={styles.detailValue}>{new Date(detailAgent.openclaw_config.last_heartbeat).toLocaleString()}</span>
+                        </div>
+                      )}
+                      {detailAgent.openclaw_config?.available_models && detailAgent.openclaw_config.available_models.length > 0 && (
+                        <div className={styles.detailItem}>
+                          <span className={styles.detailLabel}>Models</span>
+                          <span className={styles.detailValue}>{detailAgent.openclaw_config.available_models.join(', ')}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Governance & DSID badges */}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+                      {detailAgent.dsid && (
+                        <span style={{ background: 'rgba(139,92,246,0.15)', padding: '3px 10px', borderRadius: 6, fontSize: 10, color: '#a78bfa', display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#a78bfa' }} />
+                          DSID: {detailAgent.dsid.slice(0, 12)}…
+                        </span>
+                      )}
+                      {detailAgent.openclaw_config?.rara_enrolled && (
+                        <span style={{ background: 'rgba(34,197,94,0.15)', padding: '3px 10px', borderRadius: 6, fontSize: 10, color: '#86efac', display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e' }} />
+                          RARA Governed
+                        </span>
+                      )}
+                      {detailAgent.openclaw_config?.custom_skills && detailAgent.openclaw_config.custom_skills.length > 0 && (
+                        <span style={{ background: 'rgba(251,191,36,0.15)', padding: '3px 10px', borderRadius: 6, fontSize: 10, color: '#fcd34d' }}>
+                          {detailAgent.openclaw_config.custom_skills.length} custom skills
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Action buttons for OpenClaw agents */}
+                    <div style={{ display: 'flex', gap: 6, marginTop: 10 }}>
+                      <button
+                        style={{ flex: 1, padding: '6px 10px', fontSize: 10, fontWeight: 600, borderRadius: 6, border: 'none', cursor: 'pointer', background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#1a1a2e' }}
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          try {
+                            const resp = await fetch('/api/v1/openclaw/marketplace/list', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('access_token') || ''}` },
+                              body: JSON.stringify({ agent_id: detailAgent.id, price: 0, description: detailAgent.name }),
+                            });
+                            if (resp.ok) alert('Listed on Marketplace!');
+                            else { const d = await resp.json(); alert(d.detail || 'Failed'); }
+                          } catch { alert('Failed to list'); }
+                        }}
+                        title="List this agent on the OpenClaw Marketplace"
+                      >List on Marketplace</button>
+                      <button
+                        style={{ flex: 1, padding: '6px 10px', fontSize: 10, fontWeight: 600, borderRadius: 6, border: '1px solid rgba(139,92,246,0.3)', cursor: 'pointer', background: 'rgba(139,92,246,0.1)', color: '#a78bfa' }}
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          try {
+                            const resp = await fetch(`/api/v1/openclaw/governance/${detailAgent.id}`, {
+                              headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token') || ''}` },
+                            });
+                            if (resp.ok) { const d = await resp.json(); alert(JSON.stringify(d, null, 2)); }
+                            else { const d = await resp.json(); alert(d.detail || 'Failed'); }
+                          } catch { alert('Failed to fetch governance'); }
+                        }}
+                        title="View RARA governance status"
+                      >Governance Status</button>
+                    </div>
+                  </div>
+                )}
+
                 {agentBenchmarks && (
                   <div className={styles.versionSection}>
                     <h4 className={styles.sectionTitle}><Icons.TrendingUp /> Performance</h4>
