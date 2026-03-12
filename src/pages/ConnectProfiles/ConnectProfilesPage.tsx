@@ -5,6 +5,7 @@ import { connectGitHub, getGitHubStatus } from '@/api/github';
 import { initiateGoogleServiceConnection } from '@/api/sso';
 import fastapiClient from '@/api/fastapiClient';
 import { logger } from '@/utils/logger';
+import localLLMTunnel from '@/services/localLLMTunnel';
 import { fetchUserApiKeys, addUserApiKey, deleteUserApiKey, validateApiKey, API_KEY_PROVIDERS } from '@/api/userApiKeys';
 
 interface Integration {
@@ -139,6 +140,13 @@ const ConnectProfilesPage: React.FC = () => {
     getGitHubStatus().then(s => {
       if (s.connected && s.username) setConnections(p => ({ ...p, github: s.username! }));
     }).catch(() => {});
+    // Auto-start Local LLM tunnel if already connected
+    if (map['local-llm'] && !localLLMTunnel.isConnected) {
+      const llmKey = keys.find(k => k.provider === 'local-llm');
+      const endpoint = llmKey?.keyPrefix || 'http://localhost:11434';
+      // The stored keyPrefix is a masked version; use default or stored endpoint
+      localLLMTunnel.connect(endpoint.startsWith('http') ? endpoint : 'http://localhost:11434');
+    }
   }, []);
 
   useEffect(() => { loadConnections(); }, [loadConnections]);
@@ -199,6 +207,10 @@ const ConnectProfilesPage: React.FC = () => {
     const keyId = keyIds[id];
     if (keyId) {
       await deleteUserApiKey(keyId);
+    }
+    // Stop local LLM tunnel when disconnecting
+    if (id === 'local-llm') {
+      localLLMTunnel.disconnect();
     }
     // Also evict from in-memory GitHub cache by clearing OAuth token on server (best effort)
     setConnections(p => { const u = { ...p }; delete u[id]; return u; });
@@ -263,7 +275,11 @@ const ConnectProfilesPage: React.FC = () => {
     setSaving(true); setMsg(null);
     try {
       await saveConn(modal.id, inputValue.trim(), `${modal.name} Key`);
-      setMsg({ type: 'success', text: `${modal.name} connected! Key stored securely (encrypted on server).` });
+      // Start local LLM tunnel when connecting
+      if (modal.id === 'local-llm') {
+        localLLMTunnel.connect(inputValue.trim());
+      }
+      setMsg({ type: 'success', text: modal.id === 'local-llm' ? 'Local LLM tunnel connected! Your browser is now bridging requests to your local model.' : `${modal.name} connected! Key stored securely (encrypted on server).` });
       setTimeout(() => { setModal(null); setMsg(null); }, 1200);
     } catch (e) { logger.error('save integration', e); setMsg({ type: 'error', text: 'Failed to save. Please try again.' }); }
     finally { setSaving(false); }
@@ -728,7 +744,25 @@ setInterval(async () => {
                 </>
               )}
 
-              {(modal.authType === 'pat' || modal.authType === 'apikey') && (
+              {modal.id === 'local-llm' && (
+                <>
+                  <div style={{ padding: 10, background: 'rgba(34,211,238,0.08)', borderRadius: 8, fontSize: 12, lineHeight: 1.6, marginBottom: 8 }}>
+                    <strong>How it works:</strong> Your browser opens a secure tunnel to ResonantGenesis. When Resonant Chat needs your local model, the request flows: <em>Server → Tunnel → Your Browser → localhost Ollama → back</em>. No SSH tunnels needed. Keep this tab open while using local models.
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>🔑 {modal.keyLabel || 'Local Endpoint URL'}</label>
+                    <input className={styles.formInput} type="text" placeholder={modal.keyPlaceholder || 'http://localhost:11434/v1'} value={inputValue} onChange={e => setInputValue(e.target.value)} autoComplete="off" />
+                    <span className={styles.formHint}>{modal.helpText || 'Ollama default: http://localhost:11434 · LM Studio: http://localhost:1234/v1'}</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: '#a1a1aa', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: localLLMTunnel.isConnected ? '#22c55e' : '#71717a', display: 'inline-block' }} />
+                    {localLLMTunnel.isConnected ? 'Tunnel active' : 'Tunnel will start on connect'}
+                  </div>
+                  <button className={styles.submitBtn} onClick={handleSave} disabled={saving || !inputValue.trim()}>{saving ? 'Connecting tunnel…' : 'Connect Local LLM'}</button>
+                </>
+              )}
+
+              {(modal.authType === 'pat' || modal.authType === 'apikey') && modal.id !== 'local-llm' && (
                 <>
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>🔑 {modal.keyLabel || 'API Key'}</label>
