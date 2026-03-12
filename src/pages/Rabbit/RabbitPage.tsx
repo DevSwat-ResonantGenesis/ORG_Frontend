@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './RabbitPage.module.css';
 import { useAuth } from '../../security/auth/AuthProvider';
+import { getSessionData } from '../../utils/auth-cookies';
 
 /* ── Types matching backend schemas ── */
 interface Community {
@@ -298,8 +299,30 @@ const ShareDropdown: React.FC<ShareDropdownProps> = ({ postId, postTitle, onClos
    Main RabbitPage Component
    ═══════════════════════════════════════════════ */
 const RabbitPage: React.FC = () => {
-  /* ── Auth ── */
-  const { userId } = useAuth();
+  /* ── Auth: resolve real userId from multiple sources ── */
+  const { userId: authUserId } = useAuth();
+  const [resolvedUserId, setResolvedUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    // 1. Try useAuth first
+    if (authUserId) { setResolvedUserId(authUserId); return; }
+    // 2. Try session cookie
+    try {
+      const session = getSessionData();
+      if (session?.userId) { setResolvedUserId(session.userId); return; }
+    } catch { /* ignore */ }
+    // 3. Fallback: call /auth/me API
+    fetch('/api/v1/auth/me', { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.id || data?.user_id) {
+          setResolvedUserId(data.id || data.user_id);
+        }
+      })
+      .catch(() => {});
+  }, [authUserId]);
+
+  const userId = resolvedUserId;
 
   /* ── State ── */
   const [communities, setCommunities] = useState<Community[]>([]);
