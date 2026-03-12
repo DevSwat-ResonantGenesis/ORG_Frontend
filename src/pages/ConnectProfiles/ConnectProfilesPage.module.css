@@ -160,15 +160,15 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
 }
 
 .card {
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 14px;
-  padding: 20px;
+  border-radius: 10px;
+  padding: 12px;
   transition: all 0.2s;
   cursor: pointer;
   position: relative;
@@ -204,8 +204,8 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  height: 50px;
   background: radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, transparent 70%);
   pointer-events: none;
 }
@@ -213,19 +213,19 @@
 .cardTop {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 22px;
+  font-size: 16px;
   overflow: hidden;
 }
 
@@ -240,20 +240,20 @@
 }
 
 .cardName {
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-primary, #e4e4e7);
-  margin: 0 0 4px;
+  margin: 0 0 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .cardDesc {
-  font-size: 12px;
+  font-size: 10px;
   color: var(--text-secondary, #71717a);
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.3;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -263,10 +263,10 @@
 .statusBadge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 8px;
-  border-radius: 10px;
-  font-size: 11px;
+  gap: 3px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 9px;
   font-weight: 500;
   white-space: nowrap;
   flex-shrink: 0;
@@ -291,8 +291,8 @@
 }
 
 .dot {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   display: inline-block;
 }
@@ -304,23 +304,23 @@
 .cardFooter {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 14px;
+  gap: 6px;
+  margin-top: 8px;
 }
 
 .connectBtn {
   flex: 1;
-  padding: 8px 14px;
-  border-radius: 8px;
+  padding: 5px 10px;
+  border-radius: 6px;
   border: none;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .connectBtn.primary {
@@ -351,12 +351,12 @@
 }
 
 .connectedInfo {
-  font-size: 11px;
+  font-size: 9px;
   color: #52525b;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 80px;
+  max-width: 60px;
 }
 
 /* Modal */

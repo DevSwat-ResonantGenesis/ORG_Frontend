@@ -211,5 +211,10 @@ export const API_KEY_PROVIDERS = [
   { id: 'replicate', name: 'Replicate', placeholder: 'r8_...', helpUrl: 'https://replicate.com/account/api-tokens', models: ['meta/meta-llama-3.1-70b-instruct', 'stability-ai/sdxl'] },
   { id: 'stability', name: 'Stability AI', placeholder: 'sk-...', helpUrl: 'https://platform.stability.ai/account/keys', models: ['stable-diffusion-xl', 'stable-image-ultra'] },
   { id: 'elevenlabs', name: 'ElevenLabs', placeholder: 'el_...', helpUrl: 'https://elevenlabs.io/app/settings/api-keys', models: ['eleven_turbo_v2', 'eleven_multilingual_v2'] },
-
+  { id: 'grok', name: 'Grok (xAI)', placeholder: 'xai-...', helpUrl: 'https://console.x.ai', models: ['grok-2', 'grok-2-mini', 'grok-beta'] },
+  { id: 'kimi', name: 'Kimi (Moonshot)', placeholder: 'sk-...', helpUrl: 'https://platform.moonshot.cn/console/api-keys', models: ['moonshot-v1-128k', 'moonshot-v1-32k', 'moonshot-v1-8k'] },
+  { id: 'metaai', name: 'Meta AI (Llama)', placeholder: '...', helpUrl: 'https://ai.meta.com/resources/models-and-libraries/llama-downloads/', models: ['llama-3.2-90b', 'llama-3.2-11b', 'llama-3.1-405b'] },
+  { id: 'copilot', name: 'Microsoft Copilot', placeholder: '...', helpUrl: 'https://copilot.microsoft.com', models: ['gpt-4o', 'gpt-4-turbo'] },
+  { id: 'glm', name: 'GLM (Zhipu AI)', placeholder: '...', helpUrl: 'https://open.bigmodel.cn/usercenter/apikeys', models: ['glm-4', 'glm-4v', 'glm-3-turbo'] },
+  { id: 'chatgpt', name: 'ChatGPT (Direct)', placeholder: 'sk-...', helpUrl: 'https://platform.openai.com/api-keys', models: ['chatgpt-4o-latest', 'gpt-4o-mini'] },
 ];

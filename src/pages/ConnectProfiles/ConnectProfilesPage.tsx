@@ -32,15 +32,12 @@ const INTEGRATIONS: Integration[] = [
   { id: 'github', name: 'GitHub', description: 'Push projects, sync repos, trigger CI/CD pipelines directly from the builder.', emoji: '🐙', icon: '/images/connect-icons/github.png', logoColor: '#e4e4e7', category: 'Version Control', authType: 'oauth', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'ghp_...', helpUrl: 'https://github.com/settings/tokens/new?scopes=repo,read:user', helpText: 'Create token with repo & read:user scopes' },
   { id: 'gitlab', name: 'GitLab', description: 'Push generated projects to your GitLab repositories.', emoji: '🦊', icon: '/images/connect-icons/gitlab.png', logoColor: '#FC6D26', category: 'Version Control', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'glpat-...', helpUrl: 'https://gitlab.com/-/profile/personal_access_tokens', helpText: 'Scopes: api, read_user, write_repository' },
   { id: 'bitbucket', name: 'Bitbucket', description: 'Sync projects to Bitbucket repositories.', emoji: '🪣', icon: '/images/connect-icons/bitbucket.png', logoColor: '#0052CC', category: 'Version Control', authType: 'pat', status: 'available', keyLabel: 'App Password', keyPlaceholder: 'ATBB...', helpUrl: 'https://bitbucket.org/account/settings/app-passwords/', helpText: 'Repositories read/write permission required' },
-  { id: 'openclaw', name: 'Openclaw', description: "Connect to Openclaw's agent network for cross-platform AI orchestration.", emoji: '🦞', logoColor: '#FF4500', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'oclaw_...', helpUrl: 'https://openclaw.ai/settings/api-keys', helpText: 'Get from your Openclaw account settings' },
-  { id: 'openai', name: 'OpenAI', description: 'Use your own GPT-4o key for unlimited AI generations without platform quotas.', emoji: '🤖', icon: '/images/connect-icons/openai.png', logoColor: '#10A37F', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'sk-proj-...', helpUrl: 'https://platform.openai.com/api-keys', helpText: 'Get from OpenAI platform dashboard' },
-  { id: 'anthropic', name: 'Anthropic Claude', description: 'Power builds and chat with Claude using your own Anthropic API key.', emoji: '🧠', icon: '/images/connect-icons/anthropic.png', logoColor: '#D4A574', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'sk-ant-...', helpUrl: 'https://console.anthropic.com/settings/keys', helpText: 'Get from Anthropic console' },
-  { id: 'huggingface', name: 'HuggingFace', description: 'Access open-source models and the HuggingFace Hub.', emoji: '🤗', icon: '/images/connect-icons/huggingface.png', logoColor: '#FF9A00', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'Access Token', keyPlaceholder: 'hf_...', helpUrl: 'https://huggingface.co/settings/tokens', helpText: 'Create read-access token' },
-  { id: 'local-llm', name: 'Local LLM', description: 'Connect your own local LLM (Ollama, LM Studio, llama.cpp) running on your device to ResonantGenesis.', emoji: '💻', logoColor: '#22d3ee', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'Local Endpoint URL', keyPlaceholder: 'http://localhost:11434/v1', helpText: 'Enter the API endpoint of your local model server (e.g. Ollama, LM Studio)' },
+  { id: 'openclaw', name: 'Openclaw', description: "Connect to Openclaw's agent network for cross-platform AI orchestration.", emoji: '�', logoColor: '#FF4500', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'oclaw_...', helpUrl: 'https://openclaw.ai/settings/api-keys', helpText: 'Get from your Openclaw account settings' },
+  { id: 'local-llm', name: 'Local LLM', description: 'Connect your own local LLM (Ollama, LM Studio, llama.cpp) running on your device.', emoji: '💻', logoColor: '#22d3ee', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'Local Endpoint URL', keyPlaceholder: 'http://localhost:11434/v1', helpText: 'Enter the API endpoint of your local model server (e.g. Ollama, LM Studio)' },
   { id: 'digitalocean', name: 'DigitalOcean', description: 'Deploy projects to DigitalOcean Droplets, App Platform, or Kubernetes.', emoji: '🌊', icon: '/images/connect-icons/digitalocean.png', logoColor: '#0080FF', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'dop_v1_...', helpUrl: 'https://cloud.digitalocean.com/account/api/tokens', helpText: 'Read/write access required' },
   { id: 'vercel', name: 'Vercel', description: 'One-click deploy React/Next.js projects to the Vercel edge network.', emoji: '▲', icon: '/images/connect-icons/vercel.svg', logoColor: '#ffffff', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Access Token', keyPlaceholder: 'vercel_token_...', helpUrl: 'https://vercel.com/account/tokens', helpText: 'Create from Vercel account settings' },
-  { id: 'netlify', name: 'Netlify', description: 'Deploy static sites and serverless functions to Netlify CDN.', emoji: '🌐', logoColor: '#00C7B7', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'nfp_...', helpUrl: 'https://app.netlify.com/user/applications#personal-access-tokens', helpText: 'Create from Netlify user settings' },
-  { id: 'railway', name: 'Railway', description: 'Deploy any backend project to Railway with automatic scaling.', emoji: '🚂', logoColor: '#7A3FDE', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'API Token', keyPlaceholder: 'railway_token_...', helpUrl: 'https://railway.app/account/tokens', helpText: 'Create from Railway account settings' },
+  { id: 'netlify', name: 'Netlify', description: 'Deploy static sites and serverless functions to Netlify CDN.', emoji: '🌐', icon: '/images/connect-icons/netlify.png', logoColor: '#00C7B7', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'nfp_...', helpUrl: 'https://app.netlify.com/user/applications#personal-access-tokens', helpText: 'Create from Netlify user settings' },
+  { id: 'railway', name: 'Railway', description: 'Deploy any backend project to Railway with automatic scaling.', emoji: '🚂', icon: '/images/connect-icons/railway.png', logoColor: '#7A3FDE', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'API Token', keyPlaceholder: 'railway_token_...', helpUrl: 'https://railway.app/account/tokens', helpText: 'Create from Railway account settings' },
   { id: 'aws', name: 'Amazon AWS', description: 'Deploy to EC2, Lambda, ECS, or S3.', emoji: '☁️', logoColor: '#FF9900', category: 'Cloud & Hosting', authType: 'coming_soon', status: 'coming_soon' },
   { id: 'google-calendar', name: 'Google Calendar', description: 'Schedule deployments and milestones synced to your calendar.', emoji: '📅', icon: '/images/connect-icons/google-calendar.png', logoColor: '#4285F4', category: 'Productivity', authType: 'oauth', status: 'available' },
   { id: 'google-drive', name: 'Google Drive', description: 'Save generated projects and docs directly to Google Drive.', emoji: '📁', icon: '/images/connect-icons/google-drive.png', logoColor: '#34A853', category: 'Productivity', authType: 'oauth', status: 'available' },
@@ -61,15 +58,29 @@ const INTEGRATIONS: Integration[] = [
   { id: 'newrelic', name: 'New Relic', description: 'Full-stack observability and performance monitoring.', emoji: '🔍', icon: '/images/connect-icons/newrelic.png', logoColor: '#1CE783', category: 'Monitoring', authType: 'coming_soon', status: 'coming_soon' },
 ];
 
-const PROVIDER_STYLES: Record<string, { emoji: string; color: string }> = {
-  openai: { emoji: '🤖', color: '#10A37F' }, anthropic: { emoji: '🧠', color: '#D4A574' },
-  google: { emoji: '✨', color: '#4285F4' }, mistral: { emoji: '🌊', color: '#FF7000' },
-  groq: { emoji: '⚡', color: '#F55036' }, cohere: { emoji: '🔮', color: '#39594D' },
-  together: { emoji: '🤝', color: '#6366F1' }, deepseek: { emoji: '🔍', color: '#4D6BFE' },
-  openrouter: { emoji: '🔀', color: '#6366F1' }, perplexity: { emoji: '🎯', color: '#20808D' },
-  fireworks: { emoji: '🎆', color: '#FF6600' }, huggingface: { emoji: '🤗', color: '#FF9A00' },
-  replicate: { emoji: '🔄', color: '#3B82F6' }, stability: { emoji: '🎨', color: '#7C3AED' },
-  elevenlabs: { emoji: '🎙️', color: '#000000' }, github: { emoji: '🐙', color: '#e4e4e7' },
+const PROVIDER_STYLES: Record<string, { emoji: string; icon?: string; color: string }> = {
+  openai: { emoji: '🤖', icon: '/images/connect-icons/openai.png', color: '#10A37F' },
+  anthropic: { emoji: '🧠', icon: '/images/connect-icons/claude.png', color: '#D4A574' },
+  google: { emoji: '✨', icon: '/images/connect-icons/gemini.jpeg', color: '#4285F4' },
+  mistral: { emoji: '🌊', icon: '/images/connect-icons/mistral.png', color: '#FF7000' },
+  groq: { emoji: '⚡', icon: '/images/connect-icons/groq.png', color: '#F55036' },
+  cohere: { emoji: '🔮', icon: '/images/connect-icons/cohere.webp', color: '#39594D' },
+  together: { emoji: '🤝', icon: '/images/connect-icons/together.jpeg', color: '#6366F1' },
+  deepseek: { emoji: '🔍', icon: '/images/connect-icons/deepseek.jpeg', color: '#4D6BFE' },
+  openrouter: { emoji: '🔀', icon: '/images/connect-icons/openrouter.png', color: '#6366F1' },
+  perplexity: { emoji: '🎯', icon: '/images/connect-icons/perplexity.png', color: '#20808D' },
+  fireworks: { emoji: '🎆', icon: '/images/connect-icons/fireworks.png', color: '#FF6600' },
+  huggingface: { emoji: '🤗', icon: '/images/connect-icons/huggingface.png', color: '#FF9A00' },
+  replicate: { emoji: '🔄', icon: '/images/connect-icons/replicate.webp', color: '#3B82F6' },
+  stability: { emoji: '🎨', icon: '/images/connect-icons/stability.jpg', color: '#7C3AED' },
+  elevenlabs: { emoji: '🎙️', icon: '/images/connect-icons/elevenlabs.jpeg', color: '#000000' },
+  github: { emoji: '🐙', icon: '/images/connect-icons/github.png', color: '#e4e4e7' },
+  grok: { emoji: '🤖', icon: '/images/connect-icons/grok.webp', color: '#000000' },
+  kimi: { emoji: '🌙', icon: '/images/connect-icons/kimi.png', color: '#000000' },
+  metaai: { emoji: '🔷', icon: '/images/connect-icons/metaai.jpeg', color: '#0668E1' },
+  copilot: { emoji: '🤖', icon: '/images/connect-icons/copilot.jpeg', color: '#2B88D8' },
+  glm: { emoji: '🧠', icon: '/images/connect-icons/glm.png', color: '#4285F4' },
+  chatgpt: { emoji: '💬', icon: '/images/connect-icons/chatgpt.png', color: '#10A37F' },
 };
 
 const CATEGORIES = ['Version Control', 'AI & Intelligence', 'Cloud & Hosting', 'Productivity', 'Design', 'Databases', 'Payments', 'Communication', 'Automation', 'Monitoring'];
@@ -165,6 +176,8 @@ const ConnectProfilesPage: React.FC = () => {
   }, [search]);
 
   const connected = INTEGRATIONS.filter(i => connections[i.id]);
+  const connectedProviders = API_KEY_PROVIDERS.filter(p => p.id !== 'github' && connections[p.id]);
+  const totalConnected = connected.length + connectedProviders.length;
 
   const openModal = async (ig: Integration) => {
     if (ig.status === 'coming_soon') return;
@@ -238,10 +251,16 @@ const ConnectProfilesPage: React.FC = () => {
       )}
 
       <div className={styles.connectedSummary}>
-        <span className={styles.summaryTitle}>✅ Connected ({connected.length})</span>
-        {connected.length === 0
+        <span className={styles.summaryTitle}>✅ Connected ({totalConnected})</span>
+        {totalConnected === 0
           ? <span className={styles.noConnected}>No integrations connected yet — pick one below to get started.</span>
-          : <div className={styles.summaryChips}>{connected.map(i => <span key={i.id} className={styles.summaryChip} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><IntegrationIcon ig={i} size={16} /> {i.name}</span>)}</div>
+          : <div className={styles.summaryChips}>
+              {connected.map(i => <span key={i.id} className={styles.summaryChip} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><IntegrationIcon ig={i} size={14} /> {i.name}</span>)}
+              {connectedProviders.map(p => {
+                const ps = PROVIDER_STYLES[p.id];
+                return <span key={p.id} className={styles.summaryChip} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>{ps?.icon ? <img src={ps.icon} alt={p.name} style={{ width: 14, height: 14, objectFit: 'contain', borderRadius: 2 }} /> : <span style={{ fontSize: 14 }}>{ps?.emoji || '🔑'}</span>} {p.name}</span>;
+              })}
+            </div>
         }
       </div>
 
@@ -249,8 +268,8 @@ const ConnectProfilesPage: React.FC = () => {
         <div className={styles.categoryHeader} onClick={() => setProvidersOpen(p => !p)} style={{ cursor: 'pointer', userSelect: 'none' }}>
           <span className={styles.categoryEmoji}>🔑</span>
           <span className={styles.categoryTitle}>Model Provider API Keys</span>
-          <span className={styles.categoryCount}>{API_KEY_PROVIDERS.length}</span>
-          <span style={{ marginLeft: 'auto', fontSize: 12, color: '#71717a', transition: 'transform 0.2s', transform: providersOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
+          <span className={styles.categoryCount}>{API_KEY_PROVIDERS.filter(p => p.id !== 'github').length}</span>
+          <span style={{ fontSize: 12, color: '#71717a', transition: 'transform 0.2s', transform: providersOpen ? 'rotate(180deg)' : 'rotate(0deg)', marginLeft: 8 }}>▼</span>
         </div>
         {providersOpen && (
           <div className={styles.grid}>
@@ -261,8 +280,8 @@ const ConnectProfilesPage: React.FC = () => {
                 <div key={prov.id} className={`${styles.card} ${isConn ? styles.connected : ''}`} onClick={() => { if (!isConn) { setProviderModal(prov); setProviderKeyInput(''); setProviderKeyName(''); setProviderValidation(null); setMsg(null); } }}>
                   {isConn && <div className={styles.connectedGlow} />}
                   <div className={styles.cardTop}>
-                    <div className={styles.logo} style={{ background: `${ps.color}22`, color: ps.color, fontSize: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span style={{ fontSize: 24 }}>{ps.emoji}</span>
+                    <div className={styles.logo} style={{ background: `${ps.color}22`, color: ps.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {ps.icon ? <img src={ps.icon} alt={prov.name} style={{ width: 20, height: 20, objectFit: 'contain', borderRadius: 4 }} /> : <span style={{ fontSize: 16 }}>{ps.emoji}</span>}
                     </div>
                     <div className={styles.cardMeta}>
                       <h3 className={styles.cardName}>{prov.name}</h3>
@@ -309,7 +328,7 @@ const ConnectProfilesPage: React.FC = () => {
                     <div key={ig.id} className={`${styles.card} ${isConn ? styles.connected : ''} ${isSoon ? styles.comingSoon : ''}`} onClick={() => !isConn && openModal(ig)}>
                       {isConn && <div className={styles.connectedGlow} />}
                       <div className={styles.cardTop}>
-                        <div className={styles.logo} style={{ background: `${ig.logoColor}22`, color: ig.logoColor, fontSize: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IntegrationIcon ig={ig} size={24} /></div>
+                        <div className={styles.logo} style={{ background: `${ig.logoColor}22`, color: ig.logoColor, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IntegrationIcon ig={ig} size={20} /></div>
                         <div className={styles.cardMeta}>
                           <h3 className={styles.cardName}>{ig.name}</h3>
                           <p className={styles.cardDesc}>{ig.description}</p>
@@ -435,8 +454,8 @@ const ConnectProfilesPage: React.FC = () => {
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
             <button className={styles.modalClose} onClick={() => setProviderModal(null)}>×</button>
             <div className={styles.modalHeader}>
-              <div className={styles.modalLogo} style={{ background: `${(PROVIDER_STYLES[providerModal.id] || { color: '#71717a' }).color}22`, color: (PROVIDER_STYLES[providerModal.id] || { color: '#71717a' }).color, fontSize: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span style={{ fontSize: 28 }}>{(PROVIDER_STYLES[providerModal.id] || { emoji: '🔑' }).emoji}</span>
+              <div className={styles.modalLogo} style={{ background: `${(PROVIDER_STYLES[providerModal.id] || { color: '#71717a' }).color}22`, color: (PROVIDER_STYLES[providerModal.id] || { color: '#71717a' }).color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {(PROVIDER_STYLES[providerModal.id])?.icon ? <img src={PROVIDER_STYLES[providerModal.id].icon} alt={providerModal.name} style={{ width: 28, height: 28, objectFit: 'contain', borderRadius: 6 }} /> : <span style={{ fontSize: 28 }}>{(PROVIDER_STYLES[providerModal.id] || { emoji: '🔑' }).emoji}</span>}
               </div>
               <div>
                 <h2 className={styles.modalTitle}>Connect {providerModal.name}</h2>
