@@ -4,6 +4,8 @@ import { Header } from '@/components/layout/Header/Header';
 import FloatingChatWidget from '@/components/ResonantChat/FloatingChatWidget';
 import { useGlobalKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import { deviceIsMobile } from '@/utils/deviceCheck';
+import localLLMTunnel from '@/services/localLLMTunnel';
+import { fetchUserApiKeys } from '@/api/userApiKeys';
 import './MainLayout.css';
 import './clickability-fix.css';
 
@@ -36,6 +38,21 @@ const MainLayout = ({ children }: Props) => {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Global Local LLM tunnel auto-start — keeps tunnel alive across page navigation
+  useEffect(() => {
+    if (localLLMTunnel.isConnected) return; // already running
+    let cancelled = false;
+    fetchUserApiKeys().then(keys => {
+      if (cancelled) return;
+      const llmKey = keys.find(k => k.provider === 'local-llm');
+      if (llmKey) {
+        const ep = llmKey.keyPrefix?.startsWith('http') ? llmKey.keyPrefix : 'http://localhost:11434';
+        localLLMTunnel.connect(ep);
+      }
+    }).catch(() => {});
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
