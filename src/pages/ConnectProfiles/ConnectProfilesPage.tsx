@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from './ConnectProfilesPage.module.css';
 import { connectGitHub, getGitHubStatus } from '@/api/github';
 import { initiateGoogleServiceConnection } from '@/api/sso';
+import fastapiClient from '@/api/fastapiClient';
 import { logger } from '@/utils/logger';
 import { fetchUserApiKeys, addUserApiKey, deleteUserApiKey } from '@/api/userApiKeys';
 
@@ -147,8 +148,8 @@ const ConnectProfilesPage: React.FC = () => {
     if (ig.id === 'discord') {
       // Discord uses bot invite flow, not traditional OAuth
       try {
-        const resp = await fetch('/api/v1/discord/invite-url', { credentials: 'include' });
-        const data = await resp.json();
+        const resp = await fastapiClient.get('/discord/invite-url');
+        const data = resp.data;
         if (data.invite_url) {
           window.open(data.invite_url, '_blank');
           setMsg({ type: 'success', text: 'After adding the bot, run /connect <agent_id> in your Discord server.' });
