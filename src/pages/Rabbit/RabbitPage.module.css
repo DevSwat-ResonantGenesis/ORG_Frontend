@@ -3,15 +3,15 @@
 .rabbitRoot {
   display: flex;
   gap: 16px;
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 16px;
+  padding: 16px 24px;
   min-height: 70vh;
 }
 
 /* ── Left sidebar – communities (Reddit-style nav) ── */
 .leftSidebar {
-  width: 270px;
+  width: 240px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -24,7 +24,7 @@
 
 /* ── Right sidebar – user profile + community info ── */
 .rightSidebar {
-  width: 312px;
+  width: 280px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -1333,16 +1333,13 @@ select.inlineInput option {
 /* ══════════════════════════════
    Responsive – hide sidebars on small screens
    ══════════════════════════════ */
-@media (max-width: 1100px) {
+@media (max-width: 860px) {
   .rightSidebar {
     display: none;
   }
-  .rabbitRoot {
-    max-width: 900px;
-  }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .leftSidebar {
     display: none;
   }
