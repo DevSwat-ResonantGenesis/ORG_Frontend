@@ -162,6 +162,48 @@ export const initiateSSO = async (providerId: string, redirectUri?: string): Pro
 };
 
 /**
+ * Initiate Google service connection (Drive, Calendar, Gmail)
+ * Returns authorization URL to redirect user to Google with service-specific scopes.
+ */
+export const initiateGoogleServiceConnection = async (
+  service: string,
+  redirectUri?: string,
+): Promise<{ authorization_url: string; state: string; service: string }> => {
+  try {
+    const response = await fastapiClient.post('/auth/services/google/initiate', {
+      service,
+      redirect_uri: redirectUri || window.location.origin + '/auth/oauth/callback',
+    });
+    return response.data;
+  } catch (error: any) {
+    logger.error('Failed to initiate Google service connection', error, { component: 'SSO' });
+    throw error;
+  }
+};
+
+/**
+ * Complete Google service connection callback
+ * Exchanges code for tokens and stores refresh_token for agent use.
+ */
+export const completeGoogleServiceConnection = async (
+  code: string,
+  state: string,
+  service: string,
+): Promise<{ status: string; service: string; key_id: string; has_refresh_token: boolean }> => {
+  try {
+    const response = await fastapiClient.post('/auth/services/google/callback', {
+      code,
+      state,
+      service,
+    });
+    return response.data;
+  } catch (error: any) {
+    logger.error('Failed to complete Google service connection', error, { component: 'SSO' });
+    throw error;
+  }
+};
+
+/**
  * Generate random state for OAuth flow
  */
 function generateState(): string {

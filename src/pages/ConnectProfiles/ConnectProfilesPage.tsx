@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from './ConnectProfilesPage.module.css';
 import { connectGitHub, getGitHubStatus } from '@/api/github';
+import { initiateGoogleServiceConnection } from '@/api/sso';
 import { logger } from '@/utils/logger';
 import { fetchUserApiKeys, addUserApiKey, deleteUserApiKey } from '@/api/userApiKeys';
 
@@ -37,7 +38,7 @@ const INTEGRATIONS: Integration[] = [
   { id: 'google-drive', name: 'Google Drive', description: 'Save generated projects and docs directly to Google Drive.', emoji: '📁', logoColor: '#34A853', category: 'Productivity', authType: 'oauth', status: 'available' },
   { id: 'notion', name: 'Notion', description: 'Auto-create project docs and changelogs in Notion.', emoji: '📝', logoColor: '#ffffff', category: 'Productivity', authType: 'pat', status: 'available', keyLabel: 'Integration Token', keyPlaceholder: 'secret_...', helpUrl: 'https://www.notion.so/my-integrations', helpText: 'Create an internal integration' },
   { id: 'slack', name: 'Slack', description: 'Get build and deployment notifications in Slack channels.', emoji: '💬', logoColor: '#4A154B', category: 'Productivity', authType: 'pat', status: 'available', keyLabel: 'Bot OAuth Token', keyPlaceholder: 'xoxb-...', helpUrl: 'https://api.slack.com/apps', helpText: 'Create a Slack app and get Bot User OAuth Token' },
-  { id: 'discord', name: 'Discord', description: 'Real-time build and deploy notifications via Discord webhook.', emoji: '🎮', logoColor: '#5865F2', category: 'Productivity', authType: 'apikey', status: 'available', keyLabel: 'Webhook URL', keyPlaceholder: 'https://discord.com/api/webhooks/...', helpUrl: 'https://discord.com/developers/applications', helpText: 'Create webhook from server settings' },
+  { id: 'discord', name: 'Discord', description: 'Connect a ResonantGenesis AI agent to your Discord server.', emoji: '🎮', logoColor: '#5865F2', category: 'Productivity', authType: 'oauth', status: 'available' },
   { id: 'figma', name: 'Figma', description: 'Import Figma designs to auto-generate UI code and components.', emoji: '🎨', logoColor: '#1ABCFE', category: 'Design', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'figd_...', helpUrl: 'https://www.figma.com/settings', helpText: 'Generate from Figma account settings' },
   { id: 'supabase', name: 'Supabase', description: 'Auto-provision databases, auth and storage for generated backends.', emoji: '⚡', logoColor: '#3ECF8E', category: 'Databases', authType: 'pat', status: 'available', keyLabel: 'Access Token', keyPlaceholder: 'sbp_...', helpUrl: 'https://supabase.com/dashboard/account/tokens', helpText: 'Generate from Supabase account settings' },
   { id: 'mongodb', name: 'MongoDB Atlas', description: 'Auto-create Atlas databases for generated projects.', emoji: '🍃', logoColor: '#13AA52', category: 'Databases', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'xxxxxxxx-xxxx-...', helpUrl: 'https://cloud.mongodb.com/v2#/org/settings/apiKeys', helpText: 'Create from Atlas organization settings' },
@@ -91,6 +92,18 @@ const ConnectProfilesPage: React.FC = () => {
     if (c) { const ig = INTEGRATIONS.find(i => i.id === c); if (ig && ig.status !== 'coming_soon') setModal(ig); }
     // Returned from GitHub OAuth flow — reload to pick up newly stored token
     if (searchParams.get('github') === 'connected') loadConnections();
+    // Returned from Google service OAuth (Drive/Calendar/Gmail)
+    const serviceStatus = searchParams.get('status');
+    const serviceName = searchParams.get('service');
+    if (serviceName && serviceStatus) {
+      if (serviceStatus === 'connected') {
+        setMsg({ type: 'success', text: `${serviceName.replace('google-', 'Google ').replace('-', ' ')} connected successfully!` });
+        loadConnections();
+      } else if (serviceStatus === 'error') {
+        const errorMsg = searchParams.get('message') || 'Connection failed';
+        setMsg({ type: 'error', text: `Failed to connect ${serviceName}: ${errorMsg}` });
+      }
+    }
   }, [searchParams, loadConnections]);
 
   const saveConn = async (id: string, token: string, name?: string) => {
@@ -129,9 +142,38 @@ const ConnectProfilesPage: React.FC = () => {
 
   const openModal = (ig: Integration) => { if (ig.status === 'coming_soon') return; setModal(ig); setInputValue(''); setMsg(null); };
 
-  const handleOAuth = (ig: Integration) => {
-    if (ig.id === 'github') { connectGitHub(); }
-    else { window.open('https://accounts.google.com/o/oauth2/v2/auth', '_blank'); }
+  const handleOAuth = async (ig: Integration) => {
+    if (ig.id === 'github') { connectGitHub(); setModal(null); return; }
+    if (ig.id === 'discord') {
+      // Discord uses bot invite flow, not traditional OAuth
+      try {
+        const resp = await fetch('/api/v1/discord/invite-url', { credentials: 'include' });
+        const data = await resp.json();
+        if (data.invite_url) {
+          window.open(data.invite_url, '_blank');
+          setMsg({ type: 'success', text: 'After adding the bot, run /connect <agent_id> in your Discord server.' });
+        } else {
+          setMsg({ type: 'error', text: 'Discord bot not configured yet. Contact platform admin.' });
+        }
+      } catch { setMsg({ type: 'error', text: 'Failed to get Discord invite URL.' }); }
+      return;
+    }
+    // Google service connections (Drive, Calendar, Gmail)
+    const googleServices: Record<string, string> = { 'google-drive': 'google-drive', 'google-calendar': 'google-calendar', 'gmail': 'gmail' };
+    const service = googleServices[ig.id];
+    if (service) {
+      try {
+        const result = await initiateGoogleServiceConnection(service);
+        // Store state for verification on callback
+        sessionStorage.setItem(`sso_state_google-service-${service}`, result.state);
+        sessionStorage.setItem('google_service_pending', service);
+        window.location.href = result.authorization_url;
+      } catch (e: any) {
+        logger.error('Google service OAuth failed', e);
+        setMsg({ type: 'error', text: e?.response?.data?.detail || 'Failed to start Google authorization.' });
+      }
+      return;
+    }
     setModal(null);
   };
 
@@ -161,6 +203,13 @@ const ConnectProfilesPage: React.FC = () => {
       <div className={styles.searchBar}>
         <input className={styles.searchInput} placeholder="Search integrations (GitHub, Stripe, Notion…)" value={search} onChange={e => setSearch(e.target.value)} />
       </div>
+
+      {msg && !modal && (
+        <div style={{ margin: '0 0 var(--space-4)', padding: 'var(--space-3) var(--space-4)', borderRadius: '8px', background: msg.type === 'success' ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)', color: msg.type === 'success' ? '#10b981' : '#ef4444', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {msg.type === 'success' ? '✅' : '⚠️'} {msg.text}
+          <button onClick={() => setMsg(null)} style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontSize: '16px' }}>×</button>
+        </div>
+      )}
 
       <div className={styles.connectedSummary}>
         <span className={styles.summaryTitle}>✅ Connected ({connected.length})</span>
@@ -236,11 +285,33 @@ const ConnectProfilesPage: React.FC = () => {
             <div className={styles.modalBody}>
               {msg && <div className={msg.type === 'success' ? styles.successMsg : styles.errorMsg}>{msg.type === 'success' ? '✅' : '⚠️'} {msg.text}</div>}
 
-              {modal.authType === 'oauth' && (
+              {modal.authType === 'oauth' && modal.id === 'discord' && (
+                <>
+                  <div style={{ padding: 'var(--space-3)', background: 'rgba(88,101,242,0.08)', borderRadius: '8px', marginBottom: 'var(--space-3)', fontSize: '13px', lineHeight: '1.6' }}>
+                    <strong>How it works:</strong><br/>
+                    1. Click below to add the ResonantGenesis bot to your server<br/>
+                    2. In your Discord server, run <code style={{ background: 'rgba(255,255,255,0.1)', padding: '1px 4px', borderRadius: '3px' }}>/connect &lt;agent_id&gt;</code><br/>
+                    3. Mention the bot to chat with your agent!
+                  </div>
+                  <button className={styles.oauthBtn} onClick={() => handleOAuth(modal)}>
+                    <span style={{ fontSize: 20 }}>🎮</span> Add Bot to Discord Server
+                  </button>
+                  <span className={styles.formHint} style={{ textAlign: 'center', display: 'block', marginTop: 'var(--space-2)' }}>
+                    Get your Agent ID from the <a href="/agents" style={{ color: 'var(--accent-500)' }}>Agents page</a>
+                  </span>
+                </>
+              )}
+
+              {modal.authType === 'oauth' && modal.id !== 'discord' && (
                 <>
                   <button className={styles.oauthBtn} onClick={() => handleOAuth(modal)}>
                     <span style={{ fontSize: 20 }}>{modal.emoji}</span> Connect with {modal.name}
                   </button>
+                  {(modal.id === 'google-drive' || modal.id === 'google-calendar' || modal.id === 'gmail') && (
+                    <span className={styles.formHint} style={{ textAlign: 'center', display: 'block', marginTop: 'var(--space-2)' }}>
+                      You'll be redirected to Google to grant access. Your agent will be able to use this service.
+                    </span>
+                  )}
                   {modal.id === 'github' && (
                     <>
                       <div className={styles.divider}>or use a Personal Access Token</div>

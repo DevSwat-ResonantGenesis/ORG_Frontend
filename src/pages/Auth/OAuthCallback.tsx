@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { handleOAuthCallback, handleSAMLCallback, type SSOCallbackRequest } from '@/api/sso';
+import { handleOAuthCallback, handleSAMLCallback, completeGoogleServiceConnection, type SSOCallbackRequest } from '@/api/sso';
 import { getCurrentUser } from '@/api/auth';
 import { saveSessionData } from '@/utils/auth-cookies';
 import { logger } from '@/utils/logger';
@@ -35,6 +35,30 @@ const OAuthCallbackPage: React.FC = () => {
 
         if (!code || !state) {
           throw new Error('Missing required parameters (code or state)');
+        }
+
+        // Check if this is a Google service connection callback (Drive/Calendar/Gmail)
+        const pendingService = sessionStorage.getItem('google_service_pending');
+        if (pendingService) {
+          try {
+            const result = await completeGoogleServiceConnection(code, state, pendingService);
+            sessionStorage.removeItem('google_service_pending');
+            // Clean up all related state keys
+            for (let i = sessionStorage.length - 1; i >= 0; i--) {
+              const key = sessionStorage.key(i);
+              if (key && key.startsWith('sso_state_google-service-')) {
+                sessionStorage.removeItem(key);
+              }
+            }
+            // Redirect to connect-profiles with success
+            navigate(`/connect-profiles?service=${pendingService}&status=${result.status}`, { replace: true });
+            return;
+          } catch (serviceError: any) {
+            sessionStorage.removeItem('google_service_pending');
+            logger.error('Google service connection failed', serviceError, { component: 'OAuthCallback' });
+            navigate(`/connect-profiles?service=${pendingService}&status=error&message=${encodeURIComponent(serviceError?.response?.data?.detail || 'Connection failed')}`, { replace: true });
+            return;
+          }
         }
 
         const storages: Storage[] = [];
