@@ -37,19 +37,6 @@
   overflow: hidden;
 }
 
-@media (max-width: 768px) {
-  .splitContainer {
-    flex-direction: column;
-  }
-  .agentsPane.hasSessions {
-    flex: 0 0 auto;
-    max-width: 100%;
-    max-height: 200px;
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  }
-}
-
 .modalOpen .cardTopActions,
 .modalOpen .cardActions {
   visibility: hidden;
@@ -249,6 +236,57 @@
 .toolbarBtn svg {
   width: 11px;
   height: 11px;
+}
+
+/* Panel navigation icon row */
+.navIcons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px;
+  margin: 0 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.navIcons::-webkit-scrollbar {
+  display: none;
+}
+
+.navIconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 7px;
+  min-width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.navIconBtn:hover {
+  background: rgba(14, 165, 233, 0.12);
+  border-color: rgba(14, 165, 233, 0.25);
+  color: #0ea5e9;
+}
+
+.navIconBtn.navIconActive {
+  background: rgba(14, 165, 233, 0.15);
+  border-color: rgba(14, 165, 233, 0.3);
+  color: #0ea5e9;
+  opacity: 1;
+}
+
+.navIconBtn svg {
+  width: 18px;
+  height: 18px;
 }
 
 .searchBox input::placeholder {
@@ -2106,13 +2144,13 @@
 
 @media (max-width: 768px) {
   .agentsGrid {
-    grid-template-columns: repeat(auto-fill, minmax(156px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 8px;
     padding: 10px;
   }
 
   .agentCard {
-    min-height: 176px;
+    min-height: 160px;
   }
 
   .cardActions {
@@ -2136,8 +2174,52 @@
 
   .panelHeader {
     flex-direction: column;
-    gap: 12px;
-    align-items: flex-start;
+    gap: 8px;
+    align-items: stretch;
+    padding: 8px 10px;
+  }
+
+  .headerControls {
+    padding-left: 0;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .searchBox {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .filterSelect {
+    flex: 1 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+
+  .navIcons {
+    margin: 0;
+    padding: 4px 0;
+    gap: 2px;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .navIconBtn {
+    padding: 5px 6px;
+    min-width: 30px;
+    height: 30px;
+  }
+
+  .navIconBtn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .headerMeta {
+    justify-content: flex-end;
+    width: 100%;
   }
   
   .panelToolbar {
@@ -2156,6 +2238,23 @@
   
   .agentIdValue {
     width: 100%;
+  }
+
+  .splitContainer {
+    flex-direction: column;
+  }
+
+  .agentsPane.hasSessions {
+    flex: 0 0 auto;
+    max-width: 100%;
+    max-height: 220px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .sessionsPane {
+    min-height: 0;
+    flex: 1;
   }
 }
 

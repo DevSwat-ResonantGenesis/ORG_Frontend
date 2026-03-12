@@ -575,7 +575,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
         </div>
 
         {/* Panel navigation icons — replaces sidebar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 2, padding: '0 4px', margin: '0 4px' }}>
+        <div className={styles.navIcons}>
           {([
             { type: 'capabilities', icon: <Icons.Capabilities />, label: 'Capabilities' },
             { type: 'goals', icon: <Icons.Goals />, label: 'Goals' },
@@ -594,11 +594,10 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           ] as { type: string; icon: React.ReactNode; label: string }[]).map((nav) => (
             <button
               key={nav.type}
-              className={styles.toolbarBtn}
+              className={`${styles.navIconBtn} ${inlinePanel?.type === nav.type ? styles.navIconActive : ''}`}
               type="button"
               onClick={() => { setInlinePanel({ type: nav.type as any }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
               title={nav.label}
-              style={{ padding: '4px 5px', minWidth: 0, fontSize: 11, opacity: inlinePanel?.type === nav.type ? 1 : 0.6 }}
             >
               {nav.icon}
             </button>
