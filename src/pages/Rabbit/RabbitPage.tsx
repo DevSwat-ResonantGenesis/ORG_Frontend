@@ -246,7 +246,7 @@ interface ShareDropdownProps {
 const ShareDropdown: React.FC<ShareDropdownProps> = ({ postId, postTitle, onClose }) => {
   const [copied, setCopied] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const url = `${window.location.origin}/rabbit?post=${postId}`;
+  const url = `${window.location.origin}/api/v1/rabbit/posts/${postId}/og`;
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(postTitle);
 
