@@ -104,7 +104,8 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     const list = agents
       .filter((agent: Agent) => {
         if (filter === 'favorites' && !pinnedSet.has(agent.id)) return false;
-        if (filter !== 'all' && filter !== 'favorites' && agent.status !== filter) return false;
+        if (filter === 'openclaw' && agent.agent_source !== 'openclaw') return false;
+        if (filter !== 'all' && filter !== 'favorites' && filter !== 'openclaw' && agent.status !== filter) return false;
         if (q && !agent.name.toLowerCase().includes(q)) return false;
         return true;
       })
@@ -538,9 +539,10 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
             )}
           </div>
 
-          <select className={styles.filterSelect} value={filter} onChange={(e) => setFilter(e.target.value)} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>
+          <select className={styles.filterSelect} value={filter} onChange={(e) => setFilter(e.target.value)} style={{ width: '80px', minWidth: '80px', maxWidth: '80px' }}>
             <option value="all">All</option>
             <option value="favorites">Favorites</option>
+            <option value="openclaw">OpenClaw</option>
             <option value="active">Active</option>
             <option value="idle">Idle</option>
             <option value="paused">Paused</option>
@@ -647,7 +649,27 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                     </div>
                     <div className={styles.agentInfo}>
                       <h3>{agent.name}</h3>
-                      <span className={styles.typeBadge}>{agent.type}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <span className={styles.typeBadge}>{agent.type}</span>
+                        {agent.agent_source === 'openclaw' && (
+                          <span style={{
+                            display: 'inline-flex', alignItems: 'center', gap: 3,
+                            padding: '1px 6px', borderRadius: 4, fontSize: 9, fontWeight: 700,
+                            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                            color: '#1a1a2e', letterSpacing: '0.5px', textTransform: 'uppercase',
+                          }}>
+                            <span style={{
+                              width: 6, height: 6, borderRadius: '50%',
+                              background: agent.openclaw_config?.connection_status === 'online' ? '#22c55e'
+                                : agent.openclaw_config?.connection_status === 'degraded' ? '#f59e0b'
+                                : '#ef4444',
+                              boxShadow: agent.openclaw_config?.connection_status === 'online'
+                                ? '0 0 4px #22c55e' : 'none',
+                            }} />
+                            OpenClaw
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     <div className={styles.cardTopActions}>
@@ -687,6 +709,35 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                       {agent.mode === 'governed' ? <Icons.Lock /> : <Icons.Unlock />}
                     </div>
                   </div>
+
+                  {/* OpenClaw hardware info row */}
+                  {agent.agent_source === 'openclaw' && agent.openclaw_config && (
+                    <div style={{
+                      display: 'flex', flexWrap: 'wrap', gap: 4, padding: '4px 8px',
+                      fontSize: 9, color: 'rgba(255,255,255,0.5)', borderTop: '1px solid rgba(255,255,255,0.06)',
+                    }}>
+                      {agent.openclaw_config.hardware?.gpu && (
+                        <span style={{ background: 'rgba(139,92,246,0.15)', padding: '1px 5px', borderRadius: 3, color: '#a78bfa' }}>
+                          GPU: {agent.openclaw_config.hardware.gpu}
+                        </span>
+                      )}
+                      {agent.openclaw_config.hardware?.cpu && (
+                        <span style={{ background: 'rgba(59,130,246,0.15)', padding: '1px 5px', borderRadius: 3, color: '#93c5fd' }}>
+                          {agent.openclaw_config.hardware.cpu}
+                        </span>
+                      )}
+                      {agent.openclaw_config.memory_mode && (
+                        <span style={{ background: 'rgba(34,197,94,0.15)', padding: '1px 5px', borderRadius: 3, color: '#86efac' }}>
+                          Memory: {agent.openclaw_config.memory_mode}
+                        </span>
+                      )}
+                      {agent.openclaw_config.models_available && agent.openclaw_config.models_available.length > 0 && (
+                        <span style={{ background: 'rgba(251,191,36,0.15)', padding: '1px 5px', borderRadius: 3, color: '#fcd34d' }}>
+                          {agent.openclaw_config.models_available[0]}
+                        </span>
+                      )}
+                    </div>
+                  )}
                   
                   {/* Action buttons - Run, Message, Detail, Delete */}
                   <div className={styles.cardActions}>

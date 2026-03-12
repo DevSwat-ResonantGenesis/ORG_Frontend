@@ -32,7 +32,7 @@ const INTEGRATIONS: Integration[] = [
   { id: 'github', name: 'GitHub', description: 'Push projects, sync repos, trigger CI/CD pipelines directly from the builder.', emoji: '🐙', icon: '/images/connect-icons/github.png', logoColor: '#e4e4e7', category: 'Version Control', authType: 'oauth', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'ghp_...', helpUrl: 'https://github.com/settings/tokens/new?scopes=repo,read:user', helpText: 'Create token with repo & read:user scopes' },
   { id: 'gitlab', name: 'GitLab', description: 'Push generated projects to your GitLab repositories.', emoji: '🦊', icon: '/images/connect-icons/gitlab.png', logoColor: '#FC6D26', category: 'Version Control', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'glpat-...', helpUrl: 'https://gitlab.com/-/profile/personal_access_tokens', helpText: 'Scopes: api, read_user, write_repository' },
   { id: 'bitbucket', name: 'Bitbucket', description: 'Sync projects to Bitbucket repositories.', emoji: '🪣', icon: '/images/connect-icons/bitbucket.png', logoColor: '#0052CC', category: 'Version Control', authType: 'pat', status: 'available', keyLabel: 'App Password', keyPlaceholder: 'ATBB...', helpUrl: 'https://bitbucket.org/account/settings/app-passwords/', helpText: 'Repositories read/write permission required' },
-  { id: 'openclaw', name: 'Openclaw', description: "Connect to Openclaw's agent network for cross-platform AI orchestration via webhooks.", emoji: '🦞', icon: '/images/connect-icons/openclaw.svg', logoColor: '#FF4500', category: 'AI & Intelligence', authType: 'openclaw', status: 'available' },
+  { id: 'openclaw', name: 'OpenClaw', description: "Register OpenClaw agents running on your hardware. Full federation: DSID identity, RARA governance, Hash Sphere memory, skills marketplace, and webhook bridge.", emoji: '🦞', icon: '/images/connect-icons/openclaw.svg', logoColor: '#FF4500', category: 'AI & Intelligence', authType: 'openclaw', status: 'available' },
   { id: 'local-llm', name: 'Local LLM', description: 'Connect your own local LLM (Ollama, LM Studio, llama.cpp) running on your device.', emoji: '💻', logoColor: '#22d3ee', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'Local Endpoint URL', keyPlaceholder: 'http://localhost:11434/v1', helpText: 'Enter the API endpoint of your local model server (e.g. Ollama, LM Studio)' },
   { id: 'digitalocean', name: 'DigitalOcean', description: 'Deploy projects to DigitalOcean Droplets, App Platform, or Kubernetes.', emoji: '🌊', icon: '/images/connect-icons/digitalocean.png', logoColor: '#0080FF', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'dop_v1_...', helpUrl: 'https://cloud.digitalocean.com/account/api/tokens', helpText: 'Read/write access required' },
   { id: 'vercel', name: 'Vercel', description: 'One-click deploy React/Next.js projects to the Vercel edge network.', emoji: '▲', icon: '/images/connect-icons/vercel.svg', logoColor: '#ffffff', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Access Token', keyPlaceholder: 'vercel_token_...', helpUrl: 'https://vercel.com/account/tokens', helpText: 'Create from Vercel account settings' },
@@ -107,8 +107,22 @@ const ConnectProfilesPage: React.FC = () => {
   const [openclawAgents, setOpenclawAgents] = useState<{ id: string; name: string }[]>([]);
   const [openclawSelectedAgent, setOpenclawSelectedAgent] = useState('');
   const [openclawConnName, setOpenclawConnName] = useState('');
-  const [openclawResult, setOpenclawResult] = useState<{ webhook_url: string; webhook_secret: string } | null>(null);
+  const [openclawResult, setOpenclawResult] = useState<{ webhook_url: string; webhook_secret: string; agent_id?: string; dsid?: string; agent_public_hash?: string; memory_mode?: string; rara_enrolled?: boolean; skills_registered?: number } | null>(null);
   const [openclawSaving, setOpenclawSaving] = useState(false);
+  const [openclawTab, setOpenclawTab] = useState<'connect' | 'register'>('register');
+  // New agent registration fields
+  const [ocRegName, setOcRegName] = useState('');
+  const [ocRegDescription, setOcRegDescription] = useState('');
+  const [ocRegProvider, setOcRegProvider] = useState('local');
+  const [ocRegModel, setOcRegModel] = useState('llama3');
+  const [ocRegEndpoint, setOcRegEndpoint] = useState('');
+  const [ocRegGpu, setOcRegGpu] = useState('');
+  const [ocRegCpu, setOcRegCpu] = useState('');
+  const [ocRegRam, setOcRegRam] = useState('');
+  const [ocRegMemoryMode, setOcRegMemoryMode] = useState<'cloud' | 'local' | 'hybrid'>('cloud');
+  const [ocRegLocalMemoryEndpoint, setOcRegLocalMemoryEndpoint] = useState('');
+  const [ocRegEnableRara, setOcRegEnableRara] = useState(true);
+  const [ocRegEnableDsid, setOcRegEnableDsid] = useState(true);
 
   const loadConnections = useCallback(async () => {
     // Load from the existing encrypted user_api_keys DB (same system as Model Provider Keys)
@@ -458,8 +472,16 @@ const ConnectProfilesPage: React.FC = () => {
                   {openclawResult ? (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                       <div style={{ padding: 12, background: 'rgba(16,185,129,0.1)', borderRadius: 8, fontSize: 13 }}>
-                        ✅ Connection created! Copy these into your OpenClaw config:
+                        ✅ {openclawResult.agent_id ? 'OpenClaw agent registered!' : 'Connection created!'} Copy these into your OpenClaw config:
                       </div>
+                      {openclawResult.agent_id && (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, fontSize: 11 }}>
+                          {openclawResult.dsid && <span style={{ background: 'rgba(139,92,246,0.15)', padding: '2px 8px', borderRadius: 4, color: '#a78bfa' }}>DSID: {openclawResult.dsid.slice(0, 16)}…</span>}
+                          {openclawResult.rara_enrolled && <span style={{ background: 'rgba(34,197,94,0.15)', padding: '2px 8px', borderRadius: 4, color: '#86efac' }}>RARA Enrolled</span>}
+                          {openclawResult.memory_mode && <span style={{ background: 'rgba(59,130,246,0.15)', padding: '2px 8px', borderRadius: 4, color: '#93c5fd' }}>Memory: {openclawResult.memory_mode}</span>}
+                          {(openclawResult.skills_registered ?? 0) > 0 && <span style={{ background: 'rgba(251,191,36,0.15)', padding: '2px 8px', borderRadius: 4, color: '#fcd34d' }}>{openclawResult.skills_registered} skills</span>}
+                        </div>
+                      )}
                       <div className={styles.formGroup}>
                         <label className={styles.formLabel}>Webhook URL</label>
                         <div style={{ display: 'flex', gap: 4 }}>
@@ -474,44 +496,173 @@ const ConnectProfilesPage: React.FC = () => {
                           <button style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 6, color: '#fff', cursor: 'pointer', fontSize: 12, whiteSpace: 'nowrap' }} onClick={() => { navigator.clipboard.writeText(openclawResult.webhook_secret); }}>Copy</button>
                         </div>
                       </div>
-                      <span className={styles.formHint}>Use these in your OpenClaw automation webhook action config. <a href="/api/v1/openclaw/setup-guide" target="_blank" rel="noreferrer">Full setup guide →</a></span>
+                      <span className={styles.formHint}>
+                        {openclawResult.agent_id
+                          ? <>Your agent is live on the Agents page with an OpenClaw badge. <a href="/agents" style={{ color: 'var(--accent-500)' }}>View Agents →</a></>
+                          : <>Use these in your OpenClaw automation webhook action config. <a href="/api/v1/openclaw/setup-guide" target="_blank" rel="noreferrer">Full setup guide →</a></>
+                        }
+                      </span>
                       <button className={styles.submitBtn} onClick={() => { setModal(null); setOpenclawResult(null); loadConnections(); }}>Done</button>
                     </div>
                   ) : (
                     <>
-                      <div style={{ padding: 12, background: 'rgba(255,69,0,0.08)', borderRadius: 8, fontSize: 13, lineHeight: 1.6, marginBottom: 8 }}>
-                        <strong>How it works:</strong><br/>
-                        1. Select one of your agents below<br/>
-                        2. A webhook trigger is created for that agent<br/>
-                        3. Copy the webhook URL + secret into your OpenClaw config<br/>
-                        4. OpenClaw events will trigger your agent automatically
+                      {/* Tab switcher */}
+                      <div style={{ display: 'flex', gap: 0, marginBottom: 12, borderRadius: 8, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                        <button onClick={() => setOpenclawTab('register')} style={{ flex: 1, padding: '8px 0', fontSize: 12, fontWeight: 600, cursor: 'pointer', border: 'none', background: openclawTab === 'register' ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : 'rgba(255,255,255,0.05)', color: openclawTab === 'register' ? '#1a1a2e' : '#a1a1aa', transition: 'all 0.2s' }}>
+                          Register New Agent
+                        </button>
+                        <button onClick={() => setOpenclawTab('connect')} style={{ flex: 1, padding: '8px 0', fontSize: 12, fontWeight: 600, cursor: 'pointer', border: 'none', background: openclawTab === 'connect' ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : 'rgba(255,255,255,0.05)', color: openclawTab === 'connect' ? '#1a1a2e' : '#a1a1aa', transition: 'all 0.2s' }}>
+                          Connect Existing
+                        </button>
                       </div>
-                      <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Select Agent</label>
-                        {openclawAgents.length === 0 ? (
-                          <div style={{ fontSize: 13, color: '#71717a', padding: 8 }}>Loading agents… <a href="/agents" style={{ color: 'var(--accent-500)' }}>Create one first →</a></div>
-                        ) : (
-                          <select className={styles.formInput} value={openclawSelectedAgent} onChange={e => setOpenclawSelectedAgent(e.target.value)} style={{ cursor: 'pointer' }}>
-                            <option value="">— Choose an agent —</option>
-                            {openclawAgents.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
-                          </select>
-                        )}
-                      </div>
-                      <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Connection Name (optional)</label>
-                        <input className={styles.formInput} type="text" placeholder="e.g., Telegram Bot Trigger" value={openclawConnName} onChange={e => setOpenclawConnName(e.target.value)} />
-                      </div>
-                      <button className={styles.submitBtn} disabled={!openclawSelectedAgent || openclawSaving} onClick={async () => {
-                        setOpenclawSaving(true); setMsg(null);
-                        try {
-                          const resp = await fastapiClient.post('/api/v1/openclaw/connections', { agent_id: openclawSelectedAgent, connection_name: openclawConnName || undefined });
-                          setOpenclawResult({ webhook_url: resp.data.webhook_url, webhook_secret: resp.data.webhook_secret });
-                          setConnections(p => ({ ...p, openclaw: 'connected' }));
-                        } catch (e: any) {
-                          const detail = e?.response?.data?.detail || e?.message || 'Failed to create connection';
-                          setMsg({ type: 'error', text: detail });
-                        } finally { setOpenclawSaving(false); }
-                      }}>{openclawSaving ? 'Creating…' : 'Create Webhook Connection'}</button>
+
+                      {openclawTab === 'register' && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                          <div style={{ padding: 10, background: 'rgba(245,158,11,0.08)', borderRadius: 8, fontSize: 12, lineHeight: 1.5 }}>
+                            <strong>Full Federation:</strong> Register an OpenClaw agent that runs on your hardware. It gets a DSID identity, RARA governance, Hash Sphere memory, and appears on your Agents page.
+                          </div>
+
+                          <div className={styles.formGroup}>
+                            <label className={styles.formLabel}>Agent Name *</label>
+                            <input className={styles.formInput} type="text" placeholder="My Local Agent" value={ocRegName} onChange={e => setOcRegName(e.target.value)} />
+                          </div>
+                          <div className={styles.formGroup}>
+                            <label className={styles.formLabel}>Description</label>
+                            <input className={styles.formInput} type="text" placeholder="Runs on my workstation with RTX 4090" value={ocRegDescription} onChange={e => setOcRegDescription(e.target.value)} />
+                          </div>
+
+                          <div style={{ display: 'flex', gap: 8 }}>
+                            <div className={styles.formGroup} style={{ flex: 1 }}>
+                              <label className={styles.formLabel}>Provider</label>
+                              <select className={styles.formInput} value={ocRegProvider} onChange={e => setOcRegProvider(e.target.value)}>
+                                <option value="local">Local</option>
+                                <option value="ollama">Ollama</option>
+                                <option value="lmstudio">LM Studio</option>
+                                <option value="llama.cpp">llama.cpp</option>
+                                <option value="vllm">vLLM</option>
+                              </select>
+                            </div>
+                            <div className={styles.formGroup} style={{ flex: 1 }}>
+                              <label className={styles.formLabel}>Model</label>
+                              <input className={styles.formInput} type="text" placeholder="llama3, mistral, etc." value={ocRegModel} onChange={e => setOcRegModel(e.target.value)} />
+                            </div>
+                          </div>
+
+                          <div className={styles.formGroup}>
+                            <label className={styles.formLabel}>Agent Endpoint URL (optional)</label>
+                            <input className={styles.formInput} type="text" placeholder="http://192.168.1.100:8080" value={ocRegEndpoint} onChange={e => setOcRegEndpoint(e.target.value)} />
+                            <span className={styles.formHint}>Where we can reach your agent for bidirectional communication</span>
+                          </div>
+
+                          <div style={{ display: 'flex', gap: 8 }}>
+                            <div className={styles.formGroup} style={{ flex: 1 }}>
+                              <label className={styles.formLabel}>GPU</label>
+                              <input className={styles.formInput} type="text" placeholder="RTX 4090" value={ocRegGpu} onChange={e => setOcRegGpu(e.target.value)} />
+                            </div>
+                            <div className={styles.formGroup} style={{ flex: 1 }}>
+                              <label className={styles.formLabel}>CPU</label>
+                              <input className={styles.formInput} type="text" placeholder="i9-13900K" value={ocRegCpu} onChange={e => setOcRegCpu(e.target.value)} />
+                            </div>
+                            <div className={styles.formGroup} style={{ flex: 1 }}>
+                              <label className={styles.formLabel}>RAM</label>
+                              <input className={styles.formInput} type="text" placeholder="64GB" value={ocRegRam} onChange={e => setOcRegRam(e.target.value)} />
+                            </div>
+                          </div>
+
+                          <div className={styles.formGroup}>
+                            <label className={styles.formLabel}>Memory Mode</label>
+                            <select className={styles.formInput} value={ocRegMemoryMode} onChange={e => setOcRegMemoryMode(e.target.value as any)}>
+                              <option value="cloud">Cloud (Hash Sphere only)</option>
+                              <option value="hybrid">Hybrid (Hash Sphere + Local DB)</option>
+                              <option value="local">Local only</option>
+                            </select>
+                          </div>
+
+                          {(ocRegMemoryMode === 'local' || ocRegMemoryMode === 'hybrid') && (
+                            <div className={styles.formGroup}>
+                              <label className={styles.formLabel}>Local Memory Endpoint</label>
+                              <input className={styles.formInput} type="text" placeholder="http://localhost:6333" value={ocRegLocalMemoryEndpoint} onChange={e => setOcRegLocalMemoryEndpoint(e.target.value)} />
+                            </div>
+                          )}
+
+                          <div style={{ display: 'flex', gap: 16, padding: '8px 0' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, cursor: 'pointer' }}>
+                              <input type="checkbox" checked={ocRegEnableDsid} onChange={e => setOcRegEnableDsid(e.target.checked)} />
+                              <span>DSID Identity (Ethereum)</span>
+                            </label>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, cursor: 'pointer' }}>
+                              <input type="checkbox" checked={ocRegEnableRara} onChange={e => setOcRegEnableRara(e.target.checked)} />
+                              <span>RARA Governance</span>
+                            </label>
+                          </div>
+
+                          <button className={styles.submitBtn} disabled={!ocRegName.trim() || openclawSaving} onClick={async () => {
+                            setOpenclawSaving(true); setMsg(null);
+                            try {
+                              const resp = await fastapiClient.post('/api/v1/openclaw/agents/register', {
+                                name: ocRegName,
+                                description: ocRegDescription || undefined,
+                                provider: ocRegProvider,
+                                model: ocRegModel,
+                                endpoint_url: ocRegEndpoint || undefined,
+                                hardware: (ocRegGpu || ocRegCpu || ocRegRam) ? { gpu: ocRegGpu || undefined, cpu: ocRegCpu || undefined, ram: ocRegRam || undefined } : undefined,
+                                memory_mode: ocRegMemoryMode,
+                                local_memory_endpoint: ocRegLocalMemoryEndpoint || undefined,
+                                enable_rara: ocRegEnableRara,
+                                enable_dsid: ocRegEnableDsid,
+                              });
+                              setOpenclawResult({
+                                webhook_url: resp.data.webhook_url,
+                                webhook_secret: resp.data.webhook_secret,
+                                agent_id: resp.data.agent_id,
+                                dsid: resp.data.dsid,
+                                agent_public_hash: resp.data.agent_public_hash,
+                                memory_mode: resp.data.memory_mode,
+                                rara_enrolled: resp.data.rara_enrolled,
+                                skills_registered: resp.data.skills_registered,
+                              });
+                              setConnections(p => ({ ...p, openclaw: 'connected' }));
+                            } catch (e: any) {
+                              const detail = e?.response?.data?.detail || e?.message || 'Failed to register agent';
+                              setMsg({ type: 'error', text: detail });
+                            } finally { setOpenclawSaving(false); }
+                          }}>{openclawSaving ? 'Registering…' : 'Register OpenClaw Agent'}</button>
+                        </div>
+                      )}
+
+                      {openclawTab === 'connect' && (
+                        <>
+                          <div style={{ padding: 10, background: 'rgba(255,69,0,0.08)', borderRadius: 8, fontSize: 12, lineHeight: 1.5, marginBottom: 8 }}>
+                            <strong>Webhook Bridge:</strong> Connect an existing agent via webhook trigger. Select an agent and get a webhook URL + secret for your OpenClaw config.
+                          </div>
+                          <div className={styles.formGroup}>
+                            <label className={styles.formLabel}>Select Agent</label>
+                            {openclawAgents.length === 0 ? (
+                              <div style={{ fontSize: 13, color: '#71717a', padding: 8 }}>Loading agents… <a href="/agents" style={{ color: 'var(--accent-500)' }}>Create one first →</a></div>
+                            ) : (
+                              <select className={styles.formInput} value={openclawSelectedAgent} onChange={e => setOpenclawSelectedAgent(e.target.value)} style={{ cursor: 'pointer' }}>
+                                <option value="">— Choose an agent —</option>
+                                {openclawAgents.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+                              </select>
+                            )}
+                          </div>
+                          <div className={styles.formGroup}>
+                            <label className={styles.formLabel}>Connection Name (optional)</label>
+                            <input className={styles.formInput} type="text" placeholder="e.g., Telegram Bot Trigger" value={openclawConnName} onChange={e => setOpenclawConnName(e.target.value)} />
+                          </div>
+                          <button className={styles.submitBtn} disabled={!openclawSelectedAgent || openclawSaving} onClick={async () => {
+                            setOpenclawSaving(true); setMsg(null);
+                            try {
+                              const resp = await fastapiClient.post('/api/v1/openclaw/connections', { agent_id: openclawSelectedAgent, connection_name: openclawConnName || undefined });
+                              setOpenclawResult({ webhook_url: resp.data.webhook_url, webhook_secret: resp.data.webhook_secret });
+                              setConnections(p => ({ ...p, openclaw: 'connected' }));
+                            } catch (e: any) {
+                              const detail = e?.response?.data?.detail || e?.message || 'Failed to create connection';
+                              setMsg({ type: 'error', text: detail });
+                            } finally { setOpenclawSaving(false); }
+                          }}>{openclawSaving ? 'Creating…' : 'Create Webhook Connection'}</button>
+                        </>
+                      )}
                     </>
                   )}
                 </>

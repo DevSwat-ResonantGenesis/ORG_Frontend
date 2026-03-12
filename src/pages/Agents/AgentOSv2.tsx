@@ -153,7 +153,7 @@ const AgentOSv2: React.FC = () => {
           dsid: a.dsid || undefined,
           persisted: true,
           name: a.name,
-          type: 'executor',
+          type: (a as any).agent_source === 'openclaw' ? 'openclaw' : 'executor',
           status: (a.is_active ? 'active' : 'idle') as 'idle' | 'active' | 'paused' | 'archived',
           mode: 'governed' as const,
           version: String(a.version) + '.0.0',
@@ -166,7 +166,7 @@ const AgentOSv2: React.FC = () => {
           utilityScore: 0.5,
           ownerId: '',
           config: {
-            provider: 'openai',
+            provider: (a as any).provider || 'openai',
             model: a.model || 'gpt-4-turbo-preview',
             systemPrompt: '',
             temperature: 0.7,
@@ -188,6 +188,9 @@ const AgentOSv2: React.FC = () => {
           },
           createdAt: new Date(),
           updatedAt: new Date(),
+          // OpenClaw federation fields
+          agent_source: ((a as any).agent_source || 'cloud') as 'cloud' | 'openclaw',
+          openclaw_config: (a as any).openclaw_config || undefined,
         }));
         setAgents(agents);
         // Show agents immediately — don't block on metrics

@@ -193,6 +193,28 @@ export type AgentStatus = 'idle' | 'active' | 'paused' | 'failed' | 'terminated'
 export type AgentMode = 'governed' | 'unbounded';
 export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
 
+export type AgentSource = 'cloud' | 'openclaw';
+export type OpenClawConnectionStatus = 'online' | 'offline' | 'registered' | 'degraded';
+
+export interface OpenClawConfig {
+  endpoint_url?: string;
+  hardware?: {
+    cpu?: string;
+    gpu?: string;
+    ram?: string;
+    os?: string;
+  };
+  memory_mode?: 'cloud' | 'local' | 'hybrid';
+  local_memory_endpoint?: string;
+  custom_skills?: Array<{ name: string; description?: string }>;
+  enable_rara?: boolean;
+  enable_dsid?: boolean;
+  connection_status?: OpenClawConnectionStatus;
+  last_heartbeat?: string;
+  models_available?: string[];
+  registered_at?: string;
+}
+
 export interface Agent {
   id: string;
   hash: string;
@@ -218,6 +240,9 @@ export interface Agent {
   provider?: string;
   model?: string;
   tools?: string[];
+  // OpenClaw federation
+  agent_source?: AgentSource;
+  openclaw_config?: OpenClawConfig;
 }
 
 export interface AgentConfig {
