@@ -12,6 +12,7 @@ interface Integration {
   name: string;
   description: string;
   emoji: string;
+  icon?: string;
   logoColor: string;
   category: string;
   authType: 'oauth' | 'pat' | 'apikey' | 'coming_soon';
@@ -22,8 +23,13 @@ interface Integration {
   helpText?: string;
 }
 
+const IntegrationIcon: React.FC<{ ig: Integration; size?: number }> = ({ ig, size = 24 }) =>
+  ig.icon
+    ? <img src={ig.icon} alt={ig.name} style={{ width: size, height: size, objectFit: 'contain', borderRadius: 4 }} />
+    : <span style={{ fontSize: size }}>{ig.emoji}</span>;
+
 const INTEGRATIONS: Integration[] = [
-  { id: 'github', name: 'GitHub', description: 'Push projects, sync repos, trigger CI/CD pipelines directly from the builder.', emoji: '🐙', logoColor: '#e4e4e7', category: 'Version Control', authType: 'oauth', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'ghp_...', helpUrl: 'https://github.com/settings/tokens/new?scopes=repo,read:user', helpText: 'Create token with repo & read:user scopes' },
+  { id: 'github', name: 'GitHub', description: 'Push projects, sync repos, trigger CI/CD pipelines directly from the builder.', emoji: '🐙', icon: '/images/connect-icons/github.png', logoColor: '#e4e4e7', category: 'Version Control', authType: 'oauth', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'ghp_...', helpUrl: 'https://github.com/settings/tokens/new?scopes=repo,read:user', helpText: 'Create token with repo & read:user scopes' },
   { id: 'gitlab', name: 'GitLab', description: 'Push generated projects to your GitLab repositories.', emoji: '🦊', logoColor: '#FC6D26', category: 'Version Control', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'glpat-...', helpUrl: 'https://gitlab.com/-/profile/personal_access_tokens', helpText: 'Scopes: api, read_user, write_repository' },
   { id: 'bitbucket', name: 'Bitbucket', description: 'Sync projects to Bitbucket repositories.', emoji: '🪣', logoColor: '#0052CC', category: 'Version Control', authType: 'pat', status: 'available', keyLabel: 'App Password', keyPlaceholder: 'ATBB...', helpUrl: 'https://bitbucket.org/account/settings/app-passwords/', helpText: 'Repositories read/write permission required' },
   { id: 'openclaw', name: 'Openclaw', description: "Connect to Openclaw's agent network for cross-platform AI orchestration.", emoji: '🦞', logoColor: '#FF4500', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'oclaw_...', helpUrl: 'https://openclaw.ai/settings/api-keys', helpText: 'Get from your Openclaw account settings' },
@@ -35,8 +41,8 @@ const INTEGRATIONS: Integration[] = [
   { id: 'netlify', name: 'Netlify', description: 'Deploy static sites and serverless functions to Netlify CDN.', emoji: '🌐', logoColor: '#00C7B7', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'nfp_...', helpUrl: 'https://app.netlify.com/user/applications#personal-access-tokens', helpText: 'Create from Netlify user settings' },
   { id: 'railway', name: 'Railway', description: 'Deploy any backend project to Railway with automatic scaling.', emoji: '🚂', logoColor: '#7A3FDE', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'API Token', keyPlaceholder: 'railway_token_...', helpUrl: 'https://railway.app/account/tokens', helpText: 'Create from Railway account settings' },
   { id: 'aws', name: 'Amazon AWS', description: 'Deploy to EC2, Lambda, ECS, or S3.', emoji: '☁️', logoColor: '#FF9900', category: 'Cloud & Hosting', authType: 'coming_soon', status: 'coming_soon' },
-  { id: 'google-calendar', name: 'Google Calendar', description: 'Schedule deployments and milestones synced to your calendar.', emoji: '📅', logoColor: '#4285F4', category: 'Productivity', authType: 'oauth', status: 'available' },
-  { id: 'google-drive', name: 'Google Drive', description: 'Save generated projects and docs directly to Google Drive.', emoji: '📁', logoColor: '#34A853', category: 'Productivity', authType: 'oauth', status: 'available' },
+  { id: 'google-calendar', name: 'Google Calendar', description: 'Schedule deployments and milestones synced to your calendar.', emoji: '📅', icon: '/images/connect-icons/google-calendar.png', logoColor: '#4285F4', category: 'Productivity', authType: 'oauth', status: 'available' },
+  { id: 'google-drive', name: 'Google Drive', description: 'Save generated projects and docs directly to Google Drive.', emoji: '📁', icon: '/images/connect-icons/google-drive.png', logoColor: '#34A853', category: 'Productivity', authType: 'oauth', status: 'available' },
   { id: 'notion', name: 'Notion', description: 'Auto-create project docs and changelogs in Notion.', emoji: '📝', logoColor: '#ffffff', category: 'Productivity', authType: 'pat', status: 'available', keyLabel: 'Integration Token', keyPlaceholder: 'secret_...', helpUrl: 'https://www.notion.so/my-integrations', helpText: 'Create an internal integration' },
   { id: 'slack', name: 'Slack', description: 'Get build and deployment notifications in Slack channels.', emoji: '💬', logoColor: '#4A154B', category: 'Productivity', authType: 'pat', status: 'available', keyLabel: 'Bot OAuth Token', keyPlaceholder: 'xoxb-...', helpUrl: 'https://api.slack.com/apps', helpText: 'Create a Slack app and get Bot User OAuth Token' },
   { id: 'discord', name: 'Discord', description: 'Connect a ResonantGenesis AI agent to your Discord server.', emoji: '🎮', logoColor: '#5865F2', category: 'Productivity', authType: 'oauth', status: 'available' },
@@ -217,7 +223,7 @@ const ConnectProfilesPage: React.FC = () => {
         <span className={styles.summaryTitle}>✅ Connected ({connected.length})</span>
         {connected.length === 0
           ? <span className={styles.noConnected}>No integrations connected yet — pick one below to get started.</span>
-          : <div className={styles.summaryChips}>{connected.map(i => <span key={i.id} className={styles.summaryChip}>{i.emoji} {i.name}</span>)}</div>
+          : <div className={styles.summaryChips}>{connected.map(i => <span key={i.id} className={styles.summaryChip} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><IntegrationIcon ig={i} size={16} /> {i.name}</span>)}</div>
         }
       </div>
 
@@ -240,7 +246,7 @@ const ConnectProfilesPage: React.FC = () => {
                     <div key={ig.id} className={`${styles.card} ${isConn ? styles.connected : ''} ${isSoon ? styles.comingSoon : ''}`} onClick={() => !isConn && openModal(ig)}>
                       {isConn && <div className={styles.connectedGlow} />}
                       <div className={styles.cardTop}>
-                        <div className={styles.logo} style={{ background: `${ig.logoColor}22`, color: ig.logoColor, fontSize: 24 }}>{ig.emoji}</div>
+                        <div className={styles.logo} style={{ background: `${ig.logoColor}22`, color: ig.logoColor, fontSize: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IntegrationIcon ig={ig} size={24} /></div>
                         <div className={styles.cardMeta}>
                           <h3 className={styles.cardName}>{ig.name}</h3>
                           <p className={styles.cardDesc}>{ig.description}</p>
@@ -278,7 +284,7 @@ const ConnectProfilesPage: React.FC = () => {
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
             <button className={styles.modalClose} onClick={() => setModal(null)}>×</button>
             <div className={styles.modalHeader}>
-              <div className={styles.modalLogo} style={{ background: `${modal.logoColor}22`, color: modal.logoColor, fontSize: 28 }}>{modal.emoji}</div>
+              <div className={styles.modalLogo} style={{ background: `${modal.logoColor}22`, color: modal.logoColor, fontSize: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><IntegrationIcon ig={modal} size={28} /></div>
               <div>
                 <h2 className={styles.modalTitle}>Connect {modal.name}</h2>
                 <p className={styles.modalSubtitle}>{modal.description}</p>
