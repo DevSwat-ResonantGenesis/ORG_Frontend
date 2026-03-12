@@ -136,6 +136,7 @@ const AgentOSv2: React.FC = () => {
   const setAgents = useAgentStore((state) => state.setAgents);
   const setLoading = useAgentStore((state) => state.setLoading);
   const updateAgent = useAgentStore((state) => state.updateAgent);
+  const agents = useAgentStore((state) => state.agents);
   const selectedAgentId = useAgentStore((state) => state.selectedAgentId);
   const commandPaletteOpen = useUIStore((s) => s.commandPaletteOpen);
   const setCommandPaletteOpen = useUIStore((s) => s.setCommandPaletteOpen);
@@ -250,6 +251,30 @@ const AgentOSv2: React.FC = () => {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [commandPaletteOpen, setCommandPaletteOpen]);
+
+  // Poll OpenClaw agent connection status every 30s
+  useEffect(() => {
+    const poll = async () => {
+      try {
+        const resp = await fastapiClient.get('/api/v1/openclaw/agents/openclaw');
+        const ocAgents: any[] = resp.data?.agents || [];
+        for (const oc of ocAgents) {
+          if (oc.agent_id && oc.connection_status) {
+            updateAgent(oc.agent_id, {
+              openclaw_config: {
+                ...(agents.find(a => a.id === oc.agent_id)?.openclaw_config || {}),
+                connection_status: oc.connection_status,
+                last_heartbeat: oc.last_heartbeat,
+              },
+            } as any);
+          }
+        }
+      } catch { /* silently ignore — user may not have OpenClaw agents */ }
+    };
+    poll();
+    const interval = setInterval(poll, 30000);
+    return () => clearInterval(interval);
+  }, [agents, updateAgent]);
 
   const buildCommands = useCallback((): Command[] => {
     const canRun = Boolean(selectedAgentId);

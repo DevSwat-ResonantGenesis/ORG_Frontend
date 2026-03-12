@@ -296,17 +296,27 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     setIsSendingMessage(true);
 
     try {
-      const result = await executeAgentTask(chatAgent.id, content, { mode: 'chat' });
-      const outputText = typeof result?.output === 'string'
-        ? result.output
-        : result?.output
-          ? JSON.stringify(result.output, null, 2)
-          : '';
+      let outputText = '';
+      if (chatAgent.agent_source === 'openclaw') {
+        // Route through OpenClaw webhook relay
+        const resp = await fastapiClient.post(`/api/v1/openclaw/relay/${chatAgent.id}`, {
+          type: 'chat',
+          payload: { message: content, context: (agentMessages[chatAgent.id] || []).slice(-10).map(m => ({ role: m.role === 'agent' ? 'assistant' : m.role, content: m.content })) },
+        });
+        outputText = resp.data?.response || resp.data?.output || JSON.stringify(resp.data || {});
+      } else {
+        const result = await executeAgentTask(chatAgent.id, content, { mode: 'chat' });
+        outputText = typeof result?.output === 'string'
+          ? result.output
+          : result?.output
+            ? JSON.stringify(result.output, null, 2)
+            : (result?.success ? 'Done.' : (result?.error || 'Failed to execute task.'));
+      }
 
       const agentReply: AgentMessage = {
         id: `msg-${Date.now()}`,
         role: 'agent',
-        content: outputText || (result?.success ? 'Done.' : (result?.error || 'Failed to execute task.')),
+        content: outputText || 'No response.',
         timestamp: new Date(),
       };
       setAgentMessages(prev => ({
@@ -330,7 +340,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     } finally {
       setIsSendingMessage(false);
     }
-  }, [chatAgent, messageInput, isSendingMessage, toast]);
+  }, [chatAgent, messageInput, isSendingMessage, agentMessages, toast]);
 
   // Fetch agent versions and activity when detail pane opens
   useEffect(() => {
@@ -1209,6 +1219,24 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         }}
                         title="View RARA governance status"
                       >Governance Status</button>
+                      <button
+                        style={{ flex: 1, padding: '6px 10px', fontSize: 10, fontWeight: 600, borderRadius: 6, border: '1px solid rgba(245,158,11,0.3)', cursor: 'pointer', background: 'rgba(245,158,11,0.1)', color: '#fbbf24' }}
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          const skillName = prompt('Skill name to import from your OpenClaw agent:');
+                          if (!skillName) return;
+                          const skillDesc = prompt('Skill description:') || skillName;
+                          try {
+                            const resp = await fastapiClient.post('/api/v1/openclaw/skills/import', {
+                              agent_id: detailAgent.id,
+                              skills: [{ name: skillName, description: skillDesc, handler: `openclaw://${detailAgent.id}/${skillName}` }],
+                            });
+                            if (resp.data?.imported) alert(`Imported ${resp.data.imported} skill(s)!`);
+                            else alert('Import complete');
+                          } catch (err: any) { alert(err?.response?.data?.detail || 'Failed to import skill'); }
+                        }}
+                        title="Import custom skills from your OpenClaw agent"
+                      >Import Skills</button>
                     </div>
                   </div>
                 )}
