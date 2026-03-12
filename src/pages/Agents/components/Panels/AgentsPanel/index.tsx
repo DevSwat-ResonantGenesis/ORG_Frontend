@@ -623,7 +623,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
       <div className={styles.splitContainer}>
         {/* Left pane: agents grid */}
-        <div className={`${styles.agentsPane} ${selectedAgent ? styles.hasSessions : ''}`}>
+        <div className={`${styles.agentsPane} ${(selectedAgent || showFactory || inlinePanel || chatAgentId || detailAgentId || publishAgentId) ? styles.hasSessions : ''}`}>
           {bulkMode && (
             <div className={styles.panelToolbar}>
               <div className={styles.bulkBar}>
@@ -853,6 +853,13 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                 <div className={styles.emptyState}>
                   <Icons.Agents />
                   <p>No agents found</p>
+                  <button
+                    className={styles.toolbarBtn}
+                    style={{ marginTop: 12, padding: '10px 20px', fontSize: 13, fontWeight: 600 }}
+                    onClick={() => { setShowFactory(true); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setInlinePanel(null); }}
+                  >
+                    <Icons.Plus /> Create Your First Agent
+                  </button>
                 </div>
               )}
             </div>
