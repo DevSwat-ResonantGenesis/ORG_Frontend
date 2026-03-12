@@ -5,7 +5,8 @@ import { connectGitHub, getGitHubStatus } from '@/api/github';
 import { initiateGoogleServiceConnection } from '@/api/sso';
 import fastapiClient from '@/api/fastapiClient';
 import { logger } from '@/utils/logger';
-import { fetchUserApiKeys, addUserApiKey, deleteUserApiKey } from '@/api/userApiKeys';
+import { fetchUserApiKeys, addUserApiKey, deleteUserApiKey, API_KEY_PROVIDERS } from '@/api/userApiKeys';
+import { ApiKeyManager } from '@/components/features/ApiKeyManager/ApiKeyManager';
 
 interface Integration {
   id: string;
@@ -36,6 +37,7 @@ const INTEGRATIONS: Integration[] = [
   { id: 'openai', name: 'OpenAI', description: 'Use your own GPT-4o key for unlimited AI generations without platform quotas.', emoji: '🤖', icon: '/images/connect-icons/openai.png', logoColor: '#10A37F', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'sk-proj-...', helpUrl: 'https://platform.openai.com/api-keys', helpText: 'Get from OpenAI platform dashboard' },
   { id: 'anthropic', name: 'Anthropic Claude', description: 'Power builds and chat with Claude using your own Anthropic API key.', emoji: '🧠', icon: '/images/connect-icons/anthropic.png', logoColor: '#D4A574', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'sk-ant-...', helpUrl: 'https://console.anthropic.com/settings/keys', helpText: 'Get from Anthropic console' },
   { id: 'huggingface', name: 'HuggingFace', description: 'Access open-source models and the HuggingFace Hub.', emoji: '🤗', icon: '/images/connect-icons/huggingface.png', logoColor: '#FF9A00', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'Access Token', keyPlaceholder: 'hf_...', helpUrl: 'https://huggingface.co/settings/tokens', helpText: 'Create read-access token' },
+  { id: 'local-llm', name: 'Local LLM', description: 'Connect your own local LLM (Ollama, LM Studio, llama.cpp) running on your device to ResonantGenesis.', emoji: '💻', logoColor: '#22d3ee', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'Local Endpoint URL', keyPlaceholder: 'http://localhost:11434/v1', helpText: 'Enter the API endpoint of your local model server (e.g. Ollama, LM Studio)' },
   { id: 'digitalocean', name: 'DigitalOcean', description: 'Deploy projects to DigitalOcean Droplets, App Platform, or Kubernetes.', emoji: '🌊', icon: '/images/connect-icons/digitalocean.png', logoColor: '#0080FF', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'dop_v1_...', helpUrl: 'https://cloud.digitalocean.com/account/api/tokens', helpText: 'Read/write access required' },
   { id: 'vercel', name: 'Vercel', description: 'One-click deploy React/Next.js projects to the Vercel edge network.', emoji: '▲', icon: '/images/connect-icons/vercel.svg', logoColor: '#ffffff', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Access Token', keyPlaceholder: 'vercel_token_...', helpUrl: 'https://vercel.com/account/tokens', helpText: 'Create from Vercel account settings' },
   { id: 'netlify', name: 'Netlify', description: 'Deploy static sites and serverless functions to Netlify CDN.', emoji: '🌐', logoColor: '#00C7B7', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'nfp_...', helpUrl: 'https://app.netlify.com/user/applications#personal-access-tokens', helpText: 'Create from Netlify user settings' },
@@ -200,10 +202,10 @@ const ConnectProfilesPage: React.FC = () => {
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.headerTop}>
-          <div className={styles.headerIcon}>🔗</div>
+          <div className={styles.headerIcon}>⚡</div>
           <div className={styles.headerText}>
-            <h1>Connect Your Profiles</h1>
-            <p>Connect external services — push to GitHub, deploy to cloud, automate workflows. {INTEGRATIONS.filter(i => i.status !== 'coming_soon').length}+ integrations.</p>
+            <h1>Integrations</h1>
+            <p>Connect services, AI model providers, and local LLMs — all in one place. {INTEGRATIONS.filter(i => i.status !== 'coming_soon').length}+ integrations.</p>
           </div>
         </div>
       </div>
@@ -225,6 +227,17 @@ const ConnectProfilesPage: React.FC = () => {
           ? <span className={styles.noConnected}>No integrations connected yet — pick one below to get started.</span>
           : <div className={styles.summaryChips}>{connected.map(i => <span key={i.id} className={styles.summaryChip} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><IntegrationIcon ig={i} size={16} /> {i.name}</span>)}</div>
         }
+      </div>
+
+      <div className={styles.category} style={{ maxWidth: 1200, margin: '0 auto var(--space-6, 24px)' }}>
+        <div className={styles.categoryHeader}>
+          <span className={styles.categoryEmoji}>🔑</span>
+          <span className={styles.categoryTitle}>Model Provider API Keys</span>
+        </div>
+        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: '20px 24px' }}>
+          <p style={{ fontSize: 13, color: '#71717a', margin: '0 0 16px' }}>Manage your own API keys for LLM providers (OpenAI, Anthropic, Groq, etc.). These keys power Resonant Chat and agent intelligence.</p>
+          <ApiKeyManager showTitle={false} onKeyAdded={() => loadConnections()} onKeyDeleted={() => loadConnections()} />
+        </div>
       </div>
 
       <div className={styles.content}>

@@ -448,7 +448,7 @@ const ProfilePage = () => {
               <button
                 key={item.id}
                 className={`${styles.sidebarItem} ${activeTab === item.id ? styles.active : ''}`}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => item.id === 'api-keys' ? navigate('/connect-profiles') : setActiveTab(item.id)}
               >
                 <item.icon size={16} />
                 <span>{item.label}</span>
@@ -461,7 +461,7 @@ const ProfilePage = () => {
           <div className={styles.sidebarSectionTitle}>INTEGRATIONS</div>
           <button className={styles.sidebarItem} onClick={() => navigate('/connect-profiles')}>
             <Link2 size={16} />
-            <span>Connect Your Profiles</span>
+            <span>Integrations</span>
           </button>
         </div>
         <div className={styles.sidebarSection}>

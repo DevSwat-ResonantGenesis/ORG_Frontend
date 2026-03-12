@@ -429,9 +429,9 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   type="button"
                   className={styles.byokCta}
-                  onClick={() => navigate('/profile?tab=api-keys')}
+                  onClick={() => navigate('/connect-profiles')}
                 >
-                  Add API key
+                  Integrations
                   <span className={styles.byokArrow} aria-hidden="true">→</span>
                 </button>
               )}
