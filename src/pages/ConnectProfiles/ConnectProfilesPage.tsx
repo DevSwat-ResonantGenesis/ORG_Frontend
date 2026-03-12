@@ -15,7 +15,7 @@ interface Integration {
   icon?: string;
   logoColor: string;
   category: string;
-  authType: 'oauth' | 'pat' | 'apikey' | 'coming_soon';
+  authType: 'oauth' | 'pat' | 'apikey' | 'openclaw' | 'coming_soon';
   status: 'connected' | 'available' | 'coming_soon';
   keyLabel?: string;
   keyPlaceholder?: string;
@@ -32,7 +32,7 @@ const INTEGRATIONS: Integration[] = [
   { id: 'github', name: 'GitHub', description: 'Push projects, sync repos, trigger CI/CD pipelines directly from the builder.', emoji: '🐙', icon: '/images/connect-icons/github.png', logoColor: '#e4e4e7', category: 'Version Control', authType: 'oauth', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'ghp_...', helpUrl: 'https://github.com/settings/tokens/new?scopes=repo,read:user', helpText: 'Create token with repo & read:user scopes' },
   { id: 'gitlab', name: 'GitLab', description: 'Push generated projects to your GitLab repositories.', emoji: '🦊', icon: '/images/connect-icons/gitlab.png', logoColor: '#FC6D26', category: 'Version Control', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'glpat-...', helpUrl: 'https://gitlab.com/-/profile/personal_access_tokens', helpText: 'Scopes: api, read_user, write_repository' },
   { id: 'bitbucket', name: 'Bitbucket', description: 'Sync projects to Bitbucket repositories.', emoji: '🪣', icon: '/images/connect-icons/bitbucket.png', logoColor: '#0052CC', category: 'Version Control', authType: 'pat', status: 'available', keyLabel: 'App Password', keyPlaceholder: 'ATBB...', helpUrl: 'https://bitbucket.org/account/settings/app-passwords/', helpText: 'Repositories read/write permission required' },
-  { id: 'openclaw', name: 'Openclaw', description: "Connect to Openclaw's agent network for cross-platform AI orchestration.", emoji: '�', logoColor: '#FF4500', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'oclaw_...', helpUrl: 'https://openclaw.ai/settings/api-keys', helpText: 'Get from your Openclaw account settings' },
+  { id: 'openclaw', name: 'Openclaw', description: "Connect to Openclaw's agent network for cross-platform AI orchestration via webhooks.", emoji: '🦞', icon: '/images/connect-icons/openclaw.svg', logoColor: '#FF4500', category: 'AI & Intelligence', authType: 'openclaw', status: 'available' },
   { id: 'local-llm', name: 'Local LLM', description: 'Connect your own local LLM (Ollama, LM Studio, llama.cpp) running on your device.', emoji: '💻', logoColor: '#22d3ee', category: 'AI & Intelligence', authType: 'apikey', status: 'available', keyLabel: 'Local Endpoint URL', keyPlaceholder: 'http://localhost:11434/v1', helpText: 'Enter the API endpoint of your local model server (e.g. Ollama, LM Studio)' },
   { id: 'digitalocean', name: 'DigitalOcean', description: 'Deploy projects to DigitalOcean Droplets, App Platform, or Kubernetes.', emoji: '🌊', icon: '/images/connect-icons/digitalocean.png', logoColor: '#0080FF', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'dop_v1_...', helpUrl: 'https://cloud.digitalocean.com/account/api/tokens', helpText: 'Read/write access required' },
   { id: 'vercel', name: 'Vercel', description: 'One-click deploy React/Next.js projects to the Vercel edge network.', emoji: '▲', icon: '/images/connect-icons/vercel.svg', logoColor: '#ffffff', category: 'Cloud & Hosting', authType: 'pat', status: 'available', keyLabel: 'Access Token', keyPlaceholder: 'vercel_token_...', helpUrl: 'https://vercel.com/account/tokens', helpText: 'Create from Vercel account settings' },
@@ -104,6 +104,11 @@ const ConnectProfilesPage: React.FC = () => {
   const [providerKeyName, setProviderKeyName] = useState('');
   const [providerSaving, setProviderSaving] = useState(false);
   const [providerValidation, setProviderValidation] = useState<{ valid: boolean; error?: string } | null>(null);
+  const [openclawAgents, setOpenclawAgents] = useState<{ id: string; name: string }[]>([]);
+  const [openclawSelectedAgent, setOpenclawSelectedAgent] = useState('');
+  const [openclawConnName, setOpenclawConnName] = useState('');
+  const [openclawResult, setOpenclawResult] = useState<{ webhook_url: string; webhook_secret: string } | null>(null);
+  const [openclawSaving, setOpenclawSaving] = useState(false);
 
   const loadConnections = useCallback(async () => {
     // Load from the existing encrypted user_api_keys DB (same system as Model Provider Keys)
@@ -123,6 +128,15 @@ const ConnectProfilesPage: React.FC = () => {
   }, []);
 
   useEffect(() => { loadConnections(); }, [loadConnections]);
+
+  // Load OpenClaw connection status on mount
+  useEffect(() => {
+    fastapiClient.get('/api/v1/openclaw/status').then(resp => {
+      if (resp.data?.connected) {
+        setConnections(p => ({ ...p, openclaw: `${resp.data.connection_count} webhook(s)` }));
+      }
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const c = searchParams.get('connect');
@@ -187,6 +201,13 @@ const ConnectProfilesPage: React.FC = () => {
         const resp = await fastapiClient.get('/api/v1/discord/invite-url');
         if (resp.data?.invite_url) setDiscordInviteUrl(resp.data.invite_url);
       } catch { setDiscordInviteUrl(null); }
+    }
+    if (ig.id === 'openclaw') {
+      setOpenclawSelectedAgent(''); setOpenclawConnName(''); setOpenclawResult(null);
+      fastapiClient.get('/api/v1/agents/').then(resp => {
+        const agents = (resp.data?.agents || resp.data || []).map((a: any) => ({ id: a.id, name: a.name || a.id }));
+        setOpenclawAgents(agents);
+      }).catch(() => setOpenclawAgents([]));
     }
   };
 
@@ -427,6 +448,70 @@ const ConnectProfilesPage: React.FC = () => {
                         <span className={styles.formHint}>🔑 <a href="https://github.com/settings/tokens/new?scopes=repo,read:user" target="_blank" rel="noreferrer">Create token</a> — repo & read:user scopes</span>
                       </div>
                       <button className={styles.submitBtn} onClick={handleSave} disabled={saving || !inputValue.trim()}>{saving ? 'Saving…' : 'Save Token'}</button>
+                    </>
+                  )}
+                </>
+              )}
+
+              {modal.authType === 'openclaw' && (
+                <>
+                  {openclawResult ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                      <div style={{ padding: 12, background: 'rgba(16,185,129,0.1)', borderRadius: 8, fontSize: 13 }}>
+                        ✅ Connection created! Copy these into your OpenClaw config:
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Webhook URL</label>
+                        <div style={{ display: 'flex', gap: 4 }}>
+                          <input className={styles.formInput} readOnly value={openclawResult.webhook_url} onClick={e => (e.target as HTMLInputElement).select()} />
+                          <button style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 6, color: '#fff', cursor: 'pointer', fontSize: 12, whiteSpace: 'nowrap' }} onClick={() => { navigator.clipboard.writeText(openclawResult.webhook_url); }}>Copy</button>
+                        </div>
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Webhook Secret (HMAC-SHA256)</label>
+                        <div style={{ display: 'flex', gap: 4 }}>
+                          <input className={styles.formInput} readOnly value={openclawResult.webhook_secret} onClick={e => (e.target as HTMLInputElement).select()} />
+                          <button style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 6, color: '#fff', cursor: 'pointer', fontSize: 12, whiteSpace: 'nowrap' }} onClick={() => { navigator.clipboard.writeText(openclawResult.webhook_secret); }}>Copy</button>
+                        </div>
+                      </div>
+                      <span className={styles.formHint}>Use these in your OpenClaw automation webhook action config. <a href="/api/v1/openclaw/setup-guide" target="_blank" rel="noreferrer">Full setup guide →</a></span>
+                      <button className={styles.submitBtn} onClick={() => { setModal(null); setOpenclawResult(null); loadConnections(); }}>Done</button>
+                    </div>
+                  ) : (
+                    <>
+                      <div style={{ padding: 12, background: 'rgba(255,69,0,0.08)', borderRadius: 8, fontSize: 13, lineHeight: 1.6, marginBottom: 8 }}>
+                        <strong>How it works:</strong><br/>
+                        1. Select one of your agents below<br/>
+                        2. A webhook trigger is created for that agent<br/>
+                        3. Copy the webhook URL + secret into your OpenClaw config<br/>
+                        4. OpenClaw events will trigger your agent automatically
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Select Agent</label>
+                        {openclawAgents.length === 0 ? (
+                          <div style={{ fontSize: 13, color: '#71717a', padding: 8 }}>Loading agents… <a href="/agents" style={{ color: 'var(--accent-500)' }}>Create one first →</a></div>
+                        ) : (
+                          <select className={styles.formInput} value={openclawSelectedAgent} onChange={e => setOpenclawSelectedAgent(e.target.value)} style={{ cursor: 'pointer' }}>
+                            <option value="">— Choose an agent —</option>
+                            {openclawAgents.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+                          </select>
+                        )}
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Connection Name (optional)</label>
+                        <input className={styles.formInput} type="text" placeholder="e.g., Telegram Bot Trigger" value={openclawConnName} onChange={e => setOpenclawConnName(e.target.value)} />
+                      </div>
+                      <button className={styles.submitBtn} disabled={!openclawSelectedAgent || openclawSaving} onClick={async () => {
+                        setOpenclawSaving(true); setMsg(null);
+                        try {
+                          const resp = await fastapiClient.post('/api/v1/openclaw/connections', { agent_id: openclawSelectedAgent, connection_name: openclawConnName || undefined });
+                          setOpenclawResult({ webhook_url: resp.data.webhook_url, webhook_secret: resp.data.webhook_secret });
+                          setConnections(p => ({ ...p, openclaw: 'connected' }));
+                        } catch (e: any) {
+                          const detail = e?.response?.data?.detail || e?.message || 'Failed to create connection';
+                          setMsg({ type: 'error', text: detail });
+                        } finally { setOpenclawSaving(false); }
+                      }}>{openclawSaving ? 'Creating…' : 'Create Webhook Connection'}</button>
                     </>
                   )}
                 </>
