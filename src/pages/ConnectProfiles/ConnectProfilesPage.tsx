@@ -68,6 +68,7 @@ const ConnectProfilesPage: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [discordInviteUrl, setDiscordInviteUrl] = useState<string | null>(null);
 
   const loadConnections = useCallback(async () => {
     // Load from the existing encrypted user_api_keys DB (same system as Model Provider Keys)
@@ -141,22 +142,22 @@ const ConnectProfilesPage: React.FC = () => {
 
   const connected = INTEGRATIONS.filter(i => connections[i.id]);
 
-  const openModal = (ig: Integration) => { if (ig.status === 'coming_soon') return; setModal(ig); setInputValue(''); setMsg(null); };
+  const openModal = async (ig: Integration) => {
+    if (ig.status === 'coming_soon') return;
+    setModal(ig); setInputValue(''); setMsg(null);
+    if (ig.id === 'discord') {
+      try {
+        const resp = await fastapiClient.get('/discord/invite-url');
+        if (resp.data?.invite_url) setDiscordInviteUrl(resp.data.invite_url);
+      } catch { setDiscordInviteUrl(null); }
+    }
+  };
 
   const handleOAuth = async (ig: Integration) => {
     if (ig.id === 'github') { connectGitHub(); setModal(null); return; }
     if (ig.id === 'discord') {
-      // Discord uses bot invite flow, not traditional OAuth
-      try {
-        const resp = await fastapiClient.get('/discord/invite-url');
-        const data = resp.data;
-        if (data.invite_url) {
-          window.open(data.invite_url, '_blank');
-          setMsg({ type: 'success', text: 'After adding the bot, run /connect <agent_id> in your Discord server.' });
-        } else {
-          setMsg({ type: 'error', text: 'Discord bot not configured yet. Contact platform admin.' });
-        }
-      } catch { setMsg({ type: 'error', text: 'Failed to get Discord invite URL.' }); }
+      // Discord uses bot invite flow — handled via direct link in modal
+      if (discordInviteUrl) window.location.href = discordInviteUrl;
       return;
     }
     // Google service connections (Drive, Calendar, Gmail)
@@ -294,9 +295,15 @@ const ConnectProfilesPage: React.FC = () => {
                     2. In your Discord server, run <code style={{ background: 'rgba(255,255,255,0.1)', padding: '1px 4px', borderRadius: '3px' }}>/connect &lt;agent_id&gt;</code><br/>
                     3. Mention the bot to chat with your agent!
                   </div>
-                  <button className={styles.oauthBtn} onClick={() => handleOAuth(modal)}>
-                    <span style={{ fontSize: 20 }}>🎮</span> Add Bot to Discord Server
-                  </button>
+                  {discordInviteUrl ? (
+                    <a href={discordInviteUrl} target="_blank" rel="noreferrer" className={styles.oauthBtn} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}>
+                      <span style={{ fontSize: 20 }}>🎮</span> Add Bot to Discord Server
+                    </a>
+                  ) : (
+                    <button className={styles.oauthBtn} disabled style={{ opacity: 0.5 }}>
+                      <span style={{ fontSize: 20 }}>🎮</span> Loading invite URL…
+                    </button>
+                  )}
                   <span className={styles.formHint} style={{ textAlign: 'center', display: 'block', marginTop: 'var(--space-2)' }}>
                     Get your Agent ID from the <a href="/agents" style={{ color: 'var(--accent-500)' }}>Agents page</a>
                   </span>
