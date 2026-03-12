@@ -5,8 +5,7 @@ import { connectGitHub, getGitHubStatus } from '@/api/github';
 import { initiateGoogleServiceConnection } from '@/api/sso';
 import fastapiClient from '@/api/fastapiClient';
 import { logger } from '@/utils/logger';
-import { fetchUserApiKeys, addUserApiKey, deleteUserApiKey, API_KEY_PROVIDERS } from '@/api/userApiKeys';
-import { ApiKeyManager } from '@/components/features/ApiKeyManager/ApiKeyManager';
+import { fetchUserApiKeys, addUserApiKey, deleteUserApiKey, validateApiKey, API_KEY_PROVIDERS } from '@/api/userApiKeys';
 
 interface Integration {
   id: string;
@@ -62,6 +61,17 @@ const INTEGRATIONS: Integration[] = [
   { id: 'newrelic', name: 'New Relic', description: 'Full-stack observability and performance monitoring.', emoji: '🔍', icon: '/images/connect-icons/newrelic.png', logoColor: '#1CE783', category: 'Monitoring', authType: 'coming_soon', status: 'coming_soon' },
 ];
 
+const PROVIDER_STYLES: Record<string, { emoji: string; color: string }> = {
+  openai: { emoji: '🤖', color: '#10A37F' }, anthropic: { emoji: '🧠', color: '#D4A574' },
+  google: { emoji: '✨', color: '#4285F4' }, mistral: { emoji: '🌊', color: '#FF7000' },
+  groq: { emoji: '⚡', color: '#F55036' }, cohere: { emoji: '🔮', color: '#39594D' },
+  together: { emoji: '🤝', color: '#6366F1' }, deepseek: { emoji: '🔍', color: '#4D6BFE' },
+  openrouter: { emoji: '🔀', color: '#6366F1' }, perplexity: { emoji: '🎯', color: '#20808D' },
+  fireworks: { emoji: '🎆', color: '#FF6600' }, huggingface: { emoji: '🤗', color: '#FF9A00' },
+  replicate: { emoji: '🔄', color: '#3B82F6' }, stability: { emoji: '🎨', color: '#7C3AED' },
+  elevenlabs: { emoji: '🎙️', color: '#000000' }, github: { emoji: '🐙', color: '#e4e4e7' },
+};
+
 const CATEGORIES = ['Version Control', 'AI & Intelligence', 'Cloud & Hosting', 'Productivity', 'Design', 'Databases', 'Payments', 'Communication', 'Automation', 'Monitoring'];
 const CAT_EMOJI: Record<string, string> = { 'Version Control': '🔀', 'AI & Intelligence': '🤖', 'Cloud & Hosting': '☁️', Productivity: '📋', Design: '🎨', Databases: '🗄️', Payments: '💳', Communication: '📡', Automation: '⚡', Monitoring: '📊' };
 
@@ -77,6 +87,12 @@ const ConnectProfilesPage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [discordInviteUrl, setDiscordInviteUrl] = useState<string | null>(null);
+  const [providersOpen, setProvidersOpen] = useState(true);
+  const [providerModal, setProviderModal] = useState<typeof API_KEY_PROVIDERS[number] | null>(null);
+  const [providerKeyInput, setProviderKeyInput] = useState('');
+  const [providerKeyName, setProviderKeyName] = useState('');
+  const [providerSaving, setProviderSaving] = useState(false);
+  const [providerValidation, setProviderValidation] = useState<{ valid: boolean; error?: string } | null>(null);
 
   const loadConnections = useCallback(async () => {
     // Load from the existing encrypted user_api_keys DB (same system as Model Provider Keys)
@@ -229,15 +245,49 @@ const ConnectProfilesPage: React.FC = () => {
         }
       </div>
 
-      <div className={styles.category} style={{ maxWidth: 1200, margin: '0 auto var(--space-6, 24px)' }}>
-        <div className={styles.categoryHeader}>
+      <div className={styles.category}>
+        <div className={styles.categoryHeader} onClick={() => setProvidersOpen(p => !p)} style={{ cursor: 'pointer', userSelect: 'none' }}>
           <span className={styles.categoryEmoji}>🔑</span>
           <span className={styles.categoryTitle}>Model Provider API Keys</span>
+          <span className={styles.categoryCount}>{API_KEY_PROVIDERS.length}</span>
+          <span style={{ marginLeft: 'auto', fontSize: 12, color: '#71717a', transition: 'transform 0.2s', transform: providersOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
         </div>
-        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: '20px 24px' }}>
-          <p style={{ fontSize: 13, color: '#71717a', margin: '0 0 16px' }}>Manage your own API keys for LLM providers (OpenAI, Anthropic, Groq, etc.). These keys power Resonant Chat and agent intelligence.</p>
-          <ApiKeyManager showTitle={false} onKeyAdded={() => loadConnections()} onKeyDeleted={() => loadConnections()} />
-        </div>
+        {providersOpen && (
+          <div className={styles.grid}>
+            {API_KEY_PROVIDERS.filter(p => p.id !== 'github').map(prov => {
+              const ps = PROVIDER_STYLES[prov.id] || { emoji: '🔑', color: '#71717a' };
+              const isConn = !!connections[prov.id];
+              return (
+                <div key={prov.id} className={`${styles.card} ${isConn ? styles.connected : ''}`} onClick={() => { if (!isConn) { setProviderModal(prov); setProviderKeyInput(''); setProviderKeyName(''); setProviderValidation(null); setMsg(null); } }}>
+                  {isConn && <div className={styles.connectedGlow} />}
+                  <div className={styles.cardTop}>
+                    <div className={styles.logo} style={{ background: `${ps.color}22`, color: ps.color, fontSize: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span style={{ fontSize: 24 }}>{ps.emoji}</span>
+                    </div>
+                    <div className={styles.cardMeta}>
+                      <h3 className={styles.cardName}>{prov.name}</h3>
+                      <p className={styles.cardDesc}>{(prov.models || []).slice(0, 3).join(', ') || 'API Key'}</p>
+                    </div>
+                    <span className={`${styles.statusBadge} ${isConn ? styles.connected : styles.available}`}>
+                      <span className={`${styles.dot} ${isConn ? styles.green : styles.purple}`} />
+                      {isConn ? 'Connected' : 'Available'}
+                    </span>
+                  </div>
+                  <div className={styles.cardFooter}>
+                    {isConn ? (
+                      <>
+                        <span className={styles.connectedInfo}>••••••••</span>
+                        <button className={`${styles.connectBtn} ${styles.danger}`} onClick={e => { e.stopPropagation(); disconnect(prov.id); }}>Disconnect</button>
+                      </>
+                    ) : (
+                      <button className={`${styles.connectBtn} ${styles.primary}`} onClick={e => { e.stopPropagation(); setProviderModal(prov); setProviderKeyInput(''); setProviderKeyName(''); setProviderValidation(null); setMsg(null); }}>Connect</button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       <div className={styles.content}>
@@ -375,6 +425,60 @@ const ConnectProfilesPage: React.FC = () => {
               )}
 
               <button className={styles.cancelBtn} onClick={() => setModal(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {providerModal && (
+        <div className={styles.modalOverlay} onClick={() => setProviderModal(null)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <button className={styles.modalClose} onClick={() => setProviderModal(null)}>×</button>
+            <div className={styles.modalHeader}>
+              <div className={styles.modalLogo} style={{ background: `${(PROVIDER_STYLES[providerModal.id] || { color: '#71717a' }).color}22`, color: (PROVIDER_STYLES[providerModal.id] || { color: '#71717a' }).color, fontSize: 28, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: 28 }}>{(PROVIDER_STYLES[providerModal.id] || { emoji: '🔑' }).emoji}</span>
+              </div>
+              <div>
+                <h2 className={styles.modalTitle}>Connect {providerModal.name}</h2>
+                <p className={styles.modalSubtitle}>{(providerModal.models || []).join(', ') || 'Add your API key'}</p>
+              </div>
+            </div>
+            <div className={styles.modalBody}>
+              {msg && <div className={msg.type === 'success' ? styles.successMsg : styles.errorMsg}>{msg.type === 'success' ? '✅' : '⚠️'} {msg.text}</div>}
+
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>🔑 API Key</label>
+                <input className={styles.formInput} type="password" placeholder={providerModal.placeholder || 'Enter your API key…'} value={providerKeyInput} onChange={e => { setProviderKeyInput(e.target.value); setProviderValidation(null); setMsg(null); }} autoComplete="off" />
+                {providerModal.helpUrl && <span className={styles.formHint}><a href={providerModal.helpUrl} target="_blank" rel="noreferrer">Get your {providerModal.name} API key →</a></span>}
+              </div>
+
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Name (optional)</label>
+                <input className={styles.formInput} type="text" placeholder="e.g., Production Key" value={providerKeyName} onChange={e => setProviderKeyName(e.target.value)} />
+              </div>
+
+              {providerValidation && (
+                <div style={{ padding: '8px 12px', borderRadius: 6, fontSize: 13, background: providerValidation.valid ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)', color: providerValidation.valid ? '#10b981' : '#ef4444' }}>
+                  {providerValidation.valid ? '✓ API key is valid' : `✗ ${providerValidation.error || 'Invalid key'}`}
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: 8, marginTop: 'var(--space-3, 12px)' }}>
+                <button className={styles.cancelBtn} style={{ flex: 1 }} onClick={() => setProviderModal(null)}>Cancel</button>
+                <button className={styles.submitBtn} style={{ flex: 1, opacity: !providerKeyInput.trim() ? 0.5 : 1 }} disabled={!providerKeyInput.trim() || providerSaving} onClick={async () => {
+                  if (!providerKeyInput.trim()) return;
+                  setProviderSaving(true); setMsg(null);
+                  try {
+                    const vr = await validateApiKey(providerModal.id, providerKeyInput.trim());
+                    setProviderValidation(vr);
+                    if (!vr.valid) { setMsg({ type: 'error', text: vr.error || 'Invalid API key' }); setProviderSaving(false); return; }
+                    await saveConn(providerModal.id, providerKeyInput.trim(), providerKeyName.trim() || `${providerModal.name} Key`);
+                    setMsg({ type: 'success', text: `${providerModal.name} connected!` });
+                    setTimeout(() => { setProviderModal(null); setMsg(null); }, 1200);
+                  } catch (e: any) { setMsg({ type: 'error', text: e?.message || 'Failed to save key' }); }
+                  finally { setProviderSaving(false); }
+                }}>{providerSaving ? 'Saving…' : `Connect ${providerModal.name}`}</button>
+              </div>
             </div>
           </div>
         </div>
