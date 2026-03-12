@@ -302,8 +302,18 @@ const ConnectProfilesPage: React.FC = () => {
                     3. Mention the bot to chat with your agent!
                   </div>
                   {discordInviteUrl ? (
-                    <a href={discordInviteUrl} target="_blank" rel="noreferrer" className={styles.oauthBtn} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}>
-                      <span style={{ fontSize: 20 }}>🎮</span> Add Bot to Discord Server
+                    <a href={discordInviteUrl} target="_blank" rel="noreferrer" className={styles.oauthBtn} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textDecoration: 'none' }}
+                      onClick={async () => {
+                        // Store Discord connection marker so UI shows 'Connected'
+                        try {
+                          await addUserApiKey({ provider: 'discord', apiKey: 'bot-invite-authorized', name: 'Discord Bot' });
+                          await loadConnections();
+                          setModal(null);
+                          setMsg({ type: 'success', text: 'Discord bot added! Now run /connect <agent_id> in your Discord server.' });
+                        } catch { /* ignore, link still opens */ }
+                      }}
+                    >
+                      <IntegrationIcon ig={modal} size={20} /> Add Bot to Discord Server
                     </a>
                   ) : (
                     <button className={styles.oauthBtn} disabled style={{ opacity: 0.5 }}>
