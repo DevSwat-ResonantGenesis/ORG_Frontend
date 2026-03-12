@@ -509,6 +509,47 @@ const ConnectProfilesPage: React.FC = () => {
                           : <>Use these in your OpenClaw automation webhook action config. <a href="/api/v1/openclaw/setup-guide" target="_blank" rel="noreferrer">Full setup guide →</a></>
                         }
                       </span>
+                      {openclawResult.agent_id && (
+                        <details style={{ marginTop: 4 }}>
+                          <summary style={{ cursor: 'pointer', fontSize: 12, color: '#a1a1aa', fontWeight: 600 }}>
+                            📡 Heartbeat SDK — keep your agent connected
+                          </summary>
+                          <div style={{ marginTop: 8, background: 'rgba(0,0,0,0.3)', borderRadius: 8, padding: 12, fontSize: 11, fontFamily: "'Monaco','Menlo',monospace", lineHeight: 1.6, overflowX: 'auto', color: '#d4d4d8', whiteSpace: 'pre' }}>
+{`# Python — run in your agent process
+import requests, time, threading
+
+API = "https://dev-swat.com/api/v1/openclaw"
+TOKEN = "<your-jwt-token>"
+AGENT_ID = "${openclawResult.agent_id}"
+
+def heartbeat_loop():
+    while True:
+        try:
+            requests.post(f"{API}/agents/heartbeat",
+                json={"agent_id": AGENT_ID,
+                       "status": "online",
+                       "available_models": ["llama3"]},
+                headers={"Authorization": f"Bearer {TOKEN}"})
+        except: pass
+        time.sleep(30)
+
+threading.Thread(target=heartbeat_loop, daemon=True).start()`}
+                          </div>
+                          <div style={{ marginTop: 6, background: 'rgba(0,0,0,0.3)', borderRadius: 8, padding: 12, fontSize: 11, fontFamily: "'Monaco','Menlo',monospace", lineHeight: 1.6, overflowX: 'auto', color: '#d4d4d8', whiteSpace: 'pre' }}>
+{`// JavaScript / Node.js
+const AGENT_ID = "${openclawResult.agent_id}";
+setInterval(async () => {
+  await fetch("https://dev-swat.com/api/v1/openclaw/agents/heartbeat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json",
+               "Authorization": "Bearer <your-jwt-token>" },
+    body: JSON.stringify({ agent_id: AGENT_ID,
+      status: "online", available_models: ["gpt-4"] })
+  }).catch(() => {});
+}, 30000);`}
+                          </div>
+                        </details>
+                      )}
                       <button className={styles.submitBtn} onClick={() => { setModal(null); setOpenclawResult(null); loadConnections(); }}>Done</button>
                     </div>
                   ) : (
