@@ -710,19 +710,18 @@ const RabbitPage: React.FC = () => {
           )}
         </main>
 
-        {/* ── RIGHT SIDEBAR – User Profile + Community Info ── */}
+        {/* ── RIGHT SIDEBAR – Reddit-style user profile + community info ── */}
         <aside className={styles.rightSidebar}>
-          {/* User Profile Card */}
-          {userId && (
-            <div className={styles.sidebarCard}>
-              <div className={styles.profileHeader}>
+          {/* User Profile Card (always visible) */}
+          <div className={styles.profileCard}>
+            <div className={styles.profileBanner} />
+            <div className={styles.profileCardBody}>
+              <div className={styles.profileAvatarWrap}>
                 <div className={styles.profileAvatar}>
                   <UserIcon />
                 </div>
-                <div>
-                  <div className={styles.profileName}>u/{userId.slice(0, 8)}</div>
-                </div>
               </div>
+              <div className={styles.profileName}>{userId ? `u/${userId.slice(0, 8)}` : 'Guest'}</div>
               <div className={styles.profileStatsGrid}>
                 <div className={styles.profileStat}>
                   <span className={styles.profileStatValue}>{userKarma}</span>
@@ -753,13 +752,13 @@ const RabbitPage: React.FC = () => {
                 {profileTab === 'overview' && (
                   <div className={styles.profileOverview}>
                     <div className={styles.profileOverviewItem}>
-                      <span>Total posts</span><span>{userPosts.length}</span>
-                    </div>
-                    <div className={styles.profileOverviewItem}>
-                      <span>Total comments</span><span>{userCommentCount}</span>
-                    </div>
-                    <div className={styles.profileOverviewItem}>
                       <span>Karma</span><span>{userKarma}</span>
+                    </div>
+                    <div className={styles.profileOverviewItem}>
+                      <span>Posts</span><span>{userPosts.length}</span>
+                    </div>
+                    <div className={styles.profileOverviewItem}>
+                      <span>Comments</span><span>{userCommentCount}</span>
                     </div>
                   </div>
                 )}
@@ -797,7 +796,7 @@ const RabbitPage: React.FC = () => {
                 )}
               </div>
             </div>
-          )}
+          </div>
 
           {/* Community Info Panel */}
           {selectedCommunity && (
@@ -818,6 +817,20 @@ const RabbitPage: React.FC = () => {
               </div>
             </div>
           )}
+
+          {/* Quick Links (Reddit-style settings section) */}
+          <div className={styles.sidebarCard}>
+            <div className={styles.sidebarTitle}>Links</div>
+            <a href="https://resonantgenesis.xyz" className={styles.quickLink}>
+              <span>🏠</span> Home
+            </a>
+            <a href="https://resonantgenesis.xyz/rabbit" className={styles.quickLink}>
+              <span>🐰</span> Rabbit Feed
+            </a>
+            <a href="https://www.reddit.com/u/ResonantGenesis/" target="_blank" rel="noopener noreferrer" className={styles.quickLink}>
+              <span>🔗</span> Reddit
+            </a>
+          </div>
         </aside>
       </div>
 
@@ -1102,7 +1115,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, localVote, onVote, onClick, o
       {post.body && <div className={styles.postBody}>{post.body}</div>}
       {post.image_url && (
         <div className={styles.postImage}>
-          <img src={post.image_url} alt="" loading="lazy" />
+          <img src={post.image_url} alt="" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }} />
         </div>
       )}
       <div className={styles.postFooter}>
@@ -1181,7 +1194,7 @@ const PostDetailView: React.FC<PostDetailProps> = ({
         {post.body && <div className={styles.postDetailBody}>{post.body}</div>}
         {post.image_url && (
           <div className={styles.postDetailImage}>
-            <img src={post.image_url} alt="" loading="lazy" />
+            <img src={post.image_url} alt="" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }} />
           </div>
         )}
 

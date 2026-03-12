@@ -1169,37 +1169,52 @@ select.inlineInput option {
 }
 
 /* ══════════════════════════════
-   User Profile Sidebar Styles
+   Reddit-style User Profile Card
    ══════════════════════════════ */
-.profileHeader {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+.profileCard {
+  background: var(--card-bg, #18181b);
+  border: 1px solid var(--border, #27272a);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.profileBanner {
+  height: 64px;
+  background: linear-gradient(135deg, #4338ca 0%, #6366f1 40%, #8b5cf6 70%, #a78bfa 100%);
+}
+
+.profileCardBody {
+  padding: 0 16px 16px;
+}
+
+.profileAvatarWrap {
+  margin-top: -24px;
+  margin-bottom: 8px;
 }
 
 .profileAvatar {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  flex-shrink: 0;
+  border: 3px solid var(--card-bg, #18181b);
 }
 
 .profileName {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   color: var(--text, #e4e4e7);
+  margin-bottom: 12px;
 }
 
 .profileStatsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 4px;
   margin-bottom: 12px;
   padding: 10px 0;
   border-top: 1px solid var(--border, #27272a);
@@ -1214,16 +1229,16 @@ select.inlineInput option {
 }
 
 .profileStatValue {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--text, #e4e4e7);
 }
 
 .profileStatLabel {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-muted, #71717a);
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
 }
 
 .profileTabs {
@@ -1237,7 +1252,7 @@ select.inlineInput option {
   flex: 1;
   padding: 8px 4px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-muted, #71717a);
   background: transparent;
   border: none;
@@ -1252,19 +1267,19 @@ select.inlineInput option {
 }
 
 .profileTabActive {
-  color: var(--accent, #818cf8);
-  border-bottom-color: var(--accent, #818cf8);
+  color: #6366f1;
+  border-bottom-color: #6366f1;
 }
 
 .profileContent {
-  max-height: 280px;
+  max-height: 260px;
   overflow-y: auto;
 }
 
 .profileOverview {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .profileOverviewItem {
@@ -1273,7 +1288,7 @@ select.inlineInput option {
   padding: 6px 0;
   font-size: 13px;
   color: var(--text-muted, #a1a1aa);
-  border-bottom: 1px solid var(--border, #18181b);
+  border-bottom: 1px solid rgba(39, 39, 42, 0.4);
 }
 
 .profileOverviewItem span:last-child {
@@ -1283,7 +1298,7 @@ select.inlineInput option {
 
 .profilePostItem {
   padding: 8px 0;
-  border-bottom: 1px solid var(--border, #1e1e21);
+  border-bottom: 1px solid rgba(39, 39, 42, 0.4);
   cursor: pointer;
   transition: background 0.12s;
 }
@@ -1312,7 +1327,7 @@ select.inlineInput option {
 
 .profileCommentItem {
   padding: 8px 0;
-  border-bottom: 1px solid var(--border, #1e1e21);
+  border-bottom: 1px solid rgba(39, 39, 42, 0.4);
 }
 
 .profileCommentBody {
@@ -1330,10 +1345,36 @@ select.inlineInput option {
   padding: 16px 0;
 }
 
+/* ── Quick Links ── */
+.quickLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px;
+  font-size: 13px;
+  color: var(--text, #d4d4d8);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.12s;
+}
+
+.quickLink:hover {
+  background: var(--hover-bg, #27272a);
+}
+
 /* ══════════════════════════════
-   Responsive – hide sidebars on small screens
+   Responsive
    ══════════════════════════════ */
-@media (max-width: 860px) {
+@media (max-width: 960px) {
+  .rightSidebar {
+    width: 240px;
+  }
+  .leftSidebar {
+    width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
   .rightSidebar {
     display: none;
   }
