@@ -2,27 +2,44 @@
 
 .rabbitRoot {
   display: flex;
-  gap: 20px;
-  max-width: 1200px;
+  gap: 16px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 20px 16px;
+  padding: 16px;
   min-height: 70vh;
 }
 
-/* ── Left sidebar – communities ── */
-.sidebar {
-  width: 260px;
+/* ── Left sidebar – communities (Reddit-style nav) ── */
+.leftSidebar {
+  width: 270px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  position: sticky;
+  top: 76px;
+  max-height: calc(100vh - 92px);
+  overflow-y: auto;
+}
+
+/* ── Right sidebar – user profile + community info ── */
+.rightSidebar {
+  width: 312px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: sticky;
+  top: 76px;
+  max-height: calc(100vh - 92px);
+  overflow-y: auto;
 }
 
 .sidebarCard {
   background: var(--card-bg, #18181b);
   border: 1px solid var(--border, #27272a);
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 8px;
+  padding: 12px 16px;
 }
 
 .sidebarTitle {
@@ -106,7 +123,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .feedHeader {
@@ -1100,4 +1117,237 @@ select.inlineInput option {
 
 .socialFooter a:hover {
   color: var(--text-primary, #f1f5f9);
+}
+
+/* ── Share Dropdown ── */
+.shareDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 100;
+  min-width: 180px;
+  background: var(--card-bg, #1e1e21);
+  border: 1px solid var(--border, #3f3f46);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  padding: 4px 0;
+  margin-top: 4px;
+}
+
+.shareDropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: var(--text, #e4e4e7);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.12s;
+}
+
+.shareDropdownItem:hover {
+  background: var(--hover-bg, #27272a);
+}
+
+/* ── Create Box Icons (Reddit-style image/link buttons) ── */
+.createBoxIcons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted, #71717a);
+  flex-shrink: 0;
+}
+
+/* ── Meta dot ── */
+.metaDot {
+  color: var(--text-muted, #52525b);
+  font-size: 11px;
+}
+
+/* ══════════════════════════════
+   User Profile Sidebar Styles
+   ══════════════════════════════ */
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.profileAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.profileName {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text, #e4e4e7);
+}
+
+.profileStatsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border, #27272a);
+  border-bottom: 1px solid var(--border, #27272a);
+}
+
+.profileStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.profileStatValue {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text, #e4e4e7);
+}
+
+.profileStatLabel {
+  font-size: 11px;
+  color: var(--text-muted, #71717a);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.profileTabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border, #27272a);
+  margin-bottom: 8px;
+}
+
+.profileTab {
+  flex: 1;
+  padding: 8px 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted, #71717a);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  text-align: center;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.profileTab:hover {
+  color: var(--text, #e4e4e7);
+}
+
+.profileTabActive {
+  color: var(--accent, #818cf8);
+  border-bottom-color: var(--accent, #818cf8);
+}
+
+.profileContent {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.profileOverview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profileOverviewItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 13px;
+  color: var(--text-muted, #a1a1aa);
+  border-bottom: 1px solid var(--border, #18181b);
+}
+
+.profileOverviewItem span:last-child {
+  font-weight: 600;
+  color: var(--text, #e4e4e7);
+}
+
+.profilePostItem {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border, #1e1e21);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.profilePostItem:hover {
+  background: var(--hover-bg, rgba(39, 39, 42, 0.5));
+}
+
+.profilePostTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text, #e4e4e7);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profilePostMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted, #71717a);
+  margin-top: 2px;
+}
+
+.profileCommentItem {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border, #1e1e21);
+}
+
+.profileCommentBody {
+  font-size: 12px;
+  color: var(--text, #d4d4d8);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profileEmpty {
+  text-align: center;
+  color: var(--text-muted, #71717a);
+  font-size: 12px;
+  padding: 16px 0;
+}
+
+/* ══════════════════════════════
+   Responsive – hide sidebars on small screens
+   ══════════════════════════════ */
+@media (max-width: 1100px) {
+  .rightSidebar {
+    display: none;
+  }
+  .rabbitRoot {
+    max-width: 900px;
+  }
+}
+
+@media (max-width: 768px) {
+  .leftSidebar {
+    display: none;
+  }
+  .rabbitRoot {
+    padding: 8px;
+    gap: 8px;
+  }
 }
