@@ -402,8 +402,16 @@ const RabbitPage: React.FC = () => {
   };
 
   /* ── Share / copy link ── */
-  const handleShare = (postId: number) => {
+  const handleShare = async (postId: number) => {
     const url = `${window.location.origin}/rabbit?post=${postId}`;
+    const post = posts.find(p => p.id === postId) || selectedPost;
+    const title = post?.title || 'Check out this post on Rabbit';
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text: title, url });
+        return;
+      } catch { /* user cancelled or not supported – fall through to copy */ }
+    }
     navigator.clipboard.writeText(url).then(() => {
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2000);
@@ -685,15 +693,51 @@ const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, comm
   const [body, setBody] = useState('');
   const [linkUrl, setLinkUrl] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [uploading, setUploading] = useState(false);
   const [chosenSlug, setChosenSlug] = useState(communitySlug || '');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { titleRef.current?.focus(); }, []);
 
   const effectiveSlug = communitySlug || chosenSlug;
   const effectiveBody = activeTab === 'link' ? linkUrl.trim() || null : body.trim() || null;
+
+  const handleImageUpload = async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      setError('Please select an image file');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Image must be under 10 MB');
+      return;
+    }
+    setUploading(true);
+    setError(null);
+    try {
+      const formData = new FormData();
+      const key = `rabbit/images/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+      formData.append('file', file);
+      formData.append('key', key);
+      const res = await fetch('/api/v1/storage/upload', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        throw new Error(text || `Upload failed (HTTP ${res.status})`);
+      }
+      const data = await res.json();
+      setImageUrl(data.url || `/api/v1/storage/download/${key}`);
+    } catch (e: any) {
+      setError(e.message || 'Image upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSubmit = async () => {
     if (!title.trim() || !effectiveSlug) return;
@@ -780,16 +824,48 @@ const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, comm
       {activeTab === 'image' && (
         <div className={styles.imageUploadArea}>
           <input
-            className={styles.inlineInput}
-            placeholder="Paste image URL..."
-            value={imageUrl}
-            onChange={e => setImageUrl(e.target.value)}
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={e => { const f = e.target.files?.[0]; if (f) handleImageUpload(f); }}
           />
-          {imageUrl && (
+          {!imageUrl ? (
+            <div
+              className={styles.imageDropZone}
+              onClick={() => fileRef.current?.click()}
+              onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
+              onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handleImageUpload(f); }}
+            >
+              {uploading ? (
+                <><span className={styles.spinner} /> Uploading...</>
+              ) : (
+                <>
+                  <ImageIcon />
+                  <span style={{ marginTop: 8 }}>Click to upload or drag & drop</span>
+                  <span style={{ fontSize: 11, color: 'var(--text-muted, #71717a)', marginTop: 4 }}>PNG, JPG, GIF up to 10MB</span>
+                </>
+              )}
+            </div>
+          ) : (
             <div className={styles.imagePreview}>
               <img src={imageUrl} alt="Preview" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+              <button
+                className={styles.btnSecondary}
+                style={{ marginTop: 8 }}
+                onClick={() => { setImageUrl(''); if (fileRef.current) fileRef.current.value = ''; }}
+              >
+                Remove image
+              </button>
             </div>
           )}
+          <input
+            className={styles.inlineInput}
+            placeholder="Or paste image URL..."
+            value={imageUrl}
+            onChange={e => setImageUrl(e.target.value)}
+            style={{ marginTop: 8 }}
+          />
         </div>
       )}
 
@@ -806,9 +882,9 @@ const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, comm
         <button className={styles.btnSecondary} onClick={onCancel}>Cancel</button>
         <button
           className={styles.btnPrimary}
-          disabled={submitting || !title.trim() || !effectiveSlug}
+          disabled={submitting || uploading || !title.trim() || !effectiveSlug}
           onClick={handleSubmit}
-          style={{ opacity: submitting || !title.trim() || !effectiveSlug ? 0.5 : 1 }}
+          style={{ opacity: submitting || uploading || !title.trim() || !effectiveSlug ? 0.5 : 1 }}
         >
           {submitting ? 'Posting…' : 'Post'}
         </button>
