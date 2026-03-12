@@ -70,7 +70,8 @@ class LocalLLMTunnelClient {
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const host = window.location.host;
-    const wsUrl = `${protocol}//${host}/api/v1/ws/local-llm/tunnel`;
+    // Use /ws/ path so nginx applies WebSocket upgrade headers
+    const wsUrl = `${protocol}//${host}/ws/local-llm/tunnel`;
 
     try {
       this.ws = new WebSocket(wsUrl);
