@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './RabbitPage.module.css';
 
 /* ── Types matching backend schemas ── */
@@ -14,13 +14,17 @@ interface Community {
 interface Post {
   id: number;
   community_id: number;
+  community_slug?: string | null;
   title: string;
   body: string | null;
+  image_url?: string | null;
   author_user_id: string;
   created_at: string;
   updated_at: string | null;
   is_deleted: boolean;
   is_locked: boolean;
+  vote_score: number;
+  comment_count: number;
 }
 
 interface Comment {
@@ -98,6 +102,21 @@ const PlusIcon = () => (
   </svg>
 );
 
+const SearchIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <circle cx="7" cy="7" r="5" />
+    <path d="M11 11L14 14" strokeLinecap="round" />
+  </svg>
+);
+
+const ImageIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <rect x="2" y="2" width="12" height="12" rx="2" />
+    <circle cx="5.5" cy="5.5" r="1.5" />
+    <path d="M2 11L5 8L8 11L11 7L14 11" strokeLinejoin="round" />
+  </svg>
+);
+
 /* ═══════════════════════════════════════════════
    Main RabbitPage Component
    ═══════════════════════════════════════════════ */
@@ -108,7 +127,7 @@ const RabbitPage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [votes, setVotes] = useState<Record<string, number>>({}); // "post:id" => -1|0|1
+  const [localVotes, setLocalVotes] = useState<Record<string, number>>({}); // user's votes: "post:id" => -1|0|1
 
   const [loadingCommunities, setLoadingCommunities] = useState(true);
   const [loadingPosts, setLoadingPosts] = useState(false);
@@ -120,6 +139,11 @@ const RabbitPage: React.FC = () => {
   const [newCommentBody, setNewCommentBody] = useState('');
   const [submittingComment, setSubmittingComment] = useState(false);
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<Post[] | null>(null);
+  const [searching, setSearching] = useState(false);
+  const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [error, setError] = useState<string | null>(null);
 
   /* ── Derived ── */
@@ -127,12 +151,6 @@ const RabbitPage: React.FC = () => {
     () => communities.find(c => c.slug === selectedSlug) ?? null,
     [communities, selectedSlug]
   );
-
-  const communityMap = useMemo(() => {
-    const m: Record<number, Community> = {};
-    for (const c of communities) m[c.id] = c;
-    return m;
-  }, [communities]);
 
   /* ── Fetch communities ── */
   const fetchCommunities = useCallback(async () => {
@@ -148,15 +166,13 @@ const RabbitPage: React.FC = () => {
 
   useEffect(() => { fetchCommunities(); }, [fetchCommunities]);
 
-  /* ── Fetch posts for selected community ── */
+  /* ── Fetch posts ── */
   const fetchPosts = useCallback(async (slug: string | null) => {
-    if (!slug) {
-      setPosts([]);
-      return;
-    }
     setLoadingPosts(true);
     try {
-      const data = await apiFetch<Post[]>(`/communities/${slug}/posts`);
+      const data = slug
+        ? await apiFetch<Post[]>(`/communities/${slug}/posts`)
+        : await apiFetch<Post[]>('/posts');
       setPosts(data.filter(p => !p.is_deleted));
     } catch {
       setPosts([]);
@@ -167,8 +183,31 @@ const RabbitPage: React.FC = () => {
 
   useEffect(() => {
     setSelectedPost(null);
+    setSearchQuery('');
+    setSearchResults(null);
     fetchPosts(selectedSlug);
   }, [selectedSlug, fetchPosts]);
+
+  /* ── Search ── */
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults(null);
+      return;
+    }
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    searchTimeout.current = setTimeout(async () => {
+      setSearching(true);
+      try {
+        const data = await apiFetch<Post[]>(`/posts/search?q=${encodeURIComponent(searchQuery.trim())}`);
+        setSearchResults(data);
+      } catch {
+        setSearchResults([]);
+      } finally {
+        setSearching(false);
+      }
+    }, 400);
+    return () => { if (searchTimeout.current) clearTimeout(searchTimeout.current); };
+  }, [searchQuery]);
 
   /* ── Fetch comments for selected post ── */
   const fetchComments = useCallback(async (postId: number) => {
@@ -191,16 +230,36 @@ const RabbitPage: React.FC = () => {
   /* ── Vote handler ── */
   const handleVote = async (targetType: 'post' | 'comment', targetId: number, value: 1 | -1) => {
     const key = `${targetType}:${targetId}`;
-    const current = votes[key] ?? 0;
+    const current = localVotes[key] ?? 0;
     const newValue = current === value ? 0 : value;
-    setVotes(prev => ({ ...prev, [key]: newValue }));
+    const scoreDelta = newValue - current;
+
+    setLocalVotes(prev => ({ ...prev, [key]: newValue }));
+
+    if (targetType === 'post') {
+      setPosts(prev => prev.map(p =>
+        p.id === targetId ? { ...p, vote_score: p.vote_score + scoreDelta } : p
+      ));
+      if (selectedPost && selectedPost.id === targetId) {
+        setSelectedPost(prev => prev ? { ...prev, vote_score: prev.vote_score + scoreDelta } : prev);
+      }
+    }
+
     try {
       await apiFetch('/votes', {
         method: 'PUT',
         body: JSON.stringify({ target_type: targetType, target_id: targetId, value: newValue }),
       });
     } catch {
-      setVotes(prev => ({ ...prev, [key]: current }));
+      setLocalVotes(prev => ({ ...prev, [key]: current }));
+      if (targetType === 'post') {
+        setPosts(prev => prev.map(p =>
+          p.id === targetId ? { ...p, vote_score: p.vote_score - scoreDelta } : p
+        ));
+        if (selectedPost && selectedPost.id === targetId) {
+          setSelectedPost(prev => prev ? { ...prev, vote_score: prev.vote_score - scoreDelta } : prev);
+        }
+      }
     }
   };
 
@@ -215,6 +274,10 @@ const RabbitPage: React.FC = () => {
       });
       setNewCommentBody('');
       fetchComments(selectedPost.id);
+      setSelectedPost(prev => prev ? { ...prev, comment_count: prev.comment_count + 1 } : prev);
+      setPosts(prev => prev.map(p =>
+        p.id === selectedPost.id ? { ...p, comment_count: p.comment_count + 1 } : p
+      ));
     } catch (e: any) {
       setError(e.message || 'Failed to post comment');
     } finally {
@@ -226,6 +289,8 @@ const RabbitPage: React.FC = () => {
   const handleSelectCommunity = (slug: string) => {
     setSelectedSlug(prev => (prev === slug ? null : slug));
   };
+
+  const displayPosts = searchResults !== null ? searchResults : posts;
 
   /* ═══════════════════════════════════
      RENDER
@@ -276,10 +341,10 @@ const RabbitPage: React.FC = () => {
           {selectedPost ? (
             <PostDetailView
               post={selectedPost}
-              community={communityMap[selectedPost.community_id]}
+              communitySlug={selectedPost.community_slug || undefined}
               comments={comments}
               loadingComments={loadingComments}
-              votes={votes}
+              localVotes={localVotes}
               newCommentBody={newCommentBody}
               submittingComment={submittingComment}
               error={error}
@@ -300,20 +365,45 @@ const RabbitPage: React.FC = () => {
                   <div className={styles.feedSubtitle}>
                     {selectedCommunity
                       ? selectedCommunity.description || 'Community posts'
-                      : 'Select a community to browse posts'}
+                      : 'All posts across communities'}
                   </div>
                 </div>
-                {selectedSlug && (
-                  <div className={styles.feedActions}>
+                <div className={styles.feedActions}>
+                  {selectedSlug && (
                     <button className={styles.btnPrimary} onClick={() => setShowCreatePost(true)}>
                       <PlusIcon /> New Post
                     </button>
-                  </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Search Bar */}
+              <div className={styles.searchBar}>
+                <SearchIcon />
+                <input
+                  className={styles.searchInput}
+                  placeholder="Search posts..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                />
+                {searchQuery && (
+                  <button className={styles.searchClear} onClick={() => { setSearchQuery(''); setSearchResults(null); }}>
+                    &times;
+                  </button>
                 )}
               </div>
 
-              {/* Create Post Box */}
-              {selectedSlug && (
+              {/* Inline Create Post Form */}
+              {showCreatePost && selectedSlug ? (
+                <InlineCreatePost
+                  communitySlug={selectedSlug}
+                  onCreated={(p) => {
+                    setPosts(prev => [p, ...prev]);
+                    setShowCreatePost(false);
+                  }}
+                  onCancel={() => setShowCreatePost(false)}
+                />
+              ) : selectedSlug ? (
                 <div className={styles.createBox} onClick={() => setShowCreatePost(true)}>
                   <div className={styles.createBoxAvatar}>
                     <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -323,48 +413,46 @@ const RabbitPage: React.FC = () => {
                   </div>
                   <div className={styles.createBoxInput}>Create a post...</div>
                 </div>
-              )}
+              ) : null}
 
-              {/* Posts */}
-              {!selectedSlug ? (
-                <div className={styles.emptyState}>
-                  <svg className={styles.emptyIcon} viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="32" cy="32" r="28" />
-                    <path d="M22 38c3 4 14 4 20 0" strokeLinecap="round" />
-                    <circle cx="24" cy="26" r="2" fill="currentColor" />
-                    <circle cx="40" cy="26" r="2" fill="currentColor" />
-                  </svg>
-                  <div className={styles.emptyTitle}>Welcome to Rabbit</div>
-                  <div className={styles.emptyDesc}>
-                    Pick a community from the sidebar to start browsing posts, or create a new one.
-                  </div>
+              {/* Posts Feed */}
+              {searching ? (
+                <div className={styles.loading}>
+                  <span className={styles.spinner} /> Searching…
                 </div>
               ) : loadingPosts ? (
                 <div className={styles.loading}>
                   <span className={styles.spinner} /> Loading posts…
                 </div>
-              ) : posts.length === 0 ? (
+              ) : displayPosts.length === 0 ? (
                 <div className={styles.emptyState}>
                   <svg className={styles.emptyIcon} viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="8" y="12" width="48" height="40" rx="4" />
                     <path d="M8 24H56" />
                     <path d="M20 34H44M24 42H40" strokeLinecap="round" />
                   </svg>
-                  <div className={styles.emptyTitle}>No posts yet</div>
-                  <div className={styles.emptyDesc}>Be the first to post in r/{selectedSlug}!</div>
+                  <div className={styles.emptyTitle}>
+                    {searchResults !== null ? 'No results found' : 'No posts yet'}
+                  </div>
+                  <div className={styles.emptyDesc}>
+                    {searchResults !== null
+                      ? `No posts matching "${searchQuery}"`
+                      : selectedSlug
+                        ? `Be the first to post in r/${selectedSlug}!`
+                        : 'Create a community and start posting!'}
+                  </div>
                 </div>
               ) : (
-                posts.map(post => (
+                displayPosts.map(post => (
                   <PostCard
                     key={post.id}
                     post={post}
-                    community={communityMap[post.community_id]}
-                    voteValue={votes[`post:${post.id}`] ?? 0}
+                    localVote={localVotes[`post:${post.id}`] ?? 0}
                     onVote={(v) => handleVote('post', post.id, v)}
                     onClick={() => setSelectedPost(post)}
                     onCommunityClick={() => {
-                      const c = communityMap[post.community_id];
-                      if (c) setSelectedSlug(c.slug);
+                      const slug = post.community_slug;
+                      if (slug) setSelectedSlug(slug);
                     }}
                   />
                 ))
@@ -393,7 +481,7 @@ const RabbitPage: React.FC = () => {
         </a>
       </div>
 
-      {/* ── Modals ── */}
+      {/* ── Create Community Modal (kept as modal since it's less frequent) ── */}
       {showCreateCommunity && (
         <CreateCommunityModal
           onClose={() => setShowCreateCommunity(false)}
@@ -404,16 +492,132 @@ const RabbitPage: React.FC = () => {
           }}
         />
       )}
-      {showCreatePost && selectedSlug && (
-        <CreatePostModal
-          communitySlug={selectedSlug}
-          onClose={() => setShowCreatePost(false)}
-          onCreated={(p) => {
-            setPosts(prev => [p, ...prev]);
-            setShowCreatePost(false);
-          }}
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════
+   Inline Create Post (in-feed, not modal)
+   ═══════════════════════════════════ */
+interface InlineCreatePostProps {
+  communitySlug: string;
+  onCreated: (p: Post) => void;
+  onCancel: () => void;
+}
+
+const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, onCreated, onCancel }) => {
+  const [activeTab, setActiveTab] = useState<'text' | 'image' | 'link'>('text');
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const titleRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => { titleRef.current?.focus(); }, []);
+
+  const handleSubmit = async () => {
+    if (!title.trim()) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const p = await apiFetch<Post>('/posts', {
+        method: 'POST',
+        body: JSON.stringify({
+          community_slug: communitySlug,
+          title: title.trim(),
+          body: body.trim() || null,
+          image_url: imageUrl.trim() || null,
+        }),
+      });
+      onCreated(p);
+    } catch (e: any) {
+      setError(e.message || 'Failed to create post');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className={styles.inlineCreatePost}>
+      <div className={styles.inlineCreateHeader}>
+        <span className={styles.inlineCreateTitle}>Create post in r/{communitySlug}</span>
+      </div>
+
+      {/* Tabs */}
+      <div className={styles.createTabs}>
+        {(['text', 'image', 'link'] as const).map(tab => (
+          <button
+            key={tab}
+            className={`${styles.createTab} ${activeTab === tab ? styles.createTabActive : ''}`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab === 'text' && 'Text'}
+            {tab === 'image' && <><ImageIcon /> Image</>}
+            {tab === 'link' && 'Link'}
+          </button>
+        ))}
+      </div>
+
+      {error && <div className={styles.error}>{error}</div>}
+
+      <input
+        ref={titleRef}
+        className={styles.inlineInput}
+        placeholder="Title *"
+        value={title}
+        onChange={e => setTitle(e.target.value)}
+        maxLength={300}
+      />
+
+      <div className={styles.titleCount}>{title.length}/300</div>
+
+      {activeTab === 'text' && (
+        <textarea
+          className={styles.inlineTextarea}
+          placeholder="Body text (optional)"
+          value={body}
+          onChange={e => setBody(e.target.value)}
+          rows={5}
         />
       )}
+
+      {activeTab === 'image' && (
+        <div className={styles.imageUploadArea}>
+          <input
+            className={styles.inlineInput}
+            placeholder="Paste image URL..."
+            value={imageUrl}
+            onChange={e => setImageUrl(e.target.value)}
+          />
+          {imageUrl && (
+            <div className={styles.imagePreview}>
+              <img src={imageUrl} alt="Preview" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'link' && (
+        <input
+          className={styles.inlineInput}
+          placeholder="Paste a URL..."
+          value={body}
+          onChange={e => setBody(e.target.value)}
+        />
+      )}
+
+      <div className={styles.inlineCreateActions}>
+        <button className={styles.btnSecondary} onClick={onCancel}>Cancel</button>
+        <button
+          className={styles.btnPrimary}
+          disabled={submitting || !title.trim()}
+          onClick={handleSubmit}
+          style={{ opacity: submitting || !title.trim() ? 0.5 : 1 }}
+        >
+          {submitting ? 'Posting…' : 'Post'}
+        </button>
+      </div>
     </div>
   );
 };
@@ -423,37 +627,36 @@ const RabbitPage: React.FC = () => {
    ═══════════════════════════════════ */
 interface PostCardProps {
   post: Post;
-  community?: Community;
-  voteValue: number;
+  localVote: number;
   onVote: (v: 1 | -1) => void;
   onClick: () => void;
   onCommunityClick: () => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, community, voteValue, onVote, onClick, onCommunityClick }) => (
+const PostCard: React.FC<PostCardProps> = ({ post, localVote, onVote, onClick, onCommunityClick }) => (
   <div className={styles.postCard}>
     <div className={styles.postVoteSidebar}>
       <button
-        className={`${styles.voteBtn} ${voteValue === 1 ? styles.voteBtnUpActive : ''}`}
+        className={`${styles.voteBtn} ${localVote === 1 ? styles.voteBtnUpActive : ''}`}
         onClick={(e) => { e.stopPropagation(); onVote(1); }}
         title="Upvote"
       >
-        <UpArrow active={voteValue === 1} />
+        <UpArrow active={localVote === 1} />
       </button>
-      <span className={styles.voteCount}>{voteValue}</span>
+      <span className={styles.voteCount}>{post.vote_score}</span>
       <button
-        className={`${styles.voteBtn} ${voteValue === -1 ? styles.voteBtnDownActive : ''}`}
+        className={`${styles.voteBtn} ${localVote === -1 ? styles.voteBtnDownActive : ''}`}
         onClick={(e) => { e.stopPropagation(); onVote(-1); }}
         title="Downvote"
       >
-        <DownArrow active={voteValue === -1} />
+        <DownArrow active={localVote === -1} />
       </button>
     </div>
     <div className={styles.postContent}>
       <div className={styles.postMeta}>
-        {community && (
+        {post.community_slug && (
           <span className={styles.postCommunity} onClick={(e) => { e.stopPropagation(); onCommunityClick(); }}>
-            r/{community.slug}
+            r/{post.community_slug}
           </span>
         )}
         <span>•</span>
@@ -463,9 +666,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, community, voteValue, onVote,
       </div>
       <div className={styles.postTitle} onClick={onClick}>{post.title}</div>
       {post.body && <div className={styles.postBody}>{post.body}</div>}
+      {post.image_url && (
+        <div className={styles.postImage}>
+          <img src={post.image_url} alt="" loading="lazy" />
+        </div>
+      )}
       <div className={styles.postFooter}>
         <button className={styles.postFooterBtn} onClick={onClick}>
-          <CommentIcon /> Comments
+          <CommentIcon /> {post.comment_count} Comment{post.comment_count !== 1 ? 's' : ''}
         </button>
       </div>
     </div>
@@ -477,10 +685,10 @@ const PostCard: React.FC<PostCardProps> = ({ post, community, voteValue, onVote,
    ═══════════════════════════════════ */
 interface PostDetailProps {
   post: Post;
-  community?: Community;
+  communitySlug?: string;
   comments: Comment[];
   loadingComments: boolean;
-  votes: Record<string, number>;
+  localVotes: Record<string, number>;
   newCommentBody: string;
   submittingComment: boolean;
   error: string | null;
@@ -492,7 +700,7 @@ interface PostDetailProps {
 }
 
 const PostDetailView: React.FC<PostDetailProps> = ({
-  post, community, comments, loadingComments, votes,
+  post, communitySlug, comments, loadingComments, localVotes,
   newCommentBody, submittingComment, error,
   onBack, onVote, onCommentChange, onSubmitComment, onClearError,
 }) => (
@@ -502,29 +710,34 @@ const PostDetailView: React.FC<PostDetailProps> = ({
     </button>
     <div className={styles.postDetail}>
       <div className={styles.postMeta} style={{ marginBottom: 8 }}>
-        {community && <span className={styles.postCommunity}>r/{community.slug}</span>}
+        {communitySlug && <span className={styles.postCommunity}>r/{communitySlug}</span>}
         <span>•</span>
         <span className={styles.postAuthor}>u/{post.author_user_id.slice(0, 8)}</span>
         <span>•</span>
         <span className={styles.timeAgo}>{timeAgo(post.created_at)}</span>
-        {post.is_locked && <span style={{ color: '#f59e0b', fontWeight: 600 }}>🔒 Locked</span>}
+        {post.is_locked && <span style={{ color: '#f59e0b', fontWeight: 600 }}>Locked</span>}
       </div>
       <div className={styles.postDetailTitle}>{post.title}</div>
       {post.body && <div className={styles.postDetailBody}>{post.body}</div>}
+      {post.image_url && (
+        <div className={styles.postDetailImage}>
+          <img src={post.image_url} alt="" loading="lazy" />
+        </div>
+      )}
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         <button
-          className={`${styles.voteBtn} ${(votes[`post:${post.id}`] ?? 0) === 1 ? styles.voteBtnUpActive : ''}`}
+          className={`${styles.voteBtn} ${(localVotes[`post:${post.id}`] ?? 0) === 1 ? styles.voteBtnUpActive : ''}`}
           onClick={() => onVote('post', post.id, 1)}
         >
-          <UpArrow active={(votes[`post:${post.id}`] ?? 0) === 1} />
+          <UpArrow active={(localVotes[`post:${post.id}`] ?? 0) === 1} />
         </button>
-        <span className={styles.voteCount}>{votes[`post:${post.id}`] ?? 0}</span>
+        <span className={styles.voteCount}>{post.vote_score}</span>
         <button
-          className={`${styles.voteBtn} ${(votes[`post:${post.id}`] ?? 0) === -1 ? styles.voteBtnDownActive : ''}`}
+          className={`${styles.voteBtn} ${(localVotes[`post:${post.id}`] ?? 0) === -1 ? styles.voteBtnDownActive : ''}`}
           onClick={() => onVote('post', post.id, -1)}
         >
-          <DownArrow active={(votes[`post:${post.id}`] ?? 0) === -1} />
+          <DownArrow active={(localVotes[`post:${post.id}`] ?? 0) === -1} />
         </button>
       </div>
 
@@ -577,19 +790,19 @@ const PostDetailView: React.FC<PostDetailProps> = ({
               <div className={styles.commentBody}>{c.body}</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
                 <button
-                  className={`${styles.voteBtn} ${(votes[`comment:${c.id}`] ?? 0) === 1 ? styles.voteBtnUpActive : ''}`}
+                  className={`${styles.voteBtn} ${(localVotes[`comment:${c.id}`] ?? 0) === 1 ? styles.voteBtnUpActive : ''}`}
                   onClick={() => onVote('comment', c.id, 1)}
                   style={{ width: 24, height: 24 }}
                 >
-                  <UpArrow active={(votes[`comment:${c.id}`] ?? 0) === 1} />
+                  <UpArrow active={(localVotes[`comment:${c.id}`] ?? 0) === 1} />
                 </button>
-                <span className={styles.voteCount} style={{ fontSize: 11 }}>{votes[`comment:${c.id}`] ?? 0}</span>
+                <span className={styles.voteCount} style={{ fontSize: 11 }}>{localVotes[`comment:${c.id}`] ?? 0}</span>
                 <button
-                  className={`${styles.voteBtn} ${(votes[`comment:${c.id}`] ?? 0) === -1 ? styles.voteBtnDownActive : ''}`}
+                  className={`${styles.voteBtn} ${(localVotes[`comment:${c.id}`] ?? 0) === -1 ? styles.voteBtnDownActive : ''}`}
                   onClick={() => onVote('comment', c.id, -1)}
                   style={{ width: 24, height: 24 }}
                 >
-                  <DownArrow active={(votes[`comment:${c.id}`] ?? 0) === -1} />
+                  <DownArrow active={(localVotes[`comment:${c.id}`] ?? 0) === -1} />
                 </button>
               </div>
             </div>
@@ -679,82 +892,6 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ onClose, on
             style={{ opacity: submitting || !slug.trim() || !name.trim() ? 0.5 : 1 }}
           >
             {submitting ? 'Creating…' : 'Create'}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-/* ═══════════════════════════════════
-   Create Post Modal
-   ═══════════════════════════════════ */
-interface CreatePostModalProps {
-  communitySlug: string;
-  onClose: () => void;
-  onCreated: (p: Post) => void;
-}
-
-const CreatePostModal: React.FC<CreatePostModalProps> = ({ communitySlug, onClose, onCreated }) => {
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = async () => {
-    if (!title.trim()) return;
-    setSubmitting(true);
-    setError(null);
-    try {
-      const p = await apiFetch<Post>('/posts', {
-        method: 'POST',
-        body: JSON.stringify({
-          community_slug: communitySlug,
-          title: title.trim(),
-          body: body.trim() || null,
-        }),
-      });
-      onCreated(p);
-    } catch (e: any) {
-      setError(e.message || 'Failed to create post');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  return (
-    <div className={styles.modalOverlay} onClick={onClose}>
-      <div className={styles.modal} onClick={e => e.stopPropagation()}>
-        <div className={styles.modalTitle}>New Post in r/{communitySlug}</div>
-        {error && <div className={styles.error}>{error}</div>}
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Title</label>
-          <input
-            className={styles.formInput}
-            placeholder="An interesting title"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            maxLength={300}
-          />
-        </div>
-        <div className={styles.formGroup}>
-          <label className={styles.formLabel}>Body (optional)</label>
-          <textarea
-            className={`${styles.formInput} ${styles.formTextarea}`}
-            placeholder="Share your thoughts..."
-            value={body}
-            onChange={e => setBody(e.target.value)}
-          />
-        </div>
-        <div className={styles.modalActions}>
-          <button className={styles.btnSecondary} onClick={onClose}>Cancel</button>
-          <button
-            className={styles.btnPrimary}
-            disabled={submitting || !title.trim()}
-            onClick={handleSubmit}
-            style={{ opacity: submitting || !title.trim() ? 0.5 : 1 }}
-          >
-            {submitting ? 'Posting…' : 'Post'}
           </button>
         </div>
       </div>
