@@ -153,6 +153,13 @@ const ConnectProfilesPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (modal) {
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = ''; };
+    }
+  }, [modal]);
+
+  useEffect(() => {
     const c = searchParams.get('connect');
     if (c) { const ig = INTEGRATIONS.find(i => i.id === c); if (ig && ig.status !== 'coming_soon') setModal(ig); }
     // Returned from GitHub OAuth flow — reload to pick up newly stored token
@@ -631,37 +638,49 @@ const ConnectProfilesPage: React.FC = () => {
                       )}
 
                       {openclawTab === 'connect' && (
-                        <>
-                          <div style={{ padding: 10, background: 'rgba(255,69,0,0.08)', borderRadius: 8, fontSize: 12, lineHeight: 1.5, marginBottom: 8 }}>
-                            <strong>Webhook Bridge:</strong> Connect an existing agent via webhook trigger. Select an agent and get a webhook URL + secret for your OpenClaw config.
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                          <div style={{ padding: 10, background: 'rgba(245,158,11,0.08)', borderRadius: 8, fontSize: 12, lineHeight: 1.5 }}>
+                            <strong>Quick Connect:</strong> Already have an OpenClaw agent running? Enter its endpoint URL and we'll create a webhook bridge so your agent can communicate with the platform.
                           </div>
                           <div className={styles.formGroup}>
-                            <label className={styles.formLabel}>Select Agent</label>
-                            {openclawAgents.length === 0 ? (
-                              <div style={{ fontSize: 13, color: '#71717a', padding: 8 }}>Loading agents… <a href="/agents" style={{ color: 'var(--accent-500)' }}>Create one first →</a></div>
-                            ) : (
-                              <select className={styles.formInput} value={openclawSelectedAgent} onChange={e => setOpenclawSelectedAgent(e.target.value)} style={{ cursor: 'pointer' }}>
-                                <option value="">— Choose an agent —</option>
-                                {openclawAgents.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
-                              </select>
-                            )}
+                            <label className={styles.formLabel}>Agent Name *</label>
+                            <input className={styles.formInput} type="text" placeholder="My OpenClaw Agent" value={ocRegName} onChange={e => setOcRegName(e.target.value)} />
+                          </div>
+                          <div className={styles.formGroup}>
+                            <label className={styles.formLabel}>Agent Endpoint URL *</label>
+                            <input className={styles.formInput} type="text" placeholder="http://192.168.1.100:8080" value={ocRegEndpoint} onChange={e => setOcRegEndpoint(e.target.value)} />
+                            <span className={styles.formHint}>The URL where your OpenClaw agent is listening</span>
                           </div>
                           <div className={styles.formGroup}>
                             <label className={styles.formLabel}>Connection Name (optional)</label>
-                            <input className={styles.formInput} type="text" placeholder="e.g., Telegram Bot Trigger" value={openclawConnName} onChange={e => setOpenclawConnName(e.target.value)} />
+                            <input className={styles.formInput} type="text" placeholder="e.g., Home Lab Agent" value={openclawConnName} onChange={e => setOpenclawConnName(e.target.value)} />
                           </div>
-                          <button className={styles.submitBtn} disabled={!openclawSelectedAgent || openclawSaving} onClick={async () => {
+                          <button className={styles.submitBtn} disabled={!ocRegName.trim() || !ocRegEndpoint.trim() || openclawSaving} onClick={async () => {
                             setOpenclawSaving(true); setMsg(null);
                             try {
-                              const resp = await fastapiClient.post('/api/v1/openclaw/connections', { agent_id: openclawSelectedAgent, connection_name: openclawConnName || undefined });
-                              setOpenclawResult({ webhook_url: resp.data.webhook_url, webhook_secret: resp.data.webhook_secret });
+                              const resp = await fastapiClient.post('/api/v1/openclaw/agents/register', {
+                                name: ocRegName,
+                                description: openclawConnName || `Connected from ${ocRegEndpoint}`,
+                                provider: 'openclaw',
+                                model: 'external',
+                                endpoint_url: ocRegEndpoint,
+                                memory_mode: 'cloud',
+                                enable_rara: false,
+                                enable_dsid: false,
+                              });
+                              setOpenclawResult({
+                                webhook_url: resp.data.webhook_url,
+                                webhook_secret: resp.data.webhook_secret,
+                                agent_id: resp.data.agent_id,
+                                agent_public_hash: resp.data.agent_public_hash,
+                              });
                               setConnections(p => ({ ...p, openclaw: 'connected' }));
                             } catch (e: any) {
-                              const detail = e?.response?.data?.detail || e?.message || 'Failed to create connection';
+                              const detail = e?.response?.data?.detail || e?.message || 'Failed to connect agent';
                               setMsg({ type: 'error', text: detail });
                             } finally { setOpenclawSaving(false); }
-                          }}>{openclawSaving ? 'Creating…' : 'Create Webhook Connection'}</button>
-                        </>
+                          }}>{openclawSaving ? 'Connecting…' : 'Connect Agent'}</button>
+                        </div>
                       )}
                     </>
                   )}
