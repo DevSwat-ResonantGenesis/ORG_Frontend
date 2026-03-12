@@ -103,6 +103,15 @@ function buildCommentTree(comments: Comment[]): CommentNode[] {
   return result;
 }
 
+function normalizeImageUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (url.startsWith('/api/v1/storage/download/')) return url;
+  if (url.startsWith('/api/storage/download/')) return url;
+  if (url.startsWith('/storage/download/')) return `/api/v1${url}`;
+  return url;
+}
+
 async function apiFetch<T>(path: string, opts?: RequestInit): Promise<T> {
   const res = await fetch(`${API}${path}`, {
     credentials: 'include',
@@ -513,6 +522,14 @@ const RabbitPage: React.FC = () => {
   }, []);
   useEffect(() => { fetchAllPosts(); }, [fetchAllPosts]);
 
+  /* ── Fetch user comments (for profile sidebar) ── */
+  useEffect(() => {
+    if (!userId) return;
+    apiFetch<Comment[]>(`/comments?author_user_id=${encodeURIComponent(userId)}&limit=50`)
+      .then(data => setAllUserComments(data.filter(c => !c.is_deleted)))
+      .catch(() => {});
+  }, [userId]);
+
   /* ── User profile computed data ── */
   const userPosts = useMemo(() => userId ? allPosts.filter(p => p.author_user_id === userId) : [], [allPosts, userId]);
   const userKarma = useMemo(() => userPosts.reduce((sum, p) => sum + p.vote_score, 0), [userPosts]);
@@ -647,6 +664,7 @@ const RabbitPage: React.FC = () => {
                   communities={communities}
                   onCreated={(p) => {
                     setPosts(prev => [p, ...prev]);
+                    fetchAllPosts();
                     setShowCreatePost(false);
                     if (p.community_slug && p.community_slug !== selectedSlug) {
                       setSelectedSlug(p.community_slug);
@@ -903,7 +921,7 @@ const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, comm
         throw new Error(text || `Upload failed (HTTP ${res.status})`);
       }
       const data = await res.json();
-      setImageUrl(data.url || `/api/v1/storage/download/${key}`);
+      setImageUrl(`/api/storage/download/${key}`);
     } catch (e: any) {
       setError(e.message || 'Image upload failed');
     } finally {
@@ -1113,9 +1131,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, localVote, onVote, onClick, o
       </div>
       <div className={styles.postTitle} onClick={onClick}>{post.title}</div>
       {post.body && <div className={styles.postBody}>{post.body}</div>}
-      {post.image_url && (
+      {normalizeImageUrl(post.image_url) && (
         <div className={styles.postImage}>
-          <img src={post.image_url} alt="" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }} />
+          <img src={normalizeImageUrl(post.image_url)!} alt="" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }} />
         </div>
       )}
       <div className={styles.postFooter}>
@@ -1192,9 +1210,9 @@ const PostDetailView: React.FC<PostDetailProps> = ({
         </div>
         <div className={styles.postDetailTitle}>{post.title}</div>
         {post.body && <div className={styles.postDetailBody}>{post.body}</div>}
-        {post.image_url && (
+        {normalizeImageUrl(post.image_url) && (
           <div className={styles.postDetailImage}>
-            <img src={post.image_url} alt="" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }} />
+            <img src={normalizeImageUrl(post.image_url)!} alt="" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }} />
           </div>
         )}
 
