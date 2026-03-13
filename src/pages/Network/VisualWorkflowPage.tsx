@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from 'react';
+import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import ReactFlow, {
   addEdge,
   Background,
@@ -14,9 +14,11 @@ import ReactFlow, {
   Handle,
   Position,
   NodeProps,
+  ReactFlowProvider,
+  useReactFlow,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Save, Play, Trash2, ArrowLeft, Layout, Copy, Download, Upload, X, Settings, ChevronRight, Undo2, Redo2, List } from 'lucide-react';
+import { Save, Play, Trash2, ArrowLeft, Layout, Copy, Download, X, Settings, Undo2, Redo2, List, CheckCircle, XCircle, Loader, AlertTriangle, Plus, Search, ChevronDown, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 // ── Step type config ──
@@ -28,19 +30,27 @@ type WorkflowStepType =
   | 'send_notification'
   | 'transform_data'
   | 'condition'
-  | 'delay';
+  | 'delay'
+  | 'code_execute'
+  | 'webhook_trigger'
+  | 'loop'
+  | 'parallel'
+  | 'human_approval'
+  | 'data_filter';
 
 interface StepNodeData {
   label: string;
   stepType: WorkflowStepType;
   config: Record<string, any>;
-  status?: string;
+  status?: 'pending' | 'running' | 'completed' | 'failed';
 }
 
 interface SavedWorkflow {
   id: string;
   name: string;
+  status?: string;
   steps?: any[];
+  graph_data?: any;
   created_at?: string;
   updated_at?: string;
 }
@@ -90,35 +100,76 @@ const STEP_CONFIG_FIELDS: Record<WorkflowStepType, { key: string; label: string;
     { key: 'duration_ms', label: 'Duration (ms)', type: 'number' },
     { key: 'until', label: 'Wait Until (ISO date)', type: 'text' },
   ],
+  code_execute: [
+    { key: 'language', label: 'Language', type: 'select', options: ['python', 'javascript'] },
+    { key: 'code', label: 'Code', type: 'textarea' },
+    { key: 'timeout', label: 'Timeout (ms)', type: 'number' },
+  ],
+  webhook_trigger: [
+    { key: 'path', label: 'Webhook Path', type: 'text' },
+    { key: 'method', label: 'Method', type: 'select', options: ['POST', 'GET'] },
+    { key: 'timeout_seconds', label: 'Timeout (seconds)', type: 'number' },
+  ],
+  loop: [
+    { key: 'items_path', label: 'Items Path (JSONPath)', type: 'text' },
+    { key: 'max_iterations', label: 'Max Iterations', type: 'number' },
+    { key: 'concurrency', label: 'Concurrency', type: 'number' },
+  ],
+  parallel: [
+    { key: 'branches', label: 'Branch Count', type: 'number' },
+    { key: 'wait_all', label: 'Wait for All', type: 'select', options: ['true', 'false'] },
+  ],
+  human_approval: [
+    { key: 'approver', label: 'Approver Email', type: 'text' },
+    { key: 'instructions', label: 'Instructions', type: 'textarea' },
+    { key: 'timeout_hours', label: 'Timeout (hours)', type: 'number' },
+  ],
+  data_filter: [
+    { key: 'filter_expression', label: 'Filter Expression', type: 'textarea' },
+    { key: 'required_fields', label: 'Required Fields', type: 'text' },
+  ],
 };
 
-const STEP_PALETTE: { type: WorkflowStepType; label: string; color: string; icon: string }[] = [
-  { type: 'http_request', label: 'HTTP Request', color: '#3b82f6', icon: '🌐' },
-  { type: 'llm_completion', label: 'LLM Call', color: '#8b5cf6', icon: '🧠' },
-  { type: 'memory_search', label: 'Memory Search', color: '#06b6d4', icon: '🔍' },
-  { type: 'agent_execute', label: 'Agent Execute', color: '#f59e0b', icon: '🤖' },
-  { type: 'send_notification', label: 'Notification', color: '#10b981', icon: '📧' },
-  { type: 'transform_data', label: 'Transform', color: '#6366f1', icon: '🔄' },
-  { type: 'condition', label: 'Condition', color: '#ef4444', icon: '🔀' },
-  { type: 'delay', label: 'Delay', color: '#78716c', icon: '⏱️' },
+const STEP_PALETTE: { type: WorkflowStepType; label: string; color: string; icon: string; category: string }[] = [
+  { type: 'llm_completion', label: 'LLM Call', color: '#8b5cf6', icon: '🧠', category: 'AI' },
+  { type: 'memory_search', label: 'Memory Search', color: '#06b6d4', icon: '🔍', category: 'AI' },
+  { type: 'agent_execute', label: 'Agent Execute', color: '#f59e0b', icon: '🤖', category: 'AI' },
+  { type: 'http_request', label: 'HTTP Request', color: '#3b82f6', icon: '🌐', category: 'Integration' },
+  { type: 'send_notification', label: 'Notification', color: '#10b981', icon: '📧', category: 'Integration' },
+  { type: 'webhook_trigger', label: 'Webhook', color: '#0ea5e9', icon: '🔔', category: 'Integration' },
+  { type: 'condition', label: 'Condition', color: '#ef4444', icon: '🔀', category: 'Logic' },
+  { type: 'transform_data', label: 'Transform', color: '#6366f1', icon: '🔄', category: 'Logic' },
+  { type: 'code_execute', label: 'Run Code', color: '#ec4899', icon: '💻', category: 'Logic' },
+  { type: 'loop', label: 'Loop', color: '#14b8a6', icon: '🔁', category: 'Logic' },
+  { type: 'parallel', label: 'Parallel', color: '#a855f7', icon: '⚡', category: 'Logic' },
+  { type: 'data_filter', label: 'Filter', color: '#f97316', icon: '🧹', category: 'Logic' },
+  { type: 'delay', label: 'Delay', color: '#78716c', icon: '⏱️', category: 'Control' },
+  { type: 'human_approval', label: 'Human Approval', color: '#eab308', icon: '👤', category: 'Control' },
 ];
+
+const PALETTE_CATEGORIES = [...new Set(STEP_PALETTE.map(s => s.category))];
 
 const STEP_COLORS: Record<string, string> = Object.fromEntries(STEP_PALETTE.map((s) => [s.type, s.color]));
 const STEP_ICONS: Record<string, string> = Object.fromEntries(STEP_PALETTE.map((s) => [s.type, s.icon]));
+
+const STATUS_COLORS: Record<string, string> = {
+  pending: '#64748b', running: '#3b82f6', completed: '#22c55e', failed: '#ef4444',
+};
 
 // ── Custom Step Node ──
 const StepNodeComponent = React.memo(({ data, selected }: NodeProps<StepNodeData>) => {
   const color = STEP_COLORS[data.stepType] || '#6366f1';
   const icon = STEP_ICONS[data.stepType] || '⚙️';
+  const statusColor = data.status ? STATUS_COLORS[data.status] : null;
 
   return (
     <div
       style={{
         background: '#1e293b',
-        border: `2px solid ${selected ? '#e2e8f0' : color}`,
+        border: `2px solid ${selected ? '#e2e8f0' : statusColor || color}`,
         borderRadius: 10,
         minWidth: 180,
-        boxShadow: selected ? `0 0 12px ${color}40` : '0 2px 8px rgba(0,0,0,0.3)',
+        boxShadow: selected ? `0 0 12px ${color}40` : data.status === 'running' ? `0 0 12px ${STATUS_COLORS.running}40` : '0 2px 8px rgba(0,0,0,0.3)',
         transition: 'all 0.2s',
       }}
     >
@@ -142,6 +193,9 @@ const StepNodeComponent = React.memo(({ data, selected }: NodeProps<StepNodeData
         <span style={{ color, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
           {data.stepType.replace(/_/g, ' ')}
         </span>
+        {data.status && (
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: statusColor || '#64748b', display: 'inline-block', marginLeft: 'auto', animation: data.status === 'running' ? 'pulse 1.5s infinite' : 'none' }} />
+        )}
       </div>
       <div style={{ padding: '8px 12px' }}>
         <div style={{ color: '#e2e8f0', fontSize: 13, fontWeight: 500 }}>{data.label}</div>
@@ -221,21 +275,27 @@ const S = {
   } as React.CSSProperties,
 };
 
-// ── Main Page Component ──
-export default function VisualWorkflowPage() {
+// ── Inner Component (needs ReactFlow context for drag-drop) ──
+function VisualWorkflowInner() {
   const navigate = useNavigate();
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const { screenToFlowPosition } = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [workflowName, setWorkflowName] = useState('Untitled Workflow');
+  const [workflowId, setWorkflowId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [running, setRunning] = useState(false);
+  const [runStatus, setRunStatus] = useState<string | null>(null);
   const [toast, setToast] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showConfigPanel, setShowConfigPanel] = useState(true);
   const [savedWorkflows, setSavedWorkflows] = useState<SavedWorkflow[]>([]);
   const [showLoadPanel, setShowLoadPanel] = useState(false);
   const [undoStack, setUndoStack] = useState<{ nodes: Node[]; edges: Edge[] }[]>([]);
   const [redoStack, setRedoStack] = useState<{ nodes: Node[]; edges: Edge[] }[]>([]);
+  const [paletteSearch, setPaletteSearch] = useState('');
+  const [expandedCats, setExpandedCats] = useState<Set<string>>(new Set(PALETTE_CATEGORIES));
 
   // Show toast message
   const showToast = useCallback((type: 'success' | 'error', text: string) => {
@@ -312,6 +372,29 @@ export default function VisualWorkflowPage() {
     [nodes.length, setNodes, pushUndo]
   );
 
+  // Drag-and-drop from palette
+  const onDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  const onDrop = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    const stepType = event.dataTransfer.getData('application/workflow-step') as WorkflowStepType;
+    if (!stepType) return;
+    const palette = STEP_PALETTE.find((s) => s.type === stepType);
+    if (!palette) return;
+    pushUndo();
+    const position = screenToFlowPosition({ x: event.clientX, y: event.clientY });
+    const id = `step_${Date.now()}`;
+    const newNode: Node<StepNodeData> = {
+      id, type: 'stepNode', position,
+      data: { label: palette.label, stepType, config: {} },
+    };
+    setNodes((nds) => [...nds, newNode]);
+    setSelectedNode(id);
+  }, [screenToFlowPosition, setNodes, pushUndo]);
+
   const deleteSelected = useCallback(() => {
     if (!selectedNode) return;
     pushUndo();
@@ -371,41 +454,65 @@ export default function VisualWorkflowPage() {
     setSaving(true);
     try {
       const json = toWorkflowJson();
-      const res = await fetch('/api/v1/workflows', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+      const url = workflowId ? `/api/v1/workflow/workflows/${workflowId}` : '/api/v1/workflow/workflows';
+      const method = workflowId ? 'PUT' : 'POST';
+      const res = await fetch(url, {
+        method, headers: { 'Content-Type': 'application/json' },
         credentials: 'include', body: JSON.stringify(json),
       });
       if (!res.ok) throw new Error(`Save failed: ${res.status}`);
-      showToast('success', `Workflow "${workflowName}" saved!`);
+      const data = await res.json();
+      if (data.id) setWorkflowId(data.id);
+      showToast('success', workflowId ? 'Workflow updated!' : `Workflow "${workflowName}" saved!`);
+      loadWorkflowsList();
     } catch (e: any) {
       showToast('error', e?.message || 'Save failed');
     } finally {
       setSaving(false);
     }
-  }, [toWorkflowJson, nodes.length, workflowName, showToast]);
+  }, [toWorkflowJson, nodes.length, workflowName, workflowId, showToast]);
 
   const handleRun = useCallback(async () => {
     if (nodes.length === 0) { showToast('error', 'Add steps before running'); return; }
     setRunning(true);
+    setRunStatus('running');
+    setNodes((nds) => nds.map((n) => ({ ...n, data: { ...n.data, status: 'pending' as const } })));
     try {
       const json = toWorkflowJson();
-      const res = await fetch('/api/v1/workflows/draft/run', {
+      const url = workflowId ? `/api/v1/workflow/workflows/${workflowId}/execute` : '/api/v1/workflows/draft/run';
+      const body = workflowId ? { input: {} } : { inputs: {}, ...json };
+      const res = await fetch(url, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', body: JSON.stringify({ inputs: {}, ...json }),
+        credentials: 'include', body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error(`Run failed: ${res.status}`);
-      showToast('success', 'Workflow execution started!');
+      const result = await res.json();
+      setRunStatus(result.status || 'completed');
+      setNodes((nds) => nds.map((n) => ({ ...n, data: { ...n.data, status: 'completed' as const } })));
+      showToast('success', `Workflow ${result.status || 'executed'}!`);
     } catch (e: any) {
+      setRunStatus('failed');
+      setNodes((nds) => nds.map((n) => ({ ...n, data: { ...n.data, status: 'failed' as const } })));
       showToast('error', e?.message || 'Run failed');
     } finally {
       setRunning(false);
     }
-  }, [toWorkflowJson, nodes.length, showToast]);
+  }, [toWorkflowJson, nodes.length, workflowId, showToast, setNodes]);
+
+  const handleNew = useCallback(() => {
+    pushUndo();
+    setNodes([]);
+    setEdges([]);
+    setWorkflowId(null);
+    setWorkflowName('Untitled Workflow');
+    setRunStatus(null);
+    setSelectedNode(null);
+  }, [setNodes, setEdges, pushUndo]);
 
   // Load workflows list
   const loadWorkflowsList = useCallback(async () => {
     try {
-      const res = await fetch('/api/v1/workflows', { credentials: 'include' });
+      const res = await fetch('/api/v1/workflow/workflows', { credentials: 'include' });
       if (res.ok) {
         const data = await res.json();
         setSavedWorkflows(Array.isArray(data) ? data : data?.workflows || []);
@@ -416,10 +523,12 @@ export default function VisualWorkflowPage() {
   // Load a specific workflow
   const loadWorkflow = useCallback(async (wf: SavedWorkflow) => {
     try {
-      const res = await fetch(`/api/v1/workflows/${wf.id}`, { credentials: 'include' });
+      const res = await fetch(`/api/v1/workflow/workflows/${wf.id}`, { credentials: 'include' });
       if (!res.ok) throw new Error('Load failed');
       const data = await res.json();
+      setWorkflowId(data.id || wf.id);
       setWorkflowName(data.name || wf.name);
+      setRunStatus(null);
       if (data.graph_data?.nodes && data.graph_data?.edges) {
         setNodes(data.graph_data.nodes.map((n: any) => ({ ...n, type: n.type || 'stepNode' })));
         setEdges(data.graph_data.edges);
@@ -496,18 +605,27 @@ export default function VisualWorkflowPage() {
           style={{ background: 'transparent', border: 'none', color: '#e2e8f0', fontSize: 15, fontWeight: 600, width: 260, outline: 'none' }}
         />
         <div style={{ flex: 1 }} />
+        {/* Run status indicator */}
+        {runStatus && (
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '3px 10px', borderRadius: 12, fontSize: 11, fontWeight: 600, background: `${STATUS_COLORS[runStatus] || '#64748b'}20`, color: STATUS_COLORS[runStatus] || '#64748b', border: `1px solid ${STATUS_COLORS[runStatus] || '#64748b'}40` }}>
+            {runStatus === 'running' ? <Loader size={10} className="spin" /> : runStatus === 'completed' ? <CheckCircle size={10} /> : runStatus === 'failed' ? <XCircle size={10} /> : null}
+            {runStatus}
+          </span>
+        )}
+        {workflowId && <span style={{ color: '#334155', fontSize: 10, fontFamily: 'monospace' }}>ID: {workflowId.substring(0, 8)}</span>}
         <span style={{ color: '#64748b', fontSize: 11 }}>{nodes.length} steps | {edges.length} connections</span>
         <div style={{ width: 1, height: 24, background: '#334155', margin: '0 4px' }} />
         <button onClick={handleUndo} style={S.smallBtn()} title="Undo (Ctrl+Z)"><Undo2 size={14} /></button>
         <button onClick={handleRedo} style={S.smallBtn()} title="Redo (Ctrl+Y)"><Redo2 size={14} /></button>
         <div style={{ width: 1, height: 24, background: '#334155', margin: '0 4px' }} />
+        <button onClick={handleNew} style={S.smallBtn()}><Plus size={14} /> New</button>
         <button onClick={() => { setShowLoadPanel(!showLoadPanel); if (!showLoadPanel) loadWorkflowsList(); }} style={S.smallBtn(showLoadPanel)}>
           <List size={14} /> Load
         </button>
         <button onClick={handleExport} style={S.smallBtn()} title="Export JSON"><Download size={14} /></button>
         <div style={{ width: 1, height: 24, background: '#334155', margin: '0 4px' }} />
         <button onClick={handleSave} disabled={saving} style={S.topBtn('#3b82f6', saving ? 0.6 : 1)}>
-          <Save size={14} /> {saving ? 'Saving...' : 'Save'}
+          <Save size={14} /> {saving ? 'Saving...' : workflowId ? 'Update' : 'Save'}
         </button>
         <button onClick={handleRun} disabled={running} style={S.topBtn('#10b981', running ? 0.6 : 1)}>
           <Play size={14} /> {running ? 'Running...' : 'Run'}
@@ -550,35 +668,69 @@ export default function VisualWorkflowPage() {
       {/* Main area */}
       <div style={{ flex: 1, display: 'flex', position: 'relative' }}>
         {/* Left sidebar: step palette */}
-        <div style={{ width: 200, background: '#0f172a', borderRight: '1px solid #1e293b', padding: 10, overflowY: 'auto' }}>
-          <div style={{ color: '#94a3b8', fontSize: 10, fontWeight: 600, textTransform: 'uppercase', marginBottom: 10, letterSpacing: '0.5px' }}>
-            Add Steps
+        <div style={{ width: 220, background: '#0f172a', borderRight: '1px solid #1e293b', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+          <div style={{ padding: '8px 10px', borderBottom: '1px solid #1e293b' }}>
+            <div style={{ position: 'relative' }}>
+              <Search size={13} style={{ position: 'absolute', left: 8, top: 7, color: '#64748b' }} />
+              <input
+                value={paletteSearch}
+                onChange={e => setPaletteSearch(e.target.value)}
+                placeholder="Search steps..."
+                style={{ width: '100%', background: '#1e293b', border: '1px solid #334155', borderRadius: 6, color: '#e2e8f0', padding: '5px 8px 5px 26px', fontSize: 11, outline: 'none', boxSizing: 'border-box' }}
+              />
+            </div>
           </div>
-          {STEP_PALETTE.map((step) => (
-            <button
-              key={step.type}
-              onClick={() => addNode(step.type)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 8, width: '100%',
-                padding: '7px 10px', marginBottom: 3, background: '#1e293b',
-                border: '1px solid #334155', borderLeft: `3px solid ${step.color}`,
-                borderRadius: 6, color: '#e2e8f0', cursor: 'pointer', fontSize: 12,
-                transition: 'background 0.15s',
-              }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = '#334155')}
-              onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = '#1e293b')}
-            >
-              <span>{step.icon}</span>
-              <span>{step.label}</span>
-            </button>
-          ))}
-          <div style={{ color: '#475569', fontSize: 10, marginTop: 12, padding: '6px 4px', borderTop: '1px solid #1e293b', lineHeight: 1.5 }}>
-            Click to add. Drag handles to connect. Del to remove. Ctrl+Z undo.
+          <div style={{ flex: 1, overflowY: 'auto', padding: '6px 10px' }}>
+            {paletteSearch ? (
+              STEP_PALETTE.filter(s => s.label.toLowerCase().includes(paletteSearch.toLowerCase())).map(step => (
+                <div
+                  key={step.type}
+                  draggable
+                  onDragStart={(e) => { e.dataTransfer.setData('application/workflow-step', step.type); e.dataTransfer.effectAllowed = 'move'; }}
+                  onClick={() => addNode(step.type)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 10px', marginBottom: 3, background: '#1e293b', border: '1px solid #334155', borderLeft: `3px solid ${step.color}`, borderRadius: 6, color: '#e2e8f0', cursor: 'grab', fontSize: 12, transition: 'background 0.15s', userSelect: 'none' }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#334155'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#1e293b'; }}
+                >
+                  <span>{step.icon}</span>
+                  <span>{step.label}</span>
+                </div>
+              ))
+            ) : (
+              PALETTE_CATEGORIES.map(cat => (
+                <div key={cat}>
+                  <button
+                    onClick={() => setExpandedCats(prev => { const n = new Set(prev); n.has(cat) ? n.delete(cat) : n.add(cat); return n; })}
+                    style={{ display: 'flex', alignItems: 'center', gap: 4, width: '100%', padding: '5px 2px', background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}
+                  >
+                    {expandedCats.has(cat) ? <ChevronDown size={11} /> : <ChevronRight size={11} />}
+                    {cat}
+                  </button>
+                  {expandedCats.has(cat) && STEP_PALETTE.filter(s => s.category === cat).map(step => (
+                    <div
+                      key={step.type}
+                      draggable
+                      onDragStart={(e) => { e.dataTransfer.setData('application/workflow-step', step.type); e.dataTransfer.effectAllowed = 'move'; }}
+                      onClick={() => addNode(step.type)}
+                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', marginBottom: 3, background: '#1e293b', border: '1px solid #334155', borderLeft: `3px solid ${step.color}`, borderRadius: 6, color: '#e2e8f0', cursor: 'grab', fontSize: 12, transition: 'background 0.15s', userSelect: 'none' }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#334155'; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#1e293b'; }}
+                    >
+                      <span>{step.icon}</span>
+                      <span>{step.label}</span>
+                    </div>
+                  ))}
+                </div>
+              ))
+            )}
+            <div style={{ color: '#475569', fontSize: 10, marginTop: 10, padding: '6px 4px', borderTop: '1px solid #1e293b', lineHeight: 1.5 }}>
+              Drag or click to add. Connect by dragging handles. Del to remove. Ctrl+Z undo. Ctrl+S save.
+            </div>
           </div>
         </div>
 
         {/* Canvas */}
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1 }} ref={reactFlowWrapper} onDragOver={onDragOver} onDrop={onDrop}>
           <ReactFlow
             nodes={nodes} edges={edges}
             onNodesChange={onNodesChange} onEdgesChange={onEdgesChange}
@@ -709,6 +861,21 @@ export default function VisualWorkflowPage() {
           </div>
         )}
       </div>
+      {/* CSS Animations */}
+      <style>{`
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .spin { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+      `}</style>
     </div>
+  );
+}
+
+// ── Main Page Export (wrapped in ReactFlowProvider for drag-drop) ──
+export default function VisualWorkflowPage() {
+  return (
+    <ReactFlowProvider>
+      <VisualWorkflowInner />
+    </ReactFlowProvider>
   );
 }

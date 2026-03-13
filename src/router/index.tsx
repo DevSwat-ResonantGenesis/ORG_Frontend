@@ -85,13 +85,13 @@ const ItemDetailPage = lazy(() => import('../pages/Marketplace/ItemDetailPage'))
 const MyInstallationsPage = lazy(() => import('../pages/Marketplace/MyInstallationsPage'));
 const PurchasesPage = lazy(() => import('../pages/Marketplace/PurchasesPage'));
 const RabbitPage = lazy(() => import('../pages/Rabbit/RabbitPage'));
+const WalletPage = lazy(() => import("../pages/Wallet/WalletPage"));
 const AgentsPage = lazy(() => import('../pages/Agents/AgentOSv2'));
 const AgentDashboard = lazy(() => import('../pages/Agents/AgentOSv2'));
 const CreateTeamPage = lazy(() => import('../pages/AgentTeams/CreateTeamPage'));
 const EditTeamPage = lazy(() => import('../pages/AgentTeams/EditTeamPage'));
 const AutonomousAgentDashboard = lazy(() => import('../pages/Dashboards/AutonomousAgentDashboard'));
 const NotFoundPage = lazy(() => import('../pages/NotFound/NotFoundPage'));
-const WalletPage = lazy(() => import('../pages/Wallet/WalletPage'));
 
 // Owner-Only ML Training Page
 const MLTrainingPage = lazy(() => import('../pages/Owner/MLTraining'));
@@ -475,6 +475,10 @@ const router = createBrowserRouter([
     element: withShell(<RoleRoute category="predictions"><PurchasesPage /></RoleRoute>)
   },
   {
+    path: '/wallet',
+    element: withShell(<RoleRoute category="predictions"><WalletPage /></RoleRoute>)
+  },
+  {
     path: '/reset-password',
     element: withPublicShell(<ResetPasswordPage />)
   },
@@ -668,11 +672,6 @@ const router = createBrowserRouter([
   {
     path: '/rabbit',
     element: withPublicShell(<RabbitPage />)
-  },
-  // Crypto Wallet
-  {
-    path: '/wallet',
-    element: withShell(<WalletPage />)
   },
   {
     path: '*',
