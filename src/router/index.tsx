@@ -456,27 +456,27 @@ const router = createBrowserRouter([
   },
   {
     path: '/marketplace',
-    element: withShell(<RoleRoute category="predictions"><MarketplacePage /></RoleRoute>)
+    element: withShell(<ProtectedRoute><MarketplacePage /></ProtectedRoute>)
   },
   {
     path: '/marketplace/nft',
-    element: withShell(<RoleRoute category="predictions"><NFTMarketplace /></RoleRoute>)
+    element: withShell(<ProtectedRoute><NFTMarketplace /></ProtectedRoute>)
   },
   {
     path: '/marketplace/items/:itemId',
-    element: withShell(<RoleRoute category="predictions"><ItemDetailPage /></RoleRoute>)
+    element: withShell(<ProtectedRoute><ItemDetailPage /></ProtectedRoute>)
   },
   {
     path: '/marketplace/installations',
-    element: withShell(<RoleRoute category="predictions"><MyInstallationsPage /></RoleRoute>)
+    element: withShell(<ProtectedRoute><MyInstallationsPage /></ProtectedRoute>)
   },
   {
     path: '/marketplace/purchases',
-    element: withShell(<RoleRoute category="predictions"><PurchasesPage /></RoleRoute>)
+    element: withShell(<ProtectedRoute><PurchasesPage /></ProtectedRoute>)
   },
   {
     path: '/wallet',
-    element: withShell(<RoleRoute category="predictions"><WalletPage /></RoleRoute>)
+    element: withShell(<ProtectedRoute><WalletPage /></ProtectedRoute>)
   },
   {
     path: '/reset-password',
