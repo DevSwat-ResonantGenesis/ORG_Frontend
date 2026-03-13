@@ -379,6 +379,10 @@ export const Header: React.FC<HeaderProps> = ({
                       <span className={styles.navDropdownItemTitle}>Discover AI Agents</span>
                       <span className={styles.navDropdownItemDesc}>Discover agents</span>
                     </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/wallet'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Crypto Wallet</span>
+                      <span className={styles.navDropdownItemDesc}>RGT tokens & payments</span>
+                    </button>
                   </div>
                 </div>
               )}
