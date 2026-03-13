@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import Web3WalletConnect from "../../components/wallet/Web3WalletConnect";
 import { useNavigate } from 'react-router-dom';
 import fastapiClient from '../../api/fastapiClient';
 import { Button } from '../../components/ui';
