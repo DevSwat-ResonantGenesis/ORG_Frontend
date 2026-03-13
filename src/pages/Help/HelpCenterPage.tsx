@@ -270,7 +270,16 @@ const articles: Article[] = [
     category: 'Developers',
     path: '/help/developers/sdk-documentation',
     tags: ['sdk', 'python', 'javascript']
-  }
+  },
+  {
+    id: '40',
+    title: 'RGT Wallet & Web3 Integration',
+    description: 'Understand the RGT token wallet, connecting external Web3 wallets, linking accounts, deposits, withdrawals, and the token economy.',
+    category: 'Account & Billing',
+    path: '/help/account/rgt-wallet',
+    tags: ['wallet', 'crypto', 'rgt', 'web3', 'metamask', 'tokens', 'deposit', 'withdraw'],
+    readingTime: 6
+  },
 ];
 
 const HelpCenterPage: React.FC = () => {

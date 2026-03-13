@@ -27,6 +27,124 @@ interface Article {
 }
 
 const articleContent: Record<string, string> = {
+  'rgt-wallet': `
+# RGT Wallet & Web3 Integration
+
+The Wallet page (\`/wallet\`) is your central hub for managing **Resonant Genesis Tokens (RGT)** and connecting external Web3 wallets to the platform.
+
+---
+
+## What Are RGT Tokens?
+
+**RGT (Resonant Genesis Tokens)** are the platform's internal utility tokens. They are used to:
+
+- **Pay for AI agent executions** — each agent run, workflow step, and LLM call costs RGT credits
+- **Purchase items on the Agent Marketplace** — buy pre-built agents, workflows, and integrations
+- **Tip and reward** other users for sharing helpful agents or community content
+- **Access premium features** — advanced analytics, priority queues, higher rate limits
+
+> **Important:** RGT tokens are **platform credits**, not a publicly traded cryptocurrency. They exist only within the ResonantGenesis ecosystem and have no value outside the platform. They are NOT an investment vehicle or security.
+
+### Token Stats
+- **Circulating Supply** — total RGT currently held across all user wallets
+- **Total Supply** — maximum RGT that can exist (platform-controlled)
+- **Your Balance** — available RGT you can spend
+
+---
+
+## Internal RGT Wallet vs External Web3 Wallet
+
+There are **two separate wallet concepts** on the Wallet page:
+
+### 1. Internal RGT Wallet (Platform Wallet)
+This is created automatically when you first visit \`/wallet\`. It stores your RGT token balance and tracks all transactions (deposits, withdrawals, transfers, marketplace purchases).
+
+- **Wallet ID** — unique identifier for your internal wallet
+- **KYC Status** — Know Your Customer verification level
+- **Verified** — whether your wallet has been verified
+
+### 2. External Web3 Wallet (MetaMask / Brave Wallet)
+This is your **real blockchain wallet** (Ethereum, Polygon, Base, Arbitrum, etc.). Connecting it allows:
+
+- Verifying your blockchain identity on the platform
+- Future: depositing crypto to buy RGT tokens
+- Future: withdrawing RGT to your blockchain wallet
+- Proving wallet ownership via cryptographic signature
+
+---
+
+## Connect vs Link — What's the Difference?
+
+### Connecting Your Wallet
+Clicking **"Connect Wallet"** opens your browser wallet (MetaMask, Brave Wallet, etc.) and asks permission to share your public address with the site. This is a **read-only** connection:
+
+- The platform can see your wallet address and balance
+- No funds are moved or at risk
+- The connection is **browser-local** — it only exists in the browser where you connected
+- If you open the site on another device, you need to connect again (this is normal Web3 behavior)
+
+### Linking Your Wallet to Your Account
+Clicking **"Link Wallet to Account"** goes one step further. It asks you to **sign a message** with your private key (you will see a signature popup in your wallet). This proves you own the wallet address.
+
+The signed message is sent to our server and permanently associates your blockchain address with your ResonantGenesis account. Once linked:
+
+- Your wallet address appears on your profile
+- You can use it for deposits and withdrawals
+- The link persists across all devices and browsers
+
+> **Safety:** Signing a message does NOT give the platform access to your funds. It only proves ownership. No tokens are transferred during linking.
+
+---
+
+## Supported Networks
+
+| Network | Symbol | Explorer |
+|---------|--------|----------|
+| Ethereum | ETH | etherscan.io |
+| Polygon | MATIC | polygonscan.com |
+| Base | ETH | basescan.org |
+| Arbitrum | ETH | arbiscan.io |
+| Optimism | ETH | optimistic.etherscan.io |
+| Sepolia (Testnet) | SepoliaETH | sepolia.etherscan.io |
+
+You can switch networks using the dropdown in the Web3 Wallet panel.
+
+---
+
+## Wallet Page Tabs
+
+### Overview
+Shows your RGT balance, token stats, and the Web3 wallet connection panel.
+
+### Transactions
+View your complete transaction history — deposits, withdrawals, transfers, and marketplace purchases.
+
+### Funding Sources
+Manage linked payment methods and external wallets. Your linked Web3 wallet appears here after you complete the Link process.
+
+### Withdrawals
+Track pending and completed withdrawal requests.
+
+---
+
+## FAQ
+
+**Q: Why doesn't my wallet show as connected on my other device?**
+A: Web3 wallet connections (MetaMask/Brave) are browser-local. You need to click "Connect" on each device. However, if you have **linked** your wallet, the link is permanent and shows on all devices under Funding Sources.
+
+**Q: Is RGT a real cryptocurrency?**
+A: No. RGT is an internal platform credit system. Tokens cannot be traded on exchanges or transferred outside the platform.
+
+**Q: Do I need crypto to use the platform?**
+A: No. RGT tokens can be purchased with regular payment methods (credit card via Stripe). Connecting a Web3 wallet is optional.
+
+**Q: What does the signature request mean?**
+A: When linking, you sign a message like "Link wallet 0x... to ResonantGenesis. Timestamp: ..." This proves you own the wallet. It does NOT authorize any token transfer.
+
+**Q: What wallets are supported?**
+A: Any EVM-compatible wallet that injects \`window.ethereum\` — MetaMask, Brave Wallet, Coinbase Wallet, Rainbow, Trust Wallet, and others.
+`,
+
   'what-is-resonantgraph': `
 # What Is ResonantGenesis?
 
