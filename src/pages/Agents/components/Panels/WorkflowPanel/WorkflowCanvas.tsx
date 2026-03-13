@@ -12,7 +12,7 @@ interface Position {
 
 interface WorkflowNode {
   id: string;
-  type: 'start' | 'end' | 'agent' | 'condition' | 'loop' | 'transform' | 'api' | 'delay';
+  type: 'start' | 'end' | 'http_request' | 'llm_completion' | 'memory_search' | 'agent_execute' | 'send_notification' | 'transform_data' | 'condition' | 'delay';
   label: string;
   position: Position;
   config: Record<string, unknown>;
@@ -37,11 +37,13 @@ interface WorkflowCanvasProps {
 const NODE_TYPES = {
   start: { color: '#22c55e', icon: 'Play' },
   end: { color: '#ef4444', icon: 'Stop' },
-  agent: { color: '#0ea5e9', icon: 'Agents' },
+  http_request: { color: '#14b8a6', icon: 'External' },
+  llm_completion: { color: '#8b5cf6', icon: 'Brain' },
+  memory_search: { color: '#06b6d4', icon: 'Search' },
+  agent_execute: { color: '#0ea5e9', icon: 'Agents' },
+  send_notification: { color: '#f97316', icon: 'Send' },
+  transform_data: { color: '#ec4899', icon: 'Zap' },
   condition: { color: '#f59e0b', icon: 'Fork' },
-  loop: { color: '#a855f7', icon: 'Refresh' },
-  transform: { color: '#ec4899', icon: 'Zap' },
-  api: { color: '#14b8a6', icon: 'External' },
   delay: { color: '#6366f1', icon: 'Clock' },
 };
 
@@ -195,11 +197,13 @@ const WorkflowCanvasComponent: React.FC<WorkflowCanvasProps> = ({
     switch (type) {
       case 'start': return <Icons.Play />;
       case 'end': return <Icons.Stop />;
-      case 'agent': return <Icons.Agents />;
+      case 'http_request': return <Icons.External />;
+      case 'llm_completion': return <Icons.Brain />;
+      case 'memory_search': return <Icons.Search />;
+      case 'agent_execute': return <Icons.Agents />;
+      case 'send_notification': return <Icons.Send />;
+      case 'transform_data': return <Icons.Zap />;
       case 'condition': return <Icons.Fork />;
-      case 'loop': return <Icons.Refresh />;
-      case 'transform': return <Icons.Zap />;
-      case 'api': return <Icons.External />;
       case 'delay': return <Icons.Clock />;
       default: return <Icons.Zap />;
     }
@@ -242,7 +246,7 @@ const WorkflowCanvasComponent: React.FC<WorkflowCanvasProps> = ({
       {/* Nodes */}
       <div className={styles.nodesContainer} style={{ transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)` }}>
         {nodes.map(node => {
-          const nodeType = NODE_TYPES[node.type as keyof typeof NODE_TYPES] || NODE_TYPES.agent;
+          const nodeType = NODE_TYPES[node.type as keyof typeof NODE_TYPES] || NODE_TYPES.agent_execute;
           return (
             <div
               key={node.id}

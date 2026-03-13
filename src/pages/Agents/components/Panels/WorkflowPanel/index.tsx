@@ -2,7 +2,7 @@ import React, { memo, useState, useCallback, useEffect, useRef } from 'react';
 import { useWorkflowStore, useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import { WorkflowCanvas } from './WorkflowCanvas';
-import type { Workflow as UIWorkflow, WorkflowNode } from '../../../../../types';
+import type { Workflow as UIWorkflow, WorkflowNode, WorkflowEdge } from '../../../../../types';
 import * as workflowsApi from '../../../../../api/workflows';
 import fastapiClient from '../../../../../api/fastapiClient';
 import styles from './WorkflowPanel.module.css';
@@ -19,11 +19,13 @@ interface WorkflowPanelProps {
 
 // Node palette configuration
 const NODE_PALETTE = [
-  { type: 'agent', label: 'Agent', color: '#0ea5e9' },
+  { type: 'http_request', label: 'HTTP Request', color: '#14b8a6' },
+  { type: 'llm_completion', label: 'LLM Call', color: '#8b5cf6' },
+  { type: 'memory_search', label: 'Memory Search', color: '#06b6d4' },
+  { type: 'agent_execute', label: 'Agent', color: '#0ea5e9' },
+  { type: 'send_notification', label: 'Notification', color: '#f97316' },
+  { type: 'transform_data', label: 'Transform', color: '#ec4899' },
   { type: 'condition', label: 'Condition', color: '#f59e0b' },
-  { type: 'loop', label: 'Loop', color: '#a855f7' },
-  { type: 'transform', label: 'Transform', color: '#ec4899' },
-  { type: 'api', label: 'API Call', color: '#14b8a6' },
   { type: 'delay', label: 'Delay', color: '#6366f1' },
 ];
 
@@ -92,6 +94,52 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
     };
   }, []);
 
+  const graphToSteps = useCallback((nodes: WorkflowNode[], edges: WorkflowEdge[]): any[] => {
+    // Topological sort: convert visual graph into ordered backend steps
+    const executableNodes = nodes.filter(n => n.type !== 'start' && n.type !== 'end');
+    if (executableNodes.length === 0) return [];
+
+    // Build adjacency from edges
+    const incoming = new Map<string, number>();
+    const adj = new Map<string, string[]>();
+    for (const n of executableNodes) {
+      incoming.set(n.id, 0);
+      adj.set(n.id, []);
+    }
+    for (const e of edges) {
+      if (adj.has(e.source) && incoming.has(e.target)) {
+        adj.get(e.source)!.push(e.target);
+        incoming.set(e.target, (incoming.get(e.target) || 0) + 1);
+      }
+    }
+
+    // Kahn's algorithm
+    const queue = executableNodes.filter(n => (incoming.get(n.id) || 0) === 0);
+    const sorted: WorkflowNode[] = [];
+    while (queue.length > 0) {
+      const node = queue.shift()!;
+      sorted.push(node);
+      for (const next of (adj.get(node.id) || [])) {
+        incoming.set(next, (incoming.get(next) || 0) - 1);
+        if (incoming.get(next) === 0) {
+          const nextNode = executableNodes.find(n => n.id === next);
+          if (nextNode) queue.push(nextNode);
+        }
+      }
+    }
+    // Add any remaining nodes not reached by edges
+    for (const n of executableNodes) {
+      if (!sorted.find(s => s.id === n.id)) sorted.push(n);
+    }
+
+    return sorted.map((node, i) => ({
+      name: node.label || `step_${i}`,
+      type: node.type,
+      config: node.config || {},
+      continue_on_error: false,
+    }));
+  }, []);
+
   const uiToApiUpdate = useCallback((ui: UIWorkflow): workflowsApi.UpdateWorkflowRequest => {
     return {
       name: ui.name,
@@ -105,9 +153,9 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
         ui_status: ui.status,
         ui_published_at: ui.publishedAt ? ui.publishedAt.toISOString() : null,
       },
-      steps: [],
+      steps: graphToSteps(ui.nodes as any, ui.edges as any),
     };
-  }, []);
+  }, [graphToSteps]);
 
   const schedulePersist = useCallback(
     (ui: UIWorkflow) => {
@@ -285,11 +333,13 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
     switch (type) {
       case 'start': return <Icons.Play />;
       case 'end': return <Icons.Stop />;
-      case 'agent': return <Icons.Agents />;
+      case 'http_request': return <Icons.External />;
+      case 'llm_completion': return <Icons.Brain />;
+      case 'memory_search': return <Icons.Search />;
+      case 'agent_execute': return <Icons.Agents />;
+      case 'send_notification': return <Icons.Send />;
+      case 'transform_data': return <Icons.Zap />;
       case 'condition': return <Icons.Fork />;
-      case 'loop': return <Icons.Refresh />;
-      case 'transform': return <Icons.Zap />;
-      case 'api': return <Icons.External />;
       case 'delay': return <Icons.Clock />;
       default: return <Icons.Zap />;
     }
@@ -323,10 +373,19 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
     });
   }, [selectedWorkflow, handleWorkflowUpdate]);
 
+  const updateNodeConfig = useCallback((nodeId: string, configUpdates: Record<string, unknown>) => {
+    if (!selectedWorkflow) return;
+    const updatedNodes = selectedWorkflow.nodes.map(n =>
+      n.id === nodeId ? { ...n, config: { ...(n.config || {}), ...configUpdates } } : n
+    );
+    handleWorkflowUpdate(selectedWorkflow.id, { nodes: updatedNodes });
+  }, [selectedWorkflow, handleWorkflowUpdate]);
+
   const renderNodeConfig = () => {
     if (!selectedWorkflow || !selectedNodeId) return null;
     const node = selectedWorkflow.nodes.find(n => n.id === selectedNodeId);
     if (!node) return null;
+    const cfg = (node.config || {}) as Record<string, any>;
 
     return (
       <div className={styles.configForm}>
@@ -347,27 +406,115 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
           <label>Type</label>
           <span className={styles.configValue}>{node.type}</span>
         </div>
-        {node.type === 'agent' && (
+
+        {node.type === 'http_request' && (
+          <>
+            <div className={styles.configField}>
+              <label>Method</label>
+              <select value={cfg.method || 'GET'} onChange={e => updateNodeConfig(node.id, { method: e.target.value })}>
+                {['GET','POST','PUT','PATCH','DELETE'].map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+            </div>
+            <div className={styles.configField}>
+              <label>URL</label>
+              <input type="text" placeholder="https://api.example.com/endpoint" value={cfg.url || ''} onChange={e => updateNodeConfig(node.id, { url: e.target.value })} />
+            </div>
+          </>
+        )}
+
+        {node.type === 'llm_completion' && (
+          <>
+            <div className={styles.configField}>
+              <label>Prompt</label>
+              <textarea rows={4} placeholder="Enter prompt... Use {{input.key}} for variables" value={cfg.prompt || ''} onChange={e => updateNodeConfig(node.id, { prompt: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Model</label>
+              <input type="text" placeholder="gpt-4-turbo-preview" value={cfg.model || ''} onChange={e => updateNodeConfig(node.id, { model: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Max Tokens</label>
+              <input type="number" placeholder="1024" value={cfg.max_tokens || ''} onChange={e => updateNodeConfig(node.id, { max_tokens: parseInt(e.target.value) || 1024 })} />
+            </div>
+          </>
+        )}
+
+        {node.type === 'memory_search' && (
+          <>
+            <div className={styles.configField}>
+              <label>Query</label>
+              <input type="text" placeholder="Search query... Use {{input.key}} for variables" value={cfg.query || ''} onChange={e => updateNodeConfig(node.id, { query: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Limit</label>
+              <input type="number" placeholder="5" value={cfg.limit || ''} onChange={e => updateNodeConfig(node.id, { limit: parseInt(e.target.value) || 5 })} />
+            </div>
+          </>
+        )}
+
+        {node.type === 'agent_execute' && (
+          <>
+            <div className={styles.configField}>
+              <label>Agent</label>
+              <select value={cfg.agent_id || ''} onChange={e => updateNodeConfig(node.id, { agent_id: e.target.value })}>
+                <option value="">Select Agent</option>
+                {agents.map(agent => (
+                  <option key={agent.id} value={agent.id}>{agent.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.configField}>
+              <label>Task</label>
+              <textarea rows={3} placeholder="Task description for the agent" value={cfg.task || ''} onChange={e => updateNodeConfig(node.id, { task: e.target.value })} />
+            </div>
+          </>
+        )}
+
+        {node.type === 'send_notification' && (
+          <>
+            <div className={styles.configField}>
+              <label>Channel</label>
+              <select value={cfg.channel || 'log'} onChange={e => updateNodeConfig(node.id, { channel: e.target.value })}>
+                {['log','email','slack','webhook'].map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div className={styles.configField}>
+              <label>Message</label>
+              <textarea rows={3} placeholder="Notification message... Use {{steps.step_name.output}} for variables" value={cfg.message || ''} onChange={e => updateNodeConfig(node.id, { message: e.target.value })} />
+            </div>
+          </>
+        )}
+
+        {node.type === 'transform_data' && (
           <div className={styles.configField}>
-            <label>Agent</label>
-            <select>
-              <option value="">Select Agent</option>
-              {agents.map(agent => (
-                <option key={agent.id} value={agent.id}>{agent.name}</option>
-              ))}
-            </select>
+            <label>Expression</label>
+            <input type="text" placeholder="$.steps.step_name.output" value={cfg.expression || ''} onChange={e => updateNodeConfig(node.id, { expression: e.target.value })} />
           </div>
         )}
-        {node.type === 'api' && (
-          <div className={styles.configField}>
-            <label>API Endpoint</label>
-            <input type="text" placeholder="https://api.example.com/endpoint" />
-          </div>
-        )}
+
         {node.type === 'condition' && (
+          <>
+            <div className={styles.configField}>
+              <label>Left Value</label>
+              <input type="text" placeholder="{{steps.step_name.result}}" value={cfg.left || ''} onChange={e => updateNodeConfig(node.id, { left: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Operator</label>
+              <select value={cfg.operator || '=='} onChange={e => updateNodeConfig(node.id, { operator: e.target.value })}>
+                {['==','!=','>','<','contains'].map(op => <option key={op} value={op}>{op}</option>)}
+              </select>
+            </div>
+            <div className={styles.configField}>
+              <label>Right Value</label>
+              <input type="text" placeholder="true" value={cfg.right || ''} onChange={e => updateNodeConfig(node.id, { right: e.target.value })} />
+            </div>
+          </>
+        )}
+
+        {node.type === 'delay' && (
           <div className={styles.configField}>
-            <label>Condition</label>
-            <input type="text" placeholder="e.g., result.success === true" />
+            <label>Seconds</label>
+            <input type="number" placeholder="5" value={cfg.seconds || ''} onChange={e => updateNodeConfig(node.id, { seconds: parseInt(e.target.value) || 1 })} />
           </div>
         )}
       </div>
