@@ -519,6 +519,27 @@
   cursor: pointer;
 }
 
+.traceBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  margin-top: 6px;
+  background: rgba(14, 165, 233, 0.1);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  border-radius: 6px;
+  color: #0ea5e9;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.traceBtn:hover {
+  background: rgba(14, 165, 233, 0.2);
+  border-color: #0ea5e9;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
   .statsBar {

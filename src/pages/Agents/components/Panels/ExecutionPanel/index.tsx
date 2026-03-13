@@ -4,6 +4,7 @@ import { Icons } from '../../shared/Icons';
 import type { Execution } from '../../../../../types';
 import * as executionsApi from '../../../../../api/executions';
 import { LiveWorkflowView } from './LiveWorkflowView';
+import { SessionTraceViewer } from './SessionTraceViewer';
 import * as agentEngine from '../../../../../api/agentEngine';
 import styles from './ExecutionPanel.module.css';
 
@@ -46,6 +47,7 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
   const [showTriggerForm, setShowTriggerForm] = useState(false);
   const [execStatusFilter, setExecStatusFilter] = useState<string>('all');
   const [execSearchTerm, setExecSearchTerm] = useState('');
+  const [traceSessionId, setTraceSessionId] = useState<string | null>(null);
   const [triggerForm, setTriggerForm] = useState({ name: '', trigger_type: 'schedule' as string, config: '{}' });
 
   const runningExecutions = realExecutions?.filter(e => e.status === 'running') || [];
@@ -479,6 +481,13 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
                   <span><Icons.DollarSign /> ${exec.metrics.costUsd.toFixed(3)}</span>
                   <span><Icons.CheckCircle /> {exec.metrics.successRate}%</span>
                 </div>
+                <button
+                  className={styles.traceBtn}
+                  onClick={(e) => { e.stopPropagation(); setTraceSessionId(exec.id); }}
+                  title="View full execution trace with cost & waterfall"
+                >
+                  <Icons.Activity /> Trace
+                </button>
               </div>
             ))}
             {displayExecutions.filter(e => e.status === 'completed' || e.status === 'failed').length === 0 && (
@@ -488,6 +497,14 @@ const ExecutionPanelComponent: React.FC<ExecutionPanelProps> = ({ className }) =
               </div>
             )}
           </div>
+        )}
+
+        {/* Session Trace Viewer Overlay */}
+        {traceSessionId && (
+          <SessionTraceViewer
+            sessionId={traceSessionId}
+            onClose={() => setTraceSessionId(null)}
+          />
         )}
 
         {/* Queue View */}
