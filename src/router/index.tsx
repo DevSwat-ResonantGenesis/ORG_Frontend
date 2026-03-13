@@ -546,6 +546,10 @@ const router = createBrowserRouter([
     element: withShell(<WorkflowDesignerPage />)
   },
   {
+    path: '/network/workflows/visual',
+    element: withShell(<VisualWorkflowPage />)
+  },
+  {
     path: '/network/history',
     element: withShell(<ExecutionHistoryPage />)
   },

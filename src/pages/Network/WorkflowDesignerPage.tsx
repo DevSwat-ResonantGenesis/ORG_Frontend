@@ -435,6 +435,13 @@ export default function WorkflowDesignerPage() {
         <div style={styles.headerActions}>
           <button
             style={{ ...styles.button, ...styles.secondaryButton }}
+            onClick={() => navigate('/network/workflows/visual')}
+          >
+            <Zap size={16} />
+            Visual Builder
+          </button>
+          <button
+            style={{ ...styles.button, ...styles.secondaryButton }}
             onClick={exportWorkflow}
           >
             <Copy size={16} />
