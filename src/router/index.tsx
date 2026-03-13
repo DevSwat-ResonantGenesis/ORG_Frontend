@@ -456,11 +456,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/marketplace',
-    element: withShell(<RoleRoute category="predictions"><NFTMarketplace /></RoleRoute>)
+    element: withShell(<RoleRoute category="predictions"><MarketplacePage /></RoleRoute>)
   },
   {
-    path: '/marketplace/old',
-    element: withShell(<RoleRoute category="predictions"><MarketplacePage /></RoleRoute>)
+    path: '/marketplace/nft',
+    element: withShell(<RoleRoute category="predictions"><NFTMarketplace /></RoleRoute>)
   },
   {
     path: '/marketplace/items/:itemId',

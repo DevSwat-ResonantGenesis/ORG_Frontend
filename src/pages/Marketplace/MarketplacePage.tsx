@@ -164,14 +164,40 @@ const MarketplacePage: React.FC = () => {
     }
   }, []);
 
+  // Load execution ledger from owned items
+  const loadLedger = useCallback(async () => {
+    try {
+      // First ensure we have the dashboard (owned items)
+      let dashboard = userDashboard;
+      if (!dashboard) {
+        dashboard = await getUserDashboard();
+        setUserDashboard(dashboard);
+      }
+      // Load ledger from all owned items
+      const itemIds = (dashboard?.owned_items || []).map(i => i.id).slice(0, 10);
+      if (itemIds.length === 0) return;
+      const ledgerResults = await Promise.all(
+        itemIds.map(id => getExecutionLedger(id, 20).catch(() => []))
+      );
+      const allEntries = ledgerResults.flat().sort((a, b) =>
+        new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime()
+      );
+      setExecutionLedger(allEntries);
+    } catch (err) {
+      logger.error('Failed to load execution ledger:', err);
+    }
+  }, [userDashboard]);
+
   // Load data based on active tab
   useEffect(() => {
     if (activeTab === 'trends' && !marketTrends) {
       loadTrends();
     } else if (activeTab === 'dashboard' && !userDashboard) {
       loadDashboard();
+    } else if (activeTab === 'ledger' && executionLedger.length === 0) {
+      loadLedger();
     }
-  }, [activeTab, marketTrends, userDashboard, loadTrends, loadDashboard]);
+  }, [activeTab, marketTrends, userDashboard, executionLedger.length, loadTrends, loadDashboard, loadLedger]);
 
   // Handle NFT listing
   const handleListNFT = async () => {
