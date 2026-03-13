@@ -113,6 +113,19 @@ export default function WalletPage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [actionMsg, setActionMsg] = useState('');
 
+  // Web3 wallet connection
+  const [web3Address, setWeb3Address] = useState<string | null>(null);
+  const [web3Chain, setWeb3Chain] = useState<string | null>(null);
+  const [web3Connecting, setWeb3Connecting] = useState(false);
+  const [copiedId, setCopiedId] = useState(false);
+
+  // Funding source form
+  const [showAddFunding, setShowAddFunding] = useState(false);
+  const [fundingType, setFundingType] = useState<'crypto_wallet' | 'card'>('crypto_wallet');
+  const [fundingAddress, setFundingAddress] = useState('');
+  const [fundingChain, setFundingChain] = useState('ethereum');
+  const [fundingNickname, setFundingNickname] = useState('');
+
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -144,6 +157,120 @@ export default function WalletPage() {
   }, []);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  // Detect existing Web3 wallet on mount
+  useEffect(() => {
+    const eth = (window as any).ethereum;
+    if (eth) {
+      eth.request({ method: 'eth_accounts' }).then((accounts: string[]) => {
+        if (accounts.length > 0) {
+          setWeb3Address(accounts[0]);
+          eth.request({ method: 'eth_chainId' }).then((chainId: string) => {
+            setWeb3Chain(chainId);
+          }).catch(() => {});
+        }
+      }).catch(() => {});
+      const handleAccounts = (accounts: string[]) => setWeb3Address(accounts.length > 0 ? accounts[0] : null);
+      const handleChain = (chainId: string) => setWeb3Chain(chainId);
+      eth.on('accountsChanged', handleAccounts);
+      eth.on('chainChanged', handleChain);
+      return () => {
+        eth.removeListener('accountsChanged', handleAccounts);
+        eth.removeListener('chainChanged', handleChain);
+      };
+    }
+  }, []);
+
+  const getChainName = (chainId: string | null): string => {
+    const chains: Record<string, string> = {
+      '0x1': 'Ethereum Mainnet', '0x89': 'Polygon', '0xa4b1': 'Arbitrum',
+      '0xa': 'Optimism', '0x2105': 'Base', '0x5': 'Goerli', '0xaa36a7': 'Sepolia',
+    };
+    return chains[chainId || ''] || (chainId ? `Chain ${parseInt(chainId, 16)}` : 'Unknown');
+  };
+
+  const connectWeb3 = async () => {
+    const eth = (window as any).ethereum;
+    if (!eth) {
+      setActionMsg('No Web3 wallet detected. Install MetaMask or another browser wallet.');
+      return;
+    }
+    setWeb3Connecting(true);
+    setActionMsg('');
+    try {
+      const accounts: string[] = await eth.request({ method: 'eth_requestAccounts' });
+      if (accounts.length > 0) {
+        setWeb3Address(accounts[0]);
+        const chainId = await eth.request({ method: 'eth_chainId' });
+        setWeb3Chain(chainId);
+        // Auto-register as funding source
+        try {
+          await fastapiClient.post('/crypto/funding-sources', {
+            source_type: 'crypto_wallet',
+            crypto_address: accounts[0],
+            crypto_chain: 'ethereum',
+            nickname: 'MetaMask',
+          });
+        } catch { /* may already exist */ }
+        setActionMsg(`Connected: ${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`);
+        loadData();
+      }
+    } catch (err: any) {
+      setActionMsg(err?.code === 4001 ? 'Connection rejected by user' : (err?.message || 'Failed to connect'));
+    } finally {
+      setWeb3Connecting(false);
+    }
+  };
+
+  const disconnectWeb3 = () => {
+    setWeb3Address(null);
+    setWeb3Chain(null);
+    setActionMsg('External wallet disconnected');
+  };
+
+  const copyWalletId = () => {
+    if (wallet?.id) {
+      navigator.clipboard.writeText(wallet.id).then(() => {
+        setCopiedId(true);
+        setTimeout(() => setCopiedId(false), 2000);
+      }).catch(() => {});
+    }
+  };
+
+  const handleAddFunding = async () => {
+    if (fundingType === 'crypto_wallet' && !fundingAddress.trim()) {
+      setActionMsg('Enter a wallet address');
+      return;
+    }
+    setActionLoading(true);
+    try {
+      await fastapiClient.post('/crypto/funding-sources', {
+        source_type: fundingType,
+        crypto_address: fundingType === 'crypto_wallet' ? fundingAddress : undefined,
+        crypto_chain: fundingType === 'crypto_wallet' ? fundingChain : undefined,
+        nickname: fundingNickname || undefined,
+      });
+      setActionMsg('Funding source added!');
+      setShowAddFunding(false);
+      setFundingAddress('');
+      setFundingNickname('');
+      await loadData();
+    } catch (e: any) {
+      setActionMsg(e?.response?.data?.detail || 'Failed to add funding source');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleRemoveFunding = async (id: string) => {
+    try {
+      await fastapiClient.delete(`/crypto/funding-sources/${id}`);
+      setActionMsg('Funding source removed');
+      await loadData();
+    } catch (e: any) {
+      setActionMsg(e?.response?.data?.detail || 'Failed to remove');
+    }
+  };
 
   const createWallet = async () => {
     setCreating(true);
@@ -355,11 +482,55 @@ export default function WalletPage() {
         </Card>
       )}
 
+      {/* Web3 Wallet Connection Banner */}
+      <Card variant="elevated" padding="md" style={{ marginBottom: 'var(--space-4)', background: web3Address ? 'rgba(16, 185, 129, 0.05)' : 'rgba(99, 102, 241, 0.04)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ fontSize: 24 }}>{web3Address ? '🟢' : '🔗'}</span>
+            {web3Address ? (
+              <div>
+                <Text variant="body-sm" color="accent" style={{ fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
+                  {web3Address.slice(0, 6)}...{web3Address.slice(-4)}
+                </Text>
+                <Text variant="caption" color="muted">{getChainName(web3Chain)} · Connected</Text>
+              </div>
+            ) : (
+              <div>
+                <Text variant="body-sm" color="primary" style={{ fontWeight: 500 }}>External Wallet</Text>
+                <Text variant="caption" color="muted">Connect MetaMask or Web3 wallet for direct crypto operations</Text>
+              </div>
+            )}
+          </div>
+          {web3Address ? (
+            <button onClick={disconnectWeb3} style={{
+              padding: '6px 14px', borderRadius: 6, border: '1px solid rgba(239,68,68,0.3)',
+              background: 'rgba(239,68,68,0.08)', color: '#ef4444', fontSize: 12, fontWeight: 500, cursor: 'pointer',
+            }}>Disconnect</button>
+          ) : (
+            <button onClick={connectWeb3} disabled={web3Connecting} style={{
+              padding: '8px 20px', borderRadius: 8, border: 'none',
+              background: 'linear-gradient(135deg, #6366f1, #4f46e5)', color: 'white',
+              fontSize: 13, fontWeight: 600, cursor: web3Connecting ? 'not-allowed' : 'pointer',
+              opacity: web3Connecting ? 0.6 : 1, display: 'flex', alignItems: 'center', gap: 6,
+            }}>
+              {web3Connecting ? '⏳ Connecting...' : '🦊 Connect Wallet'}
+            </button>
+          )}
+        </div>
+      </Card>
+
       {/* Wallet Info */}
       {wallet && (
         <Card variant="default" padding="sm" style={{ marginBottom: 'var(--space-4)', opacity: 0.8 }}>
           <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap', alignItems: 'center' }}>
-            <Text variant="caption" color="muted">Wallet ID: <span style={{ fontFamily: 'var(--font-mono)' }}>{wallet.id}</span></Text>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Text variant="caption" color="muted">Wallet ID: <span style={{ fontFamily: 'var(--font-mono)' }}>{wallet.id.slice(0, 12)}...</span></Text>
+              <button onClick={copyWalletId} style={{
+                padding: '1px 6px', borderRadius: 4, border: '1px solid var(--color-border)',
+                background: 'transparent', color: copiedId ? '#10b981' : 'var(--color-text-secondary)',
+                fontSize: 10, cursor: 'pointer',
+              }}>{copiedId ? '✓ Copied' : '📋 Copy'}</button>
+            </div>
             <Text variant="caption" color="muted">KYC: <span style={{
               padding: '2px 6px', borderRadius: 4, fontSize: 11,
               background: wallet.kyc_status === 'verified' ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)',
@@ -485,10 +656,67 @@ export default function WalletPage() {
         {/* FUNDING SOURCES TAB */}
         {activeTab === 'funding' && (
           <div>
-            <Text variant="h3" color="primary" style={{ marginBottom: 12 }}>Funding Sources</Text>
-            {fundingSources.length === 0 ? (
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <Text variant="h3" color="primary" style={{ margin: 0 }}>Funding Sources</Text>
+              <Button variant="primary" size="sm" onClick={() => setShowAddFunding(!showAddFunding)}>
+                {showAddFunding ? 'Cancel' : '+ Add Source'}
+              </Button>
+            </div>
+
+            {showAddFunding && (
+              <Card variant="elevated" padding="md" style={{ marginBottom: 16 }}>
+                <Text variant="body-sm" color="primary" style={{ fontWeight: 600, marginBottom: 12 }}>Add New Funding Source</Text>
+                <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+                  <button onClick={() => setFundingType('crypto_wallet')} style={{
+                    padding: '6px 14px', borderRadius: 6, fontSize: 12, cursor: 'pointer',
+                    background: fundingType === 'crypto_wallet' ? 'rgba(99,102,241,0.15)' : 'transparent',
+                    border: `1px solid ${fundingType === 'crypto_wallet' ? '#6366f1' : 'var(--color-border)'}`,
+                    color: fundingType === 'crypto_wallet' ? '#6366f1' : 'var(--color-text-secondary)',
+                  }}>🔗 Crypto Wallet</button>
+                  <button onClick={() => setFundingType('card')} style={{
+                    padding: '6px 14px', borderRadius: 6, fontSize: 12, cursor: 'pointer',
+                    background: fundingType === 'card' ? 'rgba(99,102,241,0.15)' : 'transparent',
+                    border: `1px solid ${fundingType === 'card' ? '#6366f1' : 'var(--color-border)'}`,
+                    color: fundingType === 'card' ? '#6366f1' : 'var(--color-text-secondary)',
+                  }}>💳 Card (Stripe)</button>
+                </div>
+                {fundingType === 'crypto_wallet' && (
+                  <>
+                    <label style={{ display: 'block', marginBottom: 4, fontSize: 12, color: 'var(--color-text-secondary)' }}>Blockchain</label>
+                    <select value={fundingChain} onChange={e => setFundingChain(e.target.value)} style={{
+                      width: '100%', padding: '8px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)',
+                      borderRadius: 6, color: 'var(--color-text-primary)', fontSize: 13, marginBottom: 12, boxSizing: 'border-box' as const,
+                    }}>
+                      <option value="ethereum">Ethereum</option>
+                      <option value="polygon">Polygon</option>
+                      <option value="arbitrum">Arbitrum</option>
+                      <option value="optimism">Optimism</option>
+                      <option value="base">Base</option>
+                      <option value="solana">Solana</option>
+                    </select>
+                    <label style={{ display: 'block', marginBottom: 4, fontSize: 12, color: 'var(--color-text-secondary)' }}>Wallet Address</label>
+                    <input type="text" value={fundingAddress} onChange={e => setFundingAddress(e.target.value)}
+                      placeholder="0x... or wallet address" style={{
+                        width: '100%', padding: '8px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)',
+                        borderRadius: 6, color: 'var(--color-text-primary)', fontSize: 13, marginBottom: 12, fontFamily: 'var(--font-mono)', boxSizing: 'border-box' as const,
+                      }} />
+                  </>
+                )}
+                <label style={{ display: 'block', marginBottom: 4, fontSize: 12, color: 'var(--color-text-secondary)' }}>Nickname (optional)</label>
+                <input type="text" value={fundingNickname} onChange={e => setFundingNickname(e.target.value)}
+                  placeholder="e.g. My MetaMask" style={{
+                    width: '100%', padding: '8px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)',
+                    borderRadius: 6, color: 'var(--color-text-primary)', fontSize: 13, marginBottom: 12, boxSizing: 'border-box' as const,
+                  }} />
+                <Button variant="primary" size="md" onClick={handleAddFunding} disabled={actionLoading}>
+                  {actionLoading ? 'Adding...' : 'Add Source'}
+                </Button>
+              </Card>
+            )}
+
+            {fundingSources.length === 0 && !showAddFunding ? (
               <Card variant="default" padding="md" style={{ textAlign: 'center' }}>
-                <Text variant="body" color="secondary">No funding sources added yet.</Text>
+                <Text variant="body" color="secondary">No funding sources added yet. Click "Add Source" or connect a Web3 wallet above.</Text>
               </Card>
             ) : (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
@@ -498,9 +726,15 @@ export default function WalletPage() {
                       <Text variant="body" color="primary" style={{ fontWeight: 600, textTransform: 'capitalize' }}>
                         {src.source_type === 'card' ? '💳' : '🔗'} {src.source_type.replace(/_/g, ' ')}
                       </Text>
-                      {src.is_default && (
-                        <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 10, background: 'rgba(99,102,241,0.15)', color: '#6366f1' }}>Default</span>
-                      )}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        {src.is_default && (
+                          <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 10, background: 'rgba(99,102,241,0.15)', color: '#6366f1' }}>Default</span>
+                        )}
+                        <button onClick={() => handleRemoveFunding(src.id)} title="Remove" style={{
+                          padding: '2px 6px', borderRadius: 4, border: '1px solid rgba(239,68,68,0.2)',
+                          background: 'transparent', color: '#ef4444', fontSize: 11, cursor: 'pointer', opacity: 0.7,
+                        }}>✕</button>
+                      </div>
                     </div>
                     {src.card_last_four && (
                       <Text variant="body-sm" color="secondary">•••• {src.card_last_four} ({src.card_brand})</Text>
