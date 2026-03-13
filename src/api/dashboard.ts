@@ -26,6 +26,13 @@ export interface DashboardData {
   };
   alerts: { type: 'warning' | 'error' | 'info'; message: string; priority?: string }[];
   recentActivity: { type: string; description: string; timestamp: string; amount?: number }[];
+  platform: {
+    agentMetrics: { total: number; active: number; sessions: number; running: number; completed: number; failed: number } | null;
+    compliance: { score: number; grade: string; framework: string; checks: { control: string; status: string; detail: string; weight: number }[] } | null;
+    memory: { totalMemories: number; storageMb: number; totalEmbeddings: number; totalClusters: number } | null;
+    marketplace: { totalListings: number; totalDownloads: number; totalPublishers: number } | null;
+    workflows: { count: number } | null;
+  };
   isLoading?: boolean;
   error?: string;
 }
@@ -134,6 +141,11 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     historyRes,
     analyticsRes,
     usageMetricsRes,
+    agentMetricsRes,
+    complianceRes,
+    memoryStatsRes,
+    marketplaceStatsRes,
+    workflowsRes,
   ] = await Promise.all([
     fastapiClient.get('/billing/dashboard/me').catch((e) => { errors.push('dashboard'); return { data: null }; }),
     fastapiClient.get('/billing/credits').catch((e) => { errors.push('credits'); return { data: null }; }),
@@ -142,6 +154,11 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     fastapiClient.get('/billing/usage/tokens/history?days=30').catch((e) => { errors.push('history'); return { data: null }; }),
     fastapiClient.get('/analytics').catch((e) => { errors.push('analytics'); return { data: null }; }),
     fastapiClient.get('/usage/metrics').catch((e) => { errors.push('usage_metrics'); return { data: null }; }),
+    fastapiClient.get('/api/v1/agents/metrics').catch(() => ({ data: null })),
+    fastapiClient.get('/api/v1/agents/compliance/score').catch(() => ({ data: null })),
+    fastapiClient.get('/memory/stats').catch(() => ({ data: null })),
+    fastapiClient.get('/marketplace/stats').catch(() => ({ data: null })),
+    fastapiClient.get('/api/v1/workflow/workflows').catch(() => ({ data: null })),
   ]);
 
   // Extract REAL data only - no fallbacks
@@ -152,6 +169,11 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
   const history = historyRes.data;
   const analytics = analyticsRes.data;
   const usageMetrics = usageMetricsRes.data;
+  const agentMetrics = agentMetricsRes.data;
+  const complianceData = complianceRes.data;
+  const memoryStats = memoryStatsRes.data;
+  const marketplaceStats = marketplaceStatsRes.data;
+  const workflowsList = workflowsRes.data;
 
   // Determine tier from REAL subscription data only
   const plan = subscription?.plan?.toLowerCase();
@@ -229,6 +251,45 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     });
   }
 
+  // Build platform-wide metrics from live services
+  const platformAgentMetrics = agentMetrics ? {
+    total: agentMetrics.agents?.total ?? 0,
+    active: agentMetrics.agents?.active ?? 0,
+    sessions: agentMetrics.sessions?.total ?? 0,
+    running: agentMetrics.sessions?.running ?? 0,
+    completed: agentMetrics.sessions?.completed ?? 0,
+    failed: agentMetrics.sessions?.failed ?? 0,
+  } : null;
+
+  const platformCompliance = complianceData ? {
+    score: complianceData.compliance_score ?? 0,
+    grade: complianceData.grade ?? '—',
+    framework: complianceData.framework ?? '',
+    checks: Array.isArray(complianceData.checks) ? complianceData.checks : [],
+  } : null;
+
+  const platformMemory = memoryStats ? {
+    totalMemories: memoryStats.total_memories ?? memoryStats.total_embeddings ?? 0,
+    storageMb: memoryStats.storage_mb ?? memoryStats.storage_size_mb ?? 0,
+    totalEmbeddings: memoryStats.total_embeddings ?? 0,
+    totalClusters: memoryStats.total_clusters ?? 0,
+  } : null;
+
+  const platformMarketplace = marketplaceStats ? {
+    totalListings: marketplaceStats.total_listings ?? 0,
+    totalDownloads: marketplaceStats.total_downloads ?? 0,
+    totalPublishers: marketplaceStats.total_publishers ?? 0,
+  } : null;
+
+  const platformWorkflows = Array.isArray(workflowsList)
+    ? { count: workflowsList.length }
+    : null;
+
+  // Enrich activity with real agent/memory data from live services
+  const enrichedAgents = platformAgentMetrics?.active ?? agents;
+  const enrichedMemories = platformMemory?.totalMemories ?? memories;
+  const enrichedSessions = platformAgentMetrics?.sessions ?? sessions;
+
   return {
     credits: {
       balance,
@@ -243,13 +304,20 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     usageTrend: normalizeUsageTrend(history || [], 30),
     activity: {
       messages,
-      agents,
+      agents: enrichedAgents,
       agentsLimit,
-      memories,
-      sessions,
+      memories: enrichedMemories,
+      sessions: enrichedSessions,
     },
     alerts,
     recentActivity,
+    platform: {
+      agentMetrics: platformAgentMetrics,
+      compliance: platformCompliance,
+      memory: platformMemory,
+      marketplace: platformMarketplace,
+      workflows: platformWorkflows,
+    },
     error: errors.length > 0 ? `Failed to load: ${errors.join(', ')}` : undefined,
   };
 };
