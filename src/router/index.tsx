@@ -116,6 +116,7 @@ const AgentBrowserPage = lazy(() => import('../pages/Network/AgentBrowserPage'))
 const AgentPublishPage = lazy(() => import('../pages/Network/AgentPublishPage'));
 const AgentMarketplacePage = lazy(() => import('../pages/Network/AgentMarketplacePage'));
 const WorkflowDesignerPage = lazy(() => import('../pages/Network/WorkflowDesignerPage'));
+const VisualWorkflowPage = lazy(() => import("../pages/Network/VisualWorkflowPage"));
 const ExecutionHistoryPage = lazy(() => import('../pages/Network/ExecutionHistoryPage'));
 const AgentTemplatesPage = lazy(() => import('../pages/Network/AgentTemplatesPage'));
 
