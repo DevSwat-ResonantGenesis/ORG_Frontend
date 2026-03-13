@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchPredictions } from '../../api/predictions';
 import { fetchComplianceSummary } from '../../api/compliance';
+import { fetchDashboardData, type DashboardData } from '../../api/dashboard';
 import { getSession } from '../../utils/auth';
 import { normalizeRole, canAccess, type Role } from '../../utils/permissions';
 import { logger } from '../../utils/logger';
@@ -28,6 +29,7 @@ const DashboardPage = () => {
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [summary, setSummary] = useState<ComplianceSummary | null>(null);
   const [systemLogs, setSystemLogs] = useState<LogEntry[]>([]);
+  const [dashData, setDashData] = useState<DashboardData | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -52,24 +54,25 @@ const DashboardPage = () => {
         setSummary({ risky_predictions: 0, low_validity_count: 0, active_policies: 0, hipaa_violations: 0, anchor_coverage: 0 } as ComplianceSummary);
       }
 
-      // Generate sample system logs for dashboard
-      const logs: LogEntry[] = [
-        {
-          id: '1',
-          timestamp: new Date().toISOString(),
-          level: 'info',
-          message: 'Dashboard data loaded successfully',
-          source: 'dashboard'
-        },
-        {
-          id: '2',
-          timestamp: new Date(Date.now() - 30000).toISOString(),
-          level: 'success',
-          message: 'Predictions processed',
-          source: 'api'
+      // Fetch REAL dashboard data from live endpoints
+      try {
+        const realDash = await fetchDashboardData();
+        setDashData(realDash);
+        // Build real activity logs from backend data
+        const logs: LogEntry[] = (realDash.recentActivity || []).slice(0, 10).map((act, i) => ({
+          id: String(i),
+          timestamp: act.timestamp || new Date().toISOString(),
+          level: act.type === 'error' ? 'error' as const : act.type === 'warning' ? 'warning' as const : 'info' as const,
+          message: act.description || 'Activity',
+          source: act.type || 'platform',
+        }));
+        if (logs.length === 0) {
+          logs.push({ id: '0', timestamp: new Date().toISOString(), level: 'info', message: 'Dashboard loaded — no recent activity', source: 'dashboard' });
         }
-      ];
-      setSystemLogs(logs);
+        setSystemLogs(logs);
+      } catch (e) {
+        logger.error('Dashboard real data load error', e, { component: 'DashboardPage' });
+      }
     };
 
     load();
@@ -111,8 +114,18 @@ const DashboardPage = () => {
   });
 
   const violations24h = safeSummary?.risky_predictions || 0;
-  const activeModelVersion = 'v1.2.3';
-  const complianceScore = ((1 - avgRisk) * 100).toFixed(0);
+  const activeModelVersion = dashData?.tier || 'free';
+  const complianceScore = dashData?.platform?.compliance?.score
+    ? String(dashData.platform.compliance.score)
+    : ((1 - avgRisk) * 100).toFixed(0);
+  const complianceGrade = dashData?.platform?.compliance?.grade || '';
+  const totalAgents = dashData?.platform?.agentMetrics?.total ?? dashData?.activity?.agents ?? 0;
+  const activeSessions = dashData?.platform?.agentMetrics?.sessions ?? dashData?.activity?.sessions ?? 0;
+  const creditBalance = dashData?.credits?.balance;
+  const creditLimit = dashData?.credits?.limit;
+  const totalMemories = dashData?.platform?.memory?.totalMemories ?? dashData?.activity?.memories ?? 0;
+  const marketplaceListings = dashData?.platform?.marketplace?.totalListings ?? 0;
+  const workflowCount = dashData?.platform?.workflows?.count ?? 0;
 
   // Recent predictions (last 10)
   const recentPredictions = predictions.slice(0, 10);
@@ -202,36 +215,34 @@ const DashboardPage = () => {
         </div>
         <div className={styles.kpiGrid} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-3)' }}>
           <Card variant="elevated" padding="md">
-            <Text variant="body-sm" color="secondary" style={{ marginBottom: 'var(--space-1)' }}>Total Predictions Today</Text>
-            <Text variant="h2" color="primary" style={{ marginBottom: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{todayPredictions.length}</Text>
-            <Text variant="caption" color="muted" style={{ marginBottom: 'var(--space-1)' }}>+12% this week</Text>
-            <Text variant="caption" color="muted">Predictions processed today.</Text>
+            <Text variant="body-sm" color="secondary" style={{ marginBottom: 'var(--space-1)' }}>Agents</Text>
+            <Text variant="h2" color="primary" style={{ marginBottom: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{totalAgents}</Text>
+            <Text variant="caption" color="muted" style={{ marginBottom: 'var(--space-1)' }}>{activeSessions} sessions</Text>
+            <Text variant="caption" color="muted">Total agents deployed.</Text>
           </Card>
           <Card variant="elevated" padding="md">
-            <Text variant="body-sm" color="secondary" style={{ marginBottom: 'var(--space-1)' }}>Compliance Score</Text>
-            <Text variant="h2" color="accent" style={{ marginBottom: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{complianceScore}%</Text>
-            <Text variant="caption" color="success" style={{ marginBottom: 'var(--space-1)' }}>Stable</Text>
-            <Text variant="caption" color="muted">Policy adherence score.</Text>
+            <Text variant="body-sm" color="secondary" style={{ marginBottom: 'var(--space-1)' }}>Compliance</Text>
+            <Text variant="h2" color="accent" style={{ marginBottom: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{complianceScore}{complianceGrade ? ` (${complianceGrade})` : '%'}</Text>
+            <Text variant="caption" color="success" style={{ marginBottom: 'var(--space-1)' }}>{dashData?.platform?.compliance?.framework || 'SOC2'}</Text>
+            <Text variant="caption" color="muted">Live compliance score.</Text>
           </Card>
           <Card variant="elevated" padding="md">
-            <Text variant="body-sm" color="secondary" style={{ marginBottom: 'var(--space-1)' }}>Risk Index</Text>
-            <Text variant="h2" color="primary" style={{ marginBottom: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{avgRisk.toFixed(3)}</Text>
-            <Text variant="caption" color="muted" style={{ marginBottom: 'var(--space-1)' }}>Average</Text>
-            <Text variant="caption" color="muted">Average risk score (0-1 scale).</Text>
+            <Text variant="body-sm" color="secondary" style={{ marginBottom: 'var(--space-1)' }}>Credits</Text>
+            <Text variant="h2" color="primary" style={{ marginBottom: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{creditBalance !== null && creditBalance !== undefined ? creditBalance.toLocaleString() : '—'}</Text>
+            <Text variant="caption" color="muted" style={{ marginBottom: 'var(--space-1)' }}>{creditLimit ? `of ${creditLimit.toLocaleString()} limit` : dashData?.credits?.unlimited ? 'Unlimited' : ''}</Text>
+            <Text variant="caption" color="muted">Credit balance.</Text>
           </Card>
           <Card variant="elevated" padding="md">
-            <Text variant="body-sm" color="secondary" style={{ marginBottom: 'var(--space-1)' }}>Model Version</Text>
-            <Text variant="h2" color="primary" style={{ marginBottom: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{activeModelVersion}</Text>
-            <Text variant="caption" color="muted" style={{ marginBottom: 'var(--space-1)' }}>Updated 2 days ago</Text>
-            <Text variant="caption" color="muted">Active model version.</Text>
+            <Text variant="body-sm" color="secondary" style={{ marginBottom: 'var(--space-1)' }}>Memories</Text>
+            <Text variant="h2" color="primary" style={{ marginBottom: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{totalMemories.toLocaleString()}</Text>
+            <Text variant="caption" color="muted" style={{ marginBottom: 'var(--space-1)' }}>{dashData?.platform?.memory?.storageMb ? `${dashData.platform.memory.storageMb.toFixed(1)} MB` : ''}</Text>
+            <Text variant="caption" color="muted">Hash Sphere anchors.</Text>
           </Card>
           <Card variant="elevated" padding="md">
-            <Text variant="body-sm" color="secondary" style={{ marginBottom: 'var(--space-1)' }}>Violations (24h)</Text>
-            <Text variant="h2" color={violations24h > 0 ? 'error' : 'primary'} style={{ marginBottom: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{violations24h}</Text>
-            <Text variant="caption" color={violations24h > 0 ? 'error' : 'muted'} style={{ marginBottom: 'var(--space-1)' }}>
-              {violations24h > 0 ? 'Requires review' : 'All clear'}
-            </Text>
-            <Text variant="caption" color="muted">Policy violations in last 24 hours.</Text>
+            <Text variant="body-sm" color="secondary" style={{ marginBottom: 'var(--space-1)' }}>Marketplace</Text>
+            <Text variant="h2" color="primary" style={{ marginBottom: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{marketplaceListings}</Text>
+            <Text variant="caption" color="muted" style={{ marginBottom: 'var(--space-1)' }}>{workflowCount} workflows</Text>
+            <Text variant="caption" color="muted">Available listings.</Text>
           </Card>
         </div>
       </section>
@@ -441,7 +452,7 @@ const DashboardPage = () => {
                           padding: 'var(--space-2) var(--space-3)',
                           color: 'var(--color-text-primary)',
                           fontSize: 'var(--font-14)'
-                        }}>{activeModelVersion}</td>
+                        }}>{dashData?.tier || '—'}</td>
                         <td style={{ 
                           padding: 'var(--space-2) var(--space-3)',
                           textAlign: 'right',

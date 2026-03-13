@@ -28,8 +28,7 @@ import {
 } from '../../api/marketplace';
 import { Button } from '../../components/ui';
 import { useToastContext } from '../../context/ToastContext';
-import styles from '../Help/HelpCenterPage.module.css';
-import marketStyles from './MarketplacePage.module.css';
+import styles from './MarketplacePage.module.css';
 
 type MarketplaceTab = 'browse' | 'dashboard' | 'trends' | 'ledger';
 
@@ -324,9 +323,9 @@ const MarketplacePage: React.FC = () => {
     <div className={styles.helpCenterPage}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h1>🏪 General Store</h1>
+          <h1>Marketplace</h1>
           <p className={styles.subtitle}>
-            Templates & UI Skins - Digital assets, themes, and agent templates for your workspace.
+            Browse, purchase, and deploy AI agents, plugins, templates, and workflows.
           </p>
         </div>
 

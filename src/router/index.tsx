@@ -91,6 +91,7 @@ const CreateTeamPage = lazy(() => import('../pages/AgentTeams/CreateTeamPage'));
 const EditTeamPage = lazy(() => import('../pages/AgentTeams/EditTeamPage'));
 const AutonomousAgentDashboard = lazy(() => import('../pages/Dashboards/AutonomousAgentDashboard'));
 const NotFoundPage = lazy(() => import('../pages/NotFound/NotFoundPage'));
+const WalletPage = lazy(() => import('../pages/Wallet/WalletPage'));
 
 // Owner-Only ML Training Page
 const MLTrainingPage = lazy(() => import('../pages/Owner/MLTraining'));
@@ -667,6 +668,11 @@ const router = createBrowserRouter([
   {
     path: '/rabbit',
     element: withPublicShell(<RabbitPage />)
+  },
+  // Crypto Wallet
+  {
+    path: '/wallet',
+    element: withShell(<WalletPage />)
   },
   {
     path: '*',

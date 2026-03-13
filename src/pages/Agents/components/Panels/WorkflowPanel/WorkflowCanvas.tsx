@@ -12,7 +12,7 @@ interface Position {
 
 interface WorkflowNode {
   id: string;
-  type: 'start' | 'end' | 'http_request' | 'llm_completion' | 'memory_search' | 'agent_execute' | 'send_notification' | 'transform_data' | 'condition' | 'delay';
+  type: 'start' | 'end' | 'http_request' | 'llm_completion' | 'memory_search' | 'agent_execute' | 'send_notification' | 'transform_data' | 'condition' | 'delay' | 'loop' | 'parallel' | 'webhook' | 'code_execute' | 'email' | 'database' | 'filter';
   label: string;
   position: Position;
   config: Record<string, unknown>;
@@ -34,6 +34,10 @@ interface WorkflowCanvasProps {
   selectedNodeId: string | null;
 }
 
+const GRID_SIZE = 20;
+
+const snapToGrid = (val: number): number => Math.round(val / GRID_SIZE) * GRID_SIZE;
+
 const NODE_TYPES = {
   start: { color: '#22c55e', icon: 'Play' },
   end: { color: '#ef4444', icon: 'Stop' },
@@ -45,6 +49,13 @@ const NODE_TYPES = {
   transform_data: { color: '#ec4899', icon: 'Zap' },
   condition: { color: '#f59e0b', icon: 'Fork' },
   delay: { color: '#6366f1', icon: 'Clock' },
+  loop: { color: '#a855f7', icon: 'Refresh' },
+  parallel: { color: '#06b6d4', icon: 'Fork' },
+  webhook: { color: '#10b981', icon: 'External' },
+  code_execute: { color: '#f43f5e', icon: 'Code' },
+  email: { color: '#f97316', icon: 'Send' },
+  database: { color: '#8b5cf6', icon: 'Search' },
+  filter: { color: '#eab308', icon: 'Fork' },
 };
 
 const WorkflowCanvasComponent: React.FC<WorkflowCanvasProps> = ({
@@ -90,12 +101,14 @@ const WorkflowCanvasComponent: React.FC<WorkflowCanvasProps> = ({
     setMousePos({ x, y });
 
     if (draggingNode) {
-      const newX = (e.clientX - rect.left - dragOffset.x - pan.x) / zoom;
-      const newY = (e.clientY - rect.top - dragOffset.y - pan.y) / zoom;
+      const rawX = (e.clientX - rect.left - dragOffset.x - pan.x) / zoom;
+      const rawY = (e.clientY - rect.top - dragOffset.y - pan.y) / zoom;
+      const newX = snapToGrid(Math.max(0, rawX));
+      const newY = snapToGrid(Math.max(0, rawY));
 
       const updatedNodes = nodes.map(node =>
         node.id === draggingNode
-          ? { ...node, position: { x: Math.max(0, newX), y: Math.max(0, newY) } }
+          ? { ...node, position: { x: newX, y: newY } }
           : node
       );
       onNodesChange(updatedNodes);
@@ -205,6 +218,13 @@ const WorkflowCanvasComponent: React.FC<WorkflowCanvasProps> = ({
       case 'transform_data': return <Icons.Zap />;
       case 'condition': return <Icons.Fork />;
       case 'delay': return <Icons.Clock />;
+      case 'loop': return <Icons.Refresh />;
+      case 'parallel': return <Icons.Fork />;
+      case 'webhook': return <Icons.External />;
+      case 'code_execute': return <Icons.Code />;
+      case 'email': return <Icons.Send />;
+      case 'database': return <Icons.Search />;
+      case 'filter': return <Icons.Fork />;
       default: return <Icons.Zap />;
     }
   };
@@ -295,6 +315,63 @@ const WorkflowCanvasComponent: React.FC<WorkflowCanvasProps> = ({
             </div>
           );
         })}
+      </div>
+      {/* Minimap */}
+      <div style={{
+        position: 'absolute',
+        bottom: 12,
+        right: 12,
+        width: 160,
+        height: 100,
+        background: 'rgba(0,0,0,0.7)',
+        border: '1px solid rgba(255,255,255,0.1)',
+        borderRadius: 6,
+        overflow: 'hidden',
+        zIndex: 100,
+      }}>
+        <svg width="160" height="100" viewBox="0 0 1200 800">
+          {nodes.map(node => {
+            const nt = NODE_TYPES[node.type as keyof typeof NODE_TYPES] || NODE_TYPES.agent_execute;
+            return (
+              <rect
+                key={node.id}
+                x={node.position.x}
+                y={node.position.y}
+                width={80}
+                height={30}
+                rx={4}
+                fill={nt.color}
+                opacity={selectedNodeId === node.id ? 1 : 0.6}
+              />
+            );
+          })}
+          {edges.map(edge => {
+            const s = nodes.find(n => n.id === edge.source);
+            const t = nodes.find(n => n.id === edge.target);
+            if (!s || !t) return null;
+            return (
+              <line
+                key={edge.id}
+                x1={s.position.x + 40}
+                y1={s.position.y + 15}
+                x2={t.position.x + 40}
+                y2={t.position.y + 15}
+                stroke="rgba(14,165,233,0.5)"
+                strokeWidth={3}
+              />
+            );
+          })}
+          <rect
+            x={-pan.x / zoom}
+            y={-pan.y / zoom}
+            width={(canvasRef.current?.clientWidth || 800) / zoom}
+            height={(canvasRef.current?.clientHeight || 600) / zoom}
+            fill="none"
+            stroke="rgba(255,255,255,0.3)"
+            strokeWidth={4}
+            strokeDasharray="8 4"
+          />
+        </svg>
       </div>
     </div>
   );

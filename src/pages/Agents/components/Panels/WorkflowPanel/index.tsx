@@ -27,6 +27,13 @@ const NODE_PALETTE = [
   { type: 'transform_data', label: 'Transform', color: '#ec4899' },
   { type: 'condition', label: 'Condition', color: '#f59e0b' },
   { type: 'delay', label: 'Delay', color: '#6366f1' },
+  { type: 'loop', label: 'Loop', color: '#a855f7' },
+  { type: 'parallel', label: 'Parallel', color: '#06b6d4' },
+  { type: 'webhook', label: 'Webhook', color: '#10b981' },
+  { type: 'code_execute', label: 'Run Code', color: '#f43f5e' },
+  { type: 'email', label: 'Email', color: '#f97316' },
+  { type: 'database', label: 'Database', color: '#8b5cf6' },
+  { type: 'filter', label: 'Filter', color: '#eab308' },
 ];
 
 const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => {
