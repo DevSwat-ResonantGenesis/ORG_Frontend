@@ -364,6 +364,9 @@ export default function WalletPage() {
           Create your Resonant Genesis Token wallet to deposit, withdraw, transfer tokens,
           and participate in the agent marketplace economy.
         </Text>
+        <div style={{ marginBottom: 24, textAlign: 'left' }}>
+          <Web3WalletConnect onWalletLinked={() => loadData()} />
+        </div>
         <Button variant="primary" size="lg" onClick={createWallet} disabled={creating}>
           {creating ? 'Creating...' : 'Create Wallet'}
         </Button>
@@ -397,6 +400,9 @@ export default function WalletPage() {
 
   return (
     <div className="page-container">
+      {/* Web3 External Wallet Connection */}
+      <Web3WalletConnect onWalletLinked={() => loadData()} />
+
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-4)', flexWrap: 'wrap', gap: 12 }}>
         <div>
