@@ -73,6 +73,22 @@ export default function Web3WalletConnect({ onWalletLinked, compact }: Props) {
   const [connected, setConnected] = useState(false);
   const [linking, setLinking] = useState(false);
   const [linked, setLinked] = useState(false);
+
+  // Check if this address is already linked as a funding source
+  useEffect(() => {
+    if (!address) return;
+    const checkLinked = async () => {
+      try {
+        const res = await fastapiClient.get("/crypto/funding-sources");
+        const sources = Array.isArray(res.data) ? res.data : [];
+        const found = sources.some((s: any) =>
+          s.crypto_address?.toLowerCase() === address.toLowerCase()
+        );
+        if (found) setLinked(true);
+      } catch {}
+    };
+    checkLinked();
+  }, [address]);
   const [msg, setMsg] = useState<{ type: "success" | "error" | "info"; text: string } | null>(null);
   const [hasProvider, setHasProvider] = useState(false);
   const [busy, setBusy] = useState(false);
