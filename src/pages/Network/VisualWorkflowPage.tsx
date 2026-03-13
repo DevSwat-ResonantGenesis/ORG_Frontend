@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react';
+import React, { useCallback, useMemo, useState, useRef, useEffect } from 'react';
 import ReactFlow, {
   addEdge,
   Background,
@@ -18,10 +18,11 @@ import ReactFlow, {
   useReactFlow,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Save, Play, Trash2, ArrowLeft, Layout, Copy, Download, X, Settings, Undo2, Redo2, List, CheckCircle, XCircle, Loader, AlertTriangle, Plus, Search, ChevronDown, ChevronRight } from 'lucide-react';
+import { Save, Play, Trash2, ArrowLeft, Layout, Settings, X, Copy, Undo2, Redo2, Download, Upload, Eye, Zap, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import fastapiClient from '../../api/fastapiClient';
 
-// ── Step type config ──
+// ── Types ──
 type WorkflowStepType =
   | 'http_request'
   | 'llm_completion'
@@ -33,30 +34,42 @@ type WorkflowStepType =
   | 'delay'
   | 'code_execute'
   | 'webhook_trigger'
-  | 'loop'
-  | 'parallel'
-  | 'human_approval'
-  | 'data_filter';
+  | 'data_filter'
+  | 'aggregator';
 
 interface StepNodeData {
   label: string;
   stepType: WorkflowStepType;
   config: Record<string, any>;
-  status?: 'pending' | 'running' | 'completed' | 'failed';
+  status?: 'idle' | 'running' | 'completed' | 'failed';
+  description?: string;
 }
 
-interface SavedWorkflow {
-  id: string;
-  name: string;
-  status?: string;
-  steps?: any[];
-  graph_data?: any;
-  created_at?: string;
-  updated_at?: string;
-}
+const STEP_PALETTE: { type: WorkflowStepType; label: string; color: string; icon: string; desc: string }[] = [
+  { type: 'webhook_trigger', label: 'Webhook Trigger', color: '#f97316', icon: '🔔', desc: 'Start workflow from external webhook' },
+  { type: 'http_request', label: 'HTTP Request', color: '#3b82f6', icon: '🌐', desc: 'Call any REST API endpoint' },
+  { type: 'llm_completion', label: 'LLM Call', color: '#8b5cf6', icon: '🧠', desc: 'Generate text with AI models' },
+  { type: 'memory_search', label: 'Memory Search', color: '#06b6d4', icon: '🔍', desc: 'Search Hash Sphere memory' },
+  { type: 'agent_execute', label: 'Run Agent', color: '#f59e0b', icon: '🤖', desc: 'Execute an autonomous agent' },
+  { type: 'code_execute', label: 'Run Code', color: '#22c55e', icon: '💻', desc: 'Execute Python/JS code' },
+  { type: 'send_notification', label: 'Notification', color: '#10b981', icon: '📧', desc: 'Send email, Slack, Discord' },
+  { type: 'transform_data', label: 'Transform', color: '#6366f1', icon: '🔄', desc: 'Map, filter, transform data' },
+  { type: 'condition', label: 'If/Else', color: '#ef4444', icon: '🔀', desc: 'Branch based on condition' },
+  { type: 'data_filter', label: 'Filter', color: '#a855f7', icon: '🧹', desc: 'Filter array data by rules' },
+  { type: 'aggregator', label: 'Aggregator', color: '#ec4899', icon: '📊', desc: 'Merge multiple inputs' },
+  { type: 'delay', label: 'Delay', color: '#78716c', icon: '⏱️', desc: 'Wait before continuing' },
+];
 
-// Config fields for each step type
-const STEP_CONFIG_FIELDS: Record<WorkflowStepType, { key: string; label: string; type: 'text' | 'textarea' | 'select' | 'number'; options?: string[] }[]> = {
+const COLORS: Record<string, string> = Object.fromEntries(STEP_PALETTE.map(s => [s.type, s.color]));
+const ICONS: Record<string, string> = Object.fromEntries(STEP_PALETTE.map(s => [s.type, s.icon]));
+
+// ── Config fields per step type ──
+const CONFIG_FIELDS: Record<WorkflowStepType, { key: string; label: string; type: 'text' | 'textarea' | 'select' | 'number'; options?: string[] }[]> = {
+  webhook_trigger: [
+    { key: 'path', label: 'Webhook Path', type: 'text' },
+    { key: 'method', label: 'HTTP Method', type: 'select', options: ['POST', 'GET', 'PUT'] },
+    { key: 'secret', label: 'Secret (optional)', type: 'text' },
+  ],
   http_request: [
     { key: 'url', label: 'URL', type: 'text' },
     { key: 'method', label: 'Method', type: 'select', options: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'] },
@@ -65,178 +78,118 @@ const STEP_CONFIG_FIELDS: Record<WorkflowStepType, { key: string; label: string;
     { key: 'timeout', label: 'Timeout (ms)', type: 'number' },
   ],
   llm_completion: [
-    { key: 'model', label: 'Model', type: 'select', options: ['groq/llama-3.3-70b-versatile', 'groq/llama-3.1-8b-instant', 'openai/gpt-4o', 'anthropic/claude-3.5-sonnet'] },
-    { key: 'prompt', label: 'Prompt Template', type: 'textarea' },
-    { key: 'system_prompt', label: 'System Prompt', type: 'textarea' },
+    { key: 'model', label: 'Model', type: 'select', options: ['groq/llama-3.3-70b', 'openai/gpt-4o', 'anthropic/claude-3.5-sonnet', 'google/gemini-pro'] },
+    { key: 'prompt', label: 'System Prompt', type: 'textarea' },
+    { key: 'user_message', label: 'User Message', type: 'textarea' },
     { key: 'max_tokens', label: 'Max Tokens', type: 'number' },
-    { key: 'temperature', label: 'Temperature', type: 'text' },
+    { key: 'temperature', label: 'Temperature', type: 'number' },
   ],
   memory_search: [
     { key: 'query', label: 'Search Query', type: 'text' },
-    { key: 'top_k', label: 'Results Count', type: 'number' },
-    { key: 'threshold', label: 'Similarity Threshold', type: 'text' },
+    { key: 'namespace', label: 'Namespace', type: 'text' },
+    { key: 'top_k', label: 'Results Limit', type: 'number' },
   ],
   agent_execute: [
     { key: 'agent_id', label: 'Agent ID', type: 'text' },
-    { key: 'goal', label: 'Goal/Task', type: 'textarea' },
-    { key: 'max_loops', label: 'Max Loops', type: 'number' },
-  ],
-  send_notification: [
-    { key: 'channel', label: 'Channel', type: 'select', options: ['email', 'webhook', 'slack', 'discord'] },
-    { key: 'recipient', label: 'Recipient', type: 'text' },
-    { key: 'subject', label: 'Subject', type: 'text' },
-    { key: 'message', label: 'Message', type: 'textarea' },
-  ],
-  transform_data: [
-    { key: 'transform_type', label: 'Transform Type', type: 'select', options: ['jq', 'jsonpath', 'template', 'javascript'] },
-    { key: 'expression', label: 'Expression', type: 'textarea' },
-  ],
-  condition: [
-    { key: 'condition_type', label: 'Condition Type', type: 'select', options: ['equals', 'contains', 'greater_than', 'less_than', 'regex', 'javascript'] },
-    { key: 'field', label: 'Field to Check', type: 'text' },
-    { key: 'value', label: 'Expected Value', type: 'text' },
-  ],
-  delay: [
-    { key: 'duration_ms', label: 'Duration (ms)', type: 'number' },
-    { key: 'until', label: 'Wait Until (ISO date)', type: 'text' },
+    { key: 'goal', label: 'Goal', type: 'textarea' },
+    { key: 'max_steps', label: 'Max Steps', type: 'number' },
+    { key: 'timeout', label: 'Timeout (seconds)', type: 'number' },
   ],
   code_execute: [
     { key: 'language', label: 'Language', type: 'select', options: ['python', 'javascript'] },
     { key: 'code', label: 'Code', type: 'textarea' },
     { key: 'timeout', label: 'Timeout (ms)', type: 'number' },
   ],
-  webhook_trigger: [
-    { key: 'path', label: 'Webhook Path', type: 'text' },
-    { key: 'method', label: 'Method', type: 'select', options: ['POST', 'GET'] },
-    { key: 'timeout_seconds', label: 'Timeout (seconds)', type: 'number' },
+  send_notification: [
+    { key: 'channel', label: 'Channel', type: 'select', options: ['email', 'slack', 'discord', 'webhook'] },
+    { key: 'to', label: 'Recipient', type: 'text' },
+    { key: 'subject', label: 'Subject', type: 'text' },
+    { key: 'message', label: 'Message', type: 'textarea' },
   ],
-  loop: [
-    { key: 'items_path', label: 'Items Path (JSONPath)', type: 'text' },
-    { key: 'max_iterations', label: 'Max Iterations', type: 'number' },
-    { key: 'concurrency', label: 'Concurrency', type: 'number' },
+  transform_data: [
+    { key: 'operation', label: 'Operation', type: 'select', options: ['map', 'filter', 'reduce', 'jq', 'jsonpath'] },
+    { key: 'expression', label: 'Expression', type: 'textarea' },
   ],
-  parallel: [
-    { key: 'branches', label: 'Branch Count', type: 'number' },
-    { key: 'wait_all', label: 'Wait for All', type: 'select', options: ['true', 'false'] },
-  ],
-  human_approval: [
-    { key: 'approver', label: 'Approver Email', type: 'text' },
-    { key: 'instructions', label: 'Instructions', type: 'textarea' },
-    { key: 'timeout_hours', label: 'Timeout (hours)', type: 'number' },
+  condition: [
+    { key: 'expression', label: 'Condition Expression', type: 'text' },
+    { key: 'true_label', label: 'True Branch Label', type: 'text' },
+    { key: 'false_label', label: 'False Branch Label', type: 'text' },
   ],
   data_filter: [
-    { key: 'filter_expression', label: 'Filter Expression', type: 'textarea' },
-    { key: 'required_fields', label: 'Required Fields', type: 'text' },
+    { key: 'field', label: 'Field Path', type: 'text' },
+    { key: 'operator', label: 'Operator', type: 'select', options: ['equals', 'not_equals', 'contains', 'gt', 'lt', 'gte', 'lte', 'regex'] },
+    { key: 'value', label: 'Value', type: 'text' },
+  ],
+  aggregator: [
+    { key: 'mode', label: 'Aggregation Mode', type: 'select', options: ['merge', 'concat', 'first', 'last', 'all'] },
+    { key: 'wait_for', label: 'Wait For (count)', type: 'number' },
+  ],
+  delay: [
+    { key: 'duration', label: 'Duration (seconds)', type: 'number' },
+    { key: 'until', label: 'Or Until (ISO date)', type: 'text' },
   ],
 };
 
-const STEP_PALETTE: { type: WorkflowStepType; label: string; color: string; icon: string; category: string }[] = [
-  { type: 'llm_completion', label: 'LLM Call', color: '#8b5cf6', icon: '🧠', category: 'AI' },
-  { type: 'memory_search', label: 'Memory Search', color: '#06b6d4', icon: '🔍', category: 'AI' },
-  { type: 'agent_execute', label: 'Agent Execute', color: '#f59e0b', icon: '🤖', category: 'AI' },
-  { type: 'http_request', label: 'HTTP Request', color: '#3b82f6', icon: '🌐', category: 'Integration' },
-  { type: 'send_notification', label: 'Notification', color: '#10b981', icon: '📧', category: 'Integration' },
-  { type: 'webhook_trigger', label: 'Webhook', color: '#0ea5e9', icon: '🔔', category: 'Integration' },
-  { type: 'condition', label: 'Condition', color: '#ef4444', icon: '🔀', category: 'Logic' },
-  { type: 'transform_data', label: 'Transform', color: '#6366f1', icon: '🔄', category: 'Logic' },
-  { type: 'code_execute', label: 'Run Code', color: '#ec4899', icon: '💻', category: 'Logic' },
-  { type: 'loop', label: 'Loop', color: '#14b8a6', icon: '🔁', category: 'Logic' },
-  { type: 'parallel', label: 'Parallel', color: '#a855f7', icon: '⚡', category: 'Logic' },
-  { type: 'data_filter', label: 'Filter', color: '#f97316', icon: '🧹', category: 'Logic' },
-  { type: 'delay', label: 'Delay', color: '#78716c', icon: '⏱️', category: 'Control' },
-  { type: 'human_approval', label: 'Human Approval', color: '#eab308', icon: '👤', category: 'Control' },
-];
-
-const PALETTE_CATEGORIES = [...new Set(STEP_PALETTE.map(s => s.category))];
-
-const STEP_COLORS: Record<string, string> = Object.fromEntries(STEP_PALETTE.map((s) => [s.type, s.color]));
-const STEP_ICONS: Record<string, string> = Object.fromEntries(STEP_PALETTE.map((s) => [s.type, s.icon]));
-
-const STATUS_COLORS: Record<string, string> = {
-  pending: '#64748b', running: '#3b82f6', completed: '#22c55e', failed: '#ef4444',
-};
-
-// ── Custom Step Node ──
+// ── Custom Node ──
 const StepNodeComponent = React.memo(({ data, selected }: NodeProps<StepNodeData>) => {
-  const color = STEP_COLORS[data.stepType] || '#6366f1';
-  const icon = STEP_ICONS[data.stepType] || '⚙️';
-  const statusColor = data.status ? STATUS_COLORS[data.status] : null;
+  const color = COLORS[data.stepType] || '#6366f1';
+  const icon = ICONS[data.stepType] || '⚙️';
+  const statusColors: Record<string, string> = { idle: '#475569', running: '#f59e0b', completed: '#10b981', failed: '#ef4444' };
+  const st = data.status || 'idle';
 
   return (
-    <div
-      style={{
-        background: '#1e293b',
-        border: `2px solid ${selected ? '#e2e8f0' : statusColor || color}`,
-        borderRadius: 10,
-        minWidth: 180,
-        boxShadow: selected ? `0 0 12px ${color}40` : data.status === 'running' ? `0 0 12px ${STATUS_COLORS.running}40` : '0 2px 8px rgba(0,0,0,0.3)',
-        transition: 'all 0.2s',
-      }}
-    >
-      <Handle
-        type="target"
-        position={Position.Top}
-        style={{ background: color, width: 10, height: 10, border: '2px solid #0f172a' }}
-      />
-      <div
-        style={{
-          background: `${color}20`,
-          borderBottom: `1px solid ${color}40`,
-          padding: '6px 12px',
-          borderRadius: '8px 8px 0 0',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-        }}
-      >
-        <span style={{ fontSize: 16 }}>{icon}</span>
-        <span style={{ color, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+    <div style={{
+      background: '#1e293b',
+      border: `2px solid ${selected ? '#e2e8f0' : color}`,
+      borderRadius: 10,
+      minWidth: 200,
+      maxWidth: 260,
+      boxShadow: selected ? `0 0 16px ${color}50` : '0 2px 10px rgba(0,0,0,0.4)',
+      transition: 'all 0.2s',
+    }}>
+      <Handle type="target" position={Position.Top} style={{ background: color, width: 10, height: 10, border: '2px solid #0f172a' }} />
+
+      {/* Header */}
+      <div style={{
+        background: `${color}18`,
+        borderBottom: `1px solid ${color}30`,
+        padding: '6px 12px',
+        borderRadius: '8px 8px 0 0',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6,
+      }}>
+        <span style={{ fontSize: 14 }}>{icon}</span>
+        <span style={{ color, fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', flex: 1 }}>
           {data.stepType.replace(/_/g, ' ')}
         </span>
-        {data.status && (
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: statusColor || '#64748b', display: 'inline-block', marginLeft: 'auto', animation: data.status === 'running' ? 'pulse 1.5s infinite' : 'none' }} />
-        )}
+        <span style={{ width: 8, height: 8, borderRadius: '50%', background: statusColors[st], flexShrink: 0 }} />
       </div>
+
+      {/* Body */}
       <div style={{ padding: '8px 12px' }}>
-        <div style={{ color: '#e2e8f0', fontSize: 13, fontWeight: 500 }}>{data.label}</div>
+        <div style={{ color: '#e2e8f0', fontSize: 13, fontWeight: 600, marginBottom: 2 }}>{data.label}</div>
+        {data.description && (
+          <div style={{ color: '#64748b', fontSize: 11, lineHeight: 1.3 }}>{data.description}</div>
+        )}
         {data.config?.url && (
-          <div
-            style={{
-              color: '#64748b',
-              fontSize: 11,
-              marginTop: 4,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              maxWidth: 160,
-            }}
-          >
-            {data.config.url}
+          <div style={{ color: '#64748b', fontSize: 10, marginTop: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 220, fontFamily: 'monospace' }}>
+            {data.config.method || 'GET'} {data.config.url}
           </div>
         )}
         {data.config?.model && (
-          <div style={{ color: '#64748b', fontSize: 11, marginTop: 4 }}>{data.config.model}</div>
+          <div style={{ color: '#64748b', fontSize: 10, marginTop: 4, fontFamily: 'monospace' }}>{data.config.model}</div>
+        )}
+        {data.config?.expression && (
+          <div style={{ color: '#64748b', fontSize: 10, marginTop: 4, fontFamily: 'monospace' }}>if ({data.config.expression})</div>
         )}
       </div>
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        style={{ background: color, width: 10, height: 10, border: '2px solid #0f172a' }}
-      />
+
+      <Handle type="source" position={Position.Bottom} style={{ background: color, width: 10, height: 10, border: '2px solid #0f172a' }} />
       {data.stepType === 'condition' && (
         <>
-          <Handle
-            type="source"
-            position={Position.Right}
-            id="true"
-            style={{ background: '#10b981', width: 8, height: 8, border: '2px solid #0f172a', top: '60%' }}
-          />
-          <Handle
-            type="source"
-            position={Position.Left}
-            id="false"
-            style={{ background: '#ef4444', width: 8, height: 8, border: '2px solid #0f172a', top: '60%' }}
-          />
+          <Handle type="source" position={Position.Right} id="true" style={{ background: '#10b981', width: 8, height: 8, border: '2px solid #0f172a', top: '65%' }} />
+          <Handle type="source" position={Position.Left} id="false" style={{ background: '#ef4444', width: 8, height: 8, border: '2px solid #0f172a', top: '65%' }} />
         </>
       )}
     </div>
@@ -246,632 +199,542 @@ StepNodeComponent.displayName = 'StepNodeComponent';
 
 const nodeTypes: NodeTypes = { stepNode: StepNodeComponent };
 
-// ── Inline styles ──
-const S = {
-  topBtn: (bg: string, opacity = 1): React.CSSProperties => ({
-    display: 'flex', alignItems: 'center', gap: 4, padding: '6px 14px',
-    background: bg, border: 'none', borderRadius: 6, color: 'white',
-    cursor: 'pointer', fontSize: 13, opacity, transition: 'opacity 0.15s',
-  }),
-  smallBtn: (active = false): React.CSSProperties => ({
-    display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px',
-    background: active ? '#334155' : 'transparent', border: '1px solid #334155',
-    borderRadius: 4, color: '#94a3b8', cursor: 'pointer', fontSize: 12,
-  }),
-  cfgInput: {
-    width: '100%', padding: '6px 10px', background: '#0f172a',
-    border: '1px solid #334155', borderRadius: 6, color: '#e2e8f0',
-    fontSize: 12, outline: 'none',
-  } as React.CSSProperties,
-  cfgTextarea: {
-    width: '100%', padding: '6px 10px', background: '#0f172a',
-    border: '1px solid #334155', borderRadius: 6, color: '#e2e8f0',
-    fontSize: 12, outline: 'none', minHeight: 60, resize: 'vertical' as const,
-    fontFamily: 'monospace',
-  } as React.CSSProperties,
-  cfgSelect: {
-    width: '100%', padding: '6px 10px', background: '#0f172a',
-    border: '1px solid #334155', borderRadius: 6, color: '#e2e8f0', fontSize: 12,
-  } as React.CSSProperties,
+// ── Config Panel ──
+interface ConfigPanelProps {
+  node: Node<StepNodeData> | null;
+  onUpdate: (id: string, data: Partial<StepNodeData>) => void;
+  onClose: () => void;
+}
+
+const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) => {
+  if (!node) return null;
+  const data = node.data as StepNodeData;
+  const fields = CONFIG_FIELDS[data.stepType] || [];
+  const color = COLORS[data.stepType] || '#6366f1';
+
+  return (
+    <div style={{
+      width: 320,
+      background: '#0f172a',
+      borderLeft: '1px solid #1e293b',
+      padding: 0,
+      overflowY: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+    }}>
+      {/* Panel Header */}
+      <div style={{
+        padding: '12px 16px',
+        borderBottom: '1px solid #1e293b',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+      }}>
+        <Settings size={16} color={color} />
+        <span style={{ color: '#e2e8f0', fontSize: 14, fontWeight: 600, flex: 1 }}>Configure Step</span>
+        <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
+          <X size={16} color="#64748b" />
+        </button>
+      </div>
+
+      <div style={{ padding: 16, flex: 1 }}>
+        {/* Step Name */}
+        <div style={{ marginBottom: 16 }}>
+          <label style={{ color: '#94a3b8', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: 4 }}>
+            Step Name
+          </label>
+          <input
+            value={data.label}
+            onChange={(e) => onUpdate(node.id, { label: e.target.value })}
+            style={{
+              width: '100%',
+              padding: '8px 10px',
+              background: '#1e293b',
+              border: '1px solid #334155',
+              borderRadius: 6,
+              color: '#e2e8f0',
+              fontSize: 13,
+              outline: 'none',
+              boxSizing: 'border-box',
+            }}
+          />
+        </div>
+
+        {/* Description */}
+        <div style={{ marginBottom: 16 }}>
+          <label style={{ color: '#94a3b8', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: 4 }}>
+            Description
+          </label>
+          <input
+            value={data.description || ''}
+            onChange={(e) => onUpdate(node.id, { description: e.target.value })}
+            placeholder="Optional description..."
+            style={{
+              width: '100%',
+              padding: '8px 10px',
+              background: '#1e293b',
+              border: '1px solid #334155',
+              borderRadius: 6,
+              color: '#e2e8f0',
+              fontSize: 13,
+              outline: 'none',
+              boxSizing: 'border-box',
+            }}
+          />
+        </div>
+
+        {/* Config Fields */}
+        {fields.map((field) => (
+          <div key={field.key} style={{ marginBottom: 14 }}>
+            <label style={{ color: '#94a3b8', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: 4 }}>
+              {field.label}
+            </label>
+            {field.type === 'select' ? (
+              <select
+                value={data.config?.[field.key] || ''}
+                onChange={(e) => onUpdate(node.id, { config: { ...data.config, [field.key]: e.target.value } })}
+                style={{
+                  width: '100%',
+                  padding: '8px 10px',
+                  background: '#1e293b',
+                  border: '1px solid #334155',
+                  borderRadius: 6,
+                  color: '#e2e8f0',
+                  fontSize: 13,
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                }}
+              >
+                <option value="">Select...</option>
+                {(field.options || []).map(opt => (
+                  <option key={opt} value={opt}>{opt}</option>
+                ))}
+              </select>
+            ) : field.type === 'textarea' ? (
+              <textarea
+                value={data.config?.[field.key] || ''}
+                onChange={(e) => onUpdate(node.id, { config: { ...data.config, [field.key]: e.target.value } })}
+                rows={3}
+                style={{
+                  width: '100%',
+                  padding: '8px 10px',
+                  background: '#1e293b',
+                  border: '1px solid #334155',
+                  borderRadius: 6,
+                  color: '#e2e8f0',
+                  fontSize: 12,
+                  fontFamily: field.key === 'code' ? 'monospace' : 'inherit',
+                  outline: 'none',
+                  resize: 'vertical',
+                  boxSizing: 'border-box',
+                }}
+              />
+            ) : (
+              <input
+                type={field.type === 'number' ? 'number' : 'text'}
+                value={data.config?.[field.key] ?? ''}
+                onChange={(e) => onUpdate(node.id, {
+                  config: { ...data.config, [field.key]: field.type === 'number' ? Number(e.target.value) : e.target.value }
+                })}
+                style={{
+                  width: '100%',
+                  padding: '8px 10px',
+                  background: '#1e293b',
+                  border: '1px solid #334155',
+                  borderRadius: 6,
+                  color: '#e2e8f0',
+                  fontSize: 13,
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                }}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Panel Footer */}
+      <div style={{ padding: '12px 16px', borderTop: '1px solid #1e293b' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: color }} />
+          <span style={{ color: '#64748b', fontSize: 11 }}>
+            {data.stepType.replace(/_/g, ' ')} • Node {node.id.split('_').pop()}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-// ── Inner Component (needs ReactFlow context for drag-drop) ──
+// ── Main Canvas (inner — needs ReactFlowProvider) ──
 function VisualWorkflowInner() {
   const navigate = useNavigate();
-  const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const { screenToFlowPosition } = useReactFlow();
+  const reactFlowInstance = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [workflowName, setWorkflowName] = useState('Untitled Workflow');
-  const [workflowId, setWorkflowId] = useState<string | null>(null);
+  const [workflowDesc, setWorkflowDesc] = useState('');
   const [saving, setSaving] = useState(false);
   const [running, setRunning] = useState(false);
-  const [runStatus, setRunStatus] = useState<string | null>(null);
-  const [toast, setToast] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [showConfigPanel, setShowConfigPanel] = useState(true);
-  const [savedWorkflows, setSavedWorkflows] = useState<SavedWorkflow[]>([]);
-  const [showLoadPanel, setShowLoadPanel] = useState(false);
-  const [undoStack, setUndoStack] = useState<{ nodes: Node[]; edges: Edge[] }[]>([]);
-  const [redoStack, setRedoStack] = useState<{ nodes: Node[]; edges: Edge[] }[]>([]);
-  const [paletteSearch, setPaletteSearch] = useState('');
-  const [expandedCats, setExpandedCats] = useState<Set<string>>(new Set(PALETTE_CATEGORIES));
+  const [showConfig, setShowConfig] = useState(false);
+  const [history, setHistory] = useState<{ nodes: Node[]; edges: Edge[] }[]>([]);
+  const [historyIdx, setHistoryIdx] = useState(-1);
+  const nodeCounter = useRef(0);
 
-  // Show toast message
-  const showToast = useCallback((type: 'success' | 'error', text: string) => {
-    setToast({ type, text });
-    setTimeout(() => setToast(null), 3000);
-  }, []);
+  // Push to undo history
+  const pushHistory = useCallback(() => {
+    setHistory(prev => {
+      const newH = prev.slice(0, historyIdx + 1);
+      newH.push({ nodes: JSON.parse(JSON.stringify(nodes)), edges: JSON.parse(JSON.stringify(edges)) });
+      return newH.slice(-30); // keep 30 max
+    });
+    setHistoryIdx(prev => Math.min(prev + 1, 29));
+  }, [nodes, edges, historyIdx]);
 
-  // Save undo state
-  const pushUndo = useCallback(() => {
-    setUndoStack(prev => [...prev.slice(-19), { nodes: [...nodes], edges: [...edges] }]);
-    setRedoStack([]);
-  }, [nodes, edges]);
+  const undo = useCallback(() => {
+    if (historyIdx <= 0) return;
+    const prev = history[historyIdx - 1];
+    if (prev) {
+      setNodes(prev.nodes);
+      setEdges(prev.edges);
+      setHistoryIdx(i => i - 1);
+    }
+  }, [history, historyIdx, setNodes, setEdges]);
 
-  // Undo
-  const handleUndo = useCallback(() => {
-    if (undoStack.length === 0) return;
-    const prev = undoStack[undoStack.length - 1];
-    setRedoStack(rs => [...rs, { nodes: [...nodes], edges: [...edges] }]);
-    setUndoStack(us => us.slice(0, -1));
-    setNodes(prev.nodes);
-    setEdges(prev.edges);
-  }, [undoStack, nodes, edges, setNodes, setEdges]);
+  const redo = useCallback(() => {
+    if (historyIdx >= history.length - 1) return;
+    const next = history[historyIdx + 1];
+    if (next) {
+      setNodes(next.nodes);
+      setEdges(next.edges);
+      setHistoryIdx(i => i + 1);
+    }
+  }, [history, historyIdx, setNodes, setEdges]);
 
-  // Redo
-  const handleRedo = useCallback(() => {
-    if (redoStack.length === 0) return;
-    const next = redoStack[redoStack.length - 1];
-    setUndoStack(us => [...us, { nodes: [...nodes], edges: [...edges] }]);
-    setRedoStack(rs => rs.slice(0, -1));
-    setNodes(next.nodes);
-    setEdges(next.edges);
-  }, [redoStack, nodes, edges, setNodes, setEdges]);
+  const onConnect = useCallback((connection: Connection) => {
+    setEdges(eds => addEdge({ ...connection, animated: true, style: { stroke: '#6366f1', strokeWidth: 2 } }, eds));
+    pushHistory();
+  }, [setEdges, pushHistory]);
 
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); handleUndo(); }
-      if ((e.metaKey || e.ctrlKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); handleRedo(); }
-      if (e.key === 'Delete' || e.key === 'Backspace') {
-        if (selectedNode && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
-          e.preventDefault(); deleteSelected();
-        }
-      }
-      if ((e.metaKey || e.ctrlKey) && e.key === 's') { e.preventDefault(); handleSave(); }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [handleUndo, handleRedo, selectedNode]);
-
-  const onConnect = useCallback(
-    (connection: Connection) => {
-      pushUndo();
-      setEdges((eds) =>
-        addEdge({ ...connection, animated: true, style: { stroke: '#6366f1', strokeWidth: 2 } }, eds)
-      );
-    },
-    [setEdges, pushUndo]
-  );
-
-  const addNode = useCallback(
-    (stepType: WorkflowStepType) => {
-      pushUndo();
-      const palette = STEP_PALETTE.find((s) => s.type === stepType)!;
-      const id = `step_${Date.now()}`;
-      const newNode: Node<StepNodeData> = {
-        id,
-        type: 'stepNode',
-        position: { x: 250 + Math.random() * 200, y: 80 + nodes.length * 120 },
-        data: { label: palette.label, stepType, config: {} },
-      };
-      setNodes((nds) => [...nds, newNode]);
-      setSelectedNode(id);
-    },
-    [nodes.length, setNodes, pushUndo]
-  );
-
-  // Drag-and-drop from palette
-  const onDragOver = useCallback((event: React.DragEvent) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
-  }, []);
-
-  const onDrop = useCallback((event: React.DragEvent) => {
-    event.preventDefault();
-    const stepType = event.dataTransfer.getData('application/workflow-step') as WorkflowStepType;
-    if (!stepType) return;
-    const palette = STEP_PALETTE.find((s) => s.type === stepType);
-    if (!palette) return;
-    pushUndo();
-    const position = screenToFlowPosition({ x: event.clientX, y: event.clientY });
-    const id = `step_${Date.now()}`;
-    const newNode: Node<StepNodeData> = {
-      id, type: 'stepNode', position,
-      data: { label: palette.label, stepType, config: {} },
-    };
-    setNodes((nds) => [...nds, newNode]);
-    setSelectedNode(id);
-  }, [screenToFlowPosition, setNodes, pushUndo]);
-
-  const deleteSelected = useCallback(() => {
-    if (!selectedNode) return;
-    pushUndo();
-    setNodes((nds) => nds.filter((n) => n.id !== selectedNode));
-    setEdges((eds) => eds.filter((e) => e.source !== selectedNode && e.target !== selectedNode));
-    setSelectedNode(null);
-  }, [selectedNode, setNodes, setEdges, pushUndo]);
-
-  const duplicateSelected = useCallback(() => {
-    if (!selectedNode) return;
-    const node = nodes.find(n => n.id === selectedNode);
-    if (!node) return;
-    pushUndo();
-    const id = `step_${Date.now()}`;
+  const addNode = useCallback((stepType: WorkflowStepType) => {
+    const palette = STEP_PALETTE.find(s => s.type === stepType)!;
+    nodeCounter.current++;
+    const id = `step_${nodeCounter.current}_${Date.now()}`;
+    // Calculate good position
+    const viewport = reactFlowInstance.getViewport();
+    const x = (-viewport.x + 400) / viewport.zoom + Math.random() * 100;
+    const y = (-viewport.y + 200) / viewport.zoom + nodes.length * 40;
+    
     const newNode: Node<StepNodeData> = {
       id,
       type: 'stepNode',
-      position: { x: node.position.x + 40, y: node.position.y + 60 },
-      data: { ...node.data as StepNodeData, config: { ...(node.data as StepNodeData).config } },
+      position: { x, y },
+      data: { label: palette.label, stepType, config: {}, description: palette.desc },
     };
     setNodes(nds => [...nds, newNode]);
-    setSelectedNode(id);
-    showToast('success', 'Node duplicated');
-  }, [selectedNode, nodes, setNodes, pushUndo, showToast]);
+    setSelectedNodeId(id);
+    setShowConfig(true);
+    pushHistory();
+  }, [nodes.length, setNodes, pushHistory, reactFlowInstance]);
 
-  // Update selected node data
-  const updateNodeData = useCallback((key: string, value: any) => {
-    if (!selectedNode) return;
+  const deleteSelected = useCallback(() => {
+    if (!selectedNodeId) return;
+    setNodes(nds => nds.filter(n => n.id !== selectedNodeId));
+    setEdges(eds => eds.filter(e => e.source !== selectedNodeId && e.target !== selectedNodeId));
+    setSelectedNodeId(null);
+    setShowConfig(false);
+    pushHistory();
+  }, [selectedNodeId, setNodes, setEdges, pushHistory]);
+
+  const duplicateSelected = useCallback(() => {
+    if (!selectedNodeId) return;
+    const original = nodes.find(n => n.id === selectedNodeId);
+    if (!original) return;
+    nodeCounter.current++;
+    const id = `step_${nodeCounter.current}_${Date.now()}`;
+    const newNode: Node<StepNodeData> = {
+      ...original,
+      id,
+      position: { x: original.position.x + 40, y: original.position.y + 40 },
+      data: { ...original.data as StepNodeData, label: `${(original.data as StepNodeData).label} (copy)` },
+      selected: false,
+    };
+    setNodes(nds => [...nds, newNode]);
+    pushHistory();
+  }, [selectedNodeId, nodes, setNodes, pushHistory]);
+
+  const updateNodeData = useCallback((id: string, updates: Partial<StepNodeData>) => {
     setNodes(nds => nds.map(n => {
-      if (n.id !== selectedNode) return n;
-      const data = n.data as StepNodeData;
-      if (key === 'label') return { ...n, data: { ...data, label: value } };
-      return { ...n, data: { ...data, config: { ...data.config, [key]: value } } };
+      if (n.id !== id) return n;
+      return { ...n, data: { ...n.data, ...updates } as StepNodeData };
     }));
-  }, [selectedNode, setNodes]);
+  }, [setNodes]);
+
+  const selectedNode = useMemo(() => nodes.find(n => n.id === selectedNodeId) || null, [nodes, selectedNodeId]);
 
   const toWorkflowJson = useCallback(() => {
     const steps = nodes.map((node, idx) => {
       const data = node.data as StepNodeData;
-      const outEdges = edges.filter((e) => e.source === node.id);
+      const outEdges = edges.filter(e => e.source === node.id);
       return {
         id: node.id, name: data.label, type: data.stepType, order: idx,
-        config: data.config || {}, next: outEdges.map((e) => e.target), position: node.position,
+        config: data.config || {}, description: data.description || '',
+        next: outEdges.map(e => ({ target: e.target, sourceHandle: e.sourceHandle })),
+        position: node.position,
       };
     });
     return {
-      name: workflowName, steps,
+      name: workflowName,
+      description: workflowDesc,
+      steps,
       graph_data: {
-        nodes: nodes.map((n) => ({ id: n.id, position: n.position, data: n.data })),
+        nodes: nodes.map(n => ({ id: n.id, position: n.position, data: n.data })),
         edges,
       },
     };
-  }, [nodes, edges, workflowName]);
+  }, [nodes, edges, workflowName, workflowDesc]);
 
   const handleSave = useCallback(async () => {
-    if (nodes.length === 0) { showToast('error', 'Add at least one step'); return; }
     setSaving(true);
     try {
-      const json = toWorkflowJson();
-      const url = workflowId ? `/api/v1/workflow/workflows/${workflowId}` : '/api/v1/workflow/workflows';
-      const method = workflowId ? 'PUT' : 'POST';
-      const res = await fetch(url, {
-        method, headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', body: JSON.stringify(json),
-      });
-      if (!res.ok) throw new Error(`Save failed: ${res.status}`);
-      const data = await res.json();
-      if (data.id) setWorkflowId(data.id);
-      showToast('success', workflowId ? 'Workflow updated!' : `Workflow "${workflowName}" saved!`);
-      loadWorkflowsList();
-    } catch (e: any) {
-      showToast('error', e?.message || 'Save failed');
+      await fastapiClient.post('/workflows', toWorkflowJson());
+    } catch (e) {
+      console.error('Save failed:', e);
     } finally {
       setSaving(false);
     }
-  }, [toWorkflowJson, nodes.length, workflowName, workflowId, showToast]);
+  }, [toWorkflowJson]);
 
   const handleRun = useCallback(async () => {
-    if (nodes.length === 0) { showToast('error', 'Add steps before running'); return; }
     setRunning(true);
-    setRunStatus('running');
-    setNodes((nds) => nds.map((n) => ({ ...n, data: { ...n.data, status: 'pending' as const } })));
+    // Set all nodes to running
+    setNodes(nds => nds.map(n => ({ ...n, data: { ...n.data, status: 'running' } as StepNodeData })));
     try {
-      const json = toWorkflowJson();
-      const url = workflowId ? `/api/v1/workflow/workflows/${workflowId}/execute` : '/api/v1/workflows/draft/run';
-      const body = workflowId ? { input: {} } : { inputs: {}, ...json };
-      const res = await fetch(url, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', body: JSON.stringify(body),
-      });
-      if (!res.ok) throw new Error(`Run failed: ${res.status}`);
-      const result = await res.json();
-      setRunStatus(result.status || 'completed');
-      setNodes((nds) => nds.map((n) => ({ ...n, data: { ...n.data, status: 'completed' as const } })));
-      showToast('success', `Workflow ${result.status || 'executed'}!`);
-    } catch (e: any) {
-      setRunStatus('failed');
-      setNodes((nds) => nds.map((n) => ({ ...n, data: { ...n.data, status: 'failed' as const } })));
-      showToast('error', e?.message || 'Run failed');
+      await fastapiClient.post('/workflows/draft/run', { inputs: {}, ...toWorkflowJson() });
+      setNodes(nds => nds.map(n => ({ ...n, data: { ...n.data, status: 'completed' } as StepNodeData })));
+    } catch (e) {
+      console.error('Run failed:', e);
+      setNodes(nds => nds.map(n => ({ ...n, data: { ...n.data, status: 'failed' } as StepNodeData })));
     } finally {
       setRunning(false);
     }
-  }, [toWorkflowJson, nodes.length, workflowId, showToast, setNodes]);
+  }, [toWorkflowJson, setNodes]);
 
-  const handleNew = useCallback(() => {
-    pushUndo();
-    setNodes([]);
-    setEdges([]);
-    setWorkflowId(null);
-    setWorkflowName('Untitled Workflow');
-    setRunStatus(null);
-    setSelectedNode(null);
-  }, [setNodes, setEdges, pushUndo]);
-
-  // Load workflows list
-  const loadWorkflowsList = useCallback(async () => {
-    try {
-      const res = await fetch('/api/v1/workflow/workflows', { credentials: 'include' });
-      if (res.ok) {
-        const data = await res.json();
-        setSavedWorkflows(Array.isArray(data) ? data : data?.workflows || []);
-      }
-    } catch { /* ignore */ }
-  }, []);
-
-  // Load a specific workflow
-  const loadWorkflow = useCallback(async (wf: SavedWorkflow) => {
-    try {
-      const res = await fetch(`/api/v1/workflow/workflows/${wf.id}`, { credentials: 'include' });
-      if (!res.ok) throw new Error('Load failed');
-      const data = await res.json();
-      setWorkflowId(data.id || wf.id);
-      setWorkflowName(data.name || wf.name);
-      setRunStatus(null);
-      if (data.graph_data?.nodes && data.graph_data?.edges) {
-        setNodes(data.graph_data.nodes.map((n: any) => ({ ...n, type: n.type || 'stepNode' })));
-        setEdges(data.graph_data.edges);
-      } else if (data.steps) {
-        const loadedNodes = data.steps.map((s: any, i: number) => ({
-          id: s.id || `step_${i}`,
-          type: 'stepNode',
-          position: s.position || { x: 250, y: 80 + i * 120 },
-          data: { label: s.name, stepType: s.type, config: s.config || {} },
-        }));
-        setNodes(loadedNodes);
-        const loadedEdges: Edge[] = [];
-        data.steps.forEach((s: any) => {
-          (s.next || []).forEach((targetId: string) => {
-            loadedEdges.push({ id: `e-${s.id}-${targetId}`, source: s.id, target: targetId, animated: true, style: { stroke: '#6366f1', strokeWidth: 2 } });
-          });
-        });
-        setEdges(loadedEdges);
-      }
-      setShowLoadPanel(false);
-      showToast('success', `Loaded "${data.name || wf.name}"`);
-    } catch (e: any) {
-      showToast('error', e?.message || 'Failed to load workflow');
-    }
-  }, [setNodes, setEdges, showToast]);
-
-  // Export as JSON
-  const handleExport = useCallback(() => {
-    const json = toWorkflowJson();
-    const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
+  const exportJson = useCallback(() => {
+    const json = JSON.stringify(toWorkflowJson(), null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `${workflowName.replace(/\s+/g, '_')}.json`; a.click();
+    a.href = url;
+    a.download = `${workflowName.replace(/\s+/g, '_').toLowerCase()}.json`;
+    a.click();
     URL.revokeObjectURL(url);
-    showToast('success', 'Workflow exported');
-  }, [toWorkflowJson, workflowName, showToast]);
+  }, [toWorkflowJson, workflowName]);
 
-  // Get selected node data for config panel
-  const selectedNodeData = useMemo(() => {
-    if (!selectedNode) return null;
-    const node = nodes.find(n => n.id === selectedNode);
-    return node ? (node.data as StepNodeData) : null;
-  }, [selectedNode, nodes]);
+  const importJson = useCallback(() => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = async (e: any) => {
+      const file = e.target?.files?.[0];
+      if (!file) return;
+      const text = await file.text();
+      try {
+        const data = JSON.parse(text);
+        if (data.graph_data?.nodes && data.graph_data?.edges) {
+          setNodes(data.graph_data.nodes);
+          setEdges(data.graph_data.edges);
+          if (data.name) setWorkflowName(data.name);
+          if (data.description) setWorkflowDesc(data.description);
+          pushHistory();
+        }
+      } catch { console.error('Invalid workflow JSON'); }
+    };
+    input.click();
+  }, [setNodes, setEdges, pushHistory]);
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: '#0a0e1a' }}>
-      {/* Toast */}
-      {toast && (
-        <div style={{
-          position: 'fixed', top: 16, right: 16, zIndex: 1000,
-          padding: '10px 20px', borderRadius: 8, fontSize: 13, fontWeight: 500,
-          background: toast.type === 'success' ? '#065f46' : '#7f1d1d',
-          color: toast.type === 'success' ? '#6ee7b7' : '#fca5a5',
-          border: `1px solid ${toast.type === 'success' ? '#10b981' : '#ef4444'}`,
-          boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
-        }}>
-          {toast.text}
-        </div>
-      )}
-
-      {/* Top bar */}
+      {/* ── Top Bar ── */}
       <div style={{
-        display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px',
-        background: '#0f172a', borderBottom: '1px solid #1e293b', flexWrap: 'wrap',
+        display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px',
+        background: '#0f172a', borderBottom: '1px solid #1e293b', flexShrink: 0,
       }}>
-        <button onClick={() => navigate('/network/workflows')} style={S.smallBtn()}>
+        <button onClick={() => navigate('/network/workflows')} style={{
+          display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px',
+          background: 'transparent', border: '1px solid #334155', borderRadius: 4,
+          color: '#94a3b8', cursor: 'pointer', fontSize: 12,
+        }}>
           <ArrowLeft size={14} /> Back
         </button>
-        <div style={{ width: 1, height: 24, background: '#334155', margin: '0 4px' }} />
-        <Layout size={18} color="#6366f1" />
-        <input
-          value={workflowName}
-          onChange={(e) => setWorkflowName(e.target.value)}
-          style={{ background: 'transparent', border: 'none', color: '#e2e8f0', fontSize: 15, fontWeight: 600, width: 260, outline: 'none' }}
-        />
-        <div style={{ flex: 1 }} />
-        {/* Run status indicator */}
-        {runStatus && (
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '3px 10px', borderRadius: 12, fontSize: 11, fontWeight: 600, background: `${STATUS_COLORS[runStatus] || '#64748b'}20`, color: STATUS_COLORS[runStatus] || '#64748b', border: `1px solid ${STATUS_COLORS[runStatus] || '#64748b'}40` }}>
-            {runStatus === 'running' ? <Loader size={10} className="spin" /> : runStatus === 'completed' ? <CheckCircle size={10} /> : runStatus === 'failed' ? <XCircle size={10} /> : null}
-            {runStatus}
-          </span>
-        )}
-        {workflowId && <span style={{ color: '#334155', fontSize: 10, fontFamily: 'monospace' }}>ID: {workflowId.substring(0, 8)}</span>}
-        <span style={{ color: '#64748b', fontSize: 11 }}>{nodes.length} steps | {edges.length} connections</span>
-        <div style={{ width: 1, height: 24, background: '#334155', margin: '0 4px' }} />
-        <button onClick={handleUndo} style={S.smallBtn()} title="Undo (Ctrl+Z)"><Undo2 size={14} /></button>
-        <button onClick={handleRedo} style={S.smallBtn()} title="Redo (Ctrl+Y)"><Redo2 size={14} /></button>
-        <div style={{ width: 1, height: 24, background: '#334155', margin: '0 4px' }} />
-        <button onClick={handleNew} style={S.smallBtn()}><Plus size={14} /> New</button>
-        <button onClick={() => { setShowLoadPanel(!showLoadPanel); if (!showLoadPanel) loadWorkflowsList(); }} style={S.smallBtn(showLoadPanel)}>
-          <List size={14} /> Load
+        <Layout size={16} color="#6366f1" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
+          <input value={workflowName} onChange={e => setWorkflowName(e.target.value)}
+            style={{ background: 'transparent', border: 'none', color: '#e2e8f0', fontSize: 15, fontWeight: 600, outline: 'none', width: '100%' }} />
+          <input value={workflowDesc} onChange={e => setWorkflowDesc(e.target.value)} placeholder="Add description..."
+            style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: 11, outline: 'none', width: '100%' }} />
+        </div>
+
+        <span style={{ color: '#475569', fontSize: 11 }}>{nodes.length} steps • {edges.length} connections</span>
+
+        {/* Undo/Redo */}
+        <button onClick={undo} title="Undo" style={{ background: 'none', border: '1px solid #334155', borderRadius: 4, padding: '4px 6px', cursor: 'pointer' }}>
+          <Undo2 size={14} color="#94a3b8" />
         </button>
-        <button onClick={handleExport} style={S.smallBtn()} title="Export JSON"><Download size={14} /></button>
-        <div style={{ width: 1, height: 24, background: '#334155', margin: '0 4px' }} />
-        <button onClick={handleSave} disabled={saving} style={S.topBtn('#3b82f6', saving ? 0.6 : 1)}>
-          <Save size={14} /> {saving ? 'Saving...' : workflowId ? 'Update' : 'Save'}
+        <button onClick={redo} title="Redo" style={{ background: 'none', border: '1px solid #334155', borderRadius: 4, padding: '4px 6px', cursor: 'pointer' }}>
+          <Redo2 size={14} color="#94a3b8" />
         </button>
-        <button onClick={handleRun} disabled={running} style={S.topBtn('#10b981', running ? 0.6 : 1)}>
-          <Play size={14} /> {running ? 'Running...' : 'Run'}
+
+        <div style={{ width: 1, height: 20, background: '#334155' }} />
+
+        {/* Import/Export */}
+        <button onClick={importJson} title="Import JSON" style={{ background: 'none', border: '1px solid #334155', borderRadius: 4, padding: '4px 6px', cursor: 'pointer' }}>
+          <Upload size={14} color="#94a3b8" />
         </button>
-        {selectedNode && (
+        <button onClick={exportJson} title="Export JSON" style={{ background: 'none', border: '1px solid #334155', borderRadius: 4, padding: '4px 6px', cursor: 'pointer' }}>
+          <Download size={14} color="#94a3b8" />
+        </button>
+
+        <div style={{ width: 1, height: 20, background: '#334155' }} />
+
+        {/* Save / Run / Delete */}
+        <button onClick={handleSave} disabled={saving} style={{
+          display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px',
+          background: '#3b82f6', border: 'none', borderRadius: 6, color: 'white',
+          cursor: 'pointer', fontSize: 12, opacity: saving ? 0.6 : 1,
+        }}>
+          <Save size={13} /> {saving ? 'Saving...' : 'Save'}
+        </button>
+        <button onClick={handleRun} disabled={running || nodes.length === 0} style={{
+          display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px',
+          background: '#10b981', border: 'none', borderRadius: 6, color: 'white',
+          cursor: 'pointer', fontSize: 12, opacity: running || nodes.length === 0 ? 0.5 : 1,
+        }}>
+          <Play size={13} /> {running ? 'Running...' : 'Run'}
+        </button>
+        {selectedNodeId && (
           <>
-            <button onClick={duplicateSelected} style={S.topBtn('#6366f1')}><Copy size={14} /> Clone</button>
-            <button onClick={deleteSelected} style={S.topBtn('#ef4444')}><Trash2 size={14} /> Delete</button>
+            <button onClick={duplicateSelected} title="Duplicate" style={{
+              display: 'flex', alignItems: 'center', gap: 4, padding: '6px 10px',
+              background: '#334155', border: 'none', borderRadius: 6, color: '#e2e8f0',
+              cursor: 'pointer', fontSize: 12,
+            }}>
+              <Copy size={13} />
+            </button>
+            <button onClick={deleteSelected} style={{
+              display: 'flex', alignItems: 'center', gap: 4, padding: '6px 10px',
+              background: '#ef4444', border: 'none', borderRadius: 6, color: 'white',
+              cursor: 'pointer', fontSize: 12,
+            }}>
+              <Trash2 size={13} /> Delete
+            </button>
           </>
         )}
       </div>
 
-      {/* Load Panel (dropdown) */}
-      {showLoadPanel && (
+      {/* ── Main Area ── */}
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+        {/* Left: Step Palette */}
         <div style={{
-          position: 'absolute', top: 52, right: 240, zIndex: 50,
-          width: 320, maxHeight: 400, overflowY: 'auto',
-          background: '#1e293b', border: '1px solid #334155', borderRadius: 8,
-          boxShadow: '0 8px 32px rgba(0,0,0,0.5)', padding: 12,
+          width: 200, background: '#0f172a', borderRight: '1px solid #1e293b',
+          padding: '8px', overflowY: 'auto', flexShrink: 0,
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-            <span style={{ color: '#e2e8f0', fontSize: 13, fontWeight: 600 }}>Saved Workflows</span>
-            <button onClick={() => setShowLoadPanel(false)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><X size={14} /></button>
+          <div style={{ color: '#64748b', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8, padding: '0 4px' }}>
+            Add Steps
           </div>
-          {savedWorkflows.length === 0 ? (
-            <div style={{ color: '#64748b', fontSize: 12, padding: '16px 0', textAlign: 'center' }}>No saved workflows found</div>
-          ) : savedWorkflows.map(wf => (
-            <button key={wf.id} onClick={() => loadWorkflow(wf)} style={{
-              display: 'block', width: '100%', padding: '8px 10px', marginBottom: 4,
-              background: '#0f172a', border: '1px solid #334155', borderRadius: 6,
-              color: '#e2e8f0', cursor: 'pointer', fontSize: 12, textAlign: 'left',
-            }}>
-              <div style={{ fontWeight: 500 }}>{wf.name}</div>
-              {wf.created_at && <div style={{ color: '#64748b', fontSize: 10, marginTop: 2 }}>{new Date(wf.created_at).toLocaleDateString()}</div>}
+          {STEP_PALETTE.map(step => (
+            <button
+              key={step.type}
+              onClick={() => addNode(step.type)}
+              title={step.desc}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6, width: '100%',
+                padding: '6px 8px', marginBottom: 2, background: '#1e293b',
+                border: '1px solid transparent', borderLeft: `3px solid ${step.color}`,
+                borderRadius: 5, color: '#cbd5e1', cursor: 'pointer', fontSize: 12,
+                transition: 'all 0.15s', textAlign: 'left',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#334155'; e.currentTarget.style.borderColor = '#475569'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = '#1e293b'; e.currentTarget.style.borderColor = 'transparent'; }}
+            >
+              <span style={{ fontSize: 13, flexShrink: 0 }}>{step.icon}</span>
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{step.label}</span>
             </button>
           ))}
-        </div>
-      )}
-
-      {/* Main area */}
-      <div style={{ flex: 1, display: 'flex', position: 'relative' }}>
-        {/* Left sidebar: step palette */}
-        <div style={{ width: 220, background: '#0f172a', borderRight: '1px solid #1e293b', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
-          <div style={{ padding: '8px 10px', borderBottom: '1px solid #1e293b' }}>
-            <div style={{ position: 'relative' }}>
-              <Search size={13} style={{ position: 'absolute', left: 8, top: 7, color: '#64748b' }} />
-              <input
-                value={paletteSearch}
-                onChange={e => setPaletteSearch(e.target.value)}
-                placeholder="Search steps..."
-                style={{ width: '100%', background: '#1e293b', border: '1px solid #334155', borderRadius: 6, color: '#e2e8f0', padding: '5px 8px 5px 26px', fontSize: 11, outline: 'none', boxSizing: 'border-box' }}
-              />
-            </div>
-          </div>
-          <div style={{ flex: 1, overflowY: 'auto', padding: '6px 10px' }}>
-            {paletteSearch ? (
-              STEP_PALETTE.filter(s => s.label.toLowerCase().includes(paletteSearch.toLowerCase())).map(step => (
-                <div
-                  key={step.type}
-                  draggable
-                  onDragStart={(e) => { e.dataTransfer.setData('application/workflow-step', step.type); e.dataTransfer.effectAllowed = 'move'; }}
-                  onClick={() => addNode(step.type)}
-                  style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 10px', marginBottom: 3, background: '#1e293b', border: '1px solid #334155', borderLeft: `3px solid ${step.color}`, borderRadius: 6, color: '#e2e8f0', cursor: 'grab', fontSize: 12, transition: 'background 0.15s', userSelect: 'none' }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#334155'; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#1e293b'; }}
-                >
-                  <span>{step.icon}</span>
-                  <span>{step.label}</span>
-                </div>
-              ))
-            ) : (
-              PALETTE_CATEGORIES.map(cat => (
-                <div key={cat}>
-                  <button
-                    onClick={() => setExpandedCats(prev => { const n = new Set(prev); n.has(cat) ? n.delete(cat) : n.add(cat); return n; })}
-                    style={{ display: 'flex', alignItems: 'center', gap: 4, width: '100%', padding: '5px 2px', background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}
-                  >
-                    {expandedCats.has(cat) ? <ChevronDown size={11} /> : <ChevronRight size={11} />}
-                    {cat}
-                  </button>
-                  {expandedCats.has(cat) && STEP_PALETTE.filter(s => s.category === cat).map(step => (
-                    <div
-                      key={step.type}
-                      draggable
-                      onDragStart={(e) => { e.dataTransfer.setData('application/workflow-step', step.type); e.dataTransfer.effectAllowed = 'move'; }}
-                      onClick={() => addNode(step.type)}
-                      style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', marginBottom: 3, background: '#1e293b', border: '1px solid #334155', borderLeft: `3px solid ${step.color}`, borderRadius: 6, color: '#e2e8f0', cursor: 'grab', fontSize: 12, transition: 'background 0.15s', userSelect: 'none' }}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#334155'; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#1e293b'; }}
-                    >
-                      <span>{step.icon}</span>
-                      <span>{step.label}</span>
-                    </div>
-                  ))}
-                </div>
-              ))
-            )}
-            <div style={{ color: '#475569', fontSize: 10, marginTop: 10, padding: '6px 4px', borderTop: '1px solid #1e293b', lineHeight: 1.5 }}>
-              Drag or click to add. Connect by dragging handles. Del to remove. Ctrl+Z undo. Ctrl+S save.
-            </div>
+          <div style={{ color: '#475569', fontSize: 10, marginTop: 12, padding: '8px 4px', borderTop: '1px solid #1e293b', lineHeight: 1.4 }}>
+            Click to add. Drag nodes to position. Connect handles to wire steps.
           </div>
         </div>
 
-        {/* Canvas */}
-        <div style={{ flex: 1 }} ref={reactFlowWrapper} onDragOver={onDragOver} onDrop={onDrop}>
+        {/* Center: Canvas */}
+        <div style={{ flex: 1 }}>
           <ReactFlow
             nodes={nodes} edges={edges}
             onNodesChange={onNodesChange} onEdgesChange={onEdgesChange}
-            onConnect={onConnect} nodeTypes={nodeTypes}
-            onNodeClick={(_, node) => { setSelectedNode(node.id); setShowConfigPanel(true); }}
-            onPaneClick={() => setSelectedNode(null)}
-            fitView style={{ background: '#0a0e1a' }}
+            onConnect={onConnect}
+            nodeTypes={nodeTypes}
+            onNodeClick={(_, node) => { setSelectedNodeId(node.id); setShowConfig(true); }}
+            onNodeDoubleClick={(_, node) => { setSelectedNodeId(node.id); setShowConfig(true); }}
+            onPaneClick={() => { setSelectedNodeId(null); setShowConfig(false); }}
+            fitView
+            style={{ background: '#0a0e1a' }}
             defaultEdgeOptions={{ animated: true, style: { stroke: '#6366f1', strokeWidth: 2 } }}
+            snapToGrid snapGrid={[15, 15]}
           >
             <Background color="#1e293b" gap={20} />
             <Controls style={{ background: '#1e293b', borderColor: '#334155', borderRadius: 8 }} />
-            <MiniMap
-              style={{ background: '#0f172a', border: '1px solid #334155', borderRadius: 8 }}
-              nodeColor={(n: Node) => {
-                const data = n.data as StepNodeData;
-                return STEP_COLORS[data?.stepType] || '#6366f1';
-              }}
-            />
+            <MiniMap style={{ background: '#0f172a', border: '1px solid #334155', borderRadius: 8 }}
+              nodeColor={(n: Node) => COLORS[(n.data as StepNodeData)?.stepType] || '#6366f1'} />
             {nodes.length === 0 && (
               <Panel position="top-center">
                 <div style={{
                   background: '#1e293b', border: '1px solid #334155', borderRadius: 12,
-                  padding: '24px 32px', color: '#94a3b8', fontSize: 14, textAlign: 'center', marginTop: 100,
+                  padding: '24px 32px', color: '#94a3b8', fontSize: 14, textAlign: 'center',
+                  marginTop: 100, maxWidth: 400,
                 }}>
-                  <Layout size={40} color="#6366f1" style={{ marginBottom: 12 }} />
-                  <div style={{ fontWeight: 700, color: '#e2e8f0', marginBottom: 6, fontSize: 18 }}>Visual Workflow Builder</div>
-                  <div style={{ marginBottom: 12 }}>Click steps from the left panel to build your workflow</div>
-                  <div style={{ fontSize: 11, color: '#475569' }}>Ctrl+S to save | Ctrl+Z to undo | Del to delete selected</div>
+                  <Zap size={36} color="#6366f1" style={{ marginBottom: 8 }} />
+                  <div style={{ fontWeight: 700, color: '#e2e8f0', fontSize: 18, marginBottom: 8 }}>
+                    Visual Workflow Builder
+                  </div>
+                  <div style={{ lineHeight: 1.5, marginBottom: 16 }}>
+                    Build powerful automations by connecting steps visually.
+                    Click steps from the left panel to get started.
+                  </div>
+                  <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <button onClick={() => addNode('webhook_trigger')} style={{
+                      padding: '6px 14px', background: '#f97316', border: 'none',
+                      borderRadius: 6, color: 'white', fontSize: 12, cursor: 'pointer',
+                    }}>
+                      🔔 Start with Trigger
+                    </button>
+                    <button onClick={() => addNode('llm_completion')} style={{
+                      padding: '6px 14px', background: '#8b5cf6', border: 'none',
+                      borderRadius: 6, color: 'white', fontSize: 12, cursor: 'pointer',
+                    }}>
+                      🧠 Start with LLM
+                    </button>
+                  </div>
                 </div>
               </Panel>
             )}
           </ReactFlow>
         </div>
 
-        {/* Right sidebar: Node Config Panel */}
-        {showConfigPanel && selectedNodeData && (
-          <div style={{
-            width: 300, background: '#0f172a', borderLeft: '1px solid #1e293b',
-            padding: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column',
-          }}>
-            {/* Config Header */}
-            <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '10px 14px', borderBottom: '1px solid #1e293b',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <Settings size={14} color="#6366f1" />
-                <span style={{ color: '#e2e8f0', fontSize: 13, fontWeight: 600 }}>Configure Step</span>
-              </div>
-              <button onClick={() => setShowConfigPanel(false)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}>
-                <X size={14} />
-              </button>
-            </div>
-
-            <div style={{ padding: 14 }}>
-              {/* Step Type Badge */}
-              <div style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                padding: '4px 10px', borderRadius: 20, marginBottom: 14,
-                background: `${STEP_COLORS[selectedNodeData.stepType]}20`,
-                color: STEP_COLORS[selectedNodeData.stepType],
-                fontSize: 11, fontWeight: 600, textTransform: 'uppercase',
-              }}>
-                {STEP_ICONS[selectedNodeData.stepType]} {selectedNodeData.stepType.replace(/_/g, ' ')}
-              </div>
-
-              {/* Label */}
-              <div style={{ marginBottom: 14 }}>
-                <label style={{ display: 'block', fontSize: 11, color: '#94a3b8', fontWeight: 600, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
-                  Label
-                </label>
-                <input
-                  value={selectedNodeData.label}
-                  onChange={e => updateNodeData('label', e.target.value)}
-                  style={S.cfgInput}
-                />
-              </div>
-
-              {/* Config Fields */}
-              {STEP_CONFIG_FIELDS[selectedNodeData.stepType]?.map(field => (
-                <div key={field.key} style={{ marginBottom: 12 }}>
-                  <label style={{ display: 'block', fontSize: 11, color: '#94a3b8', fontWeight: 600, marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
-                    {field.label}
-                  </label>
-                  {field.type === 'text' && (
-                    <input
-                      value={selectedNodeData.config[field.key] || ''}
-                      onChange={e => updateNodeData(field.key, e.target.value)}
-                      style={S.cfgInput}
-                      placeholder={field.label}
-                    />
-                  )}
-                  {field.type === 'number' && (
-                    <input
-                      type="number"
-                      value={selectedNodeData.config[field.key] || ''}
-                      onChange={e => updateNodeData(field.key, e.target.value ? Number(e.target.value) : '')}
-                      style={S.cfgInput}
-                      placeholder="0"
-                    />
-                  )}
-                  {field.type === 'textarea' && (
-                    <textarea
-                      value={selectedNodeData.config[field.key] || ''}
-                      onChange={e => updateNodeData(field.key, e.target.value)}
-                      style={S.cfgTextarea}
-                      placeholder={field.label}
-                    />
-                  )}
-                  {field.type === 'select' && (
-                    <select
-                      value={selectedNodeData.config[field.key] || ''}
-                      onChange={e => updateNodeData(field.key, e.target.value)}
-                      style={S.cfgSelect}
-                    >
-                      <option value="">Select...</option>
-                      {field.options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                    </select>
-                  )}
-                </div>
-              ))}
-
-              {/* Node ID */}
-              <div style={{ marginTop: 16, padding: '8px 0', borderTop: '1px solid #1e293b' }}>
-                <div style={{ fontSize: 10, color: '#475569' }}>Node ID: {selectedNode}</div>
-              </div>
-            </div>
-          </div>
+        {/* Right: Config Panel */}
+        {showConfig && selectedNode && (
+          <ConfigPanel
+            node={selectedNode}
+            onUpdate={updateNodeData}
+            onClose={() => setShowConfig(false)}
+          />
         )}
       </div>
-      {/* CSS Animations */}
-      <style>{`
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .spin { animation: spin 1s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-      `}</style>
     </div>
   );
 }
 
-// ── Main Page Export (wrapped in ReactFlowProvider for drag-drop) ──
+// ── Page Wrapper ──
 export default function VisualWorkflowPage() {
   return (
     <ReactFlowProvider>
