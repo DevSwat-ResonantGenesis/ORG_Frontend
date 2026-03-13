@@ -393,8 +393,6 @@ const router = createBrowserRouter([
     element: withPublicShell(<CommunityPage />)
   },
   {
-  },
-  {
     path: '/contact',
     element: withPublicShell(<ContactPage />)
   },
