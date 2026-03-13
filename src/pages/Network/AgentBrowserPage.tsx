@@ -1,211 +1,45 @@
 /**
  * Agent Browser Page
  * Browse and execute agents on the decentralized network
+ * Redesigned: dashboardicons.com/community grid + haveibeenpwned detail card
  */
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Bot, 
-  Search, 
-  Play, 
-  Shield, 
-  Clock, 
-  Hash,
-  CheckCircle,
-  XCircle,
-  Loader2,
-  ExternalLink
+  Bot, Search, Play, Shield, Clock, Hash,
+  CheckCircle, XCircle, Loader2, ExternalLink,
+  ArrowLeft, Copy, Zap, Code, Wrench, Database, Settings,
 } from 'lucide-react';
 import { isAuthenticated } from '../../utils/auth-cookies';
 import { 
-  getNodeStatus, 
-  searchAgents, 
-  executeAgent,
-  NodeStatus,
-  Agent,
-  ExecuteResponse
+  getNodeStatus, searchAgents, executeAgent,
+  NodeStatus, Agent, ExecuteResponse
 } from '../../services/nodeApi';
+import styles from './NetworkGrid.module.css';
 
-// Styles
-const styles = {
-  container: {
-    padding: '0.5rem 1rem',
-    maxWidth: '1400px',
-    margin: '0 auto',
-    height: '100%',
-    maxHeight: 'calc(100vh - 56px)',
-    overflowY: 'auto' as const,
-    overflowX: 'hidden' as const,
-  },
-  header: {
-    marginBottom: '5px',
-  },
-  title: {
-    fontSize: '1.1rem',
-    fontWeight: '600',
-    color: '#fff',
-    marginBottom: '0',
-    display: 'inline',
-  },
-  subtitle: {
-    color: '#666',
-    fontSize: '0.7rem',
-    display: 'inline',
-    marginLeft: '0.5rem',
-  },
-  statusBar: {
-    display: 'flex',
-    gap: '0.5rem',
-    padding: '0.4rem 0.6rem',
-    background: 'rgba(255,255,255,0.03)',
-    borderRadius: '6px',
-    marginBottom: '0.5rem',
-  },
-  statusItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.25rem',
-    color: '#888',
-    fontSize: '0.7rem',
-  },
-  statusDot: (active: boolean) => ({
-    width: '6px',
-    height: '6px',
-    borderRadius: '50%',
-    background: active ? '#10b981' : '#ef4444',
-  }),
-  searchBar: {
-    display: 'inline-flex',
-    gap: '1rem',
-    marginBottom: '0.5rem',
-    alignItems: 'center',
-  },
-  searchInput: {
-    width: '150px',
-    padding: '0.15rem 0',
-    background: 'transparent',
-    border: 'none',
-    borderBottom: '1px solid rgba(255,255,255,0.15)',
-    color: '#888',
-    fontSize: '0.7rem',
-    outline: 'none',
-  },
-  filterSelect: {
-    padding: '0.15rem 0',
-    background: 'transparent',
-    border: 'none',
-    borderBottom: '1px solid rgba(255,255,255,0.15)',
-    color: '#888',
-    fontSize: '0.7rem',
-    outline: 'none',
-    cursor: 'pointer',
-  },
-  agentGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-    gap: '1.5rem',
-  },
-  agentCard: {
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '16px',
-    padding: '1.5rem',
-    transition: 'all 0.2s',
-  },
-  agentHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: '1rem',
-  },
-  agentName: {
-    fontSize: '1.25rem',
-    fontWeight: '600',
-    color: '#fff',
-  },
-  agentVersion: {
-    fontSize: '0.75rem',
-    color: '#888',
-    marginTop: '0.25rem',
-  },
-  trustBadge: (tier: number) => ({
-    padding: '0.25rem 0.5rem',
-    borderRadius: '4px',
-    fontSize: '0.75rem',
-    fontWeight: '500',
-    background: tier >= 3 ? 'rgba(16,185,129,0.2)' : tier >= 2 ? 'rgba(59,130,246,0.2)' : 'rgba(251,191,36,0.2)',
-    color: tier >= 3 ? '#10b981' : tier >= 2 ? '#3b82f6' : '#fbbf24',
-  }),
-  agentDescription: {
-    color: '#aaa',
-    fontSize: '0.875rem',
-    marginBottom: '1rem',
-    lineHeight: '1.5',
-  },
-  agentMeta: {
-    display: 'flex',
-    gap: '1rem',
-    marginBottom: '1rem',
-    flexWrap: 'wrap' as const,
-  },
-  metaItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.25rem',
-    color: '#888',
-    fontSize: '0.75rem',
-  },
-  executeButton: {
-    width: '100%',
-    padding: '0.75rem',
-    background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-    border: 'none',
-    borderRadius: '8px',
-    color: '#fff',
-    fontWeight: '600',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '0.5rem',
-  },
-  executionPanel: {
-    marginTop: '1rem',
-    padding: '1rem',
-    background: 'rgba(0,0,0,0.3)',
-    borderRadius: '8px',
-  },
-  inputArea: {
-    width: '100%',
-    padding: '0.75rem',
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.2)',
-    borderRadius: '8px',
-    color: '#fff',
-    fontFamily: 'monospace',
-    fontSize: '0.875rem',
-    marginBottom: '0.75rem',
-    minHeight: '80px',
-    resize: 'vertical' as const,
-  },
-  resultBox: {
-    padding: '1rem',
-    background: 'rgba(0,0,0,0.5)',
-    borderRadius: '8px',
-    fontFamily: 'monospace',
-    fontSize: '0.75rem',
-    color: '#10b981',
-    whiteSpace: 'pre-wrap' as const,
-    maxHeight: '200px',
-    overflow: 'auto',
-  },
-  emptyState: {
-    textAlign: 'center' as const,
-    padding: '4rem 2rem',
-    color: '#888',
-  },
-};
+const CATEGORIES = [
+  { id: 'all', label: 'All' },
+  { id: 'utility', label: 'Utility' },
+  { id: 'analysis', label: 'Analysis' },
+  { id: 'automation', label: 'Automation' },
+  { id: 'productivity', label: 'Productivity' },
+  { id: 'developer-tools', label: 'Dev Tools' },
+  { id: 'data', label: 'Data' },
+  { id: 'security', label: 'Security' },
+];
+
+function getCategoryIcon(cat: string) {
+  switch (cat) {
+    case 'utility': return <Wrench size={36} />;
+    case 'analysis': return <Zap size={36} />;
+    case 'automation': return <Settings size={36} />;
+    case 'developer-tools': return <Code size={36} />;
+    case 'data': return <Database size={36} />;
+    case 'security': return <Shield size={36} />;
+    default: return <Bot size={36} />;
+  }
+}
 
 // Published agents (from Base Sepolia chain)
 const DEMO_AGENTS: Agent[] = [
@@ -239,27 +73,28 @@ export default function AgentBrowserPage() {
   const [agents, setAgents] = useState<Agent[]>(DEMO_AGENTS);
   const [searchQuery, setSearchQuery] = useState('');
   const [category, setCategory] = useState('all');
+  const [sortBy, setSortBy] = useState<'newest' | 'popular' | 'name'>('popular');
   const [loading, setLoading] = useState(true);
-  const [executing, setExecuting] = useState<string | null>(null);
-  const [executionInput, setExecutionInput] = useState<Record<string, string>>({});
-  const [executionResults, setExecutionResults] = useState<Record<string, ExecuteResponse>>({});
 
-  // Redirect to signup if not logged in
+  // Detail modal
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [executing, setExecuting] = useState(false);
+  const [executionInput, setExecutionInput] = useState('');
+  const [executionResult, setExecutionResult] = useState<ExecuteResponse | null>(null);
+  const [copied, setCopied] = useState(false);
+
   useEffect(() => {
     if (!isAuthenticated()) {
       navigate('/signup', { replace: true });
     }
   }, [navigate]);
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useEffect(() => { loadData(); }, []);
 
   async function loadData() {
     try {
       const nodeStatus = await getNodeStatus();
       setStatus(nodeStatus);
-      
       const { agents: fetchedAgents } = await searchAgents();
       if (fetchedAgents.length > 0) {
         setAgents(fetchedAgents);
@@ -271,228 +106,256 @@ export default function AgentBrowserPage() {
     }
   }
 
-  async function handleExecute(agent: Agent) {
-    setExecuting(agent.manifest_hash);
-    
+  async function handleExecute() {
+    if (!selectedAgent) return;
+    setExecuting(true);
+    setExecutionResult(null);
     try {
-      const rawInput = executionInput[agent.manifest_hash] || '';
-      
-      // Parse input - try JSON first, otherwise wrap as message
+      const rawInput = executionInput || '';
       let inputData: Record<string, unknown>;
       if (!rawInput.trim()) {
-        // Empty input - use default
         inputData = { text: "hello", message: "hello" };
       } else {
-        try {
-          // Try to parse as JSON
-          inputData = JSON.parse(rawInput);
-        } catch {
-          // Not valid JSON - wrap as text/content/message for compatibility
-          const textValue = rawInput.trim();
-          inputData = { text: textValue, content: textValue, message: textValue };
-        }
+        try { inputData = JSON.parse(rawInput); }
+        catch { const t = rawInput.trim(); inputData = { text: t, content: t, message: t }; }
       }
-      
       const result = await executeAgent({
-        manifest_hash: agent.manifest_hash,
+        manifest_hash: selectedAgent.manifest_hash,
         input_data: inputData,
         user_dsid: 'dsid-u-demo000000000000-0000',
         trust_tier: 1,
       });
-      
-      setExecutionResults(prev => ({
-        ...prev,
-        [agent.manifest_hash]: result,
-      }));
+      setExecutionResult(result);
     } catch (error) {
-      setExecutionResults(prev => ({
-        ...prev,
-        [agent.manifest_hash]: {
-          success: false,
-          output: null,
-          execution_hash: '',
-          tokens_used: 0,
-          duration_ms: 0,
-          governance_decision: 'error',
-          error: String(error),
-        },
-      }));
+      setExecutionResult({
+        success: false, output: null, execution_hash: '',
+        tokens_used: 0, duration_ms: 0, governance_decision: 'error',
+        error: String(error),
+      });
     } finally {
-      setExecuting(null);
+      setExecuting(false);
     }
   }
 
-  const filteredAgents = agents.filter(agent => {
+  function copyHash(hash: string) {
+    navigator.clipboard.writeText(hash);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  function closeDetail() {
+    setSelectedAgent(null);
+    setExecutionResult(null);
+    setExecutionInput('');
+  }
+
+  // Filter and sort
+  const filtered = agents.filter(a => {
+    if (category !== 'all' && a.category !== category) return false;
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      const matchesName = agent.name?.toLowerCase().includes(q);
-      const matchesDesc = agent.description?.toLowerCase().includes(q);
-      const matchesHash = agent.manifest_hash?.toLowerCase().includes(q);
-      if (!matchesName && !matchesDesc && !matchesHash) return false;
-    }
-    if (category !== 'all' && agent.category !== category) {
-      return false;
+      return a.name?.toLowerCase().includes(q) || a.description?.toLowerCase().includes(q) || a.manifest_hash?.toLowerCase().includes(q);
     }
     return true;
   });
 
+  const sorted = [...filtered].sort((a, b) => {
+    if (sortBy === 'popular') return (b.execution_count || 0) - (a.execution_count || 0);
+    if (sortBy === 'name') return (a.name || '').localeCompare(b.name || '');
+    return 0; // newest - keep order
+  });
+
   return (
-    <div style={styles.container}>
-      {/* Header */}
-      <div style={styles.header}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div>
-            <h1 style={styles.title}>Agent Browser</h1>
-            <p style={styles.subtitle}>
-              Discover and execute agents on the ResonantGenesis decentralized network
-            </p>
-          </div>
-          
-        </div>
+    <div className={styles.page}>
+      {/* Hero */}
+      <div className={styles.hero}>
+        <h1 className={styles.heroTitle}>Agent Browser</h1>
+        <p className={styles.heroSub}>
+          Discover and execute agents on the ResonantGenesis decentralized network
+        </p>
       </div>
 
-      {/* Status Bar */}
-      <div style={styles.statusBar}>
-        <div style={styles.statusItem}>
-          <div style={styles.statusDot(status?.running || false)} />
+      {/* Status bar */}
+      <div className={styles.statusBar}>
+        <div className={styles.statusItem}>
+          <span className={`${styles.statusDot} ${status?.running ? styles.statusDotOnline : styles.statusDotOffline}`} />
           Node: {status?.running ? 'Online' : 'Offline'}
         </div>
-        <div style={styles.statusItem}>
-          <div style={styles.statusDot(status?.runtime_active || false)} />
+        <span className={styles.statusSep}>|</span>
+        <div className={styles.statusItem}>
+          <span className={`${styles.statusDot} ${status?.runtime_active ? styles.statusDotOnline : styles.statusDotOffline}`} />
           Runtime: {status?.runtime_active ? 'Active' : 'Inactive'}
         </div>
-        <div style={styles.statusItem}>
-          <div style={styles.statusDot(status?.chain_connected || false)} />
+        <span className={styles.statusSep}>|</span>
+        <div className={styles.statusItem}>
+          <span className={`${styles.statusDot} ${status?.chain_connected ? styles.statusDotOnline : styles.statusDotOffline}`} />
           Chain: {status?.chain_connected ? 'Connected' : 'Offline'}
         </div>
-        <div style={styles.statusItem}>
-          Mode: {status?.mode || 'Unknown'}
-        </div>
       </div>
 
-      {/* Search Bar */}
-      <div style={styles.searchBar}>
+      {/* Search */}
+      <div className={styles.searchWrap}>
+        <div className={styles.searchIcon}>
+          <Search size={18} />
+        </div>
         <input
+          className={styles.searchInput}
           type="text"
-          placeholder="Search agents..."
-          style={styles.searchInput}
+          placeholder="Search agents by name, description, or hash..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={e => setSearchQuery(e.target.value)}
         />
-        <select 
-          style={styles.filterSelect}
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-        >
-          <option value="all">All Categories</option>
-          <option value="utility">Utility</option>
-          <option value="analysis">Analysis</option>
-          <option value="automation">Automation</option>
-        </select>
       </div>
 
-      {/* Agent Grid */}
-      {loading ? (
-        <div style={styles.emptyState}>
-          <Loader2 size={48} style={{ animation: 'spin 1s linear infinite' }} />
-          <p>Loading agents...</p>
+      {/* Category pills */}
+      <div className={styles.pills}>
+        {CATEGORIES.map(c => (
+          <button
+            key={c.id}
+            className={`${styles.pill} ${category === c.id ? styles.pillActive : ''}`}
+            onClick={() => setCategory(c.id)}
+          >
+            {c.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Sort bar */}
+      <div className={styles.sortBar}>
+        <span className={styles.sortLabel}>{sorted.length} agent{sorted.length !== 1 ? 's' : ''}</span>
+        <div className={styles.sortBtns}>
+          {(['popular', 'newest', 'name'] as const).map(s => (
+            <button key={s} className={`${styles.sortBtn} ${sortBy === s ? styles.sortBtnActive : ''}`} onClick={() => setSortBy(s)}>
+              {s.charAt(0).toUpperCase() + s.slice(1)}
+            </button>
+          ))}
         </div>
-      ) : filteredAgents.length === 0 ? (
-        <div style={styles.emptyState}>
-          <Bot size={48} />
-          <p>No agents found</p>
+      </div>
+
+      {/* Grid */}
+      {loading ? (
+        <div className={styles.loading}><div className={styles.spinner} />Loading agents...</div>
+      ) : sorted.length === 0 ? (
+        <div className={styles.emptyState}>
+          <Bot size={40} style={{ marginBottom: 12, opacity: 0.4 }} />
+          <p>No agents found. Try adjusting your filters.</p>
         </div>
       ) : (
-        <div style={styles.agentGrid}>
-          {filteredAgents.map(agent => (
-            <div key={agent.manifest_hash} style={styles.agentCard}>
-              <div style={styles.agentHeader}>
-                <div>
-                  <div style={styles.agentName}>{agent.name}</div>
-                  <div style={styles.agentVersion}>v{agent.version}</div>
-                </div>
-                <div style={styles.trustBadge(agent.trust_tier)}>
-                  <Shield size={12} /> T{agent.trust_tier}
-                </div>
+        <div className={styles.iconGrid}>
+          {sorted.map(agent => (
+            <div key={agent.manifest_hash} className={styles.iconCard} onClick={() => setSelectedAgent(agent)}>
+              <span className={`${styles.cardBadge} ${agent.status === 'Active' ? styles.badgeActive : styles.badgeTrust}`}>
+                {agent.status === 'Active' ? 'Active' : agent.status}
+              </span>
+              <div className={styles.cardIcon}>
+                {getCategoryIcon(agent.category)}
               </div>
-              
-              <p style={styles.agentDescription}>{agent.description}</p>
-              
-              <div style={styles.agentMeta}>
-                <span style={styles.metaItem}>
-                  <Hash size={12} /> {agent.manifest_hash.slice(0, 10)}...
-                </span>
-                <span style={styles.metaItem}>
-                  <Clock size={12} /> {agent.execution_count} runs
-                </span>
-                <span style={styles.metaItem}>
-                  {agent.status === 'Active' ? (
-                    <CheckCircle size={12} color="#10b981" />
-                  ) : (
-                    <XCircle size={12} color="#ef4444" />
-                  )}
-                  {agent.status}
-                </span>
-              </div>
-
-              {/* Execution Panel */}
-              <div style={styles.executionPanel}>
-                <textarea
-                  style={styles.inputArea}
-                  placeholder='Enter text or JSON, e.g. "hello" or {"message": "hello"}'
-                  value={executionInput[agent.manifest_hash] || ''}
-                  onChange={(e) => setExecutionInput(prev => ({
-                    ...prev,
-                    [agent.manifest_hash]: e.target.value,
-                  }))}
-                />
-                
-                <button
-                  style={styles.executeButton}
-                  onClick={() => handleExecute(agent)}
-                  disabled={executing === agent.manifest_hash}
-                >
-                  {executing === agent.manifest_hash ? (
-                    <>
-                      <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
-                      Executing...
-                    </>
-                  ) : (
-                    <>
-                      <Play size={16} />
-                      Execute Agent
-                    </>
-                  )}
-                </button>
-
-                {executionResults[agent.manifest_hash] && (
-                  <div style={{ ...styles.resultBox, marginTop: '0.75rem' }}>
-                    {executionResults[agent.manifest_hash].success ? (
-                      JSON.stringify(executionResults[agent.manifest_hash].output, null, 2)
-                    ) : (
-                      <span style={{ color: '#ef4444' }}>
-                        Error: {executionResults[agent.manifest_hash].error}
-                      </span>
-                    )}
-                  </div>
-                )}
-              </div>
+              <div className={styles.cardName}>{agent.name}</div>
+              <div className={styles.cardMeta}>v{agent.version} &middot; T{agent.trust_tier}</div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Minimal Footer */}
-      <div style={{ marginTop: '1rem', padding: '6px 0', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <a 
-          href="https://sepolia.basescan.org/address/0x10E3079926f6C5790228d0e5f164E506AE96F3Ea"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: '#666', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
-        >
+      {/* Footer */}
+      <div className={styles.footer}>
+        <a href="https://sepolia.basescan.org/address/0x10E3079926f6C5790228d0e5f164E506AE96F3Ea" target="_blank" rel="noopener noreferrer">
           BaseScan <ExternalLink size={10} />
         </a>
       </div>
+
+      {/* Detail modal */}
+      {selectedAgent && (
+        <div className={styles.overlay} onClick={closeDetail}>
+          <div className={styles.detailPanel} onClick={e => e.stopPropagation()}>
+            <button className={styles.detailBack} onClick={closeDetail}>
+              <ArrowLeft size={14} /> Back to browser
+            </button>
+
+            <div className={styles.detailHeader}>
+              <div className={styles.detailIcon}>
+                {getCategoryIcon(selectedAgent.category)}
+              </div>
+              <div>
+                <h2 className={styles.detailTitle}>{selectedAgent.name}</h2>
+                <div className={styles.detailMeta}>
+                  v{selectedAgent.version} &middot; {selectedAgent.category} &middot; Trust Tier {selectedAgent.trust_tier}
+                </div>
+              </div>
+            </div>
+
+            {/* Stat chips */}
+            <div className={styles.statChips}>
+              <div className={styles.statChip}>
+                <Clock size={14} />
+                <span className={styles.statChipValue}>{selectedAgent.execution_count || 0}</span> runs
+              </div>
+              <div className={styles.statChip}>
+                <Shield size={14} />
+                Trust <span className={styles.statChipValue}>T{selectedAgent.trust_tier}</span>
+              </div>
+              <div className={styles.statChip}>
+                {selectedAgent.status === 'Active' ? <CheckCircle size={14} color="#22c55e" /> : <XCircle size={14} color="#ef4444" />}
+                <span className={styles.statChipValue}>{selectedAgent.status}</span>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className={styles.detailSection}>
+              <h3 className={styles.detailSectionTitle}>About this agent</h3>
+              <p className={styles.detailDesc}>{selectedAgent.description}</p>
+            </div>
+
+            {/* Manifest hash */}
+            <div className={styles.detailSection}>
+              <h3 className={styles.detailSectionTitle}>Manifest Hash</h3>
+              <div className={styles.hashBlock}>
+                <code>{selectedAgent.manifest_hash.slice(0, 24)}...{selectedAgent.manifest_hash.slice(-8)}</code>
+                <button className={styles.copyBtn} onClick={() => copyHash(selectedAgent.manifest_hash)}>
+                  {copied ? <CheckCircle size={14} color="#22c55e" /> : <Copy size={14} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Tags */}
+            {selectedAgent.tags && selectedAgent.tags.length > 0 && (
+              <div className={styles.detailSection}>
+                <h3 className={styles.detailSectionTitle}>Tags</h3>
+                <div className={styles.tagList}>
+                  {selectedAgent.tags.map((tag, i) => <span key={i} className={styles.tag}>{tag}</span>)}
+                </div>
+              </div>
+            )}
+
+            {/* Execute */}
+            <div className={styles.executeSection}>
+              <h3 className={styles.detailSectionTitle} style={{ borderBottom: 'none', paddingBottom: 0 }}>Execute Agent</h3>
+              <textarea
+                className={styles.executeTextarea}
+                placeholder='Enter text or JSON, e.g. "hello" or {"message": "hello"}'
+                value={executionInput}
+                onChange={e => setExecutionInput(e.target.value)}
+              />
+              <button className={styles.btnPrimary} onClick={handleExecute} disabled={executing}>
+                {executing ? (
+                  <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Executing...</>
+                ) : (
+                  <><Play size={16} /> Execute Agent</>
+                )}
+              </button>
+
+              {executionResult && (
+                <div className={`${styles.resultBox} ${!executionResult.success ? styles.resultError : ''}`}>
+                  {executionResult.success
+                    ? JSON.stringify(executionResult.output, null, 2)
+                    : `Error: ${executionResult.error}`
+                  }
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
