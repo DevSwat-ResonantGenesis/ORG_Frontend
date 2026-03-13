@@ -143,7 +143,15 @@ export default function WalletPage() {
         setWallet(walletRes.value.data);
         setWalletExists(true);
       } else {
-        setWalletExists(false);
+        // Auto-create wallet if it doesn't exist
+        try {
+          const createRes = await fastapiClient.post('/crypto/wallet');
+          setWallet(createRes.data);
+          setWalletExists(true);
+        } catch (createErr) {
+          console.error('Auto-create wallet failed:', createErr);
+          setWalletExists(false);
+        }
       }
 
       if (balanceRes.status === 'fulfilled') setBalance(balanceRes.value.data);
