@@ -5,7 +5,6 @@ import { canAccess, type Role } from '../../utils/permissions';
 import logger from '../../utils/logger';
 import {
   browseMarketplaceItems,
-  getMarketplaceItem,
   installItem,
   purchaseItem,
   listInstallations,
@@ -15,8 +14,6 @@ import {
   getUserDashboard,
   getExecutionLedger,
   listNFT,
-  purchaseNFT,
-  rentNFT,
   type MarketplaceItem,
   type MarketplaceItemType,
   type MarketplaceInstallation,
@@ -24,13 +21,58 @@ import {
   type MarketTrends,
   type UserDashboard,
   type ExecutionLedgerEntry,
-  type NFTListing,
 } from '../../api/marketplace';
-import { Button } from '../../components/ui';
 import { useToastContext } from '../../context/ToastContext';
 import styles from './MarketplacePage.module.css';
 
-type MarketplaceTab = 'browse' | 'dashboard' | 'trends' | 'ledger';
+type Tab = 'browse' | 'dashboard' | 'trends' | 'ledger';
+
+const CATEGORIES: { label: string; value: MarketplaceItemType | 'all' }[] = [
+  { label: 'All', value: 'all' },
+  { label: 'Agents', value: 'agent' },
+  { label: 'Plugins', value: 'plugin' },
+  { label: 'Templates', value: 'template' },
+  { label: 'Workflows', value: 'workflow' },
+  { label: 'Integrations', value: 'integration' },
+];
+
+const TypeIcon: React.FC<{ type: string; size?: number }> = ({ type, size = 24 }) => {
+  const s = size;
+  switch (type) {
+    case 'agent': return (
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="8" r="5"/><path d="M3 21v-2a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v2"/>
+      </svg>
+    );
+    case 'plugin': return (
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2v6m0 12v2M4.93 4.93l4.24 4.24m5.66 5.66l4.24 4.24M2 12h6m8 0h6M4.93 19.07l4.24-4.24m5.66-5.66l4.24-4.24"/>
+      </svg>
+    );
+    case 'template': return (
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+      </svg>
+    );
+    case 'workflow': return (
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </svg>
+    );
+    case 'integration': return (
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+      </svg>
+    );
+    default: return (
+      <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+      </svg>
+    );
+  }
+};
 
 const MarketplacePage: React.FC = () => {
   const navigate = useNavigate();
@@ -38,168 +80,155 @@ const MarketplacePage: React.FC = () => {
   const userRole = session.role as Role | null;
   const toast = useToastContext();
 
+  // Core state
   const [items, setItems] = useState<MarketplaceItem[]>([]);
-  const [featuredItems, setFeaturedItems] = useState<MarketplaceItem[]>([]);
   const [installations, setInstallations] = useState<MarketplaceInstallation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // Tab state
-  const [activeTab, setActiveTab] = useState<MarketplaceTab>('browse');
-  
-  // Advanced features state
-  const [marketTrends, setMarketTrends] = useState<MarketTrends | null>(null);
-  const [userDashboard, setUserDashboard] = useState<UserDashboard | null>(null);
-  const [executionLedger, setExecutionLedger] = useState<ExecutionLedgerEntry[]>([]);
-  const [loadingTrends, setLoadingTrends] = useState(false);
-  const [loadingDashboard, setLoadingDashboard] = useState(false);
-  
+  const [activeTab, setActiveTab] = useState<Tab>('browse');
+
   // Filters
-  const [itemTypeFilter, setItemTypeFilter] = useState<MarketplaceItemType | 'all'>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [typeFilter, setTypeFilter] = useState<MarketplaceItemType | 'all'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'popular' | 'newest' | 'rating'>('popular');
-  const [priceFilter, setPriceFilter] = useState<'all' | 'free' | 'paid'>('all');
-  const [ratingFilter, setRatingFilter] = useState<number>(0);
-  
-  // Modal state
+
+  // Detail modal
   const [selectedItem, setSelectedItem] = useState<MarketplaceItem | null>(null);
   const [itemReviews, setItemReviews] = useState<MarketplaceReview[]>([]);
-  const [showModal, setShowModal] = useState(false);
   const [installing, setInstalling] = useState(false);
   const [purchasing, setPurchasing] = useState(false);
-  
-  // NFT state
-  const [showNFTModal, setShowNFTModal] = useState(false);
-  const [nftListingType, setNftListingType] = useState<'sale' | 'rent' | 'auction'>('sale');
-  const [nftPrice, setNftPrice] = useState<string>('');
-  const [nftRentPrice, setNftRentPrice] = useState<string>('');
-  const [listingNFT, setListingNFT] = useState(false);
-  
+
   // Review form
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
 
-  const loadItems = useCallback(async () => {
-    if (!canAccess(userRole, 'predictions')) {
-      navigate('/dashboard');
-      return;
-    }
+  // Dashboard/Trends/Ledger
+  const [marketTrends, setMarketTrends] = useState<MarketTrends | null>(null);
+  const [userDashboard, setUserDashboard] = useState<UserDashboard | null>(null);
+  const [executionLedger, setExecutionLedger] = useState<ExecutionLedgerEntry[]>([]);
+  const [loadingTrends, setLoadingTrends] = useState(false);
+  const [loadingDashboard, setLoadingDashboard] = useState(false);
 
+  // NFT modal
+  const [showNFTModal, setShowNFTModal] = useState(false);
+  const [nftListingType, setNftListingType] = useState<'sale' | 'rent' | 'auction'>('sale');
+  const [nftPrice, setNftPrice] = useState('');
+  const [nftRentPrice, setNftRentPrice] = useState('');
+  const [listingNFT, setListingNFT] = useState(false);
+
+  // ---------- Load items ----------
+  const loadItems = useCallback(async () => {
+    if (!canAccess(userRole, 'predictions')) { navigate('/dashboard'); return; }
     setLoading(true);
     setError(null);
     try {
       const params = {
-        item_type: itemTypeFilter !== 'all' ? itemTypeFilter : undefined,
+        item_type: typeFilter !== 'all' ? typeFilter : undefined,
         search: searchQuery || undefined,
-        limit: 50,
+        limit: 100,
         offset: 0,
       };
-      
-      const [itemsData, installationsData] = await Promise.all([
+      const [itemsData, installData] = await Promise.all([
         browseMarketplaceItems(params),
         listInstallations().catch(() => []),
       ]);
-      
-      // Sort items
-      let sortedItems = [...itemsData];
-      if (sortBy === 'popular') {
-        sortedItems.sort((a, b) => (b.download_count || 0) - (a.download_count || 0));
-      } else if (sortBy === 'newest') {
-        sortedItems.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-      } else if (sortBy === 'rating') {
-        sortedItems.sort((a, b) => (b.average_rating || 0) - (a.average_rating || 0));
-      }
-      
-      setItems(sortedItems);
-      setInstallations(installationsData);
-      
-      // Set featured items (top rated with most downloads)
-      const featured = [...itemsData]
-        .filter(item => (item.average_rating || 0) >= 4 && (item.download_count || 0) >= 10)
-        .slice(0, 4);
-      setFeaturedItems(featured);
-    } catch (err: unknown) {
-      logger.error('Failed to load marketplace items:', err);
-      const errorMessage = err && typeof err === 'object' && 'response' in err
-        ? (err as { response?: { status?: number; data?: { detail?: string } } }).response?.data?.detail
-        : err && typeof err === 'object' && 'message' in err
-        ? (err as { message: string }).message
-        : 'Failed to load marketplace items';
-      setError(errorMessage as string);
-      toast.error(errorMessage as string);
+
+      let sorted = [...itemsData];
+      if (sortBy === 'popular') sorted.sort((a, b) => (b.download_count || 0) - (a.download_count || 0));
+      else if (sortBy === 'newest') sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      else if (sortBy === 'rating') sorted.sort((a, b) => (b.average_rating || 0) - (a.average_rating || 0));
+
+      setItems(sorted);
+      setInstallations(installData);
+    } catch (err: any) {
+      const msg = err?.response?.data?.detail || err?.message || 'Failed to load items';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
-  }, [userRole, navigate, itemTypeFilter, searchQuery, sortBy, toast]);
+  }, [userRole, navigate, typeFilter, searchQuery, sortBy, toast]);
 
-  useEffect(() => {
-    loadItems();
-  }, [loadItems]);
+  useEffect(() => { loadItems(); }, [loadItems]);
 
-  // Load market trends when trends tab is active
+  // ---------- Tab data loading ----------
   const loadTrends = useCallback(async () => {
     setLoadingTrends(true);
-    try {
-      const trends = await getMarketTrends();
-      setMarketTrends(trends);
-    } catch (err) {
-      logger.error('Failed to load market trends:', err);
-    } finally {
-      setLoadingTrends(false);
-    }
+    try { setMarketTrends(await getMarketTrends()); } catch (e) { logger.error('Trends:', e); }
+    finally { setLoadingTrends(false); }
   }, []);
 
-  // Load user dashboard when dashboard tab is active
   const loadDashboard = useCallback(async () => {
     setLoadingDashboard(true);
-    try {
-      const dashboard = await getUserDashboard();
-      setUserDashboard(dashboard);
-    } catch (err) {
-      logger.error('Failed to load dashboard:', err);
-    } finally {
-      setLoadingDashboard(false);
-    }
+    try { setUserDashboard(await getUserDashboard()); } catch (e) { logger.error('Dashboard:', e); }
+    finally { setLoadingDashboard(false); }
   }, []);
 
-  // Load execution ledger from owned items
   const loadLedger = useCallback(async () => {
     try {
-      // First ensure we have the dashboard (owned items)
-      let dashboard = userDashboard;
-      if (!dashboard) {
-        dashboard = await getUserDashboard();
-        setUserDashboard(dashboard);
-      }
-      // Load ledger from all owned items
-      const itemIds = (dashboard?.owned_items || []).map(i => i.id).slice(0, 10);
-      if (itemIds.length === 0) return;
-      const ledgerResults = await Promise.all(
-        itemIds.map(id => getExecutionLedger(id, 20).catch(() => []))
-      );
-      const allEntries = ledgerResults.flat().sort((a, b) =>
-        new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime()
-      );
-      setExecutionLedger(allEntries);
-    } catch (err) {
-      logger.error('Failed to load execution ledger:', err);
-    }
+      let d = userDashboard;
+      if (!d) { d = await getUserDashboard(); setUserDashboard(d); }
+      const ids = (d?.owned_items || []).map(i => i.id).slice(0, 10);
+      if (ids.length === 0) return;
+      const results = await Promise.all(ids.map(id => getExecutionLedger(id, 20).catch(() => [])));
+      setExecutionLedger(results.flat().sort((a, b) => new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime()));
+    } catch (e) { logger.error('Ledger:', e); }
   }, [userDashboard]);
 
-  // Load data based on active tab
   useEffect(() => {
-    if (activeTab === 'trends' && !marketTrends) {
-      loadTrends();
-    } else if (activeTab === 'dashboard' && !userDashboard) {
-      loadDashboard();
-    } else if (activeTab === 'ledger' && executionLedger.length === 0) {
-      loadLedger();
-    }
+    if (activeTab === 'trends' && !marketTrends) loadTrends();
+    else if (activeTab === 'dashboard' && !userDashboard) loadDashboard();
+    else if (activeTab === 'ledger' && executionLedger.length === 0) loadLedger();
   }, [activeTab, marketTrends, userDashboard, executionLedger.length, loadTrends, loadDashboard, loadLedger]);
 
-  // Handle NFT listing
+  // ---------- Actions ----------
+  const isInstalled = (id: string) => installations.some(i => i.item_id === id);
+
+  const openDetail = async (item: MarketplaceItem) => {
+    setSelectedItem(item);
+    try { setItemReviews(await listItemReviews(item.id)); } catch { setItemReviews([]); }
+  };
+
+  const closeDetail = () => {
+    setSelectedItem(null);
+    setItemReviews([]);
+    setShowReviewForm(false);
+    setReviewRating(5);
+    setReviewComment('');
+  };
+
+  const handleInstall = async () => {
+    if (!selectedItem) return;
+    setInstalling(true);
+    try { await installItem(selectedItem.id); toast.success(`${selectedItem.name} installed!`); loadItems(); }
+    catch (e: any) { toast.error(e?.message || 'Install failed'); }
+    finally { setInstalling(false); }
+  };
+
+  const handlePurchase = async () => {
+    if (!selectedItem) return;
+    setPurchasing(true);
+    try { await purchaseItem(selectedItem.id); toast.success(`${selectedItem.name} purchased!`); await handleInstall(); }
+    catch (e: any) { toast.error(e?.message || 'Purchase failed'); }
+    finally { setPurchasing(false); }
+  };
+
+  const handleReview = async () => {
+    if (!selectedItem) return;
+    setSubmittingReview(true);
+    try {
+      await createReview(selectedItem.id, { rating: reviewRating, comment: reviewComment });
+      toast.success('Review submitted!');
+      setShowReviewForm(false);
+      setReviewRating(5);
+      setReviewComment('');
+      setItemReviews(await listItemReviews(selectedItem.id));
+    } catch (e: any) { toast.error(e?.message || 'Review failed'); }
+    finally { setSubmittingReview(false); }
+  };
+
   const handleListNFT = async () => {
     if (!selectedItem || !nftPrice) return;
     setListingNFT(true);
@@ -210,856 +239,455 @@ const MarketplacePage: React.FC = () => {
         price: parseFloat(nftPrice),
         rent_price_per_day: nftRentPrice ? parseFloat(nftRentPrice) : undefined,
       });
-      toast.success('NFT listed successfully!');
+      toast.success('NFT listed!');
       setShowNFTModal(false);
       setNftPrice('');
       setNftRentPrice('');
       loadDashboard();
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to list NFT');
-    } finally {
-      setListingNFT(false);
-    }
-  };
-  
-  // Check if item is installed
-  const isInstalled = (itemId: string) => {
-    return installations.some(inst => inst.item_id === itemId);
-  };
-  
-  // Open item detail modal
-  const openItemModal = async (item: MarketplaceItem) => {
-    setSelectedItem(item);
-    setShowModal(true);
-    try {
-      const reviews = await listItemReviews(item.id);
-      setItemReviews(reviews);
-    } catch (err) {
-      logger.error('Failed to load reviews:', err);
-      setItemReviews([]);
-    }
-  };
-  
-  // Close modal
-  const closeModal = () => {
-    setShowModal(false);
-    setSelectedItem(null);
-    setItemReviews([]);
-    setShowReviewForm(false);
-    setReviewRating(5);
-    setReviewComment('');
-  };
-  
-  // Install item
-  const handleInstall = async () => {
-    if (!selectedItem) return;
-    setInstalling(true);
-    try {
-      await installItem(selectedItem.id);
-      toast.success(`${selectedItem.name} installed successfully!`);
-      await loadItems(); // Refresh installations
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to install item');
-    } finally {
-      setInstalling(false);
-    }
-  };
-  
-  // Purchase item
-  const handlePurchase = async () => {
-    if (!selectedItem) return;
-    setPurchasing(true);
-    try {
-      await purchaseItem(selectedItem.id);
-      toast.success(`${selectedItem.name} purchased successfully!`);
-      await handleInstall(); // Auto-install after purchase
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to purchase item');
-    } finally {
-      setPurchasing(false);
-    }
-  };
-  
-  // Submit review
-  const handleSubmitReview = async () => {
-    if (!selectedItem) return;
-    setSubmittingReview(true);
-    try {
-      await createReview(selectedItem.id, {
-        rating: reviewRating,
-        comment: reviewComment,
-      });
-      toast.success('Review submitted!');
-      setShowReviewForm(false);
-      setReviewRating(5);
-      setReviewComment('');
-      // Refresh reviews
-      const reviews = await listItemReviews(selectedItem.id);
-      setItemReviews(reviews);
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to submit review');
-    } finally {
-      setSubmittingReview(false);
-    }
+    } catch (e: any) { toast.error(e?.message || 'Failed to list NFT'); }
+    finally { setListingNFT(false); }
   };
 
-  const categories = ['all', 'agent', 'plugin', 'template', 'workflow', 'integration'];
-  
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'agent': return (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="8" r="5"/>
-          <path d="M3 21v-2a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v2"/>
-        </svg>
-      );
-      case 'plugin': return (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2v6m0 12v2M4.93 4.93l4.24 4.24m5.66 5.66l4.24 4.24M2 12h6m8 0h6M4.93 19.07l4.24-4.24m5.66-5.66l4.24-4.24"/>
-        </svg>
-      );
-      case 'template': return (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="16" y1="13" x2="8" y2="13"/>
-          <line x1="16" y1="17" x2="8" y2="17"/>
-        </svg>
-      );
-      case 'workflow': return (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-        </svg>
-      );
-      case 'integration': return (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-        </svg>
-      );
-      default: return (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-        </svg>
-      );
-    }
-  };
+  const fmtDate = (d: string) => new Date(d).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
 
+  // ---------- RENDER ----------
   return (
-    <div className={styles.helpCenterPage}>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <h1>Marketplace</h1>
-          <p className={styles.subtitle}>
-            Browse, purchase, and deploy AI agents, plugins, templates, and workflows.
-          </p>
+    <div className={styles.page}>
+      {/* Hero */}
+      <div className={styles.hero}>
+        <h1 className={styles.heroTitle}>Browse marketplace</h1>
+        <p className={styles.heroSub}>
+          Search through our collection of AI agents, plugins, templates, and workflows.
+        </p>
+      </div>
+
+      {/* Search */}
+      <div className={styles.searchWrap}>
+        <div className={styles.searchIcon}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </div>
+        <input
+          className={styles.searchInput}
+          type="text"
+          placeholder="Search agents, plugins, workflows..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && loadItems()}
+        />
+      </div>
 
-        {/* Tab Navigation */}
-        <div style={{ 
-          display: 'flex', 
-          gap: 'var(--space-1)', 
-          marginBottom: 'var(--space-4)',
-          borderBottom: '2px solid var(--border-color)',
-          paddingBottom: '0'
-        }}>
-          {(['browse', 'dashboard', 'trends', 'ledger'] as MarketplaceTab[]).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              style={{
-                padding: 'var(--space-3) var(--space-4)',
-                background: 'transparent',
-                border: 'none',
-                borderBottom: activeTab === tab ? '2px solid var(--color-primary-500)' : '2px solid transparent',
-                color: activeTab === tab ? 'var(--color-primary-600)' : 'var(--text-secondary)',
-                fontWeight: activeTab === tab ? 600 : 500,
-                cursor: 'pointer',
-                marginBottom: '-2px',
-                transition: 'all 0.2s ease',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-              }}
-            >
-              {tab === 'browse' && (
-                <>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-                  Browse
-                </>
-              )}
-              {tab === 'dashboard' && (
-                <>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                  My Dashboard
-                </>
-              )}
-              {tab === 'trends' && (
-                <>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                  Market Trends
-                </>
-              )}
-              {tab === 'ledger' && (
-                <>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                  Execution Ledger
-                </>
-              )}
-            </button>
-          ))}
-        </div>
+      {/* Tabs */}
+      <div className={styles.tabs}>
+        {(['browse', 'dashboard', 'trends', 'ledger'] as Tab[]).map(t => (
+          <button key={t} className={`${styles.tab} ${activeTab === t ? styles.tabActive : ''}`} onClick={() => setActiveTab(t)}>
+            {t === 'browse' ? 'Browse' : t === 'dashboard' ? 'My Items' : t === 'trends' ? 'Trends' : 'Ledger'}
+          </button>
+        ))}
+      </div>
 
-        {/* Browse Tab */}
-        {activeTab === 'browse' && (
-        <div className={styles.contentBody}>
-          <div className={styles.contentMain}>
-            {/* Search */}
-            <section className={styles.contentSection}>
-              <div className={styles.helpSearch}>
-                <div className={styles.searchInputWrapper}>
-                  <input
-                    type="text"
-                    placeholder="Search marketplace..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && loadItems()}
-                    className={styles.searchInput}
-                  />
-                </div>
-              </div>
-            </section>
+      {/* ===== BROWSE TAB ===== */}
+      {activeTab === 'browse' && (
+        <>
+          {/* Category pills */}
+          <div className={styles.pills}>
+            {CATEGORIES.map(c => (
+              <button
+                key={c.value}
+                className={`${styles.pill} ${typeFilter === c.value ? styles.pillActive : ''}`}
+                onClick={() => setTypeFilter(c.value)}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
 
-            {/* Category Filter */}
-            <section className={styles.contentSection}>
-              <h2>Filter by Type</h2>
-              <div className={styles.categoryFilters}>
-                {categories.map(cat => (
-                  <button
-                    key={cat}
-                    className={`${styles.categoryFilter} ${itemTypeFilter === cat ? styles.active : ''}`}
-                    onClick={() => {
-                      setItemTypeFilter(cat as MarketplaceItemType | 'all');
-                    }}
+          {/* Sort bar */}
+          <div className={styles.sortBar}>
+            <span className={styles.sortLabel}>{items.length} items</span>
+            <div className={styles.sortBtns}>
+              {(['popular', 'newest', 'rating'] as const).map(s => (
+                <button key={s} className={`${styles.sortBtn} ${sortBy === s ? styles.sortBtnActive : ''}`} onClick={() => setSortBy(s)}>
+                  {s.charAt(0).toUpperCase() + s.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Icon grid */}
+          {loading ? (
+            <div className={styles.loading}><div className={styles.spinner} />Loading...</div>
+          ) : error ? (
+            <div className={styles.emptyState}>
+              <p>{error}</p>
+              <button className={styles.btnPrimary} onClick={loadItems} style={{ display: 'inline-block', width: 'auto', marginTop: 12 }}>Retry</button>
+            </div>
+          ) : items.length === 0 ? (
+            <div className={styles.emptyState}><p>No items found. Try adjusting your filters.</p></div>
+          ) : (
+            <div className={styles.iconGrid}>
+              {items.map(item => {
+                const installed = isInstalled(item.id);
+                const featured = (item.average_rating || 0) >= 4 && (item.download_count || 0) >= 10;
+                return (
+                  <div
+                    key={item.id}
+                    className={`${styles.iconCard} ${featured ? styles.iconCardFeatured : ''}`}
+                    onClick={() => openDetail(item)}
                   >
-                    {cat === 'all' ? 'All Types' : cat.charAt(0).toUpperCase() + cat.slice(1) + 's'}
-                  </button>
-                ))}
-              </div>
-            </section>
+                    {installed && <span className={`${styles.cardBadge} ${styles.badgeInstalled}`}>Installed</span>}
+                    {!installed && featured && <span className={`${styles.cardBadge} ${styles.badgeFeatured}`}>Featured</span>}
+                    {!installed && !featured && item.is_free && <span className={`${styles.cardBadge} ${styles.badgeFree}`}>Free</span>}
+                    {!installed && !featured && !item.is_free && <span className={`${styles.cardBadge} ${styles.badgePaid}`}>${item.price?.toFixed(0)}</span>}
 
-            {/* Featured Items */}
-            {featuredItems.length > 0 && itemTypeFilter === 'all' && !searchQuery && (
-              <section className={styles.contentSection}>
-                <h2><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: '8px', verticalAlign: 'middle', color: '#fbbf24' }}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Featured</h2>
-                <div className={styles.articleGrid}>
-                  {featuredItems.map((item) => (
-                    <div
-                      key={item.id}
-                      className={styles.articleCard}
-                      onClick={() => openItemModal(item)}
-                      style={{ 
-                        cursor: 'pointer',
-                        border: '2px solid var(--color-primary-500)',
-                        position: 'relative'
-                      }}
-                    >
-                      <div style={{ position: 'absolute', top: '-10px', right: '16px', background: 'var(--color-primary-500)', color: 'white', padding: '4px 12px', borderRadius: '12px', fontSize: 'var(--font-xs)', fontWeight: 600 }}>
-                        Featured
-                      </div>
-                      <div style={{ fontSize: '24px', marginBottom: 'var(--space-2)' }}>{getTypeIcon(item.item_type)}</div>
-                      <h3>{item.name}</h3>
-                      <p>{item.short_description || item.description || 'No description available'}</p>
-                      <div className={styles.articleTags}>
-                        <span className={styles.articleTag}>{item.item_type}</span>
-                        {item.is_free ? (
-                          <span className={styles.articleTag} style={{ background: 'var(--color-success-500)', color: 'white' }}>Free</span>
-                        ) : (
-                          <span className={styles.articleTag}>${item.price?.toFixed(2)}</span>
-                        )}
-                        {item.average_rating && (
-                          <span className={styles.articleTag}>★ {item.average_rating.toFixed(1)}</span>
-                        )}
-                      </div>
+                    <div className={styles.cardIcon}>
+                      <TypeIcon type={item.item_type} size={40} />
                     </div>
-                  ))}
-                </div>
-              </section>
-            )}
+                    <div className={styles.cardName}>{item.name}</div>
+                    <div className={styles.cardType}>{item.item_type}</div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
 
-            {/* Sort Options */}
-            <section className={styles.contentSection}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-3)' }}>
-                <h2>All Items ({items.length})</h2>
-                <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                  {(['popular', 'newest', 'rating'] as const).map((sort) => (
-                    <button
-                      key={sort}
-                      onClick={() => setSortBy(sort)}
-                      style={{
-                        padding: '6px 12px',
-                        borderRadius: 'var(--radius-sm)',
-                        border: 'none',
-                        background: sortBy === sort ? 'var(--color-primary-500)' : 'var(--bg-secondary)',
-                        color: sortBy === sort ? 'white' : 'var(--text-secondary)',
-                        cursor: 'pointer',
-                        fontSize: 'var(--font-sm)',
-                      }}
-                    >
-                      {sort.charAt(0).toUpperCase() + sort.slice(1)}
-                    </button>
-                  ))}
+      {/* ===== DASHBOARD TAB ===== */}
+      {activeTab === 'dashboard' && (
+        <>
+          {loadingDashboard ? (
+            <div className={styles.loading}><div className={styles.spinner} />Loading dashboard...</div>
+          ) : userDashboard ? (
+            <>
+              <div className={styles.statsGrid}>
+                <div className={styles.statCard}>
+                  <div className={`${styles.statValue} ${styles.statValueGreen}`}>${userDashboard.total_earnings.toFixed(2)}</div>
+                  <div className={styles.statName}>Total Earnings</div>
+                </div>
+                <div className={styles.statCard}>
+                  <div className={`${styles.statValue} ${styles.statValuePurple}`}>${userDashboard.total_spent.toFixed(2)}</div>
+                  <div className={styles.statName}>Total Spent</div>
+                </div>
+                <div className={styles.statCard}>
+                  <div className={styles.statValue}>{userDashboard.owned_items.length}</div>
+                  <div className={styles.statName}>Owned Items</div>
+                </div>
+                <div className={styles.statCard}>
+                  <div className={`${styles.statValue} ${styles.statValueBlue}`}>{userDashboard.active_listings.length}</div>
+                  <div className={styles.statName}>Active Listings</div>
                 </div>
               </div>
-              
-              {loading ? (
-                <div className={styles.articleCard} style={{ cursor: 'default', textAlign: 'center' }}>
-                  <p>Loading marketplace items...</p>
-                </div>
-              ) : error ? (
-                <div className={styles.articleCard} style={{ cursor: 'default' }}>
-                  <h3>Error Loading Items</h3>
-                  <p>{error}</p>
-                  <div style={{ marginTop: 'var(--space-4)' }}>
-                    <Button variant="primary" onClick={loadItems}>Retry</Button>
-                  </div>
-                </div>
-              ) : items.length === 0 ? (
-                <div className={styles.articleCard} style={{ cursor: 'default' }}>
-                  <h3>No Items Found</h3>
-                  <p>Try adjusting your filters or check back later for new items.</p>
-                </div>
+
+              <h3 className={styles.sectionTitle}>My Items ({userDashboard.owned_items.length})</h3>
+              {userDashboard.owned_items.length === 0 ? (
+                <div className={styles.emptyState}><p>You don't own any items yet.</p></div>
               ) : (
-                <div className={styles.articleGrid}>
-                  {items.map((item) => (
-                    <div
-                      key={item.id}
-                      className={styles.articleCard}
-                      onClick={() => openItemModal(item)}
-                      style={{ cursor: 'pointer', position: 'relative' }}
-                    >
-                      {isInstalled(item.id) && (
-                        <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'var(--color-success-500)', color: 'white', padding: '2px 8px', borderRadius: '10px', fontSize: '10px', fontWeight: 600 }}>
-                          Installed
-                        </div>
-                      )}
-                      <div style={{ fontSize: '24px', marginBottom: 'var(--space-2)' }}>{getTypeIcon(item.item_type)}</div>
-                      <h3>{item.name}</h3>
-                      <p style={{ fontSize: 'var(--font-sm)', color: 'var(--text-secondary)', marginBottom: 'var(--space-2)' }}>
-                        {(item.short_description || item.description || 'No description available').slice(0, 100)}
-                        {(item.short_description || item.description || '').length > 100 ? '...' : ''}
-                      </p>
-                      <div className={styles.articleTags}>
-                        <span className={styles.articleTag}>{item.item_type}</span>
-                        {item.is_free ? (
-                          <span className={styles.articleTag} style={{ background: 'var(--color-success-100)', color: 'var(--color-success-700)' }}>Free</span>
-                        ) : (
-                          <span className={styles.articleTag}>${item.price?.toFixed(2)}</span>
-                        )}
-                        {item.average_rating && (
-                          <span className={styles.articleTag}>★ {item.average_rating.toFixed(1)}</span>
-                        )}
-                      </div>
-                      <div style={{ 
-                        marginTop: 'var(--space-2)', 
-                        fontSize: 'var(--font-xs)', 
-                        color: 'var(--text-tertiary)',
-                        display: 'flex',
-                        justifyContent: 'space-between'
-                      }}>
-                        <span>{item.publisher_name || 'Unknown'}</span>
-                        <span>{item.download_count} downloads</span>
-                      </div>
+                <div className={styles.iconGrid}>
+                  {userDashboard.owned_items.map(item => (
+                    <div key={item.id} className={styles.iconCard} onClick={() => openDetail(item)}>
+                      <div className={styles.cardIcon}><TypeIcon type={item.item_type} size={40} /></div>
+                      <div className={styles.cardName}>{item.name}</div>
+                      <div className={styles.cardType}>{item.item_type}</div>
                     </div>
                   ))}
                 </div>
               )}
-            </section>
-          </div>
 
-          <div className={styles.contentSidebar}>
-            <div className={styles.sidebarCard}>
-              <h3>Publish Your Own</h3>
-              <p>
-                Create and share your own agents, plugins, and templates.
-              </p>
-              <Button variant="primary" size="sm" fullWidth onClick={() => navigate('/marketplace/create')}>
-                Publish Item
-              </Button>
-            </div>
-            <div className={styles.sidebarCard}>
-              <h3>My Installations</h3>
-              <ul>
-                <li><a href="/marketplace/installations">View Installed Items</a></li>
-                <li><a href="/marketplace/purchases">My Purchases</a></li>
-              </ul>
-            </div>
-            <div className={styles.sidebarCard}>
-              <h3>Categories</h3>
-              <ul>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setItemTypeFilter('agent'); }}>Agents</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setItemTypeFilter('plugin'); }}>Plugins</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setItemTypeFilter('template'); }}>Templates</a></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); setItemTypeFilter('workflow'); }}>Workflows</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        )}
-
-        {/* Dashboard Tab */}
-        {activeTab === 'dashboard' && (
-          <div className={styles.contentBody}>
-            <div className={styles.contentMain}>
-              {loadingDashboard ? (
-                <div style={{ textAlign: 'center', padding: 'var(--space-8)' }}>
-                  <p>Loading your dashboard...</p>
-                </div>
-              ) : userDashboard ? (
+              {userDashboard.rented_items.length > 0 && (
                 <>
-                  {/* Stats Overview */}
-                  <section className={styles.contentSection}>
-                    <h2>📊 Overview</h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-4)' }}>
-                      <div className={styles.articleCard} style={{ cursor: 'default', textAlign: 'center' }}>
-                        <h3 style={{ fontSize: 'var(--font-2xl)', color: 'var(--color-success-600)' }}>${userDashboard.total_earnings.toFixed(2)}</h3>
-                        <p>Total Earnings</p>
-                      </div>
-                      <div className={styles.articleCard} style={{ cursor: 'default', textAlign: 'center' }}>
-                        <h3 style={{ fontSize: 'var(--font-2xl)', color: 'var(--color-primary-600)' }}>${userDashboard.total_spent.toFixed(2)}</h3>
-                        <p>Total Spent</p>
-                      </div>
-                      <div className={styles.articleCard} style={{ cursor: 'default', textAlign: 'center' }}>
-                        <h3 style={{ fontSize: 'var(--font-2xl)' }}>{userDashboard.owned_items.length}</h3>
-                        <p>Owned Items</p>
-                      </div>
-                      <div className={styles.articleCard} style={{ cursor: 'default', textAlign: 'center' }}>
-                        <h3 style={{ fontSize: 'var(--font-2xl)' }}>{userDashboard.active_listings.length}</h3>
-                        <p>Active Listings</p>
-                      </div>
+                  <h3 className={styles.sectionTitle} style={{ marginTop: 28 }}>Rented ({userDashboard.rented_items.length})</h3>
+                  {userDashboard.rented_items.map((r, i) => (
+                    <div key={i} className={styles.listRow}>
+                      <span><strong>{r.item_name}</strong> &middot; ${r.daily_rate}/day</span>
+                      <span style={{ color: r.status === 'active' ? '#22c55e' : '#f59e0b' }}>
+                        {r.status} &middot; expires {fmtDate(r.rental_end)}
+                      </span>
                     </div>
-                  </section>
-
-                  {/* Owned Items */}
-                  <section className={styles.contentSection}>
-                    <h2>🎯 My Items ({userDashboard.owned_items.length})</h2>
-                    {userDashboard.owned_items.length === 0 ? (
-                      <div className={styles.articleCard} style={{ cursor: 'default' }}>
-                        <p>You don't own any items yet. Browse the marketplace to get started!</p>
-                        <Button variant="primary" size="sm" onClick={() => setActiveTab('browse')}>Browse Marketplace</Button>
-                      </div>
-                    ) : (
-                      <div className={styles.articleGrid}>
-                        {userDashboard.owned_items.map((item) => (
-                          <div key={item.id} className={styles.articleCard} onClick={() => openItemModal(item)} style={{ cursor: 'pointer' }}>
-                            <div style={{ fontSize: '24px', marginBottom: 'var(--space-2)' }}>{getTypeIcon(item.item_type)}</div>
-                            <h3>{item.name}</h3>
-                            <p style={{ fontSize: 'var(--font-sm)', color: 'var(--text-secondary)' }}>{item.short_description}</p>
-                            <div style={{ marginTop: 'var(--space-2)', display: 'flex', gap: 'var(--space-2)' }}>
-                              <Button variant="secondary" size="sm" onClick={(e) => { e.stopPropagation(); setSelectedItem(item); setShowNFTModal(true); }}>
-                                List as NFT
-                              </Button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </section>
-
-                  {/* Rented Items */}
-                  {userDashboard.rented_items.length > 0 && (
-                    <section className={styles.contentSection}>
-                      <h2>⏰ Rented Items ({userDashboard.rented_items.length})</h2>
-                      <div className={styles.articleGrid}>
-                        {userDashboard.rented_items.map((item, idx) => (
-                          <div key={idx} className={styles.articleCard} style={{ cursor: 'default' }}>
-                            <h3>{item.item_name}</h3>
-                            <p style={{ fontSize: 'var(--font-sm)', color: 'var(--text-secondary)' }}>
-                              Expires: {new Date(item.rental_end).toLocaleDateString()}
-                            </p>
-                            <div className={styles.articleTags}>
-                              <span className={styles.articleTag} style={{ 
-                                background: item.status === 'active' ? 'var(--color-success-100)' : 'var(--color-warning-100)',
-                                color: item.status === 'active' ? 'var(--color-success-700)' : 'var(--color-warning-700)'
-                              }}>
-                                {item.status}
-                              </span>
-                              <span className={styles.articleTag}>${item.daily_rate}/day</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Sales History */}
-                  {userDashboard.sales_history.length > 0 && (
-                    <section className={styles.contentSection}>
-                      <h2>💰 Recent Sales</h2>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-                        {userDashboard.sales_history.slice(0, 10).map((sale) => (
-                          <div key={sale.sale_id} style={{ 
-                            display: 'flex', 
-                            justifyContent: 'space-between', 
-                            padding: 'var(--space-3)', 
-                            background: 'var(--bg-secondary)', 
-                            borderRadius: 'var(--radius-md)' 
-                          }}>
-                            <div>
-                              <strong>{sale.item_name}</strong>
-                              <span style={{ marginLeft: 'var(--space-2)', color: 'var(--text-secondary)', fontSize: 'var(--font-sm)' }}>
-                                to {sale.buyer_name}
-                              </span>
-                            </div>
-                            <div>
-                              <span style={{ color: 'var(--color-success-600)', fontWeight: 600 }}>+${sale.price.toFixed(2)}</span>
-                              <span style={{ marginLeft: 'var(--space-2)', color: 'var(--text-tertiary)', fontSize: 'var(--font-xs)' }}>
-                                {new Date(sale.timestamp).toLocaleDateString()}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
-                  )}
+                  ))}
                 </>
-              ) : (
-                <div className={styles.articleCard} style={{ cursor: 'default' }}>
-                  <p>Failed to load dashboard. Please try again.</p>
-                  <Button variant="primary" size="sm" onClick={loadDashboard}>Retry</Button>
-                </div>
               )}
-            </div>
-          </div>
-        )}
 
-        {/* Trends Tab */}
-        {activeTab === 'trends' && (
-          <div className={styles.contentBody}>
-            <div className={styles.contentMain}>
-              {loadingTrends ? (
-                <div style={{ textAlign: 'center', padding: 'var(--space-8)' }}>
-                  <p>Loading market trends...</p>
-                </div>
-              ) : marketTrends ? (
+              {userDashboard.sales_history.length > 0 && (
                 <>
-                  {/* 24h Stats */}
-                  <section className={styles.contentSection}>
-                    <h2>📈 24h Market Activity</h2>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-4)' }}>
-                      <div className={styles.articleCard} style={{ cursor: 'default', textAlign: 'center' }}>
-                        <h3 style={{ fontSize: 'var(--font-2xl)', color: 'var(--color-primary-600)' }}>{marketTrends.total_transactions_24h}</h3>
-                        <p>Transactions</p>
-                      </div>
-                      <div className={styles.articleCard} style={{ cursor: 'default', textAlign: 'center' }}>
-                        <h3 style={{ fontSize: 'var(--font-2xl)', color: 'var(--color-success-600)' }}>${marketTrends.total_volume_24h.toFixed(2)}</h3>
-                        <p>Volume</p>
-                      </div>
+                  <h3 className={styles.sectionTitle} style={{ marginTop: 28 }}>Recent Sales</h3>
+                  {userDashboard.sales_history.slice(0, 10).map(s => (
+                    <div key={s.sale_id} className={styles.listRow}>
+                      <span><strong>{s.item_name}</strong> to {s.buyer_name}</span>
+                      <span style={{ color: '#22c55e', fontWeight: 600 }}>+${s.price.toFixed(2)} &middot; {fmtDate(s.timestamp)}</span>
                     </div>
-                  </section>
-
-                  {/* Trending Items */}
-                  {marketTrends.trending_items.length > 0 && (
-                    <section className={styles.contentSection}>
-                      <h2>🔥 Trending Now</h2>
-                      <div className={styles.articleGrid}>
-                        {marketTrends.trending_items.map((item) => (
-                          <div key={item.id} className={styles.articleCard} onClick={() => openItemModal(item)} style={{ cursor: 'pointer' }}>
-                            <div style={{ fontSize: '24px', marginBottom: 'var(--space-2)' }}>{getTypeIcon(item.item_type)}</div>
-                            <h3>{item.name}</h3>
-                            <div className={styles.articleTags}>
-                              <span className={styles.articleTag}>{item.item_type}</span>
-                              {item.average_rating && <span className={styles.articleTag}>★ {item.average_rating.toFixed(1)}</span>}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Top Sellers */}
-                  {marketTrends.top_sellers.length > 0 && (
-                    <section className={styles.contentSection}>
-                      <h2>🏆 Top Sellers</h2>
-                      <div className={styles.articleGrid}>
-                        {marketTrends.top_sellers.map((seller) => (
-                          <div key={seller.seller_id} className={styles.articleCard} style={{ cursor: 'default' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-                              <div style={{ 
-                                width: 48, 
-                                height: 48, 
-                                borderRadius: '50%', 
-                                background: 'var(--color-primary-100)', 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                justifyContent: 'center',
-                                fontSize: '20px'
-                              }}>
-                                {seller.verified ? '✓' : '👤'}
-                              </div>
-                              <div>
-                                <h3 style={{ margin: 0 }}>{seller.seller_name}</h3>
-                                <p style={{ margin: 0, fontSize: 'var(--font-sm)', color: 'var(--text-secondary)' }}>
-                                  {seller.items_count} items • ★ {seller.average_rating.toFixed(1)}
-                                </p>
-                              </div>
-                            </div>
-                            <div style={{ marginTop: 'var(--space-3)', display: 'flex', justifyContent: 'space-between' }}>
-                              <span style={{ color: 'var(--color-success-600)' }}>${seller.total_revenue.toFixed(0)} revenue</span>
-                              <span>{seller.total_sales} sales</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Category Stats */}
-                  {marketTrends.category_stats.length > 0 && (
-                    <section className={styles.contentSection}>
-                      <h2>📊 Category Performance</h2>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-                        {marketTrends.category_stats.map((cat) => (
-                          <div key={cat.category} style={{ 
-                            display: 'flex', 
-                            justifyContent: 'space-between', 
-                            alignItems: 'center',
-                            padding: 'var(--space-3)', 
-                            background: 'var(--bg-secondary)', 
-                            borderRadius: 'var(--radius-md)' 
-                          }}>
-                            <div>
-                              <strong>{cat.category}</strong>
-                              <span style={{ marginLeft: 'var(--space-2)', color: 'var(--text-secondary)', fontSize: 'var(--font-sm)' }}>
-                                {cat.item_count} items
-                              </span>
-                            </div>
-                            <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'center' }}>
-                              <span>${cat.average_price.toFixed(2)} avg</span>
-                              <span style={{ 
-                                color: cat.growth_percentage >= 0 ? 'var(--color-success-600)' : 'var(--color-danger-600)',
-                                fontWeight: 600
-                              }}>
-                                {cat.growth_percentage >= 0 ? '+' : ''}{cat.growth_percentage.toFixed(1)}%
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
-                  )}
+                  ))}
                 </>
-              ) : (
-                <div className={styles.articleCard} style={{ cursor: 'default' }}>
-                  <p>No market data available yet.</p>
-                </div>
               )}
-            </div>
-          </div>
-        )}
+            </>
+          ) : (
+            <div className={styles.emptyState}><p>Failed to load dashboard.</p><button className={styles.btnPrimary} onClick={loadDashboard} style={{ display: 'inline-block', width: 'auto', marginTop: 12 }}>Retry</button></div>
+          )}
+        </>
+      )}
 
-        {/* Execution Ledger Tab */}
-        {activeTab === 'ledger' && (
-          <div className={styles.contentBody}>
-            <div className={styles.contentMain}>
-              <section className={styles.contentSection}>
-                <h2>📜 Execution Ledger</h2>
-                <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-4)' }}>
-                  Immutable record of all agent and plugin executions on the blockchain.
-                </p>
-                {executionLedger.length === 0 ? (
-                  <div className={styles.articleCard} style={{ cursor: 'default' }}>
-                    <p>No execution records yet. Start using agents and plugins to see their execution history here.</p>
-                  </div>
-                ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-                    {executionLedger.map((entry) => (
-                      <div key={entry.entry_id} style={{ 
-                        padding: 'var(--space-3)', 
-                        background: 'var(--bg-secondary)', 
-                        borderRadius: 'var(--radius-md)',
-                        fontFamily: 'monospace',
-                        fontSize: 'var(--font-sm)'
-                      }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-2)' }}>
-                          <span style={{ fontWeight: 600 }}>{entry.item_name}</span>
-                          <span style={{ 
-                            color: entry.status === 'success' ? 'var(--color-success-600)' : 
-                                   entry.status === 'failed' ? 'var(--color-danger-600)' : 'var(--color-warning-600)'
-                          }}>
-                            {entry.status.toUpperCase()}
-                          </span>
-                        </div>
-                        <div style={{ display: 'flex', gap: 'var(--space-4)', color: 'var(--text-tertiary)' }}>
-                          <span>Type: {entry.execution_type}</span>
-                          <span>Time: {entry.execution_time_ms}ms</span>
-                          {entry.tx_hash && <span>TX: {entry.tx_hash.slice(0, 10)}...</span>}
-                        </div>
+      {/* ===== TRENDS TAB ===== */}
+      {activeTab === 'trends' && (
+        <>
+          {loadingTrends ? (
+            <div className={styles.loading}><div className={styles.spinner} />Loading trends...</div>
+          ) : marketTrends ? (
+            <>
+              <div className={styles.statsGrid}>
+                <div className={styles.statCard}>
+                  <div className={`${styles.statValue} ${styles.statValuePurple}`}>{marketTrends.total_transactions_24h}</div>
+                  <div className={styles.statName}>24h Transactions</div>
+                </div>
+                <div className={styles.statCard}>
+                  <div className={`${styles.statValue} ${styles.statValueGreen}`}>${marketTrends.total_volume_24h.toFixed(2)}</div>
+                  <div className={styles.statName}>24h Volume</div>
+                </div>
+              </div>
+
+              {marketTrends.trending_items.length > 0 && (
+                <>
+                  <h3 className={styles.sectionTitle}>Trending</h3>
+                  <div className={styles.iconGrid} style={{ marginBottom: 28 }}>
+                    {marketTrends.trending_items.map(item => (
+                      <div key={item.id} className={styles.iconCard} onClick={() => openDetail(item)}>
+                        <div className={styles.cardIcon}><TypeIcon type={item.item_type} size={40} /></div>
+                        <div className={styles.cardName}>{item.name}</div>
+                        <div className={styles.cardType}>{item.item_type}</div>
                       </div>
                     ))}
                   </div>
-                )}
-              </section>
-            </div>
-          </div>
-        )}
-      </div>
-      
-      {/* Item Detail Modal */}
-      {showModal && selectedItem && (
-        <ItemDetailModal
-          item={selectedItem}
-          reviews={itemReviews}
-          isInstalled={isInstalled(selectedItem.id)}
-          onClose={closeModal}
-          onInstall={handleInstall}
-          onPurchase={handlePurchase}
-          installing={installing}
-          purchasing={purchasing}
-          showReviewForm={showReviewForm}
-          setShowReviewForm={setShowReviewForm}
-          reviewRating={reviewRating}
-          setReviewRating={setReviewRating}
-          reviewComment={reviewComment}
-          setReviewComment={setReviewComment}
-          onSubmitReview={handleSubmitReview}
-          submittingReview={submittingReview}
-          getTypeIcon={getTypeIcon}
-        />
+                </>
+              )}
+
+              {marketTrends.top_sellers.length > 0 && (
+                <>
+                  <h3 className={styles.sectionTitle}>Top Sellers</h3>
+                  {marketTrends.top_sellers.map(s => (
+                    <div key={s.seller_id} className={styles.listRow}>
+                      <span><strong>{s.seller_name}</strong> {s.verified ? '\u2713' : ''} &middot; {s.items_count} items</span>
+                      <span>${s.total_revenue.toFixed(0)} revenue &middot; {s.total_sales} sales</span>
+                    </div>
+                  ))}
+                </>
+              )}
+
+              {marketTrends.category_stats.length > 0 && (
+                <>
+                  <h3 className={styles.sectionTitle} style={{ marginTop: 28 }}>Categories</h3>
+                  {marketTrends.category_stats.map(c => (
+                    <div key={c.category} className={styles.listRow}>
+                      <span><strong>{c.category}</strong> &middot; {c.item_count} items &middot; ${c.average_price.toFixed(2)} avg</span>
+                      <span style={{ color: c.growth_percentage >= 0 ? '#22c55e' : '#ef4444', fontWeight: 600 }}>
+                        {c.growth_percentage >= 0 ? '+' : ''}{c.growth_percentage.toFixed(1)}%
+                      </span>
+                    </div>
+                  ))}
+                </>
+              )}
+            </>
+          ) : (
+            <div className={styles.emptyState}><p>No market data available.</p></div>
+          )}
+        </>
       )}
 
-      {/* NFT Listing Modal */}
-      {showNFTModal && selectedItem && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(0,0,0,0.4)',
-          backdropFilter: 'blur(12px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 10000,
-          padding: 'var(--space-4)'
-        }} onClick={() => setShowNFTModal(false)}>
-          <div style={{
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            borderRadius: 'var(--radius-lg)',
-            maxWidth: '500px',
-            width: '100%',
-            padding: 'var(--space-6)',
-          }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
-              <h2 style={{ margin: 0 }}>List as NFT</h2>
-              <button onClick={() => setShowNFTModal(false)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: 'var(--text-secondary)' }}>×</button>
+      {/* ===== LEDGER TAB ===== */}
+      {activeTab === 'ledger' && (
+        <>
+          <h3 className={styles.sectionTitle}>Execution Ledger</h3>
+          <p style={{ color: '#64748b', fontSize: 13, marginBottom: 16 }}>Immutable record of agent and plugin executions.</p>
+          {executionLedger.length === 0 ? (
+            <div className={styles.emptyState}><p>No execution records yet.</p></div>
+          ) : (
+            executionLedger.map(e => (
+              <div key={e.entry_id} className={styles.listRow} style={{ fontFamily: 'monospace' }}>
+                <span><strong>{e.item_name}</strong> &middot; {e.execution_type} &middot; {e.execution_time_ms}ms</span>
+                <span style={{ color: e.status === 'success' ? '#22c55e' : e.status === 'failed' ? '#ef4444' : '#f59e0b' }}>
+                  {e.status.toUpperCase()}
+                  {e.tx_hash ? ` \u00B7 ${e.tx_hash.slice(0, 10)}...` : ''}
+                </span>
+              </div>
+            ))
+          )}
+        </>
+      )}
+
+      {/* ===== ITEM DETAIL MODAL (haveibeenpwned style) ===== */}
+      {selectedItem && (
+        <div className={styles.overlay} onClick={closeDetail}>
+          <div className={styles.detailPanel} onClick={e => e.stopPropagation()}>
+            <button className={styles.detailBack} onClick={closeDetail}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+              Back to marketplace
+            </button>
+
+            <div className={styles.detailHeader}>
+              <div className={styles.detailIcon}>
+                <TypeIcon type={selectedItem.item_type} size={40} />
+              </div>
+              <div>
+                <h2 className={styles.detailTitle}>{selectedItem.name}</h2>
+                <div className={styles.detailMeta}>
+                  Updated on: {fmtDate(selectedItem.updated_at || selectedItem.created_at)}
+                  {selectedItem.publisher_name && <> &middot; By: <a href="#">{selectedItem.publisher_name}</a></>}
+                </div>
+              </div>
             </div>
-            
-            <p style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-4)' }}>
+
+            {/* Stat chips */}
+            <div className={styles.statChips}>
+              <div className={styles.statChip}>
+                <span className={styles.statChipValue}>{selectedItem.download_count || 0}</span> downloads
+              </div>
+              {selectedItem.average_rating != null && (
+                <div className={styles.statChip}>
+                  <span className={styles.statChipValue}>{'\u2605'} {selectedItem.average_rating.toFixed(1)}</span>
+                  ({selectedItem.review_count || 0} reviews)
+                </div>
+              )}
+              <div className={styles.statChip}>
+                v<span className={styles.statChipValue}>{selectedItem.version || '1.0'}</span>
+              </div>
+              <div className={styles.statChip} style={{ textTransform: 'capitalize' }}>
+                {selectedItem.item_type}
+              </div>
+            </div>
+
+            {/* About */}
+            <div className={styles.detailSection}>
+              <h3 className={styles.detailSectionTitle}>About this item</h3>
+              <p className={styles.detailDesc}>
+                {selectedItem.description || selectedItem.short_description || 'No description available.'}
+              </p>
+            </div>
+
+            {/* Tags */}
+            {selectedItem.tags && selectedItem.tags.length > 0 && (
+              <div className={styles.detailSection}>
+                <h3 className={styles.detailSectionTitle}>Tags</h3>
+                <div className={styles.tagList}>
+                  {selectedItem.tags.map((tag, i) => <span key={i} className={styles.tag}>{tag}</span>)}
+                </div>
+              </div>
+            )}
+
+            {/* Action buttons */}
+            <div className={styles.detailActions}>
+              {isInstalled(selectedItem.id) ? (
+                <button className={styles.btnPrimary} disabled>{'\u2713'} Installed</button>
+              ) : selectedItem.is_free ? (
+                <button className={styles.btnPrimary} onClick={handleInstall} disabled={installing}>
+                  {installing ? 'Installing...' : 'Install Free'}
+                </button>
+              ) : (
+                <button className={styles.btnPrimary} onClick={handlePurchase} disabled={purchasing}>
+                  {purchasing ? 'Processing...' : `Purchase $${selectedItem.price?.toFixed(2)}`}
+                </button>
+              )}
+              {selectedItem.documentation_url && (
+                <button className={styles.btnSecondary} onClick={() => window.open(selectedItem.documentation_url!, '_blank')}>Docs</button>
+              )}
+              <button className={styles.btnSecondary} onClick={() => { setShowNFTModal(true); }}>NFT</button>
+            </div>
+
+            {/* Reviews */}
+            <div className={styles.detailSection}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <h3 className={styles.detailSectionTitle} style={{ marginBottom: 0, borderBottom: 'none', paddingBottom: 0 }}>
+                  Reviews ({itemReviews.length})
+                </h3>
+                {!showReviewForm && (
+                  <button className={styles.btnSecondary} onClick={() => setShowReviewForm(true)} style={{ padding: '6px 14px', fontSize: 12 }}>
+                    Write Review
+                  </button>
+                )}
+              </div>
+
+              {showReviewForm && (
+                <div className={styles.reviewForm}>
+                  <div style={{ marginBottom: 12 }}>
+                    <label className={styles.formLabel}>Rating</label>
+                    <div>
+                      {[1, 2, 3, 4, 5].map(s => (
+                        <button key={s} className={styles.starBtn} onClick={() => setReviewRating(s)}
+                          style={{ color: s <= reviewRating ? '#facc15' : '#475569' }}>{'\u2605'}</button>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ marginBottom: 12 }}>
+                    <label className={styles.formLabel}>Comment</label>
+                    <textarea className={styles.formTextarea} value={reviewComment} onChange={e => setReviewComment(e.target.value)} placeholder="Share your experience..." />
+                  </div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button className={styles.btnPrimary} onClick={handleReview} disabled={submittingReview} style={{ flex: 'none', width: 'auto', padding: '8px 16px', fontSize: 13 }}>
+                      {submittingReview ? 'Submitting...' : 'Submit'}
+                    </button>
+                    <button className={styles.btnSecondary} onClick={() => setShowReviewForm(false)} style={{ padding: '8px 16px', fontSize: 13 }}>Cancel</button>
+                  </div>
+                </div>
+              )}
+
+              {itemReviews.length === 0 ? (
+                <p style={{ color: '#64748b', fontSize: 13 }}>No reviews yet.</p>
+              ) : (
+                itemReviews.map(r => (
+                  <div key={r.id} className={styles.reviewCard}>
+                    <div className={styles.reviewHeader}>
+                      <span className={styles.reviewAuthor}>{r.reviewer_name || 'Anonymous'}</span>
+                      <span className={styles.reviewStars}>{'\u2605'.repeat(r.rating)}{'\u2606'.repeat(5 - r.rating)}</span>
+                    </div>
+                    {r.comment && <p className={styles.reviewBody}>{r.comment}</p>}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== NFT LISTING MODAL ===== */}
+      {showNFTModal && selectedItem && (
+        <div className={styles.overlay} onClick={() => setShowNFTModal(false)}>
+          <div className={styles.detailPanel} style={{ maxWidth: 460 }} onClick={e => e.stopPropagation()}>
+            <h3 className={styles.detailTitle} style={{ fontSize: 20, marginBottom: 16 }}>List as NFT</h3>
+            <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 20 }}>
               List <strong>{selectedItem.name}</strong> on the blockchain marketplace.
             </p>
 
-            {/* Listing Type */}
-            <div style={{ marginBottom: 'var(--space-4)' }}>
-              <label style={{ display: 'block', marginBottom: 'var(--space-2)', fontWeight: 500 }}>Listing Type</label>
-              <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                {(['sale', 'rent', 'auction'] as const).map((type) => (
-                  <button
-                    key={type}
-                    onClick={() => setNftListingType(type)}
-                    style={{
-                      flex: 1,
-                      padding: 'var(--space-3)',
-                      borderRadius: 'var(--radius-md)',
-                      border: nftListingType === type ? '2px solid var(--color-primary-500)' : '1px solid var(--border-color)',
-                      background: nftListingType === type ? 'var(--color-primary-50)' : 'transparent',
-                      color: nftListingType === type ? 'var(--color-primary-700)' : 'var(--text-primary)',
-                      cursor: 'pointer',
-                      fontWeight: 500,
-                    }}
-                  >
-                    {type === 'sale' && '💰 Sale'}
-                    {type === 'rent' && '⏰ Rent'}
-                    {type === 'auction' && '🔨 Auction'}
+            <div className={styles.nftField}>
+              <label className={styles.formLabel}>Listing Type</label>
+              <div className={styles.nftTypeBtns}>
+                {(['sale', 'rent', 'auction'] as const).map(t => (
+                  <button key={t} className={`${styles.nftTypeBtn} ${nftListingType === t ? styles.nftTypeBtnActive : ''}`}
+                    onClick={() => setNftListingType(t)}>
+                    {t === 'sale' ? 'Sale' : t === 'rent' ? 'Rent' : 'Auction'}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Price */}
-            <div style={{ marginBottom: 'var(--space-4)' }}>
-              <label style={{ display: 'block', marginBottom: 'var(--space-2)', fontWeight: 500 }}>
-                {nftListingType === 'auction' ? 'Starting Price' : 'Price'} (USD)
-              </label>
-              <input
-                type="number"
-                value={nftPrice}
-                onChange={(e) => setNftPrice(e.target.value)}
-                placeholder="0.00"
-                style={{
-                  width: '100%',
-                  padding: 'var(--space-3)',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid var(--border-color)',
-                  background: 'var(--bg-primary)',
-                  color: 'var(--text-primary)',
-                  fontSize: 'var(--font-md)',
-                }}
-              />
+            <div className={styles.nftField}>
+              <label className={styles.formLabel}>{nftListingType === 'auction' ? 'Starting Price' : 'Price'} (USD)</label>
+              <input className={styles.nftInput} type="number" placeholder="0.00" value={nftPrice} onChange={e => setNftPrice(e.target.value)} />
             </div>
 
-            {/* Rent Price (only for rent type) */}
             {nftListingType === 'rent' && (
-              <div style={{ marginBottom: 'var(--space-4)' }}>
-                <label style={{ display: 'block', marginBottom: 'var(--space-2)', fontWeight: 500 }}>Daily Rent Price (USD)</label>
-                <input
-                  type="number"
-                  value={nftRentPrice}
-                  onChange={(e) => setNftRentPrice(e.target.value)}
-                  placeholder="0.00"
-                  style={{
-                    width: '100%',
-                    padding: 'var(--space-3)',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px solid var(--border-color)',
-                    background: 'var(--bg-primary)',
-                    color: 'var(--text-primary)',
-                    fontSize: 'var(--font-md)',
-                  }}
-                />
-                <p style={{ fontSize: 'var(--font-sm)', color: 'var(--text-tertiary)', marginTop: 'var(--space-1)' }}>
-                  Users can rent this item without owning it. You keep ownership.
-                </p>
+              <div className={styles.nftField}>
+                <label className={styles.formLabel}>Daily Rent Price (USD)</label>
+                <input className={styles.nftInput} type="number" placeholder="0.00" value={nftRentPrice} onChange={e => setNftRentPrice(e.target.value)} />
               </div>
             )}
 
-            {/* Info */}
-            <div style={{ 
-              padding: 'var(--space-3)', 
-              background: 'var(--color-primary-50)', 
-              borderRadius: 'var(--radius-md)',
-              marginBottom: 'var(--space-4)'
-            }}>
-              <p style={{ margin: 0, fontSize: 'var(--font-sm)', color: 'var(--color-primary-700)' }}>
-                {nftListingType === 'sale' && '🔗 This will mint an NFT and list it for sale. Buyer gets full ownership.'}
-                {nftListingType === 'rent' && '🔗 Users can rent access without owning. Multiple users can rent simultaneously.'}
-                {nftListingType === 'auction' && '🔗 Highest bidder wins after auction ends. Set a competitive starting price.'}
-              </p>
+            <div className={styles.nftInfo}>
+              {nftListingType === 'sale' && 'This will mint an NFT and list it for sale. Buyer gets full ownership.'}
+              {nftListingType === 'rent' && 'Users can rent access without owning. Multiple users can rent simultaneously.'}
+              {nftListingType === 'auction' && 'Highest bidder wins after auction ends. Set a competitive starting price.'}
             </div>
 
-            {/* Actions */}
-            <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-              <Button variant="secondary" onClick={() => setShowNFTModal(false)} fullWidth>
-                Cancel
-              </Button>
-              <Button 
-                variant="primary" 
-                onClick={handleListNFT} 
-                disabled={listingNFT || !nftPrice}
-                fullWidth
-              >
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button className={styles.btnSecondary} onClick={() => setShowNFTModal(false)} style={{ flex: 1 }}>Cancel</button>
+              <button className={styles.btnPrimary} onClick={handleListNFT} disabled={listingNFT || !nftPrice}>
                 {listingNFT ? 'Listing...' : 'List NFT'}
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -1068,199 +696,4 @@ const MarketplacePage: React.FC = () => {
   );
 };
 
-// Item Detail Modal
-const ItemDetailModal: React.FC<{
-  item: MarketplaceItem;
-  reviews: MarketplaceReview[];
-  isInstalled: boolean;
-  onClose: () => void;
-  onInstall: () => void;
-  onPurchase: () => void;
-  installing: boolean;
-  purchasing: boolean;
-  showReviewForm: boolean;
-  setShowReviewForm: (show: boolean) => void;
-  reviewRating: number;
-  setReviewRating: (rating: number) => void;
-  reviewComment: string;
-  setReviewComment: (comment: string) => void;
-  onSubmitReview: () => void;
-  submittingReview: boolean;
-  getTypeIcon: (type: string) => React.ReactNode;
-}> = ({
-  item,
-  reviews,
-  isInstalled,
-  onClose,
-  onInstall,
-  onPurchase,
-  installing,
-  purchasing,
-  showReviewForm,
-  setShowReviewForm,
-  reviewRating,
-  setReviewRating,
-  reviewComment,
-  setReviewComment,
-  onSubmitReview,
-  submittingReview,
-  getTypeIcon,
-}) => (
-  <div style={{
-    position: 'fixed',
-    inset: 0,
-    background: 'rgba(0,0,0,0.6)',
-    backdropFilter: 'blur(4px)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 9999,
-    padding: 'var(--space-4)'
-  }} onClick={onClose}>
-    <div style={{
-      background: 'var(--bg-primary)',
-      borderRadius: 'var(--radius-lg)',
-      maxWidth: '700px',
-      width: '100%',
-      maxHeight: '90vh',
-      overflow: 'auto',
-      padding: 'var(--space-6)',
-    }} onClick={(e) => e.stopPropagation()}>
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-4)' }}>
-        <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
-          <div style={{ fontSize: '48px' }}>{getTypeIcon(item.item_type)}</div>
-          <div>
-            <h2 style={{ margin: 0, fontSize: 'var(--font-xl)' }}>{item.name}</h2>
-            <p style={{ margin: '4px 0 0', color: 'var(--text-secondary)', fontSize: 'var(--font-sm)' }}>
-              by {item.publisher_name || 'Unknown Publisher'}
-            </p>
-          </div>
-        </div>
-        <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: 'var(--text-secondary)' }}>×</button>
-      </div>
-      
-      {/* Stats */}
-      <div style={{ display: 'flex', gap: 'var(--space-4)', marginBottom: 'var(--space-4)', flexWrap: 'wrap' }}>
-        <div style={{ padding: 'var(--space-2) var(--space-3)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)' }}>
-          <span style={{ fontSize: 'var(--font-lg)', fontWeight: 600 }}>{item.download_count}</span>
-          <span style={{ fontSize: 'var(--font-sm)', color: 'var(--text-secondary)', marginLeft: '4px' }}>downloads</span>
-        </div>
-        {item.average_rating && (
-          <div style={{ padding: 'var(--space-2) var(--space-3)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)' }}>
-            <span style={{ fontSize: 'var(--font-lg)', fontWeight: 600 }}>★ {item.average_rating.toFixed(1)}</span>
-            <span style={{ fontSize: 'var(--font-sm)', color: 'var(--text-secondary)', marginLeft: '4px' }}>({item.review_count} reviews)</span>
-          </div>
-        )}
-        <div style={{ padding: 'var(--space-2) var(--space-3)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)' }}>
-          <span style={{ fontSize: 'var(--font-lg)', fontWeight: 600 }}>v{item.version}</span>
-        </div>
-      </div>
-      
-      {/* Description */}
-      <div style={{ marginBottom: 'var(--space-4)' }}>
-        <h3 style={{ fontSize: 'var(--font-md)', marginBottom: 'var(--space-2)' }}>Description</h3>
-        <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-          {item.description || item.short_description || 'No description available.'}
-        </p>
-      </div>
-      
-      {/* Tags */}
-      {item.tags && item.tags.length > 0 && (
-        <div style={{ marginBottom: 'var(--space-4)' }}>
-          <h3 style={{ fontSize: 'var(--font-md)', marginBottom: 'var(--space-2)' }}>Tags</h3>
-          <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-            {item.tags.map((tag, idx) => (
-              <span key={idx} style={{ padding: '4px 10px', background: 'var(--bg-secondary)', borderRadius: '12px', fontSize: 'var(--font-sm)' }}>
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-      
-      {/* Action Buttons */}
-      <div style={{ display: 'flex', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
-        {isInstalled ? (
-          <Button variant="secondary" disabled fullWidth>✓ Installed</Button>
-        ) : item.is_free ? (
-          <Button variant="primary" onClick={onInstall} disabled={installing} fullWidth>
-            {installing ? 'Installing...' : 'Install Free'}
-          </Button>
-        ) : (
-          <Button variant="primary" onClick={onPurchase} disabled={purchasing} fullWidth>
-            {purchasing ? 'Processing...' : `Purchase $${item.price?.toFixed(2)}`}
-          </Button>
-        )}
-        {item.documentation_url && (
-          <Button variant="secondary" onClick={() => window.open(item.documentation_url!, '_blank')}>
-            Docs
-          </Button>
-        )}
-      </div>
-      
-      {/* Reviews */}
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-3)' }}>
-          <h3 style={{ fontSize: 'var(--font-md)', margin: 0 }}>Reviews ({reviews.length})</h3>
-          {!showReviewForm && (
-            <Button variant="secondary" size="sm" onClick={() => setShowReviewForm(true)}>Write Review</Button>
-          )}
-        </div>
-        
-        {showReviewForm && (
-          <div style={{ padding: 'var(--space-4)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-3)' }}>
-            <div style={{ marginBottom: 'var(--space-3)' }}>
-              <label style={{ display: 'block', fontSize: 'var(--font-sm)', marginBottom: '4px' }}>Rating</label>
-              <div style={{ display: 'flex', gap: '4px' }}>
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    onClick={() => setReviewRating(star)}
-                    style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: star <= reviewRating ? '#fbbf24' : 'var(--text-tertiary)' }}
-                  >
-                    ★
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div style={{ marginBottom: 'var(--space-3)' }}>
-              <label style={{ display: 'block', fontSize: 'var(--font-sm)', marginBottom: '4px' }}>Comment</label>
-              <textarea
-                value={reviewComment}
-                onChange={(e) => setReviewComment(e.target.value)}
-                placeholder="Share your experience..."
-                style={{ width: '100%', padding: 'var(--space-2)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', background: 'var(--bg-primary)', color: 'var(--text-primary)', minHeight: '80px', resize: 'vertical' }}
-              />
-            </div>
-            <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-              <Button variant="primary" size="sm" onClick={onSubmitReview} disabled={submittingReview}>
-                {submittingReview ? 'Submitting...' : 'Submit'}
-              </Button>
-              <Button variant="secondary" size="sm" onClick={() => setShowReviewForm(false)}>Cancel</Button>
-            </div>
-          </div>
-        )}
-        
-        {reviews.length === 0 ? (
-          <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--font-sm)' }}>No reviews yet. Be the first to review!</p>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-            {reviews.map((review) => (
-              <div key={review.id} style={{ padding: 'var(--space-3)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                  <span style={{ fontWeight: 500 }}>{review.reviewer_name || 'Anonymous'}</span>
-                  <span style={{ color: '#fbbf24' }}>{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</span>
-                </div>
-                {review.comment && <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: 'var(--font-sm)' }}>{review.comment}</p>}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  </div>
-);
-
 export default MarketplacePage;
-

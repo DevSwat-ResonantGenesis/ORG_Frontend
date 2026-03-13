@@ -35,7 +35,12 @@ type WorkflowStepType =
   | 'code_execute'
   | 'webhook_trigger'
   | 'data_filter'
-  | 'aggregator';
+  | 'aggregator'
+  | 'web_search'
+  | 'email_send'
+  | 'loop'
+  | 'parallel'
+  | 'database_query';
 
 interface StepNodeData {
   label: string;
@@ -48,85 +53,128 @@ interface StepNodeData {
 const STEP_PALETTE: { type: WorkflowStepType; label: string; color: string; icon: string; desc: string }[] = [
   { type: 'webhook_trigger', label: 'Webhook Trigger', color: '#f97316', icon: '🔔', desc: 'Start workflow from external webhook' },
   { type: 'http_request', label: 'HTTP Request', color: '#3b82f6', icon: '🌐', desc: 'Call any REST API endpoint' },
-  { type: 'llm_completion', label: 'LLM Call', color: '#8b5cf6', icon: '🧠', desc: 'Generate text with AI models' },
-  { type: 'memory_search', label: 'Memory Search', color: '#06b6d4', icon: '🔍', desc: 'Search Hash Sphere memory' },
-  { type: 'agent_execute', label: 'Run Agent', color: '#f59e0b', icon: '🤖', desc: 'Execute an autonomous agent' },
-  { type: 'code_execute', label: 'Run Code', color: '#22c55e', icon: '💻', desc: 'Execute Python/JS code' },
-  { type: 'send_notification', label: 'Notification', color: '#10b981', icon: '📧', desc: 'Send email, Slack, Discord' },
-  { type: 'transform_data', label: 'Transform', color: '#6366f1', icon: '🔄', desc: 'Map, filter, transform data' },
-  { type: 'condition', label: 'If/Else', color: '#ef4444', icon: '🔀', desc: 'Branch based on condition' },
-  { type: 'data_filter', label: 'Filter', color: '#a855f7', icon: '🧹', desc: 'Filter array data by rules' },
-  { type: 'aggregator', label: 'Aggregator', color: '#ec4899', icon: '📊', desc: 'Merge multiple inputs' },
-  { type: 'delay', label: 'Delay', color: '#78716c', icon: '⏱️', desc: 'Wait before continuing' },
+  { type: 'llm_completion', label: 'LLM Call', color: '#8b5cf6', icon: '🧠', desc: 'Generate text with AI models (live providers)' },
+  { type: 'web_search', label: 'Web Search', color: '#14b8a6', icon: '🔎', desc: 'Search the internet via DuckDuckGo/Brave' },
+  { type: 'memory_search', label: 'Memory Search', color: '#06b6d4', icon: '🧲', desc: 'Search Hash Sphere semantic memory' },
+  { type: 'agent_execute', label: 'Run Agent', color: '#f59e0b', icon: '🤖', desc: 'Execute an autonomous agent by ID' },
+  { type: 'code_execute', label: 'Run Code', color: '#22c55e', icon: '💻', desc: 'Execute Python or JavaScript code' },
+  { type: 'email_send', label: 'Send Email', color: '#e11d48', icon: '✉️', desc: 'Send email via SMTP or SendGrid' },
+  { type: 'send_notification', label: 'Notification', color: '#10b981', icon: '📧', desc: 'Send Slack, Discord, or webhook notification' },
+  { type: 'transform_data', label: 'Transform', color: '#6366f1', icon: '🔄', desc: 'Map, filter, transform JSON data' },
+  { type: 'condition', label: 'If/Else', color: '#ef4444', icon: '🔀', desc: 'Branch based on expression' },
+  { type: 'loop', label: 'Loop', color: '#a855f7', icon: '🔁', desc: 'Iterate over array items' },
+  { type: 'parallel', label: 'Parallel', color: '#0ea5e9', icon: '⚡', desc: 'Run multiple branches concurrently' },
+  { type: 'data_filter', label: 'Filter', color: '#d946ef', icon: '🧹', desc: 'Filter array data by rules' },
+  { type: 'aggregator', label: 'Aggregator', color: '#ec4899', icon: '📊', desc: 'Merge multiple input streams' },
+  { type: 'database_query', label: 'Database', color: '#7c3aed', icon: '🗄️', desc: 'Query PostgreSQL, MongoDB, or Redis' },
+  { type: 'delay', label: 'Delay', color: '#78716c', icon: '⏱️', desc: 'Wait N seconds before continuing' },
 ];
 
 const COLORS: Record<string, string> = Object.fromEntries(STEP_PALETTE.map(s => [s.type, s.color]));
 const ICONS: Record<string, string> = Object.fromEntries(STEP_PALETTE.map(s => [s.type, s.icon]));
 
 // ── Config fields per step type ──
-const CONFIG_FIELDS: Record<WorkflowStepType, { key: string; label: string; type: 'text' | 'textarea' | 'select' | 'number'; options?: string[] }[]> = {
+// NOTE: LLM model options are updated dynamically from live providers in ConfigPanel
+// defaultValue is pre-populated into node config when a node is first created
+type ConfigField = { key: string; label: string; type: 'text' | 'textarea' | 'select' | 'number'; options?: string[]; defaultValue?: string | number };
+const CONFIG_FIELDS: Record<WorkflowStepType, ConfigField[]> = {
   webhook_trigger: [
-    { key: 'path', label: 'Webhook Path', type: 'text' },
-    { key: 'method', label: 'HTTP Method', type: 'select', options: ['POST', 'GET', 'PUT'] },
-    { key: 'secret', label: 'Secret (optional)', type: 'text' },
+    { key: 'path', label: 'Webhook Path', type: 'text', defaultValue: '/webhook/incoming' },
+    { key: 'method', label: 'HTTP Method', type: 'select', options: ['POST', 'GET', 'PUT'], defaultValue: 'POST' },
+    { key: 'secret', label: 'Verification Secret', type: 'text' },
+    { key: 'response_mode', label: 'Response Mode', type: 'select', options: ['sync', 'async'], defaultValue: 'async' },
   ],
   http_request: [
     { key: 'url', label: 'URL', type: 'text' },
-    { key: 'method', label: 'Method', type: 'select', options: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'] },
-    { key: 'headers', label: 'Headers (JSON)', type: 'textarea' },
-    { key: 'body', label: 'Body (JSON)', type: 'textarea' },
-    { key: 'timeout', label: 'Timeout (ms)', type: 'number' },
+    { key: 'method', label: 'Method', type: 'select', options: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], defaultValue: 'GET' },
+    { key: 'headers', label: 'Headers (JSON)', type: 'textarea', defaultValue: '{}' },
+    { key: 'body', label: 'Body (JSON)', type: 'textarea', defaultValue: '{}' },
+    { key: 'timeout', label: 'Timeout (ms)', type: 'number', defaultValue: 30000 },
   ],
   llm_completion: [
-    { key: 'model', label: 'Model', type: 'select', options: ['groq/llama-3.3-70b', 'openai/gpt-4o', 'anthropic/claude-3.5-sonnet', 'google/gemini-pro'] },
-    { key: 'prompt', label: 'System Prompt', type: 'textarea' },
-    { key: 'user_message', label: 'User Message', type: 'textarea' },
-    { key: 'max_tokens', label: 'Max Tokens', type: 'number' },
-    { key: 'temperature', label: 'Temperature', type: 'number' },
+    { key: 'provider', label: 'Provider', type: 'select', options: ['groq', 'openai', 'anthropic', 'google'], defaultValue: 'groq' },
+    { key: 'model', label: 'Model', type: 'select', options: ['groq/llama-3.3-70b-versatile', 'groq/llama-3.1-8b-instant', 'groq/mixtral-8x7b-32768', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'anthropic/claude-3.5-sonnet', 'google/gemini-pro'], defaultValue: 'groq/llama-3.3-70b-versatile' },
+    { key: 'prompt', label: 'System Prompt', type: 'textarea', defaultValue: 'You are an expert assistant.' },
+    { key: 'user_message', label: 'User Message (use {{steps.X.output}} for dynamic input)', type: 'textarea' },
+    { key: 'max_tokens', label: 'Max Tokens', type: 'number', defaultValue: 2048 },
+    { key: 'temperature', label: 'Temperature (0-2)', type: 'number', defaultValue: 0.7 },
+  ],
+  web_search: [
+    { key: 'query', label: 'Search Query', type: 'text' },
+    { key: 'engine', label: 'Search Engine', type: 'select', options: ['duckduckgo', 'brave', 'google'], defaultValue: 'duckduckgo' },
+    { key: 'max_results', label: 'Max Results', type: 'number', defaultValue: 10 },
+    { key: 'region', label: 'Region', type: 'select', options: ['us-en', 'uk-en', 'de-de', 'fr-fr', 'global'], defaultValue: 'global' },
+    { key: 'time_range', label: 'Time Range', type: 'select', options: ['any', 'day', 'week', 'month', 'year'], defaultValue: 'any' },
   ],
   memory_search: [
     { key: 'query', label: 'Search Query', type: 'text' },
-    { key: 'namespace', label: 'Namespace', type: 'text' },
-    { key: 'top_k', label: 'Results Limit', type: 'number' },
+    { key: 'namespace', label: 'Namespace', type: 'text', defaultValue: 'default' },
+    { key: 'top_k', label: 'Results Limit', type: 'number', defaultValue: 5 },
   ],
   agent_execute: [
     { key: 'agent_id', label: 'Agent ID', type: 'text' },
-    { key: 'goal', label: 'Goal', type: 'textarea' },
-    { key: 'max_steps', label: 'Max Steps', type: 'number' },
-    { key: 'timeout', label: 'Timeout (seconds)', type: 'number' },
+    { key: 'goal', label: 'Goal / Task Description', type: 'textarea' },
+    { key: 'max_steps', label: 'Max Steps', type: 'number', defaultValue: 10 },
+    { key: 'timeout', label: 'Timeout (seconds)', type: 'number', defaultValue: 300 },
   ],
   code_execute: [
-    { key: 'language', label: 'Language', type: 'select', options: ['python', 'javascript'] },
-    { key: 'code', label: 'Code', type: 'textarea' },
-    { key: 'timeout', label: 'Timeout (ms)', type: 'number' },
+    { key: 'language', label: 'Language', type: 'select', options: ['python', 'javascript'], defaultValue: 'python' },
+    { key: 'code', label: 'Code', type: 'textarea', defaultValue: 'result = input_data\noutput = {"status": "ok", "data": result}' },
+    { key: 'timeout', label: 'Timeout (ms)', type: 'number', defaultValue: 30000 },
+  ],
+  email_send: [
+    { key: 'to', label: 'To (email address)', type: 'text' },
+    { key: 'subject', label: 'Subject', type: 'text' },
+    { key: 'body', label: 'Email Body (HTML or text)', type: 'textarea' },
+    { key: 'from_name', label: 'From Name', type: 'text', defaultValue: 'ResonantGenesis Workflows' },
+    { key: 'provider', label: 'Email Provider', type: 'select', options: ['platform_smtp', 'sendgrid', 'ses', 'custom_smtp'], defaultValue: 'platform_smtp' },
+    { key: 'attach_output', label: 'Attach Previous Output As', type: 'select', options: ['none', 'pdf', 'json', 'csv'], defaultValue: 'none' },
   ],
   send_notification: [
-    { key: 'channel', label: 'Channel', type: 'select', options: ['email', 'slack', 'discord', 'webhook'] },
-    { key: 'to', label: 'Recipient', type: 'text' },
-    { key: 'subject', label: 'Subject', type: 'text' },
+    { key: 'channel', label: 'Channel', type: 'select', options: ['slack', 'discord', 'webhook', 'telegram'], defaultValue: 'slack' },
+    { key: 'webhook_url', label: 'Webhook URL', type: 'text' },
     { key: 'message', label: 'Message', type: 'textarea' },
   ],
   transform_data: [
-    { key: 'operation', label: 'Operation', type: 'select', options: ['map', 'filter', 'reduce', 'jq', 'jsonpath'] },
-    { key: 'expression', label: 'Expression', type: 'textarea' },
+    { key: 'operation', label: 'Operation', type: 'select', options: ['map', 'filter', 'reduce', 'flatten', 'sort', 'unique', 'jq', 'jsonpath', 'template'], defaultValue: 'map' },
+    { key: 'expression', label: 'Expression / Template', type: 'textarea' },
+    { key: 'output_key', label: 'Output Key Name', type: 'text', defaultValue: 'result' },
   ],
   condition: [
-    { key: 'expression', label: 'Condition Expression', type: 'text' },
-    { key: 'true_label', label: 'True Branch Label', type: 'text' },
-    { key: 'false_label', label: 'False Branch Label', type: 'text' },
+    { key: 'expression', label: 'Condition (JS expression)', type: 'text' },
+    { key: 'true_label', label: 'True Branch Label', type: 'text', defaultValue: 'True' },
+    { key: 'false_label', label: 'False Branch Label', type: 'text', defaultValue: 'False' },
+  ],
+  loop: [
+    { key: 'items_path', label: 'Items Array Path', type: 'text' },
+    { key: 'max_iterations', label: 'Max Iterations', type: 'number', defaultValue: 100 },
+    { key: 'parallel', label: 'Parallel Execution', type: 'select', options: ['false', 'true'], defaultValue: 'false' },
+    { key: 'batch_size', label: 'Batch Size (if parallel)', type: 'number', defaultValue: 5 },
+  ],
+  parallel: [
+    { key: 'branches', label: 'Number of Branches', type: 'number', defaultValue: 3 },
+    { key: 'wait_mode', label: 'Wait Mode', type: 'select', options: ['all', 'any', 'first_success'], defaultValue: 'all' },
+    { key: 'timeout', label: 'Timeout (seconds)', type: 'number', defaultValue: 60 },
   ],
   data_filter: [
     { key: 'field', label: 'Field Path', type: 'text' },
-    { key: 'operator', label: 'Operator', type: 'select', options: ['equals', 'not_equals', 'contains', 'gt', 'lt', 'gte', 'lte', 'regex'] },
+    { key: 'operator', label: 'Operator', type: 'select', options: ['equals', 'not_equals', 'contains', 'not_contains', 'gt', 'lt', 'gte', 'lte', 'regex', 'exists', 'is_unique'], defaultValue: 'equals' },
     { key: 'value', label: 'Value', type: 'text' },
+    { key: 'deduplicate_key', label: 'Deduplicate By Field', type: 'text' },
   ],
   aggregator: [
-    { key: 'mode', label: 'Aggregation Mode', type: 'select', options: ['merge', 'concat', 'first', 'last', 'all'] },
-    { key: 'wait_for', label: 'Wait For (count)', type: 'number' },
+    { key: 'mode', label: 'Aggregation Mode', type: 'select', options: ['merge', 'concat', 'first', 'last', 'all', 'sum', 'count'], defaultValue: 'merge' },
+    { key: 'wait_for', label: 'Wait For (inputs count)', type: 'number', defaultValue: 2 },
+  ],
+  database_query: [
+    { key: 'db_type', label: 'Database Type', type: 'select', options: ['postgresql', 'mongodb', 'redis', 'elasticsearch'], defaultValue: 'postgresql' },
+    { key: 'connection_string', label: 'Connection String', type: 'text' },
+    { key: 'query', label: 'Query', type: 'textarea' },
+    { key: 'params', label: 'Parameters (JSON)', type: 'textarea', defaultValue: '[]' },
   ],
   delay: [
-    { key: 'duration', label: 'Duration (seconds)', type: 'number' },
-    { key: 'until', label: 'Or Until (ISO date)', type: 'text' },
+    { key: 'duration', label: 'Duration (seconds)', type: 'number', defaultValue: 5 },
+    { key: 'until', label: 'Or Wait Until (ISO datetime)', type: 'text' },
   ],
 };
 
@@ -207,14 +255,56 @@ interface ConfigPanelProps {
 }
 
 const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) => {
+  const [liveModels, setLiveModels] = useState<string[]>([]);
+  const [loadingProviders, setLoadingProviders] = useState(false);
+
+  // Fetch live LLM providers when an LLM node is selected
+  useEffect(() => {
+    if (!node) return;
+    const data = node.data as StepNodeData;
+    if (data.stepType === 'llm_completion' && liveModels.length === 0) {
+      setLoadingProviders(true);
+      fastapiClient.get('/resonant-chat/providers').then(res => {
+        const providers = res.data?.providers || [];
+        const models: string[] = [];
+        providers.forEach((p: any) => {
+          if (p.live || p.status === 'online') {
+            const provId = p.id || p.name || '';
+            (p.models || []).forEach((m: any) => {
+              const modelId = typeof m === 'string' ? m : (m.id || m.name || '');
+              if (modelId) models.push(`${provId}/${modelId}`);
+            });
+            if ((p.models || []).length === 0 && provId) {
+              models.push(provId);
+            }
+          }
+        });
+        // Merge with default options if live fetch returned results
+        if (models.length > 0) {
+          setLiveModels(models);
+        }
+      }).catch(() => {}).finally(() => setLoadingProviders(false));
+    }
+  }, [node, liveModels.length]);
+
   if (!node) return null;
   const data = node.data as StepNodeData;
   const fields = CONFIG_FIELDS[data.stepType] || [];
   const color = COLORS[data.stepType] || '#6366f1';
+  const icon = ICONS[data.stepType] || '⚙️';
+  const palette = STEP_PALETTE.find(s => s.type === data.stepType);
+
+  // Get options for a field, with live override for LLM models
+  const getFieldOptions = (field: typeof fields[0]): string[] => {
+    if (data.stepType === 'llm_completion' && field.key === 'model' && liveModels.length > 0) {
+      return liveModels;
+    }
+    return field.options || [];
+  };
 
   return (
     <div style={{
-      width: 320,
+      width: 340,
       background: '#0f172a',
       borderLeft: '1px solid #1e293b',
       padding: 0,
@@ -230,12 +320,21 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
         alignItems: 'center',
         gap: 8,
       }}>
-        <Settings size={16} color={color} />
-        <span style={{ color: '#e2e8f0', fontSize: 14, fontWeight: 600, flex: 1 }}>Configure Step</span>
+        <span style={{ fontSize: 16 }}>{icon}</span>
+        <div style={{ flex: 1 }}>
+          <span style={{ color: '#e2e8f0', fontSize: 14, fontWeight: 600 }}>Configure: {data.stepType.replace(/_/g, ' ')}</span>
+          {palette?.desc && <div style={{ color: '#64748b', fontSize: 10, marginTop: 2 }}>{palette.desc}</div>}
+        </div>
         <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
           <X size={16} color="#64748b" />
         </button>
       </div>
+
+      {loadingProviders && (
+        <div style={{ padding: '6px 16px', background: 'rgba(99,102,241,0.1)', color: '#818cf8', fontSize: 11 }}>
+          Loading live providers...
+        </div>
+      )}
 
       <div style={{ padding: 16, flex: 1 }}>
         {/* Step Name */}
@@ -268,7 +367,6 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
           <input
             value={data.description || ''}
             onChange={(e) => onUpdate(node.id, { description: e.target.value })}
-            placeholder="Optional description..."
             style={{
               width: '100%',
               padding: '8px 10px',
@@ -306,7 +404,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
                 }}
               >
                 <option value="">Select...</option>
-                {(field.options || []).map(opt => (
+                {getFieldOptions(field).map(opt => (
                   <option key={opt} value={opt}>{opt}</option>
                 ))}
               </select>
@@ -314,7 +412,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
               <textarea
                 value={data.config?.[field.key] || ''}
                 onChange={(e) => onUpdate(node.id, { config: { ...data.config, [field.key]: e.target.value } })}
-                rows={3}
+                rows={field.key === 'code' ? 8 : 3}
                 style={{
                   width: '100%',
                   padding: '8px 10px',
@@ -323,7 +421,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
                   borderRadius: 6,
                   color: '#e2e8f0',
                   fontSize: 12,
-                  fontFamily: field.key === 'code' ? 'monospace' : 'inherit',
+                  fontFamily: field.key === 'code' || field.key === 'query' ? 'monospace' : 'inherit',
                   outline: 'none',
                   resize: 'vertical',
                   boxSizing: 'border-box',
@@ -351,6 +449,18 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
             )}
           </div>
         ))}
+
+        {/* Variable reference helper */}
+        <div style={{
+          marginTop: 8, padding: '8px 10px', background: 'rgba(99,102,241,0.06)',
+          border: '1px solid rgba(99,102,241,0.15)', borderRadius: 6,
+        }}>
+          <div style={{ color: '#818cf8', fontSize: 10, fontWeight: 600, marginBottom: 4 }}>VARIABLE REFERENCE</div>
+          <div style={{ color: '#64748b', fontSize: 10, lineHeight: 1.5 }}>
+            Use <span style={{ color: '#a5b4fc', fontFamily: 'monospace' }}>{'{{steps.<name>.output}}'}</span> to reference output from a previous step.
+            Use <span style={{ color: '#a5b4fc', fontFamily: 'monospace' }}>{'{{env.<KEY>}}'}</span> for environment variables.
+          </div>
+        </div>
       </div>
 
       {/* Panel Footer */}
@@ -430,7 +540,16 @@ function VisualWorkflowInner() {
       id,
       type: 'stepNode',
       position: { x, y },
-      data: { label: palette.label, stepType, config: {}, description: palette.desc },
+      data: {
+        label: palette.label,
+        stepType,
+        config: Object.fromEntries(
+          (CONFIG_FIELDS[stepType] || [])
+            .filter(f => f.defaultValue !== undefined)
+            .map(f => [f.key, f.defaultValue])
+        ),
+        description: palette.desc,
+      },
     };
     setNodes(nds => [...nds, newNode]);
     setSelectedNodeId(id);
@@ -572,7 +691,7 @@ function VisualWorkflowInner() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
           <input value={workflowName} onChange={e => setWorkflowName(e.target.value)}
             style={{ background: 'transparent', border: 'none', color: '#e2e8f0', fontSize: 15, fontWeight: 600, outline: 'none', width: '100%' }} />
-          <input value={workflowDesc} onChange={e => setWorkflowDesc(e.target.value)} placeholder="Add description..."
+          <input value={workflowDesc} onChange={e => setWorkflowDesc(e.target.value)}
             style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: 11, outline: 'none', width: '100%' }} />
         </div>
 

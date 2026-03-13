@@ -1,4 +1,5 @@
 import React, { memo, useState, useCallback, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWorkflowStore, useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import { WorkflowCanvas } from './WorkflowCanvas';
@@ -17,26 +18,29 @@ interface WorkflowPanelProps {
   className?: string;
 }
 
-// Node palette configuration
+// Node palette configuration — synced with VisualWorkflowPage step types
 const NODE_PALETTE = [
-  { type: 'http_request', label: 'HTTP Request', color: '#14b8a6' },
+  { type: 'webhook_trigger', label: 'Webhook Trigger', color: '#f97316' },
+  { type: 'http_request', label: 'HTTP Request', color: '#3b82f6' },
   { type: 'llm_completion', label: 'LLM Call', color: '#8b5cf6' },
+  { type: 'web_search', label: 'Web Search', color: '#14b8a6' },
   { type: 'memory_search', label: 'Memory Search', color: '#06b6d4' },
-  { type: 'agent_execute', label: 'Agent', color: '#0ea5e9' },
-  { type: 'send_notification', label: 'Notification', color: '#f97316' },
-  { type: 'transform_data', label: 'Transform', color: '#ec4899' },
-  { type: 'condition', label: 'Condition', color: '#f59e0b' },
-  { type: 'delay', label: 'Delay', color: '#6366f1' },
+  { type: 'agent_execute', label: 'Run Agent', color: '#f59e0b' },
+  { type: 'code_execute', label: 'Run Code', color: '#22c55e' },
+  { type: 'email_send', label: 'Send Email', color: '#e11d48' },
+  { type: 'send_notification', label: 'Notification', color: '#10b981' },
+  { type: 'transform_data', label: 'Transform', color: '#6366f1' },
+  { type: 'condition', label: 'If/Else', color: '#ef4444' },
   { type: 'loop', label: 'Loop', color: '#a855f7' },
-  { type: 'parallel', label: 'Parallel', color: '#06b6d4' },
-  { type: 'webhook', label: 'Webhook', color: '#10b981' },
-  { type: 'code_execute', label: 'Run Code', color: '#f43f5e' },
-  { type: 'email', label: 'Email', color: '#f97316' },
-  { type: 'database', label: 'Database', color: '#8b5cf6' },
-  { type: 'filter', label: 'Filter', color: '#eab308' },
+  { type: 'parallel', label: 'Parallel', color: '#0ea5e9' },
+  { type: 'data_filter', label: 'Filter', color: '#d946ef' },
+  { type: 'aggregator', label: 'Aggregator', color: '#ec4899' },
+  { type: 'database_query', label: 'Database', color: '#7c3aed' },
+  { type: 'delay', label: 'Delay', color: '#78716c' },
 ];
 
 const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => {
+  const navigate = useNavigate();
   const storeWorkflows = useWorkflowStore(state => state.workflows);
   const selectedWorkflowId = useWorkflowStore(state => state.selectedWorkflowId);
   const { setWorkflows, addWorkflow, updateWorkflow, removeWorkflow, selectWorkflow, publishWorkflow, validateWorkflow, setLoading, setError } = useWorkflowStore();
@@ -46,6 +50,26 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
   const [workflowStats, setWorkflowStats] = useState<any>(null);
   const [panelError, setPanelError] = useState<string | null>(null);
   const [isWorking, setIsWorking] = useState(false);
+  const [liveModels, setLiveModels] = useState<string[]>([]);
+
+  // Fetch live LLM providers for model selection
+  useEffect(() => {
+    fastapiClient.get('/resonant-chat/providers').then(res => {
+      const providers = res.data?.providers || [];
+      const models: string[] = [];
+      providers.forEach((p: any) => {
+        if (p.live || p.status === 'online') {
+          const provId = p.id || p.name || '';
+          (p.models || []).forEach((m: any) => {
+            const modelId = typeof m === 'string' ? m : (m.id || m.name || '');
+            if (modelId) models.push(`${provId}/${modelId}`);
+          });
+          if ((p.models || []).length === 0 && provId) models.push(provId);
+        }
+      });
+      if (models.length > 0) setLiveModels(models);
+    }).catch(() => {});
+  }, []);
 
   const handleExportWorkflows = () => {
     const exportData = { exported_at: new Date().toISOString(), workflows, stats: workflowStats };
@@ -340,13 +364,22 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
     switch (type) {
       case 'start': return <Icons.Play />;
       case 'end': return <Icons.Stop />;
+      case 'webhook_trigger': return <Icons.External />;
       case 'http_request': return <Icons.External />;
       case 'llm_completion': return <Icons.Brain />;
+      case 'web_search': return <Icons.Search />;
       case 'memory_search': return <Icons.Search />;
       case 'agent_execute': return <Icons.Agents />;
+      case 'code_execute': return <Icons.Code />;
+      case 'email_send': return <Icons.Send />;
       case 'send_notification': return <Icons.Send />;
       case 'transform_data': return <Icons.Zap />;
       case 'condition': return <Icons.Fork />;
+      case 'loop': return <Icons.Refresh />;
+      case 'parallel': return <Icons.Fork />;
+      case 'data_filter': return <Icons.Search />;
+      case 'aggregator': return <Icons.BarChart />;
+      case 'database_query': return <Icons.Code />;
       case 'delay': return <Icons.Clock />;
       default: return <Icons.Zap />;
     }
@@ -394,6 +427,9 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
     if (!node) return null;
     const cfg = (node.config || {}) as Record<string, any>;
 
+    const defaultModels = ['groq/llama-3.3-70b-versatile', 'groq/llama-3.1-8b-instant', 'groq/mixtral-8x7b-32768', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'anthropic/claude-3.5-sonnet', 'google/gemini-pro'];
+    const modelOptions = liveModels.length > 0 ? liveModels : defaultModels;
+
     return (
       <div className={styles.configForm}>
         <div className={styles.configField}>
@@ -414,6 +450,25 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
           <span className={styles.configValue}>{node.type}</span>
         </div>
 
+        {node.type === 'webhook_trigger' && (
+          <>
+            <div className={styles.configField}>
+              <label>Webhook Path</label>
+              <input type="text" value={cfg.path || '/webhook/incoming'} onChange={e => updateNodeConfig(node.id, { path: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>HTTP Method</label>
+              <select value={cfg.method || 'POST'} onChange={e => updateNodeConfig(node.id, { method: e.target.value })}>
+                {['POST','GET','PUT'].map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+            </div>
+            <div className={styles.configField}>
+              <label>Secret</label>
+              <input type="text" value={cfg.secret || ''} onChange={e => updateNodeConfig(node.id, { secret: e.target.value })} />
+            </div>
+          </>
+        )}
+
         {node.type === 'http_request' && (
           <>
             <div className={styles.configField}>
@@ -424,7 +479,15 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
             </div>
             <div className={styles.configField}>
               <label>URL</label>
-              <input type="text" placeholder="https://api.example.com/endpoint" value={cfg.url || ''} onChange={e => updateNodeConfig(node.id, { url: e.target.value })} />
+              <input type="text" value={cfg.url || ''} onChange={e => updateNodeConfig(node.id, { url: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Headers (JSON)</label>
+              <textarea rows={2} value={cfg.headers || '{}'} onChange={e => updateNodeConfig(node.id, { headers: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Body (JSON)</label>
+              <textarea rows={3} value={cfg.body || '{}'} onChange={e => updateNodeConfig(node.id, { body: e.target.value })} />
             </div>
           </>
         )}
@@ -432,16 +495,57 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
         {node.type === 'llm_completion' && (
           <>
             <div className={styles.configField}>
-              <label>Prompt</label>
-              <textarea rows={4} placeholder="Enter prompt... Use {{input.key}} for variables" value={cfg.prompt || ''} onChange={e => updateNodeConfig(node.id, { prompt: e.target.value })} />
+              <label>Provider</label>
+              <select value={cfg.provider || 'groq'} onChange={e => updateNodeConfig(node.id, { provider: e.target.value })}>
+                {['groq','openai','anthropic','google'].map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
             </div>
             <div className={styles.configField}>
-              <label>Model</label>
-              <input type="text" placeholder="gpt-4-turbo-preview" value={cfg.model || ''} onChange={e => updateNodeConfig(node.id, { model: e.target.value })} />
+              <label>Model {liveModels.length > 0 ? '(live)' : ''}</label>
+              <select value={cfg.model || 'groq/llama-3.3-70b-versatile'} onChange={e => updateNodeConfig(node.id, { model: e.target.value })}>
+                {modelOptions.map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+            </div>
+            <div className={styles.configField}>
+              <label>System Prompt</label>
+              <textarea rows={4} value={cfg.prompt || 'You are an expert assistant.'} onChange={e => updateNodeConfig(node.id, { prompt: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>User Message</label>
+              <textarea rows={3} value={cfg.user_message || ''} onChange={e => updateNodeConfig(node.id, { user_message: e.target.value })} />
             </div>
             <div className={styles.configField}>
               <label>Max Tokens</label>
-              <input type="number" placeholder="1024" value={cfg.max_tokens || ''} onChange={e => updateNodeConfig(node.id, { max_tokens: parseInt(e.target.value) || 1024 })} />
+              <input type="number" value={cfg.max_tokens || 2048} onChange={e => updateNodeConfig(node.id, { max_tokens: parseInt(e.target.value) || 2048 })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Temperature (0-2)</label>
+              <input type="number" step="0.1" min="0" max="2" value={cfg.temperature ?? 0.7} onChange={e => updateNodeConfig(node.id, { temperature: parseFloat(e.target.value) || 0.7 })} />
+            </div>
+          </>
+        )}
+
+        {node.type === 'web_search' && (
+          <>
+            <div className={styles.configField}>
+              <label>Search Query</label>
+              <input type="text" value={cfg.query || ''} onChange={e => updateNodeConfig(node.id, { query: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Search Engine</label>
+              <select value={cfg.engine || 'duckduckgo'} onChange={e => updateNodeConfig(node.id, { engine: e.target.value })}>
+                {['duckduckgo','brave','google'].map(se => <option key={se} value={se}>{se}</option>)}
+              </select>
+            </div>
+            <div className={styles.configField}>
+              <label>Max Results</label>
+              <input type="number" value={cfg.max_results || 10} onChange={e => updateNodeConfig(node.id, { max_results: parseInt(e.target.value) || 10 })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Time Range</label>
+              <select value={cfg.time_range || 'any'} onChange={e => updateNodeConfig(node.id, { time_range: e.target.value })}>
+                {['any','day','week','month','year'].map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
             </div>
           </>
         )}
@@ -450,11 +554,15 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
           <>
             <div className={styles.configField}>
               <label>Query</label>
-              <input type="text" placeholder="Search query... Use {{input.key}} for variables" value={cfg.query || ''} onChange={e => updateNodeConfig(node.id, { query: e.target.value })} />
+              <input type="text" value={cfg.query || ''} onChange={e => updateNodeConfig(node.id, { query: e.target.value })} />
             </div>
             <div className={styles.configField}>
-              <label>Limit</label>
-              <input type="number" placeholder="5" value={cfg.limit || ''} onChange={e => updateNodeConfig(node.id, { limit: parseInt(e.target.value) || 5 })} />
+              <label>Namespace</label>
+              <input type="text" value={cfg.namespace || 'default'} onChange={e => updateNodeConfig(node.id, { namespace: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Results Limit</label>
+              <input type="number" value={cfg.top_k || 5} onChange={e => updateNodeConfig(node.id, { top_k: parseInt(e.target.value) || 5 })} />
             </div>
           </>
         )}
@@ -471,8 +579,60 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
               </select>
             </div>
             <div className={styles.configField}>
-              <label>Task</label>
-              <textarea rows={3} placeholder="Task description for the agent" value={cfg.task || ''} onChange={e => updateNodeConfig(node.id, { task: e.target.value })} />
+              <label>Goal / Task</label>
+              <textarea rows={3} value={cfg.goal || cfg.task || ''} onChange={e => updateNodeConfig(node.id, { goal: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Max Steps</label>
+              <input type="number" value={cfg.max_steps || 10} onChange={e => updateNodeConfig(node.id, { max_steps: parseInt(e.target.value) || 10 })} />
+            </div>
+          </>
+        )}
+
+        {node.type === 'code_execute' && (
+          <>
+            <div className={styles.configField}>
+              <label>Language</label>
+              <select value={cfg.language || 'python'} onChange={e => updateNodeConfig(node.id, { language: e.target.value })}>
+                {['python','javascript'].map(l => <option key={l} value={l}>{l}</option>)}
+              </select>
+            </div>
+            <div className={styles.configField}>
+              <label>Code</label>
+              <textarea rows={8} style={{ fontFamily: 'monospace', fontSize: '11px' }} value={cfg.code || 'result = input_data\noutput = {"status": "ok", "data": result}'} onChange={e => updateNodeConfig(node.id, { code: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Timeout (ms)</label>
+              <input type="number" value={cfg.timeout || 30000} onChange={e => updateNodeConfig(node.id, { timeout: parseInt(e.target.value) || 30000 })} />
+            </div>
+          </>
+        )}
+
+        {node.type === 'email_send' && (
+          <>
+            <div className={styles.configField}>
+              <label>To (email)</label>
+              <input type="text" value={cfg.to || ''} onChange={e => updateNodeConfig(node.id, { to: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Subject</label>
+              <input type="text" value={cfg.subject || ''} onChange={e => updateNodeConfig(node.id, { subject: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Body (HTML or text)</label>
+              <textarea rows={5} value={cfg.body || ''} onChange={e => updateNodeConfig(node.id, { body: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Email Provider</label>
+              <select value={cfg.provider || 'platform_smtp'} onChange={e => updateNodeConfig(node.id, { provider: e.target.value })}>
+                {['platform_smtp','sendgrid','ses','custom_smtp'].map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
+            </div>
+            <div className={styles.configField}>
+              <label>Attach Previous Output As</label>
+              <select value={cfg.attach_output || 'none'} onChange={e => updateNodeConfig(node.id, { attach_output: e.target.value })}>
+                {['none','pdf','json','csv'].map(a => <option key={a} value={a}>{a}</option>)}
+              </select>
             </div>
           </>
         )}
@@ -481,48 +641,155 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
           <>
             <div className={styles.configField}>
               <label>Channel</label>
-              <select value={cfg.channel || 'log'} onChange={e => updateNodeConfig(node.id, { channel: e.target.value })}>
-                {['log','email','slack','webhook'].map(c => <option key={c} value={c}>{c}</option>)}
+              <select value={cfg.channel || 'slack'} onChange={e => updateNodeConfig(node.id, { channel: e.target.value })}>
+                {['slack','discord','webhook','telegram'].map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div className={styles.configField}>
+              <label>Webhook URL</label>
+              <input type="text" value={cfg.webhook_url || ''} onChange={e => updateNodeConfig(node.id, { webhook_url: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
               <label>Message</label>
-              <textarea rows={3} placeholder="Notification message... Use {{steps.step_name.output}} for variables" value={cfg.message || ''} onChange={e => updateNodeConfig(node.id, { message: e.target.value })} />
+              <textarea rows={3} value={cfg.message || ''} onChange={e => updateNodeConfig(node.id, { message: e.target.value })} />
             </div>
           </>
         )}
 
         {node.type === 'transform_data' && (
-          <div className={styles.configField}>
-            <label>Expression</label>
-            <input type="text" placeholder="$.steps.step_name.output" value={cfg.expression || ''} onChange={e => updateNodeConfig(node.id, { expression: e.target.value })} />
-          </div>
+          <>
+            <div className={styles.configField}>
+              <label>Operation</label>
+              <select value={cfg.operation || 'map'} onChange={e => updateNodeConfig(node.id, { operation: e.target.value })}>
+                {['map','filter','reduce','flatten','sort','unique','jq','jsonpath','template'].map(o => <option key={o} value={o}>{o}</option>)}
+              </select>
+            </div>
+            <div className={styles.configField}>
+              <label>Expression</label>
+              <textarea rows={3} value={cfg.expression || ''} onChange={e => updateNodeConfig(node.id, { expression: e.target.value })} />
+            </div>
+          </>
         )}
 
         {node.type === 'condition' && (
           <>
             <div className={styles.configField}>
-              <label>Left Value</label>
-              <input type="text" placeholder="{{steps.step_name.result}}" value={cfg.left || ''} onChange={e => updateNodeConfig(node.id, { left: e.target.value })} />
+              <label>Condition Expression</label>
+              <input type="text" value={cfg.expression || cfg.left || ''} onChange={e => updateNodeConfig(node.id, { expression: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>True Branch Label</label>
+              <input type="text" value={cfg.true_label || 'True'} onChange={e => updateNodeConfig(node.id, { true_label: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>False Branch Label</label>
+              <input type="text" value={cfg.false_label || 'False'} onChange={e => updateNodeConfig(node.id, { false_label: e.target.value })} />
+            </div>
+          </>
+        )}
+
+        {node.type === 'loop' && (
+          <>
+            <div className={styles.configField}>
+              <label>Items Array Path</label>
+              <input type="text" value={cfg.items_path || ''} onChange={e => updateNodeConfig(node.id, { items_path: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Max Iterations</label>
+              <input type="number" value={cfg.max_iterations || 100} onChange={e => updateNodeConfig(node.id, { max_iterations: parseInt(e.target.value) || 100 })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Parallel Execution</label>
+              <select value={cfg.parallel || 'false'} onChange={e => updateNodeConfig(node.id, { parallel: e.target.value })}>
+                {['false','true'].map(v => <option key={v} value={v}>{v}</option>)}
+              </select>
+            </div>
+          </>
+        )}
+
+        {node.type === 'parallel' && (
+          <>
+            <div className={styles.configField}>
+              <label>Number of Branches</label>
+              <input type="number" value={cfg.branches || 3} onChange={e => updateNodeConfig(node.id, { branches: parseInt(e.target.value) || 3 })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Wait Mode</label>
+              <select value={cfg.wait_mode || 'all'} onChange={e => updateNodeConfig(node.id, { wait_mode: e.target.value })}>
+                {['all','any','first_success'].map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+            </div>
+          </>
+        )}
+
+        {node.type === 'data_filter' && (
+          <>
+            <div className={styles.configField}>
+              <label>Field Path</label>
+              <input type="text" value={cfg.field || ''} onChange={e => updateNodeConfig(node.id, { field: e.target.value })} />
             </div>
             <div className={styles.configField}>
               <label>Operator</label>
-              <select value={cfg.operator || '=='} onChange={e => updateNodeConfig(node.id, { operator: e.target.value })}>
-                {['==','!=','>','<','contains'].map(op => <option key={op} value={op}>{op}</option>)}
+              <select value={cfg.operator || 'equals'} onChange={e => updateNodeConfig(node.id, { operator: e.target.value })}>
+                {['equals','not_equals','contains','not_contains','gt','lt','regex','exists','is_unique'].map(o => <option key={o} value={o}>{o}</option>)}
               </select>
             </div>
             <div className={styles.configField}>
-              <label>Right Value</label>
-              <input type="text" placeholder="true" value={cfg.right || ''} onChange={e => updateNodeConfig(node.id, { right: e.target.value })} />
+              <label>Value</label>
+              <input type="text" value={cfg.value || ''} onChange={e => updateNodeConfig(node.id, { value: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Deduplicate By</label>
+              <input type="text" value={cfg.deduplicate_key || ''} onChange={e => updateNodeConfig(node.id, { deduplicate_key: e.target.value })} />
+            </div>
+          </>
+        )}
+
+        {node.type === 'aggregator' && (
+          <>
+            <div className={styles.configField}>
+              <label>Aggregation Mode</label>
+              <select value={cfg.mode || 'merge'} onChange={e => updateNodeConfig(node.id, { mode: e.target.value })}>
+                {['merge','concat','first','last','all','sum','count'].map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+            </div>
+            <div className={styles.configField}>
+              <label>Wait For (inputs count)</label>
+              <input type="number" value={cfg.wait_for || 2} onChange={e => updateNodeConfig(node.id, { wait_for: parseInt(e.target.value) || 2 })} />
+            </div>
+          </>
+        )}
+
+        {node.type === 'database_query' && (
+          <>
+            <div className={styles.configField}>
+              <label>Database Type</label>
+              <select value={cfg.db_type || 'postgresql'} onChange={e => updateNodeConfig(node.id, { db_type: e.target.value })}>
+                {['postgresql','mongodb','redis','elasticsearch'].map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+            </div>
+            <div className={styles.configField}>
+              <label>Connection String</label>
+              <input type="text" value={cfg.connection_string || ''} onChange={e => updateNodeConfig(node.id, { connection_string: e.target.value })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Query</label>
+              <textarea rows={4} style={{ fontFamily: 'monospace', fontSize: '11px' }} value={cfg.query || ''} onChange={e => updateNodeConfig(node.id, { query: e.target.value })} />
             </div>
           </>
         )}
 
         {node.type === 'delay' && (
-          <div className={styles.configField}>
-            <label>Seconds</label>
-            <input type="number" placeholder="5" value={cfg.seconds || ''} onChange={e => updateNodeConfig(node.id, { seconds: parseInt(e.target.value) || 1 })} />
-          </div>
+          <>
+            <div className={styles.configField}>
+              <label>Duration (seconds)</label>
+              <input type="number" value={cfg.duration || cfg.seconds || 5} onChange={e => updateNodeConfig(node.id, { duration: parseInt(e.target.value) || 1 })} />
+            </div>
+            <div className={styles.configField}>
+              <label>Or Wait Until (ISO date)</label>
+              <input type="text" value={cfg.until || ''} onChange={e => updateNodeConfig(node.id, { until: e.target.value })} />
+            </div>
+          </>
         )}
       </div>
     );
@@ -645,10 +912,10 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
       id: 't6', name: 'Report Generator', iconType: 'barChart', description: 'Automated report generation',
       templateNodes: [
         { id: 'start', type: 'start', label: 'Start', position: { x: 50, y: 200 }, config: {} },
-        { id: 'gather', type: 'api', label: 'Gather Data', position: { x: 200, y: 200 }, config: {} },
-        { id: 'process', type: 'transform', label: 'Process', position: { x: 350, y: 200 }, config: {} },
-        { id: 'generate', type: 'agent', label: 'Generate Report', position: { x: 500, y: 200 }, config: {} },
-        { id: 'deliver', type: 'api', label: 'Deliver', position: { x: 650, y: 200 }, config: {} },
+        { id: 'gather', type: 'http_request', label: 'Gather Data', position: { x: 200, y: 200 }, config: {} },
+        { id: 'process', type: 'transform_data', label: 'Process', position: { x: 350, y: 200 }, config: {} },
+        { id: 'generate', type: 'llm_completion', label: 'Generate Report', position: { x: 500, y: 200 }, config: {} },
+        { id: 'deliver', type: 'email_send', label: 'Deliver', position: { x: 650, y: 200 }, config: {} },
         { id: 'end', type: 'end', label: 'End', position: { x: 800, y: 200 }, config: {} },
       ],
       templateEdges: [
@@ -657,6 +924,56 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
         { id: 'e3', source: 'process', target: 'generate' },
         { id: 'e4', source: 'generate', target: 'deliver' },
         { id: 'e5', source: 'deliver', target: 'end' },
+      ],
+    },
+    {
+      id: 't7', name: 'AI Events Scraper', iconType: 'search', description: 'Scrape AI/IT events from the web, deduplicate, generate PDF report, and email it',
+      templateNodes: [
+        { id: 'start', type: 'start', label: 'Start', position: { x: 50, y: 200 }, config: {} },
+        { id: 'search_events', type: 'web_search', label: 'Search AI Events', position: { x: 220, y: 200 }, config: {
+          query: 'AI technology conferences events 2026',
+          engine: 'duckduckgo',
+          max_results: 50,
+          time_range: 'month',
+        }},
+        { id: 'extract_events', type: 'llm_completion', label: 'Extract Event Data', position: { x: 420, y: 200 }, config: {
+          provider: 'groq',
+          model: 'groq/llama-3.3-70b-versatile',
+          prompt: 'You are a data extraction expert. Extract structured event data from search results into a JSON array.',
+          user_message: 'Extract all AI/IT events from these search results. For each event return JSON with fields: name, description, date, time, location, price, registration_url. Search results: {{steps.search_events.output}}',
+          max_tokens: 4096,
+          temperature: 0.3,
+        }},
+        { id: 'deduplicate', type: 'data_filter', label: 'Remove Duplicates', position: { x: 620, y: 200 }, config: {
+          field: 'name',
+          operator: 'is_unique',
+          deduplicate_key: 'name',
+        }},
+        { id: 'format_report', type: 'llm_completion', label: 'Generate HTML Report', position: { x: 820, y: 200 }, config: {
+          provider: 'groq',
+          model: 'groq/llama-3.3-70b-versatile',
+          prompt: 'You are a professional report designer. Generate a beautiful HTML report for PDF conversion with modern styling.',
+          user_message: 'Create a professional HTML report titled "AI & IT Events Report" with a table listing each event: Name, Description, Date & Time, Location, Price, and Registration Link. Events data: {{steps.deduplicate.output}}',
+          max_tokens: 4096,
+          temperature: 0.5,
+        }},
+        { id: 'email_report', type: 'email_send', label: 'Email Report', position: { x: 1020, y: 200 }, config: {
+          to: '{{input.recipient_email}}',
+          subject: 'AI & IT Events Report - {{steps.format_report.output.date}}',
+          body: '{{steps.format_report.output}}',
+          from_name: 'ResonantGenesis Workflows',
+          provider: 'platform_smtp',
+          attach_output: 'pdf',
+        }},
+        { id: 'end', type: 'end', label: 'End', position: { x: 1200, y: 200 }, config: {} },
+      ],
+      templateEdges: [
+        { id: 'e1', source: 'start', target: 'search_events' },
+        { id: 'e2', source: 'search_events', target: 'extract_events' },
+        { id: 'e3', source: 'extract_events', target: 'deduplicate' },
+        { id: 'e4', source: 'deduplicate', target: 'format_report' },
+        { id: 'e5', source: 'format_report', target: 'email_report' },
+        { id: 'e6', source: 'email_report', target: 'end' },
       ],
     },
   ];
@@ -743,7 +1060,7 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
             <div className={styles.createSection}>
               <input
                 type="text"
-                placeholder="New workflow name..."
+                
                 value={newWorkflowName}
                 onChange={e => setNewWorkflowName(e.target.value)}
                 onKeyPress={e => e.key === 'Enter' && handleCreateWorkflow()}
@@ -811,7 +1128,15 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
                     {selectedWorkflow.status}
                   </span>
                   <div className={styles.builderActions}>
-                    <button className={styles.secondaryBtn} onClick={() => handleAddNode('agent')}>
+                    <button
+                      className={styles.primaryBtn}
+                      onClick={() => navigate('/network/workflows/visual')}
+                      style={{ background: '#6366f1', display: 'flex', alignItems: 'center', gap: 4 }}
+                      title="Open full-screen visual workflow builder with ReactFlow canvas"
+                    >
+                      <Icons.External /> Full Builder
+                    </button>
+                    <button className={styles.secondaryBtn} onClick={() => handleAddNode('http_request')}>
                       <Icons.Plus /> Add Node
                     </button>
                     <button className={styles.secondaryBtn} onClick={() => handleValidateWorkflow(selectedWorkflow.id)}>
