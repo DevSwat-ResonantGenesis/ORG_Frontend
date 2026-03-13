@@ -531,7 +531,7 @@ export default function WalletPage() {
         <Card variant="default" padding="sm" style={{ marginBottom: 'var(--space-4)', opacity: 0.8 }}>
           <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Text variant="caption" color="muted">Wallet ID: <span style={{ fontFamily: 'var(--font-mono)' }}>{wallet.id.slice(0, 12)}...</span></Text>
+              <Text variant="caption" color="muted">Wallet ID: <span style={{ fontFamily: 'var(--font-mono)' }}>{(wallet.id || "N/A").slice(0, 12)}...</span></Text>
               <button onClick={copyWalletId} style={{
                 padding: '1px 6px', borderRadius: 4, border: '1px solid var(--color-border)',
                 background: 'transparent', color: copiedId ? '#10b981' : 'var(--color-text-secondary)',

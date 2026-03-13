@@ -76,6 +76,7 @@ export const normalizeRole = (role: Role): Role => {
     'owner': 'org_admin',  // Organization owners get admin dashboard
     'security': 'compliance',
     'analyst': 'user',
+    'platform_owner': 'platform_dev',
   };
   return mapping[role] || role;
 };
