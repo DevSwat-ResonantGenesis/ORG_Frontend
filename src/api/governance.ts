@@ -181,3 +181,108 @@ export const checkCompliance = async (entityId: string): Promise<ComplianceCheck
     return [];
   }
 };
+
+// ============== SOC2/ISO Compliance (P4.1) ==============
+
+export interface ComplianceScoreResult {
+  compliance_score: number;
+  max_score: number;
+  grade: string;
+  framework: string;
+  checks: { control: string; status: string; detail: string; weight: number }[];
+}
+
+export interface EvidenceItem {
+  criteria: string;
+  artifact: string;
+  endpoint: string;
+  available: boolean;
+}
+
+export interface AuditExportRecord {
+  session_id: string;
+  agent_name: string;
+  agent_id: string;
+  goal: string;
+  status: string;
+  loop_count: number;
+  tokens_used: number;
+  error_message: string | null;
+  created_at: string;
+  completed_at: string | null;
+}
+
+/**
+ * Get SOC2 compliance score
+ */
+export const getComplianceScore = async (): Promise<ComplianceScoreResult | null> => {
+  try {
+    const response = await fastapiClient.get('/api/v1/agents/compliance/score');
+    return response.data;
+  } catch (error: any) {
+    console.error('Failed to get compliance score:', error);
+    return null;
+  }
+};
+
+/**
+ * Get evidence checklist for SOC2/ISO compliance
+ */
+export const getEvidenceChecklist = async (): Promise<{ framework: string; evidence: EvidenceItem[]; generated_at: string } | null> => {
+  try {
+    const response = await fastapiClient.get('/api/v1/agents/compliance/evidence-checklist');
+    return response.data;
+  } catch (error: any) {
+    console.error('Failed to get evidence checklist:', error);
+    return null;
+  }
+};
+
+/**
+ * Export audit trail in JSON or CSV format
+ */
+export const getAuditExport = async (format: 'json' | 'csv' = 'json', startDate?: string, endDate?: string, agentId?: string) => {
+  try {
+    const params = new URLSearchParams({ format });
+    if (startDate) params.set('start_date', startDate);
+    if (endDate) params.set('end_date', endDate);
+    if (agentId) params.set('agent_id', agentId);
+    const response = await fastapiClient.get(`/api/v1/agents/compliance/audit-export?${params}`);
+    return response.data;
+  } catch (error: any) {
+    console.error('Failed to export audit trail:', error);
+    return null;
+  }
+};
+
+/**
+ * Get governance audit trail
+ */
+export const getGovernanceAuditTrail = async (agentId?: string, limit: number = 100) => {
+  try {
+    const params = new URLSearchParams({ limit: String(limit) });
+    if (agentId) params.set('agent_id', agentId);
+    const response = await fastapiClient.get(`/api/v1/agents/governance/audit-trail?${params}`);
+    return response.data;
+  } catch (error: any) {
+    console.error('Failed to get governance audit trail:', error);
+    return null;
+  }
+};
+
+/**
+ * Get governance compliance report
+ */
+export const getGovernanceComplianceReport = async (startDate?: string, endDate?: string) => {
+  try {
+    const params = new URLSearchParams();
+    if (startDate) params.set('start_date', startDate);
+    if (endDate) params.set('end_date', endDate);
+    const qs = params.toString();
+    const response = await fastapiClient.get(`/api/v1/agents/governance/compliance-report${qs ? '?' + qs : ''}`);
+    return response.data;
+  } catch (error: any) {
+    console.error('Failed to get governance compliance report:', error);
+    return null;
+  }
+};

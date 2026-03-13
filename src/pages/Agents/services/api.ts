@@ -221,6 +221,56 @@ class AgentOSApi {
     return this.request('/api/v1/developer/webhooks', { method: 'POST', body: { url, events } });
   }
 
+  // ============== COMPLIANCE (P4.1) ==============
+  async getComplianceScore() {
+    return this.request('/api/v1/agents/compliance/score');
+  }
+
+  async getEvidenceChecklist() {
+    return this.request('/api/v1/agents/compliance/evidence-checklist');
+  }
+
+  async getAuditExport(format: 'json' | 'csv' = 'json', startDate?: string, endDate?: string) {
+    const params = new URLSearchParams({ format });
+    if (startDate) params.set('start_date', startDate);
+    if (endDate) params.set('end_date', endDate);
+    return this.request(`/api/v1/agents/compliance/audit-export?${params}`);
+  }
+
+  // ============== GOVERNANCE REPORTS ==============
+  async getGovernanceAuditTrail(agentId?: string, limit: number = 100) {
+    const params = new URLSearchParams({ limit: String(limit) });
+    if (agentId) params.set('agent_id', agentId);
+    return this.request(`/api/v1/agents/governance/audit-trail?${params}`);
+  }
+
+  async getGovernanceComplianceReport(startDate?: string, endDate?: string) {
+    const params = new URLSearchParams();
+    if (startDate) params.set('start_date', startDate);
+    if (endDate) params.set('end_date', endDate);
+    const qs = params.toString();
+    return this.request(`/api/v1/agents/governance/compliance-report${qs ? '?' + qs : ''}`);
+  }
+
+  // ============== LEARNING (P2.4) ==============
+  async getLearningStats() {
+    return this.request('/api/v1/agents/learning/stats');
+  }
+
+  async getLearningPatterns() {
+    return this.request('/api/v1/agents/learning/patterns');
+  }
+
+  // ============== WATCHDOG (P3.4) ==============
+  async getWatchdogStatus() {
+    return this.request('/api/v1/agents/watchdog/status');
+  }
+
+  // ============== TRACE VIEWER (P4.5) ==============
+  async getSessionTrace(sessionId: string) {
+    return this.request(`/api/v1/agents/sessions/${sessionId}/trace`);
+  }
+
   // ============== METRICS ==============
   async getMetrics() {
     return this.request('/api/v1/metrics');
