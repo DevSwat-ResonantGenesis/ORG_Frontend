@@ -280,6 +280,69 @@ const articles: Article[] = [
     tags: ['wallet', 'crypto', 'rgt', 'web3', 'metamask', 'tokens', 'deposit', 'withdraw'],
     readingTime: 6
   },
+  {
+    id: '41',
+    title: 'Blockchain Architecture',
+    description: 'Complete guide to the internal blockchain, DSID identity system, block mining, memory anchoring, Base Sepolia integration, and on-chain agent registration.',
+    category: 'Core Stack',
+    path: '/help/core-stack/blockchain-architecture',
+    tags: ['blockchain', 'dsid', 'mining', 'blocks', 'transactions', 'base', 'sepolia', 'on-chain', 'identity', 'merkle', 'anchoring'],
+    readingTime: 12
+  },
+  {
+    id: '42',
+    title: 'Register Your Agent On-Chain',
+    description: 'Step-by-step guide to registering your AI agent on the blockchain, viewing its DSID identity, checking chain status, and understanding RGT rewards.',
+    category: 'Getting Started',
+    path: '/help/getting-started/register-agent-on-chain',
+    tags: ['agent', 'blockchain', 'register', 'on-chain', 'dsid', 'identity', 'rgt', 'tutorial', 'guide'],
+    readingTime: 6
+  },
+  {
+    id: '43',
+    title: 'Understanding Your DSID',
+    description: 'What is a DSID, how it is assigned to your agents and data, how lineage works, and how to verify your blockchain identity.',
+    category: 'Core Stack',
+    path: '/help/core-stack/understanding-dsid',
+    tags: ['dsid', 'identity', 'hash', 'lineage', 'blockchain', 'verification'],
+    readingTime: 5
+  },
+  {
+    id: '44',
+    title: 'RGT Rewards & Marketplace Blockchain',
+    description: 'Learn how RGT tokens are earned through marketplace activity and how blockchain records every purchase.',
+    category: 'Blockchain',
+    path: '/help/blockchain/rgt-rewards-blockchain',
+    tags: ['rgt', 'rewards', 'marketplace', 'blockchain', 'tokens'],
+    readingTime: 5
+  },
+  {
+    id: '45',
+    title: 'Blockchain Explorer Dashboard',
+    description: 'Complete guide to the Blockchain Explorer — monitor blocks, transactions, mining, Merkle trees, and Base Sepolia anchoring in real time.',
+    category: 'Blockchain',
+    path: '/help/blockchain/blockchain-explorer',
+    tags: ['blockchain', 'explorer', 'blocks', 'transactions', 'mining', 'merkle', 'base sepolia', 'dashboard'],
+    readingTime: 8
+  },
+  {
+    id: '46',
+    title: 'Integrations & Connected Services',
+    description: 'Full guide to 40+ integrations — AI providers, version control, cloud hosting, databases, payments, automation, design, and monitoring.',
+    category: 'Platform',
+    path: '/help/platform/integrations-guide',
+    tags: ['integrations', 'api', 'openai', 'anthropic', 'github', 'slack', 'figma', 'stripe', 'zapier', 'agents'],
+    readingTime: 12
+  },
+  {
+    id: '47',
+    title: 'Code Visualizer Pro — SAST & Architecture Scanner',
+    description: 'Deep guide to the 3D code visualizer, SAST scanning, dependency analysis, governance engine, timeline playback, and AI-powered Graph Janitor agent.',
+    category: 'Developer Tools',
+    path: '/help/developer/code-visualizer-pro',
+    tags: ['code visualizer', 'sast', 'security', 'architecture', 'dependency', 'graph', 'governance', 'scanner'],
+    readingTime: 15
+  },
 ];
 
 const HelpCenterPage: React.FC = () => {

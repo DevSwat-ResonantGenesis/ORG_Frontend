@@ -252,6 +252,20 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               <span className={styles.usmLabel}>Execution History</span>
               {location.pathname === '/network/history' && <span className={styles.usmActiveIndicator} />}
             </button>
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/network/blockchain' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/network/blockchain'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="2" y="2" width="5" height="5" rx="1" />
+                  <rect x="9" y="9" width="5" height="5" rx="1" />
+                  <path d="M7 4.5H9.5V9" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>Blockchain Explorer</span>
+              {location.pathname === '/network/blockchain' && <span className={styles.usmActiveIndicator} />}
+            </button>
           </div>
 
           <div className={styles.usmDivider} />

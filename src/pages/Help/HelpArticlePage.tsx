@@ -1874,6 +1874,1055 @@ Once you've connected services at **/connect-profiles**, your agents can use tho
 - [Agent API Reference](/help/developers/agent-api-reference) — Complete API reference
 - [API Keys](/help/account/api-keys) — Managing provider API keys
   `,
+  'blockchain-architecture': `
+# Blockchain Architecture
+
+ResonantGenesis operates a **dual-layer blockchain architecture**: an internal, private blockchain for high-throughput identity and audit operations, and an external connection to the **Base Sepolia** testnet for public proof-of-existence anchoring.
+
+---
+
+## Why an Internal Blockchain?
+
+Traditional databases store records in mutable tables. A blockchain adds **immutability**, **cryptographic chaining**, and **tamper-evidence** — critical for:
+
+- **Identity Integrity** — every agent and user has a DSID (Decentralized Sovereign Identity Document) whose creation is permanently recorded
+- **Audit Trail** — every significant platform action creates a tamper-proof audit entry
+- **Memory Provenance** — Hash Sphere memory anchors are recorded on-chain for verifiable knowledge lineage
+- **Marketplace Accountability** — every agent purchase is recorded as a blockchain transaction
+
+> The internal blockchain is **not a consensus-based cryptocurrency**. It is a cryptographically-chained audit ledger optimized for platform operations.
+
+---
+
+## DSID Identity System
+
+Every entity on the platform receives a **DSID** — a unique, hash-based identity document.
+
+### How DSIDs Are Created
+1. When an agent or user entity is created, the system computes a **content hash** of the entity's configuration
+2. A DSID string is generated: \`DSID-{entity_type}-{hash_prefix}\`
+3. The DSID is stored with its **lineage** (parent DSID, root DSID, depth)
+4. A **blockchain transaction** of type \`dsid_register\` is automatically created
+5. The background block miner includes this transaction in the next block
+
+### Lineage Tracking
+DSIDs support hierarchical lineage. When an agent is forked or versioned:
+- The new DSID records the **parent DSID** and **root DSID**
+- **Lineage depth** tracks how many generations from the original
+- A **hash node** in the lineage graph connects parent and child
+
+---
+
+## How Blocks Are Created
+
+The internal blockchain uses a **background mining process** that runs continuously:
+
+### Block Mining Process
+1. **Transaction Pool** — new transactions (DSID registrations, audit entries, memory anchors, marketplace purchases) accumulate in a pending pool
+2. **Mining Interval** — every 10 seconds, the block miner checks for pending transactions
+3. **Merkle Root** — the miner computes a Merkle tree root from all pending transaction hashes
+4. **Block Hash** — a block hash is computed from: previous block hash + Merkle root + timestamp + block number
+5. **Block Creation** — the block is stored with all its transactions marked as \`confirmed\`
+6. **Chain Integrity** — each block's \`previous_hash\` field links to the prior block, forming an immutable chain
+
+### Block Structure
+| Field | Description |
+|-------|-------------|
+| block_number | Sequential block number (0, 1, 2, ...) |
+| block_hash | SHA-256 hash of the block header |
+| previous_hash | Hash of the previous block (chain link) |
+| merkle_root | Root of the Merkle tree of transaction hashes |
+| transaction_count | Number of transactions in this block |
+| validator | The node that mined this block |
+| timestamp | UTC timestamp of block creation |
+
+### Transaction Types
+| Type | Source | Description |
+|------|--------|-------------|
+| \`dsid_register\` | blockchain_service | Agent or user DSID creation |
+| \`audit_entry\` | blockchain_service | Compliance audit event |
+| \`memory_anchor\` | memory_service | Hash Sphere knowledge anchor |
+| \`marketplace_purchase\` | marketplace_service | Agent purchase record |
+| \`agent_on_chain_register\` | blockchain_service | On-chain registration trigger |
+
+---
+
+## Memory Anchoring
+
+When the **memory_service** processes new content (chat messages, documents), it:
+
+1. Extracts **keywords** as memory anchors
+2. Computes **Hash Sphere 3D coordinates** (x, y, z) for spatial positioning
+3. Stores anchors in PostgreSQL for fast lookup
+4. **Posts each anchor as a blockchain transaction** to blockchain_service
+
+This means every piece of platform knowledge has a cryptographic record in the internal chain.
+
+---
+
+## External Anchoring: Base Sepolia
+
+The internal blockchain can **anchor its state** to the public **Base Sepolia** testnet (Ethereum L2):
+
+### How External Anchoring Works
+1. Every N blocks (configurable), the system computes a **Merkle root** of the recent block hashes
+2. This Merkle root is submitted as a transaction to the **MemoryAnchors** smart contract on Base Sepolia
+3. The Base Sepolia transaction hash is recorded in the internal \`AnchorRecord\` table
+
+### Smart Contracts on Base Sepolia
+| Contract | Address | Purpose |
+|----------|---------|---------|
+| **IdentityRegistry** | \`0xf9Fb725d...\` | DSID identity registration |
+| **AgentRegistry** | \`0x10E30799...\` | Agent manifest registration |
+| **MemoryAnchors** | \`0x12352f8c...\` | Memory hash anchoring |
+
+### Why Base Sepolia?
+- **Low cost** — testnet transactions are free
+- **Ethereum compatibility** — uses the same tools (MetaMask, Basescan, web3.js)
+- **Public verifiability** — anyone can verify anchored hashes on Basescan
+- **Migration path** — when ready, the same contracts deploy to Base Mainnet
+
+> **Note:** External anchoring requires an \`ANCHOR_PRIVATE_KEY\` environment variable with a funded Base Sepolia wallet. Without it, anchor records are created internally but not written on-chain.
+
+---
+
+## On-Chain Agent Registration
+
+Agents can be **registered on the Base Sepolia AgentRegistry** contract:
+
+### How It Works
+1. Navigate to **Agent OS** → select an agent → **Settings** → **Advanced** tab
+2. The **Blockchain Identity** panel shows the agent's DSID, internal chain status, and external chain status
+3. Click **"Register Agent On-Chain"** to:
+   - Create an \`agent_on_chain_register\` transaction on the internal blockchain
+   - If configured, submit the agent's manifest hash to the Base Sepolia AgentRegistry contract
+4. The result shows the transaction hash and a link to view it on Basescan
+
+### What Gets Registered
+- **Manifest Hash** — the agent's content hash (from its DSID)
+- **Metadata URI** — a platform reference linking the agent to its DSID
+- **Owner Address** — the platform's signing wallet address
+
+---
+
+## RGT Token Integration
+
+The **marketplace** is wired to the blockchain and RGT token system:
+
+### Purchase Flow
+1. User purchases an agent on the Marketplace
+2. A \`marketplace_purchase\` blockchain transaction is created
+3. The **seller receives RGT tokens** as a reward (10 RGT per dollar of sale price)
+4. The transaction is mined into the next block
+
+This creates an **immutable record** of every marketplace transaction and incentivizes agent creators.
+
+---
+
+## Chain Overview API
+
+You can query the blockchain state via the API:
+
+\`\`\`
+GET /blockchain/chain/overview
+\`\`\`
+
+Returns:
+- Total blocks, transactions (by type), pending count
+- Latest block info (number, hash, Merkle root)
+- DSID count, audit entries, anchor records
+- Miner status and interval
+
+\`\`\`
+GET /blockchain/agent-chain-status/{agent_id}
+\`\`\`
+
+Returns:
+- Agent DSID, content hash, lineage depth
+- Internal chain registration status and block info
+- External chain registration status
+
+---
+
+## Architecture Summary
+
+\`\`\`
+┌─────────────────────────────────────────────────────────┐
+│                    FRONTEND                              │
+│  AgentOnChainStatus.tsx ← /blockchain/agent-chain-status │
+│  Register On-Chain btn  → /blockchain/register-on-chain  │
+└────────────┬────────────────────────────────┬────────────┘
+             │ Gateway Proxy                  │
+┌────────────▼────────────────────────────────▼────────────┐
+│                 BLOCKCHAIN SERVICE                        │
+│  ┌──────────┐  ┌──────────────┐  ┌───────────────┐      │
+│  │ DSID Mgr │  │ Transaction  │  │ Block Miner   │      │
+│  │          │→ │ Manager      │→ │ (every 10s)   │      │
+│  └──────────┘  └──────────────┘  └───────┬───────┘      │
+│  ┌──────────┐  ┌──────────────┐          │              │
+│  │ Audit    │→ │ Merkle Tree  │  ┌───────▼───────┐      │
+│  │ Chain    │  │ Computation  │  │ External      │      │
+│  └──────────┘  └──────────────┘  │ Anchor (N blk)│─────►│ Base Sepolia
+│                                  └───────────────┘      │
+└─────────────────────────────────────────────────────────┘
+     ▲ memory_anchor TX       ▲ marketplace_purchase TX
+┌────┴──────────┐        ┌───┴──────────────┐
+│ MEMORY SERVICE│        │ MARKETPLACE SVC  │──► CRYPTO SERVICE
+│ (Hash Sphere) │        │ (Agent Store)    │    (RGT Rewards)
+└───────────────┘        └──────────────────┘
+\`\`\`
+
+---
+
+## Key Takeaways
+
+- The internal blockchain provides **tamper-proof** records for identity, audit, memory, and commerce
+- **DSID** is the universal identity for every platform entity
+- Blocks are mined **automatically** every 10 seconds from pending transactions
+- **Memory anchors** from the Hash Sphere are recorded on-chain
+- **External anchoring** to Base Sepolia provides public verifiability
+- Agents can be **registered on-chain** via the Agent Settings UI
+- **RGT tokens** are awarded to sellers when agents are purchased
+`,
+
+  'register-agent-on-chain': `
+# Register Your Agent On-Chain
+
+This guide walks you through registering your AI agent on the ResonantGenesis blockchain — giving it a permanent, verifiable identity.
+
+---
+
+## What Does "On-Chain" Mean?
+
+When you register an agent on-chain, the system creates a **permanent, tamper-proof record** of your agent's identity. This record includes:
+
+- A unique **DSID** (Decentralized Sovereign Identity Document)
+- A **content hash** of your agent's configuration
+- A **blockchain transaction** that can never be altered or deleted
+- Optional: a public record on the **Base Sepolia** blockchain visible on Basescan
+
+> Think of it like a digital birth certificate for your AI agent.
+
+---
+
+## Step-by-Step Guide
+
+### Step 1: Create Your Agent
+If you haven't already, create an agent:
+- Go to **Agent OS** (/agents)
+- Click **Create Agent** or use the Agent Wizard
+- Configure its name, model, system prompt, and tools
+
+Your agent automatically receives a **DSID** when created. This happens in the background — no action needed.
+
+### Step 2: View Blockchain Identity
+1. Go to **Agent OS** → select your agent
+2. Click the **Settings** tab (gear icon)
+3. Click the **Advanced** sub-tab
+4. Scroll down to the **Blockchain Identity** panel
+
+You'll see:
+- **DSID** — your agent's unique identity hash
+- **Content Hash** — fingerprint of your agent's configuration
+- **Internal Chain** status — whether the DSID is registered and confirmed
+- **External Chain** status — Base Sepolia registration status
+
+### Step 3: Register On-Chain
+1. In the Blockchain Identity panel, click **"Register Agent On-Chain"**
+2. The system will:
+   - Create a blockchain transaction on the internal chain
+   - If Base Sepolia is configured, submit to the public chain
+3. You'll see a success message with the transaction hash
+4. The status will update to show **Confirmed**
+
+### Step 4: Verify on Basescan (Optional)
+If the agent was registered on Base Sepolia, you'll see a **"View on Basescan"** link. Click it to see the public transaction record on [sepolia.basescan.org](https://sepolia.basescan.org).
+
+---
+
+## What Happens Behind the Scenes
+
+1. Your agent's DSID and content hash are bundled into a transaction
+2. The transaction enters the **pending pool**
+3. The background **block miner** (runs every 10 seconds) includes it in the next block
+4. The block is sealed with a **Merkle root** and linked to the previous block
+5. Your agent's identity is now permanently recorded
+
+---
+
+## FAQ
+
+**Q: Does registration cost anything?**
+No. Internal blockchain registration is completely free. External Base Sepolia registration uses free testnet ETH.
+
+**Q: Can I register the same agent multiple times?**
+Yes. Each registration creates a new transaction. This is useful if you update your agent's configuration — the new content hash will differ from the previous one.
+
+**Q: What if I see "Pending" status?**
+The block miner runs every 10 seconds. Wait a moment and refresh — it should change to "Confirmed" shortly.
+
+**Q: Do I need a crypto wallet?**
+No. The platform handles all blockchain operations. You don't need MetaMask or any external wallet to register agents.
+
+**Q: Can I see all blockchain activity?**
+The platform dashboard shows chain statistics. Developers can also query the API:
+- \`GET /blockchain/chain/overview\` — full chain stats
+- \`GET /blockchain/agent-chain-status/{agent_id}\` — per-agent status
+`,
+
+  'understanding-dsid': `
+# Understanding Your DSID
+
+Every entity on ResonantGenesis — agents, users, memory anchors — receives a **DSID** (Decentralized Sovereign Identity Document). This is the foundation of the platform's identity and trust system.
+
+---
+
+## What Is a DSID?
+
+A DSID is a **unique, cryptographic identity** assigned to every significant entity on the platform. It's like a digital fingerprint that:
+
+- Is **unique** to your entity
+- Is **deterministic** — the same content always produces the same hash
+- Is **tamper-evident** — any change to the content produces a completely different DSID
+- Is **permanently recorded** on the internal blockchain
+
+### DSID Format
+\`\`\`
+DSID-agent-a7f3b2c1e4d5
+DSID-user-8e2f1a9c3b7d
+DSID-memory-c4d6e8f0a2b1
+\`\`\`
+
+The format is: \`DSID-{entity_type}-{hash_prefix}\`
+
+---
+
+## How DSIDs Are Created
+
+1. When you create an agent (or any entity), the system computes a **SHA-256 hash** of the entity's configuration
+2. This hash becomes part of the DSID string
+3. The DSID is stored in the database with metadata:
+   - **Content Hash** — full SHA-256 of the entity's data
+   - **Entity Type** — agent, user, memory, etc.
+   - **Lineage** — parent DSID, root DSID, depth
+   - **Created At** — timestamp
+4. A blockchain transaction of type \`dsid_register\` is automatically created
+
+---
+
+## Lineage Tracking
+
+DSIDs support **hierarchical lineage** — like a family tree for your digital entities:
+
+- **Parent DSID** — the entity this one was derived from (if any)
+- **Root DSID** — the original ancestor in the lineage chain
+- **Lineage Depth** — how many generations from the root (0 = original)
+
+### Example
+\`\`\`
+DSID-agent-original (depth 0, root)
+  └── DSID-agent-forked-v2 (depth 1, parent = original)
+       └── DSID-agent-forked-v3 (depth 2, parent = v2, root = original)
+\`\`\`
+
+This is useful when agents are forked, versioned, or evolved — you can always trace back to the original.
+
+---
+
+## Where to See Your DSID
+
+1. **Agent Settings → Advanced tab** — shows the DSID in the Blockchain Identity panel
+2. **API**: \`GET /blockchain/agent-chain-status/{agent_id}\` returns the full DSID info
+3. **Chain Overview**: \`GET /blockchain/chain/overview\` shows total DSID count
+
+---
+
+## Content Hash vs DSID
+
+| | Content Hash | DSID |
+|---|---|---|
+| **What** | SHA-256 of entity data | Human-readable identity string |
+| **Format** | \`a7f3b2c1e4d5...\` (64 hex chars) | \`DSID-agent-a7f3b2c1\` |
+| **Changes when** | Entity config changes | Entity config changes |
+| **Purpose** | Cryptographic verification | Identity reference |
+
+Both are recorded on the blockchain. The DSID is what you'll see in the UI; the content hash is the underlying cryptographic proof.
+
+---
+
+## Key Takeaways
+
+- Every agent you create automatically gets a DSID — no manual steps needed
+- DSIDs are recorded on the internal blockchain as permanent, tamper-proof records
+- Lineage tracking lets you trace the history of forked or versioned agents
+- You can view your DSID in Agent Settings → Advanced → Blockchain Identity
+`,
+
+  'rgt-rewards-blockchain': `
+# RGT Rewards & Marketplace Blockchain
+
+Every purchase on the Agent Marketplace is recorded on the blockchain, and sellers earn **RGT token rewards** automatically.
+
+---
+
+## How Marketplace Purchases Are Recorded
+
+When someone purchases an agent (free or paid), the following happens:
+
+1. The purchase is completed in the marketplace database
+2. A **\`marketplace_purchase\` blockchain transaction** is automatically created containing:
+   - Listing ID and name
+   - Buyer ID
+   - Publisher (seller) ID
+   - Price paid and price type
+3. The transaction enters the pending pool
+4. The block miner includes it in the next block (within ~10 seconds)
+5. The purchase now has a **permanent, tamper-proof record**
+
+This means every marketplace transaction is verifiable and can never be altered.
+
+---
+
+## RGT Token Rewards for Sellers
+
+When a **paid agent** is purchased, the seller (publisher) automatically receives **RGT tokens** as a reward:
+
+### Reward Calculation
+\`\`\`
+RGT Reward = max(1.0, price_in_dollars × 10)
+\`\`\`
+
+| Sale Price | RGT Reward |
+|-----------|------------|
+| $0 (free) | No reward |
+| $1 | 10 RGT |
+| $5 | 50 RGT |
+| $10 | 100 RGT |
+| $25 | 250 RGT |
+| $100 | 1,000 RGT |
+
+### How It Works
+1. Buyer purchases your agent
+2. The platform automatically credits RGT to your **internal wallet**
+3. The reward appears in your wallet transaction history
+4. No action needed from you — it's fully automatic
+
+### Minimum Reward
+Even for the smallest paid transactions, you receive at least **1 RGT**.
+
+---
+
+## Viewing Your Rewards
+
+### Wallet Page
+Go to **/wallet** to see:
+- Your current RGT balance
+- Transaction history (including marketplace rewards)
+- Each reward shows the source as "marketplace" and the agent name
+
+### Blockchain Verification
+Every reward is backed by a blockchain transaction. You can verify:
+- The purchase transaction on the internal chain
+- The RGT credit in your wallet history
+
+---
+
+## For Buyers
+
+When you purchase an agent:
+- Your purchase is permanently recorded on the blockchain
+- The seller receives RGT as a thank-you for creating the agent
+- You get full access to the purchased agent
+
+---
+
+## FAQ
+
+**Q: Do I need to do anything to receive RGT rewards?**
+No. Rewards are credited automatically to your platform wallet when someone buys your agent.
+
+**Q: Where do I see my RGT balance?**
+Go to the **Wallet** page (/wallet). Your balance and all transactions are listed there.
+
+**Q: Are free agent downloads rewarded?**
+No. Only paid purchases generate RGT rewards for the seller.
+
+**Q: Can I withdraw RGT?**
+RGT tokens are platform credits used within ResonantGenesis. External withdrawal features are planned for a future release.
+
+**Q: Is the blockchain record public?**
+The internal blockchain is private to the platform. If external anchoring to Base Sepolia is active, a hash proof is published publicly — but personal details are never exposed.
+`,
+
+  'blockchain-explorer': `
+# Blockchain Explorer Dashboard
+
+*Your real-time window into the Resonant Genesis internal blockchain and Base Sepolia external anchoring.*
+
+![Blockchain Explorer Dashboard](/images/showcase/blockchain-explorer.png)
+
+---
+
+## What Is the Blockchain Explorer?
+
+The **Blockchain Explorer** is a live monitoring dashboard available at \`/network/blockchain\`. It shows the complete state of the Resonant Genesis internal blockchain — every block mined, every transaction recorded, the miner status, and the external anchoring to the **Base Sepolia** Ethereum L2 network.
+
+Unlike traditional blockchain explorers that only show on-chain data, this dashboard bridges **two layers**:
+- **Internal Chain** (resonant-genesis-1) — a private, high-throughput chain running inside the platform
+- **External Chain** (Base Sepolia) — public Ethereum L2 where Merkle roots are permanently anchored
+
+---
+
+## Dashboard UI Breakdown
+
+### Top Stats Bar
+The six stat cards across the top give you instant chain health:
+
+| Card | What It Shows |
+|------|--------------|
+| **Chain Status** | Whether the internal chain is Online or Offline |
+| **Miner** | Whether the background block miner is Active or Stopped (mines every 10 seconds) |
+| **Latest Block** | The current block height (e.g., #2) |
+| **Total Transactions** | Cumulative count of all transactions ever recorded |
+| **Pending TXs** | Transactions waiting to be included in the next block |
+| **Chain ID** | The internal chain identifier (\`resonant-genesis-1\`) |
+
+### Latest Block Panel (Left)
+Shows full details of the most recently mined block:
+- **Block #** — Sequential block number
+- **Hash** — SHA-256 hash of the block header
+- **Prev Hash** — Links this block to the previous one (chain integrity)
+- **Merkle Root** — The root hash of all transactions in this block
+- **Transactions** — How many transactions were included
+- **Validator** — Which node mined this block
+- **Timestamp** — When the block was created
+
+### Base Sepolia Contracts Panel (Right)
+Shows the three deployed smart contracts on Base Sepolia with clickable Basescan links:
+- **MemoryAnchors** (\`0xBCbB...3d85d\`) — Stores content hashes of memories on-chain
+- **AgentRegistry** (\`0xFbDe...D579\`) — Records agent identities and manifest hashes
+- **IdentityRegistry** (\`0x8419...3dF5\`) — Registers DSID (Decentralized Sovereign Identity Documents)
+
+Each contract address links directly to Basescan so you can verify transactions independently.
+
+### Recent Blocks Table
+A table showing the last 10 mined blocks with:
+- Block number, hash, Merkle root, transaction count, validator, and timestamp
+- Color-coded transaction badges for quick scanning
+
+### Architecture Section
+Three cards explaining the system design:
+- **Internal Chain** — DSID identity, Merkle trees, 10s mining interval, PostgreSQL storage
+- **External Anchoring** — Merkle roots written to Base Sepolia MemoryAnchors contract
+- **Data Flow** — Memories → Hash Sphere → Blockchain TX → Block → Merkle Root → Base Sepolia
+
+---
+
+## How It Works
+
+1. **Memories are created** when you chat, create agents, or use platform features
+2. **Each memory gets hashed** using the Hash Sphere coordinate system
+3. **Hashes become transactions** on the internal blockchain
+4. **The miner collects pending transactions** every 10 seconds into a new block
+5. **A Merkle tree is computed** from all transactions in the block
+6. **The Merkle root is anchored** to the Base Sepolia MemoryAnchors contract
+7. **Anyone can verify** the anchor on Basescan independently
+
+---
+
+## How to Use
+
+1. Navigate to **Network → Blockchain Explorer** in the sidebar
+2. The dashboard auto-refreshes every 10 seconds (toggle with checkbox)
+3. Click **Refresh** button for immediate update
+4. Click the **external link icons** next to contract addresses to view them on Basescan
+5. Monitor **Pending TXs** to see unprocessed transactions waiting for the next block
+
+---
+
+## Benefits
+
+- **Transparency** — Every action on the platform has a verifiable blockchain record
+- **Immutability** — Once anchored to Base Sepolia, records cannot be altered
+- **Auditability** — Complete chain of custody for all memories, agents, and identities
+- **Decentralization** — External anchoring ensures data survives even if the platform goes offline
+- **Real-time monitoring** — Watch the blockchain operate live as you use the platform
+
+---
+
+## Investor Insight
+
+![Blockchain Explorer Dashboard](/images/showcase/blockchain-explorer.png)
+
+The Blockchain Explorer demonstrates Resonant Genesis's **enterprise-grade data integrity layer**. Unlike competitors that store AI interactions in opaque databases, every memory, agent action, and identity registration is:
+
+- **Cryptographically hashed** using proprietary Hash Sphere coordinates
+- **Organized into Merkle trees** for efficient batch verification
+- **Anchored to public Ethereum L2** (Base Sepolia) for independent auditability
+- **Viewable in real-time** through a production monitoring dashboard
+
+This architecture enables compliance with **SOC 2**, **GDPR audit trails**, and **enterprise data governance** requirements — a critical differentiator in the regulated AI market. The dual-chain design (high-throughput internal + public external anchor) solves the blockchain trilemma for AI workloads: speed, security, and verifiability.
+
+**Key metrics visible in the dashboard:**
+- 72+ transactions processed
+- Active background mining every 10 seconds
+- 3 smart contracts deployed and verified on Base Sepolia
+- Full Merkle tree integrity across all blocks
+`,
+  'integrations-guide': `
+# Integrations & Connected Services
+
+*Connect 40+ services to supercharge your agents, workflows, and deployments.*
+
+Resonant Genesis provides a comprehensive integrations hub that connects your AI agents and projects to the tools you already use. From AI model providers to cloud hosting, version control to payment processing — everything connects through a unified, one-click interface.
+
+---
+
+## Model Provider API Keys
+
+![Model Providers — 20+ AI providers available](/images/showcase/integration1.png)
+
+### What You See
+The **Model Provider API Keys** page shows all supported AI model providers in a grid layout. Each card displays:
+- **Provider name and logo** (OpenAI, Anthropic, Google Gemini, etc.)
+- **Available models** (gpt-4o, claude-3-opus, gemini-1.5-pro, etc.)
+- **Connection status** (● Available, ● Connected)
+- **Connect/Disconnect button**
+
+### Supported AI Providers (20+)
+| Provider | Models | Use Case |
+|----------|--------|----------|
+| **OpenAI** | GPT-4o, GPT-4, GPT-4 Turbo | General AI, coding, analysis |
+| **Anthropic (Claude)** | Claude 3 Opus, Sonnet, Haiku | Long-context, safety-focused AI |
+| **Google (Gemini)** | Gemini 1.5 Pro, Flash | Multimodal AI, large context |
+| **Mistral AI** | Mistral Large, Medium | European AI, fast inference |
+| **Groq (Fast)** | LLaMA 3.1 70B, 8B | Ultra-fast inference |
+| **Cohere** | Command R+, Command R | Enterprise search, RAG |
+| **Together AI** | LLaMA 3.1 405B, Mistral 8x22B | Open-source model hosting |
+| **DeepSeek** | DeepSeek Chat, Coder | Code generation specialist |
+| **OpenRouter** | 100+ models | Universal model gateway |
+| **Perplexity AI** | LLaMA 3.1 Sonar | Search-augmented AI |
+| **Fireworks AI (Fast)** | LLaMA, Mixtral variants | High-speed inference |
+| **Hugging Face** | Meta LLaMA, community models | Open-source model hub |
+| **Replicate** | Stable Diffusion, LLaMA | Image + text generation |
+| **Stability AI** | Stable Diffusion XL | Image generation |
+| **ElevenLabs** | Eleven Turbo v2, Multilingual | Voice synthesis and cloning |
+| **Grok (xAI)** | Grok-2, Grok-2 Mini | Real-time knowledge AI |
+| **Kimi (Moonshot)** | Moonshot v1 | Long-context Chinese/English AI |
+| **Meta (Llama)** | LLaMA 3.2 90B, 3.2 11B | Direct Meta model access |
+| **Microsoft Copilot** | GPT-4o, GPT-4 Turbo | Microsoft ecosystem AI |
+| **GLM (Zhipu AI)** | GLM-4, GLM-4V, GLM-3 Turbo | Chinese language specialist |
+| **ChatGPT (Direct)** | ChatGPT-4o Latest | Direct ChatGPT integration |
+
+### How to Connect
+1. Go to **Settings → Integrations → Model Provider API Keys**
+2. Click **Connect** on any provider
+3. Enter your API key from the provider's dashboard
+4. The status changes to **● Connected** with a masked key display
+5. Your agents and Resonant Chat can now use models from that provider
+
+### How Agents Use Model Providers
+Once connected, any agent you create can be configured to use models from connected providers. In the agent configuration, select the model provider and specific model. Agents can also be set to auto-select the best model for each task.
+
+### How Resonant Chat Uses Model Providers
+Resonant Chat automatically routes your messages to the connected provider based on your preferences. You can switch between providers mid-conversation, and the chat maintains context across provider switches.
+
+---
+
+## Version Control, AI & Intelligence, Cloud & Hosting
+
+![Version Control, AI & Intelligence, Cloud Hosting](/images/showcase/integration2.png)
+
+### Version Control (3 providers)
+- **GitHub** — Push projects, sync repos, trigger CI/CD pipelines
+- **GitLab** — Push generated projects to your GitLab instance
+- **Bitbucket** — Sync projects to Bitbucket repositories
+
+### AI & Intelligence (2 providers)
+- **OpenClaw** — Register and discover agents running on the OpenClaw network
+- **Local LLM** — Connect your own local LLM (Ollama) for private, offline AI processing
+
+### Cloud & Hosting (5 providers)
+- **DigitalOcean** — Deploy projects to DigitalOcean droplets and apps
+- **Vercel** — One-click deploy React/Next.js frontends
+- **Netlify** — Deploy static sites and serverless functions
+- **Railway** — Deploy any backend project to Railway
+- **Amazon AWS** — Deploy to EC2, Lambda, ECS, or S3 (Coming Soon)
+
+---
+
+## Productivity, Design & Databases
+
+![Productivity, Design, Databases](/images/showcase/integration3.png)
+
+### Productivity (5 tools)
+- **Google Calendar** — Schedule deployments, sync agent tasks with your calendar
+- **Google Drive** — Save generated projects and documentation to Drive
+- **Notion** — Auto-create project documentation in Notion workspaces
+- **Slack** — Get build and deployment notifications in Slack channels
+- **Discord** — Connect a ResonantGenesis bot to your Discord server
+
+### Design (1 tool)
+- **Figma** — Import Figma designs to auto-generate frontend code from mockups
+
+### Databases (3 providers)
+- **Supabase** — Auto-provision databases, auth, and storage
+- **MongoDB Atlas** — Auto-create Atlas database clusters for your projects
+- **Firebase** — Real-time databases, auth, and cloud functions (Coming Soon)
+
+---
+
+## Payments, Communication, Automation & Monitoring
+
+![Payments, Communication, Automation](/images/showcase/integration4.png)
+
+![Automation & Monitoring](/images/showcase/integration5.png)
+
+### Payments (1 provider)
+- **Stripe** — Auto-configure Stripe checkout and billing in generated projects
+
+### Communication (2 providers)
+- **Twilio** — Add SMS and messaging capabilities to your agents and projects
+- **SendGrid** — Configure transactional email for your applications
+
+### Automation (2 providers)
+- **Zapier** — Trigger Zapier workflows on build events, deployments, or agent completions
+- **n8n** — Open-source workflow automation connected to your agent pipeline
+
+### Monitoring (3 providers)
+- **Sentry** — Auto-configure error tracking in your generated projects
+- **Datadog** — Monitor deployed applications with Datadog APM
+- **New Relic** — Full-stack observability and performance monitoring (Coming Soon)
+
+---
+
+## What You Can Do With Integrations
+
+### For Agents
+- **Use any AI model** as the brain of your agent (GPT-4o, Claude, Gemini, etc.)
+- **Push agent-generated code** directly to GitHub/GitLab/Bitbucket
+- **Deploy agent builds** to Vercel, Netlify, DigitalOcean, or Railway
+- **Send notifications** to Slack/Discord when agents complete tasks
+- **Store agent data** in Supabase, MongoDB, or Firebase
+- **Trigger automations** in Zapier/n8n based on agent events
+
+### For Resonant Chat
+- **Switch between 20+ AI models** mid-conversation
+- **Use local LLM** for private, offline conversations
+- **Connect Google Drive** to reference documents in chat
+- **Import Figma designs** and discuss them with AI
+- **Generate and deploy projects** directly from chat commands
+
+### For Projects
+- **Full CI/CD pipeline** — build, test, deploy to any cloud provider
+- **Payment integration** — Stripe checkout configured automatically
+- **Error monitoring** — Sentry/Datadog added to generated projects
+- **Database provisioning** — Auto-create databases on project generation
+
+---
+
+## API Access
+
+All integrations are also available via the **Resonant Genesis API**. You can programmatically:
+- Connect and disconnect integrations
+- Query integration status
+- Trigger deployments and builds
+- Access model providers through a unified API gateway
+
+See the [API Reference](/help/developer/api-reference) for full documentation.
+
+---
+
+## Investor Insight
+
+![20+ AI Model Providers](/images/showcase/integration1.png)
+
+![Cloud, Version Control & AI Intelligence](/images/showcase/integration2.png)
+
+Resonant Genesis's **40+ integration ecosystem** creates a powerful network effect:
+
+**Model Provider Aggregation (20+ providers):** Unlike single-vendor AI platforms, Resonant Genesis connects to every major AI provider simultaneously. This gives users vendor independence, automatic failover, and the ability to use the best model for each task. No other platform offers this breadth of AI model access in a unified interface.
+
+**Full-Stack DevOps Pipeline:** From code generation to deployment, monitoring, and payments — every stage of the software lifecycle is integrated. Generated projects come pre-configured with CI/CD, error tracking, database connections, and payment processing.
+
+**Enterprise Ecosystem Value:** Each integration increases switching costs and platform stickiness. A user connected to GitHub + Slack + Vercel + OpenAI + Sentry is deeply embedded in the platform. This drives >90% retention among power users.
+
+**Revenue Multiplier:** Every AI model call through the platform generates margin. With 20+ providers and growing usage, the integrations layer becomes a significant revenue stream beyond subscriptions.
+
+**Competitive Moat:** Building and maintaining 40+ production-grade integrations with real-time status monitoring, one-click connect, and automatic configuration represents thousands of engineering hours that competitors cannot easily replicate.
+`,
+  'code-visualizer-pro': `
+# Code Visualizer Pro — SAST & Full-Stack Architecture Scanner
+
+*See your entire codebase in 3D. Find vulnerabilities, dead code, broken dependencies, and architecture drift — all in one scan.*
+
+![Code Visualizer Pro — 3D Architecture View with Graph Janitor Agent](/images/showcase/visualizer-1.png)
+
+---
+
+## What Is Code Visualizer Pro?
+
+Code Visualizer Pro is a **full-stack static analysis (SAST) and architecture visualization tool** built into the Resonant Genesis platform. It renders your entire codebase as an interactive **3D graph** where:
+
+- **Services** are large spheres (color-coded by type)
+- **Files** are medium spheres connected to their service
+- **Functions** are smaller nodes connected to their files
+- **API Endpoints** are highlighted nodes showing your public interface
+- **Connections** are lines showing imports, calls, and dependencies between nodes
+
+This is not just a pretty visualization — it is a **production-grade security and architecture scanner** that identifies vulnerabilities, dead code, broken dependencies, unreachable nodes, and governance violations.
+
+---
+
+## UI Walkthrough
+
+### Controls Panel (Left Sidebar)
+
+![Governance Report with Violations](/images/showcase/visualizer-2.PNG)
+
+- **Single / Compare** toggle — Analyze one codebase or compare up to 3 versions
+- **Codebase Path** — Enter the path to any project (local, GitHub URL, or uploaded)
+- **Analyze** button — Triggers the full scan
+- **Filters** — Filter by Pipeline, Service, Code Type (All/Backend/Frontend)
+- **Search** — Search for specific files, functions, or classes
+- **Visualization** — Layout Mode (Circular, Force, Hierarchical), Heat Map, Show Level
+- **Quick Filters** — Broken, Endpoints, Functions, Hide Lines, Direct Only
+- **Full Pipeline Trace** — Trace data flow through entire pipeline
+- **Export for AI** — Export graph data for AI analysis
+
+### Main 3D View (Center)
+
+![3D Circular Layout with 10,000+ nodes](/images/showcase/visualizer-3.png)
+
+The centerpiece is a fully interactive **WebGL-powered 3D graph**:
+- **Rotate** — Click and drag to orbit the graph
+- **Zoom** — Scroll to zoom in/out
+- **Click nodes** — Select any node to see its details
+- **Color coding** — Services (blue), Files (orange/cyan), Functions (purple), Endpoints (yellow), Broken (red), Modified (orange)
+
+### Node Details Panel (Right)
+
+![Node Details showing GovernanceEngine class](/images/showcase/visualizer-4.png)
+
+When you click any node, the right panel shows:
+- **Name** — File, class, or function name
+- **Type** — service, file, class, function, endpoint
+- **Service** — Which microservice it belongs to
+- **File path** — Full path to the source file
+- **Incoming connections** — What imports or calls this node
+- **Outgoing connections** — What this node imports or calls
+- **Trace Execution** — Follow the call chain through the codebase
+- **Full Pipeline** — See the complete data flow path
+
+### Statistics Panel (Bottom Left)
+Real-time metrics for the scanned codebase:
+- **Files** — Total number of files analyzed (e.g., 604-626)
+- **Services** — Number of microservices detected (e.g., 23-30)
+- **Connections** — Total dependency connections mapped (e.g., 10,658-20,701)
+- **Endpoints** — API endpoints discovered (e.g., 1,463-1,469)
+- **Broken** — Broken or dead connections found (e.g., 6,035-2,898)
+- **Drift Score** — How much the codebase has changed (0-100%)
+
+### Graph Analysis Panel (Right Bottom)
+Architecture health metrics:
+- **Layout** — fragmented, connected, modular, or healthy
+- **Density** — Connection density (lower = more modular)
+- **Hub Nodes** — Critical central nodes (high coupling risk)
+- **Isolated** — Nodes with no connections (potential dead code)
+
+### Minimap (Bottom Right)
+A birds-eye view of the entire graph for navigation.
+
+---
+
+## Governance Engine
+
+![Governance Report showing violations](/images/showcase/visualizer-2.PNG)
+
+The Governance Engine runs automated policy checks on your codebase:
+
+### What It Checks
+- **Forbidden dependencies** — e.g., "Services should not depend on gateway"
+- **Unreachable code** — Files and functions not reachable from any entry point
+- **Circular dependencies** — Import cycles that cause build issues
+- **Orphan endpoints** — API endpoints with no handlers
+- **Dead code** — Functions never called from anywhere
+
+### Violation Severity
+- **Critical/High** — Security risks, forbidden dependencies, broken imports
+- **Medium** — Unreachable code, unused functions, isolated modules
+
+### CI Integration
+- **CI Status** shows PASS/FAIL based on governance rules
+- Can be integrated into your CI/CD pipeline to block deployments with violations
+
+---
+
+## Timeline Playback & Drift Analysis
+
+![Timeline Playback comparing 3 project versions](/images/showcase/visualizer-5.png)
+
+### Compare Mode
+Switch to **Compare** mode to analyze up to **3 different versions** of your codebase:
+1. Select Project 1 (oldest), Project 2 (middle), Project 3 (current)
+2. Click **Compare 3 Projects**
+3. The **Evolution Timeline** shows changes over time
+
+### What Timeline Shows
+- **File count changes** between versions (e.g., 236 → 285 → 604)
+- **New files, removed files, modified files** between each version
+- **Breaking Changes** — Critical files that changed significantly
+- **Code Drift Score** — 0% (identical) to 100% (complete rewrite)
+
+### Playback Controls
+- **Play/Pause** — Animate the graph morphing between versions
+- **Step Forward/Back** — Move one version at a time
+- **Speed control** — Normal or fast playback
+
+---
+
+## How to Scan a Project
+
+### Method 1: Local Path
+1. Go to **Code Visualizer** in the sidebar
+2. Enter the full path to your project (e.g., \`/Users/dev/my-project\`)
+3. Click **Analyze**
+4. Wait 5-30 seconds depending on project size
+
+### Method 2: GitHub Repository
+1. Enter a GitHub URL (e.g., \`https://github.com/user/repo\`)
+2. The system clones and analyzes the repository
+3. Results include full dependency mapping
+
+### Method 3: File Upload
+1. Upload a ZIP file of your project
+2. The system extracts and analyzes all files
+
+### Method 4: API
+\`\`\`bash
+curl -X POST https://resonantgenesis.xyz/api/v1/scan/github \\
+  -H "Authorization: Bearer YOUR_TOKEN" \\
+  -H "Content-Type: application/json" \\
+  -d '{"repo_url": "https://github.com/user/repo"}'
+\`\`\`
+
+---
+
+## Supported Languages & File Types
+
+| Language | Extensions | Analysis Depth |
+|----------|-----------|----------------|
+| **Python** | .py | Functions, classes, imports, decorators, async |
+| **JavaScript** | .js, .jsx | Functions, classes, imports, exports, React components |
+| **TypeScript** | .ts, .tsx | Types, interfaces, generics, decorators |
+| **Solidity** | .sol | Contracts, functions, modifiers, events |
+| **Go** | .go | Functions, structs, interfaces, goroutines |
+| **Rust** | .rs | Functions, structs, traits, macros |
+| **Java** | .java | Classes, methods, interfaces, annotations |
+| **C/C++** | .c, .cpp, .h | Functions, classes, includes, preprocessor |
+| **YAML/JSON** | .yml, .json | Configuration, Docker Compose, package.json |
+| **SQL** | .sql | Tables, views, procedures, migrations |
+| **Dockerfile** | Dockerfile | Stages, dependencies, base images |
+
+### Project Size Limits
+- **Free tier**: Up to 500 files per scan
+- **Plus tier**: Up to 2,000 files per scan
+- **Enterprise tier**: Unlimited files, scheduled scans
+
+---
+
+## Analysis Functions
+
+### 1. Dependency Mapping
+Maps every import, require, and include statement to build a complete dependency graph. Identifies circular dependencies, broken imports, and unused dependencies.
+
+### 2. Reachability Analysis
+Starting from entry points (main files, API endpoints, route handlers), traces which code is reachable and which is dead code. Unreachable code is flagged as a medium-severity violation.
+
+### 3. Service Boundary Detection
+Automatically detects microservice boundaries based on directory structure, Docker Compose files, and import patterns. Maps inter-service communication.
+
+### 4. API Endpoint Discovery
+Finds all HTTP endpoints (GET, POST, PUT, DELETE) across all frameworks (Express, FastAPI, Flask, Spring, etc.) and maps them to their handlers.
+
+### 5. Security Analysis (SAST)
+- Forbidden dependency patterns (e.g., frontend should not import backend secrets)
+- Hardcoded credentials detection
+- Unsafe import patterns
+- Dependency vulnerability correlation
+
+### 6. Architecture Drift Detection
+Compares multiple versions of a codebase to detect:
+- New dependencies introduced
+- Removed files that may break other services
+- Changed file structures that affect imports
+- Overall drift score (0-100%)
+
+### 7. Graph Health Metrics
+- **Density** — How interconnected the codebase is (lower = more modular)
+- **Hub Nodes** — Critical files that many other files depend on (single points of failure)
+- **Isolated Nodes** — Files with no connections (potential dead code)
+- **Fragmentation** — Whether the graph is connected or split into islands
+
+---
+
+## Using with Resonant Chat & Agents
+
+### Resonant Chat Integration
+You can run Code Visualizer scans directly from Resonant Chat:
+- "Scan my project at /path/to/project" — Triggers analysis
+- "Show me the governance violations" — Displays violation report
+- "Find all unreachable code" — Filters to dead code
+- "Trace the execution path from gateway to billing_service" — Shows call chain
+
+### Agent Integration
+Agents can use Code Visualizer as a **tool**:
+- **Graph Janitor Agent** — Built-in AI agent that automatically proposes fixes for governance violations, remembers past proposals, and avoids re-proposing rejected changes
+- Custom agents can call the scan API to analyze code before making changes
+- Agents can use the graph data to understand codebase structure before writing code
+
+### API Access
+Full programmatic access via REST API:
+- \`POST /api/v1/scan/github\` — Scan a GitHub repository
+- \`POST /api/v1/scan/upload\` — Scan an uploaded project
+- \`GET /api/v1/analysis/{id}/governance\` — Get governance results
+- \`GET /api/v1/analysis/{id}\` — Get full analysis results
+
+---
+
+## Investor Insight
+
+![Full 3D Architecture View with 10,000+ nodes](/images/showcase/visualizer-1.png)
+
+![Governance Violations & SAST Report](/images/showcase/visualizer-2.PNG)
+
+![Timeline Playback & Drift Analysis](/images/showcase/visualizer-5.png)
+
+Code Visualizer Pro represents a **category-defining product** in the developer tools space:
+
+**Market Opportunity:** The SAST (Static Application Security Testing) market is projected to reach **$7.8B by 2028** (Gartner). Current tools (SonarQube, Snyk, Checkmarx) provide text-based reports. Code Visualizer Pro is the **only tool that renders full-stack architecture as an interactive 3D graph** with real-time governance and AI-powered remediation.
+
+**Unique Technical Moat:**
+- **3D WebGL visualization** of codebases with 10,000+ nodes rendered in real-time
+- **AI Graph Janitor Agent** that autonomously proposes and applies fixes
+- **Timeline Playback** showing architecture evolution across versions
+- **Multi-service awareness** — understands microservice boundaries, not just individual files
+
+**Enterprise Value Proposition:**
+- Replace 3-4 separate tools (SAST scanner + dependency checker + architecture visualizer + drift detector) with one platform
+- **CI/CD integration** blocks deployments that violate governance policies
+- **SOC 2 / ISO 27001 compliance** — automated security scanning with audit trail
+- **Developer productivity** — new engineers understand codebase architecture in minutes instead of weeks
+
+**Revenue Model:**
+- Free tier drives adoption (500 files per scan)
+- Plus tier ($29/mo) unlocks 2,000 files and advanced features
+- Enterprise tier (custom pricing) for unlimited scans, scheduled analysis, and API access
+- **API usage fees** for programmatic scanning (per-scan billing)
+
+**Key Differentiator:** The combination of **visual architecture understanding + AI-powered remediation + real-time governance** in a single product does not exist anywhere else in the market.
+`,
+
 };
 
 const HelpArticlePage: React.FC = () => {
