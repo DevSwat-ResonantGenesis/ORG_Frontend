@@ -2824,11 +2824,6 @@ curl -X POST https://resonantgenesis.xyz/api/v1/scan/github \\
 | **SQL** | .sql | Tables, views, procedures, migrations |
 | **Dockerfile** | Dockerfile | Stages, dependencies, base images |
 
-### Project Size Limits
-- **Free tier**: Up to 500 files per scan
-- **Plus tier**: Up to 2,000 files per scan
-- **Enterprise tier**: Unlimited files, scheduled scans
-
 ---
 
 ## Analysis Functions
@@ -2914,12 +2909,6 @@ Code Visualizer Pro represents a **category-defining product** in the developer 
 - **SOC 2 / ISO 27001 compliance** — automated security scanning with audit trail
 - **Developer productivity** — new engineers understand codebase architecture in minutes instead of weeks
 
-**Revenue Model:**
-- Free tier drives adoption (500 files per scan)
-- Plus tier ($29/mo) unlocks 2,000 files and advanced features
-- Enterprise tier (custom pricing) for unlimited scans, scheduled analysis, and API access
-- **API usage fees** for programmatic scanning (per-scan billing)
-
 **Key Differentiator:** The combination of **visual architecture understanding + AI-powered remediation + real-time governance** in a single product does not exist anywhere else in the market.
 `,
 
@@ -2990,6 +2979,28 @@ const HelpArticlePage: React.FC = () => {
 
       if (inCodeBlock) {
         codeBlockContent += line + '\n';
+        return;
+      }
+
+      // Image: ![alt](src)
+      const imgMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)/);
+      if (imgMatch) {
+        if (currentList.length > 0) {
+          elements.push(
+            <ul key={`list-${index}`} className={styles.mdList}>
+              {currentList.map((item, i) => (
+                <li key={i} className={styles.mdListItem}>{item}</li>
+              ))}
+            </ul>
+          );
+          currentList = [];
+        }
+        elements.push(
+          <div key={index} className={styles.mdImageWrap}>
+            <img src={imgMatch[2]} alt={imgMatch[1]} className={styles.mdImage} loading="lazy" />
+            {imgMatch[1] && <span className={styles.mdImageCaption}>{imgMatch[1]}</span>}
+          </div>
+        );
         return;
       }
 

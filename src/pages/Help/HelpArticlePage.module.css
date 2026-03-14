@@ -239,6 +239,31 @@
   color: #f1f5f9;
 }
 
+.mdImageWrap {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.mdImage {
+  max-width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='dark'] .mdImage {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.mdImageCaption {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #94a3b8;
+  font-style: italic;
+}
+
 .contentSection h1,
 .contentSection h2,
 .contentSection h3,
