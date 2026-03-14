@@ -13,6 +13,7 @@ import {
   FileTextIcon 
 } from '../../components/Icons/DashboardIcons';
 import { goToContact } from '../../utils/navigation';
+import { articleContent } from './HelpArticlePage';
 
 import styles from './HelpCenterPage.module.css';
 
@@ -316,83 +317,93 @@ const articles: Article[] = [
     tags: ['rgt', 'rewards', 'marketplace', 'blockchain', 'tokens'],
     readingTime: 5
   },
-];
-
-interface ShowcaseItem {
-  id: string;
-  title: string;
-  subtitle: string;
-  images: { src: string; caption: string }[];
-  highlights: string[];
-  investorPitch: string;
-}
-
-const showcaseItems: ShowcaseItem[] = [
   {
-    id: 'blockchain-explorer',
+    id: '45',
     title: 'Blockchain Explorer Dashboard',
-    subtitle: 'Real-time monitoring of internal blockchain, Merkle trees, and Base Sepolia external anchoring.',
-    images: [
-      { src: '/images/showcase/blockchain-explorer.png', caption: 'Blockchain Explorer — chain stats, recent blocks, Base Sepolia contracts, and architecture overview' },
-    ],
-    highlights: [
-      'Live chain status, miner state, block height, total transactions, and pending TXs',
-      'Latest block details — hash, prev hash, Merkle root, transaction count, timestamp',
-      'Base Sepolia smart contracts with clickable Basescan links (MemoryAnchors, AgentRegistry, IdentityRegistry)',
-      'Recent blocks table with color-coded transaction badges',
-      'Architecture breakdown — Internal Chain, External Anchoring, Data Flow pipeline',
-      'Auto-refresh every 10 seconds with manual refresh option',
-    ],
-    investorPitch: 'Enterprise-grade data integrity layer. Every memory, agent action, and identity is cryptographically hashed, organized into Merkle trees, and anchored to public Ethereum L2 (Base Sepolia). Enables SOC 2, GDPR audit trail compliance. Dual-chain design solves the blockchain trilemma for AI workloads.'
+    description: 'Complete guide to the Blockchain Explorer — monitor blocks, transactions, mining, Merkle trees, and Base Sepolia anchoring in real time.',
+    category: 'Blockchain',
+    path: '/help/blockchain/blockchain-explorer',
+    tags: ['blockchain', 'explorer', 'blocks', 'transactions', 'mining', 'merkle', 'base sepolia', 'dashboard'],
+    readingTime: 8
   },
   {
-    id: 'integrations',
+    id: '46',
     title: 'Integrations & Connected Services',
-    subtitle: '40+ one-click integrations — AI model providers, version control, cloud hosting, databases, payments, automation, and monitoring.',
-    images: [
-      { src: '/images/showcase/integration1.png', caption: 'Model Provider API Keys — 20+ AI providers (OpenAI, Anthropic, Google, Mistral, Groq, and more)' },
-      { src: '/images/showcase/integration2.png', caption: 'Version Control (GitHub, GitLab, Bitbucket), AI & Intelligence (OpenClaw, Local LLM), Cloud & Hosting (DigitalOcean, Vercel, Netlify, Railway, AWS)' },
-      { src: '/images/showcase/integration3.png', caption: 'Productivity (Google Calendar, Drive, Notion, Slack, Discord), Design (Figma), Databases (Supabase, MongoDB Atlas, Firebase)' },
-      { src: '/images/showcase/integration4.png', caption: 'Payments (Stripe), Communication (Twilio, SendGrid), Automation (Zapier, n8n)' },
-      { src: '/images/showcase/integration5.png', caption: 'Automation (Zapier, n8n), Monitoring (Sentry, Datadog, New Relic)' },
-    ],
-    highlights: [
-      '20+ AI model providers — use any model as your agent brain or in Resonant Chat',
-      'Version control — push agent-generated code to GitHub, GitLab, or Bitbucket',
-      'Cloud hosting — one-click deploy to Vercel, Netlify, DigitalOcean, Railway',
-      'Productivity — Google Calendar, Drive, Notion, Slack, Discord, Figma',
-      'Databases — auto-provision Supabase, MongoDB Atlas, or Firebase',
-      'Payments & automation — Stripe checkout, Zapier/n8n workflows, Twilio SMS, SendGrid email',
-      'Monitoring — Sentry, Datadog, New Relic for production error tracking',
-      'All integrations available via REST API for programmatic access',
-    ],
-    investorPitch: '40+ integration ecosystem creates powerful network effects. Model provider aggregation (20+) gives vendor independence. Each integration increases switching costs and platform stickiness. Every AI model call generates margin. Building 40+ production-grade integrations represents a competitive moat competitors cannot easily replicate.'
+    description: 'Full guide to 40+ integrations — AI providers, version control, cloud hosting, databases, payments, automation, design, and monitoring.',
+    category: 'Platform',
+    path: '/help/platform/integrations-guide',
+    tags: ['integrations', 'api', 'openai', 'anthropic', 'github', 'slack', 'figma', 'stripe', 'zapier', 'agents'],
+    readingTime: 12
   },
   {
-    id: 'code-visualizer',
+    id: '47',
     title: 'Code Visualizer Pro — SAST & Architecture Scanner',
-    subtitle: '3D full-stack code visualization with SAST scanning, dependency analysis, governance engine, timeline playback, and AI Graph Janitor agent.',
-    images: [
-      { src: '/images/showcase/visualizer-1.png', caption: 'Full 3D Architecture View — 10,000+ nodes with Graph Janitor Agent, governance report, and statistics' },
-      { src: '/images/showcase/visualizer-2.PNG', caption: 'Governance Report — violations, unreachable code detection, node details with trace execution' },
-      { src: '/images/showcase/visualizer-3.png', caption: '3D Circular Layout — interactive WebGL graph with service, file, function, and endpoint nodes' },
-      { src: '/images/showcase/visualizer-4.png', caption: 'Node Details — class inspection, incoming/outgoing connections, graph analysis metrics' },
-      { src: '/images/showcase/visualizer-5.png', caption: 'Timeline Playback — compare 3 project versions, evolution timeline, drift score, breaking changes' },
-    ],
-    highlights: [
-      'Interactive 3D WebGL graph — services, files, functions, endpoints all visualized',
-      'SAST scanning — forbidden dependencies, hardcoded credentials, unreachable code',
-      'Governance Engine — automated policy checks with CI/CD PASS/FAIL integration',
-      'Reachability analysis — traces code from entry points, flags dead code',
-      'Timeline Playback — compare up to 3 project versions with drift scoring',
-      'AI Graph Janitor Agent — autonomously proposes fixes for violations',
-      'Supports Python, JavaScript, TypeScript, Solidity, Go, Rust, Java, C/C++, and more',
-      'Resonant Chat and agents can trigger scans and use graph data as a tool',
-      'API access for programmatic scanning (GitHub repos, file upload, local paths)',
-    ],
-    investorPitch: 'Category-defining product in the $7.8B SAST market (Gartner 2028 projection). Only tool that renders full-stack architecture as an interactive 3D graph with AI-powered remediation. Replaces 3-4 separate tools. CI/CD integration, SOC 2 / ISO 27001 compliance, and developer productivity — new engineers understand architecture in minutes instead of weeks.'
+    description: 'Deep guide to the 3D code visualizer, SAST scanning, dependency analysis, governance engine, timeline playback, and AI-powered Graph Janitor agent.',
+    category: 'Developer Tools',
+    path: '/help/developer/code-visualizer-pro',
+    tags: ['code visualizer', 'sast', 'security', 'architecture', 'dependency', 'graph', 'governance', 'scanner'],
+    readingTime: 15
   },
 ];
+
+const getArticleKey = (path: string): string => path.split('/').pop() || '';
+
+const renderArticleContent = (text: string): React.ReactNode[] => {
+  const lines = text.split('\n');
+  const elements: React.ReactNode[] = [];
+  let currentList: string[] = [];
+  let inCodeBlock = false;
+  let codeBlockContent = '';
+
+  const flushList = (key: string) => {
+    if (currentList.length > 0) {
+      elements.push(
+        <ul key={key} className={styles.acList}>
+          {currentList.map((item, i) => <li key={i}>{item}</li>)}
+        </ul>
+      );
+      currentList = [];
+    }
+  };
+
+  lines.forEach((line, index) => {
+    if (line.startsWith('```')) {
+      if (inCodeBlock) {
+        elements.push(<pre key={index} className={styles.acCode}><code>{codeBlockContent}</code></pre>);
+        codeBlockContent = '';
+        inCodeBlock = false;
+      } else {
+        inCodeBlock = true;
+      }
+      return;
+    }
+    if (inCodeBlock) { codeBlockContent += line + '\n'; return; }
+
+    const imgMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)/);
+    if (imgMatch) {
+      flushList(`list-${index}`);
+      elements.push(
+        <div key={index} className={styles.acImageWrap}>
+          <img src={imgMatch[2]} alt={imgMatch[1]} className={styles.acImage} loading="lazy" />
+          {imgMatch[1] && <span className={styles.acCaption}>{imgMatch[1]}</span>}
+        </div>
+      );
+      return;
+    }
+    if (line.startsWith('# ')) { flushList(`list-${index}`); elements.push(<h2 key={index} className={styles.acH1}>{line.substring(2)}</h2>); }
+    else if (line.startsWith('## ')) { flushList(`list-${index}`); elements.push(<h3 key={index} className={styles.acH2}>{line.substring(3)}</h3>); }
+    else if (line.startsWith('### ')) { flushList(`list-${index}`); elements.push(<h4 key={index} className={styles.acH3}>{line.substring(4)}</h4>); }
+    else if (line.startsWith('#### ')) { flushList(`list-${index}`); elements.push(<h5 key={index} className={styles.acH3}>{line.substring(5)}</h5>); }
+    else if (line.startsWith('- ')) { currentList.push(line.substring(2)); }
+    else if (line.trim() === '' || line.trim() === '---') { flushList(`list-${index}`); }
+    else if (line.trim()) {
+      flushList(`list-${index}`);
+      elements.push(<p key={index} className={styles.acP}>{line}</p>);
+    }
+  });
+  flushList('final-list');
+  return elements;
+};
 
 const HelpCenterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -400,7 +411,9 @@ const HelpCenterPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [helpTheme, setHelpTheme] = useState<'light' | 'dark'>('light');
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
-  const [expandedShowcase, setExpandedShowcase] = useState<string | null>(null);
+  const [expandedArticle, setExpandedArticle] = useState<string | null>(null);
+
+  const toggleArticle = (id: string) => setExpandedArticle(expandedArticle === id ? null : id);
   const [isStuck, setIsStuck] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -540,7 +553,7 @@ const HelpCenterPage: React.FC = () => {
                   <button
                     key={article.id}
                     className={styles.heroSearchItem}
-                    onClick={() => navigate(article.path)}
+                    onClick={() => { setSearchQuery(''); toggleArticle(article.id); }}
                   >
                     <FileTextIcon size={16} />
                     <div className={styles.heroSearchItemText}>
@@ -578,7 +591,7 @@ const HelpCenterPage: React.FC = () => {
                     <button
                       key={topic.id}
                       className={styles.featuredCard}
-                      onClick={() => navigate(topic.path)}
+                      onClick={() => toggleArticle(topic.id)}
                     >
                       <div className={styles.featuredCardTop}>
                         <span className={styles.featuredIcon}>{categoryIcons[topic.category]}</span>
@@ -596,35 +609,44 @@ const HelpCenterPage: React.FC = () => {
               </section>
             )}
 
-            {/* Articles by Category */}
+            {/* Articles by Category — all expand inline */}
             {Object.entries(groupedArticles).map(([category, categoryArticles]) => (
               <section key={category} className={styles.contentSection}>
                 <h2 className={styles.sectionTitle}>{category}</h2>
-                <div className={styles.articleGrid}>
-                  {categoryArticles.map(article => (
-                    <div
-                      key={article.id}
-                      className={styles.articleCard}
-                      onClick={() => navigate(article.path)}
-                    >
-                      <h3 className={styles.articleTitle}>{article.title}</h3>
-                      <p className={styles.articleDesc}>{article.description}</p>
-                      <div className={styles.articleMeta}>
-                        {article.readingTime && (
-                          <span className={styles.readingTime}>
-                            <FileTextIcon size={14} /> {article.readingTime} min read
-                          </span>
-                        )}
-                        {article.tags && article.tags.length > 0 && (
-                          <div className={styles.articleTags}>
-                            {article.tags.map(tag => (
-                              <span key={tag} className={styles.articleTag}>{tag}</span>
-                            ))}
+                <div className={styles.showcaseList}>
+                  {categoryArticles.map(article => {
+                    const isOpen = expandedArticle === article.id;
+                    const contentKey = getArticleKey(article.path);
+                    const content = articleContent[contentKey];
+                    return (
+                      <div
+                        key={article.id}
+                        className={`${styles.showcaseItem} ${isOpen ? styles.showcaseExpanded : ''}`}
+                      >
+                        <button
+                          className={styles.showcaseHeader}
+                          onClick={() => toggleArticle(article.id)}
+                        >
+                          <div className={styles.showcaseHeaderText}>
+                            <span className={styles.showcaseTitle}>{article.title}</span>
+                            <span className={styles.showcaseSubtitle}>{article.description}</span>
+                          </div>
+                          <span className={styles.showcaseToggle}>{isOpen ? '−' : '+'}</span>
+                        </button>
+                        {isOpen && (
+                          <div className={styles.showcaseBody}>
+                            {content ? (
+                              <div className={styles.articleContentBody}>
+                                {renderArticleContent(content)}
+                              </div>
+                            ) : (
+                              <p className={styles.acP}>{article.description}</p>
+                            )}
                           </div>
                         )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </section>
             ))}
@@ -653,85 +675,28 @@ const HelpCenterPage: React.FC = () => {
                 </Button>
               </div>
             )}
-            {/* API Reference Section */}
+            {/* Quick Links */}
             <section className={styles.contentSection}>
-              <h2 className={styles.sectionTitle}>API Reference & Developer Resources</h2>
-              <div className={styles.articleGrid}>
-                <div className={styles.articleCard} onClick={() => navigate("/help/developers/api-reference")}>
-                  <h3 className={styles.articleTitle}>REST API Documentation</h3>
-                  <p className={styles.articleDesc}>Complete API reference for integrating with ResonantGenesis platform.</p>
-                </div>
-                <div className={styles.articleCard} onClick={() => window.open("https://github.com/louienemesh/ResonantGenesis", "_blank")}>
-                  <h3 className={styles.articleTitle}>GitHub Repository</h3>
-                  <p className={styles.articleDesc}>Explore our open-source codebase and join the community.</p>
-                </div>
-                <div className={styles.articleCard} onClick={() => goToContact(navigate)}>
-                  <h3 className={styles.articleTitle}>Contact Support</h3>
-                  <p className={styles.articleDesc}>Get help from our support team via email or contact form.</p>
-                </div>
-              </div>
-            </section>
-
-
-            {/* Platform Showcase — expandable dropdown sections */}
-            <section className={styles.showcaseSection}>
-              <h2 className={styles.sectionTitle}>Platform Showcase</h2>
-              <p style={{ color: 'var(--text-secondary, #94a3b8)', fontSize: '0.95rem', marginBottom: '16px' }}>
-                Explore key platform capabilities — click to expand.
-              </p>
+              <h2 className={styles.sectionTitle}>Quick Links</h2>
               <div className={styles.showcaseList}>
-                {showcaseItems.map(item => (
-                  <div
-                    key={item.id}
-                    className={`${styles.showcaseItem} ${expandedShowcase === item.id ? styles.showcaseExpanded : ''}`}
-                  >
-                    <button
-                      className={styles.showcaseHeader}
-                      onClick={() => setExpandedShowcase(expandedShowcase === item.id ? null : item.id)}
-                    >
-                      <div className={styles.showcaseHeaderText}>
-                        <span className={styles.showcaseTitle}>{item.title}</span>
-                        <span className={styles.showcaseSubtitle}>{item.subtitle}</span>
-                      </div>
-                      <span className={styles.showcaseToggle}>{expandedShowcase === item.id ? '−' : '+'}</span>
-                    </button>
-                    {expandedShowcase === item.id && (
-                      <div className={styles.showcaseBody}>
-                        {item.images.map((img, i) => (
-                          <div key={i} className={styles.showcaseImageWrap}>
-                            <img src={img.src} alt={img.caption} className={styles.showcaseImage} loading="lazy" />
-                            <span className={styles.showcaseCaption}>{img.caption}</span>
-                          </div>
-                        ))}
-                        <div className={styles.showcaseHighlights}>
-                          <h4>Key Features</h4>
-                          <ul>
-                            {item.highlights.map((h, i) => (
-                              <li key={i}>{h}</li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div className={styles.showcaseInvestor}>
-                          <h4>💼 Investor Insight</h4>
-                          <p>{item.investorPitch}</p>
-                        </div>
-                        <button
-                          className={styles.showcaseReadMore}
-                          onClick={() => {
-                            const paths: Record<string, string> = {
-                              'blockchain-explorer': '/help/blockchain/blockchain-explorer',
-                              'integrations': '/help/platform/integrations-guide',
-                              'code-visualizer': '/help/developer/code-visualizer-pro',
-                            };
-                            navigate(paths[item.id] || '/help');
-                          }}
-                        >
-                          Read Full Article →
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                <div className={styles.showcaseItem}>
+                  <button className={styles.showcaseHeader} onClick={() => window.open('https://github.com/louienemesh/ResonantGenesis', '_blank')}>
+                    <div className={styles.showcaseHeaderText}>
+                      <span className={styles.showcaseTitle}>GitHub Repository</span>
+                      <span className={styles.showcaseSubtitle}>Explore our open-source codebase and join the community.</span>
+                    </div>
+                    <span className={styles.showcaseToggle}>↗</span>
+                  </button>
+                </div>
+                <div className={styles.showcaseItem}>
+                  <button className={styles.showcaseHeader} onClick={() => goToContact(navigate)}>
+                    <div className={styles.showcaseHeaderText}>
+                      <span className={styles.showcaseTitle}>Contact Support</span>
+                      <span className={styles.showcaseSubtitle}>Get help from our support team via email or contact form.</span>
+                    </div>
+                    <span className={styles.showcaseToggle}>↗</span>
+                  </button>
+                </div>
               </div>
             </section>
 

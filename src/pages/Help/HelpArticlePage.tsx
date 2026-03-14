@@ -26,7 +26,7 @@ interface Article {
   content?: string;
 }
 
-const articleContent: Record<string, string> = {
+export const articleContent: Record<string, string> = {
   'rgt-wallet': `
 # RGT Wallet & Web3 Integration
 
