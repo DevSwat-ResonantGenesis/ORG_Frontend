@@ -86,6 +86,7 @@ const MyInstallationsPage = lazy(() => import('../pages/Marketplace/MyInstallati
 const PurchasesPage = lazy(() => import('../pages/Marketplace/PurchasesPage'));
 const RabbitPage = lazy(() => import('../pages/Rabbit/RabbitPage'));
 const WalletPage = lazy(() => import("../pages/Wallet/WalletPage"));
+const AgenticChatPage = lazy(() => import("../pages/AgenticChat/AgenticChatPage"));
 const AgentsPage = lazy(() => import('../pages/Agents/AgentOSv2'));
 const AgentDashboard = lazy(() => import('../pages/Agents/AgentOSv2'));
 const CreateTeamPage = lazy(() => import('../pages/AgentTeams/CreateTeamPage'));
@@ -478,6 +479,10 @@ const router = createBrowserRouter([
   {
     path: '/wallet',
     element: withShell(<ProtectedRoute><WalletPage /></ProtectedRoute>)
+  },
+  {
+    path: '/agent',
+    element: withShell(<ProtectedRoute><AgenticChatPage /></ProtectedRoute>)
   },
   {
     path: '/reset-password',
