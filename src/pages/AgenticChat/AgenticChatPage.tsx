@@ -20,17 +20,32 @@ const TOOLS = [
   // Search & Web
   { id: 'web_search', name: 'Web Search', icon: '🔍' },
   { id: 'fetch_url', name: 'Fetch URL', icon: '🌐' },
-  // Memory
+  // Memory & Hash Sphere
   { id: 'memory_read', name: 'Memory Read', icon: '🧠' },
   { id: 'memory_write', name: 'Memory Write', icon: '💾' },
+  { id: 'memory_search', name: 'Memory Search', icon: '🔎' },
+  { id: 'memory_stats', name: 'Memory Stats', icon: '📊' },
+  { id: 'hash_sphere_search', name: 'HS Search', icon: '🌍' },
+  { id: 'hash_sphere_anchor', name: 'HS Anchor', icon: '⚓' },
+  { id: 'hash_sphere_list_anchors', name: 'HS Anchors', icon: '📑' },
+  { id: 'hash_sphere_hash', name: 'HS Hash', icon: '#️⃣' },
+  { id: 'hash_sphere_resonance', name: 'HS Resonance', icon: '🌀' },
   // Code
   { id: 'execute_code', name: 'Execute Code', icon: '⚡' },
   // Code Visualizer
   { id: 'code_visualizer_scan', name: 'CV Scan', icon: '🔬' },
+  { id: 'code_visualizer_full_analysis', name: 'CV Full Analysis', icon: '🧪' },
   { id: 'code_visualizer_trace', name: 'CV Trace', icon: '🔗' },
   { id: 'code_visualizer_functions', name: 'CV Functions', icon: '📋' },
   { id: 'code_visualizer_governance', name: 'CV Governance', icon: '🛡️' },
   { id: 'code_visualizer_list', name: 'CV List', icon: '📊' },
+  { id: 'code_visualizer_report', name: 'CV Report', icon: '📄' },
+  { id: 'code_visualizer_graph', name: 'CV Graph', icon: '🕸️' },
+  { id: 'code_visualizer_pipeline', name: 'CV Pipeline', icon: '🛤️' },
+  { id: 'code_visualizer_filter', name: 'CV Filter', icon: '🔍' },
+  { id: 'code_visualizer_by_type', name: 'CV By Type', icon: '🏷️' },
+  { id: 'code_visualizer_compare', name: 'CV Compare', icon: '🔄' },
+  { id: 'code_visualizer_delete', name: 'CV Delete', icon: '🗑️' },
   // Agents OS
   { id: 'agents_list', name: 'Agents List', icon: '🤖' },
   { id: 'agents_create', name: 'Create Agent', icon: '➕' },
