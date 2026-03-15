@@ -3,7 +3,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Mail,
   Lock,
@@ -194,9 +194,7 @@ type LoginResponse = {
 
 export default function LoginPageNew() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { theme } = useThemeStore();
-  const returnUrl = searchParams.get('return');
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -234,9 +232,6 @@ export default function LoginPageNew() {
       // Platform owners go to owner dashboard, regular users to resonant-chat
       if (data.role === 'platform_owner') {
         navigate('/owner-dashboard');
-      } else if (returnUrl) {
-        // Redirect back to return URL (e.g. desktop app auth callback)
-        navigate(returnUrl, { replace: true });
       } else {
         try {
           sessionStorage.setItem(
