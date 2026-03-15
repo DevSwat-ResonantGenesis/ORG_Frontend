@@ -92,10 +92,61 @@ const AgenticChatPage: React.FC = () => {
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [enabledTools, setEnabledTools] = useState<string[]>(TOOLS.map(t => t.id));
+  const [conversations, setConversations] = useState<any[]>([]);
+  const [activeConvId, setActiveConvId] = useState<string>('');
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [loadingConvs, setLoadingConvs] = useState(false);
   const [showTools, setShowTools] = useState(false);
   const [currentSteps, setCurrentSteps] = useState<Step[]>([]);
   const [lastStats, setLastStats] = useState<{ loops: number; tokens: number; elapsed: number } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const loadConversations = useCallback(async () => {
+    setLoadingConvs(true);
+    try {
+      const resp = await fetch('/api/v1/agentic-chat/conversations', { credentials: 'include' });
+      if (resp.ok) {
+        const data = await resp.json();
+        setConversations(data.conversations || []);
+      }
+    } catch (e) { console.error('Load conversations error:', e); }
+    setLoadingConvs(false);
+  }, []);
+
+  const loadConversation = useCallback(async (convId: string) => {
+    try {
+      const resp = await fetch(`/api/v1/agentic-chat/conversations/${convId}`, { credentials: 'include' });
+      if (resp.ok) {
+        const data = await resp.json();
+        const msgs = (data.messages || []).map((m: any) => ({
+          role: m.role,
+          content: m.content,
+          steps: [],
+        }));
+        setMessages(msgs);
+        setActiveConvId(convId);
+        setCurrentSteps([]);
+        setLastStats(null);
+      }
+    } catch (e) { console.error('Load conversation error:', e); }
+  }, []);
+
+  const newConversation = useCallback(() => {
+    setMessages([]);
+    setCurrentSteps([]);
+    setLastStats(null);
+    setActiveConvId('');
+  }, []);
+
+  const deleteConversation = useCallback(async (convId: string) => {
+    try {
+      await fetch(`/api/v1/agentic-chat/conversations/${convId}`, { method: 'DELETE', credentials: 'include' });
+      setConversations(prev => prev.filter(c => c.id !== convId));
+      if (activeConvId === convId) newConversation();
+    } catch (e) { console.error('Delete error:', e); }
+  }, [activeConvId, newConversation]);
+
+  useEffect(() => { loadConversations(); }, [loadConversations]);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -125,7 +176,7 @@ const AgenticChatPage: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ message: msg, conversation_history: history, enabled_tools: enabledTools, max_loops: 10 }),
+        body: JSON.stringify({ message: msg, conversation_id: activeConvId || undefined, conversation_history: history, enabled_tools: enabledTools, max_loops: 10 }),
       });
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -155,8 +206,15 @@ const AgenticChatPage: React.FC = () => {
               const step: Step = { type: eventType as Step['type'], data, timestamp: Date.now() };
               steps.push(step);
               setCurrentSteps([...steps]);
+              if (eventType === 'status' && data.conversation_id && !activeConvId) {
+                setActiveConvId(data.conversation_id);
+              }
               if (eventType === 'response') finalContent = data.content || '';
-              if (eventType === 'done') { doneStats = { loops: data.loops, tokens: data.tokens, elapsed: data.elapsed_seconds }; setLastStats(doneStats); }
+              if (eventType === 'done') {
+                doneStats = { loops: data.loops, tokens: data.tokens, elapsed: data.elapsed_seconds };
+                setLastStats(doneStats);
+                loadConversations();
+              }
             } catch { /* skip */ }
             eventType = '';
           }
@@ -233,16 +291,66 @@ const AgenticChatPage: React.FC = () => {
   };
 
   return (
-    <div style={styles.root}>
+    <div style={{ ...styles.root, flexDirection: 'row' as const }}>
+      {/* Conversation Sidebar */}
+      {showSidebar && (
+        <div style={{
+          width: '260px', background: '#0d0d0d', borderRight: '1px solid #1e1e1e',
+          display: 'flex', flexDirection: 'column' as const, flexShrink: 0, overflow: 'hidden',
+        }}>
+          <div style={{ padding: '12px', borderBottom: '1px solid #1e1e1e', display: 'flex', gap: '8px' }}>
+            <button onClick={newConversation} style={{
+              flex: 1, padding: '8px', borderRadius: '8px', border: '1px solid #333',
+              background: '#1a1a1a', color: '#999', cursor: 'pointer', fontSize: '12px',
+            }}>+ New Chat</button>
+          </div>
+          <div style={{ flex: 1, overflow: 'auto', padding: '6px' }}>
+            {loadingConvs && <div style={{ color: '#555', fontSize: '12px', padding: '8px' }}>Loading...</div>}
+            {conversations.map(c => (
+              <div key={c.id} onClick={() => loadConversation(c.id)} style={{
+                padding: '8px 10px', borderRadius: '8px', cursor: 'pointer', marginBottom: '2px',
+                background: activeConvId === c.id ? '#1e1b4b' : 'transparent',
+                border: activeConvId === c.id ? '1px solid #4c1d95' : '1px solid transparent',
+                fontSize: '13px', color: activeConvId === c.id ? '#c4b5fd' : '#888',
+                display: 'flex', alignItems: 'center', gap: '6px',
+              }}>
+                <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>
+                  {c.title || 'Untitled'}
+                </span>
+                <span onClick={(e) => { e.stopPropagation(); deleteConversation(c.id); }}
+                  style={{ color: '#555', fontSize: '11px', cursor: 'pointer', flexShrink: 0 }}
+                  title="Delete">✕</span>
+              </div>
+            ))}
+            {!loadingConvs && conversations.length === 0 && (
+              <div style={{ color: '#444', fontSize: '12px', padding: '12px', textAlign: 'center' }}>
+                No conversations yet
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Main content */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' as const, minWidth: 0 }}>
       {/* Header */}
       <div style={styles.header}>
         <div style={styles.title}>Resonant Assistant</div>
         <div style={styles.subtitle}>AI assistant with tools, memory & Hash Sphere</div>
         <div style={{ flex: 1 }} />
+        <button onClick={() => setShowSidebar(!showSidebar)} style={{
+          ...styles.headerBtn,
+          background: showSidebar ? '#1e1b4b' : '#1a1a1a',
+          borderColor: showSidebar ? '#4c1d95' : '#333',
+          color: showSidebar ? '#c4b5fd' : '#999',
+        }}>
+          💬 Chats
+        </button>
+        <button onClick={() => { newConversation(); }} style={styles.headerBtn}>+ New</button>
         <button onClick={() => setShowTools(!showTools)} style={{ ...styles.headerBtn, background: showTools ? '#1e1b4b' : '#1a1a1a', borderColor: showTools ? '#4c1d95' : '#333', color: showTools ? '#c4b5fd' : '#999' }}>
           🔧 Tools ({enabledTools.length}/{TOOLS.length})
         </button>
-        <button onClick={() => { setMessages([]); setCurrentSteps([]); setLastStats(null); }} style={styles.headerBtn}>Clear</button>
+        <button onClick={() => { newConversation(); }} style={styles.headerBtn}>Clear</button>
       </div>
 
       {/* Tools panel */}
@@ -350,6 +458,7 @@ const AgenticChatPage: React.FC = () => {
           </button>
         </div>
       </div>
+    </div>
     </div>
   );
 };
