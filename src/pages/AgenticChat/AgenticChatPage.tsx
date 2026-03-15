@@ -221,8 +221,8 @@ const AgenticChatPage: React.FC = () => {
     <div style={styles.root}>
       {/* Header */}
       <div style={styles.header}>
-        <div style={styles.title}>Resonant Agent</div>
-        <div style={styles.subtitle}>Cascade-style agentic AI with tool calling</div>
+        <div style={styles.title}>Resonant Assistant</div>
+        <div style={styles.subtitle}>AI assistant with tools, memory & Hash Sphere</div>
         <div style={{ flex: 1 }} />
         <button onClick={() => setShowTools(!showTools)} style={{ ...styles.headerBtn, background: showTools ? '#1e1b4b' : '#1a1a1a', borderColor: showTools ? '#4c1d95' : '#333', color: showTools ? '#c4b5fd' : '#999' }}>
           🔧 Tools ({enabledTools.length}/{TOOLS.length})
@@ -252,7 +252,7 @@ const AgenticChatPage: React.FC = () => {
         {messages.length === 0 && !isStreaming && (
           <div style={{ textAlign: 'center', marginTop: '18vh', color: '#444' }}>
             <div style={{ fontSize: '42px', marginBottom: '12px' }}>🤖</div>
-            <div style={{ fontSize: '18px', fontWeight: 600, marginBottom: '6px', color: '#777' }}>Resonant Agent</div>
+            <div style={{ fontSize: '18px', fontWeight: 600, marginBottom: '6px', color: '#777' }}>Resonant Assistant</div>
             <div style={{ fontSize: '13px', maxWidth: '460px', margin: '0 auto', lineHeight: 1.6, color: '#555' }}>
               Ask me anything. I use real tools — web search, code execution,
               memory, Google services — to find answers and take actions.

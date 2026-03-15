@@ -481,8 +481,12 @@ const router = createBrowserRouter([
     element: withShell(<ProtectedRoute><WalletPage /></ProtectedRoute>)
   },
   {
-    path: '/agent',
+    path: '/resonant_assistant',
     element: withShell(<ProtectedRoute><AgenticChatPage /></ProtectedRoute>)
+  },
+  {
+    path: '/agent',
+    element: <Navigate to="/resonant_assistant" replace />
   },
   {
     path: '/reset-password',
