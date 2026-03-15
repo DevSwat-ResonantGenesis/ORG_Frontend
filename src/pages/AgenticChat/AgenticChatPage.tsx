@@ -17,16 +17,44 @@ interface Message {
 }
 
 const TOOLS = [
+  // Search & Web
   { id: 'web_search', name: 'Web Search', icon: '🔍' },
   { id: 'fetch_url', name: 'Fetch URL', icon: '🌐' },
+  // Memory
   { id: 'memory_read', name: 'Memory Read', icon: '🧠' },
   { id: 'memory_write', name: 'Memory Write', icon: '💾' },
+  // Code
   { id: 'execute_code', name: 'Execute Code', icon: '⚡' },
+  // Code Visualizer
+  { id: 'code_visualizer_scan', name: 'CV Scan', icon: '🔬' },
+  { id: 'code_visualizer_trace', name: 'CV Trace', icon: '🔗' },
+  { id: 'code_visualizer_functions', name: 'CV Functions', icon: '📋' },
+  { id: 'code_visualizer_governance', name: 'CV Governance', icon: '🛡️' },
+  { id: 'code_visualizer_list', name: 'CV List', icon: '📊' },
+  // Agents OS
+  { id: 'agents_list', name: 'Agents List', icon: '🤖' },
+  { id: 'agents_create', name: 'Create Agent', icon: '➕' },
+  { id: 'agents_start', name: 'Start Agent', icon: '▶️' },
+  { id: 'agents_stop', name: 'Stop Agent', icon: '⏹️' },
+  { id: 'agents_delete', name: 'Delete Agent', icon: '🗑️' },
+  // Community
   { id: 'create_rabbit_post', name: 'Rabbit Post', icon: '🐰' },
-  { id: 'http_request', name: 'HTTP Request', icon: '📡' },
+  // Media
+  { id: 'generate_image', name: 'Gen Image', icon: '🖼️' },
+  { id: 'generate_audio', name: 'Gen Audio', icon: '🔊' },
+  { id: 'generate_music', name: 'Gen Music', icon: '🎵' },
+  // Email & Slack
+  { id: 'gmail_send', name: 'Gmail Send', icon: '📧' },
+  { id: 'gmail_read', name: 'Gmail Read', icon: '📨' },
+  { id: 'slack_send', name: 'Slack Send', icon: '💬' },
+  { id: 'slack_read', name: 'Slack Read', icon: '📩' },
+  // Integrations
   { id: 'google_calendar', name: 'Calendar', icon: '📅' },
   { id: 'google_drive', name: 'Drive', icon: '📁' },
   { id: 'figma', name: 'Figma', icon: '🎨' },
+  { id: 'sigma', name: 'Sigma', icon: '📈' },
+  // Developer
+  { id: 'http_request', name: 'HTTP Request', icon: '📡' },
 ];
 
 const styles: Record<string, React.CSSProperties> = {
