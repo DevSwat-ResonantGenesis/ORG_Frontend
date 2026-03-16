@@ -2,8 +2,8 @@
  * Modern Login Page - Matches SignupPageNew style
  */
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import {
   Mail,
   Lock,
@@ -194,7 +194,11 @@ type LoginResponse = {
 
 export default function LoginPageNew() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { theme } = useThemeStore();
+  
+  // Desktop IDE login flow: ?redirect=/auth/desktop-callback?port=PORT
+  const postLoginRedirect = useMemo(() => searchParams.get('redirect'), [searchParams]);
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -228,6 +232,12 @@ export default function LoginPageNew() {
       });
       
       saveSessionData(email.trim(), data.role, data.org_id, data.user?.id, data.is_superuser || data.role === 'platform_owner');
+      
+      // Desktop IDE login: redirect back to /auth/desktop-callback?port=PORT
+      if (postLoginRedirect) {
+        window.location.href = postLoginRedirect;
+        return;
+      }
       
       // Platform owners go to owner dashboard, regular users to resonant-chat
       if (data.role === 'platform_owner') {
