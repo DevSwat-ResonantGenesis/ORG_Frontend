@@ -264,7 +264,7 @@ export const Header: React.FC<HeaderProps> = ({
     <>
       <header className={`${styles.header} ${styles.hoverReveal} ${isScrolled ? styles.headerScrolled : ''} ${isLandingPage ? styles.landingHoverOnly : ''}`}>
         <div className={styles.content}>
-          {/* Mobile Burger Menu Button */}
+          {/* Mobile Menu Button — uses Resonant logo instead of burger */}
           {isMobileViewport && (
             <button
               className={styles.burgerMenu}
@@ -277,11 +277,11 @@ export const Header: React.FC<HeaderProps> = ({
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               ) : (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="3" y1="6" x2="21" y2="6" />
-                  <line x1="3" y1="12" x2="21" y2="12" />
-                  <line x1="3" y1="18" x2="21" y2="18" />
-                </svg>
+                <img
+                  src={theme === 'dark' ? '/logo white.png' : '/logo black.png'}
+                  alt="Menu"
+                  className={styles.burgerLogo}
+                />
               )}
             </button>
           )}
@@ -293,7 +293,7 @@ export const Header: React.FC<HeaderProps> = ({
             <img
               src={theme === 'dark' ? '/logo white.png' : '/logo black.png'}
               alt="ResonantGenesis"
-              className={styles.logoIcon}
+              className={`${styles.logoIcon} ${isMobileViewport ? styles.logoIconHiddenMobile : ''}`}
             />
             {isLandingPage ? (landingChatActive ? 'AGI Neural Hub' : 'ResonantGenesis') : 'ResonantGenesis'}
           </div>
@@ -624,78 +624,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </header>
 
-      {/* Mobile Dropdown Menu - Same navigation as desktop */}
-      {false && isMobileMenuOpen && (
-        <div className={styles.mobileMenu}>
-          <div className={styles.mobileMenuContent}>
-            {/* Solutions */}
-            <div className={styles.mobileMenuSection}>
-              <div className={styles.mobileMenuSectionTitle}>Products</div>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/resonant-chat'); setIsMobileMenuOpen(false); }}>
-                Resonant Chat
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/build'); setIsMobileMenuOpen(false); }}>
-                Resonant Builder
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/agents'); setIsMobileMenuOpen(false); }}>
-                AI Agent Studio
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/ide'); setIsMobileMenuOpen(false); }}>
-                Resonant IDE
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/resonant-memory'); setIsMobileMenuOpen(false); }}>
-                Genesis Memory
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/state-physics'); setIsMobileMenuOpen(false); }}>
-                Invariants Enforcement SIM
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/code-visualizer'); setIsMobileMenuOpen(false); }}>
-                Codebase Analyser
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/network/history'); setIsMobileMenuOpen(false); }}>
-                Execution History
-              </button>
-            </div>
-
-            {/* Network */}
-            <div className={styles.mobileMenuSection}>
-              <div className={styles.mobileMenuSectionTitle}>Marketplace</div>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/network/marketplace'); setIsMobileMenuOpen(false); }}>
-                Marketplace
-              </button>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/network/agents'); setIsMobileMenuOpen(false); }}>
-                Discover AI Agents
-              </button>
-            </div>
-
-            {/* Tutorials */}
-            <div className={styles.mobileMenuSection}>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/help'); setIsMobileMenuOpen(false); }}>
-                Tutorials
-              </button>
-            </div>
-
-            {/* Other Links */}
-            <div className={styles.mobileMenuSection}>
-              <button className={styles.mobileMenuItem} onClick={() => { navigate('/pricing'); setIsMobileMenuOpen(false); }}>
-                Pricing
-              </button>
-            </div>
-
-            {/* Auth Section */}
-            {!isLoggedIn && (
-              <div className={styles.mobileMenuAuth}>
-                <button className={styles.mobileMenuAuthButton} onClick={() => { navigate('/login'); setIsMobileMenuOpen(false); }}>
-                  Log In
-                </button>
-                <button className={styles.mobileMenuAuthButtonPrimary} onClick={() => { navigate('/signup'); setIsMobileMenuOpen(false); }}>
-                  Sign Up
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Mobile Dropdown Menu removed — UnifiedSidebarMenu handles mobile nav */}
       <UnifiedSidebarMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
     </>
   );

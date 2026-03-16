@@ -10,16 +10,17 @@ interface ThemeState {
   toggleTheme: () => void;
 }
 
-// Default to light theme - prioritize light mode
-// IMPORTANT: Website starts with light mode by default
+// Default theme: dark on mobile, light on desktop
+// Users can override via ThemeToggle (saved to localStorage)
 const getInitialTheme = (): Theme => {
   if (typeof window === 'undefined') return 'light';
   try {
-    // Check for saved preference, default to light
     const saved = localStorage.getItem('rg_theme');
-    return (saved as Theme) || 'light'; // Default to light mode
+    if (saved) return saved as Theme;
+    // No saved preference — default to dark on mobile, light on desktop
+    const isMobile = window.innerWidth <= 1024;
+    return isMobile ? 'dark' : 'light';
   } catch {
-    // localStorage may be blocked in iframes or private browsing
     return 'light';
   }
 };
