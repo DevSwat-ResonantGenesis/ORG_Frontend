@@ -515,7 +515,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/resonant-chat',
-    element: withShell(<ProtectedRoute><ResonantChatPage /></ProtectedRoute>) // Requires authentication
+    element: withPublicShell(<ResonantChatPage />) // Public — guest mode handled internally
   },
   // IDE disabled - using Build Page instead
   {
