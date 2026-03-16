@@ -1511,6 +1511,98 @@
 }
 
 /* ============================================================
+   Agentic Step Visualization (tool calls / skill execution)
+   ============================================================ */
+.agenticSteps {
+  margin-top: 8px;
+  width: 100%;
+}
+
+.agenticStepsSummary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-secondary, #888);
+  padding: 4px 0;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.agenticStepsSummary:hover {
+  color: var(--text-primary, #e5e5e5);
+}
+
+:global([data-theme='light']) .agenticStepsSummary {
+  color: #64748b;
+}
+
+:global([data-theme='light']) .agenticStepsSummary:hover {
+  color: #1e293b;
+}
+
+.agenticStepsList {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.agenticStep {
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.agenticStepSuccess {
+  background: rgba(16, 185, 129, 0.12);
+  color: #6ee7b7;
+}
+
+.agenticStepError {
+  background: rgba(239, 68, 68, 0.12);
+  color: #fca5a5;
+}
+
+.agenticStepTool {
+  background: rgba(59, 130, 246, 0.12);
+  color: #93c5fd;
+}
+
+:global([data-theme='light']) .agenticStepSuccess {
+  background: rgba(16, 185, 129, 0.10);
+  color: #047857;
+}
+
+:global([data-theme='light']) .agenticStepError {
+  background: rgba(239, 68, 68, 0.10);
+  color: #b91c1c;
+}
+
+:global([data-theme='light']) .agenticStepTool {
+  background: rgba(59, 130, 246, 0.10);
+  color: #1d4ed8;
+}
+
+.agenticStepName {
+  font-weight: 600;
+}
+
+.agenticStepDetail {
+  opacity: 0.7;
+  max-width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+/* ============================================================
    Error States
    ============================================================ */
 .errorMessage {

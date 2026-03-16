@@ -255,6 +255,7 @@ interface Message {
   };
   generatedImages?: GeneratedImage[]; // DALL-E generated images
   webSearchResults?: WebSearchResult[]; // Web search results
+  toolResults?: Array<{ tool_name: string; success: boolean; result?: Record<string, any>; error?: string }>; // Agentic skill execution results
 }
 
 const ResonantChatPage: React.FC = () => {
@@ -2317,6 +2318,7 @@ const ResonantChatPage: React.FC = () => {
         },
         generatedImages: resonantResponse.generatedImages,
         webSearchResults: resonantResponse.webSearchResults,
+        toolResults: resonantResponse.toolResults,
       };
 
       // Show warning if error occurred
@@ -2669,6 +2671,7 @@ const ResonantChatPage: React.FC = () => {
         },
         generatedImages: resonantResponse.generatedImages,
         webSearchResults: resonantResponse.webSearchResults,
+        toolResults: resonantResponse.toolResults,
       };
 
       // Update memory anchors if new ones were created (reload to get full data)
@@ -4108,6 +4111,38 @@ const ResonantChatPage: React.FC = () => {
                           <span className={styles.typingCaret} aria-hidden="true" />
                         )}
                       </div>
+                      {/* Agentic Step Visualization (tool/skill execution results) */}
+                      {message.role === 'assistant' && message.toolResults && message.toolResults.length > 0 && (
+                        <details className={styles.agenticSteps}>
+                          <summary className={styles.agenticStepsSummary}>
+                            <span>▸ {message.toolResults.length} skill{message.toolResults.length !== 1 ? 's' : ''} executed</span>
+                            <span style={{ opacity: 0.5 }}>
+                              ({message.toolResults.filter(t => t.success).length} succeeded, {message.toolResults.filter(t => !t.success).length} failed)
+                            </span>
+                          </summary>
+                          <div className={styles.agenticStepsList}>
+                            {message.toolResults.map((tr, idx) => (
+                              <div
+                                key={idx}
+                                className={`${styles.agenticStep} ${tr.success ? styles.agenticStepSuccess : styles.agenticStepError}`}
+                              >
+                                {tr.success ? '✅' : '❌'}{' '}
+                                <span className={styles.agenticStepName}>{tr.tool_name}</span>
+                                {tr.error && (
+                                  <span className={styles.agenticStepDetail}> — {tr.error}</span>
+                                )}
+                                {tr.success && tr.result && (
+                                  <span className={styles.agenticStepDetail}>
+                                    {tr.result.action ? ` → ${tr.result.action}` : ''}
+                                    {tr.result.analysis_id ? ` (${tr.result.analysis_id.substring(0, 8)}...)` : ''}
+                                    {tr.result.panel_url ? ` → ${tr.result.panel_url}` : ''}
+                                  </span>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </details>
+                      )}
                       {/* Generated Images Display */}
                       {message.role === 'assistant' && message.generatedImages && message.generatedImages.length > 0 && (
                         <div style={{
