@@ -15,6 +15,7 @@ import { logout as apiLogout } from '@/api/auth';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { Button } from '@/components/ui';
 import { useResonantChatMenu } from '@/context/ResonantChatMenuContext';
+import { useThemeStore } from '@/store/themeStore';
 import styles from './Header.module.css';
 import { 
   goToHome, 
@@ -75,6 +76,7 @@ export const Header: React.FC<HeaderProps> = ({
   // Use auth-cookies for reliable authentication check
   const sessionData = getSessionData();
   const isLoggedIn = isAuthenticated() && !!sessionData;
+  const { theme } = useThemeStore();
   
   // Check if we're on Resonant Chat page
   const isResonantChatPage = location.pathname === '/resonant-chat' || location.pathname.startsWith('/resonant-chat');
@@ -288,6 +290,11 @@ export const Header: React.FC<HeaderProps> = ({
             className={styles.logo}
             onClick={() => (isLandingPage && landingChatActive ? navigate('/resonant-chat') : goToHome(navigate))}
           >
+            <img
+              src={theme === 'dark' ? '/logo white.png' : '/logo black.png'}
+              alt="ResonantGenesis"
+              className={styles.logoIcon}
+            />
             {isLandingPage ? (landingChatActive ? 'AGI Neural Hub' : 'ResonantGenesis') : 'ResonantGenesis'}
           </div>
 
