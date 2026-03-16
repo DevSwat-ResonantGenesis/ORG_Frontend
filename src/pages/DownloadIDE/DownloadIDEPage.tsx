@@ -1,40 +1,88 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useThemeStore } from '@/store/themeStore';
 import styles from './DownloadIDEPage.module.css';
 
+const FeatureIconBrain = () => (
+  <svg className="featureParallaxIcon" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <circle cx="16" cy="16" r="12" />
+    <path d="M12 10C12 10 14 8 16 8C18 8 20 10 20 12C20 14 18 14 18 16C18 18 16 18 16 20" strokeLinecap="round" />
+    <circle cx="16" cy="24" r="1" fill="currentColor" stroke="none" />
+    <path d="M10 14H8M22 14H24M11 20L9 22M21 20L23 22" strokeLinecap="round" opacity="0.5" />
+  </svg>
+);
+
+const FeatureIconSearch = () => (
+  <svg className="featureParallaxIcon" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <circle cx="14" cy="14" r="8" />
+    <path d="M20 20L27 27" strokeLinecap="round" />
+    <path d="M11 11L17 17M11 14H17" strokeLinecap="round" opacity="0.5" />
+  </svg>
+);
+
+const FeatureIconMemory = () => (
+  <svg className="featureParallaxIcon" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <circle cx="16" cy="16" r="10" strokeDasharray="3 3" />
+    <circle cx="12" cy="12" r="2" />
+    <circle cx="20" cy="12" r="2" />
+    <circle cx="12" cy="20" r="2" />
+    <circle cx="20" cy="20" r="2" />
+    <path d="M14 12H18M12 14V18M20 14V18M14 20H18" opacity="0.4" />
+  </svg>
+);
+
+const FeatureIconBolt = () => (
+  <svg className="featureParallaxIcon" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M18 4L8 18H16L14 28L24 14H16L18 4Z" strokeLinejoin="round" />
+  </svg>
+);
+
+const FeatureIconGit = () => (
+  <svg className="featureParallaxIcon" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <circle cx="16" cy="8" r="3" />
+    <circle cx="10" cy="24" r="3" />
+    <circle cx="22" cy="24" r="3" />
+    <path d="M16 11V18L10 21M16 18L22 21" strokeLinecap="round" />
+  </svg>
+);
+
+const FeatureIconShield = () => (
+  <svg className="featureParallaxIcon" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M16 4L6 10V18C6 24 16 28 16 28C16 28 26 24 26 18V10L16 4Z" strokeLinejoin="round" />
+    <path d="M12 16L15 19L20 13" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 const DownloadIDEPage: React.FC = () => {
-  const navigate = useNavigate();
   const { theme } = useThemeStore();
 
   const features = [
     {
-      icon: '🧠',
+      icon: <FeatureIconBrain />,
       title: 'Agentic AI Assistant',
       desc: 'Built-in Resonant AI that reads your project, executes tools, searches the web, and writes code — all locally.',
     },
     {
-      icon: '🔍',
+      icon: <FeatureIconSearch />,
       title: 'Code Visualizer',
       desc: 'Deep codebase analysis with dependency graphs, function tracing, governance checks, and architecture insights.',
     },
     {
-      icon: '💾',
+      icon: <FeatureIconMemory />,
       title: 'Hash Sphere Memory',
       desc: 'Persistent long-term memory that carries context across sessions. Your AI remembers your projects and preferences.',
     },
     {
-      icon: '⚡',
+      icon: <FeatureIconBolt />,
       title: 'Local Tool Execution',
       desc: 'File read/write, grep search, terminal commands, and git operations — executed directly on your machine.',
     },
     {
-      icon: '🔗',
+      icon: <FeatureIconGit />,
       title: 'GitHub Integration',
       desc: 'Create repos, manage issues, pull requests, review code, and push changes — all from the chat panel.',
     },
     {
-      icon: '🛡️',
+      icon: <FeatureIconShield />,
       title: 'Privacy First',
       desc: 'Your code stays on your machine. Only the queries you send are processed by the AI. No telemetry, no tracking.',
     },
@@ -75,12 +123,6 @@ const DownloadIDEPage: React.FC = () => {
               </svg>
               Download for Desktop
             </a>
-            <button
-              className={styles.secondaryButton}
-              onClick={() => navigate('/resonant-chat')}
-            >
-              Try in Browser
-            </button>
           </div>
           <div className={styles.heroPlatforms}>
             Available for macOS • Windows • Linux
@@ -98,7 +140,7 @@ const DownloadIDEPage: React.FC = () => {
           <div className={styles.screenshotCard}>
             <div className={styles.screenshotImageWrap}>
               <img
-                src="/images/showcase/Resonant AI IDEanswer.png"
+                src="/images/showcase/resonant-ide-answer.png"
                 alt="Resonant AI IDE — Code Analysis"
                 className={styles.screenshotImage}
               />
@@ -111,7 +153,7 @@ const DownloadIDEPage: React.FC = () => {
           <div className={styles.screenshotCard}>
             <div className={styles.screenshotImageWrap}>
               <img
-                src="/images/showcase/Resonant AI IDEinquery sse .png"
+                src="/images/showcase/resonant-ide-inquiry.png"
                 alt="Resonant AI IDE — Agentic Tool Execution"
                 className={styles.screenshotImage}
               />
@@ -151,7 +193,7 @@ const DownloadIDEPage: React.FC = () => {
           />
           <h2 className={styles.ctaTitle}>Ready to build with Resonant AI?</h2>
           <p className={styles.ctaDesc}>
-            Download the IDE or start coding directly in the browser.
+            Download the IDE and start building with AI on your machine.
           </p>
           <div className={styles.ctaActions}>
             <a
@@ -162,12 +204,6 @@ const DownloadIDEPage: React.FC = () => {
             >
               Download Resonant IDE
             </a>
-            <button
-              className={styles.secondaryButton}
-              onClick={() => navigate('/resonant-chat')}
-            >
-              Open in Browser
-            </button>
           </div>
         </div>
       </section>

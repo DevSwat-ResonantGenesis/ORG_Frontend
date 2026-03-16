@@ -1,5 +1,5 @@
 /* ============================================
-   Download IDE Page — Modern, clean layout
+   Download IDE Page — Black & white only
    ============================================ */
 
 .page {
@@ -29,7 +29,7 @@
   transform: translateX(-50%);
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -50,9 +50,9 @@
   gap: 8px;
   padding: 6px 16px;
   border-radius: 999px;
-  background: rgba(99, 102, 241, 0.12);
-  border: 1px solid rgba(99, 102, 241, 0.25);
-  color: #a5b4fc;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.85rem;
   font-weight: 500;
   letter-spacing: 0.02em;
@@ -73,7 +73,7 @@
 }
 
 .heroAccent {
-  background: linear-gradient(135deg, #818cf8 0%, #6366f1 50%, #a78bfa 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 50%, #ffffff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -103,38 +103,18 @@
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
-  background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
-  color: #fff;
+  background: linear-gradient(135deg, #fff 0%, #d4d4d8 100%);
+  color: #0a0a0f;
   border: none;
   cursor: pointer;
   text-decoration: none;
   transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.12);
 }
 
 .downloadButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
-}
-
-.secondaryButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 14px 28px;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  background: transparent;
-  color: var(--text-primary, #e4e4e7);
-  border: 1px solid rgba(99, 102, 241, 0.3);
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-}
-
-.secondaryButton:hover {
-  background: rgba(99, 102, 241, 0.08);
-  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 8px 30px rgba(255, 255, 255, 0.18);
 }
 
 .heroPlatforms {
@@ -156,6 +136,7 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0 0 12px;
+  text-align: center;
 }
 
 .sectionDesc {
@@ -164,6 +145,7 @@
   max-width: 600px;
   margin: 0 auto 48px;
   line-height: 1.6;
+  text-align: center;
 }
 
 .screenshotGrid {
@@ -176,12 +158,12 @@
   border-radius: 16px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   transition: border-color 0.2s, transform 0.2s;
 }
 
 .screenshotCard:hover {
-  border-color: rgba(99, 102, 241, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-4px);
 }
 
@@ -235,18 +217,24 @@
   padding: 28px;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   transition: border-color 0.2s, background 0.2s;
 }
 
 .featureCard:hover {
-  border-color: rgba(99, 102, 241, 0.22);
-  background: rgba(99, 102, 241, 0.04);
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .featureIcon {
-  font-size: 1.6rem;
   margin-bottom: 14px;
+  color: var(--text-primary, #e4e4e7);
+  opacity: 0.85;
+  transition: transform 0.3s ease;
+}
+
+.featureCard:hover .featureIcon {
+  transform: translateY(-2px);
 }
 
 .featureTitle {
@@ -311,8 +299,16 @@
 }
 
 [data-theme='light'] .heroBadge {
-  background: rgba(99, 102, 241, 0.08);
-  color: #4f46e5;
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #3f3f46;
+}
+
+[data-theme='light'] .heroAccent {
+  background: linear-gradient(135deg, #18181b 0%, #52525b 50%, #18181b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 [data-theme='light'] .heroSubtitle,
@@ -327,13 +323,27 @@
   color: #a1a1aa;
 }
 
+[data-theme='light'] .heroGlow {
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.04) 0%, transparent 70%);
+}
+
+[data-theme='light'] .downloadButton {
+  background: linear-gradient(135deg, #18181b 0%, #3f3f46 100%);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme='light'] .downloadButton:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
+}
+
 [data-theme='light'] .screenshotCard {
   background: #fff;
   border-color: #e4e4e7;
 }
 
 [data-theme='light'] .screenshotCard:hover {
-  border-color: #a5b4fc;
+  border-color: #a1a1aa;
 }
 
 [data-theme='light'] .featureCard {
@@ -342,22 +352,12 @@
 }
 
 [data-theme='light'] .featureCard:hover {
-  background: rgba(99, 102, 241, 0.04);
-  border-color: #a5b4fc;
+  background: rgba(0, 0, 0, 0.02);
+  border-color: #a1a1aa;
 }
 
-[data-theme='light'] .secondaryButton {
+[data-theme='light'] .featureIcon {
   color: #18181b;
-  border-color: #d4d4d8;
-}
-
-[data-theme='light'] .secondaryButton:hover {
-  background: rgba(99, 102, 241, 0.06);
-  border-color: #a5b4fc;
-}
-
-[data-theme='light'] .heroGlow {
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
 }
 
 /* ── Responsive ── */
@@ -380,8 +380,7 @@
     align-items: center;
   }
 
-  .downloadButton,
-  .secondaryButton {
+  .downloadButton {
     width: 100%;
     max-width: 300px;
     justify-content: center;
