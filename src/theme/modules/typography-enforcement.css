@@ -152,17 +152,17 @@ button:not([class*="_"]),
   letter-spacing: var(--tracking-normal) !important;
 }
 
-/* Links */
-a {
+/* Links (exclude CSS modules) */
+a:not([class*="_"]) {
   color: var(--color-primary-500) !important;
 }
 
-[data-theme='dark'] a {
+[data-theme='dark'] a:not([class*="_"]) {
   color: #60a5fa !important;
 }
 
-/* Ensure text is never invisible - EXCLUDE IDE */
-[data-theme='dark'] *:not(.ide-container):not(.ide-container *) {
+/* Ensure text is never invisible - EXCLUDE IDE and CSS modules */
+[data-theme='dark'] *:not(.ide-container):not(.ide-container *):not([class*="_"]) {
   color: inherit !important;
 }
 
