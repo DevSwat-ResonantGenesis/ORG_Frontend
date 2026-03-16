@@ -314,10 +314,6 @@ export const Header: React.FC<HeaderProps> = ({
               {activeDropdown === 'solutions' && (
                 <div className={styles.navDropdown}>
                   <div className={styles.navDropdownGridTwoRows}>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-chat'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>AGI Neural Hub</span>
-                      <span className={styles.navDropdownItemDesc}>For general-purpose autonomous action</span>
-                    </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/build'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>Resonant Builder</span>
                       <span className={styles.navDropdownItemDesc}>AI project generation</span>
@@ -325,10 +321,6 @@ export const Header: React.FC<HeaderProps> = ({
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/agents'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>AI Agent Studio</span>
                       <span className={styles.navDropdownItemDesc}>Create & manage agents</span>
-                    </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/ide'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Resonant IDE</span>
-                      <span className={styles.navDropdownItemDesc}>Open the in-browser IDE</span>
                     </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-memory'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>Synthetic Neural Memory</span>
@@ -395,16 +387,6 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            {/* Tutorials */}
-            <div className={styles.navItem}>
-              <button
-                className={styles.navButton}
-                onClick={() => { navigate('/help'); setActiveDropdown(null); }}
-              >
-                Tutorials
-              </button>
-            </div>
-
             {/* Rabbit - Standalone Community */}
             <div className={styles.navItem}>
               <button
@@ -428,6 +410,13 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => navigate('/investor-pitch-deck')}
             >
               Investor Pitch Deck
+            </button>
+
+            <button
+              className={styles.navButton}
+              onClick={() => navigate('/download-ide')}
+            >
+              Download IDE
             </button>
           </nav>
 

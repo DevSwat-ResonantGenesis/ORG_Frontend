@@ -178,20 +178,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             </button>
 
             <button
-              className={`${styles.usmItem} ${location.pathname === '/ide' ? styles.usmActive : ''}`}
-              onClick={() => { goToIDE(navigate, onClose); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="2" width="12" height="12" rx="1" />
-                  <path d="M5 5H11M5 8H11M5 11H8" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Resonant IDE</span>
-              {location.pathname === '/ide' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
               className={`${styles.usmItem} ${location.pathname === '/resonant-memory' ? styles.usmActive : ''}`}
               onClick={() => { navigate('/resonant-memory'); onClose(); }}
             >
@@ -363,18 +349,17 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             </button>
 
             <button
-              className={`${styles.usmItem} ${location.pathname === '/help' || location.pathname.startsWith('/help/') ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/help'); onClose(); }}
+              className={`${styles.usmItem} ${location.pathname === '/download-ide' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/download-ide'); onClose(); }}
             >
               <span className={styles.usmIcon}>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="8" r="6" />
-                  <path d="M6 6C6 5 7 4 8 4C9 4 10 5 10 6C10 7 9 7.5 8 8V9" strokeLinecap="round" />
-                  <circle cx="8" cy="11" r="0.5" fill="currentColor" />
+                  <path d="M8 2V10M5 7L8 10L11 7" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M3 12H13" strokeLinecap="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Tutorials</span>
-              {(location.pathname === '/help' || location.pathname.startsWith('/help/')) && <span className={styles.usmActiveIndicator} />}
+              <span className={styles.usmLabel}>Download IDE</span>
+              {location.pathname === '/download-ide' && <span className={styles.usmActiveIndicator} />}
             </button>
 
             <button
