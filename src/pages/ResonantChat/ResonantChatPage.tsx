@@ -2147,15 +2147,20 @@ const ResonantChatPage: React.FC = () => {
           const apiUrl = (await import('@/utils/apiUrl')).getApiUrl();
           const history = messages.slice(-10).map(m => ({ role: m.role, content: m.content }));
 
+          // Inject system context (time, timezone) into the message
+          const now = new Date();
+          const systemContext = `[System context: ${now.toISOString()} | ${Intl.DateTimeFormat().resolvedOptions().timeZone} | ${now.toLocaleDateString('en-US', { weekday: 'long' })}]`;
+          const enrichedMessage = `${systemContext}\n\n${queryWithContext}`;
+
           const response = await fetch(`${apiUrl}/api/v1/agentic-chat/stream`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify({
-              message: queryWithContext,
+              message: enrichedMessage,
               conversation_id: agenticConvId || undefined,
               conversation_history: history,
-              enabled_tools: undefined,
+              enabled_tools: enabledSkillIds.length > 0 ? enabledSkillIds : undefined,
               max_loops: 10,
             }),
             signal: controller.signal,

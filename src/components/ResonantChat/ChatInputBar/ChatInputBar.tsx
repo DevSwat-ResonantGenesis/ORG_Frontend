@@ -1312,21 +1312,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           }}
         >
           <div className={styles.toolsLeft}>
-            {onToggleAiAssistant && (
-              <button
-                className={`${styles.aiAssistantToggle} ${aiAssistantEnabled ? styles.aiAssistantToggleActive : ''}`}
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleAiAssistant(); }}
-                title={aiAssistantEnabled ? 'AI Assistant ON — using agentic tools' : 'AI Assistant OFF — basic chat'}
-                type="button"
-              >
-                <img
-                  src={document.documentElement.getAttribute('data-theme') === 'light' ? '/logo black.png' : '/logo white.png'}
-                  alt=""
-                  className={styles.aiAssistantLogo}
-                />
-                AI Assistant
-              </button>
-            )}
             {onVoiceConversation && (
               <button
                 className={`${styles.toolButton} ${voiceInInput ? styles.active : ''}`}
@@ -1574,6 +1559,22 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             )}
 
             <SkillsToolbar onEnabledSkillsChange={onEnabledSkillsChange} />
+
+            {onToggleAiAssistant && (
+              <button
+                className={`${styles.aiAssistantToggle} ${aiAssistantEnabled ? styles.aiAssistantToggleActive : ''}`}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleAiAssistant(); }}
+                title={aiAssistantEnabled ? 'AI Assistant ON — using agentic tools' : 'AI Assistant OFF — basic chat'}
+                type="button"
+              >
+                <img
+                  src={document.documentElement.getAttribute('data-theme') === 'light' ? '/logo black.png' : '/logo white.png'}
+                  alt=""
+                  className={styles.aiAssistantLogo}
+                />
+                AI Assistant
+              </button>
+            )}
           </div>
 
           <div className={styles.toolsRight}>
