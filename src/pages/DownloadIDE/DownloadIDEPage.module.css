@@ -104,10 +104,10 @@
   font-size: 1rem;
   font-weight: 600;
   background: linear-gradient(135deg, #fff 0%, #d4d4d8 100%);
-  color: #0a0a0f;
+  color: #0a0a0f !important;
   border: none;
   cursor: pointer;
-  text-decoration: none;
+  text-decoration: none !important;
   transition: transform 0.15s, box-shadow 0.15s;
   box-shadow: 0 4px 20px rgba(255, 255, 255, 0.12);
 }
@@ -115,6 +115,7 @@
 .downloadButton:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(255, 255, 255, 0.18);
+  color: #0a0a0f !important;
 }
 
 .heroPlatforms {
@@ -129,6 +130,9 @@
   max-width: 1200px;
   margin: 0 auto;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .sectionTitle {
@@ -137,6 +141,7 @@
   letter-spacing: -0.02em;
   margin: 0 0 12px;
   text-align: center;
+  width: 100%;
 }
 
 .sectionDesc {
@@ -146,12 +151,14 @@
   margin: 0 auto 48px;
   line-height: 1.6;
   text-align: center;
+  width: 100%;
 }
 
 .screenshotGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 32px;
+  width: 100%;
 }
 
 .screenshotCard {
@@ -204,6 +211,9 @@
   max-width: 1100px;
   margin: 0 auto;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .featureGrid {
@@ -211,6 +221,7 @@
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
   text-align: left;
+  width: 100%;
 }
 
 .featureCard {
@@ -329,12 +340,13 @@
 
 [data-theme='light'] .downloadButton {
   background: linear-gradient(135deg, #18181b 0%, #3f3f46 100%);
-  color: #fff;
+  color: #fff !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 [data-theme='light'] .downloadButton:hover {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
+  color: #fff !important;
 }
 
 [data-theme='light'] .screenshotCard {
