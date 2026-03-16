@@ -990,6 +990,42 @@ export const extractMemories = async (
 };
 
 /**
+ * Save agentic-chat (AI Assistant) messages into the resonant chat pipeline.
+ * This ensures agentic messages persist alongside regular resonant chat messages
+ * with full pipeline support (hashing, DSID, memory ingestion, PMI).
+ */
+export const saveAgenticToResonant = async (
+  userMessage: string,
+  assistantResponse: string,
+  chatId?: string,
+  options?: {
+    toolResults?: Array<{ tool_name: string; success: boolean; result?: any; error?: string }>;
+    toolCalls?: Array<{ tool: string; args?: any }>;
+    model?: string;
+    tokensUsed?: number;
+    loops?: number;
+  },
+): Promise<{ chat_id: string; user_message_id: string; assistant_message_id: string; resonance_score: number }> => {
+  try {
+    const response = await fastapiClient.post('/resonant-chat/save-agentic', {
+      user_message: userMessage,
+      assistant_response: assistantResponse,
+      chat_id: chatId || undefined,
+      tool_results: options?.toolResults || [],
+      tool_calls: options?.toolCalls || [],
+      model: options?.model,
+      tokens_used: options?.tokensUsed || 0,
+      loops: options?.loops || 0,
+    });
+    return response.data;
+  } catch (error: any) {
+    logger.warn('[saveAgenticToResonant] Failed (non-critical):', error?.message || error);
+    return { chat_id: chatId || '', user_message_id: '', assistant_message_id: '', resonance_score: 0 };
+  }
+};
+
+
+/**
  * Smart-group conversations into topic categories.
  */
 export interface ConversationGroup {

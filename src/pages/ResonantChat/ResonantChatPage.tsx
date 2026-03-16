@@ -1,5 +1,5 @@
 import { createMemory, deleteConversation, deleteMemory, listConversations, listMemories, updateConversation, updateMemory, uploadFile, type MemoryResponse } from '@/api/rag';
-import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, streamResonantMessage, getProviderStats, getUserAnalytics, archiveConversation, deleteResonantConversation, deleteResonantMessage, extractMemories, categorizeConversations, type UserAnalytics, type ConversationGroup, type SSEStreamEvent } from '@/api/resonantChat';
+import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, streamResonantMessage, getProviderStats, getUserAnalytics, archiveConversation, deleteResonantConversation, deleteResonantMessage, extractMemories, categorizeConversations, saveAgenticToResonant, type UserAnalytics, type ConversationGroup, type SSEStreamEvent } from '@/api/resonantChat';
 import { triggerChatSync } from '@/context/ChatContext';
 import { fetchAvailableProviders } from '@/api/userApiKeys';
 import { executeSkill } from '@/api/skills';
@@ -2237,6 +2237,30 @@ const ResonantChatPage: React.FC = () => {
 
           setAgenticSteps([]);
           triggerChatSync();
+
+          // Cross-save agentic messages into resonant chat pipeline
+          // (hashing, DSID, memory ingestion, PMI) so they persist on reload
+          if (isLoggedIn && agenticContent && !agenticContent.startsWith('Error:')) {
+            const agenticToolCalls = steps
+              .filter(s => s.type === 'tool_call')
+              .map(s => ({ tool: s.data.tool || 'unknown', args: s.data.args }));
+            saveAgenticToResonant(
+              currentInput,
+              agenticContent,
+              currentConversationId || undefined,
+              {
+                toolResults,
+                toolCalls: agenticToolCalls,
+                tokensUsed: doneStats?.tokens || 0,
+                loops: doneStats?.loops || 0,
+              },
+            ).then(result => {
+              if (result.chat_id && !currentConversationId) {
+                setCurrentConversationId(result.chat_id);
+              }
+              console.log(`[Agentic→Resonant] Saved to resonant pipeline: chat_id=${result.chat_id}`);
+            }).catch(() => {});
+          }
 
           if (soundNotifications) {
             try {
