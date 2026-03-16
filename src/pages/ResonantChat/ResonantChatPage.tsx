@@ -1,5 +1,5 @@
 import { createMemory, deleteConversation, deleteMemory, listConversations, listMemories, updateConversation, updateMemory, uploadFile, type MemoryResponse } from '@/api/rag';
-import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, getProviderStats, getUserAnalytics, archiveConversation, deleteResonantConversation, deleteResonantMessage, extractMemories, categorizeConversations, type UserAnalytics, type ConversationGroup } from '@/api/resonantChat';
+import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, streamResonantMessage, getProviderStats, getUserAnalytics, archiveConversation, deleteResonantConversation, deleteResonantMessage, extractMemories, categorizeConversations, type UserAnalytics, type ConversationGroup, type SSEStreamEvent } from '@/api/resonantChat';
 import { triggerChatSync } from '@/context/ChatContext';
 import { fetchAvailableProviders } from '@/api/userApiKeys';
 import { executeSkill } from '@/api/skills';
@@ -2123,6 +2123,120 @@ const ResonantChatPage: React.FC = () => {
       const chatIdToUse = currentConversationId || undefined;
       console.log('💬 Using chatId:', chatIdToUse, 'currentConversationId:', currentConversationId);
 
+      // === SSE STREAMING PATH (real-time token-by-token display) ===
+      // Use SSE for non-image messages; images require the full non-streaming pipeline
+      if (imageAttachments.length === 0) {
+        const sseAssistantId = crypto.randomUUID();
+        let sseContent = '';
+        const sseMeta: Record<string, any> = {};
+
+        // Add streaming placeholder message immediately
+        setMessages(prev => [...prev, {
+          id: sseAssistantId,
+          role: 'assistant' as const,
+          content: '',
+          timestamp: new Date(),
+          aiProvider: '...',
+        }]);
+
+        try {
+          await streamResonantMessage(
+            {
+              message: queryWithContext,
+              chatId: chatIdToUse,
+              preferred_provider: selectedProvider !== 'auto' ? selectedProvider : undefined,
+              agent_hash: (!selectedTeamId) ? selectedAgentHash || undefined : undefined,
+              teamId: selectedTeamId || undefined,
+            },
+            (event: SSEStreamEvent) => {
+              switch (event.event) {
+                case 'start':
+                  if (event.chat_id) {
+                    sseMeta.chatId = event.chat_id;
+                    if (!currentConversationId) setCurrentConversationId(event.chat_id);
+                  }
+                  break;
+                case 'chunk':
+                  sseContent += event.content || '';
+                  setMessages(prev => prev.map(m =>
+                    m.id === sseAssistantId ? { ...m, content: sseContent } : m
+                  ));
+                  break;
+                case 'metadata':
+                  Object.assign(sseMeta, event);
+                  setMessages(prev => prev.map(m =>
+                    m.id === sseAssistantId
+                      ? {
+                          ...m,
+                          aiProvider: event.provider || 'unknown',
+                          hash: event.hash,
+                          resonanceScore: event.resonance_score,
+                          xyz: event.xyz,
+                          metrics: { resonantEnergy: event.resonance_score, evidence: event.resonance_score },
+                        }
+                      : m
+                  ));
+                  break;
+                case 'done':
+                  Object.assign(sseMeta, event);
+                  setMessages(prev => prev.map(m =>
+                    m.id === sseAssistantId ? { ...m, anchors: event.anchors || [] } : m
+                  ));
+                  break;
+                case 'error':
+                  if (!sseContent) {
+                    sseContent = `Error: ${event.error || 'Unknown error'}`;
+                    setMessages(prev => prev.map(m =>
+                      m.id === sseAssistantId ? { ...m, content: sseContent, aiProvider: 'error' } : m
+                    ));
+                  }
+                  break;
+              }
+            },
+            controller.signal,
+          );
+
+          // Streaming completed — post-processing
+          if (sseMeta.chatId && !currentConversationId) {
+            setCurrentConversationId(sseMeta.chatId);
+          }
+          if (sseMeta.anchors?.length > 0) loadMemoryAnchors();
+
+          // Conversation saving
+          if (autoSave && isLoggedIn && !currentConversationId && !sseMeta.chatId) {
+            createChat(currentInput.substring(0, 50) || 'New Conversation')
+              .then((r: any) => { if (r?.chatId) setCurrentConversationId(r.chatId); })
+              .catch(() => {});
+          }
+
+          triggerChatSync();
+
+          if (soundNotifications) {
+            try {
+              const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OSdTgwOUKzn8LZjGwU7k9jzzHksBSR3x/DdkEAKFF606euoVRQKRp/g8r5sIQUrgc7y2Yk2CBtpvfDknU4MDlCs5/C2YxsFO5PY88x5LAUkd8fw3ZBAC');
+              audio.play().catch(() => {});
+            } catch { /* ignore audio errors */ }
+          }
+
+          // Memory extraction
+          if (isLoggedIn && currentInput && sseContent && !sseContent.startsWith('Error:')) {
+            extractMemories(currentInput, sseContent, sseMeta.chatId || currentConversationId || '')
+              .then(result => { if (result.count > 0) { console.log(`[Memory] Auto-extracted ${result.count} memories`); loadMemories(); } })
+              .catch(() => {});
+          }
+
+          return; // SSE streaming succeeded — exit handleSend (finally block still runs)
+        } catch (sseError: any) {
+          // If aborted by user, re-throw for outer catch
+          if (controller.signal.aborted || sseError?.name === 'AbortError') throw sseError;
+
+          // SSE failed — remove placeholder and fall through to non-streaming
+          console.warn('[ResonantChat] SSE streaming failed, falling back to non-streaming:', sseError);
+          setMessages(prev => prev.filter(m => m.id !== sseAssistantId));
+        }
+      }
+
+      // === NON-STREAMING FALLBACK (images/attachments or SSE failure) ===
       // Use sendResonantMessage for all users (Hash Sphere-powered messaging)
       // Extract immediate context from last few messages to help AI focus on current task
       const recentMessages = messages.slice(-5);

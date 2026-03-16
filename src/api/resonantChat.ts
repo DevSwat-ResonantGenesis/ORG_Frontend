@@ -379,6 +379,101 @@ export const sendResonantMessage = async (
 };
 
 /**
+ * SSE event types from /resonant-chat/message/stream
+ */
+export interface SSEStreamEvent {
+  event: 'start' | 'chunk' | 'metadata' | 'done' | 'error';
+  // start
+  chat_id?: string;
+  user_message_id?: string;
+  user_hash?: string;
+  // chunk
+  content?: string;
+  // metadata
+  hash?: string;
+  resonance_score?: number;
+  xyz?: [number, number, number];
+  provider?: string;
+  // done
+  message_id?: string;
+  total_length?: number;
+  anchors?: string[];
+  evidence_graph?: Record<string, any>;
+  // error
+  error?: string;
+}
+
+/**
+ * Stream a message via SSE (Server-Sent Events).
+ * Uses the /resonant-chat/message/stream endpoint for real-time chunk delivery.
+ * 
+ * @param request - The chat request payload
+ * @param onEvent - Callback invoked for each SSE event
+ * @param signal - Optional AbortSignal for cancellation
+ */
+export const streamResonantMessage = async (
+  request: ResonantChatRequest,
+  onEvent: (event: SSEStreamEvent) => void,
+  signal?: AbortSignal,
+): Promise<void> => {
+  const apiUrl = (await import('../utils/apiUrl')).getApiUrl();
+
+  const backendRequest = {
+    message: request.message,
+    chat_id: request.chatId || undefined,
+    preferred_provider: request.preferred_provider || undefined,
+    agent_hash: request.agent_hash || undefined,
+    teamId: request.teamId || undefined,
+  };
+
+  const response = await fetch(`${apiUrl}/resonant-chat/message/stream`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(backendRequest),
+    signal,
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    throw new Error(`SSE stream failed (${response.status}): ${text}`);
+  }
+
+  const reader = response.body?.getReader();
+  if (!reader) throw new Error('No response body for SSE stream');
+
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+
+      // Parse SSE lines: "data: {...}\n\n"
+      const lines = buffer.split('\n\n');
+      // Keep the last incomplete chunk in buffer
+      buffer = lines.pop() || '';
+
+      for (const block of lines) {
+        const dataLine = block.split('\n').find(l => l.startsWith('data: '));
+        if (!dataLine) continue;
+        try {
+          const parsed: SSEStreamEvent = JSON.parse(dataLine.slice(6));
+          onEvent(parsed);
+        } catch {
+          // skip malformed events
+        }
+      }
+    }
+  } finally {
+    reader.releaseLock();
+  }
+};
+
+/**
  * Get chat history
  */
 export const getChatHistory = async (chatId?: string) => {
