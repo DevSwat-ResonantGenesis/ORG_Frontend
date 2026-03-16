@@ -161,11 +161,6 @@ a:not([class*="_"]) {
   color: #60a5fa !important;
 }
 
-/* Ensure text is never invisible - EXCLUDE IDE and CSS modules */
-[data-theme='dark'] *:not(.ide-container):not(.ide-container *):not([class*="_"]) {
-  color: inherit !important;
-}
-
 [data-theme='dark'] .text-900,
 [data-theme='dark'] [class*="text-900"] {
   color: #f9fafb !important;
