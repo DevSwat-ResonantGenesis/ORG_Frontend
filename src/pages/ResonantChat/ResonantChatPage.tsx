@@ -324,6 +324,8 @@ const ResonantChatPage: React.FC = () => {
   const [providerStats, setProviderStats] = useState<Record<string, { health: string; latency?: number; available?: boolean }>>({});
   const [userAnalytics, setUserAnalytics] = useState<UserAnalytics | null>(null);
   const [agentMode, setAgentMode] = useState(false);
+  const [aiAssistantEnabled, setAiAssistantEnabled] = useState(true);
+  const [agenticSteps, setAgenticSteps] = useState<Array<{ type: string; data: any; timestamp: number }>>([]);
   const [temperature, setTemperature] = useState(0.7);
   const [maxTokens, setMaxTokens] = useState(2000);
   const [selectedModel, setSelectedModel] = useState<string>('');
@@ -2122,6 +2124,136 @@ const ResonantChatPage: React.FC = () => {
       // Get chatId from state only - no localStorage fallback
       const chatIdToUse = currentConversationId || undefined;
       console.log('💬 Using chatId:', chatIdToUse, 'currentConversationId:', currentConversationId);
+
+      // === AGENTIC AI ASSISTANT PATH (tools, thinking, real-time steps) ===
+      if (aiAssistantEnabled) {
+        const agenticMsgId = crypto.randomUUID();
+        let agenticContent = '';
+        const steps: Array<{ type: string; data: any; timestamp: number }> = [];
+        let doneStats: { loops: number; tokens: number; elapsed: number } | null = null;
+        let agenticConvId = currentConversationId || '';
+
+        // Add streaming placeholder
+        setMessages(prev => [...prev, {
+          id: agenticMsgId,
+          role: 'assistant' as const,
+          content: '',
+          timestamp: new Date(),
+          aiProvider: 'AI Assistant',
+        }]);
+        setAgenticSteps([]);
+
+        try {
+          const apiUrl = (await import('@/utils/apiUrl')).getApiUrl();
+          const history = messages.slice(-10).map(m => ({ role: m.role, content: m.content }));
+
+          const response = await fetch(`${apiUrl}/api/v1/agentic-chat/stream`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              message: queryWithContext,
+              conversation_id: agenticConvId || undefined,
+              conversation_history: history,
+              enabled_tools: undefined,
+              max_loops: 10,
+            }),
+            signal: controller.signal,
+          });
+
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          const reader = response.body?.getReader();
+          if (!reader) throw new Error('No response body');
+
+          const decoder = new TextDecoder();
+          let buffer = '';
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+            let eventType = '';
+
+            for (const line of lines) {
+              if (line.startsWith('event: ')) {
+                eventType = line.slice(7).trim();
+              } else if (line.startsWith('data: ') && eventType) {
+                try {
+                  const data = JSON.parse(line.slice(6));
+                  const step = { type: eventType, data, timestamp: Date.now() };
+                  steps.push(step);
+                  setAgenticSteps([...steps]);
+
+                  if (eventType === 'status' && data.conversation_id && !agenticConvId) {
+                    agenticConvId = data.conversation_id;
+                  }
+                  if (eventType === 'response') {
+                    agenticContent = data.content || '';
+                    setMessages(prev => prev.map(m =>
+                      m.id === agenticMsgId ? { ...m, content: agenticContent } : m
+                    ));
+                  }
+                  if (eventType === 'done') {
+                    doneStats = { loops: data.loops, tokens: data.tokens, elapsed: data.elapsed_seconds };
+                  }
+                } catch { /* skip malformed */ }
+                eventType = '';
+              }
+            }
+          }
+
+          // Finalize message with tool results
+          const toolResults = steps
+            .filter(s => s.type === 'tool_result')
+            .map(s => ({
+              tool_name: s.data.tool || 'unknown',
+              success: !s.data.error,
+              result: s.data.result ? { raw: s.data.result } : undefined,
+              error: s.data.error,
+            }));
+
+          if (agenticContent) {
+            setMessages(prev => prev.map(m =>
+              m.id === agenticMsgId
+                ? { ...m, content: agenticContent, aiProvider: 'AI Assistant', toolResults: toolResults.length > 0 ? toolResults : undefined }
+                : m
+            ));
+          } else {
+            const errStep = steps.find(s => s.type === 'error');
+            setMessages(prev => prev.map(m =>
+              m.id === agenticMsgId
+                ? { ...m, content: errStep ? `Error: ${errStep.data?.error || 'Unknown'}` : 'No response received.', aiProvider: errStep ? 'error' : 'AI Assistant' }
+                : m
+            ));
+          }
+
+          setAgenticSteps([]);
+          triggerChatSync();
+
+          if (soundNotifications) {
+            try {
+              const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OSdTgwOUKzn8LZjGwU7k9jzzHksBSR3x/DdkEAKFF606euoVRQKRp/g8r5sIQUrgc7y2Yk2CBtpvfDknU4MDlCs5/C2YxsFO5PY88x5LAUkd8fw3ZBAC');
+              audio.play().catch(() => {});
+            } catch { /* ignore */ }
+          }
+
+          if (isLoggedIn && currentInput && agenticContent && !agenticContent.startsWith('Error:')) {
+            extractMemories(currentInput, agenticContent, agenticConvId || '')
+              .then(result => { if (result.count > 0) { console.log(`[Memory] Auto-extracted ${result.count} memories`); loadMemories(); } })
+              .catch(() => {});
+          }
+
+          return; // Agentic streaming succeeded — exit handleSend
+        } catch (agenticError: any) {
+          if (controller.signal.aborted || agenticError?.name === 'AbortError') throw agenticError;
+          console.warn('[ResonantChat] Agentic streaming failed, falling back:', agenticError);
+          setMessages(prev => prev.filter(m => m.id !== agenticMsgId));
+          setAgenticSteps([]);
+        }
+      }
 
       // === SSE STREAMING PATH (real-time token-by-token display) ===
       // Use SSE for non-image messages; images require the full non-streaming pipeline
@@ -4509,8 +4641,41 @@ const ResonantChatPage: React.FC = () => {
                   ))}
                   {isLoading && (
                     <div className={styles.thinkingIndicator}>
-                      <div className={styles.thinkingSpinner} />
-                      <span className={styles.thinkingText}>Thinking...</span>
+                      {agenticSteps.length > 0 ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', width: '100%', maxWidth: '85%' }}>
+                          {agenticSteps
+                            .filter(s => ['thinking', 'tool_call', 'tool_result', 'error'].includes(s.type))
+                            .slice(-6)
+                            .map((step, i) => {
+                              const base: React.CSSProperties = { padding: '5px 10px', borderRadius: '6px', fontSize: '12px', fontFamily: "'SF Mono','Fira Code','Consolas', monospace" };
+                              switch (step.type) {
+                                case 'thinking':
+                                  return <div key={i} style={{ ...base, background: 'rgba(139,92,246,0.12)', color: '#a78bfa' }}>🧠 Thinking... <span style={{ opacity: 0.5 }}>(loop {step.data.loop})</span></div>;
+                                case 'tool_call':
+                                  return <div key={i} style={{ ...base, background: 'rgba(59,130,246,0.12)', color: '#93c5fd' }}>🔧 <strong>{step.data.tool}</strong>({JSON.stringify(step.data.args || {}).slice(0, 120)})</div>;
+                                case 'tool_result': {
+                                  const result = (step.data.result || '').toString().slice(0, 200);
+                                  return <div key={i} style={{ ...base, background: 'rgba(16,185,129,0.12)', color: '#6ee7b7', wordBreak: 'break-all' }}>✅ <strong>{step.data.tool}</strong>: <span style={{ opacity: 0.7 }}>{result}{result.length >= 200 ? '…' : ''}</span></div>;
+                                }
+                                case 'error':
+                                  return <div key={i} style={{ ...base, background: 'rgba(239,68,68,0.12)', color: '#fca5a5' }}>❌ {step.data.error}</div>;
+                                default:
+                                  return null;
+                              }
+                            })}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '2px 0' }}>
+                            <div className={styles.thinkingSpinner} />
+                            <span className={styles.thinkingText} style={{ fontSize: '11px' }}>
+                              {agenticSteps.filter(s => s.type === 'tool_call').length} tool calls · {agenticSteps.filter(s => s.type === 'thinking').length} loops
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <div className={styles.thinkingSpinner} />
+                          <span className={styles.thinkingText}>Thinking...</span>
+                        </>
+                      )}
                     </div>
                   )}
                   <div className={styles.messagesBottomSpacer} />
@@ -4682,6 +4847,8 @@ const ResonantChatPage: React.FC = () => {
           attachedFiles={attachedFiles}
           onRemoveFile={(index) => setAttachedFiles(prev => prev.filter((_, i) => i !== index))}
           onEnabledSkillsChange={setEnabledSkillIds}
+          aiAssistantEnabled={aiAssistantEnabled}
+          onToggleAiAssistant={() => setAiAssistantEnabled(prev => !prev)}
           memories={memories}
           onShowMemoryLibrary={() => {
             setShowMemoryLibrary(true);

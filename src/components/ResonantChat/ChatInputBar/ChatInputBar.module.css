@@ -809,6 +809,67 @@
   opacity: 1;
 }
 
+/* AI Assistant Toggle */
+.aiAssistantToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: 8px;
+  background: rgba(139, 92, 246, 0.08);
+  color: #a78bfa;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.aiAssistantToggle:hover {
+  opacity: 1;
+  background: rgba(139, 92, 246, 0.15);
+}
+
+.aiAssistantToggleActive {
+  opacity: 1;
+  background: rgba(139, 92, 246, 0.18);
+  border-color: rgba(139, 92, 246, 0.45);
+  color: #c4b5fd;
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.15);
+}
+
+.aiAssistantToggleActive:hover {
+  background: rgba(139, 92, 246, 0.25);
+}
+
+[data-theme='light'] .aiAssistantToggle {
+  border-color: rgba(99, 102, 241, 0.2);
+  background: rgba(99, 102, 241, 0.06);
+  color: #6366f1;
+}
+
+[data-theme='light'] .aiAssistantToggle:hover {
+  background: rgba(99, 102, 241, 0.12);
+}
+
+[data-theme='light'] .aiAssistantToggleActive {
+  background: rgba(99, 102, 241, 0.14);
+  border-color: rgba(99, 102, 241, 0.35);
+  color: #4f46e5;
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.12);
+}
+
+.aiAssistantLogo {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 /* Provider Dropdown - Modern redesign */
 .providerDropdown {
   position: absolute;

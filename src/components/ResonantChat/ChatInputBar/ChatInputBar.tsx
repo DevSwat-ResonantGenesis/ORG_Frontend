@@ -160,6 +160,10 @@ interface ChatInputBarProps {
   onVoiceConversation?: () => void;
 
   ttsText?: string;
+
+  // AI Assistant mode
+  aiAssistantEnabled?: boolean;
+  onToggleAiAssistant?: () => void;
 }
 
 const ChatInputBar: React.FC<ChatInputBarProps> = ({
@@ -223,6 +227,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   onCopyChat,
   onVoiceConversation,
   ttsText,
+  aiAssistantEnabled = true,
+  onToggleAiAssistant,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
@@ -1306,6 +1312,21 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           }}
         >
           <div className={styles.toolsLeft}>
+            {onToggleAiAssistant && (
+              <button
+                className={`${styles.aiAssistantToggle} ${aiAssistantEnabled ? styles.aiAssistantToggleActive : ''}`}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleAiAssistant(); }}
+                title={aiAssistantEnabled ? 'AI Assistant ON — using agentic tools' : 'AI Assistant OFF — basic chat'}
+                type="button"
+              >
+                <img
+                  src={document.documentElement.getAttribute('data-theme') === 'light' ? '/logo black.png' : '/logo white.png'}
+                  alt=""
+                  className={styles.aiAssistantLogo}
+                />
+                AI Assistant
+              </button>
+            )}
             {onVoiceConversation && (
               <button
                 className={`${styles.toolButton} ${voiceInInput ? styles.active : ''}`}
