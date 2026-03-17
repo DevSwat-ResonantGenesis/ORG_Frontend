@@ -339,10 +339,6 @@ export const Header: React.FC<HeaderProps> = ({
                       <span className={styles.navDropdownItemTitle}>SAST & Dependency Graph Analysis</span>
                       <span className={styles.navDropdownItemDesc}>Full-Stack Architecture Observability & Remediation Engine</span>
                     </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/network/history'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Execution History</span>
-                      <span className={styles.navDropdownItemDesc}>View past runs</span>
-                    </button>
                   </div>
                 </div>
               )}

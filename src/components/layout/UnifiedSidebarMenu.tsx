@@ -206,19 +206,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               {location.pathname === '/code-visualizer' && <span className={styles.usmActiveIndicator} />}
             </button>
 
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/network/history' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/network/history'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="8" r="6" />
-                  <path d="M8 4V8L10.5 10.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Execution History</span>
-              {location.pathname === '/network/history' && <span className={styles.usmActiveIndicator} />}
-            </button>
           </div>
 
           <div className={styles.usmDivider} />
