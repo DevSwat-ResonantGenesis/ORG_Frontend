@@ -12,6 +12,7 @@ import V8ControlPanel from '../../components/owner/V8ControlPanel';
 import PlatformStatePhysics from '../../components/owner/PlatformStatePhysics';
 import DaemonControlPanel from '../../components/owner/DaemonControlPanel';
 import { getSystemMetrics, getServiceHealth, getDatabaseStats, getRaraAgents, getSystemOverview, getPlatformUsers, getPlatformAnalytics, getRecentActivity, getV8Data, SystemMetrics, ServiceHealthResponse, DatabaseStats, RaraData, PlatformAnalytics, ActivityResponse, V8Data } from '../../api/system';
+import { getAdminLocStats, getLiveLocStats, type AdminLocStats, type LiveLocStats } from '../../api/ideLoc';
 
 // Icons
 const CrownIcon = () => (
@@ -218,6 +219,8 @@ const OwnerDashboard: React.FC = () => {
   const [realAnalytics, setRealAnalytics] = useState<PlatformAnalytics | null>(null);
   const [realActivity, setRealActivity] = useState<ActivityResponse | null>(null);
   const [realV8, setRealV8] = useState<V8Data | null>(null);
+  const [locAdminStats, setLocAdminStats] = useState<AdminLocStats | null>(null);
+  const [liveLoc, setLiveLoc] = useState<LiveLocStats | null>(null);
 
   const [authMetrics, setAuthMetrics] = useState<AuthMetrics>({
     loginSuccess: null,
@@ -399,6 +402,18 @@ const OwnerDashboard: React.FC = () => {
         }
       } catch (e) {
         console.warn('Auth metrics not available:', e);
+      }
+
+      // Fetch LOC admin stats
+      try {
+        const [locAdmin, liveLocData] = await Promise.all([
+          getAdminLocStats().catch(() => null),
+          getLiveLocStats().catch(() => null),
+        ]);
+        if (locAdmin) setLocAdminStats(locAdmin);
+        if (liveLocData) setLiveLoc(liveLocData);
+      } catch (e) {
+        console.warn('LOC stats not available:', e);
       }
 
       // Fetch real system metrics from backend
@@ -826,6 +841,75 @@ const OwnerDashboard: React.FC = () => {
               <div style={{ color: '#64748b', textAlign: 'center', padding: '20px' }}>Loading activity...</div>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Resonant AI — LOC Stats (Admin) */}
+      <div className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}><ActivityIcon /> Resonant AI — Lines of Code</h2>
+          {liveLoc && (
+            <span style={{ fontSize: 12, color: '#10b981', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+              {liveLoc.lines_today.toLocaleString()} lines today &middot; {liveLoc.active_users_today} active
+            </span>
+          )}
+        </div>
+        <div className={styles.card}>
+          <div className={styles.statsGrid} style={{ marginBottom: 16 }}>
+            <div className={styles.statCard}>
+              <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconGreen}`}><ActivityIcon /></div></div>
+              <div className={styles.statValue}>{locAdminStats ? locAdminStats.total_lines_written.toLocaleString() : '—'}</div>
+              <div className={styles.statLabel}>Total Lines Written</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconBlue}`}><ActivityIcon /></div></div>
+              <div className={styles.statValue}>{locAdminStats ? locAdminStats.total_lines_edited.toLocaleString() : '—'}</div>
+              <div className={styles.statLabel}>Total Lines Edited</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconPurple}`}><ActivityIcon /></div></div>
+              <div className={styles.statValue}>{locAdminStats ? locAdminStats.total_net_lines.toLocaleString() : '—'}</div>
+              <div className={styles.statLabel}>Net Lines</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconOrange}`}><CpuIcon /></div></div>
+              <div className={styles.statValue}>{locAdminStats ? locAdminStats.total_tool_calls.toLocaleString() : '—'}</div>
+              <div className={styles.statLabel}>Total Tool Calls</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconCyan}`}><UsersIcon /></div></div>
+              <div className={styles.statValue}>{locAdminStats ? locAdminStats.total_users : '—'}</div>
+              <div className={styles.statLabel}>IDE Users</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconRed}`}><TrendingUpIcon /></div></div>
+              <div className={styles.statValue}>{liveLoc ? liveLoc.total_lines_all_time.toLocaleString() : '—'}</div>
+              <div className={styles.statLabel}>All-Time LOC</div>
+            </div>
+          </div>
+          {locAdminStats && locAdminStats.users.length > 0 && (
+            <div className={styles.tableWrapper}>
+              <table className={styles.table}>
+                <thead>
+                  <tr><th>User</th><th style={{textAlign:'right'}}>Written</th><th style={{textAlign:'right'}}>Edited</th><th style={{textAlign:'right'}}>Net</th><th style={{textAlign:'right'}}>Tool Calls</th><th>Languages</th><th>Last Active</th></tr>
+                </thead>
+                <tbody>
+                  {locAdminStats.users.slice(0, 10).map((u) => (
+                    <tr key={u.user_id}>
+                      <td>{u.user_email || u.user_id}</td>
+                      <td style={{textAlign:'right', fontFamily:'monospace'}}>{u.total_lines_written.toLocaleString()}</td>
+                      <td style={{textAlign:'right', fontFamily:'monospace'}}>{u.total_lines_edited.toLocaleString()}</td>
+                      <td style={{textAlign:'right', fontFamily:'monospace'}}>{u.total_net_lines.toLocaleString()}</td>
+                      <td style={{textAlign:'right', fontFamily:'monospace'}}>{u.total_tool_calls.toLocaleString()}</td>
+                      <td style={{fontSize:11, color:'#94a3b8'}}>{Object.keys(u.languages || {}).slice(0,3).join(', ') || '—'}</td>
+                      <td style={{fontSize:11, color:'#64748b'}}>{u.last_active ? new Date(u.last_active).toLocaleDateString() : '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
 

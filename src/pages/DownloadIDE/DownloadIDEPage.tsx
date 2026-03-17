@@ -111,7 +111,7 @@ const DownloadIDEPage: React.FC = () => {
           </p>
           <div className={styles.heroActions}>
             <a
-              href="https://github.com/nicojo77/Resonant_App/releases"
+              href="https://dev-swat.com/api/v1/ide/updates/latest"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.downloadButton}
@@ -121,11 +121,11 @@ const DownloadIDEPage: React.FC = () => {
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
-              Download for Desktop
+              Download for macOS
             </a>
           </div>
           <div className={styles.heroPlatforms}>
-            Available for macOS • Windows • Linux
+            Currently available for macOS (Apple Silicon). Windows &amp; Linux coming soon.
           </div>
         </div>
       </section>
@@ -197,12 +197,12 @@ const DownloadIDEPage: React.FC = () => {
           </p>
           <div className={styles.ctaActions}>
             <a
-              href="https://github.com/nicojo77/Resonant_App/releases"
+              href="https://dev-swat.com/api/v1/ide/updates/latest"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.downloadButton}
             >
-              Download Resonant IDE
+              Download for macOS
             </a>
           </div>
         </div>

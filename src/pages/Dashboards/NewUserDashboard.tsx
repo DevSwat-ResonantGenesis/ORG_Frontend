@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { RefreshCw, Shield, Bot, Brain, Store, GitBranch, Activity, CheckCircle, XCircle, Zap, ArrowRight } from 'lucide-react';
 import { isAuthenticated } from '../../utils/auth-cookies';
 import { fetchDashboardData, type DashboardData } from '../../api/dashboard';
+import { getMyLocStats, getLiveLocStats, type UserLocStats, type LiveLocStats } from '../../api/ideLoc';
 import { logger } from '../../utils/logger';
 import { Button } from '../../components/ui';
 import {
@@ -28,11 +29,19 @@ const NewUserDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [data, setData] = useState<DashboardData | null>(null);
+  const [locStats, setLocStats] = useState<UserLocStats | null>(null);
+  const [liveLoc, setLiveLoc] = useState<LiveLocStats | null>(null);
 
   const loadDashboardData = useCallback(async () => {
     try {
-      const dashboardData = await fetchDashboardData();
+      const [dashboardData, locData, liveData] = await Promise.all([
+        fetchDashboardData(),
+        getMyLocStats().catch(() => null),
+        getLiveLocStats().catch(() => null),
+      ]);
       setData(dashboardData);
+      if (locData) setLocStats(locData);
+      if (liveData) setLiveLoc(liveData);
     } catch (err) {
       logger.error('Failed to load dashboard data', err);
     } finally {
@@ -228,6 +237,54 @@ const NewUserDashboard: React.FC = () => {
           { label: 'Agent Sessions', value: data.activity.sessions, icon: 'sessions' },
         ]}
       />
+
+      {/* Resonant AI — Code Stats (LOC Tracking) */}
+      <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: 20, marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Zap size={16} color="#10b981" />
+            <span style={{ color: '#e5e7eb', fontSize: 14, fontWeight: 600 }}>Resonant AI — Code Written</span>
+          </div>
+          {liveLoc && (
+            <span style={{ fontSize: 11, color: '#10b981', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+              {liveLoc.total_lines_all_time.toLocaleString()} LOC platform-wide
+            </span>
+          )}
+        </div>
+        {locStats && (locStats.total_lines_written > 0 || locStats.total_lines_edited > 0) ? (
+          <>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 8, marginBottom: 12 }}>
+              {[
+                { label: 'Lines Written', value: locStats.total_lines_written, color: '#10b981' },
+                { label: 'Lines Edited', value: locStats.total_lines_edited, color: '#3b82f6' },
+                { label: 'Net Lines', value: locStats.total_net_lines, color: '#8b5cf6' },
+                { label: 'Files Created', value: locStats.total_files_created, color: '#ec4899' },
+                { label: 'Files Modified', value: locStats.total_files_modified, color: '#06b6d4' },
+                { label: 'Tool Calls', value: locStats.total_tool_calls, color: '#f59e0b' },
+              ].map((item) => (
+                <div key={item.label} style={{ background: '#0f172a', borderRadius: 8, padding: '10px 12px', textAlign: 'center', border: '1px solid #1e293b' }}>
+                  <div style={{ color: item.color, fontSize: 20, fontWeight: 700, fontFamily: 'monospace' }}>{item.value.toLocaleString()}</div>
+                  <div style={{ color: '#6b7280', fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: 2 }}>{item.label}</div>
+                </div>
+              ))}
+            </div>
+            {locStats.languages && Object.keys(locStats.languages).length > 0 && (
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {Object.entries(locStats.languages).sort((a, b) => (b[1] as number) - (a[1] as number)).slice(0, 6).map(([lang, count]) => (
+                  <span key={lang} style={{ background: '#1e293b', color: '#94a3b8', fontSize: 11, padding: '3px 8px', borderRadius: 4 }}>
+                    {lang}: {(count as number).toLocaleString()}
+                  </span>
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          <div style={{ color: '#6b7280', fontSize: 13, textAlign: 'center', padding: '16px 0' }}>
+            No AI-written code yet. Start using Resonant IDE to see your stats here.
+          </div>
+        )}
+      </div>
 
       {/* Compliance Checks Detail */}
       {p.compliance && p.compliance.checks.length > 0 && (
