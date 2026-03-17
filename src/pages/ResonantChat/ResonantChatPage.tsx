@@ -2185,6 +2185,7 @@ const ResonantChatPage: React.FC = () => {
               conversation_id: agenticConvId || undefined,
               conversation_history: history,
               enabled_tools: enabledSkillIds.length > 0 ? enabledSkillIds : undefined,
+              preferred_provider: selectedProvider !== 'auto' ? selectedProvider : undefined,
               max_loops: 50,
             }),
             signal: controller.signal,
