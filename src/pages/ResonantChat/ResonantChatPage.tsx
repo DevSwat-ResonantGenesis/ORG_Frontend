@@ -347,6 +347,7 @@ const ResonantChatPage: React.FC = () => {
   const [agentMode, setAgentMode] = useState(false);
   const [aiAssistantEnabled, setAiAssistantEnabled] = useState(true);
   const [agenticSteps, setAgenticSteps] = useState<Array<{ type: string; data: any; timestamp: number }>>([]);
+  const [presentedOptions, setPresentedOptions] = useState<{ title: string; options: Array<{ label: string; value: string; description: string; icon?: string }>; allow_custom?: boolean } | null>(null);
   const [pipelineSteps, setPipelineSteps] = useState<Array<{ step: string; message: string; timestamp: number }>>([]);
   const [temperature, setTemperature] = useState(0.7);
   const [maxTokens, setMaxTokens] = useState(2000);
@@ -2157,6 +2158,7 @@ const ResonantChatPage: React.FC = () => {
           aiProvider: 'AI Assistant',
         }]);
         setAgenticSteps([]);
+        setPresentedOptions(null);
 
         try {
           const apiUrl = (await import('@/utils/apiUrl')).getApiUrl();
@@ -2216,6 +2218,14 @@ const ResonantChatPage: React.FC = () => {
 
                   if (eventType === 'status' && data.conversation_id && !agenticConvId) {
                     agenticConvId = data.conversation_id;
+                  }
+                  if (eventType === 'tool_result' && data.tool === 'present_options') {
+                    try {
+                      const resultData = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
+                      if (resultData?._type === 'present_options' && resultData?.options) {
+                        setPresentedOptions({ title: resultData.title, options: resultData.options, allow_custom: resultData.allow_custom });
+                      }
+                    } catch { /* not present_options */ }
                   }
                   if (eventType === 'response') {
                     agenticContent = data.content || '';
@@ -4779,6 +4789,54 @@ const ResonantChatPage: React.FC = () => {
                           <div className={styles.thinkingSpinner} />
                           <span className={styles.thinkingText}>Thinking...</span>
                         </>
+                      )}
+                    </div>
+                  )}
+                  {/* Interactive Options Cards (from present_options tool) */}
+                  {presentedOptions && !isLoading && (
+                    <div style={{ padding: '12px 16px', maxWidth: '85%' }}>
+                      <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '10px', color: 'var(--text-primary, #e2e8f0)' }}>
+                        {presentedOptions.title}
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        {presentedOptions.options.map((opt, i) => (
+                          <button
+                            key={i}
+                            onClick={() => {
+                              setPresentedOptions(null);
+                              setInput(opt.value);
+                              setTimeout(() => {
+                                const form = document.querySelector('form');
+                                if (form) form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+                                else {
+                                  setInput(opt.value);
+                                  inputRef.current?.focus();
+                                }
+                              }, 50);
+                            }}
+                            style={{
+                              display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px',
+                              padding: '12px 16px', borderRadius: '12px', border: '1px solid rgba(99, 102, 241, 0.3)',
+                              background: 'rgba(99, 102, 241, 0.08)', cursor: 'pointer', textAlign: 'left',
+                              minWidth: '140px', maxWidth: '260px', flex: '1 1 auto',
+                              transition: 'all 0.2s ease', color: 'var(--text-primary, #e2e8f0)',
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(99, 102, 241, 0.18)'; e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.6)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(99, 102, 241, 0.08)'; e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                          >
+                            <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                              {opt.icon ? `${opt.icon} ` : ''}{opt.label}
+                            </span>
+                            {opt.description && (
+                              <span style={{ fontSize: '11px', opacity: 0.65, lineHeight: 1.3 }}>{opt.description}</span>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                      {presentedOptions.allow_custom !== false && (
+                        <div style={{ fontSize: '11px', opacity: 0.4, marginTop: '8px' }}>
+                          Or type your own response below
+                        </div>
                       )}
                     </div>
                   )}
