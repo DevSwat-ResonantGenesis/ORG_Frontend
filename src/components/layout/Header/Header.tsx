@@ -415,6 +415,12 @@ export const Header: React.FC<HeaderProps> = ({
               {!isMobileViewport && <ThemeToggle />}
             </div>
 
+            {isMobileViewport && (
+              <div className={`${styles.mobileThemeToggleSlot} ${isResonantChatPage ? styles.mobileThemeToggleSlotChat : ''}`}>
+                <ThemeToggle />
+              </div>
+            )}
+
             {isResonantChatPage && (
               <button
                 type="button"
@@ -425,12 +431,6 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <SplitViewToggleIcon enabled={splitViewEnabled} />
               </button>
-            )}
-
-            {isMobileViewport && (
-              <div className={`${styles.mobileThemeToggleSlot} ${isResonantChatPage ? styles.mobileThemeToggleSlotChat : ''}`}>
-                <ThemeToggle />
-              </div>
             )}
 
             {/* Logged In: Show Account Menu */}

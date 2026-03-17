@@ -432,7 +432,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                     onClick={() => window.open(visualizerAnalysisId ? `/code-visualizer?analysis_id=${visualizerAnalysisId}` : '/code-visualizer', '_blank')}
                     title="Open in full screen"
                   >
-                    <RocketIcon /> Full Screen
+                    <RocketIcon />
                   </button>
                 )}
                 {state.activeTab === 'state_physics' && (
@@ -441,7 +441,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                     onClick={() => window.open(statePhysicsPanelUrl, '_blank')}
                     title="Open State Physics in full screen"
                   >
-                    <RocketIcon /> Full Screen
+                    <RocketIcon />
                   </button>
                 )}
                 {state.activeTab === 'agents' && (
@@ -450,7 +450,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                     onClick={() => window.open(agentsPanelUrl, '_blank')}
                     title="Open Agents OS in full screen"
                   >
-                    <RocketIcon /> Full Screen
+                    <RocketIcon />
                   </button>
                 )}
                 {state.activeTab === 'memory' && (
@@ -459,7 +459,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                     onClick={() => window.open(memoryPanelUrl, '_blank')}
                     title="Open Memory Library in full screen"
                   >
-                    <RocketIcon /> Full Screen
+                    <RocketIcon />
                   </button>
                 )}
                 <button
@@ -726,7 +726,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 onClick={() => window.open(visualizerAnalysisId ? `/code-visualizer?analysis_id=${visualizerAnalysisId}` : '/code-visualizer', '_blank')}
                 title="Open in full screen"
               >
-                <RocketIcon /> Full Screen
+                <RocketIcon />
               </button>
             )}
             {state.activeTab === 'state_physics' && (
@@ -735,7 +735,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 onClick={() => window.open(statePhysicsPanelUrl, '_blank')}
                 title="Open State Physics in full screen"
               >
-                <RocketIcon /> Full Screen
+                <RocketIcon />
               </button>
             )}
             {state.activeTab === 'agents' && (
@@ -744,7 +744,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 onClick={() => window.open(agentsPanelUrl, '_blank')}
                 title="Open Agents OS in full screen"
               >
-                <RocketIcon /> Full Screen
+                <RocketIcon />
               </button>
             )}
             {state.activeTab === 'memory' && (
@@ -753,7 +753,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 onClick={() => window.open(memoryPanelUrl, '_blank')}
                 title="Open Memory Library in full screen"
               >
-                <RocketIcon /> Full Screen
+                <RocketIcon />
               </button>
             )}
             <button
