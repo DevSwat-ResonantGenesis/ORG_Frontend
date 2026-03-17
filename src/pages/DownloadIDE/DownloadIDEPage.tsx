@@ -111,9 +111,7 @@ const DownloadIDEPage: React.FC = () => {
           </p>
           <div className={styles.heroActions}>
             <a
-              href="https://dev-swat.com/api/v1/ide/updates/latest"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="https://dev-swat.com/downloads/resonant-ide/Resonant-IDE-1.0.0-arm64-mac.zip"
               className={styles.downloadButton}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -121,7 +119,7 @@ const DownloadIDEPage: React.FC = () => {
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
-              Download for macOS
+              Download for macOS (209 MB)
             </a>
           </div>
           <div className={styles.heroPlatforms}>
@@ -197,12 +195,10 @@ const DownloadIDEPage: React.FC = () => {
           </p>
           <div className={styles.ctaActions}>
             <a
-              href="https://dev-swat.com/api/v1/ide/updates/latest"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="https://dev-swat.com/downloads/resonant-ide/Resonant-IDE-1.0.0-arm64-mac.zip"
               className={styles.downloadButton}
             >
-              Download for macOS
+              Download for macOS (209 MB)
             </a>
           </div>
         </div>
