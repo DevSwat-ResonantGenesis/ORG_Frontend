@@ -289,11 +289,13 @@
   cursor: pointer;
   border-radius: 4px;
   color: var(--text-muted, #71717a);
-  transition: color 0.15s, background 0.15s;
+  transition: color 0.15s, background 0.15s, opacity 0.15s;
+  opacity: 0.45;
 }
 
 .voteBtn:hover {
   background: var(--hover-bg, #27272a);
+  opacity: 1;
 }
 
 .voteBtnUp {
@@ -338,6 +340,7 @@
   color: var(--text, #e4e4e7);
   min-width: 20px;
   text-align: center;
+  opacity: 0.5;
 }
 
 .postContent {
@@ -356,11 +359,12 @@
   font-size: 12px;
   color: var(--text-muted, #a1a1aa);
   flex-wrap: wrap;
+  opacity: 0.4;
 }
 
 .postCommunity {
   font-weight: 600;
-  color: var(--text, #e4e4e7);
+  color: var(--text-muted, #a1a1aa);
   cursor: pointer;
 }
 
@@ -412,12 +416,14 @@
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 4px;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.15s, color 0.15s, opacity 0.15s;
+  opacity: 0.4;
 }
 
 .postFooterBtn:hover {
   background: var(--hover-bg, #27272a);
   color: var(--text, #e4e4e7);
+  opacity: 1;
 }
 
 /* ── Search Bar ── */
@@ -430,9 +436,12 @@
   border: 1px solid var(--border, #27272a);
   border-radius: 10px;
   transition: border-color 0.15s;
+  color: var(--text-muted, #52525b);
+  opacity: 0.5;
 }
 
 .searchBar:focus-within {
+  opacity: 1;
   border-color: rgba(255, 255, 255, 0.25);
 }
 
@@ -447,7 +456,8 @@
 }
 
 .searchInput::placeholder {
-  color: var(--text-muted, #71717a);
+  color: var(--text-muted, #3f3f46);
+  opacity: 0.6;
 }
 
 .searchClear {
@@ -511,6 +521,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s;
+  opacity: 0.5;
 }
 
 .createTab:hover {
@@ -521,6 +532,7 @@
 .createTabActive {
   color: #e2e8f0;
   border-bottom-color: #e2e8f0;
+  opacity: 1;
 }
 
 .inlineInput {
@@ -541,7 +553,8 @@
 }
 
 .inlineInput::placeholder {
-  color: var(--text-muted, #71717a);
+  color: var(--text-muted, #3f3f46);
+  opacity: 0.6;
 }
 
 .titleCount {
@@ -571,7 +584,8 @@
 }
 
 .inlineTextarea::placeholder {
-  color: var(--text-muted, #71717a);
+  color: var(--text-muted, #3f3f46);
+  opacity: 0.6;
 }
 
 .imageUploadArea {
@@ -677,8 +691,9 @@
 .commentsTitle {
   font-size: 14px;
   font-weight: 600;
-  color: var(--text, #e4e4e7);
+  color: var(--text-muted, #a1a1aa);
   margin-bottom: 12px;
+  opacity: 0.5;
 }
 
 .commentBox {
@@ -701,6 +716,11 @@
   font-family: inherit;
 }
 
+.commentTextarea::placeholder {
+  color: var(--text-muted, #3f3f46);
+  opacity: 0.6;
+}
+
 .commentTextarea:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.25);
@@ -710,11 +730,12 @@
   font-size: 12px;
   color: var(--text-muted, #a1a1aa);
   margin-bottom: 4px;
+  opacity: 0.4;
 }
 
 .commentAuthor {
   font-weight: 600;
-  color: var(--text, #e4e4e7);
+  color: var(--text-muted, #a1a1aa);
 }
 
 .commentBody {
@@ -1051,6 +1072,7 @@
   align-items: center;
   gap: 4px;
   margin-top: 4px;
+  opacity: 0.4;
 }
 
 /* ── Danger button modifier ── */

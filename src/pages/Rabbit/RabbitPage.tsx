@@ -1056,8 +1056,8 @@ const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, comm
             onClick={() => setActiveTab(tab)}
           >
             {tab === 'text' && 'Text'}
-            {tab === 'image' && <><ImageIcon /> Image</>}
-            {tab === 'link' && <><LinkIcon /> Link</>}
+            {tab === 'image' && <ImageIcon />}
+            {tab === 'link' && <LinkIcon />}
           </button>
         ))}
       </div>
@@ -1075,13 +1075,13 @@ const InlineCreatePost: React.FC<InlineCreatePostProps> = ({ communitySlug, comm
 
       <div className={styles.titleCount}>{title.length}/300</div>
 
-      {activeTab === 'text' && (
+      {(activeTab === 'text' || activeTab === 'image') && (
         <textarea
           className={styles.inlineTextarea}
           placeholder="Body text (optional)"
           value={body}
           onChange={e => setBody(e.target.value)}
-          rows={5}
+          rows={activeTab === 'image' ? 3 : 5}
         />
       )}
 
@@ -1212,11 +1212,11 @@ const PostCard: React.FC<PostCardProps> = ({ post, localVote, onVote, onClick, o
       )}
       <div className={styles.postFooter}>
         <button className={styles.postFooterBtn} onClick={onClick}>
-          <CommentIcon /> {post.comment_count} Comment{post.comment_count !== 1 ? 's' : ''}
+          <CommentIcon /> {post.comment_count}
         </button>
         <div style={{ position: 'relative' }}>
           <button className={styles.postFooterBtn} onClick={(e) => { e.stopPropagation(); onShareToggle(); }}>
-            <ShareIcon /> Share
+            <ShareIcon />
           </button>
           {shareDropdownId === post.id && (
             <ShareDropdown postId={post.id} postTitle={post.title} onClose={onShareClose} />
@@ -1307,7 +1307,7 @@ const PostDetailView: React.FC<PostDetailProps> = ({
           <span className={styles.actionDivider} />
           <div style={{ position: 'relative', display: 'inline-flex' }}>
             <button className={styles.postFooterBtn} onClick={() => onShareToggle(post.id)}>
-              <ShareIcon /> Share
+              <ShareIcon />
             </button>
             {shareDropdownId === post.id && (
               <ShareDropdown postId={post.id} postTitle={post.title} onClose={onShareClose} />
@@ -1318,7 +1318,7 @@ const PostDetailView: React.FC<PostDetailProps> = ({
             onClick={() => onDeletePost(post.id)}
             title="Delete (your posts only)"
           >
-            <TrashIcon /> Delete
+            <TrashIcon />
           </button>
         </div>
 
@@ -1394,7 +1394,7 @@ const PostDetailView: React.FC<PostDetailProps> = ({
                       onClick={() => onReplyTo(replyTo === c.id ? null : c.id)}
                       style={{ marginLeft: 4 }}
                     >
-                      <ReplyIcon /> Reply
+                      <ReplyIcon />
                     </button>
                   )}
                   <button
