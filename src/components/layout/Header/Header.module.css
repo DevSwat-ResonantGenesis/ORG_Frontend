@@ -861,6 +861,13 @@
 
   .authIconButton {
     display: inline-flex !important;
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .authIconButton svg {
+    width: 28px !important;
+    height: 28px !important;
   }
 }
 

@@ -135,6 +135,11 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .floatingHome {
+    justify-content: flex-start;
+    min-height: auto;
+    padding: 24px 16px;
+  }
   .watermarkLogo {
     width: 180px;
   }
@@ -144,6 +149,9 @@
 }
 
 @media (max-width: 480px) {
+  .floatingHome {
+    padding: 16px 12px;
+  }
   .watermarkLogo {
     width: 140px;
   }
