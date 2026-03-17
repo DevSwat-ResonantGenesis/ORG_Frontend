@@ -246,9 +246,9 @@ export default function LoginPageNew() {
         try {
           sessionStorage.setItem(
             'rg-post-login-target',
-            JSON.stringify({ path: '/resonant-chat', ts: Date.now(), remaining: 5 })
+            JSON.stringify({ path: '/', ts: Date.now(), remaining: 5 })
           );
-          document.cookie = `rg_post_login_target=${encodeURIComponent('/resonant-chat')}; Max-Age=60; Path=/`;
+          document.cookie = `rg_post_login_target=${encodeURIComponent('/')}; Max-Age=60; Path=/`;
         } catch {
           // ignore
         }

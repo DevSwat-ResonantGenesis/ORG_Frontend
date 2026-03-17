@@ -148,10 +148,8 @@ const withPublicShell = (node: React.ReactNode) => (
 );
 
 const HomeGate = () => {
-  if (isAuthenticated()) {
-    return <Navigate to="/resonant-chat" replace />;
-  }
-  return <HomeNew />;
+  // Legacy: redirect to / which now IS Resonant Chat
+  return <Navigate to="/" replace />;
 };
 
 const withRole = (node: React.ReactNode, roles: string[]) =>
@@ -183,7 +181,7 @@ const withOwnerAuth = (node: React.ReactNode) => (
 const router = createBrowserRouter([
   {
     path: '/',
-    element: withPublicShell(<HomeGate />)
+    element: withPublicShell(<ResonantChatPage />)
   },
   {
     path: '/signup',
@@ -515,7 +513,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/resonant-chat',
-    element: withPublicShell(<ResonantChatPage />) // Public — guest mode handled internally
+    element: <Navigate to="/" replace /> // Resonant Chat is now the home page
   },
   // IDE disabled - using Build Page instead
   {
