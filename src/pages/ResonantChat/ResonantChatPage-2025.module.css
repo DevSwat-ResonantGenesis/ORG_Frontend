@@ -146,7 +146,7 @@
 
 /* Dark theme */
 [data-theme='dark'] .chatPage {
-  background: transparent;
+  background: #262321;
   color: #f8fafc;
 }
 
