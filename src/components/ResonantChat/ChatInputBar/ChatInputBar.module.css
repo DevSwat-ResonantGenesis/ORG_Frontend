@@ -120,22 +120,21 @@
   backdrop-filter: blur(12px);
 }
 
-/* Agent Panel - Modern redesign matching provider dropdown */
+/* Agent Panel - Matches Chat Settings panel style */
 .agentPanel {
   position: absolute;
   bottom: calc(100% + 12px);
   left: 0;
   right: 0;
-  background: linear-gradient(180deg, #0a0a0a 0%, #121212 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 0;
   z-index: 10000;
-  border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   overflow: hidden;
 }
 
@@ -189,29 +188,29 @@
 
 
 [data-theme='light'] .agentPanel {
-  background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 
 .agentPanelHeader {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 8px;
+  padding: 0 0 16px;
+  border-bottom: none;
   background: transparent;
 }
 
 [data-theme='light'] .agentPanelHeader {
-  border-bottom-color: rgba(0, 0, 0, 0.06);
+  border-bottom: none;
   background: transparent;
 }
 
 .agentPanelTitle {
-  font-size: 11px;
+  font-size: 20px;
   font-weight: 600;
-  color: #666;
+  color: #fff;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   display: flex;
@@ -226,24 +225,24 @@
 }
 
 [data-theme='light'] .agentPanelTitle {
-  color: #888;
+  color: #0f172a;
 }
 
 .agentPanelContent {
-  padding: 12px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
 .agentRow {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 14px;
+  padding: 12px;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
+  border: none;
+  border-radius: 8px;
   transition: all 0.2s ease;
 }
 
@@ -253,8 +252,7 @@
 }
 
 [data-theme='light'] .agentRow {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.06);
+  background: rgba(0, 0, 0, 0.03);
 }
 
 [data-theme='light'] .agentRow:hover {
@@ -870,20 +868,19 @@
   flex-shrink: 0;
 }
 
-/* Provider Dropdown - Modern redesign */
+/* Provider Dropdown - Matches Chat Settings panel style */
 .providerDropdown {
   position: absolute;
   bottom: calc(100% + 12px);
   left: 0;
-  min-width: 220px;
-  background: linear-gradient(180deg, #0a0a0a 0%, #121212 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 8px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  min-width: 260px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   z-index: 99999;
   pointer-events: auto !important;
-  backdrop-filter: blur(20px);
 }
 
 .embedded .providerDropdown {
@@ -894,25 +891,25 @@
 }
 
 [data-theme='light'] .providerDropdown {
-  background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 
 .providerDropdownHeader {
-  padding: 8px 12px 12px;
-  font-size: 11px;
+  padding: 0 0 16px;
+  font-size: 20px;
   font-weight: 600;
-  color: #666;
+  color: #fff;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: none;
   margin-bottom: 4px;
 }
 
 [data-theme='light'] .providerDropdownHeader {
-  color: #888;
-  border-bottom-color: rgba(0, 0, 0, 0.06);
+  color: #0f172a;
+  border-bottom: none;
 }
 
 .providerOption {
@@ -920,33 +917,32 @@
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding: 12px 14px;
+  padding: 12px;
   border: none;
-  background: transparent;
-  color: #aaa;
+  background: rgba(255, 255, 255, 0.03);
+  color: #ccc;
   font-size: 14px;
   font-weight: 500;
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
-  border-radius: 10px;
-  margin: 2px 0;
+  border-radius: 8px;
+  margin: 4px 0;
 }
 
 .providerOption:hover {
-  background: rgba(14, 165, 233, 0.1);
+  background: rgba(255, 255, 255, 0.06);
   color: #fff;
-  transform: translateX(2px);
 }
 
 [data-theme='light'] .providerOption:hover {
-  background: rgba(14, 165, 233, 0.1);
+  background: rgba(0, 0, 0, 0.06);
   color: #111;
 }
 
 .providerOption.selected {
-  background: rgba(14, 165, 233, 0.15);
-  color: #0ea5e9;
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
 }
 
 .providerOption.selected::after {
@@ -954,9 +950,9 @@
   margin-left: auto;
   width: 8px;
   height: 8px;
-  background: #0ea5e9;
+  background: #22c55e;
   border-radius: 50%;
-  box-shadow: 0 0 8px rgba(14, 165, 233, 0.5);
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
 }
 
 .providerIcon {
@@ -993,20 +989,19 @@
   text-transform: uppercase;
 }
 
-/* Sticker Panels (Memory, Conversations) - Modern redesign matching provider dropdown */
+/* Sticker Panels (Memory, Conversations) - Matches Chat Settings panel style */
 .stickerPanel {
   position: absolute;
   bottom: calc(100% + 12px);
   left: 0;
   right: 0;
   max-height: 400px;
-  background: linear-gradient(180deg, #0a0a0a 0%, #121212 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   z-index: 10000;
-  backdrop-filter: blur(20px);
 }
 
 .embedded .stickerPanel {
@@ -1016,7 +1011,7 @@
 }
 
 [data-theme='light'] .stickerPanel {
-  background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+  background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
