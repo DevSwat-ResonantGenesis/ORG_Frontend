@@ -33,14 +33,10 @@ const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties>
   card: {
     width: '100%',
     maxWidth: '400px',
-    background: theme === 'dark' 
-      ? 'rgba(255,255,255,0.03)' 
-      : 'rgba(255,255,255,0.95)',
-    border: theme === 'dark' 
-      ? '1px solid rgba(255,255,255,0.1)' 
-      : '1px solid rgba(0,0,0,0.1)',
-    borderRadius: '16px',
-    padding: '2rem',
+    background: 'transparent',
+    border: 'none',
+    borderRadius: '0',
+    padding: '2rem 0',
     marginTop: '0',
   },
   header: {
