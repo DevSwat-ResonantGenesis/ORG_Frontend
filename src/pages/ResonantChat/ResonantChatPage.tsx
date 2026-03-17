@@ -339,7 +339,18 @@ const ResonantChatPage: React.FC = () => {
   const [hasStartedTyping, setHasStartedTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState<string | null>(null);
-  const [selectedProvider, setSelectedProvider] = useState<Provider>('auto');
+  const [selectedProvider, setSelectedProvider] = useState<Provider>(() => {
+    try {
+      const saved = localStorage.getItem('rg_preferred_provider');
+      return (saved as Provider) || 'auto';
+    } catch { return 'auto'; }
+  });
+  const handleProviderChange = useCallback((provider: string) => {
+    setSelectedProvider(provider as Provider);
+    try { localStorage.setItem('rg_preferred_provider', provider); } catch {}
+    setAutoReason('');
+    setSelectedModel('');
+  }, []);
   const [autoReason, setAutoReason] = useState('');
   const [availableProviders, setAvailableProviders] = useState<Provider[]>([]);
   const [providerStats, setProviderStats] = useState<Record<string, { health: string; latency?: number; available?: boolean }>>({});
@@ -4065,11 +4076,7 @@ const ResonantChatPage: React.FC = () => {
           onAttachFile={() => fileInputRef.current?.click()}
           agentMode={agentMode}
           selectedProvider={selectedProvider}
-          onProviderChange={(provider: string) => {
-            setSelectedProvider(provider as Provider);
-            setAutoReason('');
-            setSelectedModel('');
-          }}
+          onProviderChange={handleProviderChange}
           conversationsCount={conversations.length}
           memoriesCount={memories.length}
           groupsCount={resonanceClusters.length}
@@ -4187,7 +4194,7 @@ const ResonantChatPage: React.FC = () => {
                   }}
                   onAgentSelect={setSelectedAgentHash}
                   onTeamSelect={setSelectedTeamId}
-                  onProviderSelect={(provider) => setSelectedProvider(provider as Provider)}
+                  onProviderSelect={handleProviderChange}
                   selectedAgentHash={selectedAgentHash}
                   selectedTeamId={selectedTeamId}
                   selectedProvider={selectedProvider}
@@ -4981,10 +4988,7 @@ const ResonantChatPage: React.FC = () => {
               .find((m) => m.role === 'assistant')?.content || ''
           }
           selectedProvider={selectedProvider}
-          onProviderChange={(provider: string) => {
-            setSelectedProvider(provider as Provider);
-            setAutoReason('');
-          }}
+          onProviderChange={handleProviderChange}
           availableProviders={availableProviders}
           providerStats={providerStats}
           agentMode={agentMode}
