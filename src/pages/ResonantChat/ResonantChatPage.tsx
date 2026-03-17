@@ -59,6 +59,7 @@ import type { WebSocketMessage } from '@/utils/websocketClient';
 import { WebSocketClient } from '@/utils/websocketClient';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import { detectProjectIntent } from '@/utils/semanticIntentDetector';
 // @ts-ignore - react-syntax-highlighter types
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -4353,6 +4354,7 @@ const ResonantChatPage: React.FC = () => {
                         {/* Enhanced message rendering with markdown */}
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
+                          rehypePlugins={[rehypeRaw]}
                           components={{
                             code({ node, inline, className, children, ...props }: any) {
                               const match = /language-(\w+)/.exec(className || '');
