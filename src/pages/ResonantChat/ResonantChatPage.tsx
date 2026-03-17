@@ -999,12 +999,19 @@ const ResonantChatPage: React.FC = () => {
     localStorage.setItem('resonant-chat-split-width', String(splitViewWidth));
   }, [splitViewWidth]);
 
-  // Auto-select first message with code when split view is enabled
+  // Auto-select latest assistant message with code when split view is enabled
+  const prevMessageCountRef = useRef(messages.length);
   useEffect(() => {
-    if (splitViewEnabled && !selectedCodeMessage && messages.length > 0) {
-      const messageWithCode = messages.find(m => m.content.match(/```[\s\S]*?```/g));
-      if (messageWithCode) {
-        setSelectedCodeMessage(messageWithCode.id);
+    if (!splitViewEnabled || messages.length === 0) return;
+    const messagesChanged = messages.length !== prevMessageCountRef.current;
+    prevMessageCountRef.current = messages.length;
+
+    // On first open (no selection) or when new messages arrive, pick the latest code message
+    if (!selectedCodeMessage || messagesChanged) {
+      const reversed = [...messages].reverse();
+      const latestWithCode = reversed.find(m => m.role === 'assistant' && m.content.match(/```[\s\S]*?```/g));
+      if (latestWithCode && latestWithCode.id !== selectedCodeMessage) {
+        setSelectedCodeMessage(latestWithCode.id);
       }
     }
   }, [splitViewEnabled, messages, selectedCodeMessage]);

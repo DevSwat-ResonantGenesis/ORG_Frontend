@@ -170,7 +170,7 @@ export const Preview: React.FC<PreviewProps> = ({
               onClick={handleLoadUrl}
               style={{
                 padding: '10px 16px',
-                background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                background: 'rgba(255, 255, 255, 0.1)',
                 border: 'none',
                 borderRadius: '8px',
                 color: '#fff',
@@ -228,7 +228,7 @@ export const Preview: React.FC<PreviewProps> = ({
               outline: 'none',
             }}
           />
-          <button onClick={handleLoadUrl} style={{ padding: '8px 12px', background: '#3b82f6', border: 'none', borderRadius: '6px', color: '#fff', cursor: 'pointer' }}>Go</button>
+          <button onClick={handleLoadUrl} style={{ padding: '8px 12px', background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255, 255, 255, 0.15)', borderRadius: '6px', color: '#fff', cursor: 'pointer' }}>Go</button>
           <button onClick={() => setShowUrlInput(false)} style={{ padding: '8px 12px', background: '#666', border: 'none', borderRadius: '6px', color: '#fff', cursor: 'pointer' }}>Cancel</button>
         </div>
       ) : null}
