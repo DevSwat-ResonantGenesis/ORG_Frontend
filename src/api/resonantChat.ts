@@ -382,7 +382,7 @@ export const sendResonantMessage = async (
  * SSE event types from /resonant-chat/message/stream
  */
 export interface SSEStreamEvent {
-  event: 'start' | 'chunk' | 'metadata' | 'done' | 'error';
+  event: 'start' | 'chunk' | 'metadata' | 'done' | 'error' | 'step';
   // start
   chat_id?: string;
   user_message_id?: string;
@@ -401,6 +401,12 @@ export interface SSEStreamEvent {
   evidence_graph?: Record<string, any>;
   // error
   error?: string;
+  // step (pipeline processing steps)
+  step?: string;
+  message?: string;
+  count?: number;
+  history_count?: number;
+  length?: number;
 }
 
 /**

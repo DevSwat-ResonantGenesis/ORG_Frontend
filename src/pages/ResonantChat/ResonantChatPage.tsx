@@ -346,6 +346,7 @@ const ResonantChatPage: React.FC = () => {
   const [agentMode, setAgentMode] = useState(false);
   const [aiAssistantEnabled, setAiAssistantEnabled] = useState(true);
   const [agenticSteps, setAgenticSteps] = useState<Array<{ type: string; data: any; timestamp: number }>>([]);
+  const [pipelineSteps, setPipelineSteps] = useState<Array<{ step: string; message: string; timestamp: number }>>([]);
   const [temperature, setTemperature] = useState(0.7);
   const [maxTokens, setMaxTokens] = useState(2000);
   const [selectedModel, setSelectedModel] = useState<string>('');
@@ -2347,6 +2348,7 @@ const ResonantChatPage: React.FC = () => {
         const sseMeta: Record<string, any> = {};
 
         // Add streaming placeholder message immediately
+        setPipelineSteps([]);
         setMessages(prev => [...prev, {
           id: sseAssistantId,
           role: 'assistant' as const,
@@ -2371,6 +2373,13 @@ const ResonantChatPage: React.FC = () => {
                     sseMeta.chatId = event.chat_id;
                     if (!currentConversationId) setCurrentConversationId(event.chat_id);
                   }
+                  break;
+                case 'step':
+                  setPipelineSteps(prev => [...prev, {
+                    step: event.step || 'unknown',
+                    message: event.message || '',
+                    timestamp: Date.now(),
+                  }]);
                   break;
                 case 'chunk':
                   sseContent += event.content || '';
@@ -2398,6 +2407,7 @@ const ResonantChatPage: React.FC = () => {
                   setMessages(prev => prev.map(m =>
                     m.id === sseAssistantId ? { ...m, anchors: event.anchors || [] } : m
                   ));
+                  setPipelineSteps([]);
                   break;
                 case 'error':
                   if (!sseContent) {
@@ -2406,6 +2416,7 @@ const ResonantChatPage: React.FC = () => {
                       m.id === sseAssistantId ? { ...m, content: sseContent, aiProvider: 'error' } : m
                     ));
                   }
+                  setPipelineSteps([]);
                   break;
               }
             },
@@ -4738,6 +4749,44 @@ const ResonantChatPage: React.FC = () => {
                             <div className={styles.thinkingSpinner} />
                             <span className={styles.thinkingText} style={{ fontSize: '11px' }}>
                               {agenticSteps.filter(s => s.type === 'tool_call').length} tool calls · {agenticSteps.filter(s => s.type === 'thinking').length} loops
+                            </span>
+                          </div>
+                        </div>
+                      ) : pipelineSteps.length > 0 ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', width: '100%', maxWidth: '85%' }}>
+                          {pipelineSteps.slice(-6).map((ps, i) => {
+                            const base: React.CSSProperties = { padding: '5px 10px', borderRadius: '6px', fontSize: '12px', fontFamily: "'SF Mono','Fira Code','Consolas', monospace" };
+                            const icons: Record<string, string> = {
+                              hashing: '\u{1F517}',
+                              memory_search: '\u{1F9E0}',
+                              memory_found: '\u{1F4BE}',
+                              context: '\u{1F4DD}',
+                              routing: '\u{1F680}',
+                              generating_done: '\u2705',
+                              post_processing: '\u{1F50D}',
+                              memory_ingest: '\u{1F4E5}',
+                            };
+                            const colors: Record<string, { bg: string; fg: string }> = {
+                              hashing: { bg: 'rgba(14,165,233,0.12)', fg: '#38bdf8' },
+                              memory_search: { bg: 'rgba(168,85,247,0.12)', fg: '#c084fc' },
+                              memory_found: { bg: 'rgba(16,185,129,0.12)', fg: '#6ee7b7' },
+                              context: { bg: 'rgba(59,130,246,0.12)', fg: '#93c5fd' },
+                              routing: { bg: 'rgba(234,179,8,0.12)', fg: '#fde047' },
+                              generating_done: { bg: 'rgba(16,185,129,0.12)', fg: '#6ee7b7' },
+                              post_processing: { bg: 'rgba(14,165,233,0.12)', fg: '#38bdf8' },
+                              memory_ingest: { bg: 'rgba(14,165,233,0.12)', fg: '#38bdf8' },
+                            };
+                            const c = colors[ps.step] || { bg: 'rgba(255,255,255,0.06)', fg: '#888' };
+                            return (
+                              <div key={i} style={{ ...base, background: c.bg, color: c.fg, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span>{icons[ps.step] || '\u2699\uFE0F'}</span> {ps.message}
+                              </div>
+                            );
+                          })}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '2px 0' }}>
+                            <div className={styles.thinkingSpinner} />
+                            <span className={styles.thinkingText} style={{ fontSize: '11px' }}>
+                              {pipelineSteps.length} pipeline steps
                             </span>
                           </div>
                         </div>
