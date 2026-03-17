@@ -557,7 +557,7 @@ export const Header: React.FC<HeaderProps> = ({
                   </div>
                 )}
               </div>
-            ) : !isLoggedIn && !(isMobileViewport && isResonantChatPage) ? (
+            ) : !isLoggedIn ? (
               // Not Logged In: single login icon button (no text Login/Signup)
               <button
                 type="button"
