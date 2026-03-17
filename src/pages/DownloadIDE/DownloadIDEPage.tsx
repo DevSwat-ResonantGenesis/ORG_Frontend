@@ -111,7 +111,7 @@ const DownloadIDEPage: React.FC = () => {
           </p>
           <div className={styles.heroActions}>
             <a
-              href="https://dev-swat.com/downloads/resonant-ide/Resonant-IDE-1.0.0-arm64-mac.zip"
+              href="https://dev-swat.com/downloads/resonant-ide/Resonant-IDE-1.0.0-arm64.dmg"
               className={styles.downloadButton}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -119,11 +119,32 @@ const DownloadIDEPage: React.FC = () => {
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
-              Download for macOS (209 MB)
+              Download for macOS (266 MB)
             </a>
           </div>
           <div className={styles.heroPlatforms}>
-            Currently available for macOS (Apple Silicon). Windows &amp; Linux coming soon.
+            macOS (Apple Silicon) &bull; v1.0.0 &bull; Windows &amp; Linux coming soon
+          </div>
+        </div>
+      </section>
+
+      {/* Installation Instructions */}
+      <section style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px 0' }}>
+        <h2 className={styles.sectionTitle}>Installation</h2>
+        <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: 24, marginTop: 16 }}>
+          <ol style={{ color: '#d1d5db', fontSize: 14, lineHeight: 1.8, paddingLeft: 20, margin: 0 }}>
+            <li>Download the <strong>.dmg</strong> file above</li>
+            <li>Open the DMG and drag <strong>Resonant IDE</strong> into your <strong>Applications</strong> folder</li>
+            <li style={{ marginTop: 8 }}>
+              <strong style={{ color: '#f59e0b' }}>First launch — important:</strong> macOS may show <em>"Resonant IDE is damaged"</em> because the app is not yet notarized by Apple. To fix this, open <strong>Terminal</strong> and run:
+              <div style={{ background: '#0f172a', border: '1px solid #1e293b', borderRadius: 8, padding: '12px 16px', marginTop: 8, fontFamily: 'monospace', fontSize: 13, color: '#10b981', wordBreak: 'break-all' }}>
+                xattr -cr /Applications/Resonant\ IDE.app
+              </div>
+            </li>
+            <li style={{ marginTop: 8 }}>Now open <strong>Resonant IDE</strong> from Applications normally</li>
+          </ol>
+          <div style={{ marginTop: 16, padding: '12px 16px', background: '#1e293b', borderRadius: 8, fontSize: 12, color: '#94a3b8' }}>
+            <strong style={{ color: '#e5e7eb' }}>Why is this needed?</strong> Apple requires developers to pay $99/year for code signing. We're working on getting Resonant IDE notarized so this step won't be needed in future updates.
           </div>
         </div>
       </section>
@@ -195,10 +216,10 @@ const DownloadIDEPage: React.FC = () => {
           </p>
           <div className={styles.ctaActions}>
             <a
-              href="https://dev-swat.com/downloads/resonant-ide/Resonant-IDE-1.0.0-arm64-mac.zip"
+              href="https://dev-swat.com/downloads/resonant-ide/Resonant-IDE-1.0.0-arm64.dmg"
               className={styles.downloadButton}
             >
-              Download for macOS (209 MB)
+              Download for macOS (266 MB)
             </a>
           </div>
         </div>
