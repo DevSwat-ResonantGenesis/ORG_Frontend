@@ -189,7 +189,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
 
   // Code blocks from messages
   const { codeBlocks } = useCodeBlocks(messages, selectedMessageId);
-  const hideSplitHeader = state.activeTab === 'agents';
+  const hideSplitHeader = false;
 
   const lastAutoOpenRequestIdRef = React.useRef<number | null>(null);
 
