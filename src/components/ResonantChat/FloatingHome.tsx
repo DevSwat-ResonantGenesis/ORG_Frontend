@@ -1,7 +1,7 @@
 /**
  * Floating Home Component - Logo Watermark Design
  * Large faded logo centered like IDE welcome screen
- * Guest mode: shows limitations watermark + login CTA
+ * Guest mode: shows plain text info above the logo watermark
  */
 
 import React from 'react';
@@ -27,6 +27,19 @@ export const FloatingHome: React.FC<FloatingHomeProps> = ({ isLoggedIn }) => {
 
   return (
     <div className={styles.floatingHome}>
+
+      {isGuest && (
+        <div className={styles.guestText}>
+          <div className={styles.guestTitle}>You are in Guest Mode</div>
+          <div className={styles.guestLine}>Your AI Assistant tools are limited to 3 basic tools and you are using a low-reasoning LLM model.</div>
+          <div className={styles.guestLine}>You cannot create Agents, Goals, Economic models, or Workflows. Your session will be gone on reload.</div>
+          <div className={styles.guestDivider} />
+          <div className={styles.guestLine}>Our products you are missing: <strong>AI Agent Studio</strong> — Create & manage agents &nbsp;·&nbsp; <strong>Synthetic Neural Memory</strong> — Physics-Informed 9-Layer Cognitive Infrastructure &nbsp;·&nbsp; <strong>Invariants SIM</strong> — Economic constraint modeling &nbsp;·&nbsp; <strong>SAST & Dependency Graph</strong> — Full-Stack Architecture Observability</div>
+          <div className={styles.guestDivider} />
+          <div className={styles.guestLine}>To get the full experience please <span className={styles.guestLink} onClick={() => navigate('/login')}>log in</span> or <span className={styles.guestLink} onClick={() => navigate('/signup')}>sign up free</span> and enjoy ResonantGenesis — create your own intelligence, manage it.</div>
+        </div>
+      )}
+
       <div className={styles.watermarkContainer}>
         <img
           src={theme === 'dark' ? '/logo white.png' : '/logo black.png'}
@@ -35,64 +48,6 @@ export const FloatingHome: React.FC<FloatingHomeProps> = ({ isLoggedIn }) => {
           draggable={false}
         />
       </div>
-
-      {isGuest && (
-        <div className={styles.guestBanner}>
-          <div className={styles.guestBannerInner}>
-            <div className={styles.guestTitle}>You are in Guest Mode</div>
-            <p className={styles.guestSubtitle}>
-              Your AI Assistant tools are limited to <strong>3 basic tools</strong> and you are using a <strong>low-reasoning LLM model</strong>.
-            </p>
-
-            <div className={styles.guestLimitations}>
-              <div className={styles.guestLimitItem}>
-                <span className={styles.guestLimitIcon}>✕</span>
-                Cannot create Agents, Goals, Economic models, or Workflows
-              </div>
-              <div className={styles.guestLimitItem}>
-                <span className={styles.guestLimitIcon}>✕</span>
-                Session will be gone on reload — no persistent memory
-              </div>
-              <div className={styles.guestLimitItem}>
-                <span className={styles.guestLimitIcon}>✕</span>
-                Limited access to low-reasoning LLM models only
-              </div>
-            </div>
-
-            <div className={styles.guestProductsLabel}>Full platform products you're missing:</div>
-            <div className={styles.guestProducts}>
-              <div className={styles.guestProductCard}>
-                <div className={styles.guestProductName}>AI Agent Studio</div>
-                <div className={styles.guestProductDesc}>Create & manage agents</div>
-              </div>
-              <div className={styles.guestProductCard}>
-                <div className={styles.guestProductName}>Synthetic Neural Memory</div>
-                <div className={styles.guestProductDesc}>Physics-Informed, 9-Layer Cognitive Infrastructure</div>
-              </div>
-              <div className={styles.guestProductCard}>
-                <div className={styles.guestProductName}>Invariants SIM</div>
-                <div className={styles.guestProductDesc}>Economic constraint modeling</div>
-              </div>
-              <div className={styles.guestProductCard}>
-                <div className={styles.guestProductName}>SAST & Dependency Graph</div>
-                <div className={styles.guestProductDesc}>Full-Stack Architecture Observability</div>
-              </div>
-            </div>
-
-            <p className={styles.guestCta}>
-              To get the full experience — <strong>login</strong> and enjoy free ResonantGenesis. Create your own intelligence, manage it.
-            </p>
-            <div className={styles.guestActions}>
-              <button className={styles.guestLoginBtn} onClick={() => navigate('/login')}>
-                Log In
-              </button>
-              <button className={styles.guestSignupBtn} onClick={() => navigate('/signup')}>
-                Sign Up Free
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
