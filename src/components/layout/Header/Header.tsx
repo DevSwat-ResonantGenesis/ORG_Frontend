@@ -393,7 +393,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <img
                     src={document.documentElement.getAttribute('data-theme') === 'light' ? '/images/connect-icons/Integration black icon.png' : '/images/connect-icons/integration white icon.png'}
                     alt="Integrations"
-                    style={{ width: '20px', height: '20px', objectFit: 'contain' }}
+                    style={{ width: '60px', height: '60px', objectFit: 'contain' }}
                   />
                 </button>
               )}
