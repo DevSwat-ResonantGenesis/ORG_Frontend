@@ -1491,11 +1491,11 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px 20px;
-  max-width: 200px;
-  border-radius: 16px;
-  background: var(--surface-secondary, rgba(255, 255, 255, 0.04));
-  border: 1px solid var(--border-primary, rgba(255, 255, 255, 0.06));
+  padding: 4px 0;
+  max-width: 85%;
+  border-radius: 0;
+  background: transparent;
+  border: none;
   animation: thinkingFadeIn 0.3s ease;
 }
 

@@ -4706,7 +4706,7 @@ const ResonantChatPage: React.FC = () => {
                   {isLoading && (
                     <div className={styles.thinkingIndicator}>
                       {agenticSteps.length > 0 ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', width: '100%', maxWidth: '85%' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%' }}>
                           {agenticSteps
                             .filter(s => ['thinking', 'tool_call', 'tool_result', 'error'].includes(s.type))
                             .slice(-6)
