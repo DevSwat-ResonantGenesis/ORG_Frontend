@@ -323,10 +323,6 @@ export const Header: React.FC<HeaderProps> = ({
               {activeDropdown === 'solutions' && (
                 <div className={styles.navDropdown}>
                   <div className={styles.navDropdownGridTwoRows}>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/build'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Resonant Builder</span>
-                      <span className={styles.navDropdownItemDesc}>AI project generation</span>
-                    </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/agents'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>AI Agent Studio</span>
                       <span className={styles.navDropdownItemDesc}>Create & manage agents</span>
@@ -365,37 +361,6 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             )}
 
-            {/* Network Dropdown - Visible to all, pages redirect to signup if not logged in */}
-            <div className={styles.navItem}>
-              <button 
-                className={`${styles.navButton} ${activeDropdown === 'network' ? styles.navButtonActive : ''}`}
-                onClick={() => setActiveDropdown(activeDropdown === 'network' ? null : 'network')}
-              >
-                Marketplace
-                <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              {activeDropdown === 'network' && (
-                <div className={styles.navDropdown}>
-                  <div className={styles.navDropdownGridOneRow}>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/network/marketplace'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Marketplace</span>
-                      <span className={styles.navDropdownItemDesc}>T3 verified agents only</span>
-                    </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/network/agents'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Discover AI Agents</span>
-                      <span className={styles.navDropdownItemDesc}>Discover agents</span>
-                    </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/wallet'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Crypto Wallet</span>
-                      <span className={styles.navDropdownItemDesc}>RGT tokens & payments</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
             {/* Rabbit - Standalone Community */}
             <div className={styles.navItem}>
               <button
@@ -414,19 +379,6 @@ export const Header: React.FC<HeaderProps> = ({
               Pricing
             </button>
 
-            <button
-              className={styles.navButton}
-              onClick={() => navigate('/investor-pitch-deck')}
-            >
-              Investor Pitch Deck
-            </button>
-
-            <button
-              className={styles.navButton}
-              onClick={() => navigate('/download-ide')}
-            >
-              Download IDE
-            </button>
           </nav>
 
           {/* AgentOS-specific elements when on /agents page */}

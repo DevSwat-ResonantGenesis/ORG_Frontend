@@ -145,20 +145,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             <div className={styles.usmSectionTitle}>Products</div>
 
             <button
-              className={`${styles.usmItem} ${location.pathname === '/build' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/build'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M3 13V3H13V13H3Z" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M5 6H11M5 9H11" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Resonant Builder</span>
-              {location.pathname === '/build' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
               className={`${styles.usmItem} ${location.pathname === '/agents' ? styles.usmActive : ''}`}
               onClick={() => { navigate('/agents'); onClose(); }}
             >
@@ -237,58 +223,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
 
           <div className={styles.usmDivider} />
 
-          {/* Marketplace Section */}
-          <div className={styles.usmSection}>
-            <div className={styles.usmSectionTitle}>Marketplace</div>
-            
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/network/marketplace' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/network/marketplace'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="2" width="5" height="5" rx="1" />
-                  <rect x="9" y="2" width="5" height="5" rx="1" />
-                  <rect x="2" y="9" width="5" height="5" rx="1" />
-                  <rect x="9" y="9" width="5" height="5" rx="1" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Marketplace</span>
-              {location.pathname === '/network/marketplace' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/network/agents' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/network/agents'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="5" r="3" />
-                  <path d="M3 14C3 11 5 9 8 9C11 9 13 11 13 14" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Discover AI Agents</span>
-              {location.pathname === '/network/agents' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/wallet' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/wallet'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M14 8V5H3a1.5 1.5 0 010-3h10v3" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M2 3.5V13a1 1 0 001 1h11V8" strokeLinecap="round" strokeLinejoin="round" />
-                  <circle cx="12" cy="10" r="1" fill="currentColor" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Crypto Wallet</span>
-              {location.pathname === '/wallet' && <span className={styles.usmActiveIndicator} />}
-            </button>
-          </div>
-
-          <div className={styles.usmDivider} />
-
           {/* Chat Tools Section - Only on Resonant Chat page */}
           {isResonantChatPage && chatMenuItems.filter(item => !item.divider).length > 0 && (
             <>
@@ -329,33 +263,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               {location.pathname === '/pricing' && <span className={styles.usmActiveIndicator} />}
             </button>
 
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/download-ide' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/download-ide'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M8 2V10M5 7L8 10L11 7" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M3 12H13" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Download IDE</span>
-              {location.pathname === '/download-ide' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/investor-pitch-deck' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/investor-pitch-deck'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="3" width="12" height="10" rx="1" />
-                  <path d="M5 7L7 9L11 5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Investor Pitch Deck</span>
-              {location.pathname === '/investor-pitch-deck' && <span className={styles.usmActiveIndicator} />}
-            </button>
           </div>
 
           <div className={styles.usmDivider} />
