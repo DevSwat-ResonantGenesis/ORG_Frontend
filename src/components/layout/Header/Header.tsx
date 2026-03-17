@@ -79,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({
   const { theme } = useThemeStore();
   
   // Check if we're on Resonant Chat page
-  const isResonantChatPage = location.pathname === '/resonant-chat' || location.pathname.startsWith('/resonant-chat');
+  const isResonantChatPage = location.pathname === '/' || location.pathname === '/resonant-chat' || location.pathname.startsWith('/resonant-chat');
 
   const isLandingPage = location.pathname === '/';
 
