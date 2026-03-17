@@ -545,8 +545,8 @@
    ============================================ */
 .fileTree::-webkit-scrollbar,
 .instructionsText::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 1px;
+  height: 1px;
 }
 
 .fileTree::-webkit-scrollbar-track,
@@ -557,7 +557,7 @@
 .fileTree::-webkit-scrollbar-thumb,
 .instructionsText::-webkit-scrollbar-thumb {
   background: var(--border, rgba(255, 255, 255, 0.1));
-  border-radius: 4px;
+  border-radius: 1px;
 }
 
 .fileTree::-webkit-scrollbar-thumb:hover,

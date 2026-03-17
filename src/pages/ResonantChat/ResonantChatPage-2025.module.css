@@ -1977,7 +1977,7 @@
    ============================================================ */
 .messagesContainer::-webkit-scrollbar,
 .sidebarWrapper::-webkit-scrollbar {
-  width: 6px;
+  width: 1px;
 }
 
 .messagesContainer::-webkit-scrollbar-track,
@@ -1988,7 +1988,7 @@
 .messagesContainer::-webkit-scrollbar-thumb,
 .sidebarWrapper::-webkit-scrollbar-thumb {
   background: var(--surface-tertiary, rgba(255, 255, 255, 0.1));
-  border-radius: 3px;
+  border-radius: 1px;
 }
 
 .messagesContainer::-webkit-scrollbar-thumb:hover,

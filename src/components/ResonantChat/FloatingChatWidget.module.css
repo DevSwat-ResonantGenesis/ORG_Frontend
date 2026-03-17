@@ -344,7 +344,7 @@
 }
 
 .messagesContainer::-webkit-scrollbar {
-  width: 8px;
+  width: 1px;
 }
 
 .messagesContainer::-webkit-scrollbar-track {
@@ -353,7 +353,7 @@
 
 .messagesContainer::-webkit-scrollbar-thumb {
   background: var(--border, rgba(0, 0, 0, 0.2));
-  border-radius: 4px;
+  border-radius: 1px;
 }
 
 .messagesContainer::-webkit-scrollbar-thumb:hover {
@@ -471,8 +471,8 @@
 }
 
 .codeBlock::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 1px;
+  height: 1px;
 }
 
 .codeBlock::-webkit-scrollbar-track {
@@ -481,7 +481,7 @@
 
 .codeBlock::-webkit-scrollbar-thumb {
   background: var(--text-tertiary, rgba(0, 0, 0, 0.2));
-  border-radius: 2px;
+  border-radius: 1px;
 }
 
 .codeBlock code {
