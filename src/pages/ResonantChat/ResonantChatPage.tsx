@@ -4724,18 +4724,18 @@ const ResonantChatPage: React.FC = () => {
                             .filter(s => ['thinking', 'tool_call', 'tool_result', 'error'].includes(s.type))
                             .slice(-6)
                             .map((step, i) => {
-                              const base: React.CSSProperties = { padding: '5px 10px', borderRadius: '6px', fontSize: '12px', fontFamily: "'SF Mono','Fira Code','Consolas', monospace" };
+                              const base: React.CSSProperties = { padding: '2px 0', fontSize: '12px', fontFamily: "'SF Mono','Fira Code','Consolas', monospace" };
                               switch (step.type) {
                                 case 'thinking':
-                                  return <div key={i} style={{ ...base, background: 'rgba(14,165,233,0.12)', color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Thinking... <span style={{ opacity: 0.5 }}>(loop {step.data.loop})</span></div>;
+                                  return <div key={i} style={{ ...base, color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Thinking... <span style={{ opacity: 0.5 }}>(loop {step.data.loop})</span></div>;
                                 case 'tool_call':
-                                  return <div key={i} style={{ ...base, background: 'rgba(59,130,246,0.12)', color: '#93c5fd', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg> <strong>{step.data.tool}</strong>({JSON.stringify(step.data.args || {}).slice(0, 120)})</div>;
+                                  return <div key={i} style={{ ...base, color: '#93c5fd', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg> <strong>{step.data.tool}</strong>({JSON.stringify(step.data.args || {}).slice(0, 120)})</div>;
                                 case 'tool_result': {
                                   const result = (step.data.result || '').toString().slice(0, 200);
-                                  return <div key={i} style={{ ...base, background: 'rgba(16,185,129,0.12)', color: '#6ee7b7', wordBreak: 'break-all', display: 'flex', alignItems: 'flex-start', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0, marginTop: '1px' }}><path d="M20 6L9 17l-5-5"/></svg> <span><strong>{step.data.tool}</strong>: <span style={{ opacity: 0.7 }}>{result}{result.length >= 200 ? '…' : ''}</span></span></div>;
+                                  return <div key={i} style={{ ...base, color: '#6ee7b7', wordBreak: 'break-all', display: 'flex', alignItems: 'flex-start', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0, marginTop: '1px' }}><path d="M20 6L9 17l-5-5"/></svg> <span><strong>{step.data.tool}</strong>: <span style={{ opacity: 0.7 }}>{result}{result.length >= 200 ? '…' : ''}</span></span></div>;
                                 }
                                 case 'error':
-                                  return <div key={i} style={{ ...base, background: 'rgba(239,68,68,0.12)', color: '#fca5a5', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> {step.data.error}</div>;
+                                  return <div key={i} style={{ ...base, color: '#fca5a5', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> {step.data.error}</div>;
                                 default:
                                   return null;
                               }
