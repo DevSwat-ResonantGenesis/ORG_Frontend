@@ -141,7 +141,7 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
           borderBottom: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)',
         }}>
           <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: isLight ? '#1D1D1F' : '#fff', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2">
               <line x1="18" y1="20" x2="18" y2="10" />
               <line x1="12" y1="20" x2="12" y2="4" />
               <line x1="6" y1="20" x2="6" y2="14" />
@@ -186,7 +186,7 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
           borderBottom: isLight ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)',
         }}>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: '#8b5cf6' }}>{totalStats.executions}</div>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: '#0ea5e9' }}>{totalStats.executions}</div>
             <div style={{ fontSize: '11px', color: isLight ? '#6b7280' : '#888', textTransform: 'uppercase' }}>Total Executions</div>
           </div>
           <div style={{ textAlign: 'center' }}>
@@ -208,10 +208,10 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
             style={{
               flex: 1,
               padding: '12px',
-              background: activeTab === 'performance' ? 'rgba(139, 92, 246, 0.15)' : 'transparent',
+              background: activeTab === 'performance' ? 'rgba(14, 165, 233, 0.15)' : 'transparent',
               border: 'none',
-              borderBottom: activeTab === 'performance' ? '2px solid #8b5cf6' : '2px solid transparent',
-              color: activeTab === 'performance' ? '#8b5cf6' : '#888',
+              borderBottom: activeTab === 'performance' ? '2px solid #0ea5e9' : '2px solid transparent',
+              color: activeTab === 'performance' ? '#0ea5e9' : '#888',
               fontSize: '13px',
               fontWeight: 500,
               cursor: 'pointer',
@@ -225,10 +225,10 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
             style={{
               flex: 1,
               padding: '12px',
-              background: activeTab === 'feedback' ? 'rgba(139, 92, 246, 0.15)' : 'transparent',
+              background: activeTab === 'feedback' ? 'rgba(14, 165, 233, 0.15)' : 'transparent',
               border: 'none',
-              borderBottom: activeTab === 'feedback' ? '2px solid #8b5cf6' : '2px solid transparent',
-              color: activeTab === 'feedback' ? '#8b5cf6' : '#888',
+              borderBottom: activeTab === 'feedback' ? '2px solid #0ea5e9' : '2px solid transparent',
+              color: activeTab === 'feedback' ? '#0ea5e9' : '#888',
               fontSize: '13px',
               fontWeight: 500,
               cursor: 'pointer',
@@ -273,7 +273,7 @@ const MetricsDashboard: React.FC<MetricsDashboardProps> = ({ isOpen, onClose }) 
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
                       <div style={{ textAlign: 'center', padding: '8px', background: isLight ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
-                        <div style={{ fontSize: '18px', fontWeight: 600, color: '#8b5cf6' }}>{metric.total_executions}</div>
+                        <div style={{ fontSize: '18px', fontWeight: 600, color: '#0ea5e9' }}>{metric.total_executions}</div>
                         <div style={{ fontSize: '10px', color: isLight ? '#6b7280' : '#888', textTransform: 'uppercase' }}>Executions</div>
                       </div>
                       <div style={{ textAlign: 'center', padding: '8px', background: isLight ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>

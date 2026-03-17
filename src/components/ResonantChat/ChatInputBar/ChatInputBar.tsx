@@ -912,8 +912,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <div style={{ padding: '10px 12px 8px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#8b5cf6' }}>Knowledge Base ({knowledgeBaseEntries.length})</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#0ea5e9' }}>Knowledge Base ({knowledgeBaseEntries.length})</span>
                   </div>
                   <span style={{ fontSize: '10px', color: '#666' }}>Max 500KB/file · 20 max</span>
                 </div>
@@ -922,17 +922,17 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                   <label
                     style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                      padding: kbUploading ? '12px' : '14px', background: kbUploading ? 'rgba(139, 92, 246, 0.15)' : 'rgba(139, 92, 246, 0.06)',
-                      border: `2px dashed ${kbUploading ? '#8b5cf6' : 'rgba(139, 92, 246, 0.2)'}`,
-                      borderRadius: '8px', color: '#8b5cf6', cursor: kbUploading ? 'wait' : 'pointer', fontSize: '12px', fontWeight: 500,
+                      padding: kbUploading ? '12px' : '14px', background: kbUploading ? 'rgba(14, 165, 233, 0.15)' : 'rgba(14, 165, 233, 0.06)',
+                      border: `2px dashed ${kbUploading ? '#0ea5e9' : 'rgba(14, 165, 233, 0.2)'}`,
+                      borderRadius: '8px', color: '#0ea5e9', cursor: kbUploading ? 'wait' : 'pointer', fontSize: '12px', fontWeight: 500,
                       transition: 'all 0.2s', flexShrink: 0,
                     }}
-                    onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); if (!kbUploading) { (e.currentTarget as HTMLElement).style.borderColor = '#8b5cf6'; (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.18)'; } }}
-                    onDragLeave={(e) => { if (!kbUploading) { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.2)'; (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.06)'; } }}
+                    onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); if (!kbUploading) { (e.currentTarget as HTMLElement).style.borderColor = '#0ea5e9'; (e.currentTarget as HTMLElement).style.background = 'rgba(14, 165, 233, 0.18)'; } }}
+                    onDragLeave={(e) => { if (!kbUploading) { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(14, 165, 233, 0.2)'; (e.currentTarget as HTMLElement).style.background = 'rgba(14, 165, 233, 0.06)'; } }}
                     onDrop={(e) => {
                       e.preventDefault(); e.stopPropagation();
-                      (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.2)';
-                      (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.06)';
+                      (e.currentTarget as HTMLElement).style.borderColor = 'rgba(14, 165, 233, 0.2)';
+                      (e.currentTarget as HTMLElement).style.background = 'rgba(14, 165, 233, 0.06)';
                       if (kbUploading) return;
                       const files = e.dataTransfer?.files;
                       if (files && files.length > 0 && onUploadKbFile) {
@@ -976,7 +976,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                   {knowledgeBaseEntries.length > 0 ? (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', flex: 1, overflowY: 'auto' }}>
                       {knowledgeBaseEntries.map((entry) => (
-                        <div key={entry.id} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 8px', background: disabledKbEntries.has(entry.id) ? 'rgba(255,255,255,0.02)' : 'rgba(139, 92, 246, 0.05)', borderRadius: '6px', border: `1px solid ${disabledKbEntries.has(entry.id) ? 'rgba(255,255,255,0.05)' : 'rgba(139, 92, 246, 0.1)'}`, opacity: disabledKbEntries.has(entry.id) ? 0.5 : 1, transition: 'all 0.15s' }}>
+                        <div key={entry.id} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 8px', background: disabledKbEntries.has(entry.id) ? 'rgba(255,255,255,0.02)' : 'rgba(14, 165, 233, 0.05)', borderRadius: '6px', border: `1px solid ${disabledKbEntries.has(entry.id) ? 'rgba(255,255,255,0.05)' : 'rgba(14, 165, 233, 0.1)'}`, opacity: disabledKbEntries.has(entry.id) ? 0.5 : 1, transition: 'all 0.15s' }}>
                           {/* Enable/Disable toggle */}
                           <button
                             onClick={() => {
@@ -987,7 +987,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                               });
                             }}
                             title={disabledKbEntries.has(entry.id) ? 'Enable this entry' : 'Disable this entry'}
-                            style={{ width: '28px', height: '16px', borderRadius: '8px', border: 'none', cursor: 'pointer', flexShrink: 0, position: 'relative', background: disabledKbEntries.has(entry.id) ? 'rgba(255,255,255,0.1)' : '#8b5cf6', transition: 'background 0.2s', padding: 0 }}
+                            style={{ width: '28px', height: '16px', borderRadius: '8px', border: 'none', cursor: 'pointer', flexShrink: 0, position: 'relative', background: disabledKbEntries.has(entry.id) ? 'rgba(255,255,255,0.1)' : '#0ea5e9', transition: 'background 0.2s', padding: 0 }}
                           >
                             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#fff', position: 'absolute', top: '2px', transition: 'left 0.2s', left: disabledKbEntries.has(entry.id) ? '2px' : '14px' }} />
                           </button>
@@ -1533,7 +1533,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                         style={{
                           width: '100%',
                           padding: '10px 16px',
-                          background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                          background: 'rgba(255, 255, 255, 0.06)',
                           border: 'none',
                           borderRadius: '8px',
                           color: '#fff',

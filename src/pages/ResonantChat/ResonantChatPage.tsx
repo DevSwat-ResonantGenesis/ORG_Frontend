@@ -4468,11 +4468,11 @@ const ResonantChatPage: React.FC = () => {
                           gap: '12px',
                           marginTop: '12px',
                           padding: '12px',
-                          background: 'rgba(139, 92, 246, 0.1)',
+                          background: 'rgba(14, 165, 233, 0.1)',
                           borderRadius: '12px',
-                          border: '1px solid rgba(139, 92, 246, 0.2)',
+                          border: '1px solid rgba(14, 165, 233, 0.2)',
                         }}>
-                          <div style={{ width: '100%', fontSize: '12px', color: '#a78bfa', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <div style={{ width: '100%', fontSize: '12px', color: '#38bdf8', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                               <circle cx="8.5" cy="8.5" r="1.5" />
@@ -4721,7 +4721,7 @@ const ResonantChatPage: React.FC = () => {
                               const base: React.CSSProperties = { padding: '5px 10px', borderRadius: '6px', fontSize: '12px', fontFamily: "'SF Mono','Fira Code','Consolas', monospace" };
                               switch (step.type) {
                                 case 'thinking':
-                                  return <div key={i} style={{ ...base, background: 'rgba(139,92,246,0.12)', color: '#a78bfa', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Thinking... <span style={{ opacity: 0.5 }}>(loop {step.data.loop})</span></div>;
+                                  return <div key={i} style={{ ...base, background: 'rgba(14,165,233,0.12)', color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Thinking... <span style={{ opacity: 0.5 }}>(loop {step.data.loop})</span></div>;
                                 case 'tool_call':
                                   return <div key={i} style={{ ...base, background: 'rgba(59,130,246,0.12)', color: '#93c5fd', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg> <strong>{step.data.tool}</strong>({JSON.stringify(step.data.args || {}).slice(0, 120)})</div>;
                                 case 'tool_result': {
@@ -5168,7 +5168,7 @@ const ResonantChatPage: React.FC = () => {
                         {messageMetrics?.model && (
                         <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: tc.muted }}>Model</div>
-                          <div style={{ fontSize: '13px', color: '#a78bfa', fontWeight: 500, fontFamily: 'monospace' }}>{messageMetrics.model}</div>
+                          <div style={{ fontSize: '13px', color: '#38bdf8', fontWeight: 500, fontFamily: 'monospace' }}>{messageMetrics.model}</div>
                         </div>
                         )}
                         {/* Preferred Provider (what user selected) */}
@@ -5238,12 +5238,12 @@ const ResonantChatPage: React.FC = () => {
                         </div>
                         )}
                         {/* Agent Type */}
-                        <div style={{ padding: '10px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: 'rgba(14, 165, 233, 0.1)', borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: tc.muted, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                             Agent Type
                           </div>
-                          <div style={{ fontSize: '13px', color: '#8b5cf6', fontWeight: 500 }}>
+                          <div style={{ fontSize: '13px', color: '#0ea5e9', fontWeight: 500 }}>
                             {messageMetrics?.agent_id || selectedMessage.aiProvider || 'reasoning'}
                           </div>
                         </div>
@@ -5334,7 +5334,7 @@ const ResonantChatPage: React.FC = () => {
                                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
                               </svg>
                             </div>
-                            <div style={{ fontSize: '11px', color: '#8b5cf6', fontFamily: 'monospace', wordBreak: 'break-all' }}>
+                            <div style={{ fontSize: '11px', color: '#0ea5e9', fontFamily: 'monospace', wordBreak: 'break-all' }}>
                               {(messageMetrics?.hash || selectedMessage?.hash || '').substring(0, 20)}...
                             </div>
                             <span id="copy-hash-toast" style={{ position: 'absolute', top: '50%', right: '8px', transform: 'translateY(-50%)', fontSize: '10px', color: '#22c55e', opacity: 0, transition: 'opacity 0.2s' }}>Copied!</span>
@@ -5365,9 +5365,9 @@ const ResonantChatPage: React.FC = () => {
                           <div style={{ fontSize: '11px', color: tc.muted }}>Context Coherence</div>
                           <div style={{ fontSize: '14px', color: '#fbbf24', fontWeight: 500 }}>{((messageMetrics.metrics.context_coherence || 0) * 100).toFixed(1)}%</div>
                         </div>
-                        <div style={{ padding: '10px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: 'rgba(14, 165, 233, 0.1)', borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: tc.muted }}>Memory Utilization</div>
-                          <div style={{ fontSize: '14px', color: '#8b5cf6', fontWeight: 500 }}>{((messageMetrics.metrics.memory_utilization || 0) * 100).toFixed(1)}%</div>
+                          <div style={{ fontSize: '14px', color: '#0ea5e9', fontWeight: 500 }}>{((messageMetrics.metrics.memory_utilization || 0) * 100).toFixed(1)}%</div>
                         </div>
                         {messageMetrics.metrics.response_time_ms && (
                           <div style={{ padding: '10px', background: tc.rowBg, borderRadius: '8px' }}>
@@ -5460,7 +5460,7 @@ const ResonantChatPage: React.FC = () => {
                   {messageMetrics?.metrics?.dsid && (
                     <div style={{ marginBottom: '16px' }}>
                       <div style={{ fontSize: '12px', color: tc.muted, marginBottom: '8px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                         DSID Trust Metrics
                       </div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
@@ -5470,9 +5470,9 @@ const ResonantChatPage: React.FC = () => {
                             {((messageMetrics.metrics.dsid.t1_score || 0) * 100).toFixed(0)}%
                           </div>
                         </div>
-                        <div style={{ padding: '10px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '8px' }}>
+                        <div style={{ padding: '10px', background: 'rgba(14, 165, 233, 0.1)', borderRadius: '8px' }}>
                           <div style={{ fontSize: '11px', color: tc.muted }}>T3 Score (Full Provenance)</div>
-                          <div style={{ fontSize: '18px', color: (messageMetrics.metrics.dsid.t3_score || 0) > 0.5 ? '#8b5cf6' : '#666', fontWeight: 600 }}>
+                          <div style={{ fontSize: '18px', color: (messageMetrics.metrics.dsid.t3_score || 0) > 0.5 ? '#0ea5e9' : '#666', fontWeight: 600 }}>
                             {((messageMetrics.metrics.dsid.t3_score || 0) * 100).toFixed(0)}%
                           </div>
                         </div>
@@ -5972,7 +5972,7 @@ const ResonantChatPage: React.FC = () => {
                 <div style={{ fontSize: '11px', color: tc.muted, textTransform: 'uppercase' }}>Messages</div>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '24px', fontWeight: 700, color: '#8b5cf6' }}>{usageStats.tokens.toLocaleString()}</div>
+                <div style={{ fontSize: '24px', fontWeight: 700, color: '#0ea5e9' }}>{usageStats.tokens.toLocaleString()}</div>
                 <div style={{ fontSize: '11px', color: tc.muted, textTransform: 'uppercase' }}>Tokens</div>
               </div>
               <div style={{ textAlign: 'center' }}>
@@ -6017,8 +6017,8 @@ const ResonantChatPage: React.FC = () => {
                 </div>
               </div>
 
-              <div style={{ padding: '16px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '12px', borderLeft: '4px solid #8b5cf6' }}>
-                <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#8b5cf6' }}>🔢 Token Usage</h3>
+              <div style={{ padding: '16px', background: 'rgba(14, 165, 233, 0.1)', borderRadius: '12px', borderLeft: '4px solid #0ea5e9' }}>
+                <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', color: '#0ea5e9' }}>🔢 Token Usage</h3>
                 <p style={{ margin: 0, fontSize: '14px', color: isLight ? '#374151' : '#ccc', lineHeight: 1.6 }}>
                   Total tokens consumed by your conversation. Tokens are the basic units of text that AI models process.
                   Roughly 1 token ≈ 4 characters or ¾ of a word.
@@ -6204,12 +6204,12 @@ const ResonantChatPage: React.FC = () => {
                       key={cluster.id || idx}
                       style={{
                         padding: '12px',
-                        background: 'rgba(139, 92, 246, 0.1)',
-                        border: '1px solid rgba(139, 92, 246, 0.3)',
+                        background: 'rgba(14, 165, 233, 0.1)',
+                        border: '1px solid rgba(14, 165, 233, 0.3)',
                         borderRadius: '8px',
                       }}
                     >
-                      <div style={{ fontSize: '14px', fontWeight: 500, color: '#8b5cf6', marginBottom: '4px' }}>
+                      <div style={{ fontSize: '14px', fontWeight: 500, color: '#0ea5e9', marginBottom: '4px' }}>
                         {cluster.name || `Cluster ${idx + 1}`}
                       </div>
                       <div style={{ fontSize: '12px', color: tc.muted }}>
@@ -6570,7 +6570,7 @@ const ResonantChatPage: React.FC = () => {
                 </div>
 
                 {/* Knowledge Base Cross-referencing */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '8px', border: '1px solid rgba(139, 92, 246, 0.15)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(14, 165, 233, 0.05)', borderRadius: '8px', border: '1px solid rgba(14, 165, 233, 0.15)' }}>
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: 500 }}>Knowledge Base Check</div>
                     <div style={{ fontSize: '11px', color: tc.muted }}>Cross-reference against your uploaded facts/data</div>
@@ -6579,10 +6579,10 @@ const ResonantChatPage: React.FC = () => {
                     onClick={() => { setHallucinationKnowledgeBase(!hallucinationKnowledgeBase); saveHallucinationSetting('knowledge_base_check', !hallucinationKnowledgeBase); }}
                     style={{
                       padding: '6px 12px',
-                      background: hallucinationKnowledgeBase ? 'rgba(139, 92, 246, 0.2)' : tc.offBg,
-                      border: `1px solid ${hallucinationKnowledgeBase ? '#8b5cf6' : tc.offBorder}`,
+                      background: hallucinationKnowledgeBase ? 'rgba(14, 165, 233, 0.2)' : tc.offBg,
+                      border: `1px solid ${hallucinationKnowledgeBase ? '#0ea5e9' : tc.offBorder}`,
                       borderRadius: '6px',
-                      color: hallucinationKnowledgeBase ? '#8b5cf6' : '#888',
+                      color: hallucinationKnowledgeBase ? '#0ea5e9' : '#888',
                       cursor: 'pointer',
                       fontSize: '12px',
                     }}
@@ -6593,12 +6593,12 @@ const ResonantChatPage: React.FC = () => {
 
                 {/* Knowledge Base Entries */}
                 {hallucinationKnowledgeBase && (
-                  <div style={{ padding: '12px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '8px', border: '1px solid rgba(139, 92, 246, 0.1)' }}>
+                  <div style={{ padding: '12px', background: 'rgba(14, 165, 233, 0.05)', borderRadius: '8px', border: '1px solid rgba(14, 165, 233, 0.1)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                      <div style={{ fontSize: '13px', fontWeight: 500, color: '#8b5cf6' }}>Knowledge Base ({knowledgeBaseEntries.length} entries)</div>
+                      <div style={{ fontSize: '13px', fontWeight: 500, color: '#0ea5e9' }}>Knowledge Base ({knowledgeBaseEntries.length} entries)</div>
                       <button
                         onClick={() => setShowKbAddForm(!showKbAddForm)}
-                        style={{ padding: '4px 10px', background: 'rgba(139, 92, 246, 0.2)', border: '1px solid rgba(139, 92, 246, 0.3)', borderRadius: '6px', color: '#8b5cf6', cursor: 'pointer', fontSize: '11px' }}
+                        style={{ padding: '4px 10px', background: 'rgba(14, 165, 233, 0.2)', border: '1px solid rgba(14, 165, 233, 0.3)', borderRadius: '6px', color: '#0ea5e9', cursor: 'pointer', fontSize: '11px' }}
                       >
                         {showKbAddForm ? 'Cancel' : '+ Add'}
                       </button>
@@ -6635,10 +6635,10 @@ const ResonantChatPage: React.FC = () => {
                           disabled={!kbTitle.trim() || !kbContent.trim()}
                           style={{
                             padding: '8px',
-                            background: kbTitle.trim() && kbContent.trim() ? 'rgba(139, 92, 246, 0.3)' : 'rgba(255,255,255,0.05)',
-                            border: '1px solid rgba(139, 92, 246, 0.3)',
+                            background: kbTitle.trim() && kbContent.trim() ? 'rgba(14, 165, 233, 0.3)' : 'rgba(255,255,255,0.05)',
+                            border: '1px solid rgba(14, 165, 233, 0.3)',
                             borderRadius: '6px',
-                            color: kbTitle.trim() && kbContent.trim() ? '#8b5cf6' : '#666',
+                            color: kbTitle.trim() && kbContent.trim() ? '#0ea5e9' : '#666',
                             cursor: kbTitle.trim() && kbContent.trim() ? 'pointer' : 'not-allowed',
                             fontSize: '12px',
                             fontWeight: 500,
@@ -6650,16 +6650,16 @@ const ResonantChatPage: React.FC = () => {
                         <label
                           style={{
                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-                            padding: '10px', background: 'rgba(139, 92, 246, 0.08)', border: '2px dashed rgba(139, 92, 246, 0.3)',
-                            borderRadius: '8px', color: '#8b5cf6', cursor: 'pointer', fontSize: '12px', fontWeight: 500,
+                            padding: '10px', background: 'rgba(14, 165, 233, 0.08)', border: '2px dashed rgba(14, 165, 233, 0.3)',
+                            borderRadius: '8px', color: '#0ea5e9', cursor: 'pointer', fontSize: '12px', fontWeight: 500,
                             transition: 'all 0.2s',
                           }}
-                          onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); (e.currentTarget as HTMLElement).style.borderColor = '#8b5cf6'; (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.15)'; }}
-                          onDragLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.3)'; (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.08)'; }}
+                          onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); (e.currentTarget as HTMLElement).style.borderColor = '#0ea5e9'; (e.currentTarget as HTMLElement).style.background = 'rgba(14, 165, 233, 0.15)'; }}
+                          onDragLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(14, 165, 233, 0.3)'; (e.currentTarget as HTMLElement).style.background = 'rgba(14, 165, 233, 0.08)'; }}
                           onDrop={(e) => {
                             e.preventDefault(); e.stopPropagation();
-                            (e.currentTarget as HTMLElement).style.borderColor = 'rgba(139, 92, 246, 0.3)';
-                            (e.currentTarget as HTMLElement).style.background = 'rgba(139, 92, 246, 0.08)';
+                            (e.currentTarget as HTMLElement).style.borderColor = 'rgba(14, 165, 233, 0.3)';
+                            (e.currentTarget as HTMLElement).style.background = 'rgba(14, 165, 233, 0.08)';
                             const files = e.dataTransfer?.files;
                             if (files?.[0]) uploadKnowledgeBaseFile(files[0]);
                           }}

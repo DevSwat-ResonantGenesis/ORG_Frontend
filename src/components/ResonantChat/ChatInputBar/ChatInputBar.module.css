@@ -715,7 +715,7 @@
   background:
     radial-gradient(10px 10px at 30% 30%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 60%),
     radial-gradient(16px 16px at 60% 65%, rgba(14, 165, 233, 0.65), rgba(14, 165, 233, 0) 65%),
-    radial-gradient(18px 18px at 70% 30%, rgba(139, 92, 246, 0.45), rgba(139, 92, 246, 0) 60%);
+    radial-gradient(18px 18px at 70% 30%, rgba(14, 165, 233, 0.45), rgba(14, 165, 233, 0) 60%);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.14) inset,
     0 0 12px rgba(14, 165, 233, 0.20);
@@ -813,10 +813,10 @@
   align-items: center;
   gap: 6px;
   padding: 4px 10px;
-  border: 1px solid rgba(139, 92, 246, 0.25);
+  border: 1px solid rgba(14, 165, 233, 0.25);
   border-radius: 8px;
-  background: rgba(139, 92, 246, 0.08);
-  color: #a78bfa;
+  background: rgba(14, 165, 233, 0.08);
+  color: #38bdf8;
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -828,36 +828,36 @@
 
 .aiAssistantToggle:hover {
   opacity: 1;
-  background: rgba(139, 92, 246, 0.15);
+  background: rgba(14, 165, 233, 0.15);
 }
 
 .aiAssistantToggleActive {
   opacity: 1;
-  background: rgba(139, 92, 246, 0.18);
-  border-color: rgba(139, 92, 246, 0.45);
-  color: #c4b5fd;
-  box-shadow: 0 0 8px rgba(139, 92, 246, 0.15);
+  background: rgba(14, 165, 233, 0.18);
+  border-color: rgba(14, 165, 233, 0.45);
+  color: #7dd3fc;
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.15);
 }
 
 .aiAssistantToggleActive:hover {
-  background: rgba(139, 92, 246, 0.25);
+  background: rgba(14, 165, 233, 0.25);
 }
 
 [data-theme='light'] .aiAssistantToggle {
-  border-color: rgba(99, 102, 241, 0.2);
-  background: rgba(99, 102, 241, 0.06);
-  color: #6366f1;
+  border-color: rgba(14, 165, 233, 0.2);
+  background: rgba(14, 165, 233, 0.06);
+  color: #0284c7;
 }
 
 [data-theme='light'] .aiAssistantToggle:hover {
-  background: rgba(99, 102, 241, 0.12);
+  background: rgba(14, 165, 233, 0.12);
 }
 
 [data-theme='light'] .aiAssistantToggleActive {
-  background: rgba(99, 102, 241, 0.14);
-  border-color: rgba(99, 102, 241, 0.35);
-  color: #4f46e5;
-  box-shadow: 0 0 8px rgba(99, 102, 241, 0.12);
+  background: rgba(14, 165, 233, 0.14);
+  border-color: rgba(14, 165, 233, 0.35);
+  color: #0369a1;
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.12);
 }
 
 .aiAssistantLogo {

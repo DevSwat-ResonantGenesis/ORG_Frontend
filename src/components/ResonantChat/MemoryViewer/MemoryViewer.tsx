@@ -185,7 +185,7 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
             <div style={{ fontSize: '11px', color: isLight ? '#6b7280' : '#888', textTransform: 'uppercase' }}>Projects</div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: '#8b5cf6' }}>
+            <div style={{ fontSize: '24px', fontWeight: 700, color: '#0ea5e9' }}>
               {avgRelevance > 0 ? avgRelevance : (memories.length > 0 ? Math.round(memories.reduce((sum, m) => sum + (m.relevance_score || 0), 0) / memories.length * 100) : 0)}%
             </div>
             <div style={{ fontSize: '11px', color: isLight ? '#6b7280' : '#888', textTransform: 'uppercase' }}>Avg Relevance</div>
@@ -333,8 +333,8 @@ const MemoryViewer: React.FC<MemoryViewerProps> = ({ isOpen, onClose }) => {
                           fontSize: '10px', 
                           padding: '3px 8px', 
                           borderRadius: '10px',
-                          background: 'rgba(139, 92, 246, 0.15)',
-                          color: '#8b5cf6',
+                          background: 'rgba(14, 165, 233, 0.15)',
+                          color: '#0ea5e9',
                         }}>{fw}</span>
                       ))}
                     </div>
