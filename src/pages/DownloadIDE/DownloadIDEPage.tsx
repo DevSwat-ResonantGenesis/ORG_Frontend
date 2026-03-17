@@ -111,7 +111,7 @@ const DownloadIDEPage: React.FC = () => {
           </p>
           <div className={styles.heroActions}>
             <a
-              href="https://dev-swat.com/downloads/resonant-ide/Resonant-IDE-1.0.0-arm64.pkg"
+              href="https://dev-swat.com/downloads/resonant-ide/Resonant-IDE-1.0.0-arm64.dmg"
               className={styles.downloadButton}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -119,7 +119,7 @@ const DownloadIDEPage: React.FC = () => {
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
-              Download Installer for macOS (207 MB)
+              Download for macOS (266 MB)
             </a>
           </div>
           <div className={styles.heroPlatforms}>
@@ -128,19 +128,14 @@ const DownloadIDEPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Installation Instructions */}
+      {/* Signed Installer Coming Soon */}
       <section style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px 0' }}>
-        <h2 className={styles.sectionTitle}>Installation</h2>
-        <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: 24, marginTop: 16 }}>
-          <ol style={{ color: '#d1d5db', fontSize: 14, lineHeight: 1.8, paddingLeft: 20, margin: 0 }}>
-            <li>Download the <strong>.pkg</strong> installer above</li>
-            <li>Double-click the <strong>.pkg</strong> file to open the installer</li>
-            <li>Follow the prompts — it will install <strong>Resonant IDE</strong> to your Applications folder automatically</li>
-            <li>Open <strong>Resonant IDE</strong> from Applications and sign in with your Resonant account</li>
-          </ol>
-          <div style={{ marginTop: 16, padding: '12px 16px', background: '#1e293b', borderRadius: 8, fontSize: 12, color: '#94a3b8' }}>
-            <strong style={{ color: '#f59e0b' }}>Note:</strong> macOS may ask you to confirm the installation since the app is not yet notarized by Apple. Click <strong>"Open Anyway"</strong> in System Settings &gt; Privacy &amp; Security if prompted. We're working on Apple notarization for a smoother experience in future updates.
-          </div>
+        <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: 24, textAlign: 'center' }}>
+          <div style={{ fontSize: 28, marginBottom: 8 }}>&#9889;</div>
+          <h3 style={{ color: '#e5e7eb', fontSize: 16, fontWeight: 600, margin: '0 0 8px' }}>Apple-Signed Installer Coming Soon</h3>
+          <p style={{ color: '#94a3b8', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
+            We're finalizing Apple Developer notarization for Resonant IDE. A signed <strong>.pkg</strong> installer that works seamlessly with macOS Gatekeeper will be available shortly. In the meantime, download the <strong>.dmg</strong> above and open the app by right-clicking &rarr; <strong>Open</strong>.
+          </p>
         </div>
       </section>
 
@@ -211,10 +206,10 @@ const DownloadIDEPage: React.FC = () => {
           </p>
           <div className={styles.ctaActions}>
             <a
-              href="https://dev-swat.com/downloads/resonant-ide/Resonant-IDE-1.0.0-arm64.pkg"
+              href="https://dev-swat.com/downloads/resonant-ide/Resonant-IDE-1.0.0-arm64.dmg"
               className={styles.downloadButton}
             >
-              Download Installer for macOS (207 MB)
+              Download for macOS (266 MB)
             </a>
           </div>
         </div>
