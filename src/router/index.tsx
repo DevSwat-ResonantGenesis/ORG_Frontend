@@ -137,6 +137,10 @@ const APIKeysPage = lazy(() => import('../pages/APIKeys/APIKeysPage'));
 const HashSphereMemoryAPI = lazy(() => import('../pages/HashSphereMemoryAPI/HashSphereMemoryAPI'));
 const ConnectProfilesPage = lazy(() => import('../pages/ConnectProfiles/ConnectProfilesPage'));
 
+// IDE LOC Statistics
+const IDELocDashboard = lazy(() => import('../pages/IDEStats/IDELocDashboard'));
+const IDELocAdminDashboard = lazy(() => import('../pages/IDEStats/IDELocAdminDashboard'));
+
 const withShell = (node: React.ReactNode) => (
   <ProtectedRoute>
     <MainLayout>{node}</MainLayout>
@@ -689,6 +693,15 @@ const router = createBrowserRouter([
   {
     path: '/download-ide',
     element: withPublicShell(<DownloadIDEPage />)
+  },
+  // IDE LOC Statistics
+  {
+    path: '/ide-stats',
+    element: withShell(<IDELocDashboard />)
+  },
+  {
+    path: '/ide-stats/admin',
+    element: withShell(<IDELocAdminDashboard />)
   },
   {
     path: '*',
