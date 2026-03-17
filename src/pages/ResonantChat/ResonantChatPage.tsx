@@ -950,7 +950,7 @@ const ResonantChatPage: React.FC = () => {
   const [memoryPanelUrl, setMemoryPanelUrl] = useState('/resonant-memory?embed=1');
   const [splitAutoOpenRequest, setSplitAutoOpenRequest] = useState<{
     requestId: number;
-    tab: 'code' | 'preview' | 'terminal' | 'visualizer' | 'agents' | 'state_physics' | 'ide' | 'memory';
+    tab: 'code' | 'preview' | 'terminal' | 'visualizer' | 'agents' | 'state_physics' | 'ide' | 'memory' | 'voice';
     previewUrl?: string | null;
   } | null>(null);
 
@@ -4976,7 +4976,17 @@ const ResonantChatPage: React.FC = () => {
           onShowSettings={() => setShowSettingsSticker(!showSettingsSticker)}
           showSettings={showSettingsSticker}
           voiceInInput={voiceInInput}
-          onVoiceConversation={() => setShowVoiceModal(true)}
+          onVoiceConversation={() => {
+            if (!splitViewEnabled) {
+              setSplitViewEnabled(true);
+              setSplitViewPane('split');
+            }
+            window.dispatchEvent(new CustomEvent('rg:split-view-state', {
+              detail: { enabled: true, pane: 'split' },
+            }));
+            // Set voice tab via auto-open request
+            setSplitAutoOpenRequest({ requestId: Date.now(), tab: 'voice' });
+          }}
           onCopyChat={() => {
             if (messages.length === 0) {
               warning('No messages to copy');
@@ -6808,9 +6818,7 @@ const ResonantChatPage: React.FC = () => {
           document.body
         )}
 
-      {showVoiceModal && (
-        <VoiceConversationModal onClose={() => setShowVoiceModal(false)} />
-      )}
+      {/* Voice conversation now opens in split view tab instead of modal */}
     </>
   );
 };

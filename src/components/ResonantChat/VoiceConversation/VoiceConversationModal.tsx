@@ -30,12 +30,13 @@ interface Turn {
 
 interface VoiceConversationModalProps {
   onClose: () => void;
+  inline?: boolean;
 }
 
 const SAMPLE_RATE = 16_000;
 const CHUNK_FRAMES = 4_096; // samples per script-processor buffer
 
-const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose }) => {
+const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose, inline = false }) => {
   const wsRef = useRef<WebSocket | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const processorRef = useRef<ScriptProcessorNode | null>(null);
@@ -371,11 +372,11 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
   // ── Pulse animation ────────────────────────────────────────────────────────
 
   const pulseColor = {
-    connecting: '#6366f1',
+    connecting: '#64748b',
     ready: '#22d3ee',
     listening: '#10b981',
     processing: '#f59e0b',
-    speaking: '#8b5cf6',
+    speaking: '#38bdf8',
     error: '#ef4444',
   }[status];
 
@@ -393,7 +394,12 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
   const sphereSize = isActive ? 160 : 140;
 
   return (
-    <div style={{
+    <div style={inline ? {
+      width: '100%', height: '100%',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      gap: '1.2rem', overflow: 'auto',
+      background: isLight ? 'rgba(248,250,252,0.6)' : 'rgba(10,12,18,0.6)',
+    } : {
       position: 'fixed', inset: 0, zIndex: 9999,
       background: isLight ? 'rgba(248,250,252,0.92)' : 'rgba(5,7,11,0.92)',
       backdropFilter: 'blur(20px)',
@@ -499,7 +505,7 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
           {Array.from({ length: 24 }).map((_, i) => (
             <div key={`bar-${i}`} style={{
               width: 2.5, borderRadius: 2,
-              background: status === 'speaking' ? '#8b5cf6' : '#f59e0b',
+              background: status === 'speaking' ? '#38bdf8' : '#f59e0b',
               animation: `voiceBar 0.8s ease-in-out ${i * 0.05}s infinite alternate`,
               opacity: 0.7,
             }} />
@@ -531,10 +537,10 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
               <div style={{
                 maxWidth: '80%',
                 background: t.role === 'user'
-                  ? (isLight ? 'rgba(59,130,246,0.12)' : 'rgba(99,102,241,0.25)')
+                  ? (isLight ? 'rgba(59,130,246,0.12)' : 'rgba(56,189,248,0.18)')
                   : (isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.08)'),
                 border: `1px solid ${t.role === 'user'
-                  ? (isLight ? '#3b82f622' : '#6366f144')
+                  ? (isLight ? '#3b82f622' : '#38bdf833')
                   : (isLight ? '#0000000a' : '#ffffff1a')}`,
                 borderRadius: t.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                 padding: '0.6rem 1rem',

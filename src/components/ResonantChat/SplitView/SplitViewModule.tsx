@@ -77,6 +77,19 @@ const IDEIcon = () => (
   </svg>
 );
 
+const VoiceIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+    <line x1="12" y1="19" x2="12" y2="23" />
+    <line x1="8" y1="23" x2="16" y2="23" />
+  </svg>
+);
+
+const VoiceConversationPanel = React.lazy(() =>
+  import('@/components/ResonantChat/VoiceConversation/VoiceConversationModal')
+);
+
 interface MessageType {
   id: string;
   content: string;
@@ -424,20 +437,20 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                   <span className={styles.tabIcon}><StatePhysicsIcon /></span>
                 </button>
                 <button
-                  className={`${styles.tab} ${state.activeTab === 'ide' ? styles.activeTab : ''} ${styles.ideTab}`}
-                  onClick={() => actions.setActiveTab('ide')}
-                  title="IDE"
-                  aria-label="IDE"
-                >
-                  <span className={styles.tabIcon}><IDEIcon /></span>
-                </button>
-                <button
                   className={`${styles.tab} ${state.activeTab === 'memory' ? styles.activeTab : ''} ${styles.memoryTab}`}
                   onClick={() => actions.setActiveTab('memory')}
                   title="Memory Library"
                   aria-label="Memory Library"
                 >
                   <span className={styles.tabIcon}><MemoryIcon /></span>
+                </button>
+                <button
+                  className={`${styles.tab} ${state.activeTab === 'voice' ? styles.activeTab : ''}`}
+                  onClick={() => actions.setActiveTab('voice')}
+                  title="Voice Conversation"
+                  aria-label="Voice Conversation"
+                >
+                  <span className={styles.tabIcon}><VoiceIcon /></span>
                 </button>
               </div>
               <div className={styles.headerActions}>
@@ -483,15 +496,6 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                     className={styles.runButton}
                     onClick={() => window.open(statePhysicsPanelUrl, '_blank')}
                     title="Open State Physics in full screen"
-                  >
-                    <RocketIcon /> Full Screen
-                  </button>
-                )}
-                {state.activeTab === 'ide' && (
-                  <button
-                    className={styles.runButton}
-                    onClick={() => window.open(idePanelUrl, '_blank')}
-                    title="Open IDE in full screen"
                   >
                     <RocketIcon /> Full Screen
                   </button>
@@ -642,16 +646,6 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 </div>
               )}
 
-              {state.activeTab === 'ide' && (
-                <div className={styles.ideTabContent}>
-                  <iframe
-                    title="IDE"
-                    src={idePanelUrl}
-                    className={styles.ideIframe}
-                    allow="fullscreen"
-                  />
-                </div>
-              )}
               {state.activeTab === 'memory' && (
                 <div className={styles.memoryTabContent}>
                   <iframe
@@ -660,6 +654,17 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                     className={styles.memoryIframe}
                     allow="fullscreen"
                   />
+                </div>
+              )}
+
+              {state.activeTab === 'voice' && (
+                <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+                  <Suspense fallback={<div className={styles.codePanelEmpty}>Loading voice…</div>}>
+                    <VoiceConversationPanel
+                      inline
+                      onClose={() => actions.setActiveTab('code')}
+                    />
+                  </Suspense>
                 </div>
               )}
             </div>
