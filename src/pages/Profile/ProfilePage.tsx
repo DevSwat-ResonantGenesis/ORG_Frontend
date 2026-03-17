@@ -460,7 +460,11 @@ const ProfilePage = () => {
         <div className={styles.sidebarSection}>
           <div className={styles.sidebarSectionTitle}>INTEGRATIONS</div>
           <button className={styles.sidebarItem} onClick={() => navigate('/connect-profiles')}>
-            <Link2 size={16} />
+            <img
+              src={document.documentElement.getAttribute('data-theme') === 'light' ? '/images/connect-icons/Integration black icon.svg' : '/images/connect-icons/integration white icon.svg'}
+              alt="Integrations"
+              style={{ width: '16px', height: '16px', objectFit: 'contain' }}
+            />
             <span>Integrations</span>
           </button>
         </div>

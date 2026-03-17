@@ -385,11 +385,16 @@ export const Header: React.FC<HeaderProps> = ({
               {isLoggedIn && (
                 <button
                   type="button"
-                  className={styles.byokCta}
+                  className={styles.chatWidgetButton}
                   onClick={() => navigate('/connect-profiles')}
+                  title="Integrations"
+                  aria-label="Integrations"
                 >
-                  Integrations
-                  <span className={styles.byokArrow} aria-hidden="true">→</span>
+                  <img
+                    src={document.documentElement.getAttribute('data-theme') === 'light' ? '/images/connect-icons/Integration black icon.svg' : '/images/connect-icons/integration white icon.svg'}
+                    alt="Integrations"
+                    style={{ width: '20px', height: '20px', objectFit: 'contain' }}
+                  />
                 </button>
               )}
 

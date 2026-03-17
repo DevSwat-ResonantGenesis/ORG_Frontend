@@ -1307,6 +1307,24 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           }}
         >
           <div className={styles.toolsLeft}>
+            {onToggleAiAssistant && (
+              <button
+                className={`${styles.aiAssistantToggle} ${aiAssistantEnabled ? styles.aiAssistantToggleActive : ''}`}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleAiAssistant(); }}
+                title={aiAssistantEnabled ? 'AI Assistant ON — using agentic tools' : 'AI Assistant OFF — basic chat'}
+                type="button"
+              >
+                <img
+                  src={document.documentElement.getAttribute('data-theme') === 'light' ? '/logo black.png' : '/logo white.png'}
+                  alt=""
+                  className={styles.aiAssistantLogo}
+                />
+                AI Assistant
+              </button>
+            )}
+          </div>
+
+          <div className={styles.toolsRight}>
             {!hideProviderSelector && (
               <div style={{ position: 'relative', zIndex: 10000 }}>
                 {/* Custom Provider Selector - No external styles */}
@@ -1525,40 +1543,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </div>
             )}
 
-            {onToggleAiAssistant && (
-              <button
-                className={`${styles.aiAssistantToggle} ${aiAssistantEnabled ? styles.aiAssistantToggleActive : ''}`}
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleAiAssistant(); }}
-                title={aiAssistantEnabled ? 'AI Assistant ON — using agentic tools' : 'AI Assistant OFF — basic chat'}
-                type="button"
-              >
-                <img
-                  src={document.documentElement.getAttribute('data-theme') === 'light' ? '/logo black.png' : '/logo white.png'}
-                  alt=""
-                  className={styles.aiAssistantLogo}
-                />
-                AI Assistant
-              </button>
-            )}
-          </div>
-
-          <div className={styles.toolsRight}>
-            {onToggleAgentMode && (
-              <button
-                ref={agentButtonRef}
-                className={`${styles.providerButton} ${styles.agentSelectorButton} ${agentMode ? styles.agentSelectorActive : ''}`}
-                onClick={handleAgentModeToggle}
-                title={agentSelectorLabel}
-                type="button"
-              >
-                <span className={styles.agentSelectorIcon}><TeamIcon /></span>
-                <span className={styles.agentSelectorLabel}>{agentSelectorLabel}</span>
-                <ChevronDownIcon />
-              </button>
-            )}
-
-            <SkillsToolbar onEnabledSkillsChange={onEnabledSkillsChange} />
-
             {onShowConversations && (
               <button
                 className={`${styles.toolButton} ${showConversations ? styles.active : ''}`}
@@ -1669,6 +1653,22 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             >
               <SpeakerIcon />
             </button>
+
+            {onToggleAgentMode && (
+              <button
+                ref={agentButtonRef}
+                className={`${styles.providerButton} ${styles.agentSelectorButton} ${agentMode ? styles.agentSelectorActive : ''}`}
+                onClick={handleAgentModeToggle}
+                title={agentSelectorLabel}
+                type="button"
+              >
+                <span className={styles.agentSelectorIcon}><TeamIcon /></span>
+                <span className={styles.agentSelectorLabel}>{agentSelectorLabel}</span>
+                <ChevronDownIcon />
+              </button>
+            )}
+
+            <SkillsToolbar onEnabledSkillsChange={onEnabledSkillsChange} />
 
             {onShowSettings && (
               <button
