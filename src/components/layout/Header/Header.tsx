@@ -481,7 +481,7 @@ export const Header: React.FC<HeaderProps> = ({
             )}
 
             {/* Logged In: Show Account Menu */}
-            {isLoggedIn && !(isMobileViewport && isResonantChatPage) ? (
+            {isLoggedIn ? (
               <div ref={accountRef} className={styles.accountWrapper}>
                 <button 
                   className={styles.accountButton}
