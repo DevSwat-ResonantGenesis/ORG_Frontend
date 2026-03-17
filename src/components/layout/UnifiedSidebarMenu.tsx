@@ -12,7 +12,6 @@ import { useResonantChatMenu } from '@/context/ResonantChatMenuContext';
 import {
   goToPricing,
   goToHome,
-  goToResonantChat,
   goToContact,
   goToLogin,
   goToIDE,
@@ -35,7 +34,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
   const sessionData = getSessionData();
   
   // Check if on Resonant Chat page
-  const isResonantChatPage = location.pathname === '/resonant-chat' || location.pathname.startsWith('/resonant-chat');
+  const isResonantChatPage = location.pathname === '/' || location.pathname === '/resonant-chat' || location.pathname.startsWith('/resonant-chat');
   
   // Get chat menu items from context
   const { menuItems: chatMenuItems } = useResonantChatMenu();
@@ -137,19 +136,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             <div className={styles.usmSectionTitle}>Products</div>
 
             <button
-              className={`${styles.usmItem} ${location.pathname === '/resonant-chat' ? styles.usmActive : ''}`}
-              onClick={() => { goToResonantChat(navigate, onClose); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M8 2C5 2 2.5 4.5 2.5 7.5C2.5 9.5 3.5 11.2 5 12.2V14.5L7.2 12.2C7.5 12.3 7.8 12.3 8.1 12.3C11.1 12.3 13.5 9.8 13.5 7.5C13.5 4.5 11 2 8 2Z" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>AGI Neural Hub</span>
-              {location.pathname === '/resonant-chat' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
               className={`${styles.usmItem} ${location.pathname === '/build' ? styles.usmActive : ''}`}
               onClick={() => { navigate('/build'); onClose(); }}
             >
@@ -237,20 +223,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               </span>
               <span className={styles.usmLabel}>Execution History</span>
               {location.pathname === '/network/history' && <span className={styles.usmActiveIndicator} />}
-            </button>
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/network/blockchain' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/network/blockchain'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="2" width="5" height="5" rx="1" />
-                  <rect x="9" y="9" width="5" height="5" rx="1" />
-                  <path d="M7 4.5H9.5V9" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Blockchain Explorer</span>
-              {location.pathname === '/network/blockchain' && <span className={styles.usmActiveIndicator} />}
             </button>
           </div>
 

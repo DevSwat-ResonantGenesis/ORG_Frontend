@@ -4013,8 +4013,8 @@ const ResonantChatPage: React.FC = () => {
     <>
     
     <div className={styles.chatPage}>
-      {/* Enhanced Sidebar with User Info and Settings */}
-      <div className={`${styles.sidebarWrapper} ${sidebarOpen ? styles.sidebarOpen : styles.hidden}`}>
+      {/* Enhanced Sidebar with User Info and Settings — hidden for guests */}
+      {!isGuestMode && <div className={`${styles.sidebarWrapper} ${sidebarOpen ? styles.sidebarOpen : styles.hidden}`}>
         <EnhancedSidebar
           conversations={conversations}
           memories={memories}
@@ -4097,7 +4097,7 @@ const ResonantChatPage: React.FC = () => {
           selectedTeamId={selectedTeamId}
           onSelectTeam={setSelectedTeamId}
         />
-      </div>
+      </div>}
 
       {/* Hidden file input for attach file functionality - no accept filter to allow all files */}
       <input
@@ -4120,7 +4120,7 @@ const ResonantChatPage: React.FC = () => {
         }}
       />
 
-      <div className={`${styles.chatContainer} ${sidebarOpen ? styles.sidebarOpen : styles.sidebarClosed}`}>
+      <div className={`${styles.chatContainer} ${isGuestMode ? styles.sidebarClosed : (sidebarOpen ? styles.sidebarOpen : styles.sidebarClosed)}`}>
 
         {/* Project Builder - Show when project is being generated */}
         {generatedProject && (
@@ -4916,21 +4916,21 @@ const ResonantChatPage: React.FC = () => {
           onEnabledSkillsChange={setEnabledSkillIds}
           aiAssistantEnabled={isGuestMode ? true : aiAssistantEnabled}
           onToggleAiAssistant={isGuestMode ? undefined : () => setAiAssistantEnabled(prev => !prev)}
-          memories={memories}
-          onShowMemoryLibrary={() => {
+          memories={isGuestMode ? [] : memories}
+          onShowMemoryLibrary={isGuestMode ? undefined : (() => {
             setShowMemoryLibrary(true);
             setShowThreadsSticker(false);
             setShowMetricsSticker(false);
             setShowSettingsSticker(false);
             setShowClustersSticker(false);
-          }}
-          showMemoryLibrary={showMemoryLibrary}
-          onCloseMemoryLibrary={() => setShowMemoryLibrary(false)}
+          })}
+          showMemoryLibrary={isGuestMode ? false : showMemoryLibrary}
+          onCloseMemoryLibrary={isGuestMode ? undefined : (() => setShowMemoryLibrary(false))}
           onMemoryClick={(memory) => {
             setInput(prev => prev + ` @${memory.name || memory.content?.substring(0, 20)} `);
             setShowMemoryLibrary(false);
           }}
-          onDeleteMemory={handleDeleteMemory}
+          onDeleteMemory={isGuestMode ? undefined : handleDeleteMemory}
           knowledgeBaseEntries={knowledgeBaseEntries}
           onAddKbEntry={(title, content, entryType) => {
             setKbTitle(title); setKbContent(content); setKbType(entryType as any);
@@ -4938,8 +4938,8 @@ const ResonantChatPage: React.FC = () => {
           }}
           onUploadKbFile={uploadKnowledgeBaseFile}
           onDeleteKbEntry={deleteKnowledgeBaseEntry}
-          conversations={conversations}
-          onShowConversations={() => setShowThreadsSticker(true)}
+          conversations={isGuestMode ? [] : conversations}
+          onShowConversations={isGuestMode ? undefined : (() => setShowThreadsSticker(true))}
           showConversations={showThreadsSticker}
           onCloseConversations={() => setShowThreadsSticker(false)}
           onConversationClick={(conv) => {
