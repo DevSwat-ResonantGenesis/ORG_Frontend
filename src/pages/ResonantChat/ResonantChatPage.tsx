@@ -4013,8 +4013,8 @@ const ResonantChatPage: React.FC = () => {
     <>
     
     <div className={styles.chatPage}>
-      {/* Enhanced Sidebar with User Info and Settings — hidden for guests */}
-      {!isGuestMode && <div className={`${styles.sidebarWrapper} ${sidebarOpen ? styles.sidebarOpen : styles.hidden}`}>
+      {/* Enhanced Sidebar with User Info and Settings */}
+      <div className={`${styles.sidebarWrapper} ${sidebarOpen ? styles.sidebarOpen : styles.hidden}`}>
         <EnhancedSidebar
           conversations={conversations}
           memories={memories}
@@ -4097,7 +4097,7 @@ const ResonantChatPage: React.FC = () => {
           selectedTeamId={selectedTeamId}
           onSelectTeam={setSelectedTeamId}
         />
-      </div>}
+      </div>
 
       {/* Hidden file input for attach file functionality - no accept filter to allow all files */}
       <input
@@ -4120,41 +4120,7 @@ const ResonantChatPage: React.FC = () => {
         }}
       />
 
-      <div className={`${styles.chatContainer} ${isGuestMode ? styles.sidebarClosed : (sidebarOpen ? styles.sidebarOpen : styles.sidebarClosed)}`}>
-        {/* Guest Mode Banner */}
-        {isGuestMode && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '12px',
-            padding: '10px 20px',
-            background: 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.12))',
-            borderBottom: '1px solid rgba(99,102,241,0.2)',
-            fontSize: '13px',
-            color: '#a5b4fc',
-            zIndex: 10,
-            flexShrink: 0,
-          }}>
-            <span>🚀 You&apos;re using Resonant Chat as a guest — web search is available!</span>
-            <button
-              onClick={() => navigate('/signup')}
-              style={{
-                padding: '5px 14px',
-                background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                border: 'none',
-                borderRadius: '6px',
-                color: '#fff',
-                fontSize: '12px',
-                fontWeight: 600,
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              Sign up — unlock all tools
-            </button>
-          </div>
-        )}
+      <div className={`${styles.chatContainer} ${sidebarOpen ? styles.sidebarOpen : styles.sidebarClosed}`}>
 
         {/* Project Builder - Show when project is being generated */}
         {generatedProject && (
@@ -4912,7 +4878,7 @@ const ResonantChatPage: React.FC = () => {
           }}
           onSend={handleSend}
           isLoading={isLoading}
-          sidebarOpen={isGuestMode ? false : sidebarOpen}
+          sidebarOpen={sidebarOpen}
           ttsText={
             messages
               .slice()
@@ -4926,8 +4892,8 @@ const ResonantChatPage: React.FC = () => {
           }}
           availableProviders={availableProviders}
           providerStats={providerStats}
-          agentMode={isGuestMode ? false : agentMode}
-          onToggleAgentMode={isGuestMode ? undefined : () => setAgentMode(!agentMode)}
+          agentMode={agentMode}
+          onToggleAgentMode={() => setAgentMode(!agentMode)}
           selectedAgent={selectedAgentHash}
           onSelectAgent={setSelectedAgentHash}
           agents={availableAgents}
@@ -4935,36 +4901,36 @@ const ResonantChatPage: React.FC = () => {
           onSelectTeam={setSelectedTeamId}
           teams={Array.isArray(teams) ? teams.map((t: AgentTeam) => ({ id: t.id, name: t.name })) : []}
           onNewChat={isGuestMode ? (() => { setMessages([]); localStorage.removeItem('rg-guest-chat-messages'); }) : handleNewChat}
-          onClearChat={isGuestMode ? (messages.length > 0 ? () => { setMessages([]); localStorage.removeItem('rg-guest-chat-messages'); } : undefined) : (messages.length > 0 ? handleClearChat : undefined)}
-          onBuild={isGuestMode ? undefined : (() => {
+          onClearChat={messages.length > 0 ? (isGuestMode ? () => { setMessages([]); localStorage.removeItem('rg-guest-chat-messages'); } : handleClearChat) : undefined}
+          onBuild={() => {
             // Open Build Module inside Split View
             if (!splitViewEnabled) setSplitViewEnabled(true);
             setSplitViewPane('split');
             setShowBuildModule(true);
-          })}
-          onAttachFile={isGuestMode ? undefined : (() => fileInputRef.current?.click())}
+          }}
+          onAttachFile={() => fileInputRef.current?.click()}
           splitViewEnabled={splitViewEnabled}
           splitViewWidth={splitViewWidth}
           attachedFiles={attachedFiles}
           onRemoveFile={(index) => setAttachedFiles(prev => prev.filter((_, i) => i !== index))}
-          onEnabledSkillsChange={isGuestMode ? undefined : setEnabledSkillIds}
+          onEnabledSkillsChange={setEnabledSkillIds}
           aiAssistantEnabled={isGuestMode ? true : aiAssistantEnabled}
           onToggleAiAssistant={isGuestMode ? undefined : () => setAiAssistantEnabled(prev => !prev)}
-          memories={isGuestMode ? [] : memories}
-          onShowMemoryLibrary={isGuestMode ? undefined : (() => {
+          memories={memories}
+          onShowMemoryLibrary={() => {
             setShowMemoryLibrary(true);
             setShowThreadsSticker(false);
             setShowMetricsSticker(false);
             setShowSettingsSticker(false);
             setShowClustersSticker(false);
-          })}
-          showMemoryLibrary={isGuestMode ? false : showMemoryLibrary}
-          onCloseMemoryLibrary={isGuestMode ? undefined : (() => setShowMemoryLibrary(false))}
+          }}
+          showMemoryLibrary={showMemoryLibrary}
+          onCloseMemoryLibrary={() => setShowMemoryLibrary(false)}
           onMemoryClick={(memory) => {
             setInput(prev => prev + ` @${memory.name || memory.content?.substring(0, 20)} `);
             setShowMemoryLibrary(false);
           }}
-          onDeleteMemory={isGuestMode ? undefined : handleDeleteMemory}
+          onDeleteMemory={handleDeleteMemory}
           knowledgeBaseEntries={knowledgeBaseEntries}
           onAddKbEntry={(title, content, entryType) => {
             setKbTitle(title); setKbContent(content); setKbType(entryType as any);
@@ -4972,8 +4938,8 @@ const ResonantChatPage: React.FC = () => {
           }}
           onUploadKbFile={uploadKnowledgeBaseFile}
           onDeleteKbEntry={deleteKnowledgeBaseEntry}
-          conversations={isGuestMode ? [] : conversations}
-          onShowConversations={isGuestMode ? undefined : (() => setShowThreadsSticker(true))}
+          conversations={conversations}
+          onShowConversations={() => setShowThreadsSticker(true)}
           showConversations={showThreadsSticker}
           onCloseConversations={() => setShowThreadsSticker(false)}
           onConversationClick={(conv) => {
