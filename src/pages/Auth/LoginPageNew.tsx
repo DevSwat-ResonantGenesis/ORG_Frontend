@@ -21,9 +21,7 @@ import { initiateSSO } from '../../api/sso';
 const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties> => ({
   container: {
     minHeight: '100vh',
-    background: theme === 'dark' 
-      ? 'linear-gradient(180deg, #0a0a0a 0%, #121212 100%)'
-      : 'linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%)',
+    background: 'transparent',
     color: theme === 'dark' ? '#fff' : '#1a1a1a',
     display: 'flex',
     alignItems: 'center',
@@ -33,10 +31,14 @@ const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties>
   card: {
     width: '100%',
     maxWidth: '400px',
-    background: 'transparent',
-    border: 'none',
-    borderRadius: '0',
-    padding: '2rem 0',
+    background: theme === 'dark' 
+      ? 'rgba(255,255,255,0.03)' 
+      : 'rgba(255,255,255,0.95)',
+    border: theme === 'dark' 
+      ? '1px solid rgba(255,255,255,0.1)' 
+      : '1px solid rgba(0,0,0,0.1)',
+    borderRadius: '16px',
+    padding: '2rem',
     marginTop: '0',
   },
   header: {

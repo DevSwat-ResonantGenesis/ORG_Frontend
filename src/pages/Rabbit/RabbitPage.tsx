@@ -617,7 +617,7 @@ const RabbitPage: React.FC = () => {
      RENDER
      ═══════════════════════════════════ */
   return (
-    <div style={{ paddingTop: 60 }}>
+    <div>
       <div className={styles.rabbitRoot}>
         {/* ── LEFT SIDEBAR – Nav / Communities ── */}
         <aside className={styles.leftSidebar}>
