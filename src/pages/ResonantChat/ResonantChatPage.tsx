@@ -4704,7 +4704,7 @@ const ResonantChatPage: React.FC = () => {
                     </div>
                   ))}
                   {isLoading && (
-                    <div className={styles.thinkingIndicator}>
+                    <div className={styles.thinkingIndicator} style={{ background: 'transparent', border: 'none', boxShadow: 'none', borderRadius: 0, maxWidth: '85%', padding: '4px 0' }}>
                       {agenticSteps.length > 0 ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%' }}>
                           {agenticSteps
