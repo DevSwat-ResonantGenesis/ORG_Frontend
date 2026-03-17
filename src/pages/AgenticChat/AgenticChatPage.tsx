@@ -176,7 +176,7 @@ const AgenticChatPage: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ message: msg, conversation_id: activeConvId || undefined, conversation_history: history, enabled_tools: enabledTools, max_loops: 10 }),
+        body: JSON.stringify({ message: msg, conversation_id: activeConvId || undefined, conversation_history: history, enabled_tools: enabledTools, max_loops: 50 }),
       });
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
