@@ -13,7 +13,7 @@ import { DEFAULT_SPLIT_WIDTH } from '../constants';
 
 export const useSplitViewState = (initialWidth = DEFAULT_SPLIT_WIDTH) => {
   const [width, setWidth] = useState(initialWidth);
-  const [activeTab, setActiveTab] = useState<TabType>('code');
+  const [activeTab, setActiveTab] = useState<TabType>('agents');
   const [selectedFile, setSelectedFile] = useState<ProjectFile | null>(null);
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
   const [terminalOutput, setTerminalOutput] = useState<TerminalOutput[]>([]);

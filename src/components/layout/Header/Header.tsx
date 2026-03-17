@@ -391,7 +391,7 @@ export const Header: React.FC<HeaderProps> = ({
                   aria-label="Integrations"
                 >
                   <img
-                    src={document.documentElement.getAttribute('data-theme') === 'light' ? '/images/connect-icons/Integration black icon.svg' : '/images/connect-icons/integration white icon.svg'}
+                    src={document.documentElement.getAttribute('data-theme') === 'light' ? '/images/connect-icons/Integration black icon.png' : '/images/connect-icons/integration white icon.png'}
                     alt="Integrations"
                     style={{ width: '20px', height: '20px', objectFit: 'contain' }}
                   />

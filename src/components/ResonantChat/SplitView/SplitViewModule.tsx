@@ -376,38 +376,6 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
             {!hideSplitHeader && <div className={styles.codePanelHeader}>
               <div className={styles.tabs}>
                 <button
-                  className={`${styles.tab} ${state.activeTab === 'code' ? styles.activeTab : ''}`}
-                  onClick={() => actions.setActiveTab('code')}
-                  title="Code"
-                  aria-label="Code"
-                >
-                  <span className={styles.tabIcon}><CodeIcon /></span>
-                </button>
-                <button
-                  className={`${styles.tab} ${state.activeTab === 'preview' ? styles.activeTab : ''}`}
-                  onClick={() => actions.setActiveTab('preview')}
-                  title="Preview"
-                  aria-label="Preview"
-                >
-                  <span className={styles.tabIcon}><PreviewIcon /></span>
-                </button>
-                <button
-                  className={`${styles.tab} ${state.activeTab === 'terminal' ? styles.activeTab : ''}`}
-                  onClick={() => actions.setActiveTab('terminal')}
-                  title="Terminal"
-                  aria-label="Terminal"
-                >
-                  <span className={styles.tabIcon}><TerminalIcon /></span>
-                </button>
-                <button
-                  className={`${styles.tab} ${state.activeTab === 'visualizer' ? styles.activeTab : ''} ${styles.visualizerTab}`}
-                  onClick={() => actions.setActiveTab('visualizer')}
-                  title="Visualizer"
-                  aria-label="Visualizer"
-                >
-                  <span className={styles.tabIcon}><VisualizerIcon /></span>
-                </button>
-                <button
                   className={`${styles.tab} ${state.activeTab === 'agents' ? styles.activeTab : ''} ${styles.agentsTab}`}
                   onClick={() => actions.setActiveTab('agents')}
                   title="Agents OS"
@@ -416,12 +384,12 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                   <span className={styles.tabIcon}><AgentsIcon /></span>
                 </button>
                 <button
-                  className={`${styles.tab} ${state.activeTab === 'state_physics' ? styles.activeTab : ''} ${styles.statePhysicsTab}`}
-                  onClick={() => actions.setActiveTab('state_physics')}
-                  title="State Physics"
-                  aria-label="State Physics"
+                  className={`${styles.tab} ${state.activeTab === 'preview' ? styles.activeTab : ''}`}
+                  onClick={() => actions.setActiveTab('preview')}
+                  title="Preview Code"
+                  aria-label="Preview Code"
                 >
-                  <span className={styles.tabIcon}><StatePhysicsIcon /></span>
+                  <span className={styles.tabIcon}><PreviewIcon /></span>
                 </button>
                 <button
                   className={`${styles.tab} ${state.activeTab === 'memory' ? styles.activeTab : ''} ${styles.memoryTab}`}
@@ -432,34 +400,23 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                   <span className={styles.tabIcon}><MemoryIcon /></span>
                 </button>
                 <button
-                  className={`${styles.tab} ${state.activeTab === 'voice' ? styles.activeTab : ''}`}
-                  onClick={() => actions.setActiveTab('voice')}
-                  title="Voice Conversation"
-                  aria-label="Voice Conversation"
+                  className={`${styles.tab} ${state.activeTab === 'state_physics' ? styles.activeTab : ''} ${styles.statePhysicsTab}`}
+                  onClick={() => actions.setActiveTab('state_physics')}
+                  title="Invariants SIM"
+                  aria-label="Invariants SIM"
                 >
-                  <span className={styles.tabIcon}><VoiceIcon /></span>
+                  <span className={styles.tabIcon}><StatePhysicsIcon /></span>
+                </button>
+                <button
+                  className={`${styles.tab} ${state.activeTab === 'visualizer' ? styles.activeTab : ''} ${styles.visualizerTab}`}
+                  onClick={() => actions.setActiveTab('visualizer')}
+                  title="Code Analyzer"
+                  aria-label="Code Analyzer"
+                >
+                  <span className={styles.tabIcon}><VisualizerIcon /></span>
                 </button>
               </div>
               <div className={styles.headerActions}>
-                {codeBlocks && codeBlocks.length > 0 && (
-                  <button
-                    className={styles.buildButton}
-                    onClick={() => setShowBuildModule(true)}
-                    title="Build project from code"
-                  >
-                    <BuildIcon /> Build
-                  </button>
-                )}
-                {state.activeTab === 'code' && codeBlocks && codeBlocks.length > 0 && (
-                  <button
-                    className={styles.runButton}
-                    onClick={handleRunCode}
-                    disabled={state.isRunning}
-                    title="Run code"
-                  >
-                    {state.isRunning ? <LoadingIcon /> : <PlayIcon />} Run
-                  </button>
-                )}
                 {state.activeTab === 'preview' && (
                   <button
                     className={styles.runButton}
@@ -713,38 +670,6 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
         {!hideSplitHeader && <div className={styles.codePanelHeader}>
           <div className={styles.tabs}>
             <button
-              className={`${styles.tab} ${state.activeTab === 'code' ? styles.activeTab : ''}`}
-              onClick={() => actions.setActiveTab('code')}
-              title="Code"
-              aria-label="Code"
-            >
-              <span className={styles.tabIcon}><CodeIcon /></span>
-            </button>
-            <button
-              className={`${styles.tab} ${state.activeTab === 'preview' ? styles.activeTab : ''}`}
-              onClick={() => actions.setActiveTab('preview')}
-              title="Preview"
-              aria-label="Preview"
-            >
-              <span className={styles.tabIcon}><PreviewIcon /></span>
-            </button>
-            <button
-              className={`${styles.tab} ${state.activeTab === 'terminal' ? styles.activeTab : ''}`}
-              onClick={() => actions.setActiveTab('terminal')}
-              title="Terminal"
-              aria-label="Terminal"
-            >
-              <span className={styles.tabIcon}><TerminalIcon /></span>
-            </button>
-            <button
-              className={`${styles.tab} ${state.activeTab === 'visualizer' ? styles.activeTab : ''} ${styles.visualizerTab}`}
-              onClick={() => actions.setActiveTab('visualizer')}
-              title="Visualizer"
-              aria-label="Visualizer"
-            >
-              <span className={styles.tabIcon}><VisualizerIcon /></span>
-            </button>
-            <button
               className={`${styles.tab} ${state.activeTab === 'agents' ? styles.activeTab : ''} ${styles.agentsTab}`}
               onClick={() => actions.setActiveTab('agents')}
               title="Agents OS"
@@ -753,12 +678,12 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
               <span className={styles.tabIcon}><AgentsIcon /></span>
             </button>
             <button
-              className={`${styles.tab} ${state.activeTab === 'state_physics' ? styles.activeTab : ''} ${styles.statePhysicsTab}`}
-              onClick={() => actions.setActiveTab('state_physics')}
-              title="State Physics"
-              aria-label="State Physics"
+              className={`${styles.tab} ${state.activeTab === 'preview' ? styles.activeTab : ''}`}
+              onClick={() => actions.setActiveTab('preview')}
+              title="Preview Code"
+              aria-label="Preview Code"
             >
-              <span className={styles.tabIcon}><StatePhysicsIcon /></span>
+              <span className={styles.tabIcon}><PreviewIcon /></span>
             </button>
             <button
               className={`${styles.tab} ${state.activeTab === 'memory' ? styles.activeTab : ''} ${styles.memoryTab}`}
@@ -769,34 +694,23 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
               <span className={styles.tabIcon}><MemoryIcon /></span>
             </button>
             <button
-              className={`${styles.tab} ${state.activeTab === 'voice' ? styles.activeTab : ''}`}
-              onClick={() => actions.setActiveTab('voice')}
-              title="Voice Conversation"
-              aria-label="Voice Conversation"
+              className={`${styles.tab} ${state.activeTab === 'state_physics' ? styles.activeTab : ''} ${styles.statePhysicsTab}`}
+              onClick={() => actions.setActiveTab('state_physics')}
+              title="Invariants SIM"
+              aria-label="Invariants SIM"
             >
-              <span className={styles.tabIcon}><VoiceIcon /></span>
+              <span className={styles.tabIcon}><StatePhysicsIcon /></span>
+            </button>
+            <button
+              className={`${styles.tab} ${state.activeTab === 'visualizer' ? styles.activeTab : ''} ${styles.visualizerTab}`}
+              onClick={() => actions.setActiveTab('visualizer')}
+              title="Code Analyzer"
+              aria-label="Code Analyzer"
+            >
+              <span className={styles.tabIcon}><VisualizerIcon /></span>
             </button>
           </div>
           <div className={styles.headerActions}>
-            {codeBlocks && codeBlocks.length > 0 && (
-              <button
-                className={styles.buildButton}
-                onClick={() => setShowBuildModule(true)}
-                title="Build project from code"
-              >
-                <BuildIcon /> Build
-              </button>
-            )}
-            {state.activeTab === 'code' && codeBlocks && codeBlocks.length > 0 && (
-              <button
-                className={styles.runButton}
-                onClick={handleRunCode}
-                disabled={state.isRunning}
-                title="Run code"
-              >
-                {state.isRunning ? <LoadingIcon /> : <PlayIcon />} Run
-              </button>
-            )}
             {state.activeTab === 'preview' && (
               <button
                 className={styles.runButton}
