@@ -957,6 +957,21 @@
   border-left-color: rgba(217, 119, 6, 0.8);
 }
 
+.typingReveal {
+  animation: typingRevealAnim 1.2s ease-out forwards;
+}
+
+@keyframes typingRevealAnim {
+  0% {
+    opacity: 0.3;
+    clip-path: inset(0 60% 0 0);
+  }
+  100% {
+    opacity: 1;
+    clip-path: inset(0 0% 0 0);
+  }
+}
+
 .typingCaret {
   display: inline-block;
   width: 1px;

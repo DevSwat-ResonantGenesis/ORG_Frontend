@@ -396,8 +396,7 @@ const ResonantChatPage: React.FC = () => {
   const [messageMetrics, setMessageMetrics] = useState<MessageMetrics | null>(null);
   const [activeMessageId, setActiveMessageId] = useState<string | null>(null);
   const [typingMessageId, setTypingMessageId] = useState<string | null>(null);
-  const [typingVisibleChars, setTypingVisibleChars] = useState(0);
-  const typingIntervalRef = useRef<number | null>(null);
+  const typingTimeoutRef = useRef<number | null>(null);
   const previousMessagesCountRef = useRef(0);
 
   // Mobile: tap message to reveal tools/metrics; tap outside to hide
@@ -1076,7 +1075,6 @@ const ResonantChatPage: React.FC = () => {
     if (currentCount <= previousCount) return;
     if (currentCount - previousCount > 2) {
       setTypingMessageId(null);
-      setTypingVisibleChars(0);
       return;
     }
 
@@ -1084,53 +1082,46 @@ const ResonantChatPage: React.FC = () => {
     if (!latestMessage || latestMessage.role !== 'assistant') return;
     if (!latestMessage.content || latestMessage.content.length < 40) {
       setTypingMessageId(null);
-      setTypingVisibleChars(0);
       return;
     }
 
-    if (typingIntervalRef.current) {
-      window.clearInterval(typingIntervalRef.current);
-      typingIntervalRef.current = null;
+    if (typingTimeoutRef.current) {
+      window.clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
     }
 
-    const totalChars = latestMessage.content.length;
-    const step = Math.max(4, Math.ceil(totalChars / 55));
+    // CSS-only typing reveal: set typingMessageId to add CSS animation class,
+    // then clear it after the animation duration. Zero setState during animation.
+    const durationMs = Math.min(Math.max(latestMessage.content.length * 2, 400), 2000);
     setTypingMessageId(latestMessage.id);
-    setTypingVisibleChars(0);
-
-    typingIntervalRef.current = window.setInterval(() => {
-      setTypingVisibleChars((prev) => {
-        const next = Math.min(prev + step, totalChars);
-        if (next >= totalChars && typingIntervalRef.current) {
-          window.clearInterval(typingIntervalRef.current);
-          typingIntervalRef.current = null;
-          window.setTimeout(() => setTypingMessageId(null), 120);
-        }
-        return next;
-      });
-    }, 16);
+    typingTimeoutRef.current = window.setTimeout(() => {
+      setTypingMessageId(null);
+      typingTimeoutRef.current = null;
+    }, durationMs);
   }, [messages]);
 
   useEffect(() => {
     return () => {
-      if (typingIntervalRef.current) {
-        window.clearInterval(typingIntervalRef.current);
+      if (typingTimeoutRef.current) {
+        window.clearTimeout(typingTimeoutRef.current);
       }
     };
   }, []);
 
   // HYBRID SYNC: Save messages to localStorage for live sync with FloatingChatWidget
   // Backend is still source of truth, but localStorage enables real-time widget sync
+  // PERF: Debounced to 2s to avoid JSON.stringify on every state change
   useEffect(() => {
     if (messages.length > 0 && currentConversationId) {
-      // Save messages to localStorage for FloatingChatWidget live sync
-      const messagesToSync = messages.map(m => ({
-        ...m,
-        timestamp: m.timestamp instanceof Date ? m.timestamp.toISOString() : m.timestamp,
-      }));
-      localStorage.setItem('resonant-chat-live-messages', JSON.stringify(messagesToSync));
-      // Trigger sync event for same-tab updates
-      window.dispatchEvent(new CustomEvent('resonant-chat-sync'));
+      const timer = window.setTimeout(() => {
+        const messagesToSync = messages.map(m => ({
+          ...m,
+          timestamp: m.timestamp instanceof Date ? m.timestamp.toISOString() : m.timestamp,
+        }));
+        localStorage.setItem('resonant-chat-live-messages', JSON.stringify(messagesToSync));
+        window.dispatchEvent(new CustomEvent('resonant-chat-sync'));
+      }, 2000);
+      return () => window.clearTimeout(timer);
     }
   }, [messages, currentConversationId]);
 
@@ -1240,22 +1231,18 @@ const ResonantChatPage: React.FC = () => {
   // IMPORTANT: Only use real backend metrics - never fake them locally
   useEffect(() => {
     const loadChatMetrics = async () => {
-      console.log('[Metrics] Loading metrics for:', currentConversationId, 'isLoggedIn:', isLoggedIn);
       if (currentConversationId && isLoggedIn) {
         try {
           const metrics = await getChatMetrics(currentConversationId);
-          console.log('[Metrics] Received metrics:', metrics);
           // metrics will be null if backend fails or no real metrics available
           setChatMetrics(metrics);
         } catch (error) {
           logger.error('Failed to load chat metrics from API', error);
-          console.log('[Metrics] Error loading metrics:', error);
           // Don't calculate fake local metrics - set to null to show N/A
           setChatMetrics(null);
         }
       } else {
         // Not logged in or no conversation - no metrics available
-        console.log('[Metrics] No conversation ID or not logged in, setting null');
         setChatMetrics(null);
       }
     };
@@ -1270,11 +1257,9 @@ const ResonantChatPage: React.FC = () => {
     const timer = setTimeout(() => {
       const totalTokens = messages.reduce((sum, m) => sum + Math.round(m.content.length / 4), 0);
       
-      console.log('[UsageStats] Updating usageStats, chatMetrics:', chatMetrics);
       
       // Only use real backend metrics - null means "N/A" in the UI
       if (chatMetrics && chatMetrics.metrics_available) {
-        console.log('[UsageStats] Setting quality:', chatMetrics.quality, 'hallucination:', chatMetrics.hallucination);
         setUsageStats({
           messages: chatMetrics.message_count || messages.length,
           tokens: chatMetrics.tokens || totalTokens,
@@ -1283,7 +1268,6 @@ const ResonantChatPage: React.FC = () => {
         });
       } else {
         // No real metrics available - show message count and tokens only
-        console.log('[UsageStats] No metrics available, setting N/A');
         setUsageStats({
           messages: messages.length,
           tokens: totalTokens,
@@ -4257,9 +4241,7 @@ const ResonantChatPage: React.FC = () => {
                     >
                       {/** Visual typing effect only changes render pacing, not backend generation speed. */}
                       {(() => {
-                        const renderedMessageContent = message.id === typingMessageId
-                          ? message.content.slice(0, typingVisibleChars)
-                          : message.content;
+                        const renderedMessageContent = message.content;
 
                         return (
                           <>
@@ -4367,7 +4349,7 @@ const ResonantChatPage: React.FC = () => {
                           </span>
                         )}
                       </div>
-                      <div className={styles.messageContent}>
+                      <div className={`${styles.messageContent}${message.id === typingMessageId ? ` ${styles.typingReveal}` : ''}`}>
                         {/* Enhanced message rendering with markdown */}
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
