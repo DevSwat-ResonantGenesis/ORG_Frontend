@@ -306,16 +306,22 @@ const ResonantChatPage: React.FC = () => {
   const initialMessage = localStorage.getItem('resonant-chat-pending-message') || 
     (location.state as { initialMessage?: string })?.initialMessage;
 
-  // SECURITY: Clear local agent selection if user changed
+  // SECURITY: Clear all chat data if user changed to prevent cross-user data leaks
   const clearChatDataIfUserChanged = useCallback(() => {
     const sessionData = getSessionData();
     const currentUserId = sessionData?.userId || sessionData?.email;
     const storedUserId = localStorage.getItem('resonant-chat-user-id');
     
     if (currentUserId && storedUserId && currentUserId !== storedUserId) {
-      // User changed - clear agent selection only (conversations loaded from backend)
-      console.log('[ResonantChat] User changed, clearing agent selection');
+      console.log('[ResonantChat] User changed, clearing all chat data');
       localStorage.removeItem('resonant-chat-selected-agent-hash');
+      localStorage.removeItem('resonant-chat-current-conversation');
+      localStorage.removeItem('resonant-chat-live-messages');
+      localStorage.removeItem('resonant-chat-split-view');
+      localStorage.removeItem('resonant-chat-split-width');
+      // Force clear conversation so new user starts fresh
+      setCurrentConversationId(null);
+      setMessages([]);
     }
     
     // Store current user ID for future comparison

@@ -75,6 +75,14 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
       console.error('Logout error:', error);
     } finally {
       clearSession();
+      // Clear all chat-related localStorage to prevent leaking data to next user
+      localStorage.removeItem('resonant-chat-current-conversation');
+      localStorage.removeItem('resonant-chat-live-messages');
+      localStorage.removeItem('resonant-chat-selected-agent-hash');
+      localStorage.removeItem('resonant-chat-user-id');
+      localStorage.removeItem('resonant-chat-split-view');
+      localStorage.removeItem('resonant-chat-split-width');
+      localStorage.removeItem('resonant-chat-pending-message');
       onClose();
       window.location.href = '/login';
     }

@@ -169,6 +169,14 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLastUpdate(Date.now());
   }, []);
 
+  // Clear chat state when user logs out
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setMessages([]);
+      setCurrentConversationIdState(null);
+    }
+  }, [isLoggedIn]);
+
   // Initialize conversation on mount - only load if we have an existing conversation
   useEffect(() => {
     if (!isLoggedIn) return;
