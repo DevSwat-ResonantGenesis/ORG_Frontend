@@ -174,6 +174,9 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!isLoggedIn) {
       setMessages([]);
       setCurrentConversationIdState(null);
+      localStorage.removeItem(CHAT_STORAGE_KEY);
+      localStorage.removeItem('resonant-chat-live-messages');
+      localStorage.removeItem('rg-guest-chat-messages');
     }
   }, [isLoggedIn]);
 

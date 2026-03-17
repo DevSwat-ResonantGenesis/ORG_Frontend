@@ -319,13 +319,15 @@ const ResonantChatPage: React.FC = () => {
       localStorage.removeItem('resonant-chat-live-messages');
       localStorage.removeItem('resonant-chat-split-view');
       localStorage.removeItem('resonant-chat-split-width');
+      localStorage.removeItem('rg-guest-chat-messages');
       // Force clear conversation so new user starts fresh
       setCurrentConversationId(null);
       setMessages([]);
     }
     
-    // Store current user ID for future comparison
+    // Always clear guest messages when a real user is logged in
     if (currentUserId) {
+      localStorage.removeItem('rg-guest-chat-messages');
       localStorage.setItem('resonant-chat-user-id', currentUserId);
     }
   }, []);
@@ -692,6 +694,9 @@ const ResonantChatPage: React.FC = () => {
   messagesRef.current = messages;
   
   useEffect(() => {
+    // Guest mode should NEVER sync from logged-in user's live messages
+    if (isGuestMode) return;
+
     const syncMessagesFromWidget = () => {
       const liveMessages = localStorage.getItem('resonant-chat-live-messages');
       if (liveMessages) {
@@ -726,7 +731,7 @@ const ResonantChatPage: React.FC = () => {
       window.removeEventListener('storage', syncMessagesFromWidget);
       window.removeEventListener('resonant-chat-sync', syncMessagesFromWidget);
     };
-  }, []); // Empty dependency - use ref for messages to avoid re-render loop
+  }, [isGuestMode]); // Re-run when auth state changes
 
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; id: string; type: 'message' | 'source' } | null>(null);
   const [showFiles, setShowFiles] = useState(false);

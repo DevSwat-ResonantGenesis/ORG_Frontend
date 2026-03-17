@@ -245,6 +245,7 @@ export const Header: React.FC<HeaderProps> = ({
       localStorage.removeItem('resonant-chat-split-view');
       localStorage.removeItem('resonant-chat-split-width');
       localStorage.removeItem('resonant-chat-pending-message');
+      localStorage.removeItem('rg-guest-chat-messages');
       window.location.href = '/login';
     }
   };

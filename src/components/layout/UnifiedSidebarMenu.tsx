@@ -83,6 +83,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
       localStorage.removeItem('resonant-chat-split-view');
       localStorage.removeItem('resonant-chat-split-width');
       localStorage.removeItem('resonant-chat-pending-message');
+      localStorage.removeItem('rg-guest-chat-messages');
       onClose();
       window.location.href = '/login';
     }
