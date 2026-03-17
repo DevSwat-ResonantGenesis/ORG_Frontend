@@ -708,11 +708,11 @@ const RabbitPage: React.FC = () => {
                       key={mode}
                       className={`${styles.sortTab} ${sortMode === mode ? styles.sortTabActive : ''}`}
                       onClick={() => setSortMode(mode)}
+                      title={mode.charAt(0).toUpperCase() + mode.slice(1)}
                     >
-                      {mode === 'hot' && <><FireIcon />{' '}</>}
-                      {mode === 'new' && <><ClockIcon />{' '}</>}
-                      {mode === 'top' && <><TrendUpIcon />{' '}</>}
-                      {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                      {mode === 'hot' && <FireIcon />}
+                      {mode === 'new' && <ClockIcon />}
+                      {mode === 'top' && <TrendUpIcon />}
                     </button>
                   ))}
                 </div>
