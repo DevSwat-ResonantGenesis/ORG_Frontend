@@ -62,3 +62,52 @@ export const CheckmarkIcon: React.FC<{ className?: string }> = ({ className = ''
   </svg>
 );
 
+export const SmartIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
+  <svg className={`provider-icon smart-icon ${className}`} width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 2L12.5 7.5L18 10L12.5 12.5L10 18L7.5 12.5L2 10L7.5 7.5L10 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="icon-path"/>
+    <circle cx="10" cy="10" r="2" stroke="currentColor" strokeWidth="1" className="icon-path" opacity="0.6"/>
+  </svg>
+);
+
+export const LocalIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
+  <svg className={`provider-icon local-icon ${className}`} width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="3" y="4" width="14" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.5" className="icon-path"/>
+    <path d="M7 17H13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="icon-path"/>
+    <path d="M10 14V17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="icon-path"/>
+    <circle cx="10" cy="9" r="1" fill="currentColor" className="icon-dot"/>
+  </svg>
+);
+
+export const CodeIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
+  <svg className={`provider-icon code-icon ${className}`} width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M7 6L3 10L7 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="icon-path"/>
+    <path d="M13 6L17 10L13 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="icon-path"/>
+    <path d="M11 4L9 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="icon-path" opacity="0.6"/>
+  </svg>
+);
+
+export const KeyIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
+  <svg className={`provider-icon key-icon ${className}`} width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="5" cy="7" r="3" stroke="currentColor" strokeWidth="1.5" className="icon-path"/>
+    <path d="M7.5 9L14 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="icon-path"/>
+    <path d="M12 9V7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="icon-path"/>
+    <path d="M14 9V7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="icon-path"/>
+  </svg>
+);
+
+export const CreditIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
+  <svg className={`provider-icon credit-icon ${className}`} width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" className="icon-path"/>
+    <path d="M10 6.5C10 6.5 9.3 5.5 8 5.5C6.5 5.5 6 6.5 6 7C6 8 7 8.5 8 8.5C9 8.5 10 9 10 10C10 10.5 9.5 11.5 8 11.5C6.7 11.5 6 10.5 6 10.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" className="icon-path"/>
+    <path d="M8 4.5V5.5M8 11.5V12.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" className="icon-path"/>
+  </svg>
+);
+
+export const GroqIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
+  <svg className={`provider-icon groq-icon ${className}`} width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 10L10 4L16 10L10 16L4 10Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="icon-path"/>
+    <path d="M7 10H13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="icon-path"/>
+    <path d="M10 7V13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="icon-path"/>
+  </svg>
+);
+

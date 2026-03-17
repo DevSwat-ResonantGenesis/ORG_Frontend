@@ -137,8 +137,8 @@ const UpArrow = ({ active }: { active?: boolean }) => (
 );
 
 const DownArrow = ({ active }: { active?: boolean }) => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke={active ? '#6366f1' : 'currentColor'} strokeWidth="2">
-    <path d="M8 13L3 7H13L8 13Z" fill={active ? '#6366f1' : 'none'} strokeLinejoin="round" />
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke={active ? '#60a5fa' : 'currentColor'} strokeWidth="2">
+    <path d="M8 13L3 7H13L8 13Z" fill={active ? '#60a5fa' : 'none'} strokeLinejoin="round" />
   </svg>
 );
 
@@ -217,6 +217,52 @@ const CopyIcon = () => (
   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
     <rect x="5" y="5" width="9" height="9" rx="1.5" />
     <path d="M11 5V3.5C11 2.67 10.33 2 9.5 2H3.5C2.67 2 2 2.67 2 3.5V9.5C2 10.33 2.67 11 3.5 11H5" />
+  </svg>
+);
+
+const FireIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M8 1C8 1 3 6 3 10C3 12.8 5.2 15 8 15C10.8 15 13 12.8 13 10C13 6 8 1 8 1Z" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M8 8C8 8 6 10 6 11.5C6 12.6 6.9 13.5 8 13.5C9.1 13.5 10 12.6 10 11.5C10 10 8 8 8 8Z" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const ClockIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <circle cx="8" cy="8" r="6" />
+    <path d="M8 4V8L10.5 10.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const TrendUpIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M2 12L6 8L9 11L14 4" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M10 4H14V8" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const HomeIconSmall = () => (
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M2 8L8 2L14 8" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M4 7V13H12V7" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const RabbitIconSmall = () => (
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <ellipse cx="8" cy="10" rx="5" ry="4" />
+    <path d="M5 6C4.5 2 5 1 6 1" strokeLinecap="round" />
+    <path d="M11 6C11.5 2 11 1 10 1" strokeLinecap="round" />
+    <circle cx="6.5" cy="9.5" r="0.5" fill="currentColor" />
+    <circle cx="9.5" cy="9.5" r="0.5" fill="currentColor" />
+  </svg>
+);
+
+const ExternalLinkSmall = () => (
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M12 9V13H3V4H7" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M10 2H14V6" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M7 9L14 2" strokeLinecap="round" />
   </svg>
 );
 
@@ -663,9 +709,9 @@ const RabbitPage: React.FC = () => {
                       className={`${styles.sortTab} ${sortMode === mode ? styles.sortTabActive : ''}`}
                       onClick={() => setSortMode(mode)}
                     >
-                      {mode === 'hot' && '🔥 '}
-                      {mode === 'new' && '🕐 '}
-                      {mode === 'top' && '⬆ '}
+                      {mode === 'hot' && <><FireIcon />{' '}</>}
+                      {mode === 'new' && <><ClockIcon />{' '}</>}
+                      {mode === 'top' && <><TrendUpIcon />{' '}</>}
                       {mode.charAt(0).toUpperCase() + mode.slice(1)}
                     </button>
                   ))}
@@ -870,13 +916,13 @@ const RabbitPage: React.FC = () => {
           <div className={styles.sidebarCard}>
             <div className={styles.sidebarTitle}>Links</div>
             <a href="https://resonantgenesis.xyz" className={styles.quickLink}>
-              <span>🏠</span> Home
+              <HomeIconSmall /> Home
             </a>
             <a href="https://resonantgenesis.xyz/rabbit" className={styles.quickLink}>
-              <span>🐰</span> Rabbit Feed
+              <RabbitIconSmall /> Rabbit Feed
             </a>
             <a href="https://www.reddit.com/u/ResonantGenesis/" target="_blank" rel="noopener noreferrer" className={styles.quickLink}>
-              <span>🔗</span> Reddit
+              <ExternalLinkSmall /> Reddit
             </a>
           </div>
         </aside>

@@ -16,6 +16,17 @@ import {
 import { VoiceInput } from '@/components/ResonantChat/VoiceInput';
 import SkillsToolbar from '@/components/ResonantChat/SkillsToolbar/SkillsToolbar';
 import styles from './ChatInputBar.module.css';
+import {
+  SmartIcon,
+  ChatGPTIcon,
+  GeminiIcon,
+  ClaudeIcon,
+  GroqIcon,
+  LocalIcon,
+  CodeIcon,
+  KeyIcon,
+  CreditIcon,
+} from '@/components/Icons/ProviderIcons';
 
 const TeamIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1394,13 +1405,13 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                             }}
                           >
                             <span className={styles.providerIcon}>
-                              {provider === 'auto' && <span style={{fontSize: '16px'}}>✨</span>}
-                              {(provider === 'openai' || provider === 'chatgpt') && <span style={{fontSize: '16px'}}>🤖</span>}
-                              {provider === 'gemini' && <span style={{fontSize: '16px'}}>💎</span>}
-                              {provider === 'anthropic' && <span style={{fontSize: '16px'}}>🧠</span>}
-                              {provider === 'groq' && <span style={{fontSize: '16px'}}>⚡</span>}
-                              {provider === 'local' && <span style={{fontSize: '16px'}}>🏠</span>}
-                              {provider === 'codellama' && <span style={{fontSize: '16px'}}>💻</span>}
+                              {provider === 'auto' && <SmartIcon />}
+                              {(provider === 'openai' || provider === 'chatgpt') && <ChatGPTIcon />}
+                              {provider === 'gemini' && <GeminiIcon />}
+                              {provider === 'anthropic' && <ClaudeIcon />}
+                              {provider === 'groq' && <GroqIcon />}
+                              {provider === 'local' && <LocalIcon />}
+                              {provider === 'codellama' && <CodeIcon />}
                             </span>
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
                               <span className={styles.providerName}>
@@ -1420,8 +1431,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                               fontSize: '11px',
                               color: info.available ? '#4ade80' : '#f87171'
                             }}>
-                              {info.has_user_key && <span title="Your API Key" style={{color: '#60a5fa'}}>🔑</span>}
-                              {info.uses_credits && <span title="Uses Credits" style={{color: '#fbbf24'}}>💰</span>}
+                              {info.has_user_key && <span title="Your API Key" style={{color: '#60a5fa'}}><KeyIcon /></span>}
+                              {info.uses_credits && <span title="Uses Credits" style={{color: '#fbbf24'}}><CreditIcon /></span>}
                               {models.length > 0 && provider !== 'auto' && (
                                 <span
                                   title={`${models.length} models`}
