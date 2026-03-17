@@ -768,6 +768,14 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
             >
               <span className={styles.tabIcon}><MemoryIcon /></span>
             </button>
+            <button
+              className={`${styles.tab} ${state.activeTab === 'voice' ? styles.activeTab : ''}`}
+              onClick={() => actions.setActiveTab('voice')}
+              title="Voice Conversation"
+              aria-label="Voice Conversation"
+            >
+              <span className={styles.tabIcon}><VoiceIcon /></span>
+            </button>
           </div>
           <div className={styles.headerActions}>
             {codeBlocks && codeBlocks.length > 0 && (
@@ -970,6 +978,17 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                 className={styles.memoryIframe}
                 allow="fullscreen"
               />
+            </div>
+          )}
+
+          {state.activeTab === 'voice' && (
+            <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+              <Suspense fallback={<div className={styles.codePanelEmpty}>Loading voice…</div>}>
+                <VoiceConversationPanel
+                  inline
+                  onClose={() => actions.setActiveTab('code')}
+                />
+              </Suspense>
             </div>
           )}
         </div>
