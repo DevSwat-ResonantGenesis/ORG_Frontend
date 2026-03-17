@@ -80,8 +80,8 @@ client.interceptors.response.use(
         } catch (e) {
           localStorage.removeItem('rg_session_data');
         }
-        // Redirect to login page
-        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+        // Redirect to login page (skip on home/guest mode pages)
+        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login') && window.location.pathname !== '/') {
           window.location.href = '/login?session_expired=true';
         }
       }

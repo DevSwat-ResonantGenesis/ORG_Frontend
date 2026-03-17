@@ -214,8 +214,8 @@ export const sendResonantMessage = async (
         component: 'ResonantChat',
         status: 401
       });
-      // Redirect to login if not authenticated
-      if (typeof window !== 'undefined') {
+      // Redirect to login if not authenticated (skip on home/guest mode)
+      if (typeof window !== 'undefined' && window.location.pathname !== '/') {
         window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
       }
       throw new Error('Session expired. Please log in again to continue chatting.');

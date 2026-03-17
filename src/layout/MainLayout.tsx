@@ -6,6 +6,7 @@ import { useGlobalKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import { deviceIsMobile } from '@/utils/deviceCheck';
 import localLLMTunnel from '@/services/localLLMTunnel';
 import { fetchUserApiKeys } from '@/api/userApiKeys';
+import { isAuthenticated as checkAuthStatus } from '@/utils/auth-cookies';
 import './MainLayout.css';
 import './clickability-fix.css';
 
@@ -43,6 +44,8 @@ const MainLayout = ({ children }: Props) => {
   // Global Local LLM tunnel auto-start — keeps tunnel alive across page navigation
   useEffect(() => {
     if (localLLMTunnel.isConnected) return; // already running
+    // Skip for guests (no auth cookies) to avoid unnecessary 401s
+    if (!checkAuthStatus()) return;
     let cancelled = false;
     fetchUserApiKeys().then(keys => {
       if (cancelled) return;

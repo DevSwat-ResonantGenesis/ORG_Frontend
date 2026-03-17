@@ -197,8 +197,8 @@ fastapiClient.interceptors.response.use(
             } catch {
               // ignore
             }
-            // Redirect to login if not already there
-            if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/signup')) {
+            // Redirect to login if not already there (skip on home/guest mode)
+            if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/signup') && window.location.pathname !== '/') {
               window.location.href = '/login?expired=true';
             }
           }
@@ -211,7 +211,7 @@ fastapiClient.interceptors.response.use(
           } catch {
             // ignore
           }
-          if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/signup')) {
+          if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/signup') && window.location.pathname !== '/') {
             window.location.href = '/login?expired=true';
           }
         }
