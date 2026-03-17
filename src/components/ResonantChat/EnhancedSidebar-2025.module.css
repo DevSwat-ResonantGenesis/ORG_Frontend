@@ -472,7 +472,7 @@
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: rgba(59, 130, 246, 0.6) transparent;
+  scrollbar-color: rgba(155, 155, 155, 0.15) transparent;
   position: relative;
   display: flex;
   flex-direction: column;

@@ -43,7 +43,7 @@ body {
   overscroll-behavior-y: contain;
   /* Minimal Scrollbar - Super Thin */
   scrollbar-width: thin !important;
-  scrollbar-color: rgba(155, 155, 155, 0.3) transparent !important;
+  scrollbar-color: rgba(155, 155, 155, 0.15) transparent !important;
   -ms-overflow-style: -ms-autohiding-scrollbar !important;
 }
 
@@ -61,8 +61,7 @@ html::-webkit-scrollbar-track {
 
 body::-webkit-scrollbar-thumb,
 html::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.4) !important;
-  /* Blue scrollbar */
+  background: rgba(155, 155, 155, 0.2) !important;
   border-radius: 1px !important;
   transition: background 0.2s ease !important;
   /* Short style - margin from edges */
@@ -73,8 +72,7 @@ html::-webkit-scrollbar-thumb {
 
 body::-webkit-scrollbar-thumb:hover,
 html::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.6) !important;
-  /* Brighter blue on hover */
+  background: rgba(155, 155, 155, 0.35) !important;
 }
 
 /* ============================================================
@@ -84,12 +82,12 @@ html::-webkit-scrollbar-thumb:hover {
    ============================================================ */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(59, 130, 246, 0.45) transparent;
+  scrollbar-color: rgba(155, 155, 155, 0.15) transparent;
 }
 
 *::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 1px;
+  height: 1px;
 }
 
 *::-webkit-scrollbar-track {
@@ -97,14 +95,12 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.45);
-  border-radius: 4px;
-  min-height: 40px;
-  min-width: 40px;
+  background: rgba(155, 155, 155, 0.2);
+  border-radius: 1px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.7);
+  background: rgba(155, 155, 155, 0.35);
 }
 
 #root {

@@ -20,7 +20,7 @@
   position: relative;
   will-change: scroll-position;
   scrollbar-width: thin;
-  scrollbar-color: rgba(59, 130, 246, 0.6) transparent;
+  scrollbar-color: rgba(155, 155, 155, 0.15) transparent;
 }
 
 .messagesContainer::-webkit-scrollbar {
