@@ -269,7 +269,7 @@ export default function LoginPageNew() {
     setError('');
     setOauthLoading(provider);
     try {
-      const authUrl = await initiateSSO(provider);
+      const authUrl = await initiateSSO(provider, postLoginRedirect || undefined);
       window.location.href = authUrl;
     } catch (err: any) {
       setError(`${provider} login is not available. Please use email/password.`);
