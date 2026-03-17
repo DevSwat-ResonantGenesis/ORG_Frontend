@@ -946,11 +946,10 @@ const ResonantChatPage: React.FC = () => {
   const [visualizerAnalysisId, setVisualizerAnalysisId] = useState<string | null>(null);
   const [agentsPanelUrl, setAgentsPanelUrl] = useState('/agents?embed=1');
   const [statePhysicsPanelUrl, setStatePhysicsPanelUrl] = useState('/state-physics?embed=1');
-  const [idePanelUrl, setIdePanelUrl] = useState('/ide?embed=1');
   const [memoryPanelUrl, setMemoryPanelUrl] = useState('/resonant-memory?embed=1');
   const [splitAutoOpenRequest, setSplitAutoOpenRequest] = useState<{
     requestId: number;
-    tab: 'code' | 'preview' | 'terminal' | 'visualizer' | 'agents' | 'state_physics' | 'ide' | 'memory' | 'voice';
+    tab: 'code' | 'preview' | 'terminal' | 'visualizer' | 'agents' | 'state_physics' | 'memory' | 'voice';
     previewUrl?: string | null;
   } | null>(null);
 
@@ -2536,19 +2535,6 @@ const ResonantChatPage: React.FC = () => {
             setSplitAutoOpenRequest({
               requestId: Date.now(),
               tab: 'state_physics',
-            });
-            if (!splitViewEnabled) {
-              setSplitViewEnabled(true);
-              setSplitViewPane('split');
-            }
-          }
-          if (toolResult.success && toolResult.tool_name?.includes('ide_workspace')) {
-            const panelUrl = toolResult.result?.panel_url || '/ide?embed=1';
-            logger.info('[ResonantChatPage] IDE tool result received:', panelUrl);
-            setIdePanelUrl(panelUrl);
-            setSplitAutoOpenRequest({
-              requestId: Date.now(),
-              tab: 'ide',
             });
             if (!splitViewEnabled) {
               setSplitViewEnabled(true);
@@ -4165,7 +4151,6 @@ const ResonantChatPage: React.FC = () => {
                   visualizerAnalysisId={visualizerAnalysisId}
                   agentsPanelUrl={agentsPanelUrl}
                   statePhysicsPanelUrl={statePhysicsPanelUrl}
-                  idePanelUrl={idePanelUrl}
                   memoryPanelUrl={memoryPanelUrl}
                   autoOpenRequest={splitAutoOpenRequest ?? undefined}
                 >
