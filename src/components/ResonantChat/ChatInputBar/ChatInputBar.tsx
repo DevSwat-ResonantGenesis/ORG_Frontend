@@ -248,6 +248,12 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const providerButtonRef = useRef<HTMLButtonElement>(null);
   const providerDropdownRef = useRef<HTMLDivElement>(null);
   const valueRef = useRef(value); // Track current value for voice input
+
+  // PERF: Local input state to avoid re-rendering the entire parent (6900+ lines, 132 useState)
+  // on every keystroke. Only this component re-renders during typing.
+  const [localValue, setLocalValue] = useState(value);
+  const isTypingRef = useRef(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showMentionAutocomplete, setShowMentionAutocomplete] = useState(false);
   const [mentionQuery, setMentionQuery] = useState('');
   const [showProviderDropdown, setShowProviderDropdown] = useState(false);
@@ -375,10 +381,22 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     return provider || { name: providerId, model: '', available: false, has_user_key: false, uses_credits: false };
   };
 
-  // Keep valueRef in sync with value prop
+  // Keep valueRef and localValue in sync with value prop (external changes only)
   useEffect(() => {
     valueRef.current = value;
+    // If parent set value externally (not from our typing), sync localValue
+    if (!isTypingRef.current) {
+      setLocalValue(value);
+    }
+    isTypingRef.current = false;
   }, [value]);
+
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   // Close all dropdowns/panels when clicking outside
   useEffect(() => {
@@ -479,20 +497,38 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
       textarea.style.height = 'auto';
       textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`;
     }
-  }, [value]);
+  }, [localValue]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      if ((value.trim() || (attachedFiles?.length ?? 0) > 0) && !isLoading && !disabled) {
-        onSend();
+      if ((localValue.trim() || (attachedFiles?.length ?? 0) > 0) && !isLoading && !disabled) {
+        // Flush local value to parent immediately before send
+        if (debounceRef.current) {
+          clearTimeout(debounceRef.current);
+          debounceRef.current = null;
+        }
+        isTypingRef.current = true;
+        onChange(localValue);
+        // Small delay to let parent state update before send
+        setTimeout(() => onSend(), 0);
       }
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
-    onChange(newValue);
+    // Update local state immediately (only ChatInputBar re-renders)
+    setLocalValue(newValue);
+    valueRef.current = newValue;
+    // Debounce parent onChange to avoid full-page re-render on every keystroke
+    isTypingRef.current = true;
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      isTypingRef.current = true;
+      onChange(newValue);
+      debounceRef.current = null;
+    }, 150);
 
     // Detect @ mention
     const cursorPos = e.target.selectionStart || 0;
@@ -1278,7 +1314,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             ref={textareaRef}
             className={styles.textarea}
             data-chat-input="true"
-            value={value}
+            value={localValue}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
