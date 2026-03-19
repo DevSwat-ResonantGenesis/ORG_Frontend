@@ -275,3 +275,96 @@ export const deleteAgent = async (agent_id: string): Promise<{ status: string }>
   }
 };
 
+
+// ============== Goals API ==============
+
+export interface GoalAssignRequest {
+  description: string;
+  priority?: number;
+  deadline?: string;
+}
+
+export interface GoalResponse {
+  id: string;
+  description: string;
+  status: string;
+  priority: number;
+  progress: number;
+}
+
+export const assignGoal = async (agent_id: string, data: GoalAssignRequest): Promise<GoalResponse> => {
+  try {
+    const response = await fastapiClient.post(`/api/v1/agents/goals/${agent_id}/assign`, data);
+    return response.data;
+  } catch (error) {
+    logger.apiError(`/api/v1/agents/goals/${agent_id}/assign`, error);
+    throw error;
+  }
+};
+
+export const getAgentGoals = async (agent_id: string): Promise<GoalResponse[]> => {
+  try {
+    const response = await fastapiClient.get(`/api/v1/agents/goals/${agent_id}`);
+    return Array.isArray(response.data) ? response.data : [];
+  } catch (error) {
+    logger.apiError(`/api/v1/agents/goals/${agent_id}`, error);
+    return [];
+  }
+};
+
+
+// ============== Schedules API ==============
+
+export interface ScheduleCreateRequest {
+  name: string;
+  goal: string;
+  cron_expression?: string;
+  interval_seconds?: number;
+  context?: Record<string, any>;
+  timeout_seconds?: number;
+}
+
+export interface ScheduleResponse {
+  id: string;
+  name: string;
+  goal: string;
+  enabled: boolean;
+  cron_expression?: string | null;
+  interval_seconds?: number | null;
+  next_run_at?: string | null;
+  last_run_at?: string | null;
+  run_count: number;
+  success_count: number;
+  failure_count: number;
+}
+
+export const createSchedule = async (agent_id: string, data: ScheduleCreateRequest): Promise<ScheduleResponse> => {
+  try {
+    const response = await fastapiClient.post(`/api/v1/agents/${agent_id}/schedules`, data);
+    return response.data;
+  } catch (error) {
+    logger.apiError(`/api/v1/agents/${agent_id}/schedules`, error);
+    throw error;
+  }
+};
+
+export const listSchedules = async (agent_id: string): Promise<ScheduleResponse[]> => {
+  try {
+    const response = await fastapiClient.get(`/api/v1/agents/${agent_id}/schedules`);
+    return Array.isArray(response.data) ? response.data : [];
+  } catch (error) {
+    logger.apiError(`/api/v1/agents/${agent_id}/schedules`, error);
+    return [];
+  }
+};
+
+export const deleteSchedule = async (schedule_id: string): Promise<{ deleted: boolean }> => {
+  try {
+    const response = await fastapiClient.delete(`/api/v1/agents/schedules/${schedule_id}`);
+    return response.data;
+  } catch (error) {
+    logger.apiError(`/api/v1/agents/schedules/${schedule_id}`, error);
+    throw error;
+  }
+};
+

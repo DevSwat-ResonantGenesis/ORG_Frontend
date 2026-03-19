@@ -1,7 +1,7 @@
 import React, { memo, useState, useCallback, useEffect } from 'react';
 import { useAgentStore } from '../../../../../stores/agentStore';
 import { Icons } from '../../shared/Icons';
-import { createAgent as createAgentApi, getAgentProvidersCatalog, getAvailableTools } from '../../../../../api/agents';
+import { createAgent as createAgentApi, getAgentProvidersCatalog, getAvailableTools, assignGoal, createSchedule } from '../../../../../api/agents';
 import type { ProviderCatalogProvider, AvailableTool } from '../../../../../api/agents';
 import styles from './AgentWizard.module.css';
 
@@ -19,7 +19,18 @@ const WIZARD_STEPS: WizardStep[] = [
   { id: 'type', title: 'Agent Type', description: 'Choose what your agent does' },
   { id: 'model', title: 'AI Model', description: 'Select the AI model to power your agent' },
   { id: 'tools', title: 'Tools', description: 'Give your agent capabilities' },
+  { id: 'goals', title: 'Goal & Schedule', description: 'Set a goal and optional recurring schedule' },
   { id: 'review', title: 'Review', description: 'Review and create your agent' },
+];
+
+const SCHEDULE_PRESETS = [
+  { id: 'none', label: 'No schedule', cron: '', interval: 0 },
+  { id: 'every_5m', label: 'Every 5 minutes', cron: '', interval: 300 },
+  { id: 'every_30m', label: 'Every 30 minutes', cron: '', interval: 1800 },
+  { id: 'hourly', label: 'Every hour', cron: '0 * * * *', interval: 0 },
+  { id: 'daily', label: 'Daily at midnight', cron: '0 0 * * *', interval: 0 },
+  { id: 'weekly', label: 'Weekly (Monday)', cron: '0 0 * * 1', interval: 0 },
+  { id: 'custom', label: 'Custom cron...', cron: '', interval: 0 },
 ];
 
 const AGENT_TYPES = [
@@ -93,6 +104,9 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
   const [availableTools, setAvailableTools] = useState<AvailableTool[]>([]);
   const [toolsLoading, setToolsLoading] = useState(false);
   const [mode, setMode] = useState<'governed' | 'unbounded'>('governed');
+  const [goal, setGoal] = useState('');
+  const [schedulePreset, setSchedulePreset] = useState('none');
+  const [customCron, setCustomCron] = useState('');
 
   // Fetch available tools when switching to manual mode
   useEffect(() => {
@@ -290,6 +304,28 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
       };
 
       const result = await createAgentApi(agentData);
+
+      // Assign goal if provided
+      if (result?.id && goal.trim()) {
+        try {
+          await assignGoal(result.id, { description: goal.trim(), priority: 1 });
+        } catch (e) { console.warn('Goal assign failed (non-blocking):', e); }
+      }
+
+      // Create schedule if selected
+      if (result?.id && schedulePreset !== 'none' && goal.trim()) {
+        try {
+          const preset = SCHEDULE_PRESETS.find(p => p.id === schedulePreset);
+          const cronExpr = schedulePreset === 'custom' ? customCron : (preset?.cron || undefined);
+          const intervalSec = preset?.interval || undefined;
+          await createSchedule(result.id, {
+            name: `${name.trim()} schedule`,
+            goal: goal.trim(),
+            cron_expression: cronExpr || undefined,
+            interval_seconds: intervalSec || undefined,
+          });
+        } catch (e) { console.warn('Schedule create failed (non-blocking):', e); }
+      }
       
       if (result?.id) {
         setCreatedAgentId(result.id);
@@ -650,6 +686,59 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
           </div>
         );
 
+      case 'goals':
+        return (
+          <div className={styles.stepContent}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Agent Goal</label>
+              <p style={{ fontSize: 13, color: '#888', margin: '0 0 8px' }}>
+                What should this agent accomplish? This will be its primary objective.
+              </p>
+              <textarea
+                className={styles.textarea}
+                value={goal}
+                onChange={(e) => setGoal(e.target.value)}
+                placeholder="e.g. Monitor my GitHub repo for new issues and summarize them daily"
+                rows={3}
+                style={{ resize: 'vertical', minHeight: 80 }}
+              />
+            </div>
+
+            <div className={styles.formGroup} style={{ marginTop: 20 }}>
+              <label className={styles.label}>Recurring Schedule</label>
+              <p style={{ fontSize: 13, color: '#888', margin: '0 0 8px' }}>
+                Optionally run this agent on a schedule. Requires a goal above.
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 8 }}>
+                {SCHEDULE_PRESETS.map(preset => (
+                  <button
+                    key={preset.id}
+                    className={`${styles.typeCard} ${schedulePreset === preset.id ? styles.selected : ''}`}
+                    onClick={() => setSchedulePreset(preset.id)}
+                    style={{ padding: '10px 12px', minHeight: 'auto' }}
+                  >
+                    <span style={{ fontSize: 14 }}>{preset.label}</span>
+                  </button>
+                ))}
+              </div>
+              {schedulePreset === 'custom' && (
+                <input
+                  className={styles.input}
+                  value={customCron}
+                  onChange={(e) => setCustomCron(e.target.value)}
+                  placeholder="Cron expression, e.g. */15 * * * *"
+                  style={{ marginTop: 10 }}
+                />
+              )}
+              {schedulePreset !== 'none' && !goal.trim() && (
+                <p style={{ fontSize: 12, color: '#f59e0b', marginTop: 8 }}>
+                  A goal is required to create a schedule.
+                </p>
+              )}
+            </div>
+          </div>
+        );
+
       case 'review':
         if (createdAgentId) {
           return (
@@ -673,6 +762,9 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                     setProvider(defaultProv?.id || '');
                     setModel(defaultProv?.model || defaultProv?.models?.[0] || '');
                     setSelectedTools([]);
+                    setGoal('');
+                    setSchedulePreset('none');
+                    setCustomCron('');
                     setCreatedAgentId(null);
                   }}>
                     Create Another
@@ -726,6 +818,20 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                   <div className={styles.reviewItem}>
                     <span className={styles.reviewLabel}>Description</span>
                     <span className={styles.reviewValue}>{description}</span>
+                  </div>
+                )}
+                {goal.trim() && (
+                  <div className={styles.reviewItem}>
+                    <span className={styles.reviewLabel}>Goal</span>
+                    <span className={styles.reviewValue}>{goal}</span>
+                  </div>
+                )}
+                {schedulePreset !== 'none' && (
+                  <div className={styles.reviewItem}>
+                    <span className={styles.reviewLabel}>Schedule</span>
+                    <span className={styles.reviewValue}>
+                      {schedulePreset === 'custom' ? `Cron: ${customCron}` : SCHEDULE_PRESETS.find(p => p.id === schedulePreset)?.label}
+                    </span>
                   </div>
                 )}
               </div>
