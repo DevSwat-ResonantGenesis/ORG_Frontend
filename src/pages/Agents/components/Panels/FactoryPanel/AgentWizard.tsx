@@ -198,6 +198,8 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
         return !!provider && !!model;
       case 'tools':
         return true; // Tools are optional
+      case 'goals':
+        return true; // Goal & schedule are optional
       case 'review':
         return true;
       default:
@@ -689,13 +691,12 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
       case 'goals':
         return (
           <div className={styles.stepContent}>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Agent Goal</label>
+            <div className={styles.inputGroup}>
+              <label>Agent Goal</label>
               <p style={{ fontSize: 13, color: '#888', margin: '0 0 8px' }}>
                 What should this agent accomplish? This will be its primary objective.
               </p>
               <textarea
-                className={styles.textarea}
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
                 placeholder="e.g. Monitor my GitHub repo for new issues and summarize them daily"
@@ -704,8 +705,8 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
               />
             </div>
 
-            <div className={styles.formGroup} style={{ marginTop: 20 }}>
-              <label className={styles.label}>Recurring Schedule</label>
+            <div className={styles.inputGroup} style={{ marginTop: 20 }}>
+              <label>Recurring Schedule</label>
               <p style={{ fontSize: 13, color: '#888', margin: '0 0 8px' }}>
                 Optionally run this agent on a schedule. Requires a goal above.
               </p>
@@ -713,6 +714,7 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                 {SCHEDULE_PRESETS.map(preset => (
                   <button
                     key={preset.id}
+                    type="button"
                     className={`${styles.typeCard} ${schedulePreset === preset.id ? styles.selected : ''}`}
                     onClick={() => setSchedulePreset(preset.id)}
                     style={{ padding: '10px 12px', minHeight: 'auto' }}
@@ -723,7 +725,6 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
               </div>
               {schedulePreset === 'custom' && (
                 <input
-                  className={styles.input}
                   value={customCron}
                   onChange={(e) => setCustomCron(e.target.value)}
                   placeholder="Cron expression, e.g. */15 * * * *"
