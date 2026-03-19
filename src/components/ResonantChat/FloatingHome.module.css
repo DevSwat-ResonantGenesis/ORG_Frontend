@@ -115,19 +115,29 @@
   background: transparent;
   cursor: default;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.featureCard:nth-child(4n) {
+  border-right: none;
 }
 
 .featureCard:hover {
   background: transparent;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
 }
 
 [data-theme='light'] .featureCard {
   background: transparent;
   border-bottom-color: rgba(0, 0, 0, 0.07);
+  border-right-color: rgba(0, 0, 0, 0.07);
 }
 
 [data-theme='light'] .featureCard:hover {
   background: transparent;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .featureIcon {
