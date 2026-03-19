@@ -54,6 +54,27 @@ const CATEGORY_LABELS: Record<string, string> = {
   web: '🌐 Web', memory: '🧠 Memory', platform: '📦 Platform', media: '🎨 Media', general: '⚙️ General',
 };
 
+const QUICK_INTEGRATIONS = [
+  { id: 'github', name: 'GitHub', emoji: '🐙', icon: '/images/connect-icons/github.png', cat: 'Dev' },
+  { id: 'gitlab', name: 'GitLab', emoji: '🦊', icon: '/images/connect-icons/gitlab.png', cat: 'Dev' },
+  { id: 'slack', name: 'Slack', emoji: '💬', icon: '/images/connect-icons/slack.png', cat: 'Comms' },
+  { id: 'discord', name: 'Discord', emoji: '🎮', icon: '/images/connect-icons/discord.png', cat: 'Comms' },
+  { id: 'google-calendar', name: 'Google Calendar', emoji: '📅', icon: '/images/connect-icons/google-calendar.png', cat: 'Productivity' },
+  { id: 'google-drive', name: 'Google Drive', emoji: '📁', icon: '/images/connect-icons/google-drive.png', cat: 'Productivity' },
+  { id: 'notion', name: 'Notion', emoji: '📝', icon: '/images/connect-icons/notion.png', cat: 'Productivity' },
+  { id: 'figma', name: 'Figma', emoji: '🎨', icon: '/images/connect-icons/figma.png', cat: 'Design' },
+  { id: 'digitalocean', name: 'DigitalOcean', emoji: '🌊', icon: '/images/connect-icons/digitalocean.png', cat: 'Cloud' },
+  { id: 'vercel', name: 'Vercel', emoji: '▲', icon: '/images/connect-icons/vercel.svg', cat: 'Cloud' },
+  { id: 'netlify', name: 'Netlify', emoji: '🌐', icon: '/images/connect-icons/netlify.png', cat: 'Cloud' },
+  { id: 'stripe', name: 'Stripe', emoji: '💳', icon: '/images/connect-icons/stripe.png', cat: 'Payments' },
+  { id: 'supabase', name: 'Supabase', emoji: '⚡', icon: '/images/connect-icons/supabase.png', cat: 'DB' },
+  { id: 'mongodb', name: 'MongoDB', emoji: '🍃', icon: '/images/connect-icons/mongodb.png', cat: 'DB' },
+  { id: 'zapier', name: 'Zapier', emoji: '⚡', icon: '/images/connect-icons/zapier.png', cat: 'Auto' },
+  { id: 'twilio', name: 'Twilio', emoji: '📱', icon: '/images/connect-icons/twilio.png', cat: 'Comms' },
+  { id: 'sendgrid', name: 'SendGrid', emoji: '📧', icon: '/images/connect-icons/sendgrid.png', cat: 'Comms' },
+  { id: 'sentry', name: 'Sentry', emoji: '🛡️', icon: '/images/connect-icons/sentry.png', cat: 'Monitor' },
+];
+
 interface AgentWizardProps {
   className?: string;
   onComplete?: () => void;
@@ -109,6 +130,8 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
   const [goal, setGoal] = useState('');
   const [schedulePreset, setSchedulePreset] = useState('none');
   const [customCron, setCustomCron] = useState('');
+  const [integrationSearch, setIntegrationSearch] = useState('');
+  const [selectedIntegrations, setSelectedIntegrations] = useState<string[]>([]);
 
   // Fetch available tools when switching to manual mode
   useEffect(() => {
@@ -690,7 +713,14 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
           </div>
         );
 
-      case 'goals':
+      case 'goals': {
+        const filteredIntegrations = QUICK_INTEGRATIONS.filter(ig =>
+          ig.name.toLowerCase().includes(integrationSearch.toLowerCase()) ||
+          ig.cat.toLowerCase().includes(integrationSearch.toLowerCase())
+        );
+        const toggleIntegration = (id: string) => {
+          setSelectedIntegrations(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+        };
         return (
           <div className={styles.stepContent}>
             <div className={styles.inputGroup}>
@@ -707,21 +737,21 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
               />
             </div>
 
-            <div className={styles.inputGroup} style={{ marginTop: 20 }}>
+            <div className={styles.inputGroup} style={{ marginTop: 16 }}>
               <label>Recurring Schedule</label>
               <p style={{ fontSize: 13, color: '#888', margin: '0 0 8px' }}>
                 Optionally run this agent on a schedule. Requires a goal above.
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 8 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 6 }}>
                 {SCHEDULE_PRESETS.map(preset => (
                   <button
                     key={preset.id}
                     type="button"
                     className={`${styles.typeCard} ${schedulePreset === preset.id ? styles.selected : ''}`}
                     onClick={() => setSchedulePreset(preset.id)}
-                    style={{ padding: '10px 12px', minHeight: 'auto' }}
+                    style={{ padding: '8px 10px', minHeight: 'auto' }}
                   >
-                    <span style={{ fontSize: 14 }}>{preset.label}</span>
+                    <span style={{ fontSize: 13 }}>{preset.label}</span>
                   </button>
                 ))}
               </div>
@@ -730,31 +760,60 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                   value={customCron}
                   onChange={(e) => setCustomCron(e.target.value)}
                   placeholder="Cron expression, e.g. */15 * * * *"
-                  style={{ marginTop: 10 }}
+                  style={{ marginTop: 8 }}
                 />
               )}
               {schedulePreset !== 'none' && !goal.trim() && (
-                <p style={{ fontSize: 12, color: '#f59e0b', marginTop: 8 }}>
+                <p style={{ fontSize: 12, color: '#f59e0b', marginTop: 6 }}>
                   A goal is required to create a schedule.
                 </p>
               )}
             </div>
 
-            <div style={{ marginTop: 16, padding: '14px 16px', background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-              <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary, #fff)', marginBottom: 2 }}>Connect External Services</div>
-                <div style={{ fontSize: 12, color: 'var(--text-secondary, #a1a1aa)' }}>Link GitHub, Slack, Discord, Google Calendar, DigitalOcean, and 20+ more so your agent can use them.</div>
+            <div style={{ marginTop: 16 }}>
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary, #a1a1aa)', marginBottom: 6 }}>
+                Connect Integrations
+              </label>
+              {selectedIntegrations.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+                  {selectedIntegrations.map(id => {
+                    const ig = QUICK_INTEGRATIONS.find(i => i.id === id);
+                    if (!ig) return null;
+                    return (
+                      <button key={id} type="button" onClick={() => toggleIntegration(id)}
+                        style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '3px 8px 3px 4px', background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.25)', borderRadius: 6, cursor: 'pointer', fontSize: 11, color: '#818cf8' }}>
+                        <img src={ig.icon} alt="" style={{ width: 14, height: 14, borderRadius: 2 }} onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
+                        {ig.name} <span style={{ marginLeft: 2, opacity: 0.6 }}>×</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              <input
+                value={integrationSearch}
+                onChange={(e) => setIntegrationSearch(e.target.value)}
+                placeholder="Search integrations... GitHub, Slack, Calendar..."
+                style={{ width: '100%', padding: '8px 12px', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, background: 'rgba(255,255,255,0.03)', color: 'var(--text-primary, #fff)', fontSize: 13, boxSizing: 'border-box' }}
+              />
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: 4, marginTop: 8, maxHeight: 160, overflowY: 'auto' }}>
+                {filteredIntegrations.map(ig => {
+                  const active = selectedIntegrations.includes(ig.id);
+                  return (
+                    <button key={ig.id} type="button" onClick={() => toggleIntegration(ig.id)}
+                      style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 8px', border: `1px solid ${active ? 'rgba(99,102,241,0.3)' : 'rgba(255,255,255,0.06)'}`, borderRadius: 8, background: active ? 'rgba(99,102,241,0.08)' : 'rgba(255,255,255,0.02)', cursor: 'pointer', textAlign: 'left', transition: 'all .15s' }}>
+                      <img src={ig.icon} alt="" style={{ width: 18, height: 18, borderRadius: 3, flexShrink: 0 }} onError={(e) => { (e.target as HTMLImageElement).replaceWith(document.createTextNode(ig.emoji)); }} />
+                      <span style={{ fontSize: 12, color: active ? '#818cf8' : 'var(--text-secondary, #a1a1aa)', fontWeight: active ? 600 : 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ig.name}</span>
+                    </button>
+                  );
+                })}
               </div>
-              <button
-                type="button"
-                onClick={() => navigate('/connect-profiles')}
-                style={{ flexShrink: 0, padding: '8px 16px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', border: 'none', borderRadius: 8, color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
-              >
-                Connect Profiles
-              </button>
+              <p style={{ fontSize: 11, color: 'var(--text-tertiary, #71717a)', marginTop: 6 }}>
+                Selected integrations need API keys configured in <span style={{ color: '#818cf8', cursor: 'pointer' }} onClick={() => navigate('/connect-profiles')}>Connect Profiles</span>
+              </p>
             </div>
           </div>
         );
+      }
 
       case 'review':
         if (createdAgentId) {
@@ -782,6 +841,8 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                     setGoal('');
                     setSchedulePreset('none');
                     setCustomCron('');
+                    setIntegrationSearch('');
+                    setSelectedIntegrations([]);
                     setCreatedAgentId(null);
                   }}>
                     Create Another
@@ -805,42 +866,46 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                   <span className={styles.reviewLabel}>Name</span>
                   <span className={styles.reviewValue}>{name}</span>
                 </div>
+                {description && (
+                  <div className={styles.reviewItem}>
+                    <span className={styles.reviewLabel}>Description</span>
+                    <span className={styles.reviewValue} style={{ fontSize: 12, lineHeight: 1.4 }}>{description}</span>
+                  </div>
+                )}
                 <div className={styles.reviewItem}>
                   <span className={styles.reviewLabel}>Type</span>
                   <span className={styles.reviewValue}>{selectedType?.name || agentType}</span>
                 </div>
                 <div className={styles.reviewItem}>
-                  <span className={styles.reviewLabel}>AI Model</span>
-                  <span className={styles.reviewValue}>{selectedProvider?.name} ({model})</span>
+                  <span className={styles.reviewLabel}>AI Provider</span>
+                  <span className={styles.reviewValue}>{selectedProvider?.name || provider}</span>
+                </div>
+                <div className={styles.reviewItem}>
+                  <span className={styles.reviewLabel}>Model</span>
+                  <span className={styles.reviewValue} style={{ fontFamily: "'SF Mono','Fira Code', monospace", fontSize: 12 }}>{model}</span>
                 </div>
                 <div className={styles.reviewItem}>
                   <span className={styles.reviewLabel}>Mode</span>
-                  <span className={styles.reviewValue}>{mode === 'governed' ? 'Governed' : 'Unbounded'}</span>
+                  <span className={styles.reviewValue}>{mode === 'governed' ? '🛡️ Governed' : '⚡ Unbounded'}</span>
                 </div>
                 <div className={styles.reviewItem}>
                   <span className={styles.reviewLabel}>Tool Mode</span>
-                  <span className={styles.reviewValue}>{toolMode === 'smart' ? '✨ Smart (All tools auto)' : '🔧 Manual'}</span>
+                  <span className={styles.reviewValue}>{toolMode === 'smart' ? '✨ Smart (Auto)' : '🔧 Manual'}</span>
                 </div>
-                {toolMode === 'manual' && (
-                  <div className={styles.reviewItem}>
-                    <span className={styles.reviewLabel}>Tools</span>
-                    <span className={styles.reviewValue}>
-                      {selectedTools.length > 0
+                <div className={styles.reviewItem}>
+                  <span className={styles.reviewLabel}>Tools</span>
+                  <span className={styles.reviewValue} style={{ fontSize: 12 }}>
+                    {toolMode === 'smart'
+                      ? 'All platform tools (auto-selected)'
+                      : selectedTools.length > 0
                         ? selectedTools.map(t => t.replace(/_/g, ' ')).join(', ')
                         : 'None selected'}
-                    </span>
-                  </div>
-                )}
-                {description && (
-                  <div className={styles.reviewItem}>
-                    <span className={styles.reviewLabel}>Description</span>
-                    <span className={styles.reviewValue}>{description}</span>
-                  </div>
-                )}
+                  </span>
+                </div>
                 {goal.trim() && (
                   <div className={styles.reviewItem}>
                     <span className={styles.reviewLabel}>Goal</span>
-                    <span className={styles.reviewValue}>{goal}</span>
+                    <span className={styles.reviewValue} style={{ fontSize: 12, lineHeight: 1.4 }}>{goal}</span>
                   </div>
                 )}
                 {schedulePreset !== 'none' && (
@@ -848,6 +913,22 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                     <span className={styles.reviewLabel}>Schedule</span>
                     <span className={styles.reviewValue}>
                       {schedulePreset === 'custom' ? `Cron: ${customCron}` : SCHEDULE_PRESETS.find(p => p.id === schedulePreset)?.label}
+                    </span>
+                  </div>
+                )}
+                {selectedIntegrations.length > 0 && (
+                  <div className={styles.reviewItem}>
+                    <span className={styles.reviewLabel}>Integrations</span>
+                    <span className={styles.reviewValue} style={{ display: 'flex', flexWrap: 'wrap', gap: 4, justifyContent: 'flex-end' }}>
+                      {selectedIntegrations.map(id => {
+                        const ig = QUICK_INTEGRATIONS.find(i => i.id === id);
+                        return ig ? (
+                          <span key={id} style={{ display: 'inline-flex', alignItems: 'center', gap: 3, padding: '2px 6px', background: 'rgba(99,102,241,0.08)', borderRadius: 4, fontSize: 11 }}>
+                            <img src={ig.icon} alt="" style={{ width: 12, height: 12, borderRadius: 2 }} onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }} />
+                            {ig.name}
+                          </span>
+                        ) : null;
+                      })}
                     </span>
                   </div>
                 )}
