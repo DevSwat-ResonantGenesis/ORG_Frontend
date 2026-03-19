@@ -2239,8 +2239,16 @@ const ResonantChatPage: React.FC = () => {
                       }
                     } catch { /* not present_options */ }
                   }
+                  if (eventType === 'chunk') {
+                    // Token-by-token streaming — accumulate chunks in real-time
+                    agenticContent += data.content || '';
+                    setMessages(prev => prev.map(m =>
+                      m.id === agenticMsgId ? { ...m, content: agenticContent } : m
+                    ));
+                  }
                   if (eventType === 'response') {
-                    agenticContent = data.content || '';
+                    // Final response (backward compat + non-streamed responses)
+                    agenticContent = data.content || agenticContent;
                     setMessages(prev => prev.map(m =>
                       m.id === agenticMsgId ? { ...m, content: agenticContent } : m
                     ));
