@@ -81,7 +81,7 @@ interface ChatInputBarProps {
   // Core
   value: string;
   onChange: (value: string) => void;
-  onSend: () => void;
+  onSend: (message?: string) => void;
   isLoading?: boolean;
   disabled?: boolean;
   placeholder?: string;
@@ -251,9 +251,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
 
   // PERF: Local input state to avoid re-rendering the entire parent (6900+ lines, 132 useState)
   // on every keystroke. Only this component re-renders during typing.
+  // Parent onChange is NEVER called during typing — value is passed directly to onSend.
   const [localValue, setLocalValue] = useState(value);
-  const isTypingRef = useRef(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showMentionAutocomplete, setShowMentionAutocomplete] = useState(false);
   const [mentionQuery, setMentionQuery] = useState('');
   const [showProviderDropdown, setShowProviderDropdown] = useState(false);
@@ -381,23 +380,12 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     return provider || { name: providerId, model: '', available: false, has_user_key: false, uses_credits: false };
   };
 
-  // Keep valueRef and localValue in sync with value prop (external changes only)
+  // Sync localValue from parent when parent changes value externally
+  // (e.g., setInput('') after send, setInput(prompt) from prompt picker, voice input)
   useEffect(() => {
     valueRef.current = value;
-    // Always sync when parent clears the input (send, new chat, etc.)
-    // For other external changes, only sync if not mid-typing
-    if (value === '' || value !== localValue && !isTypingRef.current) {
-      setLocalValue(value);
-    }
-    isTypingRef.current = false;
+    setLocalValue(value);
   }, [value]);
-
-  // Cleanup debounce on unmount
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, []);
 
   // Close all dropdowns/panels when clicking outside
   useEffect(() => {
@@ -504,32 +492,19 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       if ((localValue.trim() || (attachedFiles?.length ?? 0) > 0) && !isLoading && !disabled) {
-        // Flush local value to parent immediately before send
-        if (debounceRef.current) {
-          clearTimeout(debounceRef.current);
-          debounceRef.current = null;
-        }
-        isTypingRef.current = true;
-        onChange(localValue);
-        // Small delay to let parent state update before send
-        setTimeout(() => onSend(), 0);
+        // Pass value directly to onSend — NO parent re-render needed
+        const messageToSend = localValue;
+        setLocalValue('');
+        onSend(messageToSend);
       }
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
-    // Update local state immediately (only ChatInputBar re-renders)
+    // Update local state ONLY — parent is never notified during typing
     setLocalValue(newValue);
     valueRef.current = newValue;
-    // Debounce parent onChange to avoid full-page re-render on every keystroke
-    isTypingRef.current = true;
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      isTypingRef.current = true;
-      onChange(newValue);
-      debounceRef.current = null;
-    }, 150);
 
     // Detect @ mention
     const cursorPos = e.target.selectionStart || 0;
@@ -735,7 +710,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     if (value.trim() !== pendingText) return;
 
     pendingVoiceSendTextRef.current = null;
-    onSend();
+    onSend(pendingText);
   }, [voiceInInput, isLoading, disabled, value, onSend]);
 
   // Close other panels when opening a new one
@@ -1324,7 +1299,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           />
           <button
             className={styles.sendButton}
-            onClick={onNewChat || onSend}
+            onClick={onNewChat || (() => { const msg = localValue; setLocalValue(''); onSend(msg); })}
             disabled={disabled}
             title="New Chat"
           >
