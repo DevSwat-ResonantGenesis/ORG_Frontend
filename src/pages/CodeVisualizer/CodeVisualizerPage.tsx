@@ -184,10 +184,10 @@ const CodeVisualizerPage: React.FC = () => {
         onClick={() => setPanelOpen(o => !o)}
         style={{
           position: 'fixed', top: 16, right: panelOpen ? 368 : 16, zIndex: 1000,
-          background: '#1a1a2e', color: '#a78bfa', border: '1px solid #7c3aed',
+          background: '#32312E', color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.1)',
           borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 600,
           cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
-          boxShadow: '0 2px 12px rgba(124,58,237,0.4)',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
           transition: 'right 0.25s',
         }}
         title="Your saved analyses"
@@ -195,7 +195,7 @@ const CodeVisualizerPage: React.FC = () => {
         <span>🗂</span> Saved Analyses
         {analyses.length > 0 && (
           <span style={{
-            background: '#7c3aed', color: '#fff', borderRadius: 10,
+            background: 'rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.7)', borderRadius: 10,
             padding: '1px 7px', fontSize: 11, marginLeft: 4,
           }}>{analyses.length}</span>
         )}
@@ -205,45 +205,45 @@ const CodeVisualizerPage: React.FC = () => {
       {panelOpen && (
         <div style={{
           position: 'fixed', top: 0, right: 0, width: 360, height: '100vh',
-          background: '#0f0f1a', borderLeft: '1px solid #2d2d4e',
+          background: '#262321', borderLeft: '1px solid rgba(255,255,255,0.06)',
           zIndex: 999, display: 'flex', flexDirection: 'column',
           boxShadow: '-4px 0 24px rgba(0,0,0,0.5)',
           fontFamily: 'system-ui, -apple-system, sans-serif',
         }}>
           {/* Header */}
           <div style={{
-            padding: '16px 16px 12px', borderBottom: '1px solid #2d2d4e',
+            padding: '16px 16px 12px', borderBottom: '1px solid rgba(255,255,255,0.06)',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           }}>
             <div style={{ flex: 1 }}>
-              <div style={{ color: '#e2e8f0', fontWeight: 700, fontSize: 15 }}>🗂 Saved Analyses</div>
+              <div style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 700, fontSize: 15 }}>🗂 Saved Analyses</div>
               {storageLimit !== null && (
-                <div style={{ color: '#94a3b8', fontSize: 11, marginTop: 3 }}>
+                <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11, marginTop: 3 }}>
                   {usedCount} / {storageLimit} used
-                  <div style={{ marginTop: 4, height: 3, background: '#2d2d4e', borderRadius: 2 }}>
+                  <div style={{ marginTop: 4, height: 3, background: 'rgba(255,255,255,0.06)', borderRadius: 2 }}>
                     <div style={{
                       width: `${limitPct}%`, height: '100%', borderRadius: 2,
-                      background: (limitPct ?? 0) > 80 ? '#ef4444' : '#7c3aed',
+                      background: (limitPct ?? 0) > 80 ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.25)',
                       transition: 'width 0.3s',
                     }} />
                   </div>
                 </div>
               )}
               {storageLimit === null && (
-                <div style={{ color: '#64748b', fontSize: 11, marginTop: 2 }}>Unlimited storage</div>
+                <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11, marginTop: 2 }}>Unlimited storage</div>
               )}
               {/* GitHub status pill */}
               <div style={{ marginTop: 6 }}>
                 {githubConnected ? (
                   <span style={{
-                    background: 'rgba(34,197,94,0.1)', color: '#4ade80',
-                    border: '1px solid rgba(34,197,94,0.3)', borderRadius: 10,
+                    background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)',
+                    border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10,
                     padding: '2px 8px', fontSize: 10, fontWeight: 600,
                   }}>🐙 GitHub: {githubUsername}</span>
                 ) : (
                   <button onClick={() => { window.location.href = `/connect-profiles?connect=github`; }}
                     style={{
-                      background: 'none', border: '1px solid #27272a', color: '#71717a',
+                      background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.35)',
                       borderRadius: 10, padding: '2px 8px', fontSize: 10, cursor: 'pointer',
                     }}
                   >GitHub</button>
@@ -252,11 +252,11 @@ const CodeVisualizerPage: React.FC = () => {
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
               <button onClick={fetchAnalyses} style={{
-                background: 'none', border: '1px solid #2d2d4e', color: '#94a3b8',
+                background: 'none', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)',
                 borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 12,
               }}>↻</button>
               <button onClick={() => setPanelOpen(false)} style={{
-                background: 'none', border: 'none', color: '#64748b',
+                background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)',
                 fontSize: 18, cursor: 'pointer', padding: '0 4px',
               }}>✕</button>
             </div>
@@ -265,25 +265,25 @@ const CodeVisualizerPage: React.FC = () => {
           {/* Body */}
           <div style={{ flex: 1, overflowY: 'auto', padding: 12 }}>
             {loading && (
-              <div style={{ color: '#64748b', textAlign: 'center', padding: 32, fontSize: 13 }}>Loading...</div>
+              <div style={{ color: 'rgba(255,255,255,0.3)', textAlign: 'center', padding: 32, fontSize: 13 }}>Loading...</div>
             )}
             {error && !loading && (
               <div style={{
-                color: '#f87171', background: '#1c1c2e', borderRadius: 8,
+                color: 'rgba(255,180,150,0.8)', background: 'rgba(255,255,255,0.04)', borderRadius: 8,
                 padding: 12, fontSize: 12, marginBottom: 8,
               }}>{error}</div>
             )}
             {!loading && !error && analyses.length === 0 && (
-              <div style={{ color: '#64748b', fontSize: 13, textAlign: 'center', padding: '40px 16px' }}>
+              <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: 13, textAlign: 'center', padding: '40px 16px' }}>
                 <div style={{ fontSize: 32, marginBottom: 8 }}>📭</div>
                 <div>No saved analyses yet.</div>
-                <div style={{ marginTop: 6, color: '#4b5563' }}>Scan a GitHub repo or upload code to get started.</div>
+                <div style={{ marginTop: 6, color: 'rgba(255,255,255,0.2)' }}>Scan a GitHub repo or upload code to get started.</div>
               </div>
             )}
             {!loading && analyses.map(a => (
               <div key={a.analysis_id} style={{
-                background: activeAnalysisId === a.analysis_id ? '#1e1b4b' : '#141428',
-                border: `1px solid ${activeAnalysisId === a.analysis_id ? '#7c3aed' : '#1e1e3a'}`,
+                background: activeAnalysisId === a.analysis_id ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.02)',
+                border: `1px solid ${activeAnalysisId === a.analysis_id ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.04)'}`,
                 borderRadius: 8, padding: '10px 12px', marginBottom: 8,
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -291,41 +291,41 @@ const CodeVisualizerPage: React.FC = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
                       <span style={{ fontSize: 14 }}>{a.source === 'github' ? '🐙' : '📦'}</span>
                       <span style={{
-                        color: '#c4b5fd', fontWeight: 600, fontSize: 13,
+                        color: 'rgba(255,255,255,0.7)', fontWeight: 600, fontSize: 13,
                         overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                       }}>{a.project_name || 'Unnamed'}</span>
                     </div>
-                    <div style={{ color: '#6b7280', fontSize: 10, fontFamily: 'monospace', marginBottom: 4 }}>
+                    <div style={{ color: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'monospace', marginBottom: 4 }}>
                       {a.analysis_id.slice(0, 16)}...
                     </div>
                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                       {[['⚡', a.stats?.total_functions ?? 0, 'fn'],
                         ['🔗', a.stats?.total_endpoints ?? 0, 'ep'],
                         ['📄', a.stats?.total_files ?? 0, 'files']].map(([icon, val, label]) => (
-                        <span key={String(label)} style={{ color: '#475569', fontSize: 10 }}>
+                        <span key={String(label)} style={{ color: 'rgba(255,255,255,0.3)', fontSize: 10 }}>
                           {icon} {val} {label}
                         </span>
                       ))}
-                      <span style={{ color: '#374151', fontSize: 10 }}>{formatBytes(a.storage_bytes)}</span>
+                      <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: 10 }}>{formatBytes(a.storage_bytes)}</span>
                     </div>
                     {a.repo_url && (
                       <div style={{
-                        color: '#4b5563', fontSize: 10, marginTop: 3,
+                        color: 'rgba(255,255,255,0.2)', fontSize: 10, marginTop: 3,
                         overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                       }}>{a.repo_url.replace('https://github.com/', '')}</div>
                     )}
-                    <div style={{ color: '#374151', fontSize: 10, marginTop: 2 }}>{formatDate(a.created_at)}</div>
+                    <div style={{ color: 'rgba(255,255,255,0.2)', fontSize: 10, marginTop: 2 }}>{formatDate(a.created_at)}</div>
                   </div>
                   <button onClick={() => handleDelete(a.analysis_id)} disabled={deletingId === a.analysis_id}
-                    style={{ background: 'none', border: 'none', color: '#4b5563', cursor: 'pointer', fontSize: 14, padding: '2px 4px', flexShrink: 0 }}
+                    style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.25)', cursor: 'pointer', fontSize: 14, padding: '2px 4px', flexShrink: 0 }}
                     title="Delete">🗑</button>
                 </div>
                 <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
                   <button onClick={() => handleLoad(a.analysis_id)} style={{
                     flex: 1,
-                    background: activeAnalysisId === a.analysis_id ? '#4c1d95' : '#1e1e3a',
-                    color: activeAnalysisId === a.analysis_id ? '#c4b5fd' : '#7c3aed',
-                    border: `1px solid ${activeAnalysisId === a.analysis_id ? '#7c3aed' : '#2d2d4e'}`,
+                    background: activeAnalysisId === a.analysis_id ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.04)',
+                    color: activeAnalysisId === a.analysis_id ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.4)',
+                    border: `1px solid ${activeAnalysisId === a.analysis_id ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.06)'}`,
                     borderRadius: 6, padding: '6px 0', fontSize: 12, cursor: 'pointer', fontWeight: 600,
                   }}>
                     {activeAnalysisId === a.analysis_id ? '✓ Loaded' : '▶ Load'}
@@ -334,8 +334,8 @@ const CodeVisualizerPage: React.FC = () => {
                     onClick={() => setExportTargetId(exportTargetId === a.analysis_id ? null : a.analysis_id)}
                     title="Push analysis report to GitHub"
                     style={{
-                      background: '#0d1117', color: '#8b949e',
-                      border: '1px solid #30363d', borderRadius: 6,
+                      background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.4)',
+                      border: '1px solid rgba(255,255,255,0.06)', borderRadius: 6,
                       padding: '6px 8px', fontSize: 11, cursor: 'pointer',
                     }}
                   >🐙</button>
@@ -343,10 +343,10 @@ const CodeVisualizerPage: React.FC = () => {
                 {/* Inline GitHub export form */}
                 {exportTargetId === a.analysis_id && (
                   <div style={{
-                    marginTop: 8, background: '#0d1117', border: '1px solid #30363d',
+                    marginTop: 8, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
                     borderRadius: 8, padding: '10px 10px 8px',
                   }}>
-                    <div style={{ color: '#8b949e', fontSize: 10, marginBottom: 6 }}>
+                    <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 10, marginBottom: 6 }}>
                       Push report to GitHub repo:
                     </div>
                     <input
@@ -355,8 +355,8 @@ const CodeVisualizerPage: React.FC = () => {
                       placeholder="resonant-cv-reports"
                       style={{
                         width: '100%', boxSizing: 'border-box',
-                        background: '#161b22', border: '1px solid #30363d',
-                        color: '#e6edf3', borderRadius: 6, padding: '5px 8px',
+                        background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+                        color: 'rgba(255,255,255,0.7)', borderRadius: 6, padding: '5px 8px',
                         fontSize: 11, marginBottom: 6, outline: 'none',
                       }}
                     />
@@ -364,8 +364,8 @@ const CodeVisualizerPage: React.FC = () => {
                       onClick={() => handleExportToGitHub(a.analysis_id)}
                       disabled={exportingId === a.analysis_id}
                       style={{
-                        width: '100%', background: exportingId === a.analysis_id ? '#161b22' : '#238636',
-                        color: '#fff', border: 'none', borderRadius: 6,
+                        width: '100%', background: exportingId === a.analysis_id ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.08)',
+                        color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 6,
                         padding: '6px 0', fontSize: 11, cursor: 'pointer', fontWeight: 600,
                       }}
                     >
@@ -379,8 +379,8 @@ const CodeVisualizerPage: React.FC = () => {
 
           {/* Footer */}
           <div style={{
-            padding: '10px 12px', borderTop: '1px solid #1e1e3a',
-            fontSize: 11, color: '#374151', textAlign: 'center',
+            padding: '10px 12px', borderTop: '1px solid rgba(255,255,255,0.06)',
+            fontSize: 11, color: 'rgba(255,255,255,0.2)', textAlign: 'center',
           }}>
             Analyses persist across sessions •{' '}
             {storageLimit !== null ? `${storageLimit - usedCount} slots remaining` : 'Unlimited storage'}
