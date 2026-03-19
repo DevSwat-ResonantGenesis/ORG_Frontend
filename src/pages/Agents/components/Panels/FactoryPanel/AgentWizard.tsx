@@ -44,14 +44,29 @@ const AGENT_TYPES = [
 
 
 const TOOL_ICON_MAP: Record<string, string> = {
-  web_search: 'Search', fetch_url: 'External', 'memory.read': 'Database', 'memory.write': 'Database',
+  web_search: 'Search', fetch_url: 'External', read_webpage: 'FileText', reddit_search: 'Search', image_search: 'Image',
+  news_search: 'Search', youtube_search: 'Video', deep_research: 'Search', wikipedia: 'BookOpen',
+  memory_read: 'Database', memory_write: 'Database', memory_search: 'Database', hash_sphere_search: 'Database',
   create_rabbit_post: 'MessageSquare', list_rabbit_communities: 'Folder', create_rabbit_community: 'Folder',
-  http_request: 'External', generate_image: 'Image', generate_audio: 'Volume2',
-  generate_music: 'Music', generate_video: 'Video',
+  http_request: 'External', external_http_request: 'External', execute_code: 'Code',
+  generate_image: 'Image', generate_audio: 'Volume2', generate_music: 'Music',
+  gmail_send: 'Mail', gmail_read: 'Mail', slack_send: 'MessageSquare', slack_read: 'MessageSquare',
+  google_calendar: 'Calendar', google_drive: 'Folder', figma: 'Image', sigma: 'BarChart',
+  github_create_repo: 'GitBranch', github_list_repos: 'GitBranch', github_issue: 'AlertCircle',
+  git_clone: 'GitBranch', git_push: 'GitBranch', git_pull: 'GitBranch',
+  weather: 'Cloud', stock_crypto: 'TrendingUp', generate_chart: 'BarChart', visualize: 'Eye',
+  platform_api_search: 'Search', platform_api_call: 'Zap', dev_tool: 'Terminal',
+  agents_list: 'Users', agents_create: 'UserPlus', run_agent: 'Play',
+  file_read: 'FileText', file_write: 'FilePlus', file_edit: 'Edit', grep_search: 'Search',
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
-  web: '🌐 Web', memory: '🧠 Memory', platform: '📦 Platform', media: '🎨 Media', general: '⚙️ General',
+  search: '🔍 Search & Web', memory: '🧠 Memory & Hash Sphere', code_analysis: '📊 Code Analysis',
+  agents: '🤖 Agents OS', community: '💬 Community', media: '🎨 Media Generation',
+  integrations: '🔗 Integrations', filesystem: '📁 Filesystem', github: '🐙 GitHub',
+  git: '📦 Git', utilities: '🛠️ Utilities', system: '⚙️ System', developer: '💻 Developer',
+  platform_api: '🌐 Platform API', state_physics: '⚛️ State Physics', visual: '👁️ Visual',
+  general: '⚙️ General',
 };
 
 const QUICK_INTEGRATIONS = [
