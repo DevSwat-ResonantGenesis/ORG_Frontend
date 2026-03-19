@@ -688,11 +688,11 @@ function VisualWorkflowInner() {
           <ArrowLeft size={14} /> Back
         </button>
         <Layout size={14} color="rgba(255,255,255,0.4)" />
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 0, flex: 1 }}>
           <input value={workflowName} onChange={e => setWorkflowName(e.target.value)}
-            style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: 600, outline: 'none', width: '100%' }} />
+            style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: 600, outline: 'none', width: '100%', padding: '1px 0', lineHeight: 1.2 }} />
           <input value={workflowDesc} onChange={e => setWorkflowDesc(e.target.value)}
-            style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 10, outline: 'none', width: '100%' }} />
+            style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 10, outline: 'none', width: '100%', padding: '1px 0', lineHeight: 1.2 }} />
         </div>
 
         <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: 10 }}>{nodes.length} steps • {edges.length} connections</span>
