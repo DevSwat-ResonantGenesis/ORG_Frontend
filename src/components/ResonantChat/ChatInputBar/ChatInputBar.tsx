@@ -384,8 +384,9 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   // Keep valueRef and localValue in sync with value prop (external changes only)
   useEffect(() => {
     valueRef.current = value;
-    // If parent set value externally (not from our typing), sync localValue
-    if (!isTypingRef.current) {
+    // Always sync when parent clears the input (send, new chat, etc.)
+    // For other external changes, only sync if not mid-typing
+    if (value === '' || value !== localValue && !isTypingRef.current) {
       setLocalValue(value);
     }
     isTypingRef.current = false;
