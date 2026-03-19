@@ -187,15 +187,15 @@ const StepNodeComponent = React.memo(({ data, selected }: NodeProps<StepNodeData
 
   return (
     <div style={{
-      background: '#1e293b',
-      border: `2px solid ${selected ? '#e2e8f0' : color}`,
+      background: '#32312E',
+      border: `2px solid ${selected ? 'rgba(255,255,255,0.7)' : color}`,
       borderRadius: 10,
       minWidth: 200,
       maxWidth: 260,
-      boxShadow: selected ? `0 0 16px ${color}50` : '0 2px 10px rgba(0,0,0,0.4)',
+      boxShadow: selected ? `0 0 16px ${color}50` : '0 2px 10px rgba(0,0,0,0.3)',
       transition: 'all 0.2s',
     }}>
-      <Handle type="target" position={Position.Top} style={{ background: color, width: 10, height: 10, border: '2px solid #0f172a' }} />
+      <Handle type="target" position={Position.Top} style={{ background: color, width: 10, height: 10, border: '2px solid #262321' }} />
 
       {/* Header */}
       <div style={{
@@ -216,28 +216,28 @@ const StepNodeComponent = React.memo(({ data, selected }: NodeProps<StepNodeData
 
       {/* Body */}
       <div style={{ padding: '8px 12px' }}>
-        <div style={{ color: '#e2e8f0', fontSize: 13, fontWeight: 600, marginBottom: 2 }}>{data.label}</div>
+        <div style={{ color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: 600, marginBottom: 2 }}>{data.label}</div>
         {data.description && (
-          <div style={{ color: '#64748b', fontSize: 11, lineHeight: 1.3 }}>{data.description}</div>
+          <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 11, lineHeight: 1.3 }}>{data.description}</div>
         )}
         {data.config?.url && (
-          <div style={{ color: '#64748b', fontSize: 10, marginTop: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 220, fontFamily: 'monospace' }}>
+          <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 10, marginTop: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 220, fontFamily: 'monospace' }}>
             {data.config.method || 'GET'} {data.config.url}
           </div>
         )}
         {data.config?.model && (
-          <div style={{ color: '#64748b', fontSize: 10, marginTop: 4, fontFamily: 'monospace' }}>{data.config.model}</div>
+          <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 10, marginTop: 4, fontFamily: 'monospace' }}>{data.config.model}</div>
         )}
         {data.config?.expression && (
-          <div style={{ color: '#64748b', fontSize: 10, marginTop: 4, fontFamily: 'monospace' }}>if ({data.config.expression})</div>
+          <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 10, marginTop: 4, fontFamily: 'monospace' }}>if ({data.config.expression})</div>
         )}
       </div>
 
-      <Handle type="source" position={Position.Bottom} style={{ background: color, width: 10, height: 10, border: '2px solid #0f172a' }} />
+      <Handle type="source" position={Position.Bottom} style={{ background: color, width: 10, height: 10, border: '2px solid #262321' }} />
       {data.stepType === 'condition' && (
         <>
-          <Handle type="source" position={Position.Right} id="true" style={{ background: '#10b981', width: 8, height: 8, border: '2px solid #0f172a', top: '65%' }} />
-          <Handle type="source" position={Position.Left} id="false" style={{ background: '#ef4444', width: 8, height: 8, border: '2px solid #0f172a', top: '65%' }} />
+          <Handle type="source" position={Position.Right} id="true" style={{ background: '#10b981', width: 8, height: 8, border: '2px solid #262321', top: '65%' }} />
+          <Handle type="source" position={Position.Left} id="false" style={{ background: '#ef4444', width: 8, height: 8, border: '2px solid #262321', top: '65%' }} />
         </>
       )}
     </div>
@@ -305,8 +305,8 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
   return (
     <div style={{
       width: 340,
-      background: '#0f172a',
-      borderLeft: '1px solid #1e293b',
+      background: '#32312E',
+      borderLeft: '1px solid rgba(255,255,255,0.06)',
       padding: 0,
       overflowY: 'auto',
       display: 'flex',
@@ -315,23 +315,23 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
       {/* Panel Header */}
       <div style={{
         padding: '12px 16px',
-        borderBottom: '1px solid #1e293b',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
         display: 'flex',
         alignItems: 'center',
         gap: 8,
       }}>
         <span style={{ fontSize: 16 }}>{icon}</span>
         <div style={{ flex: 1 }}>
-          <span style={{ color: '#e2e8f0', fontSize: 14, fontWeight: 600 }}>Configure: {data.stepType.replace(/_/g, ' ')}</span>
-          {palette?.desc && <div style={{ color: '#64748b', fontSize: 10, marginTop: 2 }}>{palette.desc}</div>}
+          <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 14, fontWeight: 600 }}>Configure: {data.stepType.replace(/_/g, ' ')}</span>
+          {palette?.desc && <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 10, marginTop: 2 }}>{palette.desc}</div>}
         </div>
         <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
-          <X size={16} color="#64748b" />
+          <X size={16} color="rgba(255,255,255,0.35)" />
         </button>
       </div>
 
       {loadingProviders && (
-        <div style={{ padding: '6px 16px', background: 'rgba(99,102,241,0.1)', color: '#818cf8', fontSize: 11 }}>
+        <div style={{ padding: '6px 16px', background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.5)', fontSize: 11 }}>
           Loading live providers...
         </div>
       )}
@@ -339,7 +339,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
       <div style={{ padding: 16, flex: 1 }}>
         {/* Step Name */}
         <div style={{ marginBottom: 16 }}>
-          <label style={{ color: '#94a3b8', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: 4 }}>
+          <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: 4 }}>
             Step Name
           </label>
           <input
@@ -348,10 +348,10 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
             style={{
               width: '100%',
               padding: '8px 10px',
-              background: '#1e293b',
-              border: '1px solid #334155',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
               borderRadius: 6,
-              color: '#e2e8f0',
+              color: 'rgba(255,255,255,0.85)',
               fontSize: 13,
               outline: 'none',
               boxSizing: 'border-box',
@@ -361,7 +361,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
 
         {/* Description */}
         <div style={{ marginBottom: 16 }}>
-          <label style={{ color: '#94a3b8', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: 4 }}>
+          <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: 4 }}>
             Description
           </label>
           <input
@@ -370,10 +370,10 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
             style={{
               width: '100%',
               padding: '8px 10px',
-              background: '#1e293b',
-              border: '1px solid #334155',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
               borderRadius: 6,
-              color: '#e2e8f0',
+              color: 'rgba(255,255,255,0.85)',
               fontSize: 13,
               outline: 'none',
               boxSizing: 'border-box',
@@ -384,7 +384,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
         {/* Config Fields */}
         {fields.map((field) => (
           <div key={field.key} style={{ marginBottom: 14 }}>
-            <label style={{ color: '#94a3b8', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: 4 }}>
+            <label style={{ color: 'rgba(255,255,255,0.5)', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: 4 }}>
               {field.label}
             </label>
             {field.type === 'select' ? (
@@ -394,10 +394,10 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
                 style={{
                   width: '100%',
                   padding: '8px 10px',
-                  background: '#1e293b',
-                  border: '1px solid #334155',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
                   borderRadius: 6,
-                  color: '#e2e8f0',
+                  color: 'rgba(255,255,255,0.85)',
                   fontSize: 13,
                   outline: 'none',
                   boxSizing: 'border-box',
@@ -416,10 +416,10 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
                 style={{
                   width: '100%',
                   padding: '8px 10px',
-                  background: '#1e293b',
-                  border: '1px solid #334155',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
                   borderRadius: 6,
-                  color: '#e2e8f0',
+                  color: 'rgba(255,255,255,0.85)',
                   fontSize: 12,
                   fontFamily: field.key === 'code' || field.key === 'query' ? 'monospace' : 'inherit',
                   outline: 'none',
@@ -437,10 +437,10 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
                 style={{
                   width: '100%',
                   padding: '8px 10px',
-                  background: '#1e293b',
-                  border: '1px solid #334155',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
                   borderRadius: 6,
-                  color: '#e2e8f0',
+                  color: 'rgba(255,255,255,0.85)',
                   fontSize: 13,
                   outline: 'none',
                   boxSizing: 'border-box',
@@ -452,22 +452,22 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
 
         {/* Variable reference helper */}
         <div style={{
-          marginTop: 8, padding: '8px 10px', background: 'rgba(99,102,241,0.06)',
-          border: '1px solid rgba(99,102,241,0.15)', borderRadius: 6,
+          marginTop: 8, padding: '8px 10px', background: 'rgba(255,255,255,0.03)',
+          border: '1px solid rgba(255,255,255,0.06)', borderRadius: 6,
         }}>
-          <div style={{ color: '#818cf8', fontSize: 10, fontWeight: 600, marginBottom: 4 }}>VARIABLE REFERENCE</div>
-          <div style={{ color: '#64748b', fontSize: 10, lineHeight: 1.5 }}>
-            Use <span style={{ color: '#a5b4fc', fontFamily: 'monospace' }}>{'{{steps.<name>.output}}'}</span> to reference output from a previous step.
-            Use <span style={{ color: '#a5b4fc', fontFamily: 'monospace' }}>{'{{env.<KEY>}}'}</span> for environment variables.
+          <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 10, fontWeight: 600, marginBottom: 4 }}>VARIABLE REFERENCE</div>
+          <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: 10, lineHeight: 1.5 }}>
+            Use <span style={{ color: 'rgba(255,255,255,0.6)', fontFamily: 'monospace' }}>{'{{steps.<name>.output}}'}</span> to reference output from a previous step.
+            Use <span style={{ color: 'rgba(255,255,255,0.6)', fontFamily: 'monospace' }}>{'{{env.<KEY>}}'}</span> for environment variables.
           </div>
         </div>
       </div>
 
       {/* Panel Footer */}
-      <div style={{ padding: '12px 16px', borderTop: '1px solid #1e293b' }}>
+      <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <span style={{ width: 8, height: 8, borderRadius: '50%', background: color }} />
-          <span style={{ color: '#64748b', fontSize: 11 }}>
+          <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11 }}>
             {data.stepType.replace(/_/g, ' ')} • Node {node.id.split('_').pop()}
           </span>
         </div>
@@ -674,77 +674,77 @@ function VisualWorkflowInner() {
   }, [setNodes, setEdges, pushHistory]);
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: '#0a0e1a' }}>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: '#262321' }}>
       {/* ── Top Bar ── */}
       <div style={{
-        display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px',
-        background: '#0f172a', borderBottom: '1px solid #1e293b', flexShrink: 0,
+        display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px',
+        background: '#32312E', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0,
       }}>
         <button onClick={() => navigate('/network/workflows')} style={{
           display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px',
-          background: 'transparent', border: '1px solid #334155', borderRadius: 4,
-          color: '#94a3b8', cursor: 'pointer', fontSize: 12,
+          background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4,
+          color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: 12,
         }}>
           <ArrowLeft size={14} /> Back
         </button>
-        <Layout size={16} color="#6366f1" />
+        <Layout size={14} color="rgba(255,255,255,0.4)" />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
           <input value={workflowName} onChange={e => setWorkflowName(e.target.value)}
-            style={{ background: 'transparent', border: 'none', color: '#e2e8f0', fontSize: 15, fontWeight: 600, outline: 'none', width: '100%' }} />
+            style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: 600, outline: 'none', width: '100%' }} />
           <input value={workflowDesc} onChange={e => setWorkflowDesc(e.target.value)}
-            style={{ background: 'transparent', border: 'none', color: '#64748b', fontSize: 11, outline: 'none', width: '100%' }} />
+            style={{ background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.3)', fontSize: 10, outline: 'none', width: '100%' }} />
         </div>
 
-        <span style={{ color: '#475569', fontSize: 11 }}>{nodes.length} steps • {edges.length} connections</span>
+        <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: 10 }}>{nodes.length} steps • {edges.length} connections</span>
 
         {/* Undo/Redo */}
-        <button onClick={undo} title="Undo" style={{ background: 'none', border: '1px solid #334155', borderRadius: 4, padding: '4px 6px', cursor: 'pointer' }}>
-          <Undo2 size={14} color="#94a3b8" />
+        <button onClick={undo} title="Undo" style={{ background: 'none', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 4, padding: '3px 5px', cursor: 'pointer' }}>
+          <Undo2 size={13} color="rgba(255,255,255,0.4)" />
         </button>
-        <button onClick={redo} title="Redo" style={{ background: 'none', border: '1px solid #334155', borderRadius: 4, padding: '4px 6px', cursor: 'pointer' }}>
-          <Redo2 size={14} color="#94a3b8" />
+        <button onClick={redo} title="Redo" style={{ background: 'none', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 4, padding: '3px 5px', cursor: 'pointer' }}>
+          <Redo2 size={13} color="rgba(255,255,255,0.4)" />
         </button>
 
-        <div style={{ width: 1, height: 20, background: '#334155' }} />
+        <div style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.08)' }} />
 
         {/* Import/Export */}
-        <button onClick={importJson} title="Import JSON" style={{ background: 'none', border: '1px solid #334155', borderRadius: 4, padding: '4px 6px', cursor: 'pointer' }}>
-          <Upload size={14} color="#94a3b8" />
+        <button onClick={importJson} title="Import JSON" style={{ background: 'none', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 4, padding: '3px 5px', cursor: 'pointer' }}>
+          <Upload size={13} color="rgba(255,255,255,0.4)" />
         </button>
-        <button onClick={exportJson} title="Export JSON" style={{ background: 'none', border: '1px solid #334155', borderRadius: 4, padding: '4px 6px', cursor: 'pointer' }}>
-          <Download size={14} color="#94a3b8" />
+        <button onClick={exportJson} title="Export JSON" style={{ background: 'none', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 4, padding: '3px 5px', cursor: 'pointer' }}>
+          <Download size={13} color="rgba(255,255,255,0.4)" />
         </button>
 
-        <div style={{ width: 1, height: 20, background: '#334155' }} />
+        <div style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.08)' }} />
 
         {/* Save / Run / Delete */}
         <button onClick={handleSave} disabled={saving} style={{
-          display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px',
-          background: '#3b82f6', border: 'none', borderRadius: 6, color: 'white',
-          cursor: 'pointer', fontSize: 12, opacity: saving ? 0.6 : 1,
+          display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px',
+          background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 5, color: 'rgba(255,255,255,0.7)',
+          cursor: 'pointer', fontSize: 11, opacity: saving ? 0.6 : 1,
         }}>
           <Save size={13} /> {saving ? 'Saving...' : 'Save'}
         </button>
         <button onClick={handleRun} disabled={running || nodes.length === 0} style={{
-          display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px',
-          background: '#10b981', border: 'none', borderRadius: 6, color: 'white',
-          cursor: 'pointer', fontSize: 12, opacity: running || nodes.length === 0 ? 0.5 : 1,
+          display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px',
+          background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 5, color: 'rgba(255,255,255,0.7)',
+          cursor: 'pointer', fontSize: 11, opacity: running || nodes.length === 0 ? 0.5 : 1,
         }}>
           <Play size={13} /> {running ? 'Running...' : 'Run'}
         </button>
         {selectedNodeId && (
           <>
             <button onClick={duplicateSelected} title="Duplicate" style={{
-              display: 'flex', alignItems: 'center', gap: 4, padding: '6px 10px',
-              background: '#334155', border: 'none', borderRadius: 6, color: '#e2e8f0',
-              cursor: 'pointer', fontSize: 12,
+              display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px',
+              background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 5, color: 'rgba(255,255,255,0.7)',
+              cursor: 'pointer', fontSize: 11,
             }}>
               <Copy size={13} />
             </button>
             <button onClick={deleteSelected} style={{
-              display: 'flex', alignItems: 'center', gap: 4, padding: '6px 10px',
-              background: '#ef4444', border: 'none', borderRadius: 6, color: 'white',
-              cursor: 'pointer', fontSize: 12,
+              display: 'flex', alignItems: 'center', gap: 4, padding: '4px 10px',
+              background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 5, color: 'rgba(255,255,255,0.7)',
+              cursor: 'pointer', fontSize: 11,
             }}>
               <Trash2 size={13} /> Delete
             </button>
@@ -756,10 +756,10 @@ function VisualWorkflowInner() {
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
         {/* Left: Step Palette */}
         <div style={{
-          width: 200, background: '#0f172a', borderRight: '1px solid #1e293b',
+          width: 200, background: '#32312E', borderRight: '1px solid rgba(255,255,255,0.06)',
           padding: '8px', overflowY: 'auto', flexShrink: 0,
         }}>
-          <div style={{ color: '#64748b', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8, padding: '0 4px' }}>
+          <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8, padding: '0 4px' }}>
             Add Steps
           </div>
           {STEP_PALETTE.map(step => (
@@ -769,19 +769,19 @@ function VisualWorkflowInner() {
               title={step.desc}
               style={{
                 display: 'flex', alignItems: 'center', gap: 6, width: '100%',
-                padding: '6px 8px', marginBottom: 2, background: '#1e293b',
+                padding: '6px 8px', marginBottom: 2, background: 'rgba(255,255,255,0.04)',
                 border: '1px solid transparent', borderLeft: `3px solid ${step.color}`,
-                borderRadius: 5, color: '#cbd5e1', cursor: 'pointer', fontSize: 12,
+                borderRadius: 5, color: 'rgba(255,255,255,0.7)', cursor: 'pointer', fontSize: 12,
                 transition: 'all 0.15s', textAlign: 'left',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#334155'; e.currentTarget.style.borderColor = '#475569'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = '#1e293b'; e.currentTarget.style.borderColor = 'transparent'; }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.borderColor = 'transparent'; }}
             >
               <span style={{ fontSize: 13, flexShrink: 0 }}>{step.icon}</span>
               <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{step.label}</span>
             </button>
           ))}
-          <div style={{ color: '#475569', fontSize: 10, marginTop: 12, padding: '8px 4px', borderTop: '1px solid #1e293b', lineHeight: 1.4 }}>
+          <div style={{ color: 'rgba(255,255,255,0.2)', fontSize: 10, marginTop: 12, padding: '8px 4px', borderTop: '1px solid rgba(255,255,255,0.06)', lineHeight: 1.4 }}>
             Click to add. Drag nodes to position. Connect handles to wire steps.
           </div>
         </div>
@@ -797,23 +797,23 @@ function VisualWorkflowInner() {
             onNodeDoubleClick={(_, node) => { setSelectedNodeId(node.id); setShowConfig(true); }}
             onPaneClick={() => { setSelectedNodeId(null); setShowConfig(false); }}
             fitView
-            style={{ background: '#0a0e1a' }}
-            defaultEdgeOptions={{ animated: true, style: { stroke: '#6366f1', strokeWidth: 2 } }}
+            style={{ background: '#262321' }}
+            defaultEdgeOptions={{ animated: true, style: { stroke: 'rgba(255,255,255,0.25)', strokeWidth: 2 } }}
             snapToGrid snapGrid={[15, 15]}
           >
-            <Background color="#1e293b" gap={20} />
-            <Controls style={{ background: '#1e293b', borderColor: '#334155', borderRadius: 8 }} />
-            <MiniMap style={{ background: '#0f172a', border: '1px solid #334155', borderRadius: 8 }}
+            <Background color="rgba(255,255,255,0.05)" gap={20} />
+            <Controls style={{ background: '#32312E', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 8 }} />
+            <MiniMap style={{ background: '#32312E', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8 }}
               nodeColor={(n: Node) => COLORS[(n.data as StepNodeData)?.stepType] || '#6366f1'} />
             {nodes.length === 0 && (
               <Panel position="top-center">
                 <div style={{
-                  background: '#1e293b', border: '1px solid #334155', borderRadius: 12,
-                  padding: '24px 32px', color: '#94a3b8', fontSize: 14, textAlign: 'center',
+                  background: '#32312E', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12,
+                  padding: '24px 32px', color: 'rgba(255,255,255,0.5)', fontSize: 14, textAlign: 'center',
                   marginTop: 100, maxWidth: 400,
                 }}>
-                  <Zap size={36} color="#6366f1" style={{ marginBottom: 8 }} />
-                  <div style={{ fontWeight: 700, color: '#e2e8f0', fontSize: 18, marginBottom: 8 }}>
+                  <Zap size={36} color="rgba(255,255,255,0.3)" style={{ marginBottom: 8 }} />
+                  <div style={{ fontWeight: 700, color: 'rgba(255,255,255,0.85)', fontSize: 18, marginBottom: 8 }}>
                     Visual Workflow Builder
                   </div>
                   <div style={{ lineHeight: 1.5, marginBottom: 16 }}>
@@ -822,14 +822,14 @@ function VisualWorkflowInner() {
                   </div>
                   <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
                     <button onClick={() => addNode('webhook_trigger')} style={{
-                      padding: '6px 14px', background: '#f97316', border: 'none',
-                      borderRadius: 6, color: 'white', fontSize: 12, cursor: 'pointer',
+                      padding: '6px 14px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: 6, color: 'rgba(255,255,255,0.7)', fontSize: 12, cursor: 'pointer',
                     }}>
                       🔔 Start with Trigger
                     </button>
                     <button onClick={() => addNode('llm_completion')} style={{
-                      padding: '6px 14px', background: '#8b5cf6', border: 'none',
-                      borderRadius: 6, color: 'white', fontSize: 12, cursor: 'pointer',
+                      padding: '6px 14px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: 6, color: 'rgba(255,255,255,0.7)', fontSize: 12, cursor: 'pointer',
                     }}>
                       🧠 Start with LLM
                     </button>
