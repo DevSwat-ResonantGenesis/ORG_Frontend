@@ -7,7 +7,7 @@
 /* Root Container - Fixed at bottom */
 .chatInputRoot {
   position: fixed;
-  bottom: 24px;
+  bottom: 72px;
   left: 24px;
   right: 24px;
   z-index: 10000;
@@ -221,7 +221,7 @@
 .agentPanelTitle svg {
   width: 16px;
   height: 16px;
-  color: #0ea5e9;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 [data-theme='light'] .agentPanelTitle {
@@ -247,8 +247,8 @@
 }
 
 .agentRow:hover {
-  background: rgba(14, 165, 233, 0.08);
-  border-color: rgba(14, 165, 233, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 [data-theme='light'] .agentRow {
@@ -256,8 +256,8 @@
 }
 
 [data-theme='light'] .agentRow:hover {
-  background: rgba(14, 165, 233, 0.08);
-  border-color: rgba(14, 165, 233, 0.2);
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.12);
 }
 
 .agentLabel {
@@ -273,7 +273,7 @@
 .agentLabel svg {
   width: 14px;
   height: 14px;
-  color: #0ea5e9;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .agentSelect {
@@ -295,14 +295,14 @@
 }
 
 .agentSelect:hover {
-  border-color: rgba(14, 165, 233, 0.4);
-  background-color: rgba(14, 165, 233, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.06);
 }
 
 .agentSelect:focus {
   outline: none;
-  border-color: #0ea5e9;
-  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
 }
 
 [data-theme='light'] .agentSelect {
@@ -313,8 +313,8 @@
 }
 
 [data-theme='light'] .agentSelect:hover {
-  border-color: rgba(14, 165, 233, 0.4);
-  background-color: rgba(14, 165, 233, 0.05);
+  border-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.04);
 }
 
 .agentSelect option {
@@ -383,7 +383,7 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: #0ea5e9;
+  background: rgba(255, 255, 255, 0.12);
   border: none;
   cursor: pointer;
   color: #fff;
@@ -500,7 +500,8 @@
 }
 
 .toolButton.active {
-  color: #0ea5e9;
+  color: #fff;
+  opacity: 1;
 }
 
 .toolButton.danger:hover {
@@ -603,8 +604,8 @@
 }
 
 .historyButton.active {
-  background: rgba(14, 165, 233, 0.15);
-  color: #0ea5e9;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
 [data-theme='light'] .historyButton {
@@ -714,11 +715,11 @@
   border-radius: 999px;
   background:
     radial-gradient(10px 10px at 30% 30%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 60%),
-    radial-gradient(16px 16px at 60% 65%, rgba(14, 165, 233, 0.65), rgba(14, 165, 233, 0) 65%),
-    radial-gradient(18px 18px at 70% 30%, rgba(14, 165, 233, 0.45), rgba(14, 165, 233, 0) 60%);
+    radial-gradient(16px 16px at 60% 65%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 65%),
+    radial-gradient(18px 18px at 70% 30%, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0) 60%);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.14) inset,
-    0 0 12px rgba(14, 165, 233, 0.20);
+    0 0 12px rgba(255, 255, 255, 0.12);
   animation: voiceOrbFloat 2.4s ease-in-out infinite;
 }
 
@@ -735,8 +736,8 @@
 
 .voiceConversationIconActive .voiceConversationOrb {
   box-shadow:
-    0 0 0 1px rgba(14, 165, 233, 0.35) inset,
-    0 0 18px rgba(14, 165, 233, 0.35);
+    0 0 0 1px rgba(255, 255, 255, 0.25) inset,
+    0 0 18px rgba(255, 255, 255, 0.2);
 }
 
 [data-theme='light'] .voiceConversationIconActive .voiceConversationOrb {
@@ -803,7 +804,7 @@
 }
 
 .agentSelectorActive {
-  color: #0ea5e9;
+  color: #fff;
   opacity: 1;
 }
 
@@ -974,8 +975,8 @@
 .providerBadge {
   font-size: 10px;
   padding: 2px 6px;
-  background: rgba(14, 165, 233, 0.2);
-  color: #0ea5e9;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
   border-radius: 4px;
   font-weight: 600;
   text-transform: uppercase;
@@ -1034,7 +1035,7 @@
 .stickerTitle svg {
   width: 18px;
   height: 18px;
-  color: #0ea5e9;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 [data-theme='light'] .stickerTitle {
@@ -1104,8 +1105,8 @@
 }
 
 .listItem:hover {
-  background: rgba(14, 165, 233, 0.08);
-  border-color: rgba(14, 165, 233, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
   transform: translateX(4px);
 }
 
@@ -1114,13 +1115,13 @@
 }
 
 [data-theme='light'] .listItem:hover {
-  background: rgba(14, 165, 233, 0.08);
-  border-color: rgba(14, 165, 233, 0.2);
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.12);
 }
 
 .listItem.active {
-  background: rgba(14, 165, 233, 0.12);
-  border-color: rgba(14, 165, 233, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .listItemIcon {
@@ -1129,7 +1130,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(14, 165, 233, 0.1);
+  background: rgba(255, 255, 255, 0.06);
   border-radius: 10px;
   flex-shrink: 0;
 }
@@ -1137,7 +1138,7 @@
 .listItemIcon svg {
   width: 18px;
   height: 18px;
-  color: #0ea5e9;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .listItemContent {
@@ -1179,8 +1180,8 @@
   font-size: 10px;
   padding: 4px 8px;
   border-radius: 6px;
-  background: rgba(14, 165, 233, 0.2);
-  color: #0ea5e9;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -1188,7 +1189,7 @@
 }
 
 [data-theme='light'] .listItemBadge {
-  background: rgba(14, 165, 233, 0.15);
+  background: rgba(0, 0, 0, 0.08);
 }
 
 .listItemTimestamp {
@@ -1243,7 +1244,7 @@
 
 .autocompleteItem:hover,
 .autocompleteItem.selected {
-  background: rgba(14, 165, 233, 0.1);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .autocompleteTitle {
