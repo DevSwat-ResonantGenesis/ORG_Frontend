@@ -1,4 +1,5 @@
 import React, { memo, useState, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAgentStore } from '../../../../../stores/agentStore';
 import { Icons } from '../../shared/Icons';
 import { createAgent as createAgentApi, getAgentProvidersCatalog, getAvailableTools, assignGoal, createSchedule } from '../../../../../api/agents';
@@ -78,6 +79,7 @@ const validateDescription = (value: string): string | null => {
 
 const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplete, onCancel }) => {
   const { addAgent } = useAgentStore();
+  const navigate = useNavigate();
   
   const [currentStep, setCurrentStep] = useState(0);
   const [isCreating, setIsCreating] = useState(false);
@@ -736,6 +738,20 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                   A goal is required to create a schedule.
                 </p>
               )}
+            </div>
+
+            <div style={{ marginTop: 16, padding: '14px 16px', background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+              <div style={{ minWidth: 0 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary, #fff)', marginBottom: 2 }}>Connect External Services</div>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary, #a1a1aa)' }}>Link GitHub, Slack, Discord, Google Calendar, DigitalOcean, and 20+ more so your agent can use them.</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate('/connect-profiles')}
+                style={{ flexShrink: 0, padding: '8px 16px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', border: 'none', borderRadius: 8, color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
+              >
+                Connect Profiles
+              </button>
             </div>
           </div>
         );
