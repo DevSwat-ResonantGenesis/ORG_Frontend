@@ -365,7 +365,7 @@
 
 [data-theme='light'] .panel {
   background: #FFFFFF;
-  color: #0a0a0a;
+  color: #262321;
 }
 
 [data-theme='light'] .header {
@@ -374,7 +374,7 @@
 }
 
 [data-theme='light'] .title {
-  color: #0a0a0a;
+  color: #262321;
 }
 
 [data-theme='light'] .resultCount {
@@ -394,7 +394,7 @@
 [data-theme='light'] .input {
   background: #FFFFFF;
   border-color: #E5E7EB;
-  color: #0a0a0a;
+  color: #262321;
 }
 
 [data-theme='light'] .input::placeholder {
@@ -414,7 +414,7 @@
 [data-theme='light'] .select {
   background: #FFFFFF;
   border-color: #E5E7EB;
-  color: #0a0a0a;
+  color: #262321;
 }
 
 [data-theme='light'] .select:hover {
@@ -443,7 +443,7 @@
 }
 
 [data-theme='light'] .emptyTitle {
-  color: #0a0a0a;
+  color: #262321;
 }
 
 [data-theme='light'] .emptyDescription {
@@ -462,7 +462,7 @@
 }
 
 [data-theme='light'] .filePath {
-  color: #0a0a0a;
+  color: #262321;
 }
 
 [data-theme='light'] .fileIcon {
@@ -497,5 +497,5 @@
 }
 
 [data-theme='light'] .code code {
-  color: #0a0a0a;
+  color: #262321;
 }

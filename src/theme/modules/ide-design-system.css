@@ -13,16 +13,16 @@
      ============================================================ */
   
   /* Background Hierarchy */
-  --ide-bg-primary: #0a0a0a;        /* Main background - Dark */
-  --ide-bg-secondary: #0a0a0a;      /* Sidebar/Panel background */
-  --ide-bg-tertiary: #0a0a0a;       /* Nested panels */
-  --ide-bg-elevated: #0a0a0a;       /* Elevated surfaces (modals, dropdowns) */
+  --ide-bg-primary: #262321;        /* Main background - Warm dark */
+  --ide-bg-secondary: #262321;      /* Sidebar/Panel background */
+  --ide-bg-tertiary: #262321;       /* Nested panels */
+  --ide-bg-elevated: #262321;       /* Elevated surfaces (modals, dropdowns) */
   
   /* Surface Hierarchy */
-  --ide-surface: #0a0a0a;           /* Card/Panel surface */
-  --ide-surface-hover: #111111;     /* Hover state */
+  --ide-surface: #262321;           /* Card/Panel surface */
+  --ide-surface-hover: #32312E;     /* Hover state */
   --ide-surface-active: #404040;    /* Active/Selected state */
-  --ide-surface-disabled: #0a0a0a;  /* Disabled state */
+  --ide-surface-disabled: #262321;  /* Disabled state */
   
   /* Border Hierarchy */
   --ide-border: rgba(255, 255, 255, 0.1);      /* Primary borders */
@@ -443,10 +443,10 @@
 }
 
 /* Light mode for any element with dark background */
-[data-theme='light'] [style*="background: #0a0a0a"],
-[data-theme='light'] [style*="background:#0a0a0a"],
-[data-theme='light'] [style*="background-color: #0a0a0a"],
-[data-theme='light'] [style*="background-color:#0a0a0a"] {
+[data-theme='light'] [style*="background: #262321"],
+[data-theme='light'] [style*="background:#262321"],
+[data-theme='light'] [style*="background-color: #262321"],
+[data-theme='light'] [style*="background-color:#262321"] {
   background: #ffffff !important;
   background-color: #ffffff !important;
 }

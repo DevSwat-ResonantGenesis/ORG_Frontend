@@ -5,7 +5,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   overflow: hidden;
   min-height: 0;
 }
@@ -14,7 +14,7 @@
   display: flex;
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   overflow-x: auto;
   overflow-y: hidden;
   flex-shrink: 0;
@@ -62,7 +62,7 @@
 }
 
 .tab.activeTab {
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   color: var(--ide-text-secondary, 0.95);
   border-bottom: none;
 }
@@ -133,7 +133,7 @@
   flex-direction: column;
   overflow: hidden;
   min-height: 0;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
 }
 
 .terminalOutput {
@@ -142,7 +142,7 @@
   overflow-x: hidden;
   padding: 12px 16px;
   min-height: 0;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
 }
 
 .terminalOutput::-webkit-scrollbar {

@@ -75,15 +75,15 @@
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
   /* IDE-specific aliases (default to dark mode for IDE compatibility) */
-  --bg-dark: #0a0a0a;
+  --bg-dark: #262321;
   /* Resonant Chat background */
-  --surface-dark: #0a0a0a;
+  --surface-dark: #262321;
   /* Resonant Chat surface */
-  --surface-hover-dark: #111111;
+  --surface-hover-dark: #32312E;
   /* Resonant Chat hover */
   --surface-border-dark: rgba(255, 255, 255, 0.1);
   /* Resonant Chat border */
-  --surface-elevated-dark: #0a0a0a;
+  --surface-elevated-dark: #262321;
 
   /* Accent colors (for IDE compatibility) */
   --accent-400: #38bdf8;
@@ -98,19 +98,19 @@
      ============================================================ */
 
   [data-theme='dark'] {
-    --bg-primary: #0a0a0a;
-    /* Resonant Chat background - dark gray */
-    --bg-secondary: #0a0a0a;
-    /* Resonant Chat surface - dark gray */
-    --bg-tertiary: #111111;
-    /* Resonant Chat hover - dark gray */
+    --bg-primary: #262321;
+    /* Resonant Chat background - warm dark */
+    --bg-secondary: #262321;
+    /* Resonant Chat surface - warm dark */
+    --bg-tertiary: #32312E;
+    /* Resonant Chat hover - warm dark */
 
-    --bg: #0a0a0a;
-    --color-bg-root: #0a0a0a;
+    --bg: #262321;
+    --color-bg-root: #262321;
 
-    --surface: #0a0a0a;
+    --surface: #262321;
     /* Resonant Chat surface */
-    --surface-elevated: #111111;
+    --surface-elevated: #32312E;
     /* Resonant Chat hover */
     --surface-hover: #111111;
     /* Resonant Chat hover */
@@ -128,15 +128,15 @@
     --text-disabled: #4B5563;
 
     /* IDE-specific aliases (for compatibility with IDE CSS modules) */
-    --bg-dark: #0a0a0a;
+    --bg-dark: #262321;
     /* Resonant Chat background */
-    --surface-dark: #0a0a0a;
+    --surface-dark: #262321;
     /* Resonant Chat surface */
-    --surface-hover-dark: #111111;
+    --surface-hover-dark: #32312E;
     /* Resonant Chat hover */
     --surface-border-dark: rgba(255, 255, 255, 0.1);
     /* Resonant Chat border */
-    --surface-elevated-dark: #0a0a0a;
+    --surface-elevated-dark: #262321;
 
     /* Accent colors (for IDE compatibility) */
     --accent-400: #38bdf8;

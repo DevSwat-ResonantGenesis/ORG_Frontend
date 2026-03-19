@@ -52,7 +52,7 @@
 }
 
 .closeBtn:hover {
-  background: var(--bg-hover, #0a0a0a);
+  background: var(--bg-hover, #262321);
   color: var(--text-primary, #fff);
 }
 
@@ -73,12 +73,12 @@
 }
 
 .tab:hover {
-  background: var(--bg-hover, #0a0a0a);
+  background: var(--bg-hover, #262321);
 }
 
 .tab.active {
   color: var(--accent-color, #6366f1);
-  background: var(--bg-secondary, #0a0a0a);
+  background: var(--bg-secondary, #262321);
   border-bottom: 2px solid var(--accent-color, #6366f1);
 }
 
@@ -120,7 +120,7 @@
 }
 
 .memoryCard {
-  background: var(--bg-secondary, #0a0a0a);
+  background: var(--bg-secondary, #262321);
   border: 1px solid var(--border-color, #333);
   border-radius: 10px;
   padding: 14px;
@@ -159,7 +159,7 @@
 }
 
 .projectCard {
-  background: var(--bg-secondary, #0a0a0a);
+  background: var(--bg-secondary, #262321);
   border: 1px solid var(--border-color, #333);
   border-radius: 10px;
   padding: 14px;
@@ -216,7 +216,7 @@
 .projectDetail {
   border-top: 1px solid var(--border-color, #333);
   padding: 16px;
-  background: var(--bg-secondary, #0a0a0a);
+  background: var(--bg-secondary, #262321);
 }
 
 .detailHeader {
@@ -259,7 +259,7 @@
 .footer {
   padding: 12px 16px;
   border-top: 1px solid var(--border-color, #333);
-  background: var(--bg-secondary, #0a0a0a);
+  background: var(--bg-secondary, #262321);
 }
 
 .footerInfo {

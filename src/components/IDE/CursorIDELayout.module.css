@@ -1,19 +1,19 @@
-/* Main IDE Layout - Unified Dark Grey Color (#0a0a0a) */
+/* Main IDE Layout - Unified Dark Grey Color (#262321) */
 
 /* ============================================================
-   UNIFIED COLOR PALETTE - Resonant Chat Dark Grey (#0a0a0a)
+   UNIFIED COLOR PALETTE - Resonant Chat Dark Grey (#262321)
    ============================================================ */
 .ideContainer {
   /* UNIFIED DARK GREY - Matches Resonant Chat Background */
-  --ide-black: #0a0a0a;
+  --ide-black: #262321;
   --ide-white: #ffffff;
   
   /* ALL backgrounds use the SAME Resonant Chat background color */
-  --ide-bg-primary: #0a0a0a;
-  --ide-bg-secondary: #0a0a0a;
-  --ide-bg-tertiary: #0a0a0a;
-  --ide-surface: #0a0a0a;
-  --ide-surface-elevated: #0a0a0a;
+  --ide-bg-primary: #262321;
+  --ide-bg-secondary: #262321;
+  --ide-bg-tertiary: #262321;
+  --ide-surface: #262321;
+  --ide-surface-elevated: #262321;
   --ide-surface-hover: rgba(255, 255, 255, 0.05);
   --ide-surface-active: rgba(255, 255, 255, 0.08);
   
@@ -266,7 +266,7 @@
   top: calc(100% + 8px);
   right: 0;
   min-width: 240px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border: none;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -421,7 +421,7 @@
 .activityBar {
   width: 44px;
   min-width: 44px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border-right: none;
   box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
   display: flex;
@@ -620,7 +620,7 @@
   top: calc(100% + 8px);
   left: var(--ide-space-4);
   min-width: 240px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border: none;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -928,7 +928,7 @@
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border: none;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
@@ -1355,10 +1355,10 @@
 /* File Explorer Container - Layout-critical styles need */
 .fileExplorerContainer {
   /* IDE Color Variables - Map to Resonant Chat colors */
-  --ide-bg-primary: var(--bg-dark, #0a0a0a);
-  --ide-bg-secondary: var(--surface-dark, #0a0a0a);
+  --ide-bg-primary: var(--bg-dark, #262321);
+  --ide-bg-secondary: var(--surface-dark, #262321);
   --ide-bg-tertiary: rgba(255, 255, 255, 0.05);
-  --ide-surface: var(--surface-dark, #0a0a0a);
+  --ide-surface: var(--surface-dark, #262321);
   --ide-surface-hover: rgba(255, 255, 255, 0.08);
   --ide-border: rgba(255, 255, 255, 0.1);
   --ide-text-primary: #E8E8E8; /* Pearl white - softer than bright white */
@@ -1473,10 +1473,10 @@
 /* Git View Container - Layout-critical styles need */
 .gitViewContainer {
   /* IDE Color Variables - Match Resonant Chat dark grey */
-  --ide-bg-primary: #0a0a0a;
-  --ide-bg-secondary: #0a0a0a;
-  --ide-bg-tertiary: #0a0a0a;
-  --ide-surface: #0a0a0a;
+  --ide-bg-primary: #262321;
+  --ide-bg-secondary: #262321;
+  --ide-bg-tertiary: #262321;
+  --ide-surface: #262321;
   --ide-surface-hover: rgba(255, 255, 255, 0.08);
   --ide-border: rgba(255, 255, 255, 0.1);
   --ide-text-primary: #E8E8E8; /* Pearl white - softer than bright white */
@@ -1591,10 +1591,10 @@
 /* View Container - Layout-critical styles need */
 .viewContainer {
   /* IDE Color Variables - Match Resonant Chat dark grey */
-  --ide-bg-primary: #0a0a0a;
-  --ide-bg-secondary: #0a0a0a;
-  --ide-bg-tertiary: #0a0a0a;
-  --ide-surface: #0a0a0a;
+  --ide-bg-primary: #262321;
+  --ide-bg-secondary: #262321;
+  --ide-bg-tertiary: #262321;
+  --ide-surface: #262321;
   --ide-surface-hover: rgba(255, 255, 255, 0.08);
   --ide-border: rgba(255, 255, 255, 0.1);
   --ide-text-primary: #E8E8E8; /* Pearl white - softer than bright white */
@@ -1667,7 +1667,7 @@
 /* Feature Section Styles */
 .featureSection {
   padding: 16px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   margin-bottom: 12px;
@@ -1945,5 +1945,5 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
 }

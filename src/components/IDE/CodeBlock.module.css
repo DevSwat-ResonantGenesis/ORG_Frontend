@@ -2,7 +2,7 @@
   margin: 12px 0;
   border-radius: 8px;
   overflow: visible; /* Changed from hidden to visible to allow scrolling */
-  background: var(--ide-bg-secondary, #0a0a0a);
+  background: var(--ide-bg-secondary, #262321);
   border: 1px solid var(--ide-border, rgba(255, 255, 255, 0.1));
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   max-width: 100%; /* Ensure it doesn't exceed parent width */
@@ -12,7 +12,7 @@
 
 .codeBlockHeader {
   padding: 8px 12px;
-  background: var(--ide-surface, #0a0a0a);
+  background: var(--ide-surface, #262321);
   border-bottom: 1px solid var(--ide-border, rgba(255, 255, 255, 0.1));
   display: flex;
   align-items: center;
@@ -45,7 +45,7 @@
 }
 
 .codeBlock :global(.monaco-editor .margin) {
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
 }
 
 /* Monaco Editor handles all syntax highlighting internally - no CSS tokens needed */
@@ -56,7 +56,7 @@
 }
 
 .codeBlock::-webkit-scrollbar-track {
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
 }
 
 .codeBlock::-webkit-scrollbar-thumb {

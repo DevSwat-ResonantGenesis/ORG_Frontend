@@ -4,7 +4,7 @@
 .chatPanel {
   width: 100%;
   height: 100%;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   color: var(--ide-text-primary, #e8e8e8);
   display: flex;
   flex-direction: column;
@@ -109,7 +109,7 @@
 
 /* Assistant Message - Dark with subtle border and glow */
 .message.assistant .messageContent {
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   color: var(--ide-text-secondary, 0.95);
   border: 1px solid rgba(59, 130, 246, 0.15);
   border-bottom-left-radius: 4px;
@@ -124,7 +124,7 @@
 
 /* Code blocks in messages */
 .message.assistant .messageContent pre {
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 8px;
   padding: 12px;
@@ -162,7 +162,7 @@
   align-items: center;
   gap: 6px;
   padding: 14px 18px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border: 1px solid rgba(59, 130, 246, 0.2);
   border-radius: 16px;
   border-bottom-left-radius: 4px;
@@ -206,7 +206,7 @@
    ============================================================ */
 .chatInput {
   padding: 12px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border-top: 1px solid rgba(59, 130, 246, 0.15);
   display: flex;
   flex-direction: column;
@@ -216,7 +216,7 @@
 
 .chatInput:focus-within {
   border-top-color: rgba(59, 130, 246, 0.4);
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
 }
 
 .inputControls {
@@ -290,7 +290,7 @@
   height: 26px;
   padding: 0 8px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   color: var(--ide-text-secondary, 0.7);
   font-size: 11px;
   font-weight: 500;
@@ -331,7 +331,7 @@
   min-width: 200px;
   max-width: 260px;
   padding: 4px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
@@ -453,7 +453,7 @@
   height: 26px;
   padding: 0 10px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   color: var(--ide-text-secondary, 0.6);
   font-size: 11px;
   font-weight: 500;
@@ -495,7 +495,7 @@
   min-width: 220px;
   max-width: 280px;
   padding: 4px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
@@ -692,7 +692,7 @@
 [data-theme='light'] .textarea {
   background: #FFFFFF;
   border-color: #E5E7EB;
-  color: #0a0a0a;
+  color: #262321;
 }
 
 [data-theme='light'] .textarea:focus {
@@ -714,12 +714,12 @@
 }
 
 [data-theme='light'] .agentSelectorButton {
-  color: #0a0a0a;
+  color: #262321;
 }
 
 [data-theme='light'] .agentSelectorButton:hover {
   background: #F3F4F6;
-  color: #0a0a0a;
+  color: #262321;
 }
 
 [data-theme='light'] .uploadPhotoButton {
@@ -728,7 +728,7 @@
 
 [data-theme='light'] .uploadPhotoButton:hover {
   background: #F3F4F6;
-  color: #0a0a0a;
+  color: #262321;
 }
 
 /* File Previews Section */
@@ -846,12 +846,12 @@
 }
 
 .acceleratorToggle:hover {
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   color: #888;
 }
 
 .acceleratorToggle.acceleratorActive {
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   color: #4ade80;
 }
 

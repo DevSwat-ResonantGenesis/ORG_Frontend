@@ -10,7 +10,7 @@
   width: 100%;
   height: 100%;
   overflow: visible;
-  background: #0a0a0a;
+  background: #262321;
   display: block;
   visibility: visible;
   z-index: 2;
@@ -24,7 +24,7 @@
   width: 100%;
   height: 100%;
   border: none;
-  background: #0a0a0a;
+  background: #262321;
   display: block;
   opacity: 1;
   visibility: visible;
@@ -76,7 +76,7 @@
   padding: 12px 14px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(26, 26, 26, 0.65); /* Match website background #0a0a0a */
+  background: rgba(26, 26, 26, 0.65); /* Match website background #262321 */
   color: #fff;
   font-size: var(--font-sm);
   font-family: inherit;
@@ -150,7 +150,7 @@
   position: absolute;
   right: 32px;
   bottom: 32px;
-  background: rgba(26, 26, 26, 0.78); /* Match website background #0a0a0a */
+  background: rgba(26, 26, 26, 0.78); /* Match website background #262321 */
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   padding: 10px 14px;
@@ -177,7 +177,7 @@
 }
 
 .consoleLog {
-  background: rgba(26, 26, 26, 0.78); /* Match website background #0a0a0a */
+  background: rgba(26, 26, 26, 0.78); /* Match website background #262321 */
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   padding: 10px 14px;

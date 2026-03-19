@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--editor-background, #0a0a0a);
+  background: var(--editor-background, #262321);
   color: var(--editor-foreground, #d4d4d4);
   font-family: var(--font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
 }
@@ -175,7 +175,7 @@
   align-items: center;
   gap: 12px;
   padding: 10px 12px;
-  background: var(--list-hover-background, #0a0a0a);
+  background: var(--list-hover-background, #262321);
   border-radius: 6px;
 }
 
@@ -289,7 +289,7 @@
   font-size: 12px;
   color: var(--text-secondary, #888);
   padding: 8px 12px;
-  background: var(--list-hover-background, #0a0a0a);
+  background: var(--list-hover-background, #262321);
   border-radius: 4px;
 }
 
@@ -356,7 +356,7 @@
 }
 
 .proofHeader:hover {
-  background: var(--list-hover-background, #0a0a0a);
+  background: var(--list-hover-background, #262321);
 }
 
 .proofHeader h4 {
@@ -450,7 +450,7 @@
 .verifyOutput {
   margin: 8px 0 0;
   padding: 8px;
-  background: var(--editor-background, #0a0a0a);
+  background: var(--editor-background, #262321);
   border-radius: 4px;
   font-size: 11px;
   font-family: var(--font-mono, 'JetBrains Mono', monospace);

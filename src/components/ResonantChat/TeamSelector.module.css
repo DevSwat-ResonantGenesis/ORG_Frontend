@@ -135,7 +135,7 @@
     }
 
     .select {
-        background: var(--surface, #0a0a0a);
+        background: var(--surface, #262321);
         color: var(--text-primary, #e0e0e0);
         border-color: var(--border, #444);
     }
@@ -158,7 +158,7 @@
     }
 
     .refreshButton {
-        background: var(--surface, #0a0a0a);
+        background: var(--surface, #262321);
         border-color: var(--border, #444);
         color: var(--text-secondary, #aaa);
     }

@@ -9,7 +9,7 @@
 }
 
 [data-theme='dark'] .page {
-  background: var(--color-bg-root, #0a0a0a);
+  background: var(--color-bg-root, #262321);
   color: var(--color-text-primary, #F9FAFB);
 }
 

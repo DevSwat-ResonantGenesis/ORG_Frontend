@@ -1,5 +1,5 @@
 /* Git Panel - Layout-critical styles need */
-/* Using Resonant Chat colors: --surface-dark: #0a0a0a, --surface-border-dark: rgba(255,255,255,0.1) */
+/* Using Resonant Chat colors: --surface-dark: #262321, --surface-border-dark: rgba(255,255,255,0.1) */
 .gitPanel {
   display: flex;
   flex-direction: column;
@@ -134,9 +134,9 @@
   flex: 1;
   min-width: 120px;
   padding: var(--space-6) var(--space-10);
-  background: var(--bg-primary, #0a0a0a);
+  background: var(--bg-primary, #262321);
   color: var(--ide-text-primary);
-  border: 1px solid var(--border, #0a0a0a);
+  border: 1px solid var(--border, #262321);
   border-radius: var(--radius-sm);
   font-size: var(--font-13);
   outline: none;

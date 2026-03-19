@@ -2,7 +2,7 @@
 
 .dashboard {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0a0a0a 0%, #141414 100%);
+  background: linear-gradient(135deg, #262321 0%, #141414 100%);
   color: #f1f5f9;
   /* Mobile: Compact padding - proper 8px grid alignment */
   padding: var(--space-12) var(--space-4);
@@ -27,7 +27,7 @@
 }
 
 [data-theme='dark'] .dashboard {
-  background: linear-gradient(135deg, #0a0a0a 0%, #141414 100%);
+  background: linear-gradient(135deg, #262321 0%, #141414 100%);
   color: #f1f5f9;
 }
 

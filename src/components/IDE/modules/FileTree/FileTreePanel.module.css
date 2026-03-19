@@ -2,7 +2,7 @@
     position: relative;
     height: 100%;
     width: 100%;
-    background: var(--vscode-sideBar-background, #0a0a0a);
+    background: var(--vscode-sideBar-background, #262321);
     color: var(--vscode-sideBar-foreground, #cccccc);
     overflow: hidden;
     display: flex;

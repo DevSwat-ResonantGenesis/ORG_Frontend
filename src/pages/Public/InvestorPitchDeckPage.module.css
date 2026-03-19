@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  background: #0a0a0a;
+  background: #262321;
   color: #e5e7eb;
   overflow-x: clip;
 }
@@ -1072,7 +1072,7 @@
 
 /* slideDark bg — padding/overflow set above in .slideDark block */
 .slideDark {
-  background: #0a0a0a;
+  background: #262321;
 }
 
 /* VR image slides (duplicate kept for specificity) */

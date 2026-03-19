@@ -1,5 +1,5 @@
 /* IDEHeader - Compact header with burger menu */
-/* No borders, #0a0a0a background, compact design */
+/* No borders, #262321 background, compact design */
 
 .header {
   display: flex;
@@ -7,7 +7,7 @@
   justify-content: space-between;
   height: 36px;
   padding: 0 8px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   position: relative;
   z-index: 1000;
   flex-shrink: 0;
@@ -95,7 +95,7 @@
   position: absolute;
   top: 100%;
   left: 8px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   min-width: 180px;
   padding: 4px;
   border-radius: 6px;

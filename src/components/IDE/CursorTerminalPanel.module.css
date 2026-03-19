@@ -2,7 +2,7 @@
    TERMINAL PANEL - Two-Tone Design with Blue Accents
    ============================================================ */
 .terminalPanel {
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
@@ -41,7 +41,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 12px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   cursor: pointer;
   color: var(--ide-text-secondary, 0.6);
@@ -51,7 +51,7 @@
 }
 
 .collapsedBar:hover {
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   color: var(--ide-text-secondary, 0.9);
 }
 
@@ -82,7 +82,7 @@
 
 :global([data-theme='light']) .collapsedBar:hover {
   background: #FFFFFF;
-  color: #0a0a0a;
+  color: #262321;
 }
 
 :global([data-theme='light']) .resizeHandle:hover {

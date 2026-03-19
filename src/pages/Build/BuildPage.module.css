@@ -24,7 +24,7 @@
   align-items: center;
   gap: 20px;
   padding: 0 20px;
-  background: #0a0a0a;
+  background: #262321;
   border-bottom: none;
   height: 30px;
   min-height: 30px;
@@ -627,7 +627,7 @@
   width: 200px;
   min-width: 200px;
   flex-shrink: 0;
-  background: #0a0a0a;
+  background: #262321;
   border: none;
   border-right: 1px solid #1a1a1a;
   border-radius: 0;
@@ -708,7 +708,7 @@
   justify-content: space-between;
   padding: 4px 10px;
   border-bottom: 1px solid #1a1a1a;
-  background: #0a0a0a;
+  background: #262321;
   min-height: 28px;
 }
 
@@ -1401,7 +1401,7 @@
 }
 
 .githubCommands {
-  background: #0a0a0a;
+  background: #262321;
   border: 1px solid #1a1a1a;
   border-radius: 6px;
   padding: 12px;
@@ -1444,7 +1444,7 @@
 .githubSelect,
 .githubInput {
   padding: 8px 10px;
-  background: #0a0a0a;
+  background: #262321;
   border: 1px solid #27272a;
   border-radius: 6px;
   color: #fafafa;

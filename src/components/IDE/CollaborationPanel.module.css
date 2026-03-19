@@ -13,7 +13,7 @@
     top: 0;
     bottom: 0;
     width: 350px;
-    background: var(--bg-secondary, #0a0a0a);
+    background: var(--bg-secondary, #262321);
     border-left: 1px solid var(--border-color, #333);
     display: flex;
     flex-direction: column;
@@ -401,7 +401,7 @@
     gap: 12px;
     padding: 8px;
     border-radius: 6px;
-    background: var(--bg-tertiary, #0a0a0a);
+    background: var(--bg-tertiary, #262321);
 }
 
 .avatar {
@@ -433,7 +433,7 @@
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    border: 2px solid var(--bg-secondary, #0a0a0a);
+    border: 2px solid var(--bg-secondary, #262321);
 }
 
 .status.online {
@@ -470,7 +470,7 @@
 .input {
     flex: 1;
     padding: 8px 12px;
-    background: var(--bg-tertiary, #0a0a0a);
+    background: var(--bg-tertiary, #262321);
     border: 1px solid var(--border-color, #333);
     border-radius: 4px;
     color: var(--text-primary, #fff);

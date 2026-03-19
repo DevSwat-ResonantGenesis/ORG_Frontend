@@ -144,7 +144,7 @@
 .fileTree {
   width: 240px;
   flex-shrink: 0;
-  background: #0a0a0a;
+  background: #262321;
   border-right: 1px solid #18181b;
   display: flex;
   flex-direction: column;
@@ -211,7 +211,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 8px 16px;
-  background: #0a0a0a;
+  background: #262321;
   border-bottom: 1px solid #18181b;
 }
 
@@ -267,7 +267,7 @@
 /* Modification Panel - Minimal Bottom Bar */
 .modifyPanel {
   padding: 12px 24px;
-  background: #0a0a0a;
+  background: #262321;
   border-top: 1px solid #18181b;
 }
 

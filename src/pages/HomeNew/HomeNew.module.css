@@ -76,11 +76,11 @@
 }
 
 [data-theme='dark'] .header {
-  background: var(--color-bg-root, #0a0a0a) !important;
+  background: var(--color-bg-root, #262321) !important;
 }
 
 [data-theme='dark'] .headerScrolled {
-  background: var(--color-bg-root, #0a0a0a) !important;
+  background: var(--color-bg-root, #262321) !important;
   box-shadow: none;
 }
 
@@ -4622,7 +4622,7 @@
 
 [data-theme='dark'] .trust {
   background: var(--bg-primary) !important;
-  /* Warm gray #0a0a0a - same as dark theme */
+  /* Warm gray #262321 - same as dark theme */
 }
 
 .trustGrid {

@@ -162,7 +162,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  border: 2px solid #0a0a0a;
+  border: 2px solid #262321;
 }
 
 .statusIndicator.running { background: #0ea5e9; animation: pulse 2s infinite; }

@@ -238,7 +238,7 @@
 .logsContent {
   width: 700px;
   max-height: 80vh;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
   overflow: hidden;

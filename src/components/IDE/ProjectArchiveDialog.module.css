@@ -13,7 +13,7 @@
 }
 
 .dialog {
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border: 1px solid var(--ide-border, rgba(255, 255, 255, 0.15));
   border-radius: 8px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -241,11 +241,11 @@
 }
 
 [data-theme='light'] .header h3 {
-  color: #0a0a0a;
+  color: #262321;
 }
 
 [data-theme='light'] .description {
-  color: #0a0a0a;
+  color: #262321;
 }
 
 [data-theme='light'] .infoBox {

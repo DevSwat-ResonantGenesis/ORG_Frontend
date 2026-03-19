@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border-top: 1px solid var(--border);
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
 }
@@ -13,7 +13,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border-bottom: 1px solid #3c3c3c;
   padding: 0 8px;
   height: 35px;
@@ -44,12 +44,12 @@
 }
 
 .tab:hover {
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   color: #cccccc;
 }
 
 .activeTab {
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   color: #ffffff;
 }
 
@@ -109,7 +109,7 @@
   flex: 1;
   overflow-y: auto;
   padding: 12px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   cursor: text;
 }
 
@@ -135,7 +135,7 @@
   display: flex;
   align-items: center;
   padding: 8px 12px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   border-top: 1px solid #3c3c3c;
 }
 
@@ -167,7 +167,7 @@
 }
 
 .terminalOutput::-webkit-scrollbar-track {
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
 }
 
 .terminalOutput::-webkit-scrollbar-thumb {

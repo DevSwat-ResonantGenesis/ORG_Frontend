@@ -1,12 +1,12 @@
 /* AcceleratorProcessFlow - Windsurf-style minimal execution UI */
-/* No borders, compact, #0a0a0a background */
+/* No borders, compact, #262321 background */
 
 .container {
   display: flex;
   flex-direction: column;
   gap: 4px;
   padding: 6px 8px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   font-size: 11px;
 }
 
@@ -168,7 +168,7 @@
   left: 100%;
   top: 0;
   margin-left: 8px;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   padding: 8px;
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
@@ -272,7 +272,7 @@
   position: absolute;
   bottom: 100%;
   left: 0;
-  background: var(--ide-bg-primary, #0a0a0a);
+  background: var(--ide-bg-primary, #262321);
   padding: 8px;
   border-radius: 4px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);

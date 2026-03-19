@@ -8,7 +8,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: var(--bg-secondary, #0a0a0a);
+  background: var(--bg-secondary, #262321);
   border: 1px solid var(--border-color, #333);
   border-radius: 8px;
   color: var(--text-primary, #fff);
@@ -69,12 +69,12 @@
 }
 
 .tab:hover {
-  background: var(--bg-hover, #0a0a0a);
+  background: var(--bg-hover, #262321);
 }
 
 .tab.active {
   color: var(--accent-color, #6366f1);
-  background: var(--bg-secondary, #0a0a0a);
+  background: var(--bg-secondary, #262321);
   border-bottom: 2px solid var(--accent-color, #6366f1);
 }
 
@@ -106,7 +106,7 @@
 }
 
 .item:hover {
-  background: var(--bg-hover, #0a0a0a);
+  background: var(--bg-hover, #262321);
 }
 
 .item.selected {
