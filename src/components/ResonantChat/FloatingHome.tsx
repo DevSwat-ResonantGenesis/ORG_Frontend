@@ -6,7 +6,6 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useThemeStore } from '@/store/themeStore';
 import {
   Bot,
   Brain,
@@ -46,7 +45,6 @@ const FEATURE_CARDS = [
 ];
 
 export const FloatingHome: React.FC<FloatingHomeProps> = ({ isLoggedIn }) => {
-  const { theme } = useThemeStore();
   const navigate = useNavigate();
   const isGuest = !isLoggedIn;
 
@@ -79,14 +77,6 @@ export const FloatingHome: React.FC<FloatingHomeProps> = ({ isLoggedIn }) => {
         </div>
       )}
 
-      <div className={styles.watermarkContainer}>
-        <img
-          src={theme === 'dark' ? '/logo white.png' : '/logo black.png'}
-          alt="ResonantGenesis"
-          className={styles.watermarkLogo}
-          draggable={false}
-        />
-      </div>
 
       <footer className={styles.siteFooter}>
         <div className={styles.footerInfo}>
