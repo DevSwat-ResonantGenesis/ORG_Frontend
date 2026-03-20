@@ -335,6 +335,8 @@
 }
 
 .messageRevealed {
+  /* placeholder — JS toggles this class */
+  opacity: 1;
 }
 
 .message:hover {
@@ -380,8 +382,8 @@
 }
 
 .message.assistant.selected {
-  background: transparent !important;
-  box-shadow: none !important;
+  background: transparent;
+  box-shadow: none;
 }
 
 .message.assistant .messageActions {
@@ -394,9 +396,9 @@
 
 
 
-.message.selected {
-  background: transparent !important;
-  box-shadow: none !important;
+.message.message.selected {
+  background: transparent;
+  box-shadow: none;
 }
 
 
@@ -945,6 +947,7 @@
 
 .typingReveal {
   /* Disabled - was causing blinking */
+  animation: none;
 }
 
 .typingCaret {
@@ -1176,13 +1179,13 @@
 }
 
 /* Stop Button */
-.stop-button {
-  background: rgba(239, 68, 68, 0.1) !important;
-  color: #ef4444 !important;
+.stop-button.stop-button {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
-.stop-button:hover {
-  background: rgba(239, 68, 68, 0.2) !important;
+.stop-button.stop-button:hover {
+  background: rgba(239, 68, 68, 0.2);
 }
 
 /* ============================================================
@@ -1828,16 +1831,16 @@
     -webkit-overflow-scrolling: touch;
   }
   
-  .splitViewPanel {
+  .splitViewPanel.splitViewPanel {
     min-width: 100%;
-    width: 100% !important;
+    width: 100%;
     flex-shrink: 0;
     scroll-snap-align: start;
   }
   
-  .splitViewCode {
+  .splitViewCode.splitViewCode {
     min-width: 100%;
-    width: 100% !important;
+    width: 100%;
     flex-shrink: 0;
     scroll-snap-align: start;
     border-left: none;
@@ -1990,8 +1993,8 @@
 /* ============================================================
    Hidden Utility
    ============================================================ */
-.hidden {
-  display: none !important;
+.hidden.hidden {
+  display: none;
 }
 
 /* ============================================================
@@ -2607,13 +2610,13 @@
 /* ============================================================
    Stop Button
    ============================================================ */
-.stop-button {
-  background: rgba(239, 68, 68, 0.15) !important;
-  color: #ef4444 !important;
+.stop-button.stop-button {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
 }
 
-.stop-button:hover {
-  background: rgba(239, 68, 68, 0.25) !important;
+.stop-button.stop-button:hover {
+  background: rgba(239, 68, 68, 0.25);
 }
 
 /* ============================================================
@@ -2664,9 +2667,9 @@
    ============================================================ */
 
 /* Active State */
-.active {
-  background: var(--accent-primary, #0ea5e9) !important;
-  color: #fff !important;
+.active.active {
+  background: var(--accent-primary, #0ea5e9);
+  color: #fff;
 }
 
 /* Agent Selection Panel */

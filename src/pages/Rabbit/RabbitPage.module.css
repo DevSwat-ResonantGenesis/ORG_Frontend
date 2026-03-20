@@ -1081,9 +1081,9 @@
   transition: opacity 0.15s, color 0.15s;
 }
 
-.postFooterBtnDanger:hover {
+.postFooterBtnDanger.postFooterBtnDanger:hover {
   opacity: 1;
-  color: #ef4444 !important;
+  color: #ef4444;
 }
 
 /* ── Image Drop Zone ── */

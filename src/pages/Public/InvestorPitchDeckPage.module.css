@@ -12,114 +12,114 @@
 }
 
 :global([data-theme="light"]) .page {
-  background: #f8fafc !important;
-  color: #1e293b !important;
+  background: #f8fafc;
+  color: #1e293b;
 }
 
 /* VR image slides — always dark so photos show in any theme */
-.slideVr {
-  background: #000 !important;
+.slideVr.slideVr {
+  background: #000;
 }
 
 /* ============================================================
    LIGHT MODE OVERRIDES — follows platform theme
    ============================================================ */
 :global([data-theme="light"]) .slideDark {
-  background: #f8fafc !important;
+  background: #f8fafc;
 }
 
 :global([data-theme="light"]) .sectionTitle {
-  color: #0f172a !important;
+  color: #0f172a;
 }
 
 :global([data-theme="light"]) .sectionLead {
-  color: #475569 !important;
+  color: #475569;
 }
 
 :global([data-theme="light"]) .card {
-  background: rgba(241, 245, 249, 0.6) !important;
-  border-color: rgba(148, 163, 184, 0.25) !important;
+  background: rgba(241, 245, 249, 0.6);
+  border-color: rgba(148, 163, 184, 0.25);
 }
 
 :global([data-theme="light"]) .cardTitle {
-  color: #0f172a !important;
+  color: #0f172a;
 }
 
 :global([data-theme="light"]) .cardBody {
-  color: #475569 !important;
+  color: #475569;
 }
 
 
 :global([data-theme="light"]) .footerCta {
   background: radial-gradient(900px 480px at 15% 15%, rgba(37, 99, 235, 0.08), transparent),
-    radial-gradient(1100px 540px at 75% 35%, rgba(14, 165, 233, 0.06), transparent) !important;
+    radial-gradient(1100px 540px at 75% 35%, rgba(14, 165, 233, 0.06), transparent);
 }
 
 :global([data-theme="light"]) .footerCtaInner {
-  background: rgba(241, 245, 249, 0.75) !important;
-  border-color: rgba(148, 163, 184, 0.25) !important;
+  background: rgba(241, 245, 249, 0.75);
+  border-color: rgba(148, 163, 184, 0.25);
 }
 
 :global([data-theme="light"]) .footerCtaTitle {
-  color: #0f172a !important;
+  color: #0f172a;
 }
 
 :global([data-theme="light"]) .footerCtaBody {
-  color: #475569 !important;
+  color: #475569;
 }
 
 :global([data-theme="light"]) .ctaPrimary {
-  color: #fff !important;
+  color: #fff;
 }
 
 /* Workflow panel sits on VR photo — text stays white in any theme */
 /* Badge on VR slides — also stays light in any theme */
 /* VR slide overlays — force white text in light mode */
 :global([data-theme="light"]) .vrTitle {
-  color: #fff !important;
+  color: #fff;
 }
 
 :global([data-theme="light"]) .vrQuote {
-  color: rgba(255, 255, 255, 0.92) !important;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 :global([data-theme="light"]) .vrQuote strong {
-  color: #60a5fa !important;
+  color: #60a5fa;
 }
 
 :global([data-theme="light"]) .workflowTitle {
-  color: #fff !important;
+  color: #fff;
 }
 
 :global([data-theme="light"]) .workflowSubtitle {
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 :global([data-theme="light"]) .workflowStepNum {
-  color: #60a5fa !important;
+  color: #60a5fa;
 }
 
 :global([data-theme="light"]) .workflowStepBody strong {
-  color: #fff !important;
+  color: #fff;
 }
 
 :global([data-theme="light"]) .workflowStepBody span {
-  color: rgba(255, 255, 255, 0.55) !important;
+  color: rgba(255, 255, 255, 0.55);
 }
 
 :global([data-theme="light"]) .workflowPanel {
-  background: transparent !important;
+  background: transparent;
 }
 
 :global([data-theme="light"]) .workflowStep {
-  background: transparent !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 :global([data-theme="light"]) .badge {
-  background: rgba(15, 23, 42, 0.55) !important;
-  border-color: rgba(59, 130, 246, 0.25) !important;
-  color: rgba(248, 250, 252, 0.85) !important;
+  background: rgba(15, 23, 42, 0.55);
+  border-color: rgba(59, 130, 246, 0.25);
+  color: rgba(248, 250, 252, 0.85);
 }
 
 :global([data-theme="light"]) .slideDot {
@@ -1076,8 +1076,8 @@
 }
 
 /* VR image slides (duplicate kept for specificity) */
-.slideVr {
-  background: #000 !important;
+.slideVr.slideVr {
+  background: #000;
 }
 
 .vrImage {

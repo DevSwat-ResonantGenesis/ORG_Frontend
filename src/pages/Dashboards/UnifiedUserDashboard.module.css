@@ -2,8 +2,8 @@
 
 .dashboard {
   min-height: 100vh;
-  background: linear-gradient(135deg, #262321 0%, #121212 50%, #262321 100%);
-  color: #f1f5f9;
+  background: linear-gradient(135deg, #262321 0%, var(--bg-secondary, #121212) 50%, #262321 100%);
+  color: var(--text-primary, #f1f5f9);
   padding: 32px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -16,14 +16,14 @@
   justify-content: center;
   min-height: 60vh;
   gap: 16px;
-  color: #94a3b8;
+  color: var(--text-secondary, #94a3b8);
 }
 
 .spinner {
   width: 40px;
   height: 40px;
   border: 3px solid rgba(255,255,255,0.1);
-  border-top-color: #6366f1;
+  border-top-color: var(--accent-primary, #6366f1);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -39,19 +39,19 @@
   align-items: center;
   margin-bottom: 32px;
   padding-bottom: 24px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid var(--border-primary, rgba(255,255,255,0.1));
 }
 
 .headerLeft h1 {
   font-size: 28px;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary, #fff);
   margin: 0 0 4px 0;
 }
 
 .headerLeft p {
   font-size: 14px;
-  color: #64748b;
+  color: var(--text-muted, #64748b);
   margin: 0;
 }
 
@@ -88,7 +88,7 @@
   border-radius: 20px;
   font-size: 14px;
   font-weight: 600;
-  color: #a5b4fc;
+  color: var(--accent-hover, #a5b4fc);
 }
 
 .upgradeBtn {
@@ -96,10 +96,10 @@
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, var(--accent-primary, #6366f1), var(--accent-hover, #8b5cf6));
   border: none;
-  border-radius: 8px;
-  color: #fff;
+  border-radius: var(--radius-md, 8px);
+  color: var(--text-primary, #fff);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -130,13 +130,13 @@
 .creditsValue {
   font-size: 48px;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary, #fff);
   line-height: 1;
 }
 
 .creditsLabel {
   font-size: 14px;
-  color: #64748b;
+  color: var(--text-muted, #64748b);
   margin-top: 4px;
 }
 
@@ -150,14 +150,14 @@
 
 .creditsBarFill {
   height: 100%;
-  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  background: linear-gradient(90deg, var(--accent-primary, #6366f1), var(--accent-hover, #8b5cf6));
   border-radius: 4px;
   transition: width 0.3s;
 }
 
 .creditsSubtext {
   font-size: 12px;
-  color: #64748b;
+  color: var(--text-muted, #64748b);
 }
 
 /* Stats Section */
@@ -171,7 +171,7 @@
   gap: 8px;
   font-size: 18px;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary, #fff);
   margin: 0 0 16px 0;
 }
 
@@ -192,7 +192,7 @@
 }
 
 .statCard svg {
-  color: #6366f1;
+  color: var(--accent-primary, #6366f1);
   flex-shrink: 0;
 }
 
@@ -204,12 +204,12 @@
 .statValue {
   font-size: 24px;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary, #fff);
 }
 
 .statLabel {
   font-size: 13px;
-  color: #64748b;
+  color: var(--text-muted, #64748b);
 }
 
 /* Features Section */
@@ -223,7 +223,7 @@
   gap: 8px;
   font-size: 18px;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary, #fff);
   margin: 0 0 16px 0;
 }
 
@@ -259,7 +259,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6366f1;
+  color: var(--accent-primary, #6366f1);
   flex-shrink: 0;
 }
 
@@ -270,18 +270,18 @@
 .featureInfo h3 {
   font-size: 16px;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary, #fff);
   margin: 0 0 4px 0;
 }
 
 .featureInfo p {
   font-size: 13px;
-  color: #64748b;
+  color: var(--text-muted, #64748b);
   margin: 0;
 }
 
 .featureCard > svg:last-child {
-  color: #64748b;
+  color: var(--text-muted, #64748b);
   flex-shrink: 0;
 }
 
@@ -303,7 +303,7 @@
   gap: 8px;
   font-size: 18px;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary, #fff);
   margin: 0;
 }
 
@@ -312,7 +312,7 @@
   background: transparent;
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 8px;
-  color: #94a3b8;
+  color: var(--text-secondary, #94a3b8);
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s;
@@ -332,7 +332,7 @@
   background: rgba(255,255,255,0.02);
   border: 1px dashed rgba(255,255,255,0.1);
   border-radius: 12px;
-  color: #64748b;
+  color: var(--text-muted, #64748b);
   gap: 12px;
 }
 
@@ -365,7 +365,7 @@
 }
 
 .conversationItem > svg:first-child {
-  color: #6366f1;
+  color: var(--accent-primary, #6366f1);
   flex-shrink: 0;
 }
 
@@ -378,16 +378,16 @@
 .convTitle {
   font-size: 14px;
   font-weight: 500;
-  color: #fff;
+  color: var(--text-primary, #fff);
 }
 
 .convDate {
   font-size: 12px;
-  color: #64748b;
+  color: var(--text-muted, #64748b);
 }
 
 .conversationItem > svg:last-child {
-  color: #64748b;
+  color: var(--text-muted, #64748b);
 }
 
 /* Upgrade CTA */
@@ -409,19 +409,19 @@
 }
 
 .upgradeContent svg {
-  color: #fbbf24;
+  color: var(--warning, #fbbf24);
 }
 
 .upgradeContent h2 {
   font-size: 20px;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary, #fff);
   margin: 0 0 4px 0;
 }
 
 .upgradeContent p {
   font-size: 14px;
-  color: #94a3b8;
+  color: var(--text-secondary, #94a3b8);
   margin: 0;
 }
 
@@ -452,7 +452,7 @@
 }
 
 .creditPurchaseHeader svg {
-  color: #6366f1;
+  color: var(--accent-primary, #6366f1);
 }
 
 /* Upgrade Prompt for Developer Plan */
@@ -475,19 +475,19 @@
 }
 
 .crownIcon {
-  color: #fbbf24;
+  color: var(--warning, #fbbf24);
 }
 
 .upgradePromptTitle {
   font-size: 15px;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary, #fff);
   margin: 0 0 4px 0;
 }
 
 .upgradePromptDesc {
   font-size: 13px;
-  color: #94a3b8;
+  color: var(--text-secondary, #94a3b8);
   margin: 0;
 }
 
@@ -553,20 +553,20 @@
 .creditPackAmount {
   font-size: 28px;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary, #fff);
   line-height: 1;
 }
 
 .creditPackLabel {
   font-size: 13px;
-  color: #64748b;
+  color: var(--text-muted, #64748b);
   margin-top: 4px;
 }
 
 .creditPackPrice {
   font-size: 20px;
   font-weight: 600;
-  color: #10b981;
+  color: var(--success, #10b981);
   margin-top: 12px;
 }
 
@@ -620,13 +620,13 @@
 .subscriptionBarText h3 {
   font-size: 18px;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-primary, #fff);
   margin: 0 0 4px 0;
 }
 
 .subscriptionBarText p {
   font-size: 13px;
-  color: #94a3b8;
+  color: var(--text-secondary, #94a3b8);
   margin: 0;
 }
 
@@ -645,12 +645,12 @@
 .priceAmount {
   font-size: 32px;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary, #fff);
 }
 
 .pricePeriod {
   font-size: 14px;
-  color: #64748b;
+  color: var(--text-muted, #64748b);
 }
 
 .subscriptionBarBtn {

@@ -102,9 +102,9 @@
   background: rgba(255,255,255,0.05);
 }
 
-.tabActive {
-  background: #6366f1 !important;
-  color: #fff !important;
+.tab.tabActive {
+  background: #6366f1;
+  color: #fff;
 }
 
 /* ---------- Category pills ---------- */
@@ -134,10 +134,10 @@
   color: #e2e8f0;
 }
 
-.pillActive {
-  background: rgba(168,85,247,0.18) !important;
-  border-color: rgba(168,85,247,0.5) !important;
-  color: #c084fc !important;
+.pill.pillActive {
+  background: rgba(168,85,247,0.18);
+  border-color: rgba(168,85,247,0.5);
+  color: #c084fc;
   font-weight: 600;
 }
 
@@ -174,9 +174,9 @@
 
 .sortBtn:hover { background: rgba(255,255,255,0.06); color: #e2e8f0; }
 
-.sortBtnActive {
-  background: #6366f1 !important;
-  color: #fff !important;
+.sortBtn.sortBtnActive {
+  background: #6366f1;
+  color: #fff;
 }
 
 /* ---------- Icon grid (dashboardicons style) ---------- */

@@ -323,11 +323,11 @@
   background: var(--bg-tertiary, #1a1a1a);
 }
 
-.level0 { background: var(--bg-tertiary, #1a1a1a) !important; }
-.level1 { background: #0e4429 !important; }
-.level2 { background: #006d32 !important; }
-.level3 { background: #26a641 !important; }
-.level4 { background: #39d353 !important; }
+.level0.level0 { background: var(--bg-tertiary, #1a1a1a); }
+.level1.level1 { background: #0e4429; }
+.level2.level2 { background: #006d32; }
+.level3.level3 { background: #26a641; }
+.level4.level4 { background: #39d353; }
 
 .heatmapLegend {
   display: flex;
@@ -425,9 +425,9 @@
   border-radius: 4px;
 }
 
-.tabActive {
-  background: var(--color-primary-500, #40c463) !important;
-  color: #000 !important;
+.tabToggle .tabActive {
+  background: var(--color-primary-500, #40c463);
+  color: #000;
 }
 
 .miniChart {

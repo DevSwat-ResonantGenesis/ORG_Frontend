@@ -66,8 +66,8 @@
   font-weight: 600;
 }
 
-.readOnlyNotice {
-  margin-top: 12px !important;
+.readOnlyNotice.readOnlyNotice {
+  margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   color: #6b7280;
@@ -1478,12 +1478,12 @@
   color: #f3f4f6;
 }
 
-.flaggedCount {
-  color: #f59e0b !important;
+.flaggedCount.flaggedCount {
+  color: #f59e0b;
 }
 
-.blockedCount {
-  color: #ef4444 !important;
+.blockedCount.blockedCount {
+  color: #ef4444;
 }
 
 .liveControls {
