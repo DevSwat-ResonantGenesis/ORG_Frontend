@@ -59,6 +59,7 @@ const AIAuditLogDetailPage = lazy(() => import('../pages/AIAudit/AIAuditLogDetai
 const DSIDPPage = lazy(() => import('../pages/DSIDP/DSIDPPage'));
 const ResetPasswordPage = lazy(() => import('../pages/Auth/ResetPasswordPage-2025'));
 const OAuthCallbackPage = lazy(() => import('../pages/Auth/OAuthCallback'));
+const DesktopCallbackPage = lazy(() => import('../pages/Auth/DesktopCallbackPage'));
 const VerifyEmailPage = lazy(() => import('../pages/Auth/VerifyEmailPage'));
 const MFASetupPage = lazy(() => import('../pages/Settings/MFASetupPage'));
 const UserManagementPage = lazy(() => import('../pages/Admin/UserManagementPage'));
@@ -370,6 +371,10 @@ const router = createBrowserRouter([
   {
     path: '/auth/oauth/callback',
     element: <OAuthCallbackPage />
+  },
+  {
+    path: '/auth/desktop-callback',
+    element: <DesktopCallbackPage />
   },
   {
     path: '/forgot-password',
