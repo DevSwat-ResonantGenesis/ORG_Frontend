@@ -1185,40 +1185,45 @@ const ResonantChatPage: React.FC = () => {
     loadConversations();
     loadMemories();
     
-    // Load available agents from Agent Engine API (real user agents)
-    fetch('/api/v1/agents?limit=50')
-      .then(res => res.json())
-      .then(data => {
-        const agentsList = data?.agents || data?.items || data?.data || (Array.isArray(data) ? data : []);
-        if (Array.isArray(agentsList) && agentsList.length > 0) {
-          setAvailableAgents(agentsList.map((a: any) => ({
-            hash: a.agent_public_hash || a.id,
-            name: a.name || 'Agent',
-          })));
-        } else {
-          // Fallback to chat service routing agents
-          fetch('/resonant-chat/agents/list')
-            .then(res2 => res2.json())
-            .then(data2 => {
-              if (data2.agents && Array.isArray(data2.agents)) {
-                setAvailableAgents(data2.agents.map((a: any) => ({ hash: a.id, name: a.name })));
-              }
-            })
-            .catch(() => {});
+    // Load available agents: built-in system agents + user's custom agents
+    const loadAllAgents = async () => {
+      const allAgents: Array<{ hash: string; name: string }> = [];
+
+      // 1. Always load built-in Resonant Chat agents
+      try {
+        const builtInRes = await fetch('/resonant-chat/agents/list');
+        const builtInData = await builtInRes.json();
+        if (builtInData.agents && Array.isArray(builtInData.agents)) {
+          builtInData.agents.forEach((a: any) => {
+            allAgents.push({ hash: a.id, name: a.name });
+          });
         }
-      })
-      .catch(err => {
-        logger.error('Failed to load agents from Agent Engine', err);
-        // Fallback to chat service
-        fetch('/resonant-chat/agents/list')
-          .then(res => res.json())
-          .then(data => {
-            if (data.agents && Array.isArray(data.agents)) {
-              setAvailableAgents(data.agents.map((a: any) => ({ hash: a.id, name: a.name })));
-            }
-          })
-          .catch(() => {});
-      });
+      } catch {
+        // Built-in agents unavailable
+      }
+
+      // 2. Load user's custom agents from Agent Engine (if logged in)
+      if (!isGuestMode) {
+        try {
+          const userRes = await fetch('/api/v1/agents?limit=50');
+          const userData = await userRes.json();
+          const userAgentsList = userData?.agents || userData?.items || userData?.data || (Array.isArray(userData) ? userData : []);
+          if (Array.isArray(userAgentsList) && userAgentsList.length > 0) {
+            userAgentsList.forEach((a: any) => {
+              allAgents.push({
+                hash: a.agent_public_hash || a.id,
+                name: a.name || 'Agent',
+              });
+            });
+          }
+        } catch (err) {
+          logger.error('Failed to load agents from Agent Engine', err);
+        }
+      }
+
+      setAvailableAgents(allAgents);
+    };
+    loadAllAgents();
     
     // Load teams from API (fallback to listAgentTeams if needed)
     fetch('/resonant-chat/teams')
