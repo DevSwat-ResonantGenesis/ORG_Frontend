@@ -1332,8 +1332,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                   className={styles.aiAssistantLogo}
                 />
                 <span>{aiAssistantEnabled ? 'AI Assistant' : 'Resonant Chat'}</span>
-                <span className={`${styles.modePill} ${aiAssistantEnabled ? styles.modePillOn : styles.modePillOff}`}>
-                  {aiAssistantEnabled ? 'ON' : 'OFF'}
+                <span className={`${styles.modePill} ${styles.modePillOn}`}>
+                  ON
                 </span>
               </button>
             )}
