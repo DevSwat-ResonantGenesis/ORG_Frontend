@@ -7,9 +7,7 @@ import { loadStripe as loadStripeOriginal } from '@stripe/stripe-js';
  * 
  * ⚠️ IMPORTANT: Never use secret keys in frontend!
  */
-export const STRIPE_PUBLISHABLE_KEY = 
-  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 
-  'STRIPE_PK_PLACEHOLDER';
+export const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '';
 
 /**
  * Load Stripe instance

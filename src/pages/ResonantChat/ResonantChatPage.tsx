@@ -356,7 +356,13 @@ const ResonantChatPage: React.FC = () => {
   const [providerStats, setProviderStats] = useState<Record<string, { health: string; latency?: number; available?: boolean }>>({});
   const [userAnalytics, setUserAnalytics] = useState<UserAnalytics | null>(null);
   const [agentMode, setAgentMode] = useState(false);
-  const [aiAssistantEnabled, setAiAssistantEnabled] = useState(true);
+  const [aiAssistantEnabled, setAiAssistantEnabled] = useState(() => {
+    try {
+      const saved = localStorage.getItem('rg-ai-assistant-mode');
+      if (saved !== null) return saved === 'true';
+    } catch {}
+    return true;
+  });
   const [agenticSteps, setAgenticSteps] = useState<Array<{ type: string; data: any; timestamp: number }>>([]);
   const [presentedOptions, setPresentedOptions] = useState<{ title: string; options: Array<{ label: string; value: string; description: string; icon?: string }>; allow_custom?: boolean } | null>(null);
   const [pipelineSteps, setPipelineSteps] = useState<Array<{ step: string; message: string; timestamp: number }>>([]);
@@ -5022,7 +5028,11 @@ const ResonantChatPage: React.FC = () => {
           onRemoveFile={(index) => setAttachedFiles(prev => prev.filter((_, i) => i !== index))}
           onEnabledSkillsChange={setEnabledSkillIds}
           aiAssistantEnabled={isGuestMode ? true : aiAssistantEnabled}
-          onToggleAiAssistant={isGuestMode ? undefined : () => setAiAssistantEnabled(prev => !prev)}
+          onToggleAiAssistant={isGuestMode ? undefined : () => setAiAssistantEnabled(prev => {
+            const next = !prev;
+            try { localStorage.setItem('rg-ai-assistant-mode', String(next)); } catch {}
+            return next;
+          })}
           memories={isGuestMode ? [] : memories}
           onShowMemoryLibrary={isGuestMode ? undefined : (() => {
             setShowMemoryLibrary(true);

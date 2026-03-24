@@ -1321,9 +1321,9 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           <div className={styles.toolsLeft}>
             {onToggleAiAssistant && (
               <button
-                className={`${styles.aiAssistantToggle} ${aiAssistantEnabled ? styles.aiAssistantToggleActive : ''}`}
+                className={`${styles.aiAssistantToggle} ${aiAssistantEnabled ? styles.aiAssistantToggleActive : styles.aiAssistantToggleResonant}`}
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleAiAssistant(); }}
-                title={aiAssistantEnabled ? 'AI Assistant ON — using agentic tools' : 'AI Assistant OFF — basic chat'}
+                title={aiAssistantEnabled ? 'AI Assistant ON — click to switch to Resonant Chat' : 'Resonant Chat ON — click to switch to AI Assistant'}
                 type="button"
               >
                 <img
@@ -1331,7 +1331,10 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                   alt=""
                   className={styles.aiAssistantLogo}
                 />
-                AI Assistant
+                <span>{aiAssistantEnabled ? 'AI Assistant' : 'Resonant Chat'}</span>
+                <span className={`${styles.modePill} ${aiAssistantEnabled ? styles.modePillOn : styles.modePillOff}`}>
+                  {aiAssistantEnabled ? 'ON' : 'OFF'}
+                </span>
               </button>
             )}
           </div>

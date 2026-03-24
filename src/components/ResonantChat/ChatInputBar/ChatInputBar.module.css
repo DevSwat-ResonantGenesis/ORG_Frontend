@@ -853,6 +853,57 @@
   color: rgba(0, 0, 0, 0.6);
 }
 
+.aiAssistantToggleResonant {
+  opacity: 1;
+  color: rgba(100, 200, 255, 0.85);
+}
+
+.aiAssistantToggleResonant:hover {
+  color: rgba(100, 200, 255, 1);
+}
+
+[data-theme='light'] .aiAssistantToggleResonant {
+  color: rgba(0, 100, 180, 0.7);
+}
+
+[data-theme='light'] .aiAssistantToggleResonant:hover {
+  color: rgba(0, 100, 180, 0.9);
+}
+
+.modePill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.modePillOn {
+  background: rgba(74, 222, 128, 0.2);
+  color: #4ade80;
+}
+
+.modePillOff {
+  background: rgba(100, 200, 255, 0.15);
+  color: rgba(100, 200, 255, 0.9);
+}
+
+[data-theme='light'] .modePillOn {
+  background: rgba(22, 163, 74, 0.12);
+  color: #16a34a;
+}
+
+[data-theme='light'] .modePillOff {
+  background: rgba(0, 100, 180, 0.1);
+  color: rgba(0, 100, 180, 0.8);
+}
+
 .aiAssistantLogo {
   width: 16px;
   height: 16px;
