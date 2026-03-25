@@ -15,12 +15,12 @@ const SETUP_STEPS = [
 ];
 
 const FEATURES = [
-  { title: '59 AI Tools', desc: 'File I/O, grep, git, terminal, web search, deploy, notebooks — all executed locally on your machine.' },
-  { title: '11 AI Providers', desc: 'OpenAI, Anthropic, Groq, Google, DeepSeek + Ollama, LM Studio, llama.cpp, LocalAI, vLLM + BYOK.' },
-  { title: 'AST Code Visualizer', desc: 'Full static analysis engine — dependency graphs, function tracing, SAST, governance checks, dead code detection.' },
-  { title: 'Hash Sphere Memory', desc: 'Persistent long-term memory across sessions. Your AI remembers your projects, preferences, and decisions.' },
-  { title: 'Agentic Loop', desc: 'Configurable max tool loops (1 to unlimited). Smart context compression reduces token burn by 90%.' },
-  { title: 'Privacy First', desc: 'Your code stays on your machine. No telemetry, no tracking. Only queries you send are processed by the AI.' },
+  { title: '59 Local Tools', desc: 'File read/write/edit, grep search, git operations, terminal commands, web search, deploy, notebook execution — all running locally on your machine via Electron IPC.' },
+  { title: '11 AI Providers', desc: '6 cloud (OpenAI, Anthropic, Groq, Google, DeepSeek, BYOK) + 5 local (Ollama, LM Studio, llama.cpp, LocalAI, vLLM). Automatic fallback chain rotates through providers on failure.' },
+  { title: 'AST Code Visualizer', desc: 'Built-in static analysis server — generates dependency graphs, traces function calls, runs SAST security scans, detects dead code, and scores governance compliance.' },
+  { title: 'Hash Sphere Memory', desc: '9-layer persistent memory synced with dev-swat.com. Your AI remembers project context, coding preferences, and past decisions across sessions and machines.' },
+  { title: 'Agentic Chat Loop', desc: 'Configurable tool loop depth (1 to unlimited). The AI reads your code, plans changes, executes tools, and iterates — with smart context compression that reduces token usage by up to 90%.' },
+  { title: 'Privacy & Ownership', desc: 'Fully open source (MIT). Your code never leaves your machine. No telemetry, no tracking. Only the prompts you send reach the LLM provider — nothing else.' },
 ];
 
 const REQUIREMENTS = [
@@ -91,7 +91,6 @@ const DownloadIDEPage: React.FC = () => {
 
       {/* Quick Setup — Two Column */}
       <section className={styles.setupSection}>
-        <h2 className={styles.sectionTitle}>Quick Setup</h2>
         <p className={styles.sectionDesc}>Clone, build, and launch in under 10 minutes.</p>
 
         <div className={styles.setupGrid}>
