@@ -411,7 +411,7 @@ export default function ContactPage() {
                   style={styles.submitBtn}
                   onClick={() => navigate('/signup')}
                 >
-                  Get Started Free <ArrowRight size={18} />
+                  Get Started <ArrowRight size={18} />
                 </button>
               </div>
             ) : (

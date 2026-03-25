@@ -475,8 +475,8 @@ const SignupPageQuick = () => {
     <div className={styles.signupPage}>
       <div className={styles.container}>
         <div className={styles.header}>
-          <h1>Get Started Free</h1>
-          <p className={styles.subtitle}>1,000 free credits. No credit card required.</p>
+          <h1>Get Started</h1>
+          <p className={styles.subtitle}>Developer plan — $15/mo with 15,000 credits included.</p>
         </div>
         <div className={styles.contentBody}>
           <div className={styles.contentMain}>

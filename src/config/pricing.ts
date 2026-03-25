@@ -128,21 +128,21 @@ export const CREDIT_RATE: CreditRate = {
 };
 
 export const PLANS: Plan[] = [
-  // Developer - Free Forever
+  // Developer - $15/month
   {
     id: 'developer',
     name: 'Developer',
-    badge: 'Free Forever',
+    badge: '$15/month',
     price: {
-      monthly: 0,
-      yearly: 0,
-      display: '$0',
+      monthly: 15,
+      yearly: 150,
+      display: '$15',
       period: '/month',
     },
-    description: 'For solo builders exploring ResonantGenesis. Get started with essential features and limited credits to test the platform.',
+    description: 'Full platform access for solo builders. All features unlocked — same as Plus, with 15K credits to start.',
     credits: {
-      included: 1000,
-      display: '1,000 / month',
+      included: 15000,
+      display: '15,000 / month',
       rollover: false,
       topups: true,
       note: 'No rollover • Top-ups available',
@@ -150,52 +150,54 @@ export const PLANS: Plan[] = [
     recommended: false,
     contactSales: false,
     cta: {
-      text: 'Get Started Free',
+      text: 'Start Developer Plan',
       style: 'secondary',
     },
     limits: {
       agents: {
-        active: -1,  // Unlimited - we bill by credits only
-        autonomousMode: false,
-        teams: false,
+        active: -1,
+        autonomousMode: true,
+        teams: true,
       },
       chat: {
         conversations: -1,
         messagesPerDay: -1,
-        evidenceGraph: false,
+        evidenceGraph: true,
       },
       hashSphereMemory: {
-        standaloneService: false,
-        universeAccess: false,
+        standaloneService: true,
+        universeAccess: '1 Universe',
         multiLayer: false,
       },
       ideCompute: {
-        computeHours: 10,
-        previewTime: '1 hr/day',
-        aiAssistance: 'Basic',
+        computeHours: 100,
+        previewTime: 'Unlimited',
+        aiAssistance: 'Full',
       },
       governance: {
-        killSwitch: 'Manual',
-        invariants: 5,
-        snapshots: false,
+        killSwitch: 'Automated',
+        invariants: 15,
+        snapshots: 10,
       },
       codeVisualizer: {
-        codebaseGraphs: false,
-        dependencyAnalysis: false,
+        codebaseGraphs: true,
+        dependencyAnalysis: true,
         ciIntegration: false,
       },
     },
     features: [
-      'Free forever',
-      '1,000 credits/month',
-      'Unlimited agents (billed by credits)',
-      'Unlimited conversations (limited by credits only)',
-      '100 MB storage, 5 RAG documents',
-      '10 compute hours/month',
-      'Manual kill switch, 5 basic invariants',
-      'No Hash Sphere Memory standalone',
-      'No Code Visualizer',
-      'Community support only',
+      '15,000 credits/month',
+      'All platform features unlocked',
+      'Unlimited agents (credits-only billing)',
+      'Autonomous mode & agent teams',
+      'Evidence graph access',
+      'Hash Sphere Memory: 1 Universe',
+      'Code Visualizer: graphs + dependency analysis',
+      'Full AI assistance',
+      'Automated kill switch, 15 invariants, 10 snapshots',
+      '100 compute hours/month',
+      '5 GB storage, 100 RAG documents',
+      'Top-ups available',
     ],
   },
 
@@ -210,7 +212,7 @@ export const PLANS: Plan[] = [
       display: '$499',
       period: '/month',
     },
-    description: 'For serious builders, teams, and power users. Unlock autonomous agents, full AI assistance, and advanced features.',
+    description: 'For power users and heavy workloads. Same features as Developer — more credits with rollover.',
     credits: {
       included: 499000,
       display: '499,000 / month',
@@ -364,8 +366,8 @@ export const PLANS: Plan[] = [
 
 export const HASH_SPHERE_FEATURES: HashSphereFeature[] = [
   { capability: 'View own identity node', developer: true, plus: true, enterprise: true },
-  { capability: 'View full identity graph', developer: false, plus: true, enterprise: true },
-  { capability: 'Trust relationship visualization', developer: false, plus: true, enterprise: true },
+  { capability: 'View full identity graph', developer: true, plus: true, enterprise: true },
+  { capability: 'Trust relationship visualization', developer: true, plus: true, enterprise: true },
   { capability: 'Economic flow tracking', developer: false, plus: false, enterprise: true },
   { capability: 'System entropy metrics', developer: false, plus: false, enterprise: true },
   { capability: 'Invariant checks', developer: false, plus: false, enterprise: true },
@@ -683,7 +685,7 @@ export const FAQ: FaqItem[] = [
   },
   {
     question: 'What support is included?',
-    answer: 'Developer: Community only. Plus: Email + Slack. Enterprise: Dedicated engineers, architecture guidance, and SLA guarantees.',
+    answer: 'Developer ($15/mo): Community + email. Plus: Priority email + Slack. Enterprise: Dedicated engineers, architecture guidance, and SLA guarantees.',
   },
 ];
 

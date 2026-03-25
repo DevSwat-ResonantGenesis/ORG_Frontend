@@ -116,40 +116,42 @@ export const SIGNUP_STEPS_LEGACY: SignUpStep[] = [
  * Usage is metered via Resonant Credits (1 credit ≈ $0.001)
  */
 export const PLANS: PlanOption[] = [
-  // Developer - Free Forever
+  // Developer - $15/month
   {
     id: 'developer',
     name: 'Developer',
     category: 'platform',
-    price: { monthly: 0, yearly: 0 },
-    bestFor: 'Solo builders exploring ResonantGenesis',
+    price: { monthly: 15, yearly: 150 },
+    bestFor: 'Solo builders with full platform access',
     isTrial: false,
     requiresApiKey: false,
     limits: {
-      tokens: 1000,          // 1,000 credits/month (no rollover, top-ups available)
+      tokens: 15000,         // 15,000 credits/month (no rollover, top-ups available)
       agents: -1,            // Unlimited - we bill by credits only
       teams: -1,             // Unlimited - we bill by credits only
       users: 1,
-      memoryAnchors: 10,
-      providers: ['openai', 'gemini', 'claude'],
-      agentExecutions: 100,
-      workflowRuns: 10,
-      publishedAgents: 0,
-      storage: 100,          // 100 MB
-      apiRateLimit: 10,
-      executionTimeout: 30,
+      memoryAnchors: -1,     // Unlimited (credits-only)
+      providers: ['openai', 'gemini', 'claude', 'mistral', 'groq'],
+      agentExecutions: -1,   // Unlimited (credits-only)
+      workflowRuns: -1,      // Unlimited (credits-only)
+      publishedAgents: -1,   // Unlimited (credits-only)
+      storage: 5000,         // 5 GB
+      apiRateLimit: 100,
+      executionTimeout: 120,
     },
     features: [
-      'Free forever',
-      '1,000 credits/month',
-      'Unlimited agents (billed by credits)',
-      'Unlimited conversations (limited by credits only)',
-      '100 MB storage, 5 RAG documents',
-      '10 compute hours/month',
-      'Manual kill switch, 5 basic invariants',
-      'No Hash Sphere Memory standalone',
-      'No Code Visualizer',
-      'Community support only',
+      '15,000 credits/month',
+      'All platform features unlocked',
+      'Unlimited agents (credits-only billing)',
+      'Autonomous mode & agent teams',
+      'Evidence graph access',
+      'Hash Sphere Memory: 1 Universe',
+      'Code Visualizer: graphs + dependency analysis',
+      'Full AI assistance',
+      'Automated kill switch, 15 invariants, 10 snapshots',
+      '100 compute hours/month',
+      '5 GB storage, 100 RAG documents',
+      'Top-ups available',
     ],
   },
   // Plus - $499/month (RECOMMENDED)

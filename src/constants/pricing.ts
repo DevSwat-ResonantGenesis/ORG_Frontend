@@ -32,9 +32,9 @@ export const PLATFORM_PLANS: PlatformPlan[] = [
   {
     id: 'developer',
     name: 'Developer',
-    monthlyPrice: 0,
-    yearlyPrice: 0,
-    description: 'Free forever for solo builders exploring ResonantGenesis',
+    monthlyPrice: 15,
+    yearlyPrice: 150,
+    description: 'Full platform access for solo builders — 15K credits/month',
     popular: false,
   },
   {

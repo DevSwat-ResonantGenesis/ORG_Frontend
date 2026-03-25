@@ -173,11 +173,11 @@ const CommunityPage: React.FC = () => {
         <div className={styles.ctaContent}>
           <h2 className={styles.ctaTitle}>Ready to Join?</h2>
           <p className={styles.ctaDescription}>
-            Start building with ResonantGenesis today. Free tier available.
+            Start building with ResonantGenesis today. Developer plan from $15/mo.
           </p>
           <div className={styles.ctaActions}>
             <button className={styles.primaryButton} onClick={() => navigate('/signup')}>
-              Get Started Free
+              Get Started
               <ArrowRight size={18} />
             </button>
             <button className={styles.secondaryButton} onClick={() => navigate('/contact')}>

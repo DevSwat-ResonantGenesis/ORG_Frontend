@@ -152,14 +152,14 @@ export const getSimplePlanLimits = (planId: string): SimplePlanLimits => {
   const plan = getPlanById(planId);
   if (!plan) {
     return {
-      agents: -1, // Unlimited - we bill by credits only
-      autonomousMode: false,
-      teams: false,
+      agents: -1,
+      autonomousMode: true,
+      teams: true,
       conversations: -1,
       messagesPerDay: -1,
-      computeHours: -1,
-      storageMb: 100,
-      ragDocuments: -1,
+      computeHours: 100,
+      storageMb: 5000,
+      ragDocuments: 100,
     };
   }
   
@@ -171,14 +171,14 @@ export const getSimplePlanLimits = (planId: string): SimplePlanLimits => {
     conversations: limits.chat.conversations,
     messagesPerDay: limits.chat.messagesPerDay,
     computeHours: typeof limits.ideCompute.computeHours === 'number' ? limits.ideCompute.computeHours : -1,
-    storageMb: planId === 'developer' ? 100 : (planId === 'plus' ? 5000 : -1),
-    ragDocuments: planId === 'developer' ? 5 : (planId === 'plus' ? 100 : -1),
+    storageMb: planId === 'enterprise' ? -1 : 5000,
+    ragDocuments: planId === 'enterprise' ? -1 : 100,
   };
 };
 
 export const getPlanCredits = (planId: string): number => {
   const plan = getPlanById(planId);
-  if (!plan) return 1000; // Default to developer tier (1K credits)
+  if (!plan) return 15000; // Default to developer tier (15K credits)
   return plan.credits.included;
 };
 
@@ -194,7 +194,7 @@ export const formatCredits = (credits: number): string => {
 };
 
 export const formatPrice = (price: number): string => {
-  if (price === 0) return 'Free';
+  if (price === 0) return 'Custom';
   return `$${price}`;
 };
 

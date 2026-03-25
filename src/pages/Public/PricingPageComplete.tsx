@@ -81,7 +81,7 @@ const PricingPage: React.FC = () => {
           return {
             id: planId,
             name,
-            badge: isEnterprise ? 'Custom' : isPlus ? 'Professional' : 'Free Forever',
+            badge: isEnterprise ? 'Custom' : isPlus ? 'Professional' : '$15/month',
             price: {
               monthly,
               yearly,
@@ -90,9 +90,9 @@ const PricingPage: React.FC = () => {
             },
             description:
               planId === 'developer'
-                ? 'For solo builders exploring ResonantGenesis. Get started with essential features and limited credits to test the platform.'
+                ? 'Full platform access for solo builders. All features unlocked — same as Plus, with 15K credits to start.'
                 : planId === 'plus'
-                ? 'For serious builders, teams, and power users. Unlock autonomous agents, full AI assistance, and advanced features.'
+                ? 'For power users and heavy workloads. Same features as Developer — more credits with rollover.'
                 : 'For organizations running AI as critical infrastructure. SLA guarantees, dedicated support, and custom deployments.',
             credits: {
               included,
@@ -102,19 +102,19 @@ const PricingPage: React.FC = () => {
               topups: Boolean(cfg?.credits?.topups ?? false),
               topupPrice: cfg?.credits?.topupPrice,
               topupAmount: cfg?.credits?.topupAmount,
-              note: isEnterprise ? 'Tailored to your needs' : isPlus ? 'Rollover + Top-ups' : 'Top-ups available',
+              note: isEnterprise ? 'Tailored to your needs' : isPlus ? 'Rollover + Top-ups' : 'No rollover • Top-ups available',
             },
             recommended: planId === 'plus',
             contactSales: isEnterprise,
             cta: {
-              text: isEnterprise ? 'Contact Sales' : planId === 'plus' ? 'Start Plus Plan' : 'Get Started Free',
+              text: isEnterprise ? 'Contact Sales' : planId === 'plus' ? 'Start Plus Plan' : 'Start Developer Plan',
               style: planId === 'plus' ? 'primary' : 'secondary',
             },
             limits: {
               agents: {
-                active: planId === 'enterprise' ? -1 : -1,
-                autonomousMode: planId !== 'developer',
-                teams: planId !== 'developer',
+                active: -1,
+                autonomousMode: true,
+                teams: true,
               },
               userTeams: {
                 enabled: false,
@@ -122,27 +122,27 @@ const PricingPage: React.FC = () => {
               chat: {
                 conversations: -1,
                 messagesPerDay: -1,
-                evidenceGraph: planId !== 'developer',
+                evidenceGraph: true,
               },
               hashSphereMemory: {
-                standaloneService: planId !== 'developer',
-                universeAccess: planId === 'enterprise' ? 'Multi Universe' : planId === 'plus' ? '1 Universe' : false,
+                standaloneService: true,
+                universeAccess: planId === 'enterprise' ? 'Multi Universe' : '1 Universe',
                 multiLayer: planId === 'enterprise',
               },
               ideCompute: {
-                computeHours: cfg?.limits?.compute?.hours ?? (planId === 'enterprise' ? -1 : planId === 'plus' ? 100 : 10),
-                previewTime: planId === 'developer' ? '1 hr/day' : 'Unlimited',
-                aiAssistance: planId === 'enterprise' ? 'Full + Custom' : planId === 'plus' ? 'Full' : 'Basic',
+                computeHours: cfg?.limits?.compute?.hours ?? (planId === 'enterprise' ? -1 : 100),
+                previewTime: 'Unlimited',
+                aiAssistance: planId === 'enterprise' ? 'Full + Custom' : 'Full',
                 customRuntimes: planId === 'enterprise',
               },
               governance: {
-                killSwitch: planId === 'enterprise' ? 'SLA-backed' : planId === 'plus' ? 'Automated' : 'Manual',
-                invariants: planId === 'enterprise' ? 'Custom' : planId === 'plus' ? 15 : 5,
-                snapshots: planId === 'enterprise' ? -1 : planId === 'plus' ? 10 : false,
+                killSwitch: planId === 'enterprise' ? 'SLA-backed' : 'Automated',
+                invariants: planId === 'enterprise' ? 'Custom' : 15,
+                snapshots: planId === 'enterprise' ? -1 : 10,
               },
               codeVisualizer: {
-                codebaseGraphs: planId !== 'developer',
-                dependencyAnalysis: planId !== 'developer',
+                codebaseGraphs: true,
+                dependencyAnalysis: true,
                 ciIntegration: planId === 'enterprise',
               },
             },
@@ -245,7 +245,7 @@ const PricingPage: React.FC = () => {
       return;
     }
     
-    // Free tier - just go to dashboard or signup
+    // Developer tier - $15/month, route to signup with plan
     if (plan.id === 'developer') {
       if (isAuthenticated()) {
         navigate('/dashboard');
@@ -412,7 +412,7 @@ const PricingPage: React.FC = () => {
           <span className={styles.sectionBadge}>Pricing</span>
           <h1 className={styles.sectionTitle}>Simple, Transparent Pricing</h1>
           <p className={styles.sectionDescription}>
-            Start free, scale as you grow. All plans include governance, memory, and multi-provider AI.
+            All plans include full platform access. Developer and Plus share the same features — only credits and rollover differ.
             Usage is metered via Resonant Credits ({creditRateDescription}).
           </p>
           

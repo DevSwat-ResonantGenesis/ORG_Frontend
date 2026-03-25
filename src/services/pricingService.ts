@@ -15,14 +15,14 @@ const DEFAULT_PRICING = {
     developer: {
       id: 'developer',
       name: 'Developer',
-      price: { monthly: 0, yearly: 0 },
-      credits: { included: 1000, rollover: false, topups: false },
+      price: { monthly: 15, yearly: 150 },
+      credits: { included: 15000, rollover: false, topups: true },
       limits: {
-        agents: { active: 3, autonomousMode: false, teams: false },
+        agents: { active: -1, autonomousMode: true, teams: true },
         chat: { conversations: -1, messagesPerDay: -1, messagesPerConversation: -1 },
-        compute: { hours: 10, aiAssistance: 'Basic' },
-        storage: { mb: 100, ragDocuments: 5 },
-        governance: { killSwitch: 'Manual', invariants: 5, snapshots: 0 }
+        compute: { hours: 100, aiAssistance: 'Full' },
+        storage: { mb: 5000, ragDocuments: 100 },
+        governance: { killSwitch: 'Automated', invariants: 15, snapshots: 10 }
       }
     },
     plus: {
@@ -31,7 +31,7 @@ const DEFAULT_PRICING = {
       price: { monthly: 499, yearly: 4990 },
       credits: { included: 499000, rollover: true, rolloverLimit: 249500, topups: true, topupPrice: 8, topupAmount: 10000 },
       limits: {
-        agents: { active: 20, autonomousMode: true, teams: true },
+        agents: { active: -1, autonomousMode: true, teams: true },
         chat: { conversations: -1, messagesPerDay: -1, messagesPerConversation: -1 },
         compute: { hours: 100, aiAssistance: 'Full' },
         storage: { mb: 5000, ragDocuments: 100 },

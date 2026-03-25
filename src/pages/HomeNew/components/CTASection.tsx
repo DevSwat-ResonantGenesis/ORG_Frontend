@@ -67,7 +67,7 @@ export const CTASection = () => {
                 </div>
                 {!isLoggedIn && (
                     <p className={styles.ctaNote}>
-                        ✓ Free tier forever  ✓ No credit card required  ✓ Instant access
+                        ✓ Developer plan from $15/mo  ✓ 15,000 credits included  ✓ All features unlocked
                     </p>
                 )}
             </div>

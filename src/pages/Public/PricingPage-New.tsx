@@ -475,10 +475,10 @@ export default function PricingPageNew() {
         <h2 style={styles.sectionTitle}>Frequently Asked Questions</h2>
         <div style={styles.faq}>
           <div style={styles.faqItem}>
-            <div style={styles.faqQuestion}>What's included in the free tier?</div>
+            <div style={styles.faqQuestion}>What's included in the Developer plan?</div>
             <div style={styles.faqAnswer}>
-              The free tier includes 100 agent executions, 10 workflow runs, and the ability to 
-              publish up to 2 agents. You'll need to bring your own API key (BYOK) for LLM access.
+              The Developer plan ($15/mo) includes 15,000 credits/month with all platform features unlocked —
+              same capabilities as Plus, just fewer credits. Top-ups are available anytime.
             </div>
           </div>
           <div style={styles.faqItem}>
