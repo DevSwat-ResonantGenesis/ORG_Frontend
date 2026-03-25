@@ -15,12 +15,12 @@ const SETUP_STEPS = [
 ];
 
 const FEATURES = [
-  { title: '59 Local Tools', desc: 'File read/write/edit, grep search, git operations, terminal commands, web search, deploy, notebook execution — all running locally on your machine via Electron IPC.' },
-  { title: '11 AI Providers', desc: '6 cloud (OpenAI, Anthropic, Groq, Google, DeepSeek, BYOK) + 5 local (Ollama, LM Studio, llama.cpp, LocalAI, vLLM). Automatic fallback chain rotates through providers on failure.' },
-  { title: 'AST Code Visualizer', desc: 'Built-in static analysis server — generates dependency graphs, traces function calls, runs SAST security scans, detects dead code, and scores governance compliance.' },
-  { title: 'Hash Sphere Memory', desc: '9-layer persistent memory synced with dev-swat.com. Your AI remembers project context, coding preferences, and past decisions across sessions and machines.' },
-  { title: 'Agentic Chat Loop', desc: 'Configurable tool loop depth (1 to unlimited). The AI reads your code, plans changes, executes tools, and iterates — with smart context compression that reduces token usage by up to 90%.' },
-  { title: 'Privacy & Ownership', desc: 'Fully open source (MIT). Your code never leaves your machine. No telemetry, no tracking. Only the prompts you send reach the LLM provider — nothing else.' },
+  { title: '71 Local Tools · 13 Categories', desc: 'File I/O, multi-edit, grep, find, git (status/diff/commit/push/pull/branch), run_command, 8 interactive terminal tools, web search, browser preview, notebook edit, deploy, SSH, Docker, MCP, workflows, checkpoints, and inline SVG/Mermaid visualization — all executed locally via Electron IPC.' },
+  { title: '11 AI Providers · Cloud + Local', desc: '6 cloud providers (OpenAI, Anthropic, Groq, Google, DeepSeek, BYOK) + 5 local (Ollama, LM Studio, llama.cpp, LocalAI, vLLM). Server-side fallback chain auto-rotates through keys and providers on failure. You choose the model in the IDE picker.' },
+  { title: '14 Code Visualizer Tools', desc: 'AST-based static analysis engine with 14 dedicated tools: scan projects, trace dependency flows, run SAST security audits, detect dead code, score governance compliance (0–100), compare multi-repo drift, verify formal invariants, and compile reversible Graph Analysis Language patches.' },
+  { title: 'Hash Sphere Memory', desc: 'Persistent cross-session memory synced with dev-swat.com via save_memory, read_memory, and create_memory tools. The AI stores project context, coding preferences, and decisions — retrieves them semantically across machines.' },
+  { title: 'Agentic Chat Loop', desc: 'LLM plans → calls tools → reads results → iterates. Configurable loop depth (1 to unlimited). Smart context compression summarizes large tool outputs to reduce token usage. Interactive terminals let the AI run REPLs, dev servers, and SSH sessions persistently.' },
+  { title: 'Platform API Access', desc: 'platform_api_search indexes 450+ backend endpoints across agents, billing, memory, blockchain, marketplace, Invariants SIM, and more. platform_api_call lets the AI invoke any endpoint directly — turning the IDE into a full control plane for the Resonant Genesis platform.' },
 ];
 
 const REQUIREMENTS = [
@@ -59,8 +59,9 @@ const DownloadIDEPage: React.FC = () => {
             Resonant <span className={styles.heroAccent}>IDE</span>
           </h1>
           <p className={styles.heroSubtitle}>
-            The AI-native code editor built on VS Code Open Source — with 59 local tools,
-            11 AI providers, AST code analysis, and persistent memory. Built entirely by AI.
+            Fork of VS Code Open Source with a built-in AI extension — 71 local tools across 13 categories,
+            agentic chat loop, AST code analysis engine, interactive terminals, and cross-session memory.
+            All tools execute locally on your machine. Server provides LLM routing and memory sync only.
           </p>
           <div className={styles.heroActions}>
             <a href={GITHUB_DOWNLOAD} className={styles.downloadButton}>
@@ -170,7 +171,7 @@ const DownloadIDEPage: React.FC = () => {
       {/* Features Grid */}
       <section className={styles.features}>
         <h2 className={styles.sectionTitle}>What's Inside</h2>
-        <p className={styles.sectionDesc}>Everything you need to build with AI, all in one editor.</p>
+        <p className={styles.sectionDesc}>Built-in extension with 71 tools across 13 categories — every tool runs locally on your machine.</p>
         <div className={styles.featureGrid}>
           {FEATURES.map((f, i) => (
             <div key={i} className={styles.featureCard}>

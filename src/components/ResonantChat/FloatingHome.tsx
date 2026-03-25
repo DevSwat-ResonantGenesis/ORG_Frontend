@@ -34,12 +34,12 @@ interface FloatingHomeProps {
 }
 
 const FEATURE_CARDS = [
-  { icon: MessageSquare, title: 'Resonant Chat', desc: 'Real-time AI chat with web search, scraping, image generation & skill execution — no setup, just ask' },
-  { icon: Brain, title: 'AI Assistant', desc: 'Full agentic pipeline with 130+ tools, autonomous task execution, multi-provider LLM fallback & BYOK support' },
+  { icon: MessageSquare, title: 'Resonant Chat', desc: 'Full control plane for the entire platform — manage agents, memory, billing, tools, providers & workflows from one unified chat interface' },
+  { icon: Brain, title: 'AI Assistant', desc: 'Tool-assisted agentic chat — web search, scraping, image generation, skill execution & autonomous task completion with multi-provider LLM routing' },
   { icon: Bot, title: 'AI Agent Studio', desc: 'Build, test & deploy autonomous agents with custom tools, memory & team collaboration' },
   { icon: Cpu, title: 'ML Workers', desc: 'Run training jobs, manage model pipelines & monitor GPU usage across distributed infrastructure' },
   { icon: TrendingUp, title: 'Invariants SIM', desc: 'Simulate economic constraints, predict system drift & enforce architectural invariants before deployment' },
-  { icon: Laptop, title: 'Resonant IDE', desc: 'Open-source AI code editor — 59 local tools, 11 providers, AST analysis & persistent memory across sessions' },
+  { icon: Laptop, title: 'Resonant IDE', desc: 'Open-source VS Code fork with 71 local tools, 11 providers, 14 AST analysis tools, interactive terminals & cross-session memory' },
   { icon: ShieldCheck, title: 'AST Code Analyser', desc: 'Full-stack static analysis — dependency graphs, dead code detection, SAST vulnerabilities & governance scoring' },
   { icon: Plug, title: 'Webhooks & Providers', desc: 'Connect external APIs, LLM providers & third-party services with zero-code webhook configuration' },
   { icon: Database, title: 'Neural Retrieval Memory', desc: '9-layer cognitive memory with semantic search, session persistence & cross-agent knowledge sharing' },
