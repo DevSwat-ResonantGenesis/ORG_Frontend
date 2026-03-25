@@ -34,18 +34,18 @@ interface FloatingHomeProps {
 }
 
 const FEATURE_CARDS = [
-  { icon: MessageSquare, title: 'Resonant Chat', desc: 'Intelligent chat with fast tool calls — search, scrape & more, no agents needed' },
-  { icon: Brain, title: 'AI Assistant', desc: 'Agentic chat with 130+ tools, multi-provider LLM routing, web search & autonomous execution' },
-  { icon: Bot, title: 'AI Agent Studio', desc: 'Create & manage autonomous agents with AI assistance' },
-  { icon: Cpu, title: 'ML Workers', desc: 'Training jobs, model pipelines & system monitoring' },
-  { icon: TrendingUp, title: 'Invariants SIM', desc: 'Economic constraint modeling & simulation' },
-  { icon: Laptop, title: 'Resonant IDE', desc: 'Desktop coding app powered by Resonant AI — built-in AST & 80+ smart tools' },
-  { icon: ShieldCheck, title: 'AST Code Analyser', desc: 'SAST & full-stack architecture observability' },
-  { icon: Plug, title: 'Webhooks & Providers', desc: 'Connect almost anything to your workflow' },
-  { icon: Database, title: 'Neural Retrieval Memory', desc: '9-layer cognitive memory retrieval & storage' },
-  { icon: Network, title: 'DSID', desc: 'Decentralized internal network for logging & SOC compliance' },
-  { icon: Zap, title: 'RARA', desc: 'Resonant Autonomous Runtime Agent — self-executing agent framework' },
-  { icon: Boxes, title: 'Open Source', desc: 'Self-hosted agentic platform — sits between LLM providers & your hardware' },
+  { icon: MessageSquare, title: 'Resonant Chat', desc: 'Real-time AI chat with web search, scraping, image generation & skill execution — no setup, just ask' },
+  { icon: Brain, title: 'AI Assistant', desc: 'Full agentic pipeline with 130+ tools, autonomous task execution, multi-provider LLM fallback & BYOK support' },
+  { icon: Bot, title: 'AI Agent Studio', desc: 'Build, test & deploy autonomous agents with custom tools, memory & team collaboration' },
+  { icon: Cpu, title: 'ML Workers', desc: 'Run training jobs, manage model pipelines & monitor GPU usage across distributed infrastructure' },
+  { icon: TrendingUp, title: 'Invariants SIM', desc: 'Simulate economic constraints, predict system drift & enforce architectural invariants before deployment' },
+  { icon: Laptop, title: 'Resonant IDE', desc: 'Open-source AI code editor — 59 local tools, 11 providers, AST analysis & persistent memory across sessions' },
+  { icon: ShieldCheck, title: 'AST Code Analyser', desc: 'Full-stack static analysis — dependency graphs, dead code detection, SAST vulnerabilities & governance scoring' },
+  { icon: Plug, title: 'Webhooks & Providers', desc: 'Connect external APIs, LLM providers & third-party services with zero-code webhook configuration' },
+  { icon: Database, title: 'Neural Retrieval Memory', desc: '9-layer cognitive memory with semantic search, session persistence & cross-agent knowledge sharing' },
+  { icon: Network, title: 'DSID', desc: 'Blockchain-verified identity — every action is traceable, auditable & SOC-compliant on Base Sepolia L2' },
+  { icon: Zap, title: 'RARA', desc: 'Self-executing runtime agents that plan, act & adapt autonomously with built-in circuit breakers' },
+  { icon: Boxes, title: 'Open Source', desc: 'Self-hosted agentic platform — full control over your data, providers & infrastructure. No vendor lock-in' },
 ];
 
 export const FloatingHome: React.FC<FloatingHomeProps> = ({ isLoggedIn }) => {

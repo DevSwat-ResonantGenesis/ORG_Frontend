@@ -16,8 +16,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 70vh;
-  padding: 120px 24px 80px;
+  min-height: auto;
+  padding: 100px 24px 40px;
   text-align: center;
   overflow: hidden;
 }
@@ -37,11 +37,12 @@
 .heroContent {
   position: relative;
   z-index: 1;
-  max-width: 720px;
+  max-width: 900px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 18px;
 }
 
 .heroBadge {
@@ -80,10 +81,10 @@
 }
 
 .heroSubtitle {
-  font-size: 1.15rem;
-  line-height: 1.7;
+  font-size: 1.1rem;
+  line-height: 1.6;
   color: var(--text-secondary, #a1a1aa);
-  max-width: 600px;
+  max-width: 100%;
   margin: 0;
 }
 
@@ -116,6 +117,56 @@
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(255, 255, 255, 0.18);
   color: #0a0a0f !important;
+}
+
+.downloadButtonOutline {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  background: transparent;
+  color: #e5e7eb !important;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  text-decoration: none !important;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+
+.downloadButtonOutline:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff !important;
+}
+
+.downloadButtonOutline svg {
+  fill: #e5e7eb;
+}
+
+.downloadButtonOutline:hover svg {
+  fill: #ffffff;
+}
+
+/* ── Setup Two-Column ── */
+.setupSection {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 0;
+}
+
+.setupGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .setupGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .heroPlatforms {
@@ -349,6 +400,24 @@
   color: #fff !important;
 }
 
+[data-theme='light'] .downloadButtonOutline {
+  color: #18181b !important;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+[data-theme='light'] .downloadButtonOutline:hover {
+  color: #000 !important;
+  border-color: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='light'] .downloadButtonOutline svg {
+  fill: #18181b;
+}
+
+[data-theme='light'] .downloadButtonOutline:hover svg {
+  fill: #000;
+}
+
 [data-theme='light'] .screenshotCard {
   background: #fff;
   border-color: #e4e4e7;
@@ -375,8 +444,12 @@
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .hero {
-    padding: 100px 20px 60px;
-    min-height: 60vh;
+    padding: 90px 16px 32px;
+    min-height: auto;
+  }
+
+  .setupSection {
+    padding: 24px 16px 0;
   }
 
   .screenshotGrid {

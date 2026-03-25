@@ -75,10 +75,9 @@ const DownloadIDEPage: React.FC = () => {
               href={GITHUB_REPO}
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.downloadButton}
-              style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.3)', color: '#e5e7eb' }}
+              className={styles.downloadButtonOutline}
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <svg width="20" height="20" viewBox="0 0 24 24">
                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
               </svg>
               View on GitHub
@@ -90,56 +89,54 @@ const DownloadIDEPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Quick Setup Instructions */}
-      <section style={{ maxWidth: 780, margin: '0 auto', padding: '56px 24px 0' }}>
+      {/* Quick Setup — Two Column */}
+      <section className={styles.setupSection}>
         <h2 className={styles.sectionTitle}>Quick Setup</h2>
         <p className={styles.sectionDesc}>Clone, build, and launch in under 10 minutes.</p>
 
-        {/* Prerequisites */}
-        <div style={{ background: 'var(--bg-secondary, #111827)', border: '1px solid var(--border-color, #1f2937)', borderRadius: 12, padding: '20px 24px', marginBottom: 24 }}>
-          <h3 style={{ color: 'var(--text-primary, #e5e7eb)', fontSize: 14, fontWeight: 600, margin: '0 0 12px', textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.7 }}>Prerequisites</h3>
-          <div style={{ display: 'grid', gap: 6 }}>
-            {REQUIREMENTS.map((r, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 8, fontSize: 13, color: 'var(--text-secondary, #94a3b8)' }}>
-                <span style={{ color: 'var(--accent-color, #818cf8)', fontWeight: 600 }}>{r.label}</span>
-                {r.detail && <span style={{ opacity: 0.7 }}>{r.detail}</span>}
+        <div className={styles.setupGrid}>
+          {/* Left: Prerequisites */}
+          <div>
+            <div style={{ background: 'var(--bg-secondary, #111827)', border: '1px solid var(--border-color, #1f2937)', borderRadius: 12, padding: '20px 24px' }}>
+              <h3 style={{ color: 'var(--text-primary, #e5e7eb)', fontSize: 13, fontWeight: 600, margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.06em', opacity: 0.6 }}>Prerequisites</h3>
+              <div style={{ display: 'grid', gap: 8 }}>
+                {REQUIREMENTS.map((r, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 8, fontSize: 13, color: 'var(--text-secondary, #94a3b8)' }}>
+                    <span style={{ color: 'var(--accent-color, #818cf8)', fontWeight: 600 }}>{r.label}</span>
+                    {r.detail && <span style={{ opacity: 0.7 }}>{r.detail}</span>}
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+            {/* Tip */}
+            <div style={{ marginTop: 16, padding: '14px 18px', background: 'var(--bg-secondary, #111827)', border: '1px solid var(--border-color, #1f2937)', borderRadius: 10, fontSize: 13, color: 'var(--text-secondary, #94a3b8)', lineHeight: 1.6 }}>
+              <strong style={{ color: 'var(--text-primary, #e5e7eb)' }}>Tip:</strong> If you have Node 25+, use{' '}
+              <code style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>brew install node@22</code>{' '}
+              and prefix with{' '}
+              <code style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>PATH="/opt/homebrew/opt/node@22/bin:$PATH"</code>
+            </div>
           </div>
-        </div>
 
-        {/* Code Block */}
-        <div style={{ position: 'relative', background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, overflow: 'hidden' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', borderBottom: '1px solid #21262d', background: '#161b22' }}>
-            <span style={{ fontSize: 12, color: '#8b949e', fontFamily: 'monospace' }}>Terminal</span>
-            <button
-              onClick={handleCopy}
-              style={{ background: 'none', border: '1px solid #30363d', borderRadius: 6, color: copied ? '#3fb950' : '#8b949e', fontSize: 12, padding: '4px 10px', cursor: 'pointer', transition: 'all 0.2s' }}
-            >
-              {copied ? 'Copied!' : 'Copy'}
-            </button>
+          {/* Right: Terminal */}
+          <div style={{ position: 'relative', background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, overflow: 'hidden' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', borderBottom: '1px solid #21262d', background: '#161b22' }}>
+              <span style={{ fontSize: 12, color: '#8b949e', fontFamily: 'monospace' }}>Terminal</span>
+              <button
+                onClick={handleCopy}
+                style={{ background: 'none', border: '1px solid #30363d', borderRadius: 6, color: copied ? '#3fb950' : '#8b949e', fontSize: 12, padding: '4px 10px', cursor: 'pointer', transition: 'all 0.2s' }}
+              >
+                {copied ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+            <div style={{ padding: '16px 20px', overflowX: 'auto' }}>
+              {SETUP_STEPS.map((step, i) => (
+                <div key={i} style={{ display: 'flex', gap: 12, marginBottom: i < SETUP_STEPS.length - 1 ? 8 : 0, fontFamily: "'JetBrains Mono', 'Fira Code', monospace", fontSize: 13, lineHeight: 1.6 }}>
+                  <span style={{ color: '#3fb950', userSelect: 'none', flexShrink: 0 }}>$</span>
+                  <span style={{ color: '#e6edf3' }}>{step.cmd}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div style={{ padding: '16px 20px', overflowX: 'auto' }}>
-            {SETUP_STEPS.map((step, i) => (
-              <div key={i} style={{ display: 'flex', gap: 12, marginBottom: i < SETUP_STEPS.length - 1 ? 8 : 0, fontFamily: "'JetBrains Mono', 'Fira Code', monospace", fontSize: 13, lineHeight: 1.6 }}>
-                <span style={{ color: '#3fb950', userSelect: 'none', flexShrink: 0 }}>$</span>
-                <span style={{ color: '#e6edf3' }}>{step.cmd}</span>
-                <span style={{ color: '#484f58', marginLeft: 'auto', whiteSpace: 'nowrap', paddingLeft: 16 }}>{'# ' + step.note}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Troubleshooting tip */}
-        <div style={{ marginTop: 16, padding: '14px 18px', background: 'var(--bg-secondary, #111827)', border: '1px solid var(--border-color, #1f2937)', borderRadius: 10, fontSize: 13, color: 'var(--text-secondary, #94a3b8)', lineHeight: 1.6 }}>
-          <strong style={{ color: 'var(--text-primary, #e5e7eb)' }}>Tip:</strong> If you have Node 25+ installed, use{' '}
-          <code style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>
-            brew install node@22
-          </code>{' '}
-          and prefix commands with{' '}
-          <code style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>
-            PATH="/opt/homebrew/opt/node@22/bin:$PATH"
-          </code>
         </div>
       </section>
 
@@ -204,7 +201,7 @@ const DownloadIDEPage: React.FC = () => {
               </svg>
               View Source on GitHub
             </a>
-            <a href={GITHUB_DOWNLOAD} className={styles.downloadButton} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.3)', color: '#e5e7eb' }}>
+            <a href={GITHUB_DOWNLOAD} className={styles.downloadButtonOutline}>
               Download ZIP (latest from GitHub)
             </a>
           </div>
