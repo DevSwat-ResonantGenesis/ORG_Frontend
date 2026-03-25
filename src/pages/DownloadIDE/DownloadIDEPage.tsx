@@ -1,119 +1,69 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useThemeStore } from '@/store/themeStore';
 import styles from './DownloadIDEPage.module.css';
 
-const FeatureIconBrain = () => (
-  <svg className="featureParallaxIcon" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <circle cx="16" cy="16" r="12" />
-    <path d="M12 10C12 10 14 8 16 8C18 8 20 10 20 12C20 14 18 14 18 16C18 18 16 18 16 20" strokeLinecap="round" />
-    <circle cx="16" cy="24" r="1" fill="currentColor" stroke="none" />
-    <path d="M10 14H8M22 14H24M11 20L9 22M21 20L23 22" strokeLinecap="round" opacity="0.5" />
-  </svg>
-);
+const GITHUB_REPO = 'https://github.com/DevSwat-ResonantGenesis/RG_IDE';
+const GITHUB_DOWNLOAD = 'https://github.com/DevSwat-ResonantGenesis/RG_IDE/archive/refs/heads/main.zip';
 
-const FeatureIconSearch = () => (
-  <svg className="featureParallaxIcon" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <circle cx="14" cy="14" r="8" />
-    <path d="M20 20L27 27" strokeLinecap="round" />
-    <path d="M11 11L17 17M11 14H17" strokeLinecap="round" opacity="0.5" />
-  </svg>
-);
+const SETUP_STEPS = [
+  { cmd: 'git clone https://github.com/DevSwat-ResonantGenesis/RG_IDE.git', note: 'Clone the repo' },
+  { cmd: 'cd RG_IDE', note: 'Enter directory' },
+  { cmd: 'npm install', note: 'Install dependencies (2-5 min)' },
+  { cmd: 'cd extensions/resonant-ai && npm install && npx tsc -p tsconfig.json && cd ../..', note: 'Build the AI extension' },
+  { cmd: 'npm run compile', note: 'Compile the IDE (~2 min)' },
+  { cmd: './scripts/code.sh', note: 'Launch Resonant IDE' },
+];
 
-const FeatureIconMemory = () => (
-  <svg className="featureParallaxIcon" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <circle cx="16" cy="16" r="10" strokeDasharray="3 3" />
-    <circle cx="12" cy="12" r="2" />
-    <circle cx="20" cy="12" r="2" />
-    <circle cx="12" cy="20" r="2" />
-    <circle cx="20" cy="20" r="2" />
-    <path d="M14 12H18M12 14V18M20 14V18M14 20H18" opacity="0.4" />
-  </svg>
-);
+const FEATURES = [
+  { title: '59 AI Tools', desc: 'File I/O, grep, git, terminal, web search, deploy, notebooks — all executed locally on your machine.' },
+  { title: '11 AI Providers', desc: 'OpenAI, Anthropic, Groq, Google, DeepSeek + Ollama, LM Studio, llama.cpp, LocalAI, vLLM + BYOK.' },
+  { title: 'AST Code Visualizer', desc: 'Full static analysis engine — dependency graphs, function tracing, SAST, governance checks, dead code detection.' },
+  { title: 'Hash Sphere Memory', desc: 'Persistent long-term memory across sessions. Your AI remembers your projects, preferences, and decisions.' },
+  { title: 'Agentic Loop', desc: 'Configurable max tool loops (1 to unlimited). Smart context compression reduces token burn by 90%.' },
+  { title: 'Privacy First', desc: 'Your code stays on your machine. No telemetry, no tracking. Only queries you send are processed by the AI.' },
+];
 
-const FeatureIconBolt = () => (
-  <svg className="featureParallaxIcon" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <path d="M18 4L8 18H16L14 28L24 14H16L18 4Z" strokeLinejoin="round" />
-  </svg>
-);
-
-const FeatureIconGit = () => (
-  <svg className="featureParallaxIcon" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <circle cx="16" cy="8" r="3" />
-    <circle cx="10" cy="24" r="3" />
-    <circle cx="22" cy="24" r="3" />
-    <path d="M16 11V18L10 21M16 18L22 21" strokeLinecap="round" />
-  </svg>
-);
-
-const FeatureIconShield = () => (
-  <svg className="featureParallaxIcon" width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <path d="M16 4L6 10V18C6 24 16 28 16 28C16 28 26 24 26 18V10L16 4Z" strokeLinejoin="round" />
-    <path d="M12 16L15 19L20 13" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
+const REQUIREMENTS = [
+  { label: 'Node.js 22.x', detail: '(22.22.0 recommended — do NOT use Node 23+ or 25+)' },
+  { label: 'npm 10.x+', detail: '' },
+  { label: 'Python 3.10+', detail: '(for native modules & SAST analysis)' },
+  { label: 'Xcode CLI Tools', detail: '(macOS) or build-essential (Linux)' },
+  { label: 'Free account', detail: 'at dev-swat.com (required for AI features)' },
+];
 
 const DownloadIDEPage: React.FC = () => {
   const { theme } = useThemeStore();
+  const [copied, setCopied] = useState(false);
 
-  const features = [
-    {
-      icon: <FeatureIconBrain />,
-      title: 'Agentic AI Assistant',
-      desc: 'Built-in Resonant AI that reads your project, executes tools, searches the web, and writes code — all locally.',
-    },
-    {
-      icon: <FeatureIconSearch />,
-      title: 'Code Visualizer',
-      desc: 'Deep codebase analysis with dependency graphs, function tracing, governance checks, and architecture insights.',
-    },
-    {
-      icon: <FeatureIconMemory />,
-      title: 'Hash Sphere Memory',
-      desc: 'Persistent long-term memory that carries context across sessions. Your AI remembers your projects and preferences.',
-    },
-    {
-      icon: <FeatureIconBolt />,
-      title: 'Local Tool Execution',
-      desc: 'File read/write, grep search, terminal commands, and git operations — executed directly on your machine.',
-    },
-    {
-      icon: <FeatureIconGit />,
-      title: 'GitHub Integration',
-      desc: 'Create repos, manage issues, pull requests, review code, and push changes — all from the chat panel.',
-    },
-    {
-      icon: <FeatureIconShield />,
-      title: 'Privacy First',
-      desc: 'Your code stays on your machine. Only the queries you send are processed by the AI. No telemetry, no tracking.',
-    },
-  ];
+  const fullCloneScript = SETUP_STEPS.map(s => s.cmd).join('\n');
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(fullCloneScript);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div className={styles.page}>
-      {/* Hero Section */}
+      {/* Hero */}
       <section className={styles.hero}>
         <div className={styles.heroGlow} />
         <div className={styles.heroContent}>
           <div className={styles.heroBadge}>
-            <img
-              src={theme === 'dark' ? '/logo white.png' : '/logo black.png'}
-              alt="Resonant"
-              className={styles.heroBadgeLogo}
-            />
-            Powered by Resonant AI
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style={{ opacity: 0.8 }}>
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            Open Source on GitHub
           </div>
           <h1 className={styles.heroTitle}>
             Resonant <span className={styles.heroAccent}>IDE</span>
           </h1>
           <p className={styles.heroSubtitle}>
-            The AI-native code editor with an agentic assistant that understands your entire codebase.
-            Build faster with local tool execution, persistent memory, and deep code analysis.
+            The AI-native code editor built on VS Code Open Source — with 59 local tools,
+            11 AI providers, AST code analysis, and persistent memory. Built entirely by AI.
           </p>
           <div className={styles.heroActions}>
-            <a
-              href="https://dev-swat.com/downloads/resonant-ide/Resonant-IDE-1.0.0-arm64.dmg"
-              className={styles.downloadButton}
-            >
+            <a href={GITHUB_DOWNLOAD} className={styles.downloadButton}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
@@ -121,51 +71,97 @@ const DownloadIDEPage: React.FC = () => {
               </svg>
               Download for macOS (266 MB)
             </a>
+            <a
+              href={GITHUB_REPO}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.downloadButton}
+              style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)' }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+              View on GitHub
+            </a>
           </div>
           <div className={styles.heroPlatforms}>
-            macOS (Apple Silicon) &bull; v1.0.0 &bull; Windows &amp; Linux coming soon
+            macOS (Apple Silicon) &bull; Node.js 22 required &bull; Windows &amp; Linux coming soon
           </div>
         </div>
       </section>
 
-      {/* Signed Installer Coming Soon */}
-      <section style={{ maxWidth: 720, margin: '0 auto', padding: '48px 24px 0' }}>
-        <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: 24, textAlign: 'center' }}>
-          <div style={{ fontSize: 28, marginBottom: 8 }}>&#9889;</div>
-          <h3 style={{ color: '#e5e7eb', fontSize: 16, fontWeight: 600, margin: '0 0 8px' }}>Apple-Signed Installer Coming Soon</h3>
-          <p style={{ color: '#94a3b8', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
-            We're finalizing Apple Developer notarization for Resonant IDE. A signed <strong>.pkg</strong> installer that works seamlessly with macOS Gatekeeper will be available shortly. In the meantime, download the <strong>.dmg</strong> above and open the app by right-clicking &rarr; <strong>Open</strong>.
-          </p>
+      {/* Quick Setup Instructions */}
+      <section style={{ maxWidth: 780, margin: '0 auto', padding: '56px 24px 0' }}>
+        <h2 className={styles.sectionTitle}>Quick Setup</h2>
+        <p className={styles.sectionDesc}>Clone, build, and launch in under 10 minutes.</p>
+
+        {/* Prerequisites */}
+        <div style={{ background: 'var(--bg-secondary, #111827)', border: '1px solid var(--border-color, #1f2937)', borderRadius: 12, padding: '20px 24px', marginBottom: 24 }}>
+          <h3 style={{ color: 'var(--text-primary, #e5e7eb)', fontSize: 14, fontWeight: 600, margin: '0 0 12px', textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.7 }}>Prerequisites</h3>
+          <div style={{ display: 'grid', gap: 6 }}>
+            {REQUIREMENTS.map((r, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 8, fontSize: 13, color: 'var(--text-secondary, #94a3b8)' }}>
+                <span style={{ color: 'var(--accent-color, #818cf8)', fontWeight: 600 }}>{r.label}</span>
+                {r.detail && <span style={{ opacity: 0.7 }}>{r.detail}</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Code Block */}
+        <div style={{ position: 'relative', background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, overflow: 'hidden' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', borderBottom: '1px solid #21262d', background: '#161b22' }}>
+            <span style={{ fontSize: 12, color: '#8b949e', fontFamily: 'monospace' }}>Terminal</span>
+            <button
+              onClick={handleCopy}
+              style={{ background: 'none', border: '1px solid #30363d', borderRadius: 6, color: copied ? '#3fb950' : '#8b949e', fontSize: 12, padding: '4px 10px', cursor: 'pointer', transition: 'all 0.2s' }}
+            >
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+          </div>
+          <div style={{ padding: '16px 20px', overflowX: 'auto' }}>
+            {SETUP_STEPS.map((step, i) => (
+              <div key={i} style={{ display: 'flex', gap: 12, marginBottom: i < SETUP_STEPS.length - 1 ? 8 : 0, fontFamily: "'JetBrains Mono', 'Fira Code', monospace", fontSize: 13, lineHeight: 1.6 }}>
+                <span style={{ color: '#3fb950', userSelect: 'none', flexShrink: 0 }}>$</span>
+                <span style={{ color: '#e6edf3' }}>{step.cmd}</span>
+                <span style={{ color: '#484f58', marginLeft: 'auto', whiteSpace: 'nowrap', paddingLeft: 16 }}>{'# ' + step.note}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Troubleshooting tip */}
+        <div style={{ marginTop: 16, padding: '14px 18px', background: 'var(--bg-secondary, #111827)', border: '1px solid var(--border-color, #1f2937)', borderRadius: 10, fontSize: 13, color: 'var(--text-secondary, #94a3b8)', lineHeight: 1.6 }}>
+          <strong style={{ color: 'var(--text-primary, #e5e7eb)' }}>Tip:</strong> If you have Node 25+ installed, use{' '}
+          <code style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>
+            brew install node@22
+          </code>{' '}
+          and prefix commands with{' '}
+          <code style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>
+            PATH="/opt/homebrew/opt/node@22/bin:$PATH"
+          </code>
         </div>
       </section>
 
-      {/* Screenshots Section */}
+      {/* Screenshots */}
       <section className={styles.screenshots}>
         <h2 className={styles.sectionTitle}>See It in Action</h2>
         <p className={styles.sectionDesc}>
-          Resonant IDE combines a professional code editor with an AI assistant that can read, analyze, and modify your code.
+          A professional code editor with an AI assistant that reads, analyzes, and modifies your code.
         </p>
         <div className={styles.screenshotGrid}>
           <div className={styles.screenshotCard}>
             <div className={styles.screenshotImageWrap}>
-              <img
-                src="/images/showcase/resonant-ide-answer.png"
-                alt="Resonant AI IDE — Code Analysis"
-                className={styles.screenshotImage}
-              />
+              <img src="/images/showcase/resonant-ide-answer.png" alt="Resonant AI IDE — Code Analysis" className={styles.screenshotImage} />
             </div>
             <div className={styles.screenshotCaption}>
               <h3>Deep Code Analysis</h3>
-              <p>Ask the AI to analyze your project structure, trace execution flows, and generate dependency graphs.</p>
+              <p>Analyze project structure, trace execution flows, and generate dependency graphs.</p>
             </div>
           </div>
           <div className={styles.screenshotCard}>
             <div className={styles.screenshotImageWrap}>
-              <img
-                src="/images/showcase/resonant-ide-inquiry.png"
-                alt="Resonant AI IDE — Agentic Tool Execution"
-                className={styles.screenshotImage}
-              />
+              <img src="/images/showcase/resonant-ide-inquiry.png" alt="Resonant AI IDE — Agentic Tool Execution" className={styles.screenshotImage} />
             </div>
             <div className={styles.screenshotCaption}>
               <h3>Agentic Tool Execution</h3>
@@ -175,16 +171,13 @@ const DownloadIDEPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Features Grid */}
       <section className={styles.features}>
-        <h2 className={styles.sectionTitle}>Built for Developers</h2>
-        <p className={styles.sectionDesc}>
-          Everything you need to build with AI, all in one place.
-        </p>
+        <h2 className={styles.sectionTitle}>What's Inside</h2>
+        <p className={styles.sectionDesc}>Everything you need to build with AI, all in one editor.</p>
         <div className={styles.featureGrid}>
-          {features.map((f, i) => (
+          {FEATURES.map((f, i) => (
             <div key={i} className={styles.featureCard}>
-              <div className={styles.featureIcon}>{f.icon}</div>
               <h3 className={styles.featureTitle}>{f.title}</h3>
               <p className={styles.featureDesc}>{f.desc}</p>
             </div>
@@ -192,7 +185,7 @@ const DownloadIDEPage: React.FC = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA */}
       <section className={styles.cta}>
         <div className={styles.ctaContent}>
           <img
@@ -200,16 +193,19 @@ const DownloadIDEPage: React.FC = () => {
             alt=""
             className={styles.ctaLogo}
           />
-          <h2 className={styles.ctaTitle}>Ready to build with Resonant AI?</h2>
+          <h2 className={styles.ctaTitle}>Build with Resonant AI</h2>
           <p className={styles.ctaDesc}>
-            Download the IDE and start building with AI on your machine.
+            Open source. Clone it, build it, run it. Your code stays on your machine.
           </p>
           <div className={styles.ctaActions}>
-            <a
-              href="https://dev-swat.com/downloads/resonant-ide/Resonant-IDE-1.0.0-arm64.dmg"
-              className={styles.downloadButton}
-            >
-              Download for macOS (266 MB)
+            <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className={styles.downloadButton}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+              View Source on GitHub
+            </a>
+            <a href={GITHUB_DOWNLOAD} className={styles.downloadButton} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)' }}>
+              Download ZIP (266 MB)
             </a>
           </div>
         </div>
