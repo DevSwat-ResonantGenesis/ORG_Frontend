@@ -7,16 +7,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Bot,
+  MessageSquare,
   Brain,
-  Search,
-  Microscope,
-  GitGraph,
+  Bot,
+  Cpu,
   TrendingUp,
-  Webhook,
-  Share2,
-  Image,
-  Globe,
+  Laptop,
+  ShieldCheck,
+  Plug,
+  Database,
+  Network,
+  Zap,
+  Boxes,
 } from 'lucide-react';
 import styles from './FloatingHome.module.css';
 
@@ -32,16 +34,18 @@ interface FloatingHomeProps {
 }
 
 const FEATURE_CARDS = [
-  { icon: Bot, title: 'AI Agent Studio', desc: 'Create & manage autonomous agents' },
-  { icon: Brain, title: 'Neural Memory', desc: '9-layer cognitive infrastructure' },
-  { icon: Image, title: 'Image Generation', desc: 'Create visual content with AI' },
-  { icon: Search, title: 'Web Search', desc: 'Find information in real-time' },
-  { icon: Microscope, title: 'Deep Research', desc: 'In-depth analysis on any topic' },
-  { icon: Globe, title: 'Any Integration', desc: 'Connect to your favorite tools' },
-  { icon: GitGraph, title: 'Code Visualizer', desc: 'Full-stack architecture observability' },
-  { icon: TrendingUp, title: 'Economic Modeling', desc: 'Constraint modeling & simulation' },
-  { icon: Webhook, title: 'Webhooks', desc: 'Automate agent execution' },
-  { icon: Share2, title: 'Sharing', desc: 'Share with colleagues or friends' },
+  { icon: MessageSquare, title: 'Resonant Chat', desc: 'Intelligent chat with fast tool calls — search, scrape & more, no agents needed' },
+  { icon: Brain, title: 'Neural Memory', desc: 'Ecosystem control plane — connect agents, tools, LLMs, providers & memory' },
+  { icon: Bot, title: 'AI Agent Studio', desc: 'Create & manage autonomous agents with AI assistance' },
+  { icon: Cpu, title: 'ML Workers', desc: 'Training jobs, model pipelines & system monitoring' },
+  { icon: TrendingUp, title: 'Invariants SIM', desc: 'Economic constraint modeling & simulation' },
+  { icon: Laptop, title: 'Resonant IDE', desc: 'Desktop coding app powered by Resonant AI — built-in AST & 80+ smart tools' },
+  { icon: ShieldCheck, title: 'AST Code Analyser', desc: 'SAST & full-stack architecture observability' },
+  { icon: Plug, title: 'Webhooks & Providers', desc: 'Connect almost anything to your workflow' },
+  { icon: Database, title: 'Neural Retrieval Memory', desc: '9-layer cognitive memory retrieval & storage' },
+  { icon: Network, title: 'DSID', desc: 'Decentralized internal network for logging & SOC compliance' },
+  { icon: Zap, title: 'RARA', desc: 'Resonant Autonomous Runtime Agent — self-executing agent framework' },
+  { icon: Boxes, title: 'Open Source', desc: 'Self-hosted agentic platform — sits between LLM providers & your hardware' },
 ];
 
 export const FloatingHome: React.FC<FloatingHomeProps> = ({ isLoggedIn }) => {
