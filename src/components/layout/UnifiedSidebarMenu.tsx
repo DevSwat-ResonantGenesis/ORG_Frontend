@@ -206,6 +206,20 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               {location.pathname === '/code-visualizer' && <span className={styles.usmActiveIndicator} />}
             </button>
 
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/download-ide' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/download-ide'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="2" y="3" width="12" height="10" rx="1" />
+                  <path d="M8 6V10M6 8L8 10L10 8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>Download IDE</span>
+              {location.pathname === '/download-ide' && <span className={styles.usmActiveIndicator} />}
+            </button>
+
           </div>
 
           <div className={styles.usmDivider} />

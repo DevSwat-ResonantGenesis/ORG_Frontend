@@ -375,6 +375,22 @@ export const Header: React.FC<HeaderProps> = ({
               Pricing
             </button>
 
+            {/* Investor Pitch Deck */}
+            <button 
+              className={styles.navButton}
+              onClick={() => navigate('/investor-pitch-deck')}
+            >
+              Investor Pitch Deck
+            </button>
+
+            {/* Download IDE */}
+            <button 
+              className={styles.navButton}
+              onClick={() => navigate('/download-ide')}
+            >
+              Download IDE
+            </button>
+
           </nav>
 
           {/* AgentOS-specific elements when on /agents page */}

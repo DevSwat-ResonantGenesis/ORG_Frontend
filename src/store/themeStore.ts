@@ -10,26 +10,24 @@ interface ThemeState {
   toggleTheme: () => void;
 }
 
-// Default theme: dark on mobile, light on desktop
+// Default theme: dark everywhere
 // Users can override via ThemeToggle (saved to localStorage)
 const getInitialTheme = (): Theme => {
-  if (typeof window === 'undefined') return 'light';
+  if (typeof window === 'undefined') return 'dark';
   try {
     const saved = localStorage.getItem('rg_theme');
     if (saved) return saved as Theme;
-    // No saved preference — default to dark on mobile, light on desktop
-    const isMobile = window.innerWidth <= 1024;
-    return isMobile ? 'dark' : 'light';
+    return 'dark';
   } catch {
-    return 'light';
+    return 'dark';
   }
 };
 
 export const useThemeStore = create<ThemeState>((set) => {
-  // Start with light mode as default
+  // Start with dark mode as default
   const initialTheme = getInitialTheme();
   
-  // Initialize on store creation - Set light mode as default
+  // Initialize on store creation - Set dark mode as default
   if (typeof window !== 'undefined') {
     // Set theme on HTML and body
     document.documentElement.setAttribute('data-theme', initialTheme);

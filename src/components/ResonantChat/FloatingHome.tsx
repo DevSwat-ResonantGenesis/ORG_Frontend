@@ -64,7 +64,7 @@ export const FloatingHome: React.FC<FloatingHomeProps> = ({ isLoggedIn }) => {
 
           <div className={styles.featureGrid}>
             {FEATURE_CARDS.map((card) => (
-              <div key={card.title} className={styles.featureCard}>
+              <div key={card.title} className={styles.featureCard} onClick={() => navigate('/login')} style={{ cursor: 'pointer' }}>
                 <card.icon className={styles.featureIcon} size={22} strokeWidth={1.5} />
                 <div className={styles.featureTitle}>{card.title}</div>
                 <div className={styles.featureDesc}>{card.desc}</div>
