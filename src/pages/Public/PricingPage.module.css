@@ -1188,3 +1188,173 @@
   cursor: not-allowed;
   transform: none;
 }
+
+/* ============================================================
+   Credit Breakdown Section
+   ============================================================ */
+
+.creditBreakdownSection {
+  margin-bottom: 80px;
+}
+
+.creditBreakdownGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 640px) {
+  .creditBreakdownGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .creditBreakdownGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.creditBreakdownCard {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 24px;
+  transition: all 0.3s;
+}
+
+.creditBreakdownCard:hover {
+  border-color: #06b6d4;
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.1);
+  transform: translateY(-2px);
+}
+
+[data-theme='dark'] .creditBreakdownCard {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(148, 163, 184, 0.15);
+}
+
+[data-theme='dark'] .creditBreakdownCard:hover {
+  border-color: #06b6d4;
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.15);
+}
+
+.creditBreakdownTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+[data-theme='dark'] .creditBreakdownTitle {
+  color: #f9fafb;
+}
+
+.creditBreakdownSubtitle {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0 0 16px 0;
+}
+
+[data-theme='dark'] .creditBreakdownSubtitle {
+  color: #94a3b8;
+}
+
+.creditBreakdownList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+}
+
+.creditBreakdownList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 13px;
+  color: #374151;
+}
+
+[data-theme='dark'] .creditBreakdownList li {
+  border-bottom-color: rgba(148, 163, 184, 0.1);
+  color: #cbd5e1;
+}
+
+.creditBreakdownList li:last-child {
+  border-bottom: none;
+}
+
+.creditBreakdownList li span {
+  flex: 1;
+}
+
+.creditBreakdownList li strong {
+  color: #06b6d4;
+  font-weight: 600;
+  font-size: 13px;
+  text-align: right;
+  white-space: nowrap;
+  margin-left: 12px;
+}
+
+[data-theme='dark'] .creditBreakdownList li strong {
+  color: #22d3ee;
+}
+
+.creditBreakdownProviders {
+  margin-bottom: 12px;
+}
+
+.creditBreakdownProviders strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+[data-theme='dark'] .creditBreakdownProviders strong {
+  color: #94a3b8;
+}
+
+.providerChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.providerChip {
+  display: inline-block;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+[data-theme='dark'] .providerChip {
+  background: rgba(148, 163, 184, 0.12);
+  color: #94a3b8;
+}
+
+.creditBreakdownExample {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(8, 145, 178, 0.05));
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #0e7490;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.4;
+}
+
+[data-theme='dark'] .creditBreakdownExample {
+  background: rgba(6, 182, 212, 0.08);
+  border-color: rgba(6, 182, 212, 0.2);
+  color: #22d3ee;
+}

@@ -437,6 +437,140 @@ const PricingPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Credit Cost Breakdown */}
+        <section className={styles.creditBreakdownSection}>
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionBadge}>Credit Costs</span>
+            <h2 className={styles.sectionTitle}>What Do Credits Cost?</h2>
+            <p className={styles.sectionDescription}>
+              Every action on the platform has a transparent credit cost. 1 credit ≈ $0.001.
+              Here's exactly what you pay for each service.
+            </p>
+          </div>
+
+          <div className={styles.creditBreakdownGrid}>
+            {/* Chat / LLM */}
+            <div className={styles.creditBreakdownCard}>
+              <h4 className={styles.creditBreakdownTitle}>💬 Chat &amp; LLM</h4>
+              <p className={styles.creditBreakdownSubtitle}>Token-based billing — pay for actual usage</p>
+              <ul className={styles.creditBreakdownList}>
+                <li><span>Average message</span><strong>~20 credits</strong></li>
+                <li><span>Input tokens</span><strong>10 / 1K tokens</strong></li>
+                <li><span>Output tokens</span><strong>30 / 1K tokens</strong></li>
+                <li><span>Min per request</span><strong>10 credits</strong></li>
+              </ul>
+              <div className={styles.creditBreakdownProviders}>
+                <strong>Provider multipliers:</strong>
+                <div className={styles.providerChips}>
+                  <span className={styles.providerChip}>OpenAI 1.0×</span>
+                  <span className={styles.providerChip}>Anthropic 1.2×</span>
+                  <span className={styles.providerChip}>Google 0.8×</span>
+                  <span className={styles.providerChip}>Groq 0.5×</span>
+                  <span className={styles.providerChip}>Local 0.1×</span>
+                </div>
+              </div>
+              <div className={styles.creditBreakdownExample}>
+                Developer plan: ~750 messages/month • Plus: ~24,950 messages/month
+              </div>
+            </div>
+
+            {/* Agents */}
+            <div className={styles.creditBreakdownCard}>
+              <h4 className={styles.creditBreakdownTitle}>🤖 Agent Execution</h4>
+              <p className={styles.creditBreakdownSubtitle}>Per-action billing for autonomous agents</p>
+              <ul className={styles.creditBreakdownList}>
+                <li><span>Session start</span><strong>100 credits</strong></li>
+                <li><span>Step (reasoning)</span><strong>500 credits</strong></li>
+                <li><span>Tool invocation</span><strong>200 credits</strong></li>
+                <li><span>Web call</span><strong>300 credits</strong></li>
+                <li><span>Memory write</span><strong>50 credits</strong></li>
+                <li><span>Goal completion</span><strong>200 credits</strong></li>
+                <li><span>Team run</span><strong>500 credits</strong></li>
+              </ul>
+              <div className={styles.creditBreakdownProviders}>
+                <strong>Agent type multipliers:</strong>
+                <div className={styles.providerChips}>
+                  <span className={styles.providerChip}>Simple 0.5×</span>
+                  <span className={styles.providerChip}>Default 1.0×</span>
+                  <span className={styles.providerChip}>Complex 1.5×</span>
+                  <span className={styles.providerChip}>Autonomous 2.0×</span>
+                </div>
+              </div>
+              <div className={styles.creditBreakdownExample}>
+                3-step simple agent: ~800 credits • 3-step autonomous: ~3,200 credits
+              </div>
+            </div>
+
+            {/* Workflows */}
+            <div className={styles.creditBreakdownCard}>
+              <h4 className={styles.creditBreakdownTitle}>⚡ Workflows</h4>
+              <p className={styles.creditBreakdownSubtitle}>Automated multi-step pipelines</p>
+              <ul className={styles.creditBreakdownList}>
+                <li><span>Workflow start</span><strong>1,000 credits</strong></li>
+                <li><span>Node execution</span><strong>300 credits</strong></li>
+                <li><span>Conditional branch</span><strong>200 credits</strong></li>
+                <li><span>Parallel execution</span><strong>400 credits</strong></li>
+                <li><span>Scheduled trigger</span><strong>10 credits</strong></li>
+                <li><span>Webhook trigger</span><strong>5 credits</strong></li>
+              </ul>
+              <div className={styles.creditBreakdownExample}>
+                Typical 5-node workflow: ~2,500 credits per run
+              </div>
+            </div>
+
+            {/* Compute / IDE */}
+            <div className={styles.creditBreakdownCard}>
+              <h4 className={styles.creditBreakdownTitle}>🖥️ Compute &amp; IDE</h4>
+              <p className={styles.creditBreakdownSubtitle}>Code execution, terminal, and preview</p>
+              <ul className={styles.creditBreakdownList}>
+                <li><span>Code execution (base)</span><strong>5 credits</strong></li>
+                <li><span>Terminal session (min)</span><strong>50 credits</strong></li>
+                <li><span>Preview (min)</span><strong>200 credits</strong></li>
+                <li><span>Compute rate</span><strong>1 credit/ms</strong></li>
+              </ul>
+              <div className={styles.creditBreakdownExample}>
+                All plans include 100 compute hours/month
+              </div>
+            </div>
+
+            {/* Memory / Storage */}
+            <div className={styles.creditBreakdownCard}>
+              <h4 className={styles.creditBreakdownTitle}>🧠 Memory &amp; Storage</h4>
+              <p className={styles.creditBreakdownSubtitle}>Hash Sphere Memory, RAG, and embeddings</p>
+              <ul className={styles.creditBreakdownList}>
+                <li><span>Embedding</span><strong>100 credits</strong></li>
+                <li><span>Retrieval</span><strong>50 credits</strong></li>
+                <li><span>Store memory</span><strong>20 credits</strong></li>
+                <li><span>Memory write</span><strong>2 credits</strong></li>
+                <li><span>Memory read</span><strong>Free</strong></li>
+                <li><span>RAG upload</span><strong>10 credits</strong></li>
+                <li><span>Storage</span><strong>1 credit/MB</strong></li>
+              </ul>
+              <div className={styles.creditBreakdownExample}>
+                All plans include 5 GB storage and 100 RAG documents
+              </div>
+            </div>
+
+            {/* Blockchain + Code Viz + API */}
+            <div className={styles.creditBreakdownCard}>
+              <h4 className={styles.creditBreakdownTitle}>🔗 Blockchain, Code Viz &amp; API</h4>
+              <p className={styles.creditBreakdownSubtitle}>Audit trail, visualization, and API access</p>
+              <ul className={styles.creditBreakdownList}>
+                <li><span>Audit entry</span><strong>100 credits</strong></li>
+                <li><span>Compliance report</span><strong>500 credits</strong></li>
+                <li><span>Codebase analysis</span><strong>200 credits</strong></li>
+                <li><span>Governance check</span><strong>50 credits</strong></li>
+                <li><span>Graph export</span><strong>20 credits</strong></li>
+                <li><span>API GET</span><strong>1 credit</strong></li>
+                <li><span>API POST/PUT</span><strong>5 credits</strong></li>
+              </ul>
+              <div className={styles.creditBreakdownExample}>
+                Hash Sphere: Identity 50 • Transaction 20 • Trust 10 • Simulation 100
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Credit Packs Section */}
         <section className={styles.creditPacksSection}>
           <div className={styles.sectionHeader}>
