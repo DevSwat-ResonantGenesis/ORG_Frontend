@@ -35,7 +35,7 @@ interface FloatingHomeProps {
 
 const FEATURE_CARDS = [
   { icon: MessageSquare, title: 'Resonant Chat', desc: 'Intelligent chat with fast tool calls — search, scrape & more, no agents needed' },
-  { icon: Brain, title: 'Neural Memory', desc: 'Ecosystem control plane — connect agents, tools, LLMs, providers & memory' },
+  { icon: Brain, title: 'Neural Memory', desc: 'Ecosystem control plane — unify 130+ tools, agents, LLMs, providers & memory' },
   { icon: Bot, title: 'AI Agent Studio', desc: 'Create & manage autonomous agents with AI assistance' },
   { icon: Cpu, title: 'ML Workers', desc: 'Training jobs, model pipelines & system monitoring' },
   { icon: TrendingUp, title: 'Invariants SIM', desc: 'Economic constraint modeling & simulation' },
