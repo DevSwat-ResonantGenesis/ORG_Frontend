@@ -92,8 +92,6 @@ const DownloadIDEPage: React.FC = () => {
 
       {/* Quick Setup — Two Column */}
       <section className={styles.setupSection}>
-        <p className={styles.sectionDesc}>Clone, build, and launch in under 10 minutes.</p>
-
         <div className={styles.setupGrid}>
           {/* Left: Prerequisites */}
           <div>
