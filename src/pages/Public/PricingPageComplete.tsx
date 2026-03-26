@@ -245,55 +245,44 @@ const PricingPage: React.FC = () => {
       return;
     }
     
-    // Developer tier - $15/month, route to signup with plan
-    if (plan.id === 'developer') {
-      if (isAuthenticated()) {
-        navigate('/dashboard');
-      } else {
-        navigate('/signup', { state: { plan: plan.id, billingPeriod } });
-      }
+    // All paid plans (Developer $15/mo, Plus $499/mo) go through backend Stripe checkout
+    if (!isAuthenticated()) {
+      navigate('/signup', { state: { plan: plan.id, billingPeriod } });
       return;
     }
     
-    // Plus plan - redirect directly to Stripe Payment Link
-    if (plan.id === 'plus') {
-      window.location.href = 'https://buy.stripe.com/7sYaEW7owgbHclrb7f33W0b';
-      return;
-    }
-    
-    // Fallback: backend checkout for other plans
-    if (isAuthenticated()) {
-      setCheckoutLoading(plan.id);
-      try {
-        const response = await fetch('/api/billing/checkout/subscription', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            plan_id: plan.id,
-            billing_cycle: billingPeriod,
-            success_url: `${window.location.origin}/dashboard?success=true`,
-            cancel_url: `${window.location.origin}/pricing?canceled=true`,
-          }),
-        });
-        if (response.ok) {
-          const data = await response.json();
+    setCheckoutLoading(plan.id);
+    try {
+      const response = await fetch('/api/billing/checkout/subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          plan_id: plan.id,
+          billing_cycle: billingPeriod,
+          success_url: `${window.location.origin}/dashboard?success=true&plan=${plan.id}`,
+          cancel_url: `${window.location.origin}/pricing?canceled=true`,
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.checkout_url || data.url) {
           window.location.href = data.checkout_url || data.url;
         } else {
-          console.error('Checkout failed');
-          alert('Checkout failed. Please try again.');
+          console.error('No checkout URL returned:', data);
+          alert('Checkout session created but no redirect URL received.');
         }
-      } catch (err) {
-        console.error('Checkout failed:', err);
-        alert('Checkout failed. Please try again.');
-      } finally {
-        setCheckoutLoading(null);
+      } else {
+        const error = await response.json().catch(() => ({}));
+        console.error('Checkout failed:', error);
+        alert('Checkout failed: ' + (error.detail || 'Please try again.'));
       }
-      return;
+    } catch (err) {
+      console.error('Checkout failed:', err);
+      alert('Checkout failed. Please try again.');
+    } finally {
+      setCheckoutLoading(null);
     }
-    
-    // Not logged in - go to signup
-    navigate('/signup', { state: { plan: plan.id, billingPeriod } });
   };
 
   const getDisplayPrice = (plan: Plan): string => {
