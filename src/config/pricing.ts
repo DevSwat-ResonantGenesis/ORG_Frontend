@@ -368,11 +368,11 @@ export const HASH_SPHERE_FEATURES: HashSphereFeature[] = [
   { capability: 'View own identity node', developer: true, plus: true, enterprise: true },
   { capability: 'View full identity graph', developer: true, plus: true, enterprise: true },
   { capability: 'Trust relationship visualization', developer: true, plus: true, enterprise: true },
-  { capability: 'Economic flow tracking', developer: false, plus: false, enterprise: true },
-  { capability: 'System entropy metrics', developer: false, plus: false, enterprise: true },
-  { capability: 'Invariant checks', developer: false, plus: false, enterprise: true },
-  { capability: 'Perturbation simulation', developer: false, plus: false, enterprise: true },
-  { capability: 'API Access', developer: false, plus: false, enterprise: true },
+  { capability: 'Economic flow tracking', developer: true, plus: true, enterprise: true },
+  { capability: 'System entropy metrics', developer: true, plus: true, enterprise: true },
+  { capability: 'Invariant checks', developer: true, plus: true, enterprise: true },
+  { capability: 'Perturbation simulation', developer: true, plus: true, enterprise: true },
+  { capability: 'API Access', developer: true, plus: true, enterprise: true },
 ];
 
 export const CORE_FEATURES: CoreFeature[] = [

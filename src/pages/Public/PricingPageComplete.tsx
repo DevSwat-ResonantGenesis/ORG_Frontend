@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { isAuthenticated, getSessionData } from '../../utils/auth-cookies';
 import {
   Globe, Brain, Users, Database, Code, GitBranch,
@@ -12,14 +12,11 @@ import {
 } from 'lucide-react';
 import {
   CORE_FEATURES,
-  HASH_SPHERE_FEATURES,
   FAQ,
   STATE_PHYSICS_API_PLANS,
   HASH_SPHERE_MEMORY_API_PLANS,
   type Plan,
   type CoreFeature,
-  type StatePhysicsAPIPlan,
-  type HashSphereMemoryAPIPlan,
 } from '../../config/pricing';
 import { pricingService } from '../../services/pricingService';
 import type { CreditPack } from '../../config/pricingConfig';
@@ -40,8 +37,7 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const PricingPage: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
+  const billingPeriod = 'monthly' as const;
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [apiCheckoutLoading, setApiCheckoutLoading] = useState<string | null>(null);
   const [creditPackLoading, setCreditPackLoading] = useState<string | null>(null);
@@ -52,16 +48,7 @@ const PricingPage: React.FC = () => {
   // Get user's current plan to determine credit pack access
   const sessionData = getSessionData();
   const userPlan = sessionData?.plan?.toLowerCase();
-  const canPurchaseCredits = userPlan === 'plus' || userPlan === 'enterprise';
-
-  // Show upgrade message if URL contains upgrade parameter
-  useEffect(() => {
-    if (location.search.includes('upgrade=plus')) {
-      setTimeout(() => {
-        alert('Upgrade to Plus plan to unlock credit pack purchases and other premium features!');
-      }, 1000);
-    }
-  }, [location.search]);
+  const canPurchaseCredits = userPlan === 'developer' || userPlan === 'plus' || userPlan === 'enterprise';
 
   useEffect(() => {
     const loadPricing = async () => {
@@ -568,7 +555,7 @@ const PricingPage: React.FC = () => {
             <p className={styles.sectionDescription}>
               {canPurchaseCredits 
                 ? 'Top up your account with credit packs. Larger packs offer better value.'
-                : 'Credit packs are available for Plus and Enterprise subscribers. Upgrade your plan to access credit purchases.'
+                : 'Credit packs are available for all paid subscribers. Sign up for a plan to purchase credits.'
               }
             </p>
           </div>
@@ -759,7 +746,7 @@ const PricingPage: React.FC = () => {
                       </span>
                     </li>
                     <li className={styles.limitItem}>
-                      <span>Teams</span>
+                      <span>Agent Teams</span>
                       <span className={styles.limitValue}>
                         {typeof plan.limits.agents.teams === 'boolean' 
                           ? (plan.limits.agents.teams ? 'Yes' : 'No')
@@ -838,20 +825,20 @@ const PricingPage: React.FC = () => {
                     </li>
                     <li className={styles.limitItem}>
                       <span>Full Identity Graph</span>
-                      <span className={plan.id === 'plus' || plan.id === 'enterprise' ? styles.checkIcon : styles.crossIcon}>
-                        {plan.id === 'plus' || plan.id === 'enterprise' ? <Check size={16} /> : <X size={16} />}
+                      <span className={styles.checkIcon}>
+                        <Check size={16} />
                       </span>
                     </li>
                     <li className={styles.limitItem}>
                       <span>Economic Flow Tracking</span>
-                      <span className={plan.id === 'enterprise' ? styles.checkIcon : styles.crossIcon}>
-                        {plan.id === 'enterprise' ? <Check size={16} /> : <X size={16} />}
+                      <span className={styles.checkIcon}>
+                        <Check size={16} />
                       </span>
                     </li>
                     <li className={styles.limitItem}>
                       <span>API Access</span>
-                      <span className={plan.id === 'enterprise' ? styles.checkIcon : styles.crossIcon}>
-                        {plan.id === 'enterprise' ? <Check size={16} /> : <X size={16} />}
+                      <span className={styles.checkIcon}>
+                        <Check size={16} />
                       </span>
                     </li>
                   </ul>
@@ -912,13 +899,13 @@ const PricingPage: React.FC = () => {
                     <li className={styles.limitItem}>
                       <span>Audit Trail</span>
                       <span className={styles.limitValue}>
-                        {plan.id === 'developer' ? 'Basic' : plan.id === 'plus' ? 'Full' : 'Immutable'}
+                        {plan.id === 'enterprise' ? 'Immutable' : 'Full'}
                       </span>
                     </li>
                     <li className={styles.limitItem}>
                       <span>Compliance Reports</span>
-                      <span className={plan.id !== 'developer' ? styles.checkIcon : styles.crossIcon}>
-                        {plan.id !== 'developer' ? <Check size={16} /> : <X size={16} />}
+                      <span className={styles.checkIcon}>
+                        <Check size={16} />
                       </span>
                     </li>
                     <li className={styles.limitItem}>
@@ -931,46 +918,6 @@ const PricingPage: React.FC = () => {
                 </div>
               </div>
             ))}
-          </div>
-        </section>
-
-        {/* Hash Sphere Comparison */}
-        <section className={styles.comparisonSection}>
-          <div className={styles.sectionHeader}>
-            <span className={styles.sectionBadge}>Hash Sphere</span>
-            <h2 className={styles.sectionTitle}>Hash Sphere Feature Comparison</h2>
-            <p className={styles.sectionDescription}>
-              Advanced identity and economic graph capabilities by plan
-            </p>
-          </div>
-          
-          <div className={styles.tableWrapper}>
-            <table className={styles.comparisonTable}>
-              <thead>
-                <tr>
-                  <th>Capability</th>
-                  <th>Developer</th>
-                  <th>Plus</th>
-                  <th>Enterprise</th>
-                </tr>
-              </thead>
-              <tbody>
-                {HASH_SPHERE_FEATURES.map((feature, idx) => (
-                  <tr key={idx}>
-                    <td>{feature.capability}</td>
-                    <td className={feature.developer ? styles.checkIcon : styles.crossIcon}>
-                      {feature.developer ? <Check size={18} /> : <X size={18} />}
-                    </td>
-                    <td className={feature.plus ? styles.checkIcon : styles.crossIcon}>
-                      {feature.plus ? <Check size={18} /> : <X size={18} />}
-                    </td>
-                    <td className={feature.enterprise ? styles.checkIcon : styles.crossIcon}>
-                      {feature.enterprise ? <Check size={18} /> : <X size={18} />}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </section>
 
