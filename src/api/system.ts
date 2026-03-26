@@ -83,11 +83,19 @@ export interface PlatformUser {
   status: string;
   is_active: boolean;
   is_superuser: boolean;
+  role: string;
+  plan: string;
+  org_name: string;
   mfa_enabled: boolean;
   email_verified: boolean;
+  unlimited_credits: boolean;
+  trial_status: string | null;
+  trial_expires_at: string | null;
   last_login_at: string | null;
   created_at: string | null;
   updated_at: string | null;
+  chat_count: number;
+  message_count: number;
 }
 
 export interface UsersResponse {
@@ -139,61 +147,61 @@ export interface V8Data {
 }
 
 function authHeaders(): Record<string, string> {
-  const token = localStorage.getItem('owner_token');
+  const token = localStorage.getItem('owner_token') || localStorage.getItem('access_token');
   if (token) return { 'Authorization': `Bearer ${token}` };
   return {};
 }
 
 export async function getSystemMetrics(): Promise<SystemMetrics> {
-  const res = await fetch(`${API_BASE}/owner/dashboard/system/metrics`, { headers: authHeaders() });
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/metrics`, { headers: authHeaders(), credentials: 'include' });
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }
 
 export async function getServiceHealth(): Promise<ServiceHealthResponse> {
-  const res = await fetch(`${API_BASE}/owner/dashboard/system/services`, { headers: authHeaders() });
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/services`, { headers: authHeaders(), credentials: 'include' });
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }
 
 export async function getDatabaseStats(): Promise<DatabaseStats> {
-  const res = await fetch(`${API_BASE}/owner/dashboard/system/database`, { headers: authHeaders() });
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/database`, { headers: authHeaders(), credentials: 'include' });
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }
 
 export async function getRaraAgents(): Promise<RaraData> {
-  const res = await fetch(`${API_BASE}/owner/dashboard/system/rara`, { headers: authHeaders() });
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/rara`, { headers: authHeaders(), credentials: 'include' });
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }
 
 export async function getSystemOverview(): Promise<SystemOverview> {
-  const res = await fetch(`${API_BASE}/owner/dashboard/system/overview`, { headers: authHeaders() });
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/overview`, { headers: authHeaders(), credentials: 'include' });
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }
 
 export async function getPlatformUsers(): Promise<UsersResponse> {
-  const res = await fetch(`${API_BASE}/owner/dashboard/system/users`, { headers: authHeaders() });
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/users`, { headers: authHeaders(), credentials: 'include' });
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }
 
 export async function getPlatformAnalytics(): Promise<PlatformAnalytics> {
-  const res = await fetch(`${API_BASE}/owner/dashboard/system/analytics`, { headers: authHeaders() });
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/analytics`, { headers: authHeaders(), credentials: 'include' });
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }
 
 export async function getRecentActivity(): Promise<ActivityResponse> {
-  const res = await fetch(`${API_BASE}/owner/dashboard/system/activity`, { headers: authHeaders() });
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/activity`, { headers: authHeaders(), credentials: 'include' });
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }
 
 export async function getV8Data(): Promise<V8Data> {
-  const res = await fetch(`${API_BASE}/owner/dashboard/system/v8`, { headers: authHeaders() });
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/v8`, { headers: authHeaders(), credentials: 'include' });
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }

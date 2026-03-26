@@ -120,13 +120,25 @@ interface User {
   id: string;
   name: string;
   email: string;
-  plan: 'developer' | 'plus' | 'enterprise';
+  username?: string;
+  role: string;
+  plan: string;
+  orgName?: string;
   status: 'active' | 'inactive' | 'warning';
   creditsUsed: number | null;
   creditsTotal: number | null;
   revenue: number | null;
   lastActive: string;
   signupDate: string;
+  isSuperuser?: boolean;
+  mfaEnabled?: boolean;
+  emailVerified?: boolean;
+  lastLoginAt?: string | null;
+  unlimitedCredits?: boolean;
+  trialStatus?: string | null;
+  trialExpiresAt?: string | null;
+  chatCount?: number;
+  messageCount?: number;
 }
 
 interface RARAAgent {
@@ -299,7 +311,9 @@ const OwnerDashboard: React.FC = () => {
             name: u.full_name || u.email.split('@')[0],
             email: u.email,
             username: u.username || '',
-            plan: u.is_superuser ? 'enterprise' as const : u.unlimited_credits ? 'plus' as const : 'developer' as const,
+            role: u.role || 'user',
+            plan: (u.plan || 'free') as 'developer' | 'plus' | 'enterprise',
+            orgName: u.org_name || '',
             status: (u.status || (u.is_active ? 'active' : 'inactive')) as 'active' | 'inactive' | 'warning',
             creditsUsed: null,
             creditsTotal: null,
@@ -309,6 +323,7 @@ const OwnerDashboard: React.FC = () => {
             mfaEnabled: u.mfa_enabled || false,
             emailVerified: u.email_verified || false,
             lastLoginAt: u.last_login_at ? u.last_login_at.split('T')[0] : null,
+            isSuperuser: u.is_superuser || false,
             unlimitedCredits: u.unlimited_credits || false,
             trialStatus: u.trial_status || null,
             trialExpiresAt: u.trial_expires_at || null,
@@ -332,13 +347,16 @@ const OwnerDashboard: React.FC = () => {
             name: u.full_name || u.email.split('@')[0],
             email: u.email,
             username: u.username || '',
-            plan: 'developer' as const,
+            role: u.role || 'user',
+            plan: u.plan || 'free',
+            orgName: u.org_name || '',
             status: (u.status || (u.is_active ? 'active' : 'inactive')) as 'active' | 'inactive' | 'warning',
             creditsUsed: null,
             creditsTotal: null,
             revenue: null,
             lastActive: u.last_login_at || 'Never',
             signupDate: u.created_at ? u.created_at.split('T')[0] : 'N/A',
+            isSuperuser: u.is_superuser || false,
             mfaEnabled: u.mfa_enabled || false,
             emailVerified: u.email_verified || false,
             lastLoginAt: u.last_login_at ? u.last_login_at.split('T')[0] : null,
@@ -355,9 +373,9 @@ const OwnerDashboard: React.FC = () => {
         const settingsData = await settingsRes.json();
         setSettings({
           creditRate: settingsData.credit_rate || 0.001,
-          developerCredits: settingsData.developer_credits || 1000,
-          plusCredits: settingsData.plus_credits || 50000,
-          plusPrice: settingsData.plus_price || 49,
+          developerCredits: settingsData.developer_credits || 15000,
+          plusCredits: settingsData.plus_credits || 499000,
+          plusPrice: settingsData.plus_price || 499,
           topupPrice: settingsData.topup_price || 8,
           topupAmount: settingsData.topup_amount || 10000,
           maintenanceMode: settingsData.maintenance_mode || false,
