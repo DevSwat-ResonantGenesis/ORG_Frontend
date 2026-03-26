@@ -205,3 +205,33 @@ export async function getV8Data(): Promise<V8Data> {
   if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
   return res.json();
 }
+
+export interface UsageAnalytics {
+  platform_totals: {
+    total_messages: number;
+    total_chats: number;
+    total_credits_used: number;
+    total_logins: number;
+    active_users_7d: number;
+  };
+  ai_provider_usage: { provider: string; messages: number }[];
+  service_usage: { service: string; transactions: number; credits_spent: number }[];
+  top_users_by_chat: { email: string; name: string; messages: number; chats: number }[];
+  top_users_by_credits: { email: string; name: string; credits_spent: number; transactions: number }[];
+  per_user_stats: {
+    id: string; email: string; name: string; role: string; plan: string;
+    last_login: string | null; signup_date: string | null;
+    chat_count: number; message_count: number;
+    credits_spent: number; credits_received: number; txn_count: number;
+    unlimited_credits: boolean; is_superuser: boolean;
+  }[];
+  login_trends: { event: string; date: string; count: number }[];
+  timestamp: string;
+  error?: string;
+}
+
+export async function getUsageAnalytics(): Promise<UsageAnalytics> {
+  const res = await fetch(`${API_BASE}/owner/dashboard/system/analytics/usage`, { headers: authHeaders(), credentials: 'include' });
+  if (!res.ok) throw new Error(`Failed: ${res.statusText}`);
+  return res.json();
+}

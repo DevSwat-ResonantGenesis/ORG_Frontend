@@ -11,7 +11,7 @@ import styles from './OwnerDashboard.module.css';
 import V8ControlPanel from '../../components/owner/V8ControlPanel';
 import PlatformStatePhysics from '../../components/owner/PlatformStatePhysics';
 import DaemonControlPanel from '../../components/owner/DaemonControlPanel';
-import { getSystemMetrics, getServiceHealth, getDatabaseStats, getRaraAgents, getSystemOverview, getPlatformUsers, getPlatformAnalytics, getRecentActivity, getV8Data, SystemMetrics, ServiceHealthResponse, DatabaseStats, RaraData, PlatformAnalytics, ActivityResponse, V8Data } from '../../api/system';
+import { getSystemMetrics, getServiceHealth, getDatabaseStats, getRaraAgents, getSystemOverview, getPlatformUsers, getPlatformAnalytics, getRecentActivity, getV8Data, getUsageAnalytics, SystemMetrics, ServiceHealthResponse, DatabaseStats, RaraData, PlatformAnalytics, ActivityResponse, V8Data, UsageAnalytics } from '../../api/system';
 import { getAdminLocStats, getLiveLocStats, type AdminLocStats, type LiveLocStats } from '../../api/ideLoc';
 
 // Icons
@@ -183,7 +183,7 @@ const defaultStats: PlatformStats = {
 
 const defaultAgents: RARAAgent[] = [];
 
-type TabType = 'overview' | 'users' | 'revenue' | 'agents' | 'monitoring' | 'settings' | 'state-physics' | 'system' | 'v8' | 'control' | 'chat-skills';
+type TabType = 'overview' | 'users' | 'revenue' | 'agents' | 'monitoring' | 'settings' | 'state-physics' | 'system' | 'v8' | 'control' | 'chat-skills' | 'usage';
 
 interface ServiceHealth {
   name: string;
@@ -233,6 +233,7 @@ const OwnerDashboard: React.FC = () => {
   const [realV8, setRealV8] = useState<V8Data | null>(null);
   const [locAdminStats, setLocAdminStats] = useState<AdminLocStats | null>(null);
   const [liveLoc, setLiveLoc] = useState<LiveLocStats | null>(null);
+  const [usageAnalytics, setUsageAnalytics] = useState<UsageAnalytics | null>(null);
 
   const [authMetrics, setAuthMetrics] = useState<AuthMetrics>({
     loginSuccess: null,
@@ -473,6 +474,13 @@ const OwnerDashboard: React.FC = () => {
         }
         if (activityData) setRealActivity(activityData);
         if (v8DataRes) setRealV8(v8DataRes);
+        // Fetch usage analytics
+        try {
+          const usageData = await getUsageAnalytics();
+          if (usageData && !usageData.error) setUsageAnalytics(usageData);
+        } catch (e) {
+          console.warn('Usage analytics not available:', e);
+        }
         if (raraData) {
           setRealRara(raraData);
           if (raraData.agents && raraData.agents.length > 0) {
@@ -1860,6 +1868,225 @@ const OwnerDashboard: React.FC = () => {
     );
   };
 
+  const renderUsageAnalytics = () => {
+    const ua = usageAnalytics;
+    if (!ua) return <div className={styles.card} style={{ textAlign: 'center', color: '#94a3b8', padding: '40px' }}>Loading usage analytics...</div>;
+
+    const pt = ua.platform_totals;
+    return (
+      <>
+        {/* Platform Totals */}
+        <div className={styles.statsGrid}>
+          <div className={styles.statCard}>
+            <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconBlue}`}><ActivityIcon /></div></div>
+            <div className={styles.statValue}>{pt.total_messages.toLocaleString()}</div>
+            <div className={styles.statLabel}>Total Messages</div>
+          </div>
+          <div className={styles.statCard}>
+            <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconGreen}`}><UsersIcon /></div></div>
+            <div className={styles.statValue}>{pt.total_chats.toLocaleString()}</div>
+            <div className={styles.statLabel}>Total Chats</div>
+          </div>
+          <div className={styles.statCard}>
+            <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconPurple}`}><DollarIcon /></div></div>
+            <div className={styles.statValue}>{pt.total_credits_used.toLocaleString()}</div>
+            <div className={styles.statLabel}>Credits Used</div>
+          </div>
+          <div className={styles.statCard}>
+            <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconOrange}`}><TrendingUpIcon /></div></div>
+            <div className={styles.statValue}>{pt.total_logins.toLocaleString()}</div>
+            <div className={styles.statLabel}>Total Logins</div>
+          </div>
+          <div className={styles.statCard}>
+            <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconCyan}`}><UsersIcon /></div></div>
+            <div className={styles.statValue}>{pt.active_users_7d}</div>
+            <div className={styles.statLabel}>Active Users (7d)</div>
+          </div>
+        </div>
+
+        <div className={styles.cardsGrid}>
+          {/* AI Provider / Model Usage */}
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}><CpuIcon /> AI Agent / Model Usage</h3>
+            <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
+              {ua.ai_provider_usage.length > 0 ? ua.ai_provider_usage.map((p, i) => {
+                const maxMsgs = ua.ai_provider_usage[0]?.messages || 1;
+                return (
+                  <div key={p.provider} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 0', borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+                    <span style={{ width: '20px', color: '#64748b', fontSize: '11px', textAlign: 'right' }}>{i + 1}</span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '3px' }}>
+                        <span style={{ color: '#e2e8f0', fontSize: '12px', fontFamily: 'monospace' }}>{p.provider}</span>
+                        <span style={{ color: '#94a3b8', fontSize: '11px' }}>{p.messages.toLocaleString()} msgs</span>
+                      </div>
+                      <div style={{ height: '4px', background: '#1e293b', borderRadius: '2px', overflow: 'hidden' }}>
+                        <div style={{ width: `${(p.messages / maxMsgs) * 100}%`, height: '100%', background: 'linear-gradient(90deg, #8b5cf6, #6366f1)', borderRadius: '2px' }} />
+                      </div>
+                    </div>
+                  </div>
+                );
+              }) : <div style={{ color: '#64748b', textAlign: 'center' }}>No AI usage data</div>}
+            </div>
+          </div>
+
+          {/* Service Usage (Credit Breakdown) */}
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}><ServerIcon /> Service Usage (Credits)</h3>
+            {ua.service_usage.length > 0 ? (
+              <div>
+                {ua.service_usage.map(s => (
+                  <div key={s.service} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+                    <span style={{ color: '#e2e8f0', fontSize: '13px' }}>
+                      {s.service === 'chat_message' ? 'Chat Messages' :
+                       s.service === 'memory_store' ? 'Memory Storage' :
+                       s.service === 'code_analysis' ? 'Code Analysis' :
+                       s.service === 'code_visualizer_analysis' ? 'Code Visualizer' :
+                       s.service}
+                    </span>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ color: '#a78bfa', fontSize: '13px', fontWeight: 600 }}>{s.credits_spent.toLocaleString()} credits</div>
+                      <div style={{ color: '#64748b', fontSize: '10px' }}>{s.transactions.toLocaleString()} transactions</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : <div style={{ color: '#64748b', textAlign: 'center' }}>No service usage data</div>}
+          </div>
+        </div>
+
+        <div className={styles.cardsGrid}>
+          {/* Top Users by Chat */}
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}><UsersIcon /> Top Users by Chat Activity</h3>
+            <div className={styles.tableWrapper} style={{ maxHeight: '350px', overflowY: 'auto' }}>
+              <table className={styles.table}>
+                <thead style={{ position: 'sticky', top: 0, background: '#1e293b', zIndex: 5 }}>
+                  <tr><th>#</th><th>User</th><th style={{ textAlign: 'right' }}>Messages</th><th style={{ textAlign: 'right' }}>Chats</th></tr>
+                </thead>
+                <tbody>
+                  {ua.top_users_by_chat.map((u, i) => (
+                    <tr key={u.email}>
+                      <td style={{ color: '#64748b', width: '30px' }}>{i + 1}</td>
+                      <td>
+                        <div style={{ fontSize: '12px', color: '#e2e8f0' }}>{u.name}</div>
+                        <div style={{ fontSize: '10px', color: '#64748b', fontFamily: 'monospace' }}>{u.email}</div>
+                      </td>
+                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: '#3b82f6' }}>{u.messages.toLocaleString()}</td>
+                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: '#10b981' }}>{u.chats}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Top Users by Credit Spend */}
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}><DollarIcon /> Top Users by Credit Spend</h3>
+            <div className={styles.tableWrapper} style={{ maxHeight: '350px', overflowY: 'auto' }}>
+              <table className={styles.table}>
+                <thead style={{ position: 'sticky', top: 0, background: '#1e293b', zIndex: 5 }}>
+                  <tr><th>#</th><th>User</th><th style={{ textAlign: 'right' }}>Credits Spent</th><th style={{ textAlign: 'right' }}>Transactions</th></tr>
+                </thead>
+                <tbody>
+                  {ua.top_users_by_credits.map((u, i) => (
+                    <tr key={u.email}>
+                      <td style={{ color: '#64748b', width: '30px' }}>{i + 1}</td>
+                      <td>
+                        <div style={{ fontSize: '12px', color: '#e2e8f0' }}>{u.name}</div>
+                        <div style={{ fontSize: '10px', color: '#64748b', fontFamily: 'monospace' }}>{u.email}</div>
+                      </td>
+                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: '#a78bfa' }}>{u.credits_spent.toLocaleString()}</td>
+                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: '#64748b' }}>{u.transactions}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {/* Per-User Detailed Stats */}
+        <div className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}><UsersIcon /> Per-User Usage Details ({ua.per_user_stats.length} users)</h2>
+          </div>
+          <div className={styles.card}>
+            <div className={styles.tableWrapper} style={{ maxHeight: '500px', overflowY: 'auto' }}>
+              <table className={styles.table}>
+                <thead style={{ position: 'sticky', top: 0, background: '#1e293b', zIndex: 10 }}>
+                  <tr>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Plan</th>
+                    <th style={{ textAlign: 'right' }}>Chats</th>
+                    <th style={{ textAlign: 'right' }}>Messages</th>
+                    <th style={{ textAlign: 'right' }}>Credits Spent</th>
+                    <th style={{ textAlign: 'right' }}>Credits Received</th>
+                    <th>Flags</th>
+                    <th>Last Login</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ua.per_user_stats.map(u => (
+                    <tr key={u.id}>
+                      <td style={{ fontFamily: 'monospace', fontSize: '11px' }}>{u.email}</td>
+                      <td><span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(139,92,246,0.15)', color: '#a78bfa' }}>{u.role}</span></td>
+                      <td><span className={`${styles.badge} ${getBadgeClass(u.plan)}`}>{u.plan}</span></td>
+                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: u.chat_count > 0 ? '#10b981' : '#475569' }}>{u.chat_count}</td>
+                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: u.message_count > 0 ? '#3b82f6' : '#475569' }}>{u.message_count}</td>
+                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: u.credits_spent > 0 ? '#f59e0b' : '#475569' }}>{u.credits_spent.toLocaleString()}</td>
+                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: u.credits_received > 0 ? '#10b981' : '#475569' }}>{u.credits_received.toLocaleString()}</td>
+                      <td style={{ fontSize: '10px' }}>
+                        {u.is_superuser && <span style={{ color: '#ef4444', marginRight: '4px' }}>SUPER</span>}
+                        {u.unlimited_credits && <span style={{ color: '#a78bfa' }}>UNLIMITED</span>}
+                        {!u.is_superuser && !u.unlimited_credits && <span style={{ color: '#475569' }}>—</span>}
+                      </td>
+                      <td style={{ fontSize: '11px', color: '#94a3b8' }}>{u.last_login ? new Date(u.last_login).toLocaleDateString() : 'Never'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {/* Login Trends */}
+        {ua.login_trends.length > 0 && (
+          <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}><TrendingUpIcon /> Login & Registration Trends (30 days)</h2>
+            </div>
+            <div className={styles.card}>
+              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                {(() => {
+                  const dates = [...new Set(ua.login_trends.map(t => t.date))].sort().slice(-14);
+                  return dates.map(date => {
+                    const logins = ua.login_trends.filter(t => t.date === date && t.event !== 'registration').reduce((s, t) => s + t.count, 0);
+                    const regs = ua.login_trends.filter(t => t.date === date && t.event === 'registration').reduce((s, t) => s + t.count, 0);
+                    return (
+                      <div key={date} style={{ textAlign: 'center', minWidth: '50px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', height: '80px', justifyContent: 'flex-end' }}>
+                          {regs > 0 && <div style={{ width: '20px', height: `${Math.max(4, regs * 4)}px`, background: '#10b981', borderRadius: '2px' }} title={`${regs} registrations`} />}
+                          {logins > 0 && <div style={{ width: '20px', height: `${Math.max(4, logins * 2)}px`, background: '#3b82f6', borderRadius: '2px' }} title={`${logins} logins`} />}
+                        </div>
+                        <div style={{ fontSize: '9px', color: '#64748b', marginTop: '4px' }}>{date.slice(5)}</div>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+              <div style={{ display: 'flex', gap: '16px', marginTop: '12px', fontSize: '11px' }}>
+                <span style={{ color: '#3b82f6' }}>&#9632; Logins</span>
+                <span style={{ color: '#10b981' }}>&#9632; Registrations</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </>
+    );
+  };
+
   const renderSettings = () => (
     <div className={styles.cardsGrid}>
       <div className={styles.card}>
@@ -1948,6 +2175,7 @@ const OwnerDashboard: React.FC = () => {
           <button className={`${styles.navTab} ${activeTab === 'settings' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('settings')}>Settings</button>
           <button className={`${styles.navTab} ${activeTab === 'state-physics' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('state-physics')}>🌌 State Physics</button>
           <button className={`${styles.navTab} ${activeTab === 'v8' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('v8')}>⚡ V8 Engine</button>
+          <button className={`${styles.navTab} ${activeTab === 'usage' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('usage')}>📊 Usage Analytics</button>
           <button className={`${styles.navTab} ${activeTab === 'chat-skills' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('chat-skills')}>🧠 Chat Skills</button>
           <button className={`${styles.navTab} ${activeTab === 'control' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('control')}>🎛️ Platform Control</button>
           <button className={styles.navTab} onClick={() => window.location.href = '/v8/'}>🔮 V8 HashSphere</button>
@@ -1962,6 +2190,7 @@ const OwnerDashboard: React.FC = () => {
         {activeTab === 'settings' && renderSettings()}
         {activeTab === "state-physics" && <PlatformStatePhysics />}
         {activeTab === 'v8' && <V8ControlPanel />}
+        {activeTab === 'usage' && renderUsageAnalytics()}
         {activeTab === 'chat-skills' && renderChatSkills()}
         {activeTab === 'control' && <DaemonControlPanel />}
       </div>
