@@ -571,14 +571,6 @@ const OwnerDashboard: React.FC = () => {
   };
 
   const handleResetPassword = async (userId: string, userEmail: string) => {
-    const ownerToken = localStorage.getItem('owner_token');
-    const sessionToken = localStorage.getItem('access_token');
-    const authToken = ownerToken || sessionToken;
-    if (!authToken) {
-      navigate('/dashboard');
-      return;
-    }
-
     if (!confirm(`Send password reset email to ${userEmail}?`)) {
       return;
     }
@@ -586,9 +578,7 @@ const OwnerDashboard: React.FC = () => {
     try {
       const response = await fetch(`${API_BASE}/owner/auth/admin/reset-password/${userId}`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${authToken}`,
-        },
+        credentials: 'include',
       });
 
       if (response.ok) {
@@ -605,14 +595,6 @@ const OwnerDashboard: React.FC = () => {
   };
 
   const handleBlockUser = async (userId: string, userEmail: string, isCurrentlyBlocked: boolean) => {
-    const ownerToken = localStorage.getItem('owner_token');
-    const sessionToken = localStorage.getItem('access_token');
-    const authToken = ownerToken || sessionToken;
-    if (!authToken) {
-      navigate('/dashboard');
-      return;
-    }
-
     const action = isCurrentlyBlocked ? 'unblock' : 'block';
     if (!confirm(`Are you sure you want to ${action} ${userEmail}?`)) {
       return;
@@ -622,9 +604,7 @@ const OwnerDashboard: React.FC = () => {
       const endpoint = isCurrentlyBlocked ? 'unblock-user' : 'block-user';
       const response = await fetch(`${API_BASE}/owner/auth/admin/${endpoint}/${userId}`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${authToken}`,
-        },
+        credentials: 'include',
       });
 
       if (response.ok) {
@@ -643,14 +623,6 @@ const OwnerDashboard: React.FC = () => {
   };
 
   const handleDeleteUser = async (userId: string, userEmail: string) => {
-    const ownerToken = localStorage.getItem('owner_token');
-    const sessionToken = localStorage.getItem('access_token');
-    const authToken = ownerToken || sessionToken;
-    if (!authToken) {
-      navigate('/dashboard');
-      return;
-    }
-
     if (!confirm(`⚠️ DANGER: Are you sure you want to PERMANENTLY DELETE ${userEmail}? This cannot be undone!`)) {
       return;
     }
@@ -662,9 +634,7 @@ const OwnerDashboard: React.FC = () => {
     try {
       const response = await fetch(`${API_BASE}/owner/auth/admin/delete-user/${userId}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${authToken}`,
-        },
+        credentials: 'include',
       });
 
       if (response.ok) {
