@@ -14,7 +14,7 @@ import {
 import { saveSessionData, clearSessionData, type UserRole } from '../../utils/auth-cookies';
 import { clearSession } from '../../utils/auth';
 import fastapiClient from '../../api/fastapiClient';
-import { goToResonantChat } from '../../utils/navigation';
+import { goToDashboard } from '../../utils/navigation';
 import { useThemeStore } from '../../store/themeStore';
 import { initiateSSO } from '../../api/sso';
 
@@ -244,13 +244,13 @@ export default function LoginPageNew() {
         try {
           sessionStorage.setItem(
             'rg-post-login-target',
-            JSON.stringify({ path: '/', ts: Date.now(), remaining: 5 })
+            JSON.stringify({ path: '/dashboard', ts: Date.now(), remaining: 5 })
           );
-          document.cookie = `rg_post_login_target=${encodeURIComponent('/')}; Max-Age=60; Path=/`;
+          document.cookie = `rg_post_login_target=${encodeURIComponent('/dashboard')}; Max-Age=60; Path=/`;
         } catch {
           // ignore
         }
-        goToResonantChat(navigate);
+        goToDashboard(navigate);
       }
     } catch (err: any) {
       let message = 'Unable to sign in. Please check your credentials.';

@@ -4,7 +4,7 @@ import { handleOAuthCallback, handleSAMLCallback, completeGoogleServiceConnectio
 import { getCurrentUser } from '@/api/auth';
 import { saveSessionData } from '@/utils/auth-cookies';
 import { logger } from '@/utils/logger';
-import { goToResonantChat } from '@/utils/navigation';
+import { goToDashboard } from '@/utils/navigation';
 import { Button } from '@/components/ui/Button';
 import pageStyles from '../../components/ui/Page.module.css';
 import containerStyles from '../../components/ui/Container.module.css';
@@ -158,20 +158,20 @@ const OAuthCallbackPage: React.FC = () => {
         try {
           sessionStorage.setItem(
             'rg-post-login-target',
-            JSON.stringify({ path: '/', ts: Date.now(), remaining: 5 })
+            JSON.stringify({ path: '/dashboard', ts: Date.now(), remaining: 5 })
           );
-          document.cookie = `rg_post_login_target=${encodeURIComponent('/')}; Max-Age=60; Path=/`;
+          document.cookie = `rg_post_login_target=${encodeURIComponent('/dashboard')}; Max-Age=60; Path=/`;
         } catch {
         }
 
-        goToResonantChat(navigate);
+        goToDashboard(navigate);
       } catch (error: any) {
         logger.error('OAuth callback error', error, { component: 'OAuthCallback' });
 
         try {
           const user = await getCurrentUser();
           if (user) {
-            goToResonantChat(navigate);
+            goToDashboard(navigate);
             return;
           }
         } catch {

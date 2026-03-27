@@ -9,17 +9,18 @@ import { isAuthenticated, getSessionData } from '../utils/auth-cookies';
 
 interface PlanRestrictedRouteProps {
   children: React.ReactNode;
-  requiredPlan: 'developer' | 'plus' | 'enterprise';
+  requiredPlan: 'free' | 'developer' | 'plus' | 'enterprise';
   redirectTo?: string;
 }
 
-type PlanLevel = 'guest' | 'developer' | 'plus' | 'enterprise';
+type PlanLevel = 'guest' | 'free' | 'developer' | 'plus' | 'enterprise';
 
 const PLAN_HIERARCHY: Record<PlanLevel, number> = {
   guest: 0,
-  developer: 1,
-  plus: 2,
-  enterprise: 3,
+  free: 1,
+  developer: 2,
+  plus: 3,
+  enterprise: 4,
 };
 
 const getUserPlan = (): PlanLevel => {
@@ -33,18 +34,15 @@ const getUserPlan = (): PlanLevel => {
     return 'enterprise';
   }
   
-  const plan = sessionData?.plan || sessionData?.subscription_tier || 'developer';
-  
-  // Debug logging
-  console.log('[PlanRestrictedRoute] Session data:', sessionData);
-  console.log('[PlanRestrictedRoute] Detected plan:', plan);
+  const plan = sessionData?.plan || sessionData?.subscription_tier || 'free';
   
   // Map legacy plan names to new names
   if (plan === 'plus' || plan === 'starter' || plan === 'pro' || plan === 'professional') return 'plus';
   if (plan === 'enterprise') return 'enterprise';
+  if (plan === 'developer') return 'developer';
   
-  // developer, free, or any other value defaults to developer
-  return 'developer';
+  // free or any other value defaults to free
+  return 'free';
 };
 
 const hasAccess = (requiredPlan: PlanLevel): boolean => {
