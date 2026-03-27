@@ -279,32 +279,7 @@ const NewUserDashboard: React.FC = () => {
         )}
       </div>
 
-      {/* Compliance Checks Detail — only shown if compliance data is available */}
-      {p.compliance && p.compliance.checks.length > 0 && (
-        <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: 20, marginBottom: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Shield size={16} color={complianceColor} />
-              <span style={{ color: '#e5e7eb', fontSize: 14, fontWeight: 600 }}>Platform Compliance</span>
-            </div>
-            <span style={{ color: '#6b7280', fontSize: 11 }}>SOC2 controls status</span>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 8 }}>
-            {p.compliance.checks.map((check, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: '#0f172a', borderRadius: 8, border: '1px solid #1e293b' }}>
-                {check.status === 'pass'
-                  ? <CheckCircle size={16} color="#22c55e" />
-                  : <XCircle size={16} color="#ef4444" />}
-                <div style={{ flex: 1 }}>
-                  <div style={{ color: '#d1d5db', fontSize: 12, fontWeight: 500 }}>{check.control}</div>
-                  <div style={{ color: '#6b7280', fontSize: 11 }}>{check.detail}</div>
-                </div>
-                <span style={{ color: '#6b7280', fontSize: 10 }}>{check.weight}pt</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Platform Compliance removed — it shows system-wide data, not per-user */}
 
       {/* Bottom Row: Activity Feed + Quick Actions */}
       <div className={styles.bottomRow}>

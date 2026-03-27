@@ -135,7 +135,7 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
   // Fetch data from multiple REAL endpoints in parallel
   // Group 1: Billing (credits, subscription, usage history)
   // Group 2: Per-user REAL counts (agents, memory, conversations)
-  // Group 3: Platform-wide (compliance, marketplace)
+  // Group 3: Platform-wide (marketplace)
   const [
     dashboardRes,
     creditsRes,
@@ -146,7 +146,6 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     userMemoryRes,
     userConversationsRes,
     userRagConvsRes,
-    complianceRes,
     marketplaceStatsRes,
     workflowsRes,
   ] = await Promise.all([
@@ -160,8 +159,7 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     fastapiClient.get('/memory/stats').catch(() => ({ data: null })),
     fastapiClient.get('/resonant-chat/conversations').catch(() => ({ data: null })),
     fastapiClient.get('/rag/conversations?limit=10000').catch(() => ({ data: null })),
-    // Platform-wide metrics (compliance, marketplace)
-    fastapiClient.get('/api/v1/agents/compliance/score').catch(() => ({ data: null })),
+    // Platform-wide metrics (marketplace only — compliance removed from user dashboard)
     fastapiClient.get('/marketplace/stats').catch(() => ({ data: null })),
     fastapiClient.get('/api/v1/workflow/workflows').catch(() => ({ data: null })),
   ]);
@@ -172,7 +170,6 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
   const subscription = subscriptionRes.data;
   const breakdown = breakdownRes.data;
   const history = historyRes.data;
-  const complianceData = complianceRes.data;
   const marketplaceStats = marketplaceStatsRes.data;
   const workflowsList = workflowsRes.data;
 
@@ -267,12 +264,8 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
   // Platform agent metrics not used for per-user dashboard
   const platformAgentMetrics = null;
 
-  const platformCompliance = complianceData ? {
-    score: complianceData.compliance_score ?? 0,
-    grade: complianceData.grade ?? '—',
-    framework: complianceData.framework ?? '',
-    checks: Array.isArray(complianceData.checks) ? complianceData.checks : [],
-  } : null;
+  // Compliance removed from user dashboard — was system-wide, not per-user
+  const platformCompliance = null;
 
   const platformMemory = userMemoryStats ? {
     totalMemories: userMemoryStats.total_memories ?? userMemoryStats.total_embeddings ?? 0,
