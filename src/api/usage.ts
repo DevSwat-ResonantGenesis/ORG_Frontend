@@ -92,35 +92,81 @@ export interface UsageSummary {
 }
 
 /**
- * Fetch full usage metrics for the current organization
+ * Fetch full usage metrics by aggregating from REAL backend endpoints.
+ * /usage/metrics does NOT exist — we must query real services directly.
  */
 export const fetchUsageMetrics = async (): Promise<UsageMetrics> => {
   try {
-    const res = await fastapiClient.get('/usage/metrics');
-    // Ensure all required fields have defaults to prevent undefined errors
-    const data = res.data || {};
+    // Fetch from all real endpoints in parallel
+    const [dashboardRes, agentMetricsRes, memoryStatsRes, subscriptionRes] = await Promise.all([
+      fastapiClient.get('/billing/dashboard/me').catch(() => ({ data: null })),
+      fastapiClient.get('/api/v1/agents/metrics').catch(() => ({ data: null })),
+      fastapiClient.get('/memory/stats').catch(() => ({ data: null })),
+      fastapiClient.get('/billing/subscription').catch(() => ({ data: null })),
+    ]);
+
+    const dash = dashboardRes.data;
+    const agentM = agentMetricsRes.data;
+    const memStats = memoryStatsRes.data;
+    const sub = subscriptionRes.data;
+
+    // Map real data into UsageMetrics shape
+    const creditBalance = dash?.current_balance ?? dash?.credits?.balance ?? 0;
+    const creditLimit = dash?.tier_credits ?? 0;
+    const creditUsed = dash?.credits?.lifetime_used ?? dash?.usage_this_period ?? 0;
+    const agentsActive = agentM?.agents?.active ?? dash?.agents ?? 0;
+    const agentsTotal = agentM?.agents?.total ?? 0;
+    const agentsLimit = dash?.agents_limit ?? -1;
+    const memoriesCount = memStats?.total_memories ?? memStats?.total_embeddings ?? dash?.memories ?? 0;
+    const storageMb = memStats?.storage_mb ?? memStats?.storage_size_mb ?? 0;
+    const sessions = agentM?.sessions?.total ?? dash?.sessions ?? 0;
+    const messages = dash?.messages ?? 0;
+
+    const plan = sub?.plan?.toLowerCase() || dash?.subscription?.plan?.toLowerCase() || 'free';
+    const planDisplayName = plan === 'free' ? 'Free'
+      : plan === 'developer' ? 'Developer'
+      : plan === 'plus' ? 'Plus'
+      : plan === 'enterprise' ? 'Enterprise' : plan;
+
     return {
-      tokens: data.tokens || { used: 0, limit: 0, remaining: 0, percentUsed: 0 },
-      agents: data.agents || { active: 0, limit: 0, remaining: 0 },
-      teams: data.teams || { created: 0, limit: 0, remaining: 0 },
-      memory: data.memory || { anchorsUsed: 0, anchorsLimit: 0, storageUsedMB: 0, storageLimitMB: 0 },
-      ragDocuments: data.ragDocuments || { used: 0, limit: 0 },
-      computeHours: data.computeHours || { used: 0, limit: 0 },
-      conversations: data.conversations || { count: 0, limit: 0 },
-      credits: data.credits || { balance: 0, used: 0, limit: 0 },
-      providers: data.providers || { available: [], used: [] },
-      users: data.users || { active: 0, limit: 0 },
-      billing: data.billing || {
-        planId: '',
-        planName: '',
-        billingPeriod: 'monthly',
-        currentPeriodStart: '',
-        currentPeriodEnd: '',
+      tokens: {
+        used: creditUsed,
+        limit: creditLimit,
+        remaining: Math.max(0, creditLimit - creditUsed),
+        percentUsed: creditLimit > 0 ? Math.round((creditUsed / creditLimit) * 100) : 0,
+      },
+      agents: {
+        active: agentsActive,
+        limit: agentsLimit === -1 ? 999 : agentsLimit,
+        remaining: agentsLimit === -1 ? 999 : Math.max(0, agentsLimit - agentsActive),
+      },
+      teams: { created: 0, limit: 0, remaining: 0 },
+      memory: {
+        anchorsUsed: memoriesCount,
+        anchorsLimit: 0,
+        storageUsedMB: storageMb,
+        storageLimitMB: 0,
+      },
+      ragDocuments: { used: 0, limit: 0 },
+      computeHours: { used: 0, limit: 0 },
+      conversations: { count: sessions, limit: 0 },
+      credits: {
+        balance: creditBalance,
+        used: creditUsed,
+        limit: creditLimit,
+      },
+      providers: { available: [], used: [] },
+      users: { active: 1, limit: 0 },
+      billing: {
+        planId: plan,
+        planName: planDisplayName,
+        billingPeriod: sub?.billing_cycle || dash?.subscription?.billing_cycle || 'monthly',
+        currentPeriodStart: dash?.usage?.period_start || '',
+        currentPeriodEnd: dash?.usage?.period_end || '',
         nextBillingDate: '',
       },
     };
   } catch (error: any) {
-    // Return default metrics if API fails
     console.error('Failed to fetch usage metrics:', error);
     return {
       tokens: { used: 0, limit: 0, remaining: 0, percentUsed: 0 },
@@ -130,8 +176,8 @@ export const fetchUsageMetrics = async (): Promise<UsageMetrics> => {
       providers: { available: [], used: [] },
       users: { active: 0, limit: 0 },
       billing: {
-        planId: 'starter',
-        planName: 'Starter',
+        planId: 'free',
+        planName: 'Free',
         billingPeriod: 'monthly',
         currentPeriodStart: '',
         currentPeriodEnd: '',
@@ -146,8 +192,20 @@ export const fetchUsageMetrics = async (): Promise<UsageMetrics> => {
  */
 export const fetchUsageSummary = async (): Promise<UsageSummary> => {
   try {
-    const res = await fastapiClient.get('/usage/summary');
-    return res.data;
+    // Use the same real data source as fetchUsageMetrics
+    const metrics = await fetchUsageMetrics();
+    return {
+      tokensUsed: metrics.tokens.used,
+      tokensLimit: metrics.tokens.limit,
+      agentsActive: metrics.agents.active,
+      agentsLimit: metrics.agents.limit,
+      teamsCreated: metrics.teams.created,
+      teamsLimit: metrics.teams.limit,
+      memoryAnchors: metrics.memory.anchorsUsed,
+      memoryAnchorsLimit: metrics.memory.anchorsLimit,
+      planId: metrics.billing.planId,
+      planName: metrics.billing.planName,
+    };
   } catch (error: any) {
     console.error('Failed to fetch usage summary:', error);
     return {
@@ -159,8 +217,8 @@ export const fetchUsageSummary = async (): Promise<UsageSummary> => {
       teamsLimit: 0,
       memoryAnchors: 0,
       memoryAnchorsLimit: 0,
-      planId: 'starter',
-      planName: 'Starter',
+      planId: 'free',
+      planName: 'Free',
     };
   }
 };

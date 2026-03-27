@@ -190,20 +190,17 @@ const ProfilePage = () => {
           setPlanName(metrics.billing?.planName || 'Free');
         }
         
-        // Load activity stats
+        // Populate activity stats from billing dashboard (real data)
         try {
-          const activityRes = await fastapiClient.get('/usage/activity');
-          if (activityRes.data) {
-            setActivityData(activityRes.data.heatmap || []);
-            setTotalLinesWritten(activityRes.data.total_lines || 0);
-            setTotalMessages(activityRes.data.total_messages || 0);
-            setTotalCreditsUsed(activityRes.data.total_credits_used || 0);
-            setDaysWithContributions(activityRes.data.days_with_contributions || 0);
-            setStreak(activityRes.data.streak || 0);
-            setRecordStreak(activityRes.data.record_streak || 0);
+          const dashRes = await fastapiClient.get('/billing/dashboard/me');
+          if (dashRes.data) {
+            setTotalMessages(dashRes.data.messages || 0);
+            setTotalCreditsUsed(dashRes.data.credits?.lifetime_used || dashRes.data.usage_this_period || 0);
           }
         } catch {
-          // Activity endpoint may not exist
+          // billing dashboard may fail — metrics already has some data
+          setTotalMessages(metrics.conversations?.count || 0);
+          setTotalCreditsUsed(metrics.credits?.used || 0);
         }
         
         // Load real conversation count from RAG API
