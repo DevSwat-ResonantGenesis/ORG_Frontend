@@ -220,6 +220,11 @@ fastapiClient.interceptors.response.use(
       // All 401s that weren't handled above - just reject (no retry)
       return Promise.reject(error);
     }
+    // Handle 402 Insufficient Credits - pass through with response intact
+    if (error?.response?.status === 402) {
+      return Promise.reject(error);
+    }
+
     // Handle 400 Bad Request with proper FastAPI validation error parsing
     if (error?.response?.status === 400) {
       const parsedError = apiErrorHandler(error);

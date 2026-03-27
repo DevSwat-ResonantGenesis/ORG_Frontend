@@ -221,9 +221,10 @@ export const sendResonantMessage = async (
       throw new Error('Session expired. Please log in again to continue chatting.');
     }
 
-    // Handle insufficient credits
-    if (error?.response?.status === 402) {
-      const data = error?.response?.data;
+    // Handle insufficient credits (check both raw axios error and apiErrorHandler-transformed error)
+    const is402 = error?.response?.status === 402 || error?.status === 402;
+    if (is402) {
+      const data = error?.response?.data || error;
       const msg = data?.message || data?.detail || 'Insufficient credits. Please purchase more credits to continue.';
       const actionUrl = data?.action_url || '/pricing';
       const err = new Error(msg) as any;
@@ -235,12 +236,11 @@ export const sendResonantMessage = async (
     }
 
     // Handle LLM-related errors (quota, rate limit, API key issues)
+    // NOTE: 'insufficient' and 'credit' removed — those are handled by the 402 block above
     const errorMsg = error?.response?.data?.detail || error?.response?.data?.message || error?.message || '';
     const isLLMError = 
       errorMsg.toLowerCase().includes('quota') ||
       errorMsg.toLowerCase().includes('rate limit') ||
-      errorMsg.toLowerCase().includes('insufficient') ||
-      errorMsg.toLowerCase().includes('credit') ||
       errorMsg.toLowerCase().includes('api key') ||
       errorMsg.toLowerCase().includes('failed to generate') ||
       error?.response?.status === 429;
