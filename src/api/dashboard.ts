@@ -41,11 +41,19 @@ const normalizeUsageTrend = (
   history: any,
   days: number
 ): { date: string; tokens: number }[] => {
-  const arr: Array<{ date: string; tokens: number }> = Array.isArray(history) ? history : [];
+  const arr: any[] = Array.isArray(history) ? history : [];
   const map = new Map<string, number>();
+
   for (const item of arr) {
-    if (item && typeof item.date === 'string') {
-      map.set(item.date, typeof item.tokens === 'number' ? item.tokens : 0);
+    if (!item) continue;
+    // Standard format: { date, tokens }
+    if (typeof item.date === 'string' && typeof item.tokens === 'number') {
+      map.set(item.date, (map.get(item.date) || 0) + item.tokens);
+    }
+    // Transaction format from recent_transactions: { created_at, amount }
+    else if (item.created_at && typeof item.amount === 'number') {
+      const dateKey = item.created_at.slice(0, 10);
+      map.set(dateKey, (map.get(dateKey) || 0) + Math.abs(item.amount));
     }
   }
 
@@ -155,7 +163,7 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     fastapiClient.get('/billing/dashboard/me/breakdown').catch((e) => { errors.push('breakdown'); return { data: null }; }),
     fastapiClient.get('/billing/usage/tokens/history?days=30').catch(() => ({ data: null })),
     // Per-user REAL data from actual services
-    fastapiClient.get('/agents/agents').catch(() => ({ data: null })),
+    fastapiClient.get('/api/v1/agents').catch(() => ({ data: null })),
     fastapiClient.get('/memory/stats').catch(() => ({ data: null })),
     fastapiClient.get('/resonant-chat/conversations').catch(() => ({ data: null })),
     fastapiClient.get('/rag/conversations?limit=10000').catch(() => ({ data: null })),
@@ -216,7 +224,27 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
   const burnRate = dashboard?.burn_rate ?? null;
 
   // Build usage breakdown from backend response (supports both legacy and new shapes)
-  const usageBreakdown: { service: string; credits: number; percentage: number }[] = normalizeBreakdown(breakdown, dashboard);
+  let usageBreakdown: { service: string; credits: number; percentage: number }[] = normalizeBreakdown(breakdown, dashboard);
+
+  // If credit breakdown is empty, build from REAL activity counts
+  if (usageBreakdown.length === 0 || usageBreakdown.every(b => b.credits === 0)) {
+    const chatActivity = realChatCount;
+    const agentActivity = realAgentCount ?? 0;
+    const memoryActivity = realMemoryCount ?? 0;
+    const ragActivity = realRagCount;
+    const workflowActivity = Array.isArray(workflowsList) ? workflowsList.length : 0;
+    const totalActivity = chatActivity + agentActivity + memoryActivity + ragActivity + workflowActivity;
+
+    if (totalActivity > 0) {
+      const activityBreakdown: { service: string; credits: number; percentage: number }[] = [];
+      if (chatActivity > 0) activityBreakdown.push({ service: 'Chat', credits: chatActivity, percentage: Math.round((chatActivity / totalActivity) * 100) });
+      if (agentActivity > 0) activityBreakdown.push({ service: 'Agents', credits: agentActivity, percentage: Math.round((agentActivity / totalActivity) * 100) });
+      if (memoryActivity > 0) activityBreakdown.push({ service: 'Storage', credits: memoryActivity, percentage: Math.round((memoryActivity / totalActivity) * 100) });
+      if (ragActivity > 0) activityBreakdown.push({ service: 'Code Visualizer', credits: ragActivity, percentage: Math.round((ragActivity / totalActivity) * 100) });
+      if (workflowActivity > 0) activityBreakdown.push({ service: 'Workflows', credits: workflowActivity, percentage: Math.round((workflowActivity / totalActivity) * 100) });
+      usageBreakdown = activityBreakdown.sort((a, b) => b.credits - a.credits);
+    }
+  }
 
   // Build alerts from REAL data
   const alerts: DashboardData['alerts'] = dashboard?.alerts || [];
@@ -300,7 +328,7 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     },
     tier,
     usageBreakdown,
-    usageTrend: normalizeUsageTrend(history || [], 30),
+    usageTrend: normalizeUsageTrend(history || dashboard?.recent_transactions || [], 30),
     activity: {
       messages,
       agents: enrichedAgents ?? 0,

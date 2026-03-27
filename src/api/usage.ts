@@ -101,7 +101,7 @@ export const fetchUsageMetrics = async (): Promise<UsageMetrics> => {
     const [dashboardRes, subscriptionRes, userAgentsRes, userMemoryRes, userConvsRes] = await Promise.all([
       fastapiClient.get('/billing/dashboard/me').catch(() => ({ data: null })),
       fastapiClient.get('/billing/subscription').catch(() => ({ data: null })),
-      fastapiClient.get('/agents/agents').catch(() => ({ data: null })),
+      fastapiClient.get('/api/v1/agents').catch(() => ({ data: null })),
       fastapiClient.get('/memory/stats').catch(() => ({ data: null })),
       fastapiClient.get('/resonant-chat/conversations').catch(() => ({ data: null })),
     ]);
