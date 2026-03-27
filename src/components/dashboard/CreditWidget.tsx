@@ -65,6 +65,54 @@ export const CreditWidget: React.FC<CreditWidgetProps> = ({
     );
   }
 
+  const tierLower = (tier || '').toLowerCase();
+  const isFree = tierLower === 'free' || tierLower === '';
+
+  // FREE PLAN: show subscribe CTA instead of credit stats
+  if (isFree && !unlimited) {
+    return (
+      <div className={styles.widget}>
+        <div className={styles.header}>
+          <div className={styles.titleRow}>
+            <Coins className={styles.icon} size={20} />
+            <span className={styles.title}>Credits</span>
+          </div>
+          <div className={`${styles.tierBadge} ${styles.tierBadgeFree}`}>
+            Free
+          </div>
+        </div>
+
+        <div className={styles.freeHero}>
+          <p className={styles.freeHeading}>Subscribe to get started</p>
+          <p className={styles.freeSubtext}>Choose a plan to unlock AI credits and full platform access.</p>
+        </div>
+
+        <div className={styles.planCards}>
+          <a href="/pricing?plan=developer" className={styles.planCard}>
+            <div className={styles.planCardHeader}>
+              <Rocket size={14} />
+              <span className={styles.planName}>Developer</span>
+            </div>
+            <div className={styles.planPrice}>$15<span>/mo</span></div>
+            <div className={styles.planCredits}>15,000 credits/mo</div>
+            <div className={styles.planNote}>All features unlocked</div>
+          </a>
+          <a href="/pricing?plan=plus" className={`${styles.planCard} ${styles.planCardRecommended}`}>
+            <div className={styles.planCardHeader}>
+              <Crown size={14} />
+              <span className={styles.planName}>Plus</span>
+              <span className={styles.recommendedBadge}>Recommended</span>
+            </div>
+            <div className={styles.planPrice}>$499<span>/mo</span></div>
+            <div className={styles.planCredits}>499,000 credits/mo</div>
+            <div className={styles.planNote}>Rollover + Top-ups</div>
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  // PAID / UNLIMITED PLAN: show credit stats
   return (
     <div className={`${styles.widget} ${isCritical ? styles.critical : isLow ? styles.low : ''}`}>
       <div className={styles.header}>
@@ -126,17 +174,17 @@ export const CreditWidget: React.FC<CreditWidgetProps> = ({
         </div>
       )}
 
-      {/* Plan CTA buttons */}
+      {/* Plan upgrade cards for paid users */}
       {!unlimited && (
         <div className={styles.planCards}>
           <a
             href="/pricing?plan=developer"
-            className={`${styles.planCard} ${(tier || '').toLowerCase() === 'developer' ? styles.planCardActive : ''}`}
+            className={`${styles.planCard} ${tierLower === 'developer' ? styles.planCardActive : ''}`}
           >
             <div className={styles.planCardHeader}>
               <Rocket size={14} />
               <span className={styles.planName}>Developer</span>
-              {(tier || '').toLowerCase() === 'developer' && <span className={styles.currentBadge}>Current</span>}
+              {tierLower === 'developer' && <span className={styles.currentBadge}>Current</span>}
             </div>
             <div className={styles.planPrice}>$15<span>/mo</span></div>
             <div className={styles.planCredits}>15,000 credits/mo</div>
@@ -144,12 +192,12 @@ export const CreditWidget: React.FC<CreditWidgetProps> = ({
           </a>
           <a
             href="/pricing?plan=plus"
-            className={`${styles.planCard} ${styles.planCardRecommended} ${(tier || '').toLowerCase() === 'plus' ? styles.planCardActive : ''}`}
+            className={`${styles.planCard} ${styles.planCardRecommended} ${tierLower === 'plus' ? styles.planCardActive : ''}`}
           >
             <div className={styles.planCardHeader}>
               <Crown size={14} />
               <span className={styles.planName}>Plus</span>
-              <span className={styles.recommendedBadge}>Recommended</span>
+              {tierLower === 'plus' ? <span className={styles.currentBadge}>Current</span> : <span className={styles.recommendedBadge}>Recommended</span>}
             </div>
             <div className={styles.planPrice}>$499<span>/mo</span></div>
             <div className={styles.planCredits}>499,000 credits/mo</div>

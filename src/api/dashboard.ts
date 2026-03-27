@@ -178,14 +178,15 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
   // Determine tier from REAL subscription data only
   const plan = subscription?.plan?.toLowerCase();
   let tier: string | null = null;
-  if (plan === 'developer' || plan === 'free') tier = 'developer';
+  if (plan === 'free') tier = 'free';
+  else if (plan === 'developer') tier = 'developer';
   else if (plan === 'plus' || plan === 'professional') tier = 'plus';
   else if (plan === 'enterprise') tier = 'enterprise';
 
   // Get REAL credits data
   const balance = dashboard?.current_balance ?? credits?.balance ?? usageMetrics?.credits?.balance ?? null;
   let creditLimit = dashboard?.tier_credits ?? usageMetrics?.credits?.limit ?? null;
-  if (creditLimit === 0 && usageMetrics?.credits?.limit) creditLimit = usageMetrics.credits.limit;
+  if (creditLimit === 0 && tier !== 'free' && usageMetrics?.credits?.limit) creditLimit = usageMetrics.credits.limit;
 
   const usedThisMonthFromBackend = dashboard?.usage_this_period ?? null;
   const derivedUsedThisMonth = creditLimit !== null && balance !== null && creditLimit > 0
