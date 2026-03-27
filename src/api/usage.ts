@@ -97,29 +97,23 @@ export interface UsageSummary {
  */
 export const fetchUsageMetrics = async (): Promise<UsageMetrics> => {
   try {
-    // Fetch from all real endpoints in parallel
-    const [dashboardRes, agentMetricsRes, memoryStatsRes, subscriptionRes] = await Promise.all([
+    // Fetch from REAL per-user endpoints only — NO platform-wide endpoints
+    const [dashboardRes, subscriptionRes] = await Promise.all([
       fastapiClient.get('/billing/dashboard/me').catch(() => ({ data: null })),
-      fastapiClient.get('/api/v1/agents/metrics').catch(() => ({ data: null })),
-      fastapiClient.get('/memory/stats').catch(() => ({ data: null })),
       fastapiClient.get('/billing/subscription').catch(() => ({ data: null })),
     ]);
 
     const dash = dashboardRes.data;
-    const agentM = agentMetricsRes.data;
-    const memStats = memoryStatsRes.data;
     const sub = subscriptionRes.data;
 
-    // Map real data into UsageMetrics shape
+    // Map ONLY per-user data — /billing/dashboard/me is user-scoped
     const creditBalance = dash?.current_balance ?? dash?.credits?.balance ?? 0;
     const creditLimit = dash?.tier_credits ?? 0;
     const creditUsed = dash?.credits?.lifetime_used ?? dash?.usage_this_period ?? 0;
-    const agentsActive = agentM?.agents?.active ?? dash?.agents ?? 0;
-    const agentsTotal = agentM?.agents?.total ?? 0;
+    const agentsActive = dash?.agents ?? 0;
     const agentsLimit = dash?.agents_limit ?? -1;
-    const memoriesCount = memStats?.total_memories ?? memStats?.total_embeddings ?? dash?.memories ?? 0;
-    const storageMb = memStats?.storage_mb ?? memStats?.storage_size_mb ?? 0;
-    const sessions = agentM?.sessions?.total ?? dash?.sessions ?? 0;
+    const memoriesCount = dash?.memories ?? 0;
+    const sessions = dash?.sessions ?? 0;
     const messages = dash?.messages ?? 0;
 
     const plan = sub?.plan?.toLowerCase() || dash?.subscription?.plan?.toLowerCase() || 'free';
@@ -144,7 +138,7 @@ export const fetchUsageMetrics = async (): Promise<UsageMetrics> => {
       memory: {
         anchorsUsed: memoriesCount,
         anchorsLimit: 0,
-        storageUsedMB: storageMb,
+        storageUsedMB: 0,
         storageLimitMB: 0,
       },
       ragDocuments: { used: 0, limit: 0 },

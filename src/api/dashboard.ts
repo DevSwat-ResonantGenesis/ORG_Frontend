@@ -286,10 +286,11 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     ? { count: workflowsList.length }
     : null;
 
-  // Enrich activity with real agent/memory data from live services
-  const enrichedAgents = platformAgentMetrics?.active ?? agents;
-  const enrichedMemories = platformMemory?.totalMemories ?? memories;
-  const enrichedSessions = platformAgentMetrics?.sessions ?? sessions;
+  // User-facing activity: ONLY use per-user data from /billing/dashboard/me
+  // DO NOT use platform-wide /agents/metrics here — those are system totals
+  const enrichedAgents = agents;
+  const enrichedMemories = memories;
+  const enrichedSessions = sessions;
 
   return {
     credits: {
@@ -305,10 +306,10 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     usageTrend: normalizeUsageTrend(history || [], 30),
     activity: {
       messages,
-      agents: enrichedAgents,
+      agents: enrichedAgents ?? 0,
       agentsLimit,
-      memories: enrichedMemories,
-      sessions: enrichedSessions,
+      memories: enrichedMemories ?? 0,
+      sessions: enrichedSessions ?? 0,
     },
     alerts,
     recentActivity,

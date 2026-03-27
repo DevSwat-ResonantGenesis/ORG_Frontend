@@ -108,28 +108,9 @@ const NewUserDashboard: React.FC = () => {
         />
       )}
 
-      {/* Platform Overview - Real Live Metrics */}
+      {/* User Overview - Per-User Metrics */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12, marginBottom: 16 }}>
-        {/* Compliance Score */}
-        <div
-          onClick={() => navigate('/compliance')}
-          style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: '16px 20px', cursor: 'pointer', transition: 'border-color 0.2s' }}
-          onMouseEnter={e => (e.currentTarget.style.borderColor = complianceColor)}
-          onMouseLeave={e => (e.currentTarget.style.borderColor = '#1f2937')}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <Shield size={18} color={complianceColor} />
-            <span style={{ color: '#9ca3af', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Compliance</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-            <span style={{ color: complianceColor, fontSize: 28, fontWeight: 700, fontFamily: 'monospace' }}>{p.compliance?.score ?? '—'}</span>
-            <span style={{ color: '#6b7280', fontSize: 14 }}>/100</span>
-            {p.compliance?.grade && <span style={{ background: `${complianceColor}20`, color: complianceColor, padding: '2px 8px', borderRadius: 4, fontSize: 12, fontWeight: 600, marginLeft: 4 }}>Grade {p.compliance.grade}</span>}
-          </div>
-          <div style={{ color: '#6b7280', fontSize: 11, marginTop: 4 }}>{p.compliance?.framework || 'SOC2 Framework'}</div>
-        </div>
-
-        {/* Active Agents */}
+        {/* My Agents */}
         <div
           onClick={() => navigate('/agents')}
           style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: '16px 20px', cursor: 'pointer', transition: 'border-color 0.2s' }}
@@ -138,19 +119,15 @@ const NewUserDashboard: React.FC = () => {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
             <Bot size={18} color="#8b5cf6" />
-            <span style={{ color: '#9ca3af', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>AI Agents</span>
+            <span style={{ color: '#9ca3af', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>My Agents</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-            <span style={{ color: '#e5e7eb', fontSize: 28, fontWeight: 700, fontFamily: 'monospace' }}>{p.agentMetrics?.active ?? '—'}</span>
-            <span style={{ color: '#6b7280', fontSize: 14 }}>/ {p.agentMetrics?.total ?? '—'} total</span>
-          </div>
-          <div style={{ display: 'flex', gap: 12, marginTop: 6 }}>
-            {p.agentMetrics && <span style={{ color: '#22c55e', fontSize: 11 }}><CheckCircle size={10} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 3 }} />{p.agentMetrics.completed} completed</span>}
-            {p.agentMetrics && p.agentMetrics.running > 0 && <span style={{ color: '#3b82f6', fontSize: 11 }}><Activity size={10} style={{ display: 'inline', verticalAlign: 'middle', marginRight: 3 }} />{p.agentMetrics.running} running</span>}
+            <span style={{ color: '#e5e7eb', fontSize: 28, fontWeight: 700, fontFamily: 'monospace' }}>{data.activity.agents ?? 0}</span>
+            <span style={{ color: '#6b7280', fontSize: 14 }}>created</span>
           </div>
         </div>
 
-        {/* Memory / Hash Sphere */}
+        {/* My Memory */}
         <div
           onClick={() => navigate('/resonant-memory')}
           style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: '16px 20px', cursor: 'pointer', transition: 'border-color 0.2s' }}
@@ -159,16 +136,32 @@ const NewUserDashboard: React.FC = () => {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
             <Brain size={18} color="#ec4899" />
-            <span style={{ color: '#9ca3af', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Memory</span>
+            <span style={{ color: '#9ca3af', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>My Memory</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-            <span style={{ color: '#e5e7eb', fontSize: 28, fontWeight: 700, fontFamily: 'monospace' }}>{p.memory ? p.memory.totalMemories.toLocaleString() : '—'}</span>
+            <span style={{ color: '#e5e7eb', fontSize: 28, fontWeight: 700, fontFamily: 'monospace' }}>{data.activity.memories ?? 0}</span>
             <span style={{ color: '#6b7280', fontSize: 14 }}>anchors</span>
           </div>
-          <div style={{ color: '#6b7280', fontSize: 11, marginTop: 4 }}>{p.memory ? `${p.memory.storageMb.toFixed(1)} MB stored` : 'Loading...'}</div>
         </div>
 
-        {/* Workflows */}
+        {/* My Sessions */}
+        <div
+          onClick={() => navigate('/agents')}
+          style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: '16px 20px', cursor: 'pointer', transition: 'border-color 0.2s' }}
+          onMouseEnter={e => (e.currentTarget.style.borderColor = '#6366f1')}
+          onMouseLeave={e => (e.currentTarget.style.borderColor = '#1f2937')}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+            <Activity size={18} color="#6366f1" />
+            <span style={{ color: '#9ca3af', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Sessions</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+            <span style={{ color: '#e5e7eb', fontSize: 28, fontWeight: 700, fontFamily: 'monospace' }}>{data.activity.sessions ?? 0}</span>
+            <span style={{ color: '#6b7280', fontSize: 14 }}>total</span>
+          </div>
+        </div>
+
+        {/* My Workflows */}
         <div
           onClick={() => navigate('/network/workflows')}
           style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: '16px 20px', cursor: 'pointer', transition: 'border-color 0.2s' }}
@@ -180,7 +173,7 @@ const NewUserDashboard: React.FC = () => {
             <span style={{ color: '#9ca3af', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Workflows</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-            <span style={{ color: '#e5e7eb', fontSize: 28, fontWeight: 700, fontFamily: 'monospace' }}>{p.workflows?.count ?? '—'}</span>
+            <span style={{ color: '#e5e7eb', fontSize: 28, fontWeight: 700, fontFamily: 'monospace' }}>{p.workflows?.count ?? 0}</span>
             <span style={{ color: '#6b7280', fontSize: 14 }}>saved</span>
           </div>
           <div style={{ color: '#6b7280', fontSize: 11, marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -286,15 +279,15 @@ const NewUserDashboard: React.FC = () => {
         )}
       </div>
 
-      {/* Compliance Checks Detail */}
+      {/* Compliance Checks Detail — only shown if compliance data is available */}
       {p.compliance && p.compliance.checks.length > 0 && (
         <div style={{ background: '#111827', border: '1px solid #1f2937', borderRadius: 12, padding: 20, marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <Shield size={16} color={complianceColor} />
-              <span style={{ color: '#e5e7eb', fontSize: 14, fontWeight: 600 }}>Compliance Controls</span>
+              <span style={{ color: '#e5e7eb', fontSize: 14, fontWeight: 600 }}>Platform Compliance</span>
             </div>
-            <button onClick={() => navigate('/compliance')} style={{ background: 'none', border: 'none', color: '#6366f1', fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>View Details <ArrowRight size={12} /></button>
+            <span style={{ color: '#6b7280', fontSize: 11 }}>SOC2 controls status</span>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 8 }}>
             {p.compliance.checks.map((check, i) => (
