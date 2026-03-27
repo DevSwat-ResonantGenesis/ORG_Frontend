@@ -4,7 +4,7 @@
  * Displays ONLY real data - shows loading/error states for null values
  */
 import React from 'react';
-import { Coins, AlertTriangle, Zap, Loader2 } from 'lucide-react';
+import { Coins, AlertTriangle, Zap, Loader2, Rocket, Crown } from 'lucide-react';
 import styles from './CreditWidget.module.css';
 
 interface CreditWidgetProps {
@@ -123,6 +123,38 @@ export const CreditWidget: React.FC<CreditWidgetProps> = ({
               Buy Credits
             </button>
           )}
+        </div>
+      )}
+
+      {/* Plan CTA buttons */}
+      {!unlimited && (
+        <div className={styles.planCards}>
+          <a
+            href="/pricing?plan=developer"
+            className={`${styles.planCard} ${(tier || '').toLowerCase() === 'developer' ? styles.planCardActive : ''}`}
+          >
+            <div className={styles.planCardHeader}>
+              <Rocket size={14} />
+              <span className={styles.planName}>Developer</span>
+              {(tier || '').toLowerCase() === 'developer' && <span className={styles.currentBadge}>Current</span>}
+            </div>
+            <div className={styles.planPrice}>$15<span>/mo</span></div>
+            <div className={styles.planCredits}>15,000 credits/mo</div>
+            <div className={styles.planNote}>No rollover</div>
+          </a>
+          <a
+            href="/pricing?plan=plus"
+            className={`${styles.planCard} ${styles.planCardRecommended} ${(tier || '').toLowerCase() === 'plus' ? styles.planCardActive : ''}`}
+          >
+            <div className={styles.planCardHeader}>
+              <Crown size={14} />
+              <span className={styles.planName}>Plus</span>
+              <span className={styles.recommendedBadge}>Recommended</span>
+            </div>
+            <div className={styles.planPrice}>$499<span>/mo</span></div>
+            <div className={styles.planCredits}>499,000 credits/mo</div>
+            <div className={styles.planNote}>Rollover + Top-ups</div>
+          </a>
         </div>
       )}
     </div>
