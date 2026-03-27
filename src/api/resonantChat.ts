@@ -223,8 +223,15 @@ export const sendResonantMessage = async (
 
     // Handle insufficient credits
     if (error?.response?.status === 402) {
-      const detail = error?.response?.data?.detail;
-      throw new Error(detail?.message || 'Insufficient credits. Please purchase more credits to continue.');
+      const data = error?.response?.data;
+      const msg = data?.message || data?.detail || 'Insufficient credits. Please purchase more credits to continue.';
+      const actionUrl = data?.action_url || '/pricing';
+      const err = new Error(msg) as any;
+      err.creditError = true;
+      err.actionUrl = actionUrl;
+      err.available = data?.available;
+      err.required = data?.required;
+      throw err;
     }
 
     // Handle LLM-related errors (quota, rate limit, API key issues)

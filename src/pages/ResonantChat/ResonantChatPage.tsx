@@ -2264,8 +2264,22 @@ const ResonantChatPage: React.FC = () => {
                       m.id === agenticMsgId ? { ...m, content: agenticContent } : m
                     ));
                   }
+                  if (eventType === 'credit_warning') {
+                    if (data.type === 'zero') {
+                      showError(`Credits exhausted! ${data.message || 'Please upgrade your plan or purchase credits.'}`, 15000);
+                    } else if (data.type === 'low') {
+                      warning(`${data.message || `Low credit balance: ${data.balance} credits remaining.`}`, 10000);
+                    }
+                  }
                   if (eventType === 'done') {
                     doneStats = { loops: data.loops, tokens: data.tokens, elapsed: data.elapsed_seconds };
+                    if (data.credits_balance !== null && data.credits_balance !== undefined) {
+                      if (data.credits_balance <= 0) {
+                        showError('Your credit balance has reached zero. Please upgrade your plan or purchase credits to continue.', 15000);
+                      } else if (data.credits_balance < 3000) {
+                        warning(`Credit balance low: ${data.credits_balance} credits remaining. Consider upgrading your plan.`, 10000);
+                      }
+                    }
                   }
                 } catch { /* skip malformed */ }
                 eventType = '';
@@ -2659,6 +2673,15 @@ const ResonantChatPage: React.FC = () => {
         return;
       }
       if (controller.signal.aborted) {
+        return;
+      }
+
+      // Handle credit-specific errors with styled notifications
+      const isCreditError = error && typeof error === 'object' && 'creditError' in error && (error as any).creditError;
+      if (isCreditError) {
+        const actionUrl = (error as any).actionUrl || '/pricing';
+        showError(`${(error as Error).message} Click here or go to ${actionUrl === '/pricing' ? 'Pricing' : 'Billing'} to get more credits.`, 15000);
+        // Don't remove user message for credit errors — show what they tried to send
         return;
       }
 
