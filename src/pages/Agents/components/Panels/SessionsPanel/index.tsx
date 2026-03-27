@@ -1,4 +1,5 @@
 import React, { memo, useState, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAgentStore, selectSelectedAgent } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import * as agentEngine from '../../../../../api/agentEngine';
@@ -25,6 +26,8 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
   const [showNewSession, setShowNewSession] = useState(false);
   const [newGoal, setNewGoal] = useState('');
   const [startingSession, setStartingSession] = useState(false);
+  const [creditActionUrl, setCreditActionUrl] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleExportSessions = () => {
     const exportData = { exported_at: new Date().toISOString(), sessions };
@@ -96,7 +99,16 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
       setNewGoal('');
       setShowNewSession(false);
     } catch (err: any) {
-      setError(err.message || 'Failed to start session');
+      const is402 = err?.response?.status === 402 || err?.status === 402;
+      if (is402) {
+        const data = err?.response?.data || err;
+        const actionUrl = data?.action_url || '/pricing';
+        setError(`${data?.message || 'Credits exhausted.'} Go to ${actionUrl === '/pricing' ? 'Pricing' : 'Billing'} to get more credits.`);
+        setCreditActionUrl(actionUrl);
+      } else {
+        setError(err.message || 'Failed to start session');
+        setCreditActionUrl(null);
+      }
     } finally {
       setStartingSession(false);
     }
@@ -178,9 +190,10 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
       </div>
 
       {error && (
-        <div className={styles.errorBanner}>
+        <div className={styles.errorBanner} style={creditActionUrl ? { cursor: 'pointer' } : undefined} onClick={creditActionUrl ? () => navigate(creditActionUrl) : undefined}>
           <Icons.AlertTriangle /> {error}
-          <button onClick={() => setError(null)}>×</button>
+          {creditActionUrl && <span style={{ textDecoration: 'underline', marginLeft: 8 }}>Go to {creditActionUrl === '/pricing' ? 'Pricing' : 'Billing'} →</span>}
+          <button onClick={(e) => { e.stopPropagation(); setError(null); setCreditActionUrl(null); }}>×</button>
         </div>
       )}
 

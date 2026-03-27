@@ -4,8 +4,8 @@ import { ToastContainer } from '../components/Toast/ToastContainer';
 
 interface ToastContextType {
   success: (message: string, duration?: number) => string;
-  error: (message: string, duration?: number) => string;
-  warning: (message: string, duration?: number) => string;
+  error: (message: string, duration?: number, onClick?: () => void) => string;
+  warning: (message: string, duration?: number, onClick?: () => void) => string;
   info: (message: string, duration?: number) => string;
 }
 

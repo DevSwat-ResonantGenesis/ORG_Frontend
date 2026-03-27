@@ -2266,7 +2266,7 @@ const ResonantChatPage: React.FC = () => {
                   }
                   if (eventType === 'credit_warning') {
                     if (data.type === 'zero') {
-                      showError(`Credits exhausted! ${data.message || 'Please upgrade your plan or purchase credits.'}`, 15000);
+                      showError(`Credits exhausted! ${data.message || 'Please upgrade your plan or purchase credits.'} Click to upgrade.`, 15000, () => navigate('/pricing'));
                     } else if (data.type === 'low') {
                       warning(`${data.message || `Low credit balance: ${data.balance} credits remaining.`}`, 10000);
                     }
@@ -2275,7 +2275,7 @@ const ResonantChatPage: React.FC = () => {
                     doneStats = { loops: data.loops, tokens: data.tokens, elapsed: data.elapsed_seconds };
                     if (data.credits_balance !== null && data.credits_balance !== undefined) {
                       if (data.credits_balance <= 0) {
-                        showError('Your credit balance has reached zero. Please upgrade your plan or purchase credits to continue.', 15000);
+                        showError('Your credit balance has reached zero. Click here to upgrade your plan or purchase credits.', 15000, () => navigate('/pricing'));
                       } else if (data.credits_balance < 3000) {
                         warning(`Credit balance low: ${data.credits_balance} credits remaining. Consider upgrading your plan.`, 10000);
                       }
@@ -2680,7 +2680,7 @@ const ResonantChatPage: React.FC = () => {
       const isCreditError = error && typeof error === 'object' && 'creditError' in error && (error as any).creditError;
       if (isCreditError) {
         const actionUrl = (error as any).actionUrl || '/pricing';
-        showError(`${(error as Error).message} Click here or go to ${actionUrl === '/pricing' ? 'Pricing' : 'Billing'} to get more credits.`, 15000);
+        showError(`${(error as Error).message} Click here to get more credits.`, 15000, () => navigate(actionUrl));
         // Don't remove user message for credit errors — show what they tried to send
         return;
       }

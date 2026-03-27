@@ -146,6 +146,11 @@ client.interceptors.response.use(
       });
     }
     
+    // Handle 402 Insufficient Credits - pass through with response intact
+    if (error.response?.status === 402) {
+      return Promise.reject(error);
+    }
+
     // Handle 400 Bad Request with proper error parsing
     if (error.response?.status === 400) {
       const parsedError = apiErrorHandler(error);
