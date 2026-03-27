@@ -35,7 +35,7 @@ interface CreditBalance {
 const BillingPage = () => {
   const session = getSession() as any;
   const navigate = useNavigate();
-  const plan = session?.plan || 'developer';
+  const plan = session?.plan || 'free';
   const planDetails = getPlanDetails(plan);
 
   const [loading, setLoading] = useState(true);

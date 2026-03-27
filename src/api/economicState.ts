@@ -106,13 +106,13 @@ export const getEconomicState = async (): Promise<EconomicState> => {
   } catch (error: any) {
     logger.error('Failed to fetch economic state', error);
     
-    // Return a safe default for Developer tier if API fails
+    // Return a safe default for Free tier if API fails
     // This prevents UI crashes but shows limited access
     return {
       id: '',
       user_id: '',
       org_id: '',
-      subscription_tier: 'developer',
+      subscription_tier: 'free',
       subscription_status: 'active',
       subscription_source: 'internal',
       subscription_id: null,

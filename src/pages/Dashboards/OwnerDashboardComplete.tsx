@@ -2977,7 +2977,7 @@ const OwnerDashboardComplete: React.FC = () => {
                         fontSize: '11px',
                         color: '#a78bfa'
                       }}>
-                        {user.plan || 'developer'}
+                        {user.plan || 'free'}
                       </span>
                     </td>
                     <td>

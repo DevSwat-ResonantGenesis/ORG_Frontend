@@ -502,7 +502,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <div className={styles.accountMenuSection}>
                       <span className={styles.accountMenuSectionTitle}>Dashboards</span>
                       
-                      {/* 1. Free Developer Dashboard - Everyone sees this */}
+                      {/* Main Dashboard - Everyone sees this */}
                       <button className={styles.accountMenuItem} onClick={() => { navigate('/dashboard'); setShowAccountMenu(false); }}>
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                           <rect x="2" y="2" width="5" height="5" rx="1" />
@@ -510,7 +510,7 @@ export const Header: React.FC<HeaderProps> = ({
                           <rect x="2" y="9" width="5" height="5" rx="1" />
                           <rect x="9" y="9" width="5" height="5" rx="1" />
                         </svg>
-                        Developer Dashboard
+                        Dashboard
                       </button>
                       
                       {/* 2. Plus User Dashboard - Superusers and Plus users */}

@@ -97,7 +97,7 @@ const ProfilePage = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState(session.email || '');
-  const [planName, setPlanName] = useState('Developer');
+  const [planName, setPlanName] = useState('Free');
   
   // Usage metrics
   const [usageMetrics, setUsageMetrics] = useState<UsageMetrics | null>(null);
@@ -170,7 +170,25 @@ const ProfilePage = () => {
         // Load usage metrics
         const metrics = await fetchUsageMetrics();
         setUsageMetrics(metrics);
-        setPlanName(metrics.billing?.planName || 'Developer');
+        // Fetch actual plan from billing subscription endpoint
+        try {
+          const subRes = await fastapiClient.get('/billing/subscription');
+          const plan = subRes.data?.plan?.toLowerCase();
+          if (plan === 'unlimited' || subRes.data?.unlimited_credits) {
+            setPlanName('Unlimited');
+          } else if (plan === 'enterprise') {
+            setPlanName('Enterprise');
+          } else if (plan === 'plus' || plan === 'professional') {
+            setPlanName('Plus');
+          } else if (plan === 'developer') {
+            setPlanName('Developer');
+          } else {
+            setPlanName('Free');
+          }
+        } catch {
+          // Fall back to usage metrics billing info, then 'Free'
+          setPlanName(metrics.billing?.planName || 'Free');
+        }
         
         // Load activity stats
         try {
