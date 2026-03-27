@@ -132,18 +132,21 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
   // Track which endpoints failed for error reporting
   const errors: string[] = [];
   
-  // Fetch data from multiple endpoints in parallel
+  // Fetch data from multiple REAL endpoints in parallel
+  // Group 1: Billing (credits, subscription, usage history)
+  // Group 2: Per-user REAL counts (agents, memory, conversations)
+  // Group 3: Platform-wide (compliance, marketplace)
   const [
     dashboardRes,
     creditsRes,
     subscriptionRes,
     breakdownRes,
     historyRes,
-    analyticsRes,
-    usageMetricsRes,
-    agentMetricsRes,
+    userAgentsRes,
+    userMemoryRes,
+    userConversationsRes,
+    userRagConvsRes,
     complianceRes,
-    memoryStatsRes,
     marketplaceStatsRes,
     workflowsRes,
   ] = await Promise.all([
@@ -151,29 +154,39 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     fastapiClient.get('/billing/credits').catch((e) => { errors.push('credits'); return { data: null }; }),
     fastapiClient.get('/billing/subscription').catch((e) => { errors.push('subscription'); return { data: null }; }),
     fastapiClient.get('/billing/dashboard/me/breakdown').catch((e) => { errors.push('breakdown'); return { data: null }; }),
-    fastapiClient.get('/billing/usage/tokens/history?days=30').catch((e) => { errors.push('history'); return { data: null }; }),
-    fastapiClient.get('/analytics').catch((e) => { errors.push('analytics'); return { data: null }; }),
-    fastapiClient.get('/usage/metrics').catch((e) => { errors.push('usage_metrics'); return { data: null }; }),
-    fastapiClient.get('/api/v1/agents/metrics').catch(() => ({ data: null })),
-    fastapiClient.get('/api/v1/agents/compliance/score').catch(() => ({ data: null })),
+    fastapiClient.get('/billing/usage/tokens/history?days=30').catch(() => ({ data: null })),
+    // Per-user REAL data from actual services
+    fastapiClient.get('/agents/agents').catch(() => ({ data: null })),
     fastapiClient.get('/memory/stats').catch(() => ({ data: null })),
+    fastapiClient.get('/resonant-chat/conversations').catch(() => ({ data: null })),
+    fastapiClient.get('/rag/conversations?limit=10000').catch(() => ({ data: null })),
+    // Platform-wide metrics (compliance, marketplace)
+    fastapiClient.get('/api/v1/agents/compliance/score').catch(() => ({ data: null })),
     fastapiClient.get('/marketplace/stats').catch(() => ({ data: null })),
     fastapiClient.get('/api/v1/workflow/workflows').catch(() => ({ data: null })),
   ]);
 
-  // Extract REAL data only - no fallbacks
+  // Extract data
   const dashboard = dashboardRes.data;
   const credits = creditsRes.data;
   const subscription = subscriptionRes.data;
   const breakdown = breakdownRes.data;
   const history = historyRes.data;
-  const analytics = analyticsRes.data;
-  const usageMetrics = usageMetricsRes.data;
-  const agentMetrics = agentMetricsRes.data;
   const complianceData = complianceRes.data;
-  const memoryStats = memoryStatsRes.data;
   const marketplaceStats = marketplaceStatsRes.data;
   const workflowsList = workflowsRes.data;
+
+  // Per-user REAL counts from actual services
+  const userAgentsList = userAgentsRes.data;
+  const userMemoryStats = userMemoryRes.data;
+  const userConvsList = userConversationsRes.data;
+  const userRagConvs = userRagConvsRes.data;
+  const realAgentCount = Array.isArray(userAgentsList) ? userAgentsList.length : (userAgentsList?.agents ? userAgentsList.agents.length : null);
+  const realMemoryCount = userMemoryStats?.total_memories ?? userMemoryStats?.total_embeddings ?? null;
+  const realStorageMb = userMemoryStats?.storage_mb ?? userMemoryStats?.storage_size_mb ?? 0;
+  const realChatCount = Array.isArray(userConvsList) ? userConvsList.length : 0;
+  const realRagCount = Array.isArray(userRagConvs) ? userRagConvs.length : 0;
+  const realConversationCount = realChatCount + realRagCount;
 
   // Determine tier from REAL subscription data only
   const plan = subscription?.plan?.toLowerCase();
@@ -184,9 +197,8 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
   else if (plan === 'enterprise') tier = 'enterprise';
 
   // Get REAL credits data
-  const balance = dashboard?.current_balance ?? credits?.balance ?? usageMetrics?.credits?.balance ?? null;
-  let creditLimit = dashboard?.tier_credits ?? usageMetrics?.credits?.limit ?? null;
-  if (creditLimit === 0 && tier !== 'free' && usageMetrics?.credits?.limit) creditLimit = usageMetrics.credits.limit;
+  const balance = dashboard?.current_balance ?? credits?.balance ?? null;
+  let creditLimit = dashboard?.tier_credits ?? null;
 
   const usedThisMonthFromBackend = dashboard?.usage_this_period ?? null;
   const derivedUsedThisMonth = creditLimit !== null && balance !== null && creditLimit > 0
@@ -232,12 +244,12 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     });
   }
 
-  // Get activity metrics from REAL data only - no fallbacks
-  const messages = analytics?.usage?.total_messages ?? dashboard?.messages ?? null;
-  const memories = usageMetrics?.memory?.anchorsUsed ?? analytics?.usage?.total_memories ?? dashboard?.memories ?? null;
-  const agents = usageMetrics?.agents?.active ?? dashboard?.agents ?? null;
-  const sessions = usageMetrics?.conversations?.count ?? dashboard?.sessions ?? analytics?.usage?.total_conversations ?? null;
-  const agentsLimit = usageMetrics?.agents?.limit ?? dashboard?.agents_limit ?? null;
+  // Get activity metrics from REAL per-user service endpoints
+  const messages = realConversationCount;
+  const memories = realMemoryCount ?? 0;
+  const agents = realAgentCount ?? 0;
+  const sessions = realConversationCount;
+  const agentsLimit = dashboard?.agents_limit ?? null;
 
   // Build recent activity from REAL transactions
   const recentActivity: DashboardData['recentActivity'] = [];
@@ -252,15 +264,8 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     });
   }
 
-  // Build platform-wide metrics from live services
-  const platformAgentMetrics = agentMetrics ? {
-    total: agentMetrics.agents?.total ?? 0,
-    active: agentMetrics.agents?.active ?? 0,
-    sessions: agentMetrics.sessions?.total ?? 0,
-    running: agentMetrics.sessions?.running ?? 0,
-    completed: agentMetrics.sessions?.completed ?? 0,
-    failed: agentMetrics.sessions?.failed ?? 0,
-  } : null;
+  // Platform agent metrics not used for per-user dashboard
+  const platformAgentMetrics = null;
 
   const platformCompliance = complianceData ? {
     score: complianceData.compliance_score ?? 0,
@@ -269,11 +274,11 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     checks: Array.isArray(complianceData.checks) ? complianceData.checks : [],
   } : null;
 
-  const platformMemory = memoryStats ? {
-    totalMemories: memoryStats.total_memories ?? memoryStats.total_embeddings ?? 0,
-    storageMb: memoryStats.storage_mb ?? memoryStats.storage_size_mb ?? 0,
-    totalEmbeddings: memoryStats.total_embeddings ?? 0,
-    totalClusters: memoryStats.total_clusters ?? 0,
+  const platformMemory = userMemoryStats ? {
+    totalMemories: userMemoryStats.total_memories ?? userMemoryStats.total_embeddings ?? 0,
+    storageMb: userMemoryStats.storage_mb ?? userMemoryStats.storage_size_mb ?? 0,
+    totalEmbeddings: userMemoryStats.total_embeddings ?? 0,
+    totalClusters: userMemoryStats.total_clusters ?? 0,
   } : null;
 
   const platformMarketplace = marketplaceStats ? {
@@ -286,8 +291,7 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     ? { count: workflowsList.length }
     : null;
 
-  // User-facing activity: ONLY use per-user data from /billing/dashboard/me
-  // DO NOT use platform-wide /agents/metrics here — those are system totals
+  // Per-user counts from real service endpoints — NOT billing (which returns 0)
   const enrichedAgents = agents;
   const enrichedMemories = memories;
   const enrichedSessions = sessions;

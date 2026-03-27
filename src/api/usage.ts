@@ -97,24 +97,31 @@ export interface UsageSummary {
  */
 export const fetchUsageMetrics = async (): Promise<UsageMetrics> => {
   try {
-    // Fetch from REAL per-user endpoints only — NO platform-wide endpoints
-    const [dashboardRes, subscriptionRes] = await Promise.all([
+    // Fetch from REAL per-user service endpoints
+    const [dashboardRes, subscriptionRes, userAgentsRes, userMemoryRes, userConvsRes] = await Promise.all([
       fastapiClient.get('/billing/dashboard/me').catch(() => ({ data: null })),
       fastapiClient.get('/billing/subscription').catch(() => ({ data: null })),
+      fastapiClient.get('/agents/agents').catch(() => ({ data: null })),
+      fastapiClient.get('/memory/stats').catch(() => ({ data: null })),
+      fastapiClient.get('/resonant-chat/conversations').catch(() => ({ data: null })),
     ]);
 
     const dash = dashboardRes.data;
     const sub = subscriptionRes.data;
+    const agentsList = userAgentsRes.data;
+    const memStats = userMemoryRes.data;
+    const convsList = userConvsRes.data;
 
-    // Map ONLY per-user data — /billing/dashboard/me is user-scoped
+    // Credits from billing service (it does track credits correctly)
     const creditBalance = dash?.current_balance ?? dash?.credits?.balance ?? 0;
     const creditLimit = dash?.tier_credits ?? 0;
     const creditUsed = dash?.credits?.lifetime_used ?? dash?.usage_this_period ?? 0;
-    const agentsActive = dash?.agents ?? 0;
+    // Per-user counts from REAL service endpoints
+    const agentsActive = Array.isArray(agentsList) ? agentsList.length : (agentsList?.agents?.length ?? 0);
     const agentsLimit = dash?.agents_limit ?? -1;
-    const memoriesCount = dash?.memories ?? 0;
-    const sessions = dash?.sessions ?? 0;
-    const messages = dash?.messages ?? 0;
+    const memoriesCount = memStats?.total_memories ?? memStats?.total_embeddings ?? 0;
+    const sessions = Array.isArray(convsList) ? convsList.length : 0;
+    const messages = sessions;
 
     const plan = sub?.plan?.toLowerCase() || dash?.subscription?.plan?.toLowerCase() || 'free';
     const planDisplayName = plan === 'free' ? 'Free'
@@ -138,7 +145,7 @@ export const fetchUsageMetrics = async (): Promise<UsageMetrics> => {
       memory: {
         anchorsUsed: memoriesCount,
         anchorsLimit: 0,
-        storageUsedMB: 0,
+        storageUsedMB: memStats?.storage_mb ?? memStats?.storage_size_mb ?? 0,
         storageLimitMB: 0,
       },
       ragDocuments: { used: 0, limit: 0 },
