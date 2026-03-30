@@ -562,9 +562,9 @@
   position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translate(-50%, 50%);
-  width: 200vmin;
-  height: 200vmin;
+  transform: translate(-50%, 65%);
+  width: 100vw;
+  height: 100vw;
   z-index: 0;
   pointer-events: none;
   overflow: visible;
@@ -576,7 +576,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .heroParallax {
-    transform: translate(-50%, 50%);
+    transform: translate(-50%, 65%);
   }
 }
 
@@ -601,9 +601,9 @@
     bottom: 0;
     left: 50%;
     right: auto;
-    transform: translate(-50%, 50%);
-    width: 170vmin;
-    height: 170vmin;
+    transform: translate(-50%, 60%);
+    width: 100vw;
+    height: 100vw;
     z-index: 0;
     align-items: center;
     justify-content: center;
@@ -3141,9 +3141,9 @@
     bottom: 0;
     left: 50%;
     right: auto;
-    transform: translate(-50%, 50%);
-    width: 170vmin;
-    height: 170vmin;
+    transform: translate(-50%, 60%);
+    width: 100vw;
+    height: 100vw;
     z-index: 0;
     pointer-events: none;
     overflow: visible;
