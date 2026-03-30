@@ -460,12 +460,12 @@
 
 .heroParallax {
   position: absolute;
-  bottom: -85%;
+  bottom: -92%;
   left: 50%;
   transform: translateX(-50%) scale(0.5);
   transform-origin: center center;
-  width: 180vmin;
-  height: 180vmin;
+  width: 200vmin;
+  height: 200vmin;
   z-index: 0;
   pointer-events: none;
   overflow: visible;
@@ -513,11 +513,11 @@
     top: auto;
     left: 50%;
     right: auto;
-    bottom: -85%;
+    bottom: -90%;
     transform: translateX(-50%);
     animation: none;
-    width: 150vmin;
-    height: 150vmin;
+    width: 170vmin;
+    height: 170vmin;
     z-index: 0;
     align-items: center;
     justify-content: center;
@@ -3055,11 +3055,11 @@
     top: auto;
     left: 50%;
     right: auto;
-    bottom: -85%;
+    bottom: -90%;
     transform: translateX(-50%);
     animation: none;
-    width: 150vmin;
-    height: 150vmin;
+    width: 170vmin;
+    height: 170vmin;
     z-index: 0;
     pointer-events: none;
     overflow: visible;

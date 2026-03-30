@@ -48,7 +48,32 @@ h1.heroTitle {
   display: none;
 }
 
-/* Tagline — uppercase, wide tracking, thin weight */
+/* Tagline under title — light weight, smaller */
+.heroTitleTagline {
+  display: block;
+  margin-top: 16px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  font-size: clamp(18px, 3vw, 28px);
+  font-weight: 300;
+  font-style: normal;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.45);
+  opacity: 1;
+}
+
+@media (min-width: 1024px) {
+  .heroTitleTagline {
+    font-size: 28px;
+    margin-top: 20px;
+  }
+}
+
+[data-theme='light'] .heroTitleTagline {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+/* Subtitle tagline — uppercase, wide tracking, thin weight */
 .heroSubtitle {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
   font-size: clamp(11px, 1.8vw, 14px);

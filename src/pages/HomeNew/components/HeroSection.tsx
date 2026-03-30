@@ -28,9 +28,10 @@ export const HeroSection = () => {
             {/* Centered content */}
             <div className={styles.heroContent}>
                 <h1 className={heroTitleStyles.heroTitle}>
-                    Own Your
-                    <br />
-                    Intelligence.
+                    Own Your Intelligence.
+                    <span className={heroTitleStyles.heroTitleTagline}>
+                        Simple as never before
+                    </span>
                 </h1>
 
                 <p className={heroTitleStyles.heroSubtitle}>
@@ -38,9 +39,10 @@ export const HeroSection = () => {
                 </p>
 
                 <p className={heroTitleStyles.heroSubtitleSecondary}>
-                    One chat — entire platform. From agent factory to code-execution IDE.
-                    <br className={styles.desktopBr} />
-                    Blockchain identity, enforced governance, unified retrieval memory. All yours.
+                    One chat, entire platform — code, create, connect, deploy, govern, and monetize AI agents and your projects with blockchain identity, enforced governance on every action, and a full economic layer built in.
+                </p>
+                <p className={heroTitleStyles.heroSubtitleSecondary} style={{ marginTop: '8px', opacity: 0.75 }}>
+                    From agent factory to code-execution IDE. One ecosystem with unified cross-reasoning retrieval memory. All yours.
                 </p>
 
                 <button
