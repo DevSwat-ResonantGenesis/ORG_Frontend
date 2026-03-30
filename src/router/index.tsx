@@ -149,8 +149,7 @@ const withPublicShell = (node: React.ReactNode) => (
 );
 
 const HomeGate = () => {
-  // Legacy: redirect to / which now IS Resonant Chat
-  return <Navigate to="/" replace />;
+  return isAuthenticated() ? <ResonantChatPage /> : <HomeNew />;
 };
 
 const withRole = (node: React.ReactNode, roles: string[]) =>
@@ -180,6 +179,10 @@ const withOwnerAuth = (node: React.ReactNode) => (
 const router = createBrowserRouter([
   {
     path: '/',
+    element: withPublicShell(<HomeGate />)
+  },
+  {
+    path: '/chat',
     element: withPublicShell(<ResonantChatPage />)
   },
   {

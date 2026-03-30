@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import heroTitleStyles from '@/components/ui/HeroTitle.module.css';
 import styles from '../HomeNew.module.css';
@@ -10,7 +10,14 @@ const ThreeParticleSphere = React.lazy(() => import('@/components/features/landi
 export const HeroSection = () => {
     const navigate = useNavigate();
     const isLoggedIn = isAuthenticated();
+    const [query, setQuery] = useState('');
     if (isLoggedIn) return null;
+
+    const handleChatSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const trimmed = query.trim();
+        navigate(trimmed ? `/chat?q=${encodeURIComponent(trimmed)}` : '/chat');
+    };
 
     const isReactSnap = typeof navigator !== 'undefined' && navigator.userAgent === 'ReactSnap';
 
@@ -57,6 +64,23 @@ export const HeroSection = () => {
                             </button>
                         </div>
                     </div>
+                    {/* Chat Input Bar */}
+                    <form className={styles.heroChatBar} onSubmit={handleChatSubmit}>
+                        <input
+                            className={styles.heroChatInput}
+                            type="text"
+                            placeholder="Ask anything — try the AI assistant..."
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            autoComplete="off"
+                        />
+                        <button type="submit" className={styles.heroChatSend} aria-label="Send">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </form>
+                    <div className={styles.heroChatHint}>Guest mode · 3 tools · Low-reasoning model</div>
                 </div>
             </div>
         </section>

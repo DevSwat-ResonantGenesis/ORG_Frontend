@@ -962,6 +962,121 @@
   }
 }
 
+/* ============================================================
+   Hero Chat Input Bar — glassmorphism, faded bg
+   ============================================================ */
+.heroChatBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 520px;
+  margin-top: 28px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 4px 4px 4px 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.heroChatBar:focus-within {
+  border-color: rgba(251, 191, 36, 0.4);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.08);
+}
+
+[data-theme='light'] .heroChatBar {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .heroChatBar:focus-within {
+  border-color: rgba(180, 83, 9, 0.35);
+  box-shadow: 0 0 20px rgba(180, 83, 9, 0.06);
+}
+
+.heroChatInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  padding: 10px 0;
+  min-width: 0;
+}
+
+.heroChatInput::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme='light'] .heroChatInput {
+  color: #0f172a;
+}
+
+[data-theme='light'] .heroChatInput::placeholder {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+.heroChatSend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(251, 191, 36, 0.15);
+  color: rgba(251, 191, 36, 0.9);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.heroChatSend:hover {
+  background: rgba(251, 191, 36, 0.25);
+  transform: scale(1.05);
+}
+
+[data-theme='light'] .heroChatSend {
+  background: rgba(180, 83, 9, 0.1);
+  color: rgba(180, 83, 9, 0.85);
+}
+
+[data-theme='light'] .heroChatSend:hover {
+  background: rgba(180, 83, 9, 0.18);
+}
+
+.heroChatHint {
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.25);
+  text-align: center;
+  width: 100%;
+  max-width: 520px;
+}
+
+[data-theme='light'] .heroChatHint {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 640px) {
+  .heroChatBar {
+    max-width: 100%;
+    margin-top: 16px;
+  }
+
+  .heroChatInput {
+    font-size: 13px;
+  }
+
+  .heroChatHint {
+    font-size: 10.5px;
+  }
+}
+
 .heroStats {
   margin-top: var(--space-md);
 }
