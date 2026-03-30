@@ -98,20 +98,20 @@
      ============================================================ */
 
   [data-theme='dark'] {
-    --bg-primary: #262321;
-    /* Resonant Chat background - warm dark */
-    --bg-secondary: #262321;
-    /* Resonant Chat surface - warm dark */
+    --bg-primary: #000000;
+    /* Black background - dark mode */
+    --bg-secondary: #0a0a0a;
+    /* Near-black surface - dark mode */
     --bg-tertiary: #32312E;
     /* Resonant Chat hover - warm dark */
 
-    --bg: #262321;
-    --color-bg-root: #262321;
+    --bg: #000000;
+    --color-bg-root: #000000;
 
-    --surface: #262321;
-    /* Resonant Chat surface */
-    --surface-elevated: #32312E;
-    /* Resonant Chat hover */
+    --surface: #0a0a0a;
+    /* Dark surface */
+    --surface-elevated: #161616;
+    /* Dark elevated surface */
     --surface-hover: #111111;
     /* Resonant Chat hover */
 

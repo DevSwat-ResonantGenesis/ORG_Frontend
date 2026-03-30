@@ -20,19 +20,7 @@ body[data-theme=""] {
   color: var(--text-primary) !important;
 }
 
-body:not([data-theme="light"])::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9998;
-  background-image:
-    linear-gradient(90deg, rgba(0, 0, 0, 0.7) 0px, rgba(0, 0, 0, 0) 16px),
-    linear-gradient(270deg, rgba(0, 0, 0, 0.7) 0px, rgba(0, 0, 0, 0) 16px);
-  background-repeat: no-repeat;
-  background-size: 16px 100%, 16px 100%;
-  background-position: left top, right top;
-}
+/* Gradient side lines removed — clean edge-to-edge dark mode */
 
 /* Dark Mode Theme - Use new token system (warm gray) */
 html[data-theme="dark"] {

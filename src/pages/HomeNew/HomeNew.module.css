@@ -76,11 +76,11 @@
 }
 
 [data-theme='dark'] .header {
-  background: var(--color-bg-root, #262321) !important;
+  background: var(--color-bg-root, #000000) !important;
 }
 
 [data-theme='dark'] .headerScrolled {
-  background: var(--color-bg-root, #262321) !important;
+  background: var(--color-bg-root, #000000) !important;
   box-shadow: none;
 }
 
