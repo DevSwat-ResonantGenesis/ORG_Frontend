@@ -39,9 +39,6 @@ export const HeroSection = () => {
                 </p>
 
                 <p className={heroTitleStyles.heroSubtitleSecondary}>
-                    One chat, entire platform — code, create, connect, deploy, govern, and monetize AI agents and your projects with blockchain identity, enforced governance on every action, and a full economic layer built in.
-                </p>
-                <p className={heroTitleStyles.heroSubtitleSecondary} style={{ marginTop: '8px', opacity: 0.75 }}>
                     From agent factory to code-execution IDE. One ecosystem with unified cross-reasoning retrieval memory. All yours.
                 </p>
 

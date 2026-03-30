@@ -253,23 +253,17 @@
 /* Hero Section - Mobile First, Enhanced 2025 */
 .hero {
   min-height: 100dvh;
+  width: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 24px;
+  padding: 0;
   margin: 0;
   background: #000000;
   position: relative;
   z-index: 1;
   overflow: hidden;
   box-sizing: border-box;
-}
-
-@media (max-width: 768px) {
-  .hero {
-    min-height: 100dvh;
-    padding: 0 16px;
-  }
 }
 
 .hero::before,
@@ -460,7 +454,7 @@
 
 .heroParallax {
   position: absolute;
-  bottom: -92%;
+  bottom: -97%;
   left: 50%;
   transform: translateX(-50%) scale(0.5);
   transform-origin: center center;
@@ -513,7 +507,7 @@
     top: auto;
     left: 50%;
     right: auto;
-    bottom: -90%;
+    bottom: -95%;
     transform: translateX(-50%);
     animation: none;
     width: 170vmin;
@@ -3055,7 +3049,7 @@
     top: auto;
     left: 50%;
     right: auto;
-    bottom: -90%;
+    bottom: -95%;
     transform: translateX(-50%);
     animation: none;
     width: 170vmin;
