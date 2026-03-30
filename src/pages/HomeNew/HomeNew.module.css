@@ -460,35 +460,35 @@
 
 .heroParallax {
   position: absolute;
-  top: 50%;
+  bottom: -85%;
   left: 50%;
-  transform: translate(-50%, -50%) scale(0.5);
+  transform: translateX(-50%) scale(0.5);
   transform-origin: center center;
-  width: 90vmin;
-  height: 90vmin;
+  width: 180vmin;
+  height: 180vmin;
   z-index: 0;
   pointer-events: none;
   overflow: visible;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.7;
+  opacity: 0.85;
   animation: sphereScaleUp 3s cubic-bezier(0.2, 0, 0.2, 1) forwards;
 }
 
 @keyframes sphereScaleUp {
   0% {
-    transform: translate(-50%, -50%) scale(0.5);
+    transform: translateX(-50%) scale(0.5);
   }
   100% {
-    transform: translate(-50%, -50%) scale(1);
+    transform: translateX(-50%) scale(1);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .heroParallax {
     animation: none;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translateX(-50%) scale(1);
   }
 }
 
@@ -506,23 +506,23 @@
 }
 
 
-/* Mobile: centered nebula trace */
+/* Mobile: big nebula at bottom, only ~15% visible */
 @media (max-width: 768px) {
   .heroParallax {
     position: absolute;
-    top: 50%;
+    top: auto;
     left: 50%;
     right: auto;
-    bottom: auto;
-    transform: translate(-50%, -50%);
+    bottom: -85%;
+    transform: translateX(-50%);
     animation: none;
-    width: 75vmin;
-    height: 75vmin;
+    width: 150vmin;
+    height: 150vmin;
     z-index: 0;
     align-items: center;
     justify-content: center;
-    opacity: 0.5;
-    overflow: hidden;
+    opacity: 0.7;
+    overflow: visible;
   }
 
   .heroParallaxInner {
@@ -536,15 +536,13 @@
 
   .heroParallax > * {
     overflow: visible !important;
-    max-width: 100%;
-    max-height: 100%;
+    max-width: none;
+    max-height: none;
   }
 
   .heroParallax canvas {
     width: 100% !important;
     height: 100% !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
   }
 }
 
@@ -3051,21 +3049,21 @@
     min-height: 100dvh;
   }
 
-  /* Hero Parallax - Mobile: centered nebula */
+  /* Hero Parallax - Mobile: big nebula at bottom */
   .heroParallax {
     position: absolute;
-    top: 50%;
+    top: auto;
     left: 50%;
     right: auto;
-    bottom: auto;
-    transform: translate(-50%, -50%);
+    bottom: -85%;
+    transform: translateX(-50%);
     animation: none;
-    width: 75vmin;
-    height: 75vmin;
+    width: 150vmin;
+    height: 150vmin;
     z-index: 0;
     pointer-events: none;
-    overflow: hidden;
-    opacity: 0.5;
+    overflow: visible;
+    opacity: 0.7;
     display: flex;
     align-items: center;
     justify-content: center;

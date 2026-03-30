@@ -106,18 +106,18 @@ export const ThreeParticleSphere: React.FC = () => {
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
         scene.add(ambientLight);
 
-        // Point light 1 - main light (front-right) - Bright Blue
-        const pointLight1 = new THREE.PointLight(0x3b82f6, 1.5, 100);
+        // Point light 1 - main light (front-right) - White
+        const pointLight1 = new THREE.PointLight(0xffffff, 1.5, 100);
         pointLight1.position.set(3, 2, 5);
         scene.add(pointLight1);
 
-        // Point light 2 - accent light (back-left) - Cool Cyan
-        const pointLight2 = new THREE.PointLight(0x06b6d4, 1, 100);
+        // Point light 2 - accent light (back-left) - Soft White
+        const pointLight2 = new THREE.PointLight(0xcccccc, 1, 100);
         pointLight2.position.set(-3, -2, 3);
         scene.add(pointLight2);
 
-        // Point light 3 - top light for highlights - Bright Sky Blue
-        const pointLight3 = new THREE.PointLight(0xbae6fd, 0.8, 100);
+        // Point light 3 - top light for highlights - Bright White
+        const pointLight3 = new THREE.PointLight(0xffffff, 0.8, 100);
         pointLight3.position.set(0, 4, 2);
         scene.add(pointLight3);
 
@@ -129,8 +129,8 @@ export const ThreeParticleSphere: React.FC = () => {
         // 1. Outer Glass Shell (Physical Material for Realism)
         const coreOuterGeometry = new THREE.SphereGeometry(0.5, 128, 128); // Ultra smooth
         const coreOuterMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0x3b82f6,       // Clear Blue
-            emissive: 0x1d4ed8,    // Deep Blue glow
+            color: 0xffffff,       // White
+            emissive: 0x888888,    // Soft gray glow
             emissiveIntensity: 0.2, // Subtle self-emission
             roughness: 0.1,        // Very smooth
             metalness: 0.1,        // Slight metallic hint
@@ -148,8 +148,8 @@ export const ThreeParticleSphere: React.FC = () => {
         // 2. Mid Atmoshpere (Frosted Energy)
         const coreMidGeometry = new THREE.SphereGeometry(0.38, 64, 64);
         const coreMidMaterial = new THREE.MeshStandardMaterial({
-            color: 0x06b6d4,       // Cyan
-            emissive: 0x3b82f6,    // Blue
+            color: 0xcccccc,       // Light gray
+            emissive: 0xaaaaaa,    // Gray glow
             emissiveIntensity: 0.8,
             roughness: 0.7,        // Frosted look
             metalness: 0.3,
@@ -163,8 +163,8 @@ export const ThreeParticleSphere: React.FC = () => {
         // 3. Inner Reactor (Intense Glow)
         const coreInnerGeometry = new THREE.SphereGeometry(0.24, 64, 64);
         const coreInnerMaterial = new THREE.MeshStandardMaterial({
-            color: 0x67e8f9,       // Bright Cyan
-            emissive: 0xbae6fd,    // White-Blue
+            color: 0xeeeeee,       // Bright white
+            emissive: 0xffffff,    // Pure white glow
             emissiveIntensity: 1.5,
             roughness: 0.2,
             metalness: 0.8,
@@ -189,14 +189,14 @@ export const ThreeParticleSphere: React.FC = () => {
         // ============================================================
         const wireframeGeometry = new THREE.SphereGeometry(1.1, 48, 48); // More segments
         const wireframeMaterial = new THREE.MeshPhongMaterial({
-            color: 0x93c5fd, // Brighter Sky Blue for more contrast
-            emissive: 0x60a5fa, // Stronger blue glow
-            emissiveIntensity: 0.5, // Increased for nebula effect
+            color: 0xdddddd, // Light gray wireframe
+            emissive: 0x999999, // Gray glow
+            emissiveIntensity: 0.5,
             wireframe: true,
             transparent: true,
-            opacity: 0.45, // Slightly more visible
-            shininess: 100, // More shine
-            blending: THREE.AdditiveBlending, // Nebula glow effect
+            opacity: 0.35,
+            shininess: 100,
+            blending: THREE.AdditiveBlending,
         });
         const wireframeSphere = new THREE.Mesh(wireframeGeometry, wireframeMaterial);
         scene.add(wireframeSphere);
@@ -211,9 +211,9 @@ export const ThreeParticleSphere: React.FC = () => {
         const colors = new Float32Array(particleCount * 3);
         const sizes = new Float32Array(particleCount);
 
-        const colorA = new THREE.Color('#7dd3fc'); // Sky Blue
+        const colorA = new THREE.Color('#cccccc'); // Light gray
         const colorB = new THREE.Color('#ffffff'); // white
-        const colorC = new THREE.Color('#2563eb'); // Deep Blue accent
+        const colorC = new THREE.Color('#888888'); // Mid gray accent
 
         for (let i = 0; i < particleCount; i++) {
             // Spherical distribution with some randomness
@@ -267,7 +267,7 @@ export const ThreeParticleSphere: React.FC = () => {
             const rCount = isMobileLayout ? 300 : 800;
             const rPos = new Float32Array(rCount * 3);
             const rCol = new Float32Array(rCount * 3);
-            const rBase = new THREE.Color('#3b82f6'); // Blue
+            const rBase = new THREE.Color('#ffffff'); // White
 
             for (let i = 0; i < rCount; i++) {
                 const theta = Math.random() * Math.PI * 2;
@@ -287,7 +287,7 @@ export const ThreeParticleSphere: React.FC = () => {
                 rPos.set([x, y, z], i * 3);
 
                 const mix = Math.random();
-                const c = rBase.clone().lerp(new THREE.Color('#06b6d4'), mix); // Cyan accent
+                const c = rBase.clone().lerp(new THREE.Color('#aaaaaa'), mix); // Gray accent
                 rCol.set([c.r, c.g, c.b], i * 3);
             }
 
