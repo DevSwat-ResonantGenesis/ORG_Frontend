@@ -4,7 +4,7 @@ import heroTitleStyles from '@/components/ui/HeroTitle.module.css';
 import styles from '../HomeNew.module.css';
 import { isAuthenticated } from '@/utils/auth-cookies';
 
-// Lazy load Vision Pro aesthetic particle sphere
+// Lazy load particle sphere — used as nebula trace background
 const ThreeParticleSphere = React.lazy(() => import('@/components/features/landing/ThreeParticleSphere'));
 
 export const HeroSection = () => {
@@ -16,7 +16,7 @@ export const HeroSection = () => {
 
     return (
         <section className={styles.hero}>
-            {/* Parallax Background - Behind Content */}
+            {/* Nebula trace — particle sphere behind content */}
             <div className={styles.heroParallax} aria-hidden="true">
                 <Suspense fallback={<div className={styles.parallaxPlaceholder} />}>
                     <div className={styles.heroParallaxInner}>
@@ -25,42 +25,30 @@ export const HeroSection = () => {
                 </Suspense>
             </div>
 
+            {/* Centered content */}
             <div className={styles.heroContent}>
-                <div className={styles.heroIntro}>
-                    <button
-                        type="button"
-                        className={styles.byokHeroAlert}
-                        onClick={() => navigate('/signup')}
-                    >
-                        <span className={styles.byokHeroText}>Bring Your Own Keys to unlock functions</span>
-                        <span className={styles.byokHeroArrow}>→ Create or Bring your AI Agents</span>
-                    </button>
+                <h1 className={heroTitleStyles.heroTitle}>
+                    Own Your
+                    <br />
+                    Intelligence.
+                </h1>
 
-                    <h1 className={heroTitleStyles.heroTitle}>
-                        Own Your Intelligence.
-                        <span className={heroTitleStyles.heroTitleTagline}>
-                            Simple as never before
-                        </span>
-                    </h1>
-                    <p className={heroTitleStyles.heroSubtitle}>
-                        One chat, entire platform — code, create, connect, deploy, govern, and monetize AI agents and your projects with blockchain identity, enforced governance on every action, and a full economic layer built in.
-                    </p>
-                    <p className={heroTitleStyles.heroSubtitle} style={{ marginTop: '8px', opacity: 0.75 }}>
-                        From agent factory to code-execution IDE. One ecosystem with unified cross-reasoning retrieval memory. All yours.
-                    </p>
-                    
-                    {/* Hero CTAs */}
-                    <div className={styles.heroNavLinks}>
-                        <div className={styles.heroNavRow}>
-                            <button className={`${styles.heroNavItem} ${styles.heroNavItemPrimary}`} onClick={() => navigate('/signup')}>
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-                                </svg>
-                                <span>Get Started</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <p className={heroTitleStyles.heroSubtitle}>
+                    code, create, connect, deploy, govern &amp; monetize
+                </p>
+
+                <p className={heroTitleStyles.heroSubtitleSecondary}>
+                    One chat — entire platform. From agent factory to code-execution IDE.
+                    <br className={styles.desktopBr} />
+                    Blockchain identity, enforced governance, unified retrieval memory. All yours.
+                </p>
+
+                <button
+                    className={styles.heroCta}
+                    onClick={() => navigate('/signup')}
+                >
+                    Get Started
+                </button>
             </div>
         </section>
     );
