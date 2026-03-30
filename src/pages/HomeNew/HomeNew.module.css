@@ -629,8 +629,8 @@
   }
 
   .heroParallaxInner {
-    width: min(100vw, 80dvh);
-    height: min(100vw, 80dvh);
+    width: min(75vw, 60dvh);
+    height: min(75vw, 60dvh);
     aspect-ratio: 1 / 1;
     transform: translateY(16px);
     display: block;
@@ -3191,8 +3191,8 @@
   }
 
   .heroParallaxInner {
-    width: min(100vw, 80dvh);
-    height: min(100vw, 80dvh);
+    width: min(75vw, 60dvh);
+    height: min(75vw, 60dvh);
     aspect-ratio: 1 / 1;
     transform: translateY(16px);
     margin-left: auto;
