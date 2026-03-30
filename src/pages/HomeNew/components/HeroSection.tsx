@@ -39,6 +39,7 @@ export const HeroSection = () => {
                 </p>
 
                 <p className={heroTitleStyles.heroSubtitleSecondary}>
+                    Build AI agents and projects with blockchain identity, enforced governance on every action, and a full economic layer built in.
                     From agent factory to code-execution IDE. One ecosystem with unified cross-reasoning retrieval memory. All yours.
                 </p>
 
