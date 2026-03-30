@@ -83,7 +83,7 @@ h1.heroTitle {
   line-height: 1.6;
   padding: 0;
   text-align: center;
-  max-width: 600px;
+  max-width: none;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   display: block;
@@ -113,7 +113,7 @@ h1.heroTitle {
   line-height: 1.7;
   padding: 0;
   text-align: center;
-  max-width: 480px;
+  max-width: none;
   letter-spacing: 0.02em;
   display: block;
   -webkit-font-smoothing: antialiased;
@@ -123,7 +123,7 @@ h1.heroTitle {
   .heroSubtitleSecondary {
     font-size: 15px;
     margin-bottom: 48px;
-    max-width: 520px;
+    max-width: none;
   }
 }
 

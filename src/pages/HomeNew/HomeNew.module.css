@@ -562,7 +562,7 @@
   position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translate(-50%, 78%);
+  transform: translate(-50%, 50%);
   width: 200vmin;
   height: 200vmin;
   z-index: 0;
@@ -572,22 +572,11 @@
   align-items: center;
   justify-content: center;
   opacity: 0.85;
-  animation: sphereSlideUp 3s cubic-bezier(0.2, 0, 0.2, 1) forwards;
-}
-
-@keyframes sphereSlideUp {
-  0% {
-    transform: translate(-50%, 90%);
-  }
-  100% {
-    transform: translate(-50%, 78%);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .heroParallax {
-    animation: none;
-    transform: translate(-50%, 78%);
+    transform: translate(-50%, 50%);
   }
 }
 
@@ -605,15 +594,14 @@
 }
 
 
-/* Mobile: big nebula at bottom, only ~15% visible */
+/* Mobile: big nebula at bottom */
 @media (max-width: 768px) {
   .heroParallax {
     position: absolute;
     bottom: 0;
     left: 50%;
     right: auto;
-    transform: translate(-50%, 78%);
-    animation: none;
+    transform: translate(-50%, 50%);
     width: 170vmin;
     height: 170vmin;
     z-index: 0;
@@ -3153,8 +3141,7 @@
     bottom: 0;
     left: 50%;
     right: auto;
-    transform: translate(-50%, 78%);
-    animation: none;
+    transform: translate(-50%, 50%);
     width: 170vmin;
     height: 170vmin;
     z-index: 0;
