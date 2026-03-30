@@ -39,11 +39,14 @@ export const HeroSection = () => {
                     <h1 className={heroTitleStyles.heroTitle}>
                         Own Your Intelligence.
                         <span className={heroTitleStyles.heroTitleTagline}>
-                            Sovereign AI Ecosystem
+                            Simple as never before
                         </span>
                     </h1>
                     <p className={heroTitleStyles.heroSubtitle}>
-                        AES-256-GCM encrypted retrieval memory · Autonomous AI agents with blockchain identity & crypto wallet · Agent Factory Marketplace — create, sell or rent intelligence on-chain · Full governance with epoch spending, performance tracking & kill switch · Resonant IDE for transparent, hallucination-controlled development · One chat wired to the entire platform with unified memory · Invariant simulation, internal blockchain logging anchored to external chains, and more.
+                        One chat, entire platform — code, create, connect, deploy, govern, and monetize AI agents and your projects with blockchain identity, enforced governance on every action, and a full economic layer built in.
+                    </p>
+                    <p className={heroTitleStyles.heroSubtitle} style={{ marginTop: '8px', opacity: 0.75 }}>
+                        From agent factory to code-execution IDE. One ecosystem with unified cross-reasoning retrieval memory. All yours.
                     </p>
                     
                     {/* Hero CTAs */}
