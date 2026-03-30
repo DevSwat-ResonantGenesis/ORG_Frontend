@@ -56,46 +56,26 @@ export const ThreeParticleSphere: React.FC = () => {
             powerPreference: 'high-performance',
         });
 
-        // Desktop/laptop should match the previous fixed hero sphere sizing.
-        const canvasSize = 820;
-
-        const getNextSize = () => {
+        const getContainerSize = () => {
             const el = mountRef.current;
-            if (!el) return 300;
+            if (!el) return { w: 800, h: 800 };
             const rect = el.getBoundingClientRect();
-            const size = Math.floor(Math.min(rect.width, rect.height));
-            return Math.max(1, size || 300);
+            return { w: Math.max(1, Math.floor(rect.width) || 800), h: Math.max(1, Math.floor(rect.height) || 800) };
         };
 
         const applySize = () => {
-            if (!isMobileLayout) {
-                renderer.setSize(canvasSize, canvasSize, false);
-                camera.aspect = 1;
-                camera.updateProjectionMatrix();
-                return;
-            }
-
-            const nextSize = getNextSize();
-            renderer.setSize(nextSize, nextSize, false);
-            camera.aspect = 1;
+            const { w, h } = getContainerSize();
+            renderer.setSize(w, h, false);
+            camera.aspect = w / h;
             camera.updateProjectionMatrix();
         };
 
         applySize();
-        // Maximum quality - no mobile compromise for sharpness
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 3));
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         
-        // Style canvas to stay centered and not move
         renderer.domElement.style.display = 'block';
-        renderer.domElement.style.margin = '0 auto';
-
-        if (!isMobileLayout) {
-            renderer.domElement.style.width = `${canvasSize}px`;
-            renderer.domElement.style.height = `${canvasSize}px`;
-        } else {
-            renderer.domElement.style.width = '100%';
-            renderer.domElement.style.height = '100%';
-        }
+        renderer.domElement.style.width = '100%';
+        renderer.domElement.style.height = '100%';
         
         mountRef.current.appendChild(renderer.domElement);
 
@@ -324,14 +304,6 @@ export const ThreeParticleSphere: React.FC = () => {
             const nextIsMobileLayout = getIsMobileLayout();
             if (nextIsMobileLayout !== isMobileLayout) {
                 isMobileLayout = nextIsMobileLayout;
-                if (!isMobileLayout) {
-                    renderer.domElement.style.width = `${canvasSize}px`;
-                    renderer.domElement.style.height = `${canvasSize}px`;
-                } else {
-                    renderer.domElement.style.width = '100%';
-                    renderer.domElement.style.height = '100%';
-                }
-
                 applyCameraSettings();
             }
             applySize();

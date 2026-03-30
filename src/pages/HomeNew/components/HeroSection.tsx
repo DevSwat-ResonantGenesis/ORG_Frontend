@@ -13,13 +13,13 @@ export const HeroSection = () => {
     const btnRef = useRef<HTMLButtonElement>(null);
     const heroRef = useRef<HTMLElement>(null);
 
-    const parallaxRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (isLoggedIn) return;
         const hero = heroRef.current;
         const btn = btnRef.current;
-        const sphere = parallaxRef.current;
+        const content = contentRef.current;
         if (!hero || !btn) return;
 
         const onMove = (e: MouseEvent) => {
@@ -28,24 +28,22 @@ export const HeroSection = () => {
             const x = (e.clientX / w - 0.5) * 2;
             const y = (e.clientY / h - 0.5) * 2;
 
-            // CTA button — 3D tilt
-            btn.style.transform = `perspective(600px) rotateY(${x * 12}deg) rotateX(${-y * 12}deg) translateZ(6px)`;
+            // CTA button — 3D tilt (stronger)
+            btn.style.transform = `perspective(600px) rotateY(${x * 14}deg) rotateX(${-y * 14}deg) translateZ(8px)`;
             const rect = btn.getBoundingClientRect();
             btn.style.setProperty('--glow-x', `${((e.clientX - rect.left) / rect.width) * 100}%`);
             btn.style.setProperty('--glow-y', `${((e.clientY - rect.top) / rect.height) * 100}%`);
 
-            // Sphere parallax — shift + tilt based on mouse
-            if (sphere) {
-                const shiftX = x * 30;
-                const shiftY = y * 20;
-                sphere.style.transform = `translate(calc(-50% + ${shiftX}px), calc(65% + ${shiftY}px)) perspective(1200px) rotateY(${x * 5}deg) rotateX(${-y * 5}deg)`;
+            // Entire hero content — subtle 3D tilt (same effect as button but softer)
+            if (content) {
+                content.style.transform = `perspective(1200px) rotateY(${x * 2}deg) rotateX(${-y * 2}deg) translateZ(0px)`;
             }
         };
 
         const onLeave = () => {
             btn.style.transform = 'perspective(600px) rotateY(0deg) rotateX(0deg) translateZ(0px)';
-            if (sphere) {
-                sphere.style.transform = 'translate(-50%, 65%)';
+            if (content) {
+                content.style.transform = 'perspective(1200px) rotateY(0deg) rotateX(0deg) translateZ(0px)';
             }
         };
 
@@ -64,7 +62,7 @@ export const HeroSection = () => {
     return (
         <section ref={heroRef} className={styles.hero}>
             {/* Nebula trace — particle sphere behind content */}
-            <div ref={parallaxRef} className={styles.heroParallax} aria-hidden="true">
+            <div className={styles.heroParallax} aria-hidden="true">
                 <Suspense fallback={<div className={styles.parallaxPlaceholder} />}>
                     <div className={styles.heroParallaxInner}>
                         {isReactSnap ? <div className={styles.parallaxPlaceholder} /> : <ThreeParticleSphere />}
@@ -73,7 +71,7 @@ export const HeroSection = () => {
             </div>
 
             {/* Centered content */}
-            <div className={styles.heroContent}>
+            <div ref={contentRef} className={styles.heroContent}>
                 <h1 className={heroTitleStyles.heroTitle}>
                     Own Your Intelligence.
                     <span className={heroTitleStyles.heroTitleTagline}>

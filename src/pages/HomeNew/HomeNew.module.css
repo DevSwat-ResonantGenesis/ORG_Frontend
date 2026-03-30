@@ -291,6 +291,9 @@
   justify-content: center;
   box-shadow: none;
   border: none;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.15s ease-out;
 }
 
 @media (max-width: 768px) {
