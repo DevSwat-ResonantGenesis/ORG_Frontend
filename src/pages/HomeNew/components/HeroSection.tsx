@@ -14,12 +14,14 @@ export const HeroSection = () => {
     const heroRef = useRef<HTMLElement>(null);
 
     const contentRef = useRef<HTMLDivElement>(null);
+    const glowRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (isLoggedIn) return;
         const hero = heroRef.current;
         const btn = btnRef.current;
         const content = contentRef.current;
+        const glow = glowRef.current;
         if (!hero || !btn) return;
 
         const onMove = (e: MouseEvent) => {
@@ -34,9 +36,16 @@ export const HeroSection = () => {
             btn.style.setProperty('--glow-x', `${((e.clientX - rect.left) / rect.width) * 100}%`);
             btn.style.setProperty('--glow-y', `${((e.clientY - rect.top) / rect.height) * 100}%`);
 
-            // Entire hero content — subtle 3D tilt (same effect as button but softer)
+            // Entire hero content — subtle 3D tilt
             if (content) {
                 content.style.transform = `perspective(1200px) rotateY(${x * 2}deg) rotateX(${-y * 2}deg) translateZ(0px)`;
+            }
+
+            // Page-wide white glow that follows mouse
+            if (glow) {
+                glow.style.opacity = '1';
+                glow.style.left = `${e.clientX}px`;
+                glow.style.top = `${e.clientY}px`;
             }
         };
 
@@ -44,6 +53,9 @@ export const HeroSection = () => {
             btn.style.transform = 'perspective(600px) rotateY(0deg) rotateX(0deg) translateZ(0px)';
             if (content) {
                 content.style.transform = 'perspective(1200px) rotateY(0deg) rotateX(0deg) translateZ(0px)';
+            }
+            if (glow) {
+                glow.style.opacity = '0';
             }
         };
 
@@ -61,6 +73,9 @@ export const HeroSection = () => {
 
     return (
         <section ref={heroRef} className={styles.hero}>
+            {/* Mouse-following white glow */}
+            <div ref={glowRef} className={styles.heroMouseGlow} aria-hidden="true" />
+
             {/* Nebula trace — particle sphere behind content */}
             <div className={styles.heroParallax} aria-hidden="true">
                 <Suspense fallback={<div className={styles.parallaxPlaceholder} />}>

@@ -255,9 +255,10 @@
   min-height: 100dvh;
   width: 100vw;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   padding: 0;
+  padding-top: 18vh;
   margin: 0;
   background: #000000;
   position: relative;
@@ -273,6 +274,25 @@
 
 [data-theme='light'] .hero {
   background: #ffffff;
+}
+
+/* Mouse-following white glow */
+.heroMouseGlow {
+  position: fixed;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.03) 40%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease;
+  will-change: left, top, opacity;
+}
+
+[data-theme='light'] .heroMouseGlow {
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.02) 40%, transparent 70%);
 }
 
 /* Hero Content — centered column */
