@@ -450,7 +450,7 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             )}
 
-            {isResonantChatPage && (
+            {isResonantChatPage && isLoggedIn && (
               <button
                 type="button"
                 className={`${styles.splitViewToggleButton} ${splitViewEnabled ? styles.splitViewToggleButtonActive : ''} ${splitViewEnabled && splitViewPane === 'split' ? styles.splitViewToggleButtonPulse : ''}`}
