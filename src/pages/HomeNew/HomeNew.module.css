@@ -586,8 +586,8 @@
   bottom: 0;
   left: 50%;
   transform: translate(-50%, 65%);
-  width: 100vw;
-  height: 100vw;
+  width: calc(100vw + 4in);
+  height: calc(100vw + 4in);
   z-index: 0;
   pointer-events: none;
   overflow: visible;
@@ -625,8 +625,8 @@
     left: 50%;
     right: auto;
     transform: translate(-50%, 60%);
-    width: 100vw;
-    height: 100vw;
+    width: calc(100vw + 4in);
+    height: calc(100vw + 4in);
     z-index: 0;
     align-items: center;
     justify-content: center;
@@ -3165,8 +3165,8 @@
     left: 50%;
     right: auto;
     transform: translate(-50%, 60%);
-    width: 100vw;
-    height: 100vw;
+    width: calc(100vw + 4in);
+    height: calc(100vw + 4in);
     z-index: 0;
     pointer-events: none;
     overflow: visible;
