@@ -340,9 +340,9 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
         model,
         tool_mode: toolMode,
         tools: toolMode === 'smart' ? [] : selectedTools,
-        systemPrompt: '',
+        system_prompt: '',
         temperature: 0.7,
-        maxTokens: 4096,
+        max_tokens: 4096,
       };
 
       const result = await createAgentApi(agentData);
@@ -407,11 +407,19 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
         });
       }
     } catch (err: any) {
-      setError(err?.message || 'Failed to create agent');
+      // Handle structured error from backend (e.g. agent limit 429)
+      const detail = err?.detail || err?.response?.data?.detail;
+      if (detail && typeof detail === 'object' && detail.message) {
+        setError(detail.message);
+      } else if (typeof detail === 'string') {
+        setError(detail);
+      } else {
+        setError(err?.message || 'Failed to create agent');
+      }
     } finally {
       setIsCreating(false);
     }
-  }, [name, description, agentType, mode, provider, model, selectedTools, addAgent]);
+  }, [name, description, agentType, mode, provider, model, toolMode, selectedTools, goal, schedulePreset, customCron, addAgent]);
 
   const renderStepContent = () => {
     switch (currentStepData.id) {

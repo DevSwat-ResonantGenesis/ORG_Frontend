@@ -70,7 +70,12 @@ fastapiClient.interceptors.response.use(
     const retryableStatuses = [429, 500, 502, 503, 504];
     const retryCount = config.__retryCount || 0;
     
-    if (error?.response?.status && retryableStatuses.includes(error.response.status)) {
+    // Don't retry 429 if it's a business logic error (e.g. agent_limit_exceeded), not a rate limit
+    const is429BusinessError = error?.response?.status === 429 && 
+      error?.response?.data?.detail?.error && 
+      error.response.data.detail.error !== 'rate_limited';
+    
+    if (error?.response?.status && retryableStatuses.includes(error.response.status) && !is429BusinessError) {
       if (retryCount < MAX_RETRIES) {
         config.__retryCount = retryCount + 1;
         const delay = RETRY_DELAY * Math.pow(2, retryCount); // Exponential backoff

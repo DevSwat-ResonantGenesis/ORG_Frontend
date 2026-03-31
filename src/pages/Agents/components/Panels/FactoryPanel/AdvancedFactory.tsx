@@ -662,7 +662,9 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
         type: config.type,
         description: config.description,
         system_prompt: config.systemPrompt,
+        provider: config.provider,
         model: config.model,
+        mode: config.mode,
         temperature: config.temperature,
         max_tokens: config.maxTokens,
         tool_mode: config.toolMode,
@@ -670,7 +672,6 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
         allowed_actions: allowedActions,
         blocked_actions: blockedActions,
         safety_config: {
-          provider: config.provider,
           topP: config.topP,
           frequencyPenalty: config.frequencyPenalty,
           presencePenalty: config.presencePenalty,

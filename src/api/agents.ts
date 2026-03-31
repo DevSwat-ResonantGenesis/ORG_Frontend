@@ -69,7 +69,9 @@ export interface CreateAgentRequest {
   type?: string;
   description?: string;
   system_prompt?: string;
+  provider?: string;
   model?: string;
+  mode?: string;
   temperature?: number;
   max_tokens?: number;
   tool_mode?: string;
