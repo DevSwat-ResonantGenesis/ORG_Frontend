@@ -142,7 +142,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
         <div className={styles.usmContent}>
           {/* Products Section */}
           <div className={styles.usmSection}>
-            <div className={styles.usmSectionTitle}>Products</div>
+            <div className={styles.usmSectionTitle}>Services</div>
 
             <button
               className={`${styles.usmItem} ${location.pathname === '/agents' ? styles.usmActive : ''}`}
@@ -154,7 +154,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <path d="M3 14C3 11 5.5 9 8 9C10.5 9 13 11 13 14" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>AI Agent Studio</span>
+              <span className={styles.usmLabel}>Agents</span>
               {location.pathname === '/agents' && <span className={styles.usmActiveIndicator} />}
             </button>
 
@@ -264,28 +264,34 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               {location.pathname === '/pricing' && <span className={styles.usmActiveIndicator} />}
             </button>
 
-          </div>
-
-          <div className={styles.usmDivider} />
-
-          {/* Rabbit - Standalone Community Section */}
-          <div className={styles.usmSection}>
-            <div className={styles.usmSectionTitle}>Community</div>
-
             <button
-              className={`${styles.usmItem} ${location.pathname === '/rabbit' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/rabbit'); onClose(); }}
+              className={`${styles.usmItem} ${location.pathname === '/marketplace' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/marketplace'); onClose(); }}
             >
               <span className={styles.usmIcon}>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="8" r="6" />
-                  <path d="M5.5 9.5c1 1 4 1 5 0" strokeLinecap="round" />
-                  <path d="M6 6.5h0.01M10 6.5h0.01" strokeLinecap="round" />
+                  <rect x="2" y="6" width="12" height="8" rx="1" />
+                  <path d="M4 6V4C4 2.9 5.8 2 8 2C10.2 2 12 2.9 12 4V6" strokeLinecap="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Rabbit</span>
-              {location.pathname === '/rabbit' && <span className={styles.usmActiveIndicator} />}
+              <span className={styles.usmLabel}>Marketplace</span>
+              {location.pathname === '/marketplace' && <span className={styles.usmActiveIndicator} />}
             </button>
+
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/investor-pitch-deck' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/investor-pitch-deck'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M2 12L8 4L14 12" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M5 8H11" strokeLinecap="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>Investors</span>
+              {location.pathname === '/investor-pitch-deck' && <span className={styles.usmActiveIndicator} />}
+            </button>
+
           </div>
 
           <div className={styles.usmDivider} />

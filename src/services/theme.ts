@@ -139,7 +139,7 @@ const DARK_THEME: Theme = {
   name: 'Default Dark+',
   type: 'dark',
   colors: {
-    'editor.background': '#0a0a0a',
+    'editor.background': '#000000',
     'editor.foreground': '#d4d4d4',
     'editor.lineHighlightBackground': '#0a0a0a',
     'editor.selectionBackground': '#264f78',

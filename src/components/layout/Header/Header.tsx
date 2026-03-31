@@ -315,7 +315,7 @@ export const Header: React.FC<HeaderProps> = ({
                 className={`${styles.navButton} ${activeDropdown === 'solutions' ? styles.navButtonActive : ''}`}
                 onClick={() => setActiveDropdown(activeDropdown === 'solutions' ? null : 'solutions')}
               >
-                Products
+                Services
                 <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -323,10 +323,6 @@ export const Header: React.FC<HeaderProps> = ({
               {activeDropdown === 'solutions' && (
                 <div className={styles.navDropdown}>
                   <div className={styles.navDropdownGridTwoRows}>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/agents'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>AI Agent Studio</span>
-                      <span className={styles.navDropdownItemDesc}>Create & manage agents</span>
-                    </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-memory'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>Synthetic Neural Memory</span>
                       <span className={styles.navDropdownItemDesc}>A Physics-Informed, 9-Layer Cognitive Infrastructure for Autonomous Agents</span>
@@ -357,13 +353,13 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             )}
 
-            {/* Rabbit - Standalone Community */}
+            {/* Agents - Top level */}
             <div className={styles.navItem}>
               <button
                 className={styles.navButton}
-                onClick={() => { navigate('/rabbit'); setActiveDropdown(null); }}
+                onClick={() => { navigate('/agents'); setActiveDropdown(null); }}
               >
-                Rabbit
+                Agents
               </button>
             </div>
 
@@ -380,7 +376,7 @@ export const Header: React.FC<HeaderProps> = ({
               className={styles.navButton}
               onClick={() => navigate('/investor-pitch-deck')}
             >
-              Investor Pitch Deck
+              Investors
             </button>
 
             {/* Download IDE */}
@@ -389,6 +385,14 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => navigate('/download-ide')}
             >
               Download IDE
+            </button>
+
+            {/* Marketplace */}
+            <button 
+              className={styles.navButton}
+              onClick={() => navigate('/marketplace')}
+            >
+              Marketplace
             </button>
 
           </nav>
@@ -441,14 +445,9 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
-              {!isMobileViewport && <ThemeToggle />}
             </div>
 
-            {isMobileViewport && (
-              <div className={`${styles.mobileThemeToggleSlot} ${isResonantChatPage ? styles.mobileThemeToggleSlotChat : ''}`}>
-                <ThemeToggle />
-              </div>
-            )}
+            <ThemeToggle />
 
             {isResonantChatPage && isLoggedIn && (
               <button
