@@ -155,6 +155,14 @@ const OAuthCallbackPage: React.FC = () => {
           response.user.org_id || ''
         );
 
+        // Check for pending desktop-callback redirect (miner app / IDE login)
+        const desktopRedirect = sessionStorage.getItem('rg_desktop_redirect');
+        if (desktopRedirect) {
+          sessionStorage.removeItem('rg_desktop_redirect');
+          window.location.href = desktopRedirect;
+          return;
+        }
+
         try {
           sessionStorage.setItem(
             'rg-post-login-target',

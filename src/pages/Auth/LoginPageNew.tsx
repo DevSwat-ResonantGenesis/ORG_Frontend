@@ -269,6 +269,10 @@ export default function LoginPageNew() {
     setError('');
     setOauthLoading(provider);
     try {
+      // Persist desktop-callback redirect through the OAuth round-trip
+      if (postLoginRedirect) {
+        sessionStorage.setItem('rg_desktop_redirect', postLoginRedirect);
+      }
       const authUrl = await initiateSSO(provider, postLoginRedirect || undefined);
       window.location.href = authUrl;
     } catch (err: any) {
