@@ -80,6 +80,17 @@ const FALLBACK_SKILLS: Skill[] = [
     is_default: true,
     enabled: true,
   },
+  {
+    id: 'agent_architect',
+    name: 'Agent Architect',
+    description: 'Advanced meta-agent that analyzes your needs and creates fully-configured autonomous agents with tools, schedules, goals, webhooks, and API connections.',
+    icon: 'sparkles',
+    category: 'utility',
+    capabilities: ['analyze_user_needs', 'plan_agent_architecture', 'create_agents', 'configure_tools', 'assign_goals', 'create_schedules', 'create_webhooks'],
+    credit_cost: 50,
+    is_default: true,
+    enabled: true,
+  },
 ];
 
 const parseSkillsPayload = (payload: unknown): Skill[] => {
