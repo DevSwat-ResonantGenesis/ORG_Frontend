@@ -4745,15 +4745,7 @@ const ResonantChatPage: React.FC = () => {
                             key={i}
                             onClick={() => {
                               setPresentedOptions(null);
-                              setInput(opt.value);
-                              setTimeout(() => {
-                                const form = document.querySelector('form');
-                                if (form) form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-                                else {
-                                  setInput(opt.value);
-                                  inputRef.current?.focus();
-                                }
-                              }, 50);
+                              handleSend(opt.value);
                             }}
                             style={{
                               display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px',
