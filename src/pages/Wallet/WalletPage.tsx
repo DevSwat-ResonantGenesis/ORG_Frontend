@@ -1,10 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Web3WalletConnect from "../../components/wallet/Web3WalletConnect";
-import { useNavigate } from 'react-router-dom';
 import fastapiClient from '../../api/fastapiClient';
-import { Button } from '../../components/ui';
-import { Card } from '../../components/ui';
-import { Text } from '../../components/ui';
+import s from './WalletPage.module.css';
 
 // ── Types (matching crypto_service backend) ──
 interface Wallet {
@@ -64,6 +61,19 @@ interface WithdrawalRequest {
   status: string;
 }
 
+interface MinerStats {
+  trust_score: number;
+  rgt_earned: string;
+  tasks_completed: number;
+  samples_processed: number;
+  tier: 'validator_miner' | 'core_miner' | 'miner';
+  verification_rate: number;
+  status: 'active' | 'idle' | 'suspended';
+  current_epoch: number;
+  total_miners: number;
+  your_rank: number;
+}
+
 // ── Helpers ──
 const fmt = (val: string | number) => {
   const n = typeof val === 'string' ? parseFloat(val) : val;
@@ -71,12 +81,12 @@ const fmt = (val: string | number) => {
   return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
-const statusColor = (s: string) => {
+const statusColor = (st: string) => {
   const map: Record<string, string> = {
     completed: '#10b981', pending: '#f59e0b', processing: '#3b82f6',
     failed: '#ef4444', cancelled: '#6b7280', approved: '#10b981', rejected: '#ef4444',
   };
-  return map[s] || '#6b7280';
+  return map[st] || '#6b7280';
 };
 
 const txIcon = (type: string) => {
@@ -88,7 +98,6 @@ const txIcon = (type: string) => {
 };
 
 export default function WalletPage() {
-  const navigate = useNavigate();
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [balance, setBalance] = useState<Balance | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -126,6 +135,20 @@ export default function WalletPage() {
   const [fundingAddress, setFundingAddress] = useState('');
   const [fundingChain, setFundingChain] = useState('ethereum');
   const [fundingNickname, setFundingNickname] = useState('');
+
+  // Miner dashboard stats (simulated until training endpoints are live)
+  const [minerStats] = useState<MinerStats>({
+    trust_score: 0.94,
+    rgt_earned: '1,247.83',
+    tasks_completed: 47,
+    samples_processed: 12450,
+    tier: 'validator_miner',
+    verification_rate: 98.2,
+    status: 'active',
+    current_epoch: 0,
+    total_miners: 100,
+    your_rank: 3,
+  });
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -366,469 +389,405 @@ export default function WalletPage() {
   // ── No Wallet State ──
   if (!loading && !walletExists) {
     return (
-      <div className="page-container" style={{ maxWidth: 600, margin: '80px auto', textAlign: 'center' }}>
-        <div style={{ fontSize: 64, marginBottom: 16 }}>💰</div>
-        <Text variant="h1" color="primary" style={{ marginBottom: 8 }}>RGT Wallet</Text>
-        <Text variant="body" color="secondary" style={{ marginBottom: 24 }}>
-          Create your Resonant Genesis Token wallet to deposit, withdraw, transfer tokens,
-          and participate in the agent marketplace economy.
-        </Text>
-        <div style={{ marginBottom: 24, textAlign: 'left' }}>
-          <Web3WalletConnect onWalletLinked={() => loadData()} />
+      <div className={s.page}>
+        <div className={s.noWallet}>
+          <div style={{ fontSize: 56 }}>💰</div>
+          <h2>RGT Wallet</h2>
+          <p>Create your Resonant Genesis Token wallet to deposit, withdraw, transfer tokens, and participate in the decentralized training economy.</p>
+          <Web3WalletConnect onWalletLinked={() => loadData()} compact />
+          <button className={`${s.btn} ${s.btnPrimary}`} style={{ padding: '10px 28px', fontSize: 14, marginTop: 12 }}
+            onClick={createWallet} disabled={creating}>
+            {creating ? 'Creating...' : 'Create Wallet'}
+          </button>
+          {actionMsg && <p style={{ color: '#f87171', fontSize: 12, marginTop: 10 }}>{actionMsg}</p>}
         </div>
-        <Button variant="primary" size="lg" onClick={createWallet} disabled={creating}>
-          {creating ? 'Creating...' : 'Create Wallet'}
-        </Button>
-        {actionMsg && (
-          <Text variant="body-sm" color="error" style={{ marginTop: 12 }}>{actionMsg}</Text>
-        )}
       </div>
     );
   }
 
   // ── Loading ──
   if (loading) {
-    return (
-      <div className="page-container" style={{ textAlign: 'center', padding: 'var(--space-8)' }}>
-        <Text variant="body" color="secondary">Loading wallet...</Text>
-      </div>
-    );
+    return <div className={s.loader}><span className={s.spin}>⏳</span> Loading wallet...</div>;
   }
 
-  const tabStyle = (tab: string) => ({
-    padding: '8px 16px',
-    background: activeTab === tab ? 'var(--color-bg-secondary)' : 'transparent',
-    border: activeTab === tab ? '1px solid var(--color-border)' : '1px solid transparent',
-    borderBottom: activeTab === tab ? '2px solid #6366f1' : '2px solid transparent',
-    borderRadius: '8px 8px 0 0',
-    color: activeTab === tab ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
-    cursor: 'pointer' as const,
-    fontSize: 13,
-    fontWeight: activeTab === tab ? 600 : 400,
-  });
+  // Trust score ring calculations
+  const trustCircumference = 2 * Math.PI * 20;
+  const trustOffset = trustCircumference * (1 - minerStats.trust_score);
+  const trustColor = minerStats.trust_score >= 0.9 ? '#34d399' : minerStats.trust_score >= 0.7 ? '#fbbf24' : '#f87171';
+  const tierLabel = minerStats.tier === 'validator_miner' ? 'Validator (F)' : minerStats.tier === 'core_miner' ? 'Core (G)' : 'Standard (H)';
+  const tierClass = minerStats.tier === 'validator_miner' ? s.tierF : minerStats.tier === 'core_miner' ? s.tierG : s.tierH;
 
   return (
-    <div className="page-container">
-      {/* Web3 External Wallet Connection */}
-      <Web3WalletConnect onWalletLinked={() => loadData()} />
+    <div className={s.page}>
 
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-4)', flexWrap: 'wrap', gap: 12 }}>
-        <div>
-          <Text variant="h1" color="primary" style={{ margin: 0 }}>💰 RGT Wallet</Text>
-          <Text variant="body-sm" color="secondary">
-            Manage your Resonant Genesis Tokens — deposit, withdraw, transfer, and track all transactions.
-          </Text>
+      {/* ── Header ── */}
+      <div className={s.hdr}>
+        <div className={s.hdrLeft}>
+          <h1>💰 RGT Wallet & Mining</h1>
+          <span className={s.badge}>Live</span>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <Button variant="primary" size="md" onClick={() => setShowDeposit(true)}>⬇️ Deposit</Button>
-          <Button variant="secondary" size="md" onClick={() => setShowWithdraw(true)}>⬆️ Withdraw</Button>
-          <Button variant="secondary" size="md" onClick={() => setShowTransfer(true)}>↔️ Transfer</Button>
-          <Button variant="secondary" size="sm" onClick={loadData}>🔄</Button>
+        <div className={s.hdrActions}>
+          <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => setShowDeposit(true)}>⬇ Deposit</button>
+          <button className={`${s.btn} ${s.btnGhost}`} onClick={() => setShowWithdraw(true)}>⬆ Withdraw</button>
+          <button className={`${s.btn} ${s.btnGhost}`} onClick={() => setShowTransfer(true)}>↔ Transfer</button>
+          <button className={s.btnIcon} onClick={loadData}>🔄</button>
         </div>
       </div>
 
-      {/* Action Message */}
+      {/* ── Toast ── */}
       {actionMsg && (
-        <div style={{
-          padding: '8px 16px', marginBottom: 16, borderRadius: 8,
-          background: actionMsg.includes('fail') || actionMsg.includes('Failed') ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)',
-          border: `1px solid ${actionMsg.includes('fail') || actionMsg.includes('Failed') ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`,
-        }}>
-          <Text variant="body-sm" color="primary">{actionMsg}</Text>
-          <button onClick={() => setActionMsg('')} style={{ float: 'right', background: 'none', border: 'none', color: 'var(--color-text-secondary)', cursor: 'pointer' }}>✕</button>
+        <div className={`${s.toast} ${actionMsg.includes('fail') || actionMsg.includes('Failed') ? s.toastErr : s.toastOk}`}>
+          {actionMsg}
+          <button className={s.toastClose} onClick={() => setActionMsg('')}>✕</button>
         </div>
       )}
 
-      {/* Balance Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
-        <Card variant="elevated" padding="md">
-          <Text variant="body-sm" color="secondary">Available Balance</Text>
-          <Text variant="h2" color="accent" style={{ fontFamily: 'var(--font-mono)', margin: '4px 0' }}>
-            {fmt(balance?.available || wallet?.token_balance || '0')} <span style={{ fontSize: 14, opacity: 0.7 }}>RGT</span>
-          </Text>
-          <Text variant="caption" color="muted">Ready to use</Text>
-        </Card>
-        <Card variant="elevated" padding="md">
-          <Text variant="body-sm" color="secondary">Pending</Text>
-          <Text variant="h2" color="primary" style={{ fontFamily: 'var(--font-mono)', margin: '4px 0' }}>
-            {fmt(balance?.pending || wallet?.pending_balance || '0')} <span style={{ fontSize: 14, opacity: 0.7 }}>RGT</span>
-          </Text>
-          <Text variant="caption" color="muted">Processing deposits/withdrawals</Text>
-        </Card>
-        <Card variant="elevated" padding="md">
-          <Text variant="body-sm" color="secondary">Locked</Text>
-          <Text variant="h2" color="primary" style={{ fontFamily: 'var(--font-mono)', margin: '4px 0' }}>
-            {fmt(balance?.locked || wallet?.locked_balance || '0')} <span style={{ fontSize: 14, opacity: 0.7 }}>RGT</span>
-          </Text>
-          <Text variant="caption" color="muted">In active marketplace listings</Text>
-        </Card>
-        <Card variant="elevated" padding="md">
-          <Text variant="body-sm" color="secondary">Total</Text>
-          <Text variant="h2" color="primary" style={{ fontFamily: 'var(--font-mono)', margin: '4px 0' }}>
-            {fmt(balance?.total || '0')} <span style={{ fontSize: 14, opacity: 0.7 }}>RGT</span>
-          </Text>
-          <Text variant="caption" color="muted">All balances combined</Text>
-        </Card>
+      {/* ── Balance Strip ── */}
+      <div className={s.balStrip}>
+        <div className={`${s.balCard} ${s.balCardPrimary}`}>
+          <div className={s.balLabel}>Available</div>
+          <div className={s.balVal}>{fmt(balance?.available || wallet?.token_balance || '0')}<span className={s.balUnit}>RGT</span></div>
+          <div className={s.balSub}>Ready to use</div>
+        </div>
+        <div className={s.balCard}>
+          <div className={s.balLabel}>Pending</div>
+          <div className={s.balVal}>{fmt(balance?.pending || wallet?.pending_balance || '0')}<span className={s.balUnit}>RGT</span></div>
+          <div className={s.balSub}>Processing</div>
+        </div>
+        <div className={s.balCard}>
+          <div className={s.balLabel}>Locked</div>
+          <div className={s.balVal}>{fmt(balance?.locked || wallet?.locked_balance || '0')}<span className={s.balUnit}>RGT</span></div>
+          <div className={s.balSub}>In listings</div>
+        </div>
+        <div className={s.balCard}>
+          <div className={s.balLabel}>Total</div>
+          <div className={s.balVal}>{fmt(balance?.total || '0')}<span className={s.balUnit}>RGT</span></div>
+          <div className={s.balSub}>All combined</div>
+        </div>
       </div>
 
-      {/* Token Stats */}
+      {/* ── Token Economy Bar ── */}
       {tokenStats && (
-        <Card variant="elevated" padding="md" style={{ marginBottom: 'var(--space-4)' }}>
-          <Text variant="h4" color="primary" style={{ marginBottom: 8 }}>RGT Token Economy</Text>
-          <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
-            <div>
-              <Text variant="caption" color="secondary">Token Price</Text>
-              <Text variant="body" color="accent" style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>${fmt(tokenStats.current_price_usd)}</Text>
-            </div>
-            <div>
-              <Text variant="caption" color="secondary">Market Cap</Text>
-              <Text variant="body" color="primary" style={{ fontFamily: 'var(--font-mono)' }}>${fmt(tokenStats.market_cap_usd)}</Text>
-            </div>
-            <div>
-              <Text variant="caption" color="secondary">Circulating</Text>
-              <Text variant="body" color="primary" style={{ fontFamily: 'var(--font-mono)' }}>{fmt(tokenStats.circulating_supply)}</Text>
-            </div>
-            <div>
-              <Text variant="caption" color="secondary">Total Supply</Text>
-              <Text variant="body" color="primary" style={{ fontFamily: 'var(--font-mono)' }}>{fmt(tokenStats.total_supply)}</Text>
-            </div>
+        <div className={s.tokenBar}>
+          <div className={`${s.tokenChip} ${s.tokenChipAccent}`}>
+            <div className={s.tokenChipLabel}>Token Price</div>
+            <div className={s.tokenChipVal}>${fmt(tokenStats.current_price_usd)}</div>
           </div>
-        </Card>
+          <div className={s.tokenChip}>
+            <div className={s.tokenChipLabel}>Market Cap</div>
+            <div className={s.tokenChipVal}>${fmt(tokenStats.market_cap_usd)}</div>
+          </div>
+          <div className={s.tokenChip}>
+            <div className={s.tokenChipLabel}>Circulating</div>
+            <div className={s.tokenChipVal}>{fmt(tokenStats.circulating_supply)}</div>
+          </div>
+          <div className={s.tokenChip}>
+            <div className={s.tokenChipLabel}>Total Supply</div>
+            <div className={s.tokenChipVal}>{fmt(tokenStats.total_supply)}</div>
+          </div>
+        </div>
       )}
 
-      {/* Web3 Wallet Connection Banner */}
-      <Card variant="elevated" padding="md" style={{ marginBottom: 'var(--space-4)', background: web3Address ? 'rgba(16, 185, 129, 0.05)' : 'rgba(99, 102, 241, 0.04)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: 24 }}>{web3Address ? '🟢' : '🔗'}</span>
-            {web3Address ? (
-              <div>
-                <Text variant="body-sm" color="accent" style={{ fontWeight: 600, fontFamily: 'var(--font-mono)' }}>
-                  {web3Address.slice(0, 6)}...{web3Address.slice(-4)}
-                </Text>
-                <Text variant="caption" color="muted">{getChainName(web3Chain)} · Connected</Text>
-              </div>
-            ) : (
-              <div>
-                <Text variant="body-sm" color="primary" style={{ fontWeight: 500 }}>External Wallet</Text>
-                <Text variant="caption" color="muted">Connect MetaMask or Web3 wallet for direct crypto operations</Text>
-              </div>
-            )}
-          </div>
+      {/* ── Web3 Compact Banner ── */}
+      <div className={s.web3Bar}>
+        <div className={s.web3Dot} style={{ background: web3Address ? '#34d399' : '#64748b' }} />
+        <div className={s.web3Info}>
           {web3Address ? (
-            <button onClick={disconnectWeb3} style={{
-              padding: '6px 14px', borderRadius: 6, border: '1px solid rgba(239,68,68,0.3)',
-              background: 'rgba(239,68,68,0.08)', color: '#ef4444', fontSize: 12, fontWeight: 500, cursor: 'pointer',
-            }}>Disconnect</button>
+            <>
+              <span className={s.web3Addr}>{web3Address.slice(0, 6)}...{web3Address.slice(-4)}</span>
+              <span className={s.web3Chain}>{getChainName(web3Chain)}</span>
+            </>
           ) : (
-            <button onClick={connectWeb3} disabled={web3Connecting} style={{
-              padding: '8px 20px', borderRadius: 8, border: 'none',
-              background: 'linear-gradient(135deg, #6366f1, #4f46e5)', color: 'white',
-              fontSize: 13, fontWeight: 600, cursor: web3Connecting ? 'not-allowed' : 'pointer',
-              opacity: web3Connecting ? 0.6 : 1, display: 'flex', alignItems: 'center', gap: 6,
-            }}>
-              {web3Connecting ? '⏳ Connecting...' : '🦊 Connect Wallet'}
-            </button>
+            'No external wallet connected'
           )}
         </div>
-      </Card>
+        {web3Address ? (
+          <button className={`${s.btn}`} style={{ fontSize: 10, padding: '4px 10px', background: 'rgba(248,113,113,.1)', border: '1px solid rgba(248,113,113,.2)', color: '#f87171' }} onClick={disconnectWeb3}>Disconnect</button>
+        ) : (
+          <button className={`${s.btn} ${s.btnPrimary}`} style={{ fontSize: 10, padding: '4px 10px' }} onClick={connectWeb3} disabled={web3Connecting}>
+            {web3Connecting ? '...' : '🦊 Connect'}
+          </button>
+        )}
+      </div>
 
-      {/* Wallet Info */}
+      {/* ── Wallet ID Bar ── */}
       {wallet && (
-        <Card variant="default" padding="sm" style={{ marginBottom: 'var(--space-4)', opacity: 0.8 }}>
-          <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Text variant="caption" color="muted">Wallet ID: <span style={{ fontFamily: 'var(--font-mono)' }}>{(wallet.id || "N/A").slice(0, 12)}...</span></Text>
-              <button onClick={copyWalletId} style={{
-                padding: '1px 6px', borderRadius: 4, border: '1px solid var(--color-border)',
-                background: 'transparent', color: copiedId ? '#10b981' : 'var(--color-text-secondary)',
-                fontSize: 10, cursor: 'pointer',
-              }}>{copiedId ? '✓ Copied' : '📋 Copy'}</button>
-            </div>
-            <Text variant="caption" color="muted">KYC: <span style={{
-              padding: '2px 6px', borderRadius: 4, fontSize: 11,
-              background: wallet.kyc_status === 'verified' ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)',
-              color: wallet.kyc_status === 'verified' ? '#10b981' : '#f59e0b',
-            }}>{wallet.kyc_status}</span></Text>
-            <Text variant="caption" color="muted">Verified: {wallet.is_verified ? '✅' : '❌'}</Text>
-          </div>
-        </Card>
+        <div className={s.walletIdBar}>
+          <span>ID: <span className={s.mono}>{(wallet.id || 'N/A').slice(0, 12)}...</span></span>
+          <button className={s.copyBtn} onClick={copyWalletId}>{copiedId ? '✓' : '📋'}</button>
+          <span>KYC: <span className={s.kycBadge} style={{
+            background: wallet.kyc_status === 'verified' ? 'rgba(52,211,153,.12)' : 'rgba(251,191,36,.12)',
+            color: wallet.kyc_status === 'verified' ? '#34d399' : '#fbbf24',
+          }}>{wallet.kyc_status}</span></span>
+          <span>{wallet.is_verified ? '✅' : '❌'} Verified</span>
+        </div>
       )}
 
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: 4, marginBottom: 0, borderBottom: '1px solid var(--color-border)' }}>
-        <button style={tabStyle('overview')} onClick={() => setActiveTab('overview')}>Overview</button>
-        <button style={tabStyle('transactions')} onClick={() => setActiveTab('transactions')}>Transactions ({transactions.length})</button>
-        <button style={tabStyle('funding')} onClick={() => setActiveTab('funding')}>Funding Sources ({fundingSources.length})</button>
-        <button style={tabStyle('withdrawals')} onClick={() => setActiveTab('withdrawals')}>Withdrawals ({withdrawals.length})</button>
-      </div>
+      {/* ── Two-Column: Miner Dashboard + Recent Transactions ── */}
+      <div className={s.mainGrid}>
 
-      {/* Tab Content */}
-      <div style={{ padding: 'var(--space-4) 0' }}>
-
-        {/* OVERVIEW TAB */}
-        {activeTab === 'overview' && (
-          <div>
-            <Text variant="h3" color="primary" style={{ marginBottom: 12 }}>Recent Transactions</Text>
-            {transactions.length === 0 ? (
-              <Card variant="default" padding="md" style={{ textAlign: 'center' }}>
-                <Text variant="body" color="secondary">No transactions yet. Make a deposit to get started.</Text>
-              </Card>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {transactions.slice(0, 10).map(tx => (
-                  <Card key={tx.id} variant="elevated" padding="sm">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <span style={{ fontSize: 20 }}>{txIcon(tx.tx_type)}</span>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Text variant="body-sm" color="primary" style={{ fontWeight: 600, textTransform: 'capitalize' }}>
-                            {tx.tx_type.replace(/_/g, ' ')}
-                          </Text>
-                          <Text variant="body" color={tx.tx_type === 'deposit' || tx.tx_type === 'reward' ? 'accent' : 'primary'}
-                            style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>
-                            {tx.tx_type === 'deposit' || tx.tx_type === 'reward' || tx.tx_type === 'sale' ? '+' : '-'}{fmt(tx.amount)} {tx.currency}
-                          </Text>
-                        </div>
-                        <div style={{ display: 'flex', gap: 12, marginTop: 2 }}>
-                          {tx.description && <Text variant="caption" color="muted">{tx.description}</Text>}
-                          <Text variant="caption" color="muted">{new Date(tx.created_at).toLocaleDateString()}</Text>
-                          <span style={{
-                            padding: '1px 6px', borderRadius: 4, fontSize: 10,
-                            background: `${statusColor(tx.status)}20`, color: statusColor(tx.status),
-                          }}>{tx.status}</span>
-                          {tx.fee !== '0' && tx.fee !== '0.00' && (
-                            <Text variant="caption" color="muted">Fee: {fmt(tx.fee)}</Text>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* TRANSACTIONS TAB */}
-        {activeTab === 'transactions' && (
-          <div>
-            <Text variant="h3" color="primary" style={{ marginBottom: 12 }}>All Transactions</Text>
-            {transactions.length === 0 ? (
-              <Card variant="default" padding="md" style={{ textAlign: 'center' }}>
-                <Text variant="body" color="secondary">No transactions found.</Text>
-              </Card>
-            ) : (
-              <Card variant="elevated" padding="none">
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead>
-                      <tr style={{ background: 'var(--color-bg-secondary)', borderBottom: '1px solid var(--color-border)' }}>
-                        <th style={{ padding: '8px 12px', textAlign: 'left', fontSize: 12, color: 'var(--color-text-secondary)' }}>Type</th>
-                        <th style={{ padding: '8px 12px', textAlign: 'right', fontSize: 12, color: 'var(--color-text-secondary)' }}>Amount</th>
-                        <th style={{ padding: '8px 12px', textAlign: 'right', fontSize: 12, color: 'var(--color-text-secondary)' }}>Fee</th>
-                        <th style={{ padding: '8px 12px', textAlign: 'right', fontSize: 12, color: 'var(--color-text-secondary)' }}>Net</th>
-                        <th style={{ padding: '8px 12px', textAlign: 'center', fontSize: 12, color: 'var(--color-text-secondary)' }}>Status</th>
-                        <th style={{ padding: '8px 12px', textAlign: 'left', fontSize: 12, color: 'var(--color-text-secondary)' }}>Date</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {transactions.map(tx => (
-                        <tr key={tx.id} style={{ borderBottom: '1px solid var(--color-border)' }}>
-                          <td style={{ padding: '8px 12px' }}>
-                            <span style={{ marginRight: 6 }}>{txIcon(tx.tx_type)}</span>
-                            <span style={{ fontSize: 13, textTransform: 'capitalize' }}>{tx.tx_type.replace(/_/g, ' ')}</span>
-                          </td>
-                          <td style={{ padding: '8px 12px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: 13 }}>
-                            {fmt(tx.amount)} {tx.currency}
-                          </td>
-                          <td style={{ padding: '8px 12px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: 13, opacity: 0.6 }}>
-                            {fmt(tx.fee)}
-                          </td>
-                          <td style={{ padding: '8px 12px', textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 600 }}>
-                            {fmt(tx.net_amount)}
-                          </td>
-                          <td style={{ padding: '8px 12px', textAlign: 'center' }}>
-                            <span style={{
-                              padding: '2px 8px', borderRadius: 4, fontSize: 11,
-                              background: `${statusColor(tx.status)}20`, color: statusColor(tx.status),
-                            }}>{tx.status}</span>
-                          </td>
-                          <td style={{ padding: '8px 12px', fontSize: 12, color: 'var(--color-text-secondary)' }}>
-                            {new Date(tx.created_at).toLocaleString()}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </Card>
-            )}
-          </div>
-        )}
-
-        {/* FUNDING SOURCES TAB */}
-        {activeTab === 'funding' && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <Text variant="h3" color="primary" style={{ margin: 0 }}>Funding Sources</Text>
-              <Button variant="primary" size="sm" onClick={() => setShowAddFunding(!showAddFunding)}>
-                {showAddFunding ? 'Cancel' : '+ Add Source'}
-              </Button>
+        {/* LEFT: Miner Dashboard */}
+        <div className={s.panel}>
+          <h3 className={s.panelTitle}>⛏️ Miner Dashboard <span className={`${s.tierBadge} ${tierClass}`}>{tierLabel}</span></h3>
+          <div className={s.minerGrid}>
+            <div className={s.minerStat}>
+              <div className={s.minerStatLabel}>RGT Earned</div>
+              <div className={s.minerStatVal} style={{ color: '#34d399' }}>{minerStats.rgt_earned}</div>
+              <div className={s.minerStatSub}>From training</div>
+            </div>
+            <div className={s.minerStat}>
+              <div className={s.minerStatLabel}>Tasks Done</div>
+              <div className={s.minerStatVal}>{minerStats.tasks_completed}</div>
+              <div className={s.minerStatSub}>Epoch {minerStats.current_epoch}</div>
+            </div>
+            <div className={s.minerStat}>
+              <div className={s.minerStatLabel}>Samples</div>
+              <div className={s.minerStatVal}>{minerStats.samples_processed.toLocaleString()}</div>
+              <div className={s.minerStatSub}>Processed</div>
+            </div>
+            <div className={s.minerStat}>
+              <div className={s.minerStatLabel}>Verify Rate</div>
+              <div className={s.minerStatVal}>{minerStats.verification_rate}%</div>
+              <div className={s.minerStatSub}>Pass rate</div>
             </div>
 
-            {showAddFunding && (
-              <Card variant="elevated" padding="md" style={{ marginBottom: 16 }}>
-                <Text variant="body-sm" color="primary" style={{ fontWeight: 600, marginBottom: 12 }}>Add New Funding Source</Text>
-                <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-                  <button onClick={() => setFundingType('crypto_wallet')} style={{
-                    padding: '6px 14px', borderRadius: 6, fontSize: 12, cursor: 'pointer',
-                    background: fundingType === 'crypto_wallet' ? 'rgba(99,102,241,0.15)' : 'transparent',
-                    border: `1px solid ${fundingType === 'crypto_wallet' ? '#6366f1' : 'var(--color-border)'}`,
-                    color: fundingType === 'crypto_wallet' ? '#6366f1' : 'var(--color-text-secondary)',
-                  }}>🔗 Crypto Wallet</button>
-                  <button onClick={() => setFundingType('card')} style={{
-                    padding: '6px 14px', borderRadius: 6, fontSize: 12, cursor: 'pointer',
-                    background: fundingType === 'card' ? 'rgba(99,102,241,0.15)' : 'transparent',
-                    border: `1px solid ${fundingType === 'card' ? '#6366f1' : 'var(--color-border)'}`,
-                    color: fundingType === 'card' ? '#6366f1' : 'var(--color-text-secondary)',
-                  }}>💳 Card (Stripe)</button>
+            {/* Trust Score Ring */}
+            <div className={s.trustRing}>
+              <div className={s.trustCircle}>
+                <svg viewBox="0 0 48 48">
+                  <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="4" />
+                  <circle cx="24" cy="24" r="20" fill="none" stroke={trustColor} strokeWidth="4" strokeLinecap="round"
+                    strokeDasharray={trustCircumference} strokeDashoffset={trustOffset}
+                    style={{ transition: 'stroke-dashoffset .6s ease', transform: 'rotate(-90deg)', transformOrigin: 'center' }} />
+                </svg>
+                <div className={s.trustNum}>{minerStats.trust_score.toFixed(2)}</div>
+              </div>
+              <div className={s.trustInfo}>
+                <div className={s.trustTitle}>Trust Score</div>
+                <div className={s.trustLabel}>Rank #{minerStats.your_rank} of {minerStats.total_miners} miners · {minerStats.status}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT: Recent Transactions */}
+        <div className={s.panel}>
+          <h3 className={s.panelTitle}>📋 Recent Transactions</h3>
+          {transactions.length === 0 ? (
+            <div className={s.empty}>No transactions yet. Deposit to get started.</div>
+          ) : (
+            <div className={s.txList}>
+              {transactions.slice(0, 8).map(tx => (
+                <div key={tx.id} className={s.txRow}>
+                  <div className={s.txDot}>{txIcon(tx.tx_type)}</div>
+                  <div className={s.txInfo}>
+                    <div className={s.txType}>{tx.tx_type.replace(/_/g, ' ')}</div>
+                    <div className={s.txMeta}>
+                      <span>{new Date(tx.created_at).toLocaleDateString()}</span>
+                      {tx.description && <span>{tx.description}</span>}
+                      <span className={s.txStatus} style={{ background: `${statusColor(tx.status)}18`, color: statusColor(tx.status) }}>{tx.status}</span>
+                    </div>
+                  </div>
+                  <div className={s.txAmt}>
+                    <div className={`${s.txAmtVal} ${tx.tx_type === 'deposit' || tx.tx_type === 'reward' || tx.tx_type === 'sale' ? s.txPlus : s.txMinus}`}>
+                      {tx.tx_type === 'deposit' || tx.tx_type === 'reward' || tx.tx_type === 'sale' ? '+' : '-'}{fmt(tx.amount)}
+                    </div>
+                  </div>
                 </div>
-                {fundingType === 'crypto_wallet' && (
-                  <>
-                    <label style={{ display: 'block', marginBottom: 4, fontSize: 12, color: 'var(--color-text-secondary)' }}>Blockchain</label>
-                    <select value={fundingChain} onChange={e => setFundingChain(e.target.value)} style={{
-                      width: '100%', padding: '8px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)',
-                      borderRadius: 6, color: 'var(--color-text-primary)', fontSize: 13, marginBottom: 12, boxSizing: 'border-box' as const,
-                    }}>
-                      <option value="ethereum">Ethereum</option>
-                      <option value="polygon">Polygon</option>
-                      <option value="arbitrum">Arbitrum</option>
-                      <option value="optimism">Optimism</option>
-                      <option value="base">Base</option>
-                      <option value="solana">Solana</option>
-                    </select>
-                    <label style={{ display: 'block', marginBottom: 4, fontSize: 12, color: 'var(--color-text-secondary)' }}>Wallet Address</label>
-                    <input type="text" value={fundingAddress} onChange={e => setFundingAddress(e.target.value)}
-                      placeholder="0x... or wallet address" style={{
-                        width: '100%', padding: '8px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)',
-                        borderRadius: 6, color: 'var(--color-text-primary)', fontSize: 13, marginBottom: 12, fontFamily: 'var(--font-mono)', boxSizing: 'border-box' as const,
-                      }} />
-                  </>
-                )}
-                <label style={{ display: 'block', marginBottom: 4, fontSize: 12, color: 'var(--color-text-secondary)' }}>Nickname (optional)</label>
-                <input type="text" value={fundingNickname} onChange={e => setFundingNickname(e.target.value)}
-                  placeholder="e.g. My MetaMask" style={{
-                    width: '100%', padding: '8px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)',
-                    borderRadius: 6, color: 'var(--color-text-primary)', fontSize: 13, marginBottom: 12, boxSizing: 'border-box' as const,
-                  }} />
-                <Button variant="primary" size="md" onClick={handleAddFunding} disabled={actionLoading}>
-                  {actionLoading ? 'Adding...' : 'Add Source'}
-                </Button>
-              </Card>
-            )}
-
-            {fundingSources.length === 0 && !showAddFunding ? (
-              <Card variant="default" padding="md" style={{ textAlign: 'center' }}>
-                <Text variant="body" color="secondary">No funding sources added yet. Click "Add Source" or connect a Web3 wallet above.</Text>
-              </Card>
-            ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 12 }}>
-                {fundingSources.map(src => (
-                  <Card key={src.id} variant="elevated" padding="md">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                      <Text variant="body" color="primary" style={{ fontWeight: 600, textTransform: 'capitalize' }}>
-                        {src.source_type === 'card' ? '💳' : '🔗'} {src.source_type.replace(/_/g, ' ')}
-                      </Text>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        {src.is_default && (
-                          <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 10, background: 'rgba(99,102,241,0.15)', color: '#6366f1' }}>Default</span>
-                        )}
-                        <button onClick={() => handleRemoveFunding(src.id)} title="Remove" style={{
-                          padding: '2px 6px', borderRadius: 4, border: '1px solid rgba(239,68,68,0.2)',
-                          background: 'transparent', color: '#ef4444', fontSize: 11, cursor: 'pointer', opacity: 0.7,
-                        }}>✕</button>
-                      </div>
-                    </div>
-                    {src.card_last_four && (
-                      <Text variant="body-sm" color="secondary">•••• {src.card_last_four} ({src.card_brand})</Text>
-                    )}
-                    {src.crypto_address && (
-                      <Text variant="caption" color="secondary" style={{ fontFamily: 'var(--font-mono)', wordBreak: 'break-all' }}>
-                        {src.crypto_address} ({src.crypto_chain})
-                      </Text>
-                    )}
-                    <div style={{ marginTop: 6 }}>
-                      <Text variant="caption" color={src.is_verified ? 'accent' : 'muted'}>
-                        {src.is_verified ? '✅ Verified' : '⏳ Unverified'}
-                      </Text>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* WITHDRAWALS TAB */}
-        {activeTab === 'withdrawals' && (
-          <div>
-            <Text variant="h3" color="primary" style={{ marginBottom: 12 }}>Withdrawal Requests</Text>
-            {withdrawals.length === 0 ? (
-              <Card variant="default" padding="md" style={{ textAlign: 'center' }}>
-                <Text variant="body" color="secondary">No withdrawal requests.</Text>
-              </Card>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {withdrawals.map(wd => (
-                  <Card key={wd.id} variant="elevated" padding="sm">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <div>
-                        <Text variant="body" color="primary" style={{ fontWeight: 600 }}>
-                          {fmt(wd.amount)} RGT → {wd.destination_type.replace(/_/g, ' ')}
-                        </Text>
-                        <Text variant="caption" color="muted">Fee: {fmt(wd.fee)} | Net: {fmt(wd.net_amount)}</Text>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span style={{
-                          padding: '2px 8px', borderRadius: 4, fontSize: 11,
-                          background: `${statusColor(wd.status)}20`, color: statusColor(wd.status),
-                        }}>{wd.status}</span>
-                        {wd.status === 'pending' && (
-                          <button onClick={() => cancelWithdrawal(wd.id)} style={{
-                            padding: '4px 8px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
-                            borderRadius: 4, color: '#ef4444', fontSize: 11, cursor: 'pointer',
-                          }}>Cancel</button>
-                        )}
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* ── Bottom Tabs ── */}
+      <div className={s.tabs}>
+        {(['overview', 'transactions', 'funding', 'withdrawals'] as const).map(tab => (
+          <button key={tab} className={`${s.tab} ${activeTab === tab ? s.tabActive : ''}`} onClick={() => setActiveTab(tab)}>
+            {tab === 'overview' ? 'Overview' : tab === 'transactions' ? 'Transactions' : tab === 'funding' ? 'Funding' : 'Withdrawals'}
+            {tab === 'transactions' && <span className={s.tabCount}>({transactions.length})</span>}
+            {tab === 'funding' && <span className={s.tabCount}>({fundingSources.length})</span>}
+            {tab === 'withdrawals' && <span className={s.tabCount}>({withdrawals.length})</span>}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Tab Content ── */}
+
+      {activeTab === 'overview' && (
+        <div className={s.panel}>
+          <h3 className={s.panelTitle}>Activity Summary</h3>
+          {transactions.length === 0 ? (
+            <div className={s.empty}>No activity yet.</div>
+          ) : (
+            <div className={s.txList}>
+              {transactions.slice(0, 10).map(tx => (
+                <div key={tx.id} className={s.txRow}>
+                  <div className={s.txDot}>{txIcon(tx.tx_type)}</div>
+                  <div className={s.txInfo}>
+                    <div className={s.txType}>{tx.tx_type.replace(/_/g, ' ')}</div>
+                    <div className={s.txMeta}>
+                      <span>{new Date(tx.created_at).toLocaleDateString()}</span>
+                      {tx.description && <span>{tx.description}</span>}
+                    </div>
+                  </div>
+                  <div className={s.txAmt}>
+                    <div className={`${s.txAmtVal} ${tx.tx_type === 'deposit' || tx.tx_type === 'reward' || tx.tx_type === 'sale' ? s.txPlus : s.txMinus}`}>
+                      {tx.tx_type === 'deposit' || tx.tx_type === 'reward' || tx.tx_type === 'sale' ? '+' : '-'}{fmt(tx.amount)} {tx.currency}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'transactions' && (
+        <div style={{ overflowX: 'auto' }}>
+          {transactions.length === 0 ? (
+            <div className={s.empty}>No transactions found.</div>
+          ) : (
+            <table className={s.detailTable}>
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th style={{ textAlign: 'right' }}>Amount</th>
+                  <th style={{ textAlign: 'right' }}>Fee</th>
+                  <th style={{ textAlign: 'right' }}>Net</th>
+                  <th style={{ textAlign: 'center' }}>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {transactions.map(tx => (
+                  <tr key={tx.id}>
+                    <td><span style={{ marginRight: 6 }}>{txIcon(tx.tx_type)}</span>{tx.tx_type.replace(/_/g, ' ')}</td>
+                    <td style={{ textAlign: 'right' }} className={s.mono}>{fmt(tx.amount)} {tx.currency}</td>
+                    <td style={{ textAlign: 'right' }} className={`${s.mono} ${s.dim}`}>{fmt(tx.fee)}</td>
+                    <td style={{ textAlign: 'right', fontWeight: 600 }} className={s.mono}>{fmt(tx.net_amount)}</td>
+                    <td style={{ textAlign: 'center' }}>
+                      <span className={s.txStatus} style={{ background: `${statusColor(tx.status)}18`, color: statusColor(tx.status) }}>{tx.status}</span>
+                    </td>
+                    <td className={s.dim}>{new Date(tx.created_at).toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'funding' && (
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+            <h3 className={s.panelTitle} style={{ margin: 0 }}>Funding Sources</h3>
+            <button className={`${s.btn} ${s.btnPrimary}`} onClick={() => setShowAddFunding(!showAddFunding)}>
+              {showAddFunding ? 'Cancel' : '+ Add'}
+            </button>
+          </div>
+
+          {showAddFunding && (
+            <div className={s.panel} style={{ marginBottom: 12 }}>
+              <div style={{ display: 'flex', gap: 6, marginBottom: 10 }}>
+                <button className={`${s.btn} ${fundingType === 'crypto_wallet' ? s.btnPrimary : s.btnGhost}`}
+                  onClick={() => setFundingType('crypto_wallet')}>🔗 Crypto</button>
+                <button className={`${s.btn} ${fundingType === 'card' ? s.btnPrimary : s.btnGhost}`}
+                  onClick={() => setFundingType('card')}>💳 Card</button>
+              </div>
+              {fundingType === 'crypto_wallet' && (
+                <>
+                  <label className={s.modalLabel}>Blockchain</label>
+                  <select className={s.modalSelect} value={fundingChain} onChange={e => setFundingChain(e.target.value)}>
+                    <option value="ethereum">Ethereum</option>
+                    <option value="polygon">Polygon</option>
+                    <option value="arbitrum">Arbitrum</option>
+                    <option value="optimism">Optimism</option>
+                    <option value="base">Base</option>
+                    <option value="solana">Solana</option>
+                  </select>
+                  <label className={s.modalLabel}>Wallet Address</label>
+                  <input className={s.modalInput} style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                    value={fundingAddress} onChange={e => setFundingAddress(e.target.value)} placeholder="0x..." />
+                </>
+              )}
+              <label className={s.modalLabel}>Nickname</label>
+              <input className={s.modalInput} value={fundingNickname} onChange={e => setFundingNickname(e.target.value)} placeholder="e.g. My MetaMask" />
+              <button className={`${s.btn} ${s.btnPrimary}`} onClick={handleAddFunding} disabled={actionLoading}>
+                {actionLoading ? 'Adding...' : 'Add Source'}
+              </button>
+            </div>
+          )}
+
+          {fundingSources.length === 0 && !showAddFunding ? (
+            <div className={s.empty}>No funding sources. Click "+ Add" or connect Web3 above.</div>
+          ) : (
+            <div>
+              {fundingSources.map(src => (
+                <div key={src.id} className={s.fundRow}>
+                  <div className={s.fundIcon}>{src.source_type === 'card' ? '💳' : '🔗'}</div>
+                  <div className={s.fundInfo}>
+                    <div className={s.fundName}>{src.source_type.replace(/_/g, ' ')}</div>
+                    {src.card_last_four && <div className={s.fundAddr}>•••• {src.card_last_four} ({src.card_brand})</div>}
+                    {src.crypto_address && <div className={s.fundAddr}>{src.crypto_address} ({src.crypto_chain})</div>}
+                  </div>
+                  <div className={s.fundActions}>
+                    {src.is_default && <span className={s.fundDefault}>Default</span>}
+                    <span style={{ fontSize: 10, color: src.is_verified ? '#34d399' : '#64748b' }}>
+                      {src.is_verified ? '✅' : '⏳'}
+                    </span>
+                    <button className={s.fundRemove} onClick={() => handleRemoveFunding(src.id)}>✕</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'withdrawals' && (
+        <div>
+          {withdrawals.length === 0 ? (
+            <div className={s.empty}>No withdrawal requests.</div>
+          ) : (
+            <div>
+              {withdrawals.map(wd => (
+                <div key={wd.id} className={s.txRow} style={{ padding: '10px 0' }}>
+                  <div className={s.txDot}>⬆️</div>
+                  <div className={s.txInfo}>
+                    <div className={s.txType}>{fmt(wd.amount)} RGT → {wd.destination_type.replace(/_/g, ' ')}</div>
+                    <div className={s.txMeta}>
+                      <span>Fee: {fmt(wd.fee)}</span>
+                      <span>Net: {fmt(wd.net_amount)}</span>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span className={s.txStatus} style={{ background: `${statusColor(wd.status)}18`, color: statusColor(wd.status) }}>{wd.status}</span>
+                    {wd.status === 'pending' && (
+                      <button className={`${s.btn}`} style={{ fontSize: 10, padding: '3px 8px', background: 'rgba(248,113,113,.1)', border: '1px solid rgba(248,113,113,.2)', color: '#f87171' }}
+                        onClick={() => cancelWithdrawal(wd.id)}>Cancel</button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ── DEPOSIT MODAL ── */}
       {showDeposit && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}
-          onClick={() => setShowDeposit(false)}>
-          <div style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)', borderRadius: 12, padding: 24, width: 400, maxWidth: '90vw' }}
-            onClick={e => e.stopPropagation()}>
-            <Text variant="h3" color="primary" style={{ marginBottom: 16 }}>⬇️ Deposit RGT</Text>
-            <label style={{ display: 'block', marginBottom: 4, fontSize: 12, color: 'var(--color-text-secondary)' }}>Amount (USD)</label>
-            <input type="number" min="1" step="0.01" value={depositAmount} onChange={e => setDepositAmount(e.target.value)}
-              placeholder="10.00" style={{
-                width: '100%', padding: '10px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)',
-                borderRadius: 6, color: 'var(--color-text-primary)', fontSize: 16, marginBottom: 16, boxSizing: 'border-box',
-              }} />
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <Button variant="secondary" size="md" onClick={() => setShowDeposit(false)}>Cancel</Button>
-              <Button variant="primary" size="md" onClick={handleDeposit} disabled={actionLoading}>
+        <div className={s.overlay} onClick={() => setShowDeposit(false)}>
+          <div className={s.modal} onClick={e => e.stopPropagation()}>
+            <h3 className={s.modalTitle}>⬇️ Deposit RGT</h3>
+            <label className={s.modalLabel}>Amount (USD)</label>
+            <input type="number" min="1" step="0.01" className={s.modalInput}
+              value={depositAmount} onChange={e => setDepositAmount(e.target.value)} placeholder="10.00" />
+            <div className={s.modalActions}>
+              <button className={`${s.btn} ${s.btnGhost}`} onClick={() => setShowDeposit(false)}>Cancel</button>
+              <button className={`${s.btn} ${s.btnPrimary}`} onClick={handleDeposit} disabled={actionLoading}>
                 {actionLoading ? 'Processing...' : 'Deposit'}
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -836,40 +795,29 @@ export default function WalletPage() {
 
       {/* ── WITHDRAW MODAL ── */}
       {showWithdraw && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}
-          onClick={() => setShowWithdraw(false)}>
-          <div style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)', borderRadius: 12, padding: 24, width: 400, maxWidth: '90vw' }}
-            onClick={e => e.stopPropagation()}>
-            <Text variant="h3" color="primary" style={{ marginBottom: 16 }}>⬆️ Withdraw RGT</Text>
-            <label style={{ display: 'block', marginBottom: 4, fontSize: 12, color: 'var(--color-text-secondary)' }}>Amount (RGT)</label>
-            <input type="number" min="1" step="0.01" value={withdrawAmount} onChange={e => setWithdrawAmount(e.target.value)}
-              placeholder="100.00" style={{
-                width: '100%', padding: '10px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)',
-                borderRadius: 6, color: 'var(--color-text-primary)', fontSize: 16, marginBottom: 12, boxSizing: 'border-box',
-              }} />
-            <label style={{ display: 'block', marginBottom: 4, fontSize: 12, color: 'var(--color-text-secondary)' }}>Destination</label>
-            <select value={withdrawDest} onChange={e => setWithdrawDest(e.target.value)} style={{
-              width: '100%', padding: '10px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)',
-              borderRadius: 6, color: 'var(--color-text-primary)', fontSize: 14, marginBottom: 12, boxSizing: 'border-box',
-            }}>
+        <div className={s.overlay} onClick={() => setShowWithdraw(false)}>
+          <div className={s.modal} onClick={e => e.stopPropagation()}>
+            <h3 className={s.modalTitle}>⬆️ Withdraw RGT</h3>
+            <label className={s.modalLabel}>Amount (RGT)</label>
+            <input type="number" min="1" step="0.01" className={s.modalInput}
+              value={withdrawAmount} onChange={e => setWithdrawAmount(e.target.value)} placeholder="100.00" />
+            <label className={s.modalLabel}>Destination</label>
+            <select className={s.modalSelect} value={withdrawDest} onChange={e => setWithdrawDest(e.target.value)}>
               <option value="crypto_wallet">Crypto Wallet</option>
               <option value="bank">Bank Account</option>
             </select>
             {withdrawDest === 'crypto_wallet' && (
               <>
-                <label style={{ display: 'block', marginBottom: 4, fontSize: 12, color: 'var(--color-text-secondary)' }}>Wallet Address</label>
-                <input type="text" value={withdrawAddr} onChange={e => setWithdrawAddr(e.target.value)}
-                  placeholder="0x..." style={{
-                    width: '100%', padding: '10px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)',
-                    borderRadius: 6, color: 'var(--color-text-primary)', fontSize: 14, marginBottom: 16, fontFamily: 'var(--font-mono)', boxSizing: 'border-box',
-                  }} />
+                <label className={s.modalLabel}>Wallet Address</label>
+                <input type="text" className={s.modalInput} style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                  value={withdrawAddr} onChange={e => setWithdrawAddr(e.target.value)} placeholder="0x..." />
               </>
             )}
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <Button variant="secondary" size="md" onClick={() => setShowWithdraw(false)}>Cancel</Button>
-              <Button variant="primary" size="md" onClick={handleWithdraw} disabled={actionLoading}>
+            <div className={s.modalActions}>
+              <button className={`${s.btn} ${s.btnGhost}`} onClick={() => setShowWithdraw(false)}>Cancel</button>
+              <button className={`${s.btn} ${s.btnPrimary}`} onClick={handleWithdraw} disabled={actionLoading}>
                 {actionLoading ? 'Processing...' : 'Withdraw'}
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -877,45 +825,27 @@ export default function WalletPage() {
 
       {/* ── TRANSFER MODAL ── */}
       {showTransfer && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}
-          onClick={() => setShowTransfer(false)}>
-          <div style={{ background: 'var(--color-bg-primary)', border: '1px solid var(--color-border)', borderRadius: 12, padding: 24, width: 400, maxWidth: '90vw' }}
-            onClick={e => e.stopPropagation()}>
-            <Text variant="h3" color="primary" style={{ marginBottom: 16 }}>↔️ Transfer RGT</Text>
-            <label style={{ display: 'block', marginBottom: 4, fontSize: 12, color: 'var(--color-text-secondary)' }}>Recipient User ID</label>
-            <input type="text" value={transferTo} onChange={e => setTransferTo(e.target.value)}
-              placeholder="user-uuid..." style={{
-                width: '100%', padding: '10px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)',
-                borderRadius: 6, color: 'var(--color-text-primary)', fontSize: 14, marginBottom: 12, fontFamily: 'var(--font-mono)', boxSizing: 'border-box',
-              }} />
-            <label style={{ display: 'block', marginBottom: 4, fontSize: 12, color: 'var(--color-text-secondary)' }}>Amount (RGT)</label>
-            <input type="number" min="1" step="0.01" value={transferAmount} onChange={e => setTransferAmount(e.target.value)}
-              placeholder="50.00" style={{
-                width: '100%', padding: '10px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)',
-                borderRadius: 6, color: 'var(--color-text-primary)', fontSize: 16, marginBottom: 12, boxSizing: 'border-box',
-              }} />
-            <label style={{ display: 'block', marginBottom: 4, fontSize: 12, color: 'var(--color-text-secondary)' }}>Description (optional)</label>
-            <input type="text" value={transferDesc} onChange={e => setTransferDesc(e.target.value)}
-              placeholder="Payment for..." style={{
-                width: '100%', padding: '10px', background: 'var(--color-bg-secondary)', border: '1px solid var(--color-border)',
-                borderRadius: 6, color: 'var(--color-text-primary)', fontSize: 14, marginBottom: 16, boxSizing: 'border-box',
-              }} />
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <Button variant="secondary" size="md" onClick={() => setShowTransfer(false)}>Cancel</Button>
-              <Button variant="primary" size="md" onClick={handleTransfer} disabled={actionLoading}>
+        <div className={s.overlay} onClick={() => setShowTransfer(false)}>
+          <div className={s.modal} onClick={e => e.stopPropagation()}>
+            <h3 className={s.modalTitle}>↔️ Transfer RGT</h3>
+            <label className={s.modalLabel}>Recipient User ID</label>
+            <input type="text" className={s.modalInput} style={{ fontFamily: "'JetBrains Mono', monospace" }}
+              value={transferTo} onChange={e => setTransferTo(e.target.value)} placeholder="user-uuid..." />
+            <label className={s.modalLabel}>Amount (RGT)</label>
+            <input type="number" min="1" step="0.01" className={s.modalInput}
+              value={transferAmount} onChange={e => setTransferAmount(e.target.value)} placeholder="50.00" />
+            <label className={s.modalLabel}>Description</label>
+            <input type="text" className={s.modalInput}
+              value={transferDesc} onChange={e => setTransferDesc(e.target.value)} placeholder="Payment for..." />
+            <div className={s.modalActions}>
+              <button className={`${s.btn} ${s.btnGhost}`} onClick={() => setShowTransfer(false)}>Cancel</button>
+              <button className={`${s.btn} ${s.btnPrimary}`} onClick={handleTransfer} disabled={actionLoading}>
                 {actionLoading ? 'Processing...' : 'Send'}
-              </Button>
+              </button>
             </div>
           </div>
         </div>
       )}
-
-      {/* Data Source Footer */}
-      <Card variant="default" padding="sm" style={{ marginTop: 'var(--space-4)', opacity: 0.6 }}>
-        <Text variant="caption" color="muted" style={{ textAlign: 'center', display: 'block' }}>
-          All data from live crypto_service endpoints: /api/v1/crypto/wallet, /balance, /transactions, /funding-sources, /token/stats, /withdrawals
-        </Text>
-      </Card>
     </div>
   );
 }
