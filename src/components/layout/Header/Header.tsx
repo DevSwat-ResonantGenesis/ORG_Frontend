@@ -546,6 +546,18 @@ export const Header: React.FC<HeaderProps> = ({
                     </div>
                     
                     <div className={styles.accountMenuDivider} />
+
+                    {/* Wallet */}
+                    <button className={styles.accountMenuItem} onClick={() => { navigate('/wallet'); setShowAccountMenu(false); }}>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <rect x="2" y="4" width="12" height="9" rx="1.5" />
+                        <path d="M2 7H14" />
+                        <circle cx="11" cy="10" r="1" fill="currentColor" />
+                      </svg>
+                      Wallet
+                    </button>
+
+                    <div className={styles.accountMenuDivider} />
                     
                     {/* Superuser/Platform Owner Tools */}
                     {(sessionData?.is_superuser || sessionData?.role === 'platform_owner') && (

@@ -316,6 +316,21 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                 </button>
 
                 <button
+                  className={`${styles.usmItem} ${location.pathname === '/wallet' ? styles.usmActive : ''}`}
+                  onClick={() => { navigate('/wallet'); onClose(); }}
+                >
+                  <span className={styles.usmIcon}>
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <rect x="2" y="4" width="12" height="9" rx="1.5" />
+                      <path d="M2 7H14" />
+                      <circle cx="11" cy="10" r="1" fill="currentColor" />
+                    </svg>
+                  </span>
+                  <span className={styles.usmLabel}>Wallet</span>
+                  {location.pathname === '/wallet' && <span className={styles.usmActiveIndicator} />}
+                </button>
+
+                <button
                   className={`${styles.usmItem} ${styles.usmDanger}`}
                   onClick={handleLogout}
                 >

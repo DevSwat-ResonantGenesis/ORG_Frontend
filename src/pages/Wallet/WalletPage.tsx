@@ -136,30 +136,31 @@ export default function WalletPage() {
   const [fundingChain, setFundingChain] = useState('ethereum');
   const [fundingNickname, setFundingNickname] = useState('');
 
-  // Miner dashboard stats (simulated until training endpoints are live)
-  const [minerStats] = useState<MinerStats>({
-    trust_score: 0.94,
-    rgt_earned: '1,247.83',
-    tasks_completed: 47,
-    samples_processed: 12450,
-    tier: 'validator_miner',
-    verification_rate: 98.2,
-    status: 'active',
+  // Miner dashboard stats — fetched from /crypto/miner/stats
+  const [minerStats, setMinerStats] = useState<MinerStats>({
+    trust_score: 0,
+    rgt_earned: '0',
+    tasks_completed: 0,
+    samples_processed: 0,
+    tier: 'miner',
+    verification_rate: 0,
+    status: 'idle',
     current_epoch: 0,
-    total_miners: 100,
-    your_rank: 3,
+    total_miners: 0,
+    your_rank: 0,
   });
 
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [walletRes, balanceRes, txRes, fundingRes, statsRes, wdRes] = await Promise.allSettled([
+      const [walletRes, balanceRes, txRes, fundingRes, statsRes, wdRes, minerRes] = await Promise.allSettled([
         fastapiClient.get('/crypto/wallet'),
         fastapiClient.get('/crypto/wallet/balance'),
         fastapiClient.get('/crypto/transactions', { params: { limit: 50 } }),
         fastapiClient.get('/crypto/funding-sources'),
         fastapiClient.get('/crypto/token/stats'),
         fastapiClient.get('/crypto/withdrawals'),
+        fastapiClient.get('/crypto/miner/stats'),
       ]);
 
       if (walletRes.status === 'fulfilled') {
@@ -182,6 +183,7 @@ export default function WalletPage() {
       if (fundingRes.status === 'fulfilled') setFundingSources(Array.isArray(fundingRes.value.data) ? fundingRes.value.data : []);
       if (statsRes.status === 'fulfilled') setTokenStats(statsRes.value.data);
       if (wdRes.status === 'fulfilled') setWithdrawals(Array.isArray(wdRes.value.data) ? wdRes.value.data : []);
+      if (minerRes.status === 'fulfilled') setMinerStats(minerRes.value.data);
     } catch (e) {
       console.error('Wallet load error:', e);
     }
