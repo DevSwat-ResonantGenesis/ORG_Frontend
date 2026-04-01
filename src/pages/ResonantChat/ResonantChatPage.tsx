@@ -2503,6 +2503,20 @@ const ResonantChatPage: React.FC = () => {
         }
       }
 
+      // Extract present_options from regular skill toolResults (e.g., Agent Architect)
+      if (resonantResponse.toolResults && resonantResponse.toolResults.length > 0) {
+        const presentOptionsResult = resonantResponse.toolResults.find(
+          (tr: any) => tr.tool_name === 'present_options' && tr.success && tr.result
+        );
+        if (presentOptionsResult?.result?._type === 'present_options' && presentOptionsResult.result?.options) {
+          setPresentedOptions({
+            title: presentOptionsResult.result.title || 'Options',
+            options: presentOptionsResult.result.options,
+            allow_custom: presentOptionsResult.result.allow_custom,
+          });
+        }
+      }
+
       // Save chatId from response if provided (backend creates chat if not provided)
       if (resonantResponse.chatId && !currentConversationId) {
         console.log('💬 Saving new chatId:', resonantResponse.chatId);
