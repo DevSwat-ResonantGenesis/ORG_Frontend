@@ -534,7 +534,7 @@ export default function WalletPage() {
           <div className={s.minerGrid}>
             <div className={s.minerStat}>
               <div className={s.minerStatLabel}>RGT Earned</div>
-              <div className={s.minerStatVal} style={{ color: '#34d399' }}>{minerStats.rgt_earned}</div>
+              <div className={s.minerStatVal} style={{ color: '#34d399' }}>{fmt(minerStats.rgt_earned)}</div>
               <div className={s.minerStatSub}>From training</div>
             </div>
             <div className={s.minerStat}>
