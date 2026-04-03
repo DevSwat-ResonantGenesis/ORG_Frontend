@@ -136,6 +136,11 @@ export default function WalletPage() {
   const [fundingChain, setFundingChain] = useState('ethereum');
   const [fundingNickname, setFundingNickname] = useState('');
 
+  // Blockchain identity — fetched from /auth/me
+  const [cryptoHash, setCryptoHash] = useState<string>('');
+  const [userHash, setUserHash] = useState<string>('');
+  const [copiedHash, setCopiedHash] = useState(false);
+
   // Miner dashboard stats — fetched from /crypto/miner/stats
   const [minerStats, setMinerStats] = useState<MinerStats>({
     trust_score: 0,
@@ -153,7 +158,7 @@ export default function WalletPage() {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [walletRes, balanceRes, txRes, fundingRes, statsRes, wdRes, minerRes] = await Promise.allSettled([
+      const [walletRes, balanceRes, txRes, fundingRes, statsRes, wdRes, minerRes, meRes] = await Promise.allSettled([
         fastapiClient.get('/crypto/wallet'),
         fastapiClient.get('/crypto/wallet/balance'),
         fastapiClient.get('/crypto/transactions', { params: { limit: 50 } }),
@@ -161,6 +166,7 @@ export default function WalletPage() {
         fastapiClient.get('/crypto/token/stats'),
         fastapiClient.get('/crypto/withdrawals'),
         fastapiClient.get('/crypto/miner/stats'),
+        fastapiClient.get('/auth/me'),
       ]);
 
       if (walletRes.status === 'fulfilled') {
@@ -184,6 +190,10 @@ export default function WalletPage() {
       if (statsRes.status === 'fulfilled') setTokenStats(statsRes.value.data);
       if (wdRes.status === 'fulfilled') setWithdrawals(Array.isArray(wdRes.value.data) ? wdRes.value.data : []);
       if (minerRes.status === 'fulfilled') setMinerStats(minerRes.value.data);
+      if (meRes.status === 'fulfilled') {
+        setCryptoHash(meRes.value.data.crypto_hash || '');
+        setUserHash(meRes.value.data.user_hash || '');
+      }
     } catch (e) {
       console.error('Wallet load error:', e);
     }
@@ -573,6 +583,33 @@ export default function WalletPage() {
         </div>
 
         {/* RIGHT: Recent Transactions */}
+        <div className={s.panel}>
+          <h3 className={s.panelTitle}>⛓️ ResonantGenesis Blockchain Identity</h3>
+          {cryptoHash ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div>
+                <div style={{ fontSize: 11, color: '#8888a0', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>Blockchain Hash (SHA-256)</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.06)', borderRadius: 8, padding: '10px 14px' }}>
+                  <code style={{ fontSize: 12, color: '#a29bfe', wordBreak: 'break-all', flex: 1, fontFamily: 'monospace' }}>0x{cryptoHash}</code>
+                  <button onClick={() => { navigator.clipboard.writeText('0x' + cryptoHash); setCopiedHash(true); setTimeout(() => setCopiedHash(false), 2000); }}
+                    style={{ background: 'rgba(108,92,231,.15)', border: '1px solid rgba(108,92,231,.3)', borderRadius: 6, padding: '4px 10px', color: '#a29bfe', cursor: 'pointer', fontSize: 11, whiteSpace: 'nowrap' }}>
+                    {copiedHash ? '✓ Copied' : 'Copy'}
+                  </button>
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: 11, color: '#8888a0', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>Hash Sphere Identity</div>
+                <code style={{ fontSize: 11, color: '#6b7280', wordBreak: 'break-all', fontFamily: 'monospace' }}>{userHash.slice(0, 16)}...{userHash.slice(-8)}</code>
+              </div>
+              <div style={{ fontSize: 11, color: '#4ade80', background: 'rgba(74,222,128,.08)', border: '1px solid rgba(74,222,128,.15)', borderRadius: 6, padding: '6px 10px', display: 'inline-flex', alignItems: 'center', gap: 6, width: 'fit-content' }}>
+                <span>●</span> Anchored on ResonantGenesis Blockchain
+              </div>
+            </div>
+          ) : (
+            <div className={s.empty}>Blockchain identity will be generated on your next login.</div>
+          )}
+        </div>
+
         <div className={s.panel}>
           <h3 className={s.panelTitle}>📋 Recent Transactions</h3>
           {transactions.length === 0 ? (
