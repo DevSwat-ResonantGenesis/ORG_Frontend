@@ -500,17 +500,18 @@ export default function WalletPage() {
         </div>
       )}
 
-      {/* ── Web3 Compact Banner ── */}
+      {/* ── External Web3 Wallet (MetaMask / Brave) ── */}
       <div className={s.web3Bar}>
         <div className={s.web3Dot} style={{ background: web3Address ? '#34d399' : '#64748b' }} />
         <div className={s.web3Info}>
           {web3Address ? (
             <>
+              <span style={{ color: '#6b7280', fontSize: 10, marginRight: 4 }}>External:</span>
               <span className={s.web3Addr}>{web3Address.slice(0, 6)}...{web3Address.slice(-4)}</span>
               <span className={s.web3Chain}>{getChainName(web3Chain)}</span>
             </>
           ) : (
-            'No external wallet connected'
+            'No external Web3 wallet (MetaMask/Brave)'
           )}
         </div>
         {web3Address ? (
