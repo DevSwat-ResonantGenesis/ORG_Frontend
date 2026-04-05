@@ -50,14 +50,30 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
     }
   }, [selectedAgent?.id]);
 
-  // Load session steps when session changes
+  // Load session steps when session changes + auto-poll when running/waiting
   useEffect(() => {
     if (selectedSession?.id) {
       loadSessionSteps(selectedSession.id);
     } else {
       setSessionSteps([]);
     }
-  }, [selectedSession?.id]);
+
+    // Auto-poll every 2s while session is active
+    const isActive = selectedSession?.status === 'running' || selectedSession?.status === 'waiting_approval' || selectedSession?.status === 'initializing';
+    if (!isActive || !selectedSession?.id) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const fresh = await agentEngine.getSession(selectedSession.id);
+        setSelectedSession(fresh);
+        setSessions(prev => prev.map(s => s.id === fresh.id ? fresh : s));
+        const steps = await agentEngine.getSessionSteps(selectedSession.id);
+        setSessionSteps(steps);
+      } catch { /* ignore poll errors */ }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [selectedSession?.id, selectedSession?.status]);
 
   const loadSessions = async (agentId: string) => {
     setLoading(true);
