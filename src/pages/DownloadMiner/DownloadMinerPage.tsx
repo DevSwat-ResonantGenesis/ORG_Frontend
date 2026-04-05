@@ -9,9 +9,9 @@ const SETUP_STEPS = [
   { cmd: 'git clone https://github.com/DevSwat-ResonantGenesis/RG_miner_app.git', note: 'Clone the repo' },
   { cmd: 'cd RG_miner_app', note: 'Enter directory' },
   { cmd: 'python3 -m venv venv', note: 'Create virtual environment' },
-  { cmd: 'source venv/bin/activate', note: 'Activate venv (Linux/Mac)' },
+  { cmd: 'source venv/bin/activate', note: 'Activate venv' },
   { cmd: 'pip install -r requirements.txt', note: 'Install dependencies' },
-  { cmd: 'python server.py', note: 'Start the miner' },
+  { cmd: 'python server.py', note: 'Start the miner (open localhost:3000)' },
 ];
 
 const FEATURES = [
