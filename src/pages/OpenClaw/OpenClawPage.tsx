@@ -24,6 +24,176 @@ const FEATURES = [
   { title: 'Custom Skill Import', desc: 'Export skills from your OpenClaw agent back to the platform. Other users and agents can discover and use your custom skills. Skills execute on your hardware — you control the compute.' },
 ];
 
+const TOOL_CATALOG = [
+  { category: 'Search & Web', count: 11, tools: [
+    { name: 'web_search', desc: 'Search the web for current information, news, articles, documentation.' },
+    { name: 'fetch_url', desc: 'Fetch and read content from any URL.' },
+    { name: 'read_webpage', desc: 'Read a webpage and extract clean structured content.' },
+    { name: 'read_many_pages', desc: 'Read multiple web pages in parallel (max 5).' },
+    { name: 'reddit_search', desc: 'Search Reddit for discussions and recommendations.' },
+    { name: 'image_search', desc: 'Search for images on the web.' },
+    { name: 'news_search', desc: 'Search latest news articles.' },
+    { name: 'places_search', desc: 'Search for businesses on Google Maps.' },
+    { name: 'youtube_search', desc: 'Search YouTube for videos.' },
+    { name: 'deep_research', desc: 'Deep multi-source research via Perplexity AI.' },
+    { name: 'wikipedia', desc: 'Search and read Wikipedia articles.' },
+  ]},
+  { category: 'Memory & Hash Sphere', count: 9, tools: [
+    { name: 'memory_read', desc: 'Search user\'s long-term memory.' },
+    { name: 'memory_write', desc: 'Save information to long-term memory.' },
+    { name: 'memory_search', desc: 'Deep keyword + semantic search through memories.' },
+    { name: 'memory_stats', desc: 'Get memory usage stats.' },
+    { name: 'hash_sphere_search', desc: 'Search Hash Sphere anchors (blockchain-verified memories).' },
+    { name: 'hash_sphere_anchor', desc: 'Create a new blockchain-verified memory point.' },
+    { name: 'hash_sphere_list_anchors', desc: 'List all user\'s Hash Sphere anchors.' },
+    { name: 'hash_sphere_hash', desc: 'Generate a Hash Sphere hash for content.' },
+    { name: 'hash_sphere_resonance', desc: 'Check resonance between two content pieces.' },
+  ]},
+  { category: 'Code Visualizer (SAST)', count: 8, tools: [
+    { name: 'code_visualizer_scan', desc: 'AST-scan project: functions, classes, endpoints, imports, pipelines, dead code.' },
+    { name: 'code_visualizer_functions', desc: 'List all functions and API endpoints.' },
+    { name: 'code_visualizer_trace', desc: 'Trace dependency flow from any node.' },
+    { name: 'code_visualizer_governance', desc: 'Architecture governance: reachability, drift, health score.' },
+    { name: 'code_visualizer_graph', desc: 'Get full dependency graph.' },
+    { name: 'code_visualizer_pipeline', desc: 'Get auto-detected pipeline flow.' },
+    { name: 'code_visualizer_filter', desc: 'Filter graph by file path, node type, or keyword.' },
+    { name: 'code_visualizer_by_type', desc: 'Get all nodes of a type (function, class, endpoint, service, etc.).' },
+  ]},
+  { category: 'Agents OS', count: 24, tools: [
+    { name: 'agents_list', desc: 'List user\'s AI agents.' },
+    { name: 'agents_create', desc: 'Create a new AI agent.' },
+    { name: 'agents_start', desc: 'Start/run an agent.' },
+    { name: 'agents_stop', desc: 'Stop a running agent.' },
+    { name: 'agents_status', desc: 'Get agent config and status.' },
+    { name: 'agents_delete', desc: 'Delete an agent.' },
+    { name: 'agents_update', desc: 'Update agent config — name, goal, model, tools, etc.' },
+    { name: 'agents_sessions', desc: 'List sessions/runs for an agent.' },
+    { name: 'agents_session_steps', desc: 'Get execution steps for a session.' },
+    { name: 'agents_session_trace', desc: 'Full execution trace — steps, waterfall, cost, safety flags.' },
+    { name: 'agents_metrics', desc: 'Get agent run metrics (sessions, tokens, success rate).' },
+    { name: 'agents_session_cancel', desc: 'Cancel a running session.' },
+    { name: 'workspace_snapshot', desc: 'Full overview of workspace.' },
+    { name: 'run_agent', desc: 'Directly run an agent with a goal.' },
+    { name: 'schedule_agent', desc: 'Set recurring schedule for an agent.' },
+    { name: 'present_options', desc: 'Present interactive options to the user.' },
+    { name: 'architect_plan', desc: 'Analyze a request and produce a JSON blueprint for production-ready agents.' },
+    { name: 'architect_create_agent', desc: 'Create a fully-configured agent from a blueprint.' },
+    { name: 'architect_assign_goal', desc: 'Assign a goal to an agent.' },
+    { name: 'architect_create_schedule', desc: 'Create a recurring schedule — cron or interval.' },
+    { name: 'architect_create_webhook', desc: 'Create a webhook trigger for an agent.' },
+    { name: 'architect_set_autonomy', desc: 'Set autonomy mode (governed, supervised, unbounded).' },
+    { name: 'architect_list_available_tools', desc: 'List all tools available to assign to agents.' },
+    { name: 'architect_list_providers', desc: 'List available LLM providers and models.' },
+  ]},
+  { category: 'Media Generation', count: 3, tools: [
+    { name: 'generate_image', desc: 'Generate an AI image from text (DALL-E).' },
+    { name: 'generate_audio', desc: 'Generate speech from text (TTS).' },
+    { name: 'generate_music', desc: 'Generate music from text description.' },
+  ]},
+  { category: 'Integrations', count: 9, tools: [
+    { name: 'gmail_send', desc: 'Send email via Gmail.' },
+    { name: 'gmail_read', desc: 'Read recent Gmail inbox.' },
+    { name: 'slack_send', desc: 'Send Slack message.' },
+    { name: 'slack_read', desc: 'Read Slack channel messages.' },
+    { name: 'google_calendar', desc: 'Google Calendar: list/create events, check availability.' },
+    { name: 'google_drive', desc: 'Google Drive: list/search/read/create files.' },
+    { name: 'figma', desc: 'Figma: list projects, get file, inspect components.' },
+    { name: 'sigma', desc: 'Sigma Computing dashboards and analytics.' },
+    { name: 'send_email', desc: 'Send email via SendGrid with HTML support.' },
+  ]},
+  { category: 'GitHub', count: 9, tools: [
+    { name: 'github_create_repo', desc: 'Create GitHub repository.' },
+    { name: 'github_list_repos', desc: 'List GitHub repositories.' },
+    { name: 'github_list_files', desc: 'List files in a GitHub repo.' },
+    { name: 'github_download_file', desc: 'Download file from GitHub repo.' },
+    { name: 'github_upload_file', desc: 'Upload file to GitHub repo.' },
+    { name: 'github_pull_request', desc: 'Create or list pull requests.' },
+    { name: 'github_issue', desc: 'Create or list issues.' },
+    { name: 'github_commit', desc: 'Get commits in a repository.' },
+    { name: 'github_comment', desc: 'Comment on a GitHub issue or PR.' },
+  ]},
+  { category: 'Git Operations', count: 5, tools: [
+    { name: 'git_clone', desc: 'Clone a Git repository.' },
+    { name: 'git_branch', desc: 'Create, list, or switch Git branches.' },
+    { name: 'git_merge', desc: 'Merge a branch into current branch.' },
+    { name: 'git_push', desc: 'Push commits to remote.' },
+    { name: 'git_pull', desc: 'Pull changes from remote.' },
+  ]},
+  { category: 'State Physics Engine', count: 21, tools: [
+    { name: 'sp_state', desc: 'Get full State Physics universe — nodes, edges, metrics, invariants.' },
+    { name: 'sp_reset', desc: 'Reset State Physics universe to initial state.' },
+    { name: 'sp_nodes', desc: 'List all nodes in Hash Sphere universe.' },
+    { name: 'sp_metrics', desc: 'Get universe metrics — node count, edge count, entropy.' },
+    { name: 'sp_identity', desc: 'Create identity node in Hash Sphere universe.' },
+    { name: 'sp_simulate', desc: 'Run N physics simulation steps.' },
+    { name: 'sp_galaxy', desc: 'Create galaxy-scale simulation.' },
+    { name: 'sp_demo', desc: 'Seed universe with demo data.' },
+    { name: 'sp_asymmetry', desc: 'Get asymmetry score — trust variance and Gini.' },
+    { name: 'sp_physics_config', desc: 'Update physics engine parameters.' },
+    { name: 'sp_entropy_config', desc: 'Update entropy engine parameters.' },
+    { name: 'sp_entropy_toggle', desc: 'Enable or disable entropy injection.' },
+    { name: 'sp_entropy_perturbation', desc: 'Inject perturbation event.' },
+    { name: 'sp_agent_spawn', desc: 'Spawn autonomous agent in universe.' },
+    { name: 'sp_agent_step', desc: 'Step the active agent once.' },
+    { name: 'sp_agent_kill', desc: 'Kill the active agent.' },
+    { name: 'sp_agents_spawn', desc: 'Spawn multiple agents.' },
+    { name: 'sp_agents_kill_all', desc: 'Kill all autonomous agents.' },
+    { name: 'sp_experiment', desc: 'Setup named experiment — zero_agent, stress_test, long_run.' },
+    { name: 'sp_memory_cost', desc: 'Set memory cost multiplier.' },
+    { name: 'sp_metrics_record', desc: 'Record metrics snapshot to history.' },
+  ]},
+  { category: 'Community (Rabbit)', count: 12, tools: [
+    { name: 'create_rabbit_post', desc: 'Create post in Rabbit community.' },
+    { name: 'list_rabbit_communities', desc: 'List all Rabbit communities.' },
+    { name: 'list_rabbit_posts', desc: 'List Rabbit posts.' },
+    { name: 'rabbit_vote', desc: 'Vote on Rabbit post/comment.' },
+    { name: 'create_rabbit_community', desc: 'Create a new Rabbit community.' },
+    { name: 'get_rabbit_community', desc: 'Get a Rabbit community by slug.' },
+    { name: 'search_rabbit_posts', desc: 'Search Rabbit posts by keyword.' },
+    { name: 'get_rabbit_post', desc: 'Get a specific Rabbit post by ID.' },
+    { name: 'delete_rabbit_post', desc: 'Delete a Rabbit post (owner only).' },
+    { name: 'create_rabbit_comment', desc: 'Comment on a Rabbit post.' },
+    { name: 'list_rabbit_comments', desc: 'List comments on a Rabbit post.' },
+    { name: 'delete_rabbit_comment', desc: 'Delete a Rabbit comment (owner only).' },
+  ]},
+  { category: 'Developer', count: 4, tools: [
+    { name: 'execute_code', desc: 'Run code in Docker sandbox (Python, JavaScript, Bash).' },
+    { name: 'http_request', desc: 'HTTP request to internal platform APIs.' },
+    { name: 'external_http_request', desc: 'HTTP request to any external URL.' },
+    { name: 'dev_tool', desc: 'Bridge to ED service for file ops, git, docker, testing.' },
+  ]},
+  { category: 'Utilities', count: 6, tools: [
+    { name: 'weather', desc: 'Get current weather and 3-day forecast.' },
+    { name: 'stock_crypto', desc: 'Get real-time stock or crypto prices.' },
+    { name: 'generate_chart', desc: 'Generate chart image from data (bar, line, pie, radar, scatter).' },
+    { name: 'visualize', desc: 'Generate SVG diagram inline.' },
+    { name: 'get_current_time', desc: 'Get current date, time, timezone.' },
+    { name: 'get_system_info', desc: 'Get platform system info.' },
+  ]},
+  { category: 'Platform API', count: 2, tools: [
+    { name: 'platform_api_search', desc: 'Search ~383 platform API endpoints.' },
+    { name: 'platform_api_call', desc: 'Call any authenticated platform API endpoint.' },
+  ]},
+  { category: 'Filesystem', count: 10, tools: [
+    { name: 'file_read', desc: 'Read file with offset/limit.' },
+    { name: 'file_write', desc: 'Create or overwrite file.' },
+    { name: 'file_edit', desc: 'Replace exact unique string in file.' },
+    { name: 'multi_edit', desc: 'Atomic batch edits on one file.' },
+    { name: 'file_list', desc: 'List directory contents.' },
+    { name: 'file_delete', desc: 'Delete file or directory.' },
+    { name: 'grep_search', desc: 'Search text pattern in files via ripgrep.' },
+    { name: 'find_by_name', desc: 'Find files by name glob.' },
+    { name: 'run_command', desc: 'Run shell command.' },
+    { name: 'command_status', desc: 'Check background command status.' },
+  ]},
+  { category: 'Tool Management', count: 4, tools: [
+    { name: 'create_tool', desc: 'Create custom HTTP tool stored in DB.' },
+    { name: 'list_tools', desc: 'List user\'s custom tools.' },
+    { name: 'delete_tool', desc: 'Delete a custom tool.' },
+    { name: 'update_tool', desc: 'Update an existing custom tool.' },
+  ]},
+];
+
 const REQUIREMENTS = [
   { label: 'Python 3.9+', detail: '(3.11+ recommended)' },
   { label: 'pip', detail: 'Package manager' },
@@ -140,6 +310,7 @@ const OpenClawPage: React.FC = () => {
   const { theme } = useThemeStore();
   const [copied, setCopied] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [openCat, setOpenCat] = useState<number | null>(null);
 
   const fullCloneScript = SETUP_STEPS.map(s => s.cmd).join('\n');
 
@@ -272,6 +443,46 @@ const OpenClawPage: React.FC = () => {
             <div key={i} className={styles.featureCard}>
               <h3 className={styles.featureTitle}>{f.title}</h3>
               <p className={styles.featureDesc}>{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Tool Catalog */}
+      <section className={styles.toolCatalog}>
+        <h2 className={styles.sectionTitle}>Full Tool Catalog</h2>
+        <p className={styles.sectionDesc}>
+          Every tool your OpenClaw agent can call — {TOOL_CATALOG.reduce((sum, c) => sum + c.count, 0)} tools across {TOOL_CATALOG.length} categories.
+          Click a category to see every tool with its description.
+        </p>
+        <div className={styles.catalogGrid}>
+          {TOOL_CATALOG.map((cat, i) => (
+            <div key={i} className={styles.catalogCategory}>
+              <button
+                className={styles.catalogHeader}
+                onClick={() => setOpenCat(openCat === i ? null : i)}
+              >
+                <span className={styles.catalogCategoryName}>
+                  {cat.category}
+                  <span className={styles.catalogCount}>{cat.count}</span>
+                </span>
+                <svg
+                  className={`${styles.catalogChevron} ${openCat === i ? styles.catalogChevronOpen : ''}`}
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              {openCat === i && (
+                <div className={styles.catalogTools}>
+                  {cat.tools.map((tool, j) => (
+                    <div key={j} className={styles.catalogTool}>
+                      <code className={styles.catalogToolName}>{tool.name}</code>
+                      <span className={styles.catalogToolDesc}>{tool.desc}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
