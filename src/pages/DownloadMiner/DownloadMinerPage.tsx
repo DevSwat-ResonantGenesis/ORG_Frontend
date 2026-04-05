@@ -46,9 +46,76 @@ const NETWORK_FLOW = [
   { step: '10', title: 'Earn $RGT', desc: 'ResonantGenesis Tokens credited for accepted gradients' },
 ];
 
+const FAQ_ITEMS = [
+  {
+    label: 'Architecture',
+    labelClass: 'faqLabelArch',
+    question: 'Who is actually training what? Can consumer GPUs really train AI models?',
+    answer: `<p><strong>Yes — and we don't hide how.</strong> The entire training architecture is open-source (AGPL-3.0) and auditable on GitHub. Here's exactly what happens:</p>
+<p><strong>Pipeline-Parallel Training:</strong> Large models (7B–405B parameters) are split into layer groups across multiple miners. Each miner holds only a slice — e.g., layers 0–12 of a 24-layer model. No single consumer GPU needs to hold the full model. The <code>ShardManager</code> in our Mining service computes optimal pipeline stages based on each miner's reported GPU VRAM, then assigns layer ranges accordingly.</p>
+<p><strong>1F1B Microbatch Scheduling:</strong> We use a one-forward-one-backward interleaved schedule (same technique used by Microsoft DeepSpeed and Meta's pipeline training). This keeps GPU utilization high and reduces peak activation memory — critical for consumer-grade hardware. With 32 microbatches and 4 stages, pipeline efficiency is 91%.</p>
+<p><strong>Activation Router:</strong> Between pipeline stages, activation tensors are forwarded miner-to-miner. Our <code>ActivationRouter</code> supports adaptive compression (INT8 quantization = 2x compression, INT8+zlib = 3–4x) and chunked transfer for tensors over 64 MB. Checksums (SHA-256) verify data integrity on every transfer.</p>
+<p><strong>P2P via WebRTC:</strong> Miners behind home routers (NAT) discover each other through WebRTC signaling — no manual port forwarding needed. The <code>P2PDiscovery</code> service handles ICE candidate exchange and establishes DataChannels for direct miner-to-miner communication.</p>
+<p><strong>Gradient Aggregation:</strong> Each pipeline stage has its own <code>ShardParameterServer</code> that collects and aggregates gradients using staleness-aware weighted averaging. A <code>GlobalAggregator</code> coordinates step advancement across all shards with O(log N) hierarchical consensus — scalable from 4 miners to millions.</p>
+<p><strong>Fault Tolerance:</strong> If a miner disconnects, "liquid redistribution" automatically reassigns its shard to the best available replacement miner and re-links the pipeline. No human intervention needed.</p>
+<p><strong>Current phase:</strong> The seed model (<code>resonant-seed-1b</code>, 1B params, 24 layers) fits entirely in 2 GB VRAM, so each miner holds a full copy and trains independently with compressed gradient submission. Pipeline sharding activates automatically when the network scales to larger models that don't fit on a single GPU.</p>`,
+  },
+  {
+    label: 'Token',
+    labelClass: 'faqLabelToken',
+    question: 'What is $RGT worth? Is it traded anywhere?',
+    answer: `<p><strong>$RGT is a utility token — not a speculative asset.</strong> Here's the transparent breakdown:</p>
+<p><strong>How rewards work:</strong> Every time your miner submits a gradient that passes verification (SHA-256 hash match, staleness check, parameter server validation), the Mining service credits your wallet with $RGT via the <code>ChainBridge</code>. The reward amount depends on your miner tier:</p>
+<ul>
+<li><strong>Genesis Validator (T1):</strong> 150 $RGT per accepted gradient (1.5x multiplier)</li>
+<li><strong>Core Contributor (T2):</strong> 125 $RGT per accepted gradient (1.25x multiplier)</li>
+<li><strong>Standard Miner (T3/T4):</strong> 100 $RGT per accepted gradient (base rate)</li>
+</ul>
+<p><strong>Halving schedule:</strong> Block rewards halve yearly — Year 1: 100 $RGT/block, Year 2: 50, Year 3: 25, Year 4: 12.5. This is a deflationary model similar to Bitcoin's halving mechanism.</p>
+<p><strong>On-chain recording:</strong> Every gradient submission and reward distribution is recorded as a <code>training_gradient</code> transaction on the ResonantGenesis Blockchain (chain ID: <code>resonant-genesis-external-1</code>), which uses Raft consensus with Merkle-tree block validation. This creates an immutable provenance trail for all training contributions.</p>
+<p><strong>Current status:</strong> $RGT is not traded on any exchange. It currently functions as an internal platform credit tracking compute contributions. The token's long-term value is tied to the utility of the models trained by the network — not to exchange speculation. We believe in building value through real compute work, not hype.</p>
+<p><strong>Staking & slashing:</strong> The <code>WalletService</code> supports staking (with lock periods) and slashing penalties for misbehavior. Minimum stake for RG_TOKEN is 1,000 $RGT. This is an economic incentive layer to ensure honest training contributions.</p>`,
+  },
+  {
+    label: 'Platform',
+    labelClass: 'faqLabelPlatform',
+    question: 'Why does it require a free account at dev-swat.com?',
+    answer: `<p><strong>Authentication prevents abuse, not lock-in.</strong> Here's why and how it works:</p>
+<p><strong>Why auth is required:</strong> Without identity verification, anyone could submit garbage gradients and claim rewards. The auth system ensures every gradient submission is tied to a verified account, making it possible to enforce quality control, slashing penalties for bad actors, and fair reward distribution.</p>
+<p><strong>How login works:</strong> The miner app sends your credentials to the platform auth service and receives a JWT token, stored locally on your machine. All subsequent API calls (mining tasks, gradient submission, reward claims) include this token. This is the exact same auth flow used by the Resonant IDE — one account for the entire platform.</p>
+<p><strong>Identity layers:</strong> On registration, each user gets 4 identity anchors: a platform UUID, a SHA-256 blockchain identity (crypto_hash), a Hash Sphere semantic identity (user_hash), and a deterministic Anchor Universe ID (universe_id). Your blockchain identity is anchored on-chain via the <code>/identity/register</code> endpoint.</p>
+<p><strong>About the domain:</strong> <code>dev-swat.com</code> is the production domain for the ResonantGenesis platform, operated by the DevSwat-ResonantGenesis organization (same org that owns all the GitHub repos). The name "DevSwat" is the parent organization. All services (auth, mining, blockchain, lighthouse) run behind HTTPS on this domain with HSTS, CORS lockdown, and fail-closed auth in production.</p>
+<p><strong>No vendor lock-in:</strong> The miner app is fully open-source. The <code>RG_PLATFORM_URL</code> is configurable — you can point it at any compatible backend. The code for all 3 backend services (Mining, Lighthouse, External Blockchain) is also open-source under AGPL-3.0.</p>`,
+  },
+  {
+    label: 'License',
+    labelClass: 'faqLabelLicense',
+    question: 'What does the AGPL-3.0 license mean for me?',
+    answer: `<p><strong>AGPL-3.0 is one of the strongest open-source licenses — and that's the point.</strong></p>
+<p><strong>What it guarantees you:</strong></p>
+<ul>
+<li><strong>Full source access:</strong> Every line of miner code, model architecture, training logic, gradient compression, blockchain consensus, and P2P discovery is available on GitHub.</li>
+<li><strong>Right to fork:</strong> You can fork, modify, and run your own version of the entire stack.</li>
+<li><strong>Transparency:</strong> If we modify the server-side code, AGPL requires those changes to also be available. No hidden proprietary training logic.</li>
+</ul>
+<p><strong>What it requires:</strong> If you modify and distribute the code (or run a modified version as a network service), you must also share your modifications under AGPL-3.0. This prevents someone from taking the open-source work, making it proprietary, and competing against the community that built it.</p>
+<p><strong>What you can audit right now:</strong></p>
+<ul>
+<li><strong>Model architecture:</strong> <code>model_architecture.py</code> — GQA, RoPE, SwiGLU, RMSNorm (same techniques as LLaMA/Mistral)</li>
+<li><strong>Training engine:</strong> <code>real_trainer.py</code> — actual PyTorch forward/backward with Top-K gradient compression</li>
+<li><strong>Pipeline scheduling:</strong> <code>pipeline.py</code> — 1F1B microbatch scheduling implementation</li>
+<li><strong>Shard management:</strong> <code>shard_manager.py</code> — how miners are grouped and assigned model layers</li>
+<li><strong>Blockchain consensus:</strong> <code>consensus.py</code> — full Raft protocol implementation</li>
+<li><strong>Reward mechanics:</strong> <code>training_task.py</code> — reward multipliers and halving schedule</li>
+</ul>
+<p>This is not a black box. Every claim on this page can be verified by reading the source.</p>`,
+  },
+];
+
 const DownloadMinerPage: React.FC = () => {
   const { theme } = useThemeStore();
   const [copied, setCopied] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const fullCloneScript = SETUP_STEPS.map(s => s.cmd).join('\n');
 
@@ -178,6 +245,46 @@ const DownloadMinerPage: React.FC = () => {
             <div key={i} className={styles.featureCard}>
               <h3 className={styles.featureTitle}>{f.title}</h3>
               <p className={styles.featureDesc}>{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ / Transparency */}
+      <section className={styles.faq}>
+        <h2 className={styles.sectionTitle}>Transparency & FAQ</h2>
+        <p className={styles.sectionDesc}>
+          We know "train AI + earn crypto" raises eyebrows. Here are honest, code-backed answers to the hardest questions.
+        </p>
+        <div className={styles.faqList}>
+          {FAQ_ITEMS.map((item, i) => (
+            <div key={i} className={styles.faqItem}>
+              <button
+                className={styles.faqQuestion}
+                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+              >
+                <span>
+                  <span className={`${styles.faqLabel} ${styles[item.labelClass]}`}>{item.label}</span>
+                  {item.question}
+                </span>
+                <svg
+                  className={`${styles.faqChevron} ${openFaq === i ? styles.faqChevronOpen : ''}`}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+              {openFaq === i && (
+                <div
+                  className={styles.faqAnswer}
+                  dangerouslySetInnerHTML={{ __html: item.answer }}
+                />
+              )}
             </div>
           ))}
         </div>
