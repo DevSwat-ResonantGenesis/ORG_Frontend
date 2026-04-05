@@ -387,6 +387,14 @@ export const Header: React.FC<HeaderProps> = ({
               Download IDE
             </button>
 
+            {/* Download Miner */}
+            <button 
+              className={styles.navButton}
+              onClick={() => navigate('/download-miner')}
+            >
+              Download Miner
+            </button>
+
             {/* Marketplace */}
             <button 
               className={styles.navButton}
