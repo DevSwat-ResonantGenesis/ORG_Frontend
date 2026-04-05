@@ -4903,7 +4903,7 @@ const ResonantChatPage: React.FC = () => {
             setShowMetricsSticker(false);
             setShowSettingsSticker(false);
             setShowClustersSticker(false);
-          })}
+          }}
           showMemoryLibrary={showMemoryLibrary}
           onCloseMemoryLibrary={() => setShowMemoryLibrary(false)}
           onMemoryClick={(memory) => {
