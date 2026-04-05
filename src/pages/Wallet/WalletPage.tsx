@@ -867,20 +867,39 @@ export default function WalletPage() {
       {showTransfer && (
         <div className={s.overlay} onClick={() => setShowTransfer(false)}>
           <div className={s.modal} onClick={e => e.stopPropagation()}>
-            <h3 className={s.modalTitle}>↔️ Transfer RGT</h3>
-            <label className={s.modalLabel}>Recipient (email, user ID, or blockchain hash)</label>
-            <input type="text" className={s.modalInput} style={{ fontFamily: "'JetBrains Mono', monospace" }}
-              value={transferTo} onChange={e => setTransferTo(e.target.value)} placeholder="user@email.com or 0x..." />
-            <label className={s.modalLabel}>Amount (RGT)</label>
-            <input type="number" min="1" step="0.01" className={s.modalInput}
-              value={transferAmount} onChange={e => setTransferAmount(e.target.value)} placeholder="50.00" />
-            <label className={s.modalLabel}>Description</label>
+            <h3 className={s.modalTitle} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 18 }}>⛓️</span> Send $RGT
+            </h3>
+            <label className={s.modalLabel}>RECIPIENT BLOCKCHAIN ADDRESS</label>
+            <input type="text" className={s.modalInput} style={{
+              fontFamily: "'JetBrains Mono', monospace", fontSize: 12,
+              background: '#0a0f1a', border: '1px solid #2d1b69', color: '#a78bfa',
+              letterSpacing: '0.5px',
+            }}
+              value={transferTo} onChange={e => setTransferTo(e.target.value)}
+              placeholder="0x0000000000000000000000000000000000000000000000000000000000000000" />
+            <p style={{ color: '#6b7280', fontSize: 10, margin: '4px 0 12px', lineHeight: 1.4 }}>
+              Paste the recipient's Blockchain Hash (SHA-256) from their wallet.
+              <span style={{ color: '#4b5563' }}> Also accepts email address.</span>
+            </p>
+            <label className={s.modalLabel}>AMOUNT ($RGT)</label>
+            <div style={{ position: 'relative' }}>
+              <input type="number" min="0.01" step="0.01" className={s.modalInput} style={{
+                paddingRight: 50, fontSize: 18, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace",
+              }}
+                value={transferAmount} onChange={e => setTransferAmount(e.target.value)} placeholder="0.00" />
+              <span style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', color: '#6b7280', fontSize: 12, fontWeight: 600 }}>RGT</span>
+            </div>
+            <label className={s.modalLabel} style={{ marginTop: 8 }}>MEMO (OPTIONAL)</label>
             <input type="text" className={s.modalInput}
-              value={transferDesc} onChange={e => setTransferDesc(e.target.value)} placeholder="Payment for..." />
-            <div className={s.modalActions}>
+              value={transferDesc} onChange={e => setTransferDesc(e.target.value)} placeholder="What's this for?" />
+            {actionMsg && <p style={{ color: actionMsg.includes('complete') ? '#34d399' : '#f87171', fontSize: 11, margin: '8px 0' }}>{actionMsg}</p>}
+            <div className={s.modalActions} style={{ marginTop: 12 }}>
               <button className={`${s.btn} ${s.btnGhost}`} onClick={() => setShowTransfer(false)}>Cancel</button>
-              <button className={`${s.btn} ${s.btnPrimary}`} onClick={handleTransfer} disabled={actionLoading}>
-                {actionLoading ? 'Processing...' : 'Send'}
+              <button className={`${s.btn} ${s.btnPrimary}`} style={{
+                background: 'linear-gradient(135deg, #7c3aed, #6d28d9)', padding: '10px 24px',
+              }} onClick={handleTransfer} disabled={actionLoading || !transferTo || !transferAmount}>
+                {actionLoading ? 'Broadcasting...' : '⛓️ Send on Chain'}
               </button>
             </div>
           </div>
