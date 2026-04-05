@@ -233,6 +233,20 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               {location.pathname === '/download-miner' && <span className={styles.usmActiveIndicator} />}
             </button>
 
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/openclaw' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/openclaw'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <circle cx="8" cy="8" r="5.5" />
+                  <path d="M5.5 8h5M8 5.5v5" strokeLinecap="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>OpenClaw+</span>
+              {location.pathname === '/openclaw' && <span className={styles.usmActiveIndicator} />}
+            </button>
+
           </div>
 
           <div className={styles.usmDivider} />

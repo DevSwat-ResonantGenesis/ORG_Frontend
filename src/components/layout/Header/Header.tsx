@@ -395,6 +395,14 @@ export const Header: React.FC<HeaderProps> = ({
               Download Miner
             </button>
 
+            {/* OpenClaw+ */}
+            <button 
+              className={styles.navButton}
+              onClick={() => navigate('/openclaw')}
+            >
+              OpenClaw+
+            </button>
+
             {/* Marketplace */}
             <button 
               className={styles.navButton}

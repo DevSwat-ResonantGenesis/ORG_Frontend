@@ -90,6 +90,7 @@ const WalletPage = lazy(() => import("../pages/Wallet/WalletPage"));
 const AgenticChatPage = lazy(() => import("../pages/AgenticChat/AgenticChatPage"));
 const DownloadIDEPage = lazy(() => import("../pages/DownloadIDE/DownloadIDEPage"));
 const DownloadMinerPage = lazy(() => import("../pages/DownloadMiner/DownloadMinerPage"));
+const OpenClawPage = lazy(() => import("../pages/OpenClaw/OpenClawPage"));
 const AgentsPage = lazy(() => import('../pages/Agents/AgentOSv2'));
 const AgentDashboard = lazy(() => import('../pages/Agents/AgentOSv2'));
 const CreateTeamPage = lazy(() => import('../pages/AgentTeams/CreateTeamPage'));
@@ -700,6 +701,10 @@ const router = createBrowserRouter([
   {
     path: '/download-miner',
     element: withPublicShell(<DownloadMinerPage />)
+  },
+  {
+    path: '/openclaw',
+    element: withPublicShell(<OpenClawPage />)
   },
 ]);
 
