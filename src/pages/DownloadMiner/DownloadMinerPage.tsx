@@ -6,7 +6,8 @@ const GITHUB_REPO = 'https://github.com/DevSwat-ResonantGenesis/RG_miner_app';
 const GITHUB_DOWNLOAD = 'https://github.com/DevSwat-ResonantGenesis/RG_miner_app/archive/refs/heads/main.zip';
 
 const SETUP_STEPS = [
-  { cmd: 'brew install ffmpeg pkg-config', note: 'Prerequisites (macOS — needed for P2P WebRTC)' },
+  { cmd: '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"', note: 'Install Homebrew (skip if you have it)' },
+  { cmd: 'brew install ffmpeg pkg-config', note: 'Install P2P prerequisites' },
   { cmd: 'git clone https://github.com/DevSwat-ResonantGenesis/RG_miner_app.git', note: 'Clone the repo' },
   { cmd: 'cd RG_miner_app', note: 'Enter directory' },
   { cmd: 'python3 -m venv venv', note: 'Create virtual environment' },
