@@ -186,11 +186,13 @@ const TOOL_CATALOG = [
     { name: 'run_command', desc: 'Run shell command.' },
     { name: 'command_status', desc: 'Check background command status.' },
   ]},
-  { category: 'Tool Management', count: 4, tools: [
-    { name: 'create_tool', desc: 'Create custom HTTP tool stored in DB.' },
-    { name: 'list_tools', desc: 'List user\'s custom tools.' },
+  { category: 'Tool Management & Self-Creation', count: 6, tools: [
+    { name: 'create_tool', desc: 'Create custom HTTP tool stored in DB. Set is_shared=true for platform-wide access.' },
+    { name: 'list_tools', desc: 'List user\'s custom tools + all shared platform tools.' },
     { name: 'delete_tool', desc: 'Delete a custom tool.' },
     { name: 'update_tool', desc: 'Update an existing custom tool.' },
+    { name: 'auto_build_tool', desc: 'LLM designs, validates (AST safety scan), and registers a new tool at runtime. Describe what the tool should do.' },
+    { name: 'check_tool_exists', desc: 'Check if a capability exists as a tool. Suggests auto_build_tool if not found.' },
   ]},
 ];
 
