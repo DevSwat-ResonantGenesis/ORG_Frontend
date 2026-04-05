@@ -72,9 +72,11 @@ const FAQ_ITEMS = [
 <li><strong>Standard Miner (T3/T4):</strong> 100 $RGT per accepted gradient (base rate)</li>
 </ul>
 <p><strong>Halving schedule:</strong> Block rewards halve yearly — Year 1: 100 $RGT/block, Year 2: 50, Year 3: 25, Year 4: 12.5. This is a deflationary model similar to Bitcoin's halving mechanism.</p>
+<p><strong>A closed utility economy, not speculation:</strong> $RGT isn't trying to be traded on exchanges — it's a platform currency. You mine it by contributing compute, and spend it on IDE access, LLM API calls, agent creation and management. That's a closed utility loop: earn by training models, spend on platform services. This is actually more sustainable than "earn tokens and hope someone buys them" — value comes from real usage, not exchange speculation.</p>
+<p><strong>The real break-even question:</strong> It's not "when does $RGT hit X price on a DEX" — it's "does my GPU mining output cover what I'd otherwise pay in platform fees?" If you're already using the Resonant IDE, LLM APIs, or AI agents, mining essentially makes those services free. Your cost is electricity + GPU wear instead of subscription fees.</p>
 <p><strong>On-chain recording:</strong> Every gradient submission and reward distribution is recorded as a <code>training_gradient</code> transaction on the ResonantGenesis Blockchain (chain ID: <code>resonant-genesis-external-1</code>), which uses Raft consensus with Merkle-tree block validation. This creates an immutable provenance trail for all training contributions.</p>
-<p><strong>Current status:</strong> $RGT is not traded on any exchange. It currently functions as an internal platform credit tracking compute contributions. The token's long-term value is tied to the utility of the models trained by the network — not to exchange speculation. We believe in building value through real compute work, not hype.</p>
-<p><strong>Staking & slashing:</strong> The <code>WalletService</code> supports staking (with lock periods) and slashing penalties for misbehavior. Minimum stake for RG_TOKEN is 1,000 $RGT. This is an economic incentive layer to ensure honest training contributions.</p>`,
+<p><strong>Staking & slashing:</strong> The <code>WalletService</code> supports staking (with lock periods) and slashing penalties for misbehavior. Minimum stake for RG_TOKEN is 1,000 $RGT. This is an economic incentive layer to ensure honest training contributions.</p>
+<p><strong>Future Base L2 anchor:</strong> $RGT currently lives on the ResonantGenesis sovereign chain. A cross-chain bridge to Base/ETH mainnet is planned as the network matures and more contributors join — we're building the utility first, not the speculation layer.</p>`,
   },
   {
     label: 'Platform',
@@ -86,6 +88,27 @@ const FAQ_ITEMS = [
 <p><strong>Identity layers:</strong> On registration, each user gets 4 identity anchors: a platform UUID, a SHA-256 blockchain identity (crypto_hash), a Hash Sphere semantic identity (user_hash), and a deterministic Anchor Universe ID (universe_id). Your blockchain identity is anchored on-chain via the <code>/identity/register</code> endpoint.</p>
 <p><strong>About the domain:</strong> <code>dev-swat.com</code> is the production domain for the ResonantGenesis platform, operated by the DevSwat-ResonantGenesis organization (same org that owns all the GitHub repos). The name "DevSwat" is the parent organization. All services (auth, mining, blockchain, lighthouse) run behind HTTPS on this domain with HSTS, CORS lockdown, and fail-closed auth in production.</p>
 <p><strong>No vendor lock-in:</strong> The miner app is fully open-source. The <code>RG_PLATFORM_URL</code> is configurable — you can point it at any compatible backend. The code for all 3 backend services (Mining, Lighthouse, External Blockchain) is also open-source under AGPL-3.0.</p>`,
+  },
+  {
+    label: 'Trust',
+    labelClass: 'faqLabelTrust',
+    question: 'This project is brand new with zero stars — why should I trust it?',
+    answer: `<p><strong>We won't pretend we're established. Here's where we actually stand:</strong></p>
+<p><strong>Yes, we're early.</strong> The repos are new, the star count is zero, and there's no large community yet. We're a small team that shipped real code before marketing it. Every project starts here — the question is whether the substance is real.</p>
+<p><strong>What you can verify right now:</strong></p>
+<ul>
+<li><strong>7+ repos on GitHub</strong> under <a href="https://github.com/DevSwat-ResonantGenesis" target="_blank" rel="noopener noreferrer">DevSwat-ResonantGenesis</a> — miner app, mining service, blockchain, lighthouse, crypto service, memory service, frontend. All open-source under AGPL-3.0.</li>
+<li><strong>Real ML engineering:</strong> Raft consensus from scratch, 1F1B pipeline parallelism, GQA+RoPE+SwiGLU transformer architecture, Top-K gradient compression with SHA-256 verification, WebRTC P2P NAT traversal, slashing with Merkle proof verification.</li>
+<li><strong>Production infrastructure:</strong> Docker-composed microservices, Nginx TLS termination, JWT auth with fail-closed security, HSTS, CORS lockdown. This isn't a weekend hackathon project.</li>
+<li><strong>Live platform:</strong> <a href="https://dev-swat.com" target="_blank" rel="noopener noreferrer">dev-swat.com</a> runs the Resonant IDE, AI agents, LLM APIs, Hash Sphere memory, and Code Visualizer — the services that $RGT pays for.</li>
+</ul>
+<p><strong>What we haven't done yet:</strong></p>
+<ul>
+<li>No Base mainnet token contract — $RGT lives on our sovereign chain for now. The bridge comes when the network proves itself.</li>
+<li>No third-party security audit — the code is open for anyone to audit, but we haven't paid for a formal one yet.</li>
+<li>No large miner network — we need early participants to help stress-test the P2P pipeline. That's why we're here.</li>
+</ul>
+<p><strong>The honest pitch:</strong> If you're looking for a proven, battle-tested network — wait. If you want to be an early contributor to a technically real project, help the network form, and accumulate $RGT before the crowd shows up — that's what early participation looks like. We'd rather be transparent about where we are than fake momentum we don't have.</p>`,
   },
   {
     label: 'License',
