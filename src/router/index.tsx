@@ -185,7 +185,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/chat',
-    element: withPublicShell(<ResonantChatPage />)
+    element: withShell(<ResonantChatPage />)
   },
   {
     path: '/signup',

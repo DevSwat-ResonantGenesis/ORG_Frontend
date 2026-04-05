@@ -1,25 +1,9 @@
 /**
  * Floating Home Component - Logo Watermark Design
  * Large faded logo centered like IDE welcome screen
- * Guest mode: shows feature cards grid
  */
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  MessageSquare,
-  Brain,
-  Bot,
-  Cpu,
-  TrendingUp,
-  Laptop,
-  ShieldCheck,
-  Plug,
-  Database,
-  Network,
-  Zap,
-  Boxes,
-} from 'lucide-react';
 import styles from './FloatingHome.module.css';
 
 interface FloatingHomeProps {
@@ -33,54 +17,9 @@ interface FloatingHomeProps {
   isLoggedIn?: boolean;
 }
 
-const FEATURE_CARDS = [
-  { icon: MessageSquare, title: 'Resonant Chat', desc: 'Full control plane for the entire platform — manage agents, memory, billing, tools, providers & workflows from one unified chat interface' },
-  { icon: Brain, title: 'AI Assistant', desc: 'Tool-assisted agentic chat — web search, scraping, image generation, skill execution & autonomous task completion with multi-provider LLM routing' },
-  { icon: Bot, title: 'AI Agent Studio', desc: 'Build, test & deploy autonomous agents with custom tools, memory & team collaboration' },
-  { icon: Cpu, title: 'ML Workers', desc: 'Run training jobs, manage model pipelines & monitor GPU usage across distributed infrastructure' },
-  { icon: TrendingUp, title: 'Invariants SIM', desc: 'Simulate economic constraints, predict system drift & enforce architectural invariants before deployment' },
-  { icon: Laptop, title: 'Resonant IDE', desc: 'Open-source VS Code fork with 71 local tools, 11 providers, 14 AST analysis tools, interactive terminals & cross-session memory' },
-  { icon: ShieldCheck, title: 'AST Code Analyser', desc: 'Full-stack static analysis — dependency graphs, dead code detection, SAST vulnerabilities & governance scoring' },
-  { icon: Plug, title: 'Webhooks & Providers', desc: 'Connect external APIs, LLM providers & third-party services with zero-code webhook configuration' },
-  { icon: Database, title: 'Neural Retrieval Memory', desc: '9-layer cognitive memory with semantic search, session persistence & cross-agent knowledge sharing' },
-  { icon: Network, title: 'DSID', desc: 'Blockchain-verified identity — every action is traceable, auditable & SOC-compliant on Base Sepolia L2' },
-  { icon: Zap, title: 'RARA', desc: 'Self-executing runtime agents that plan, act & adapt autonomously with built-in circuit breakers' },
-  { icon: Boxes, title: 'Open Source', desc: 'Self-hosted agentic platform — full control over your data, providers & infrastructure. No vendor lock-in' },
-];
-
-export const FloatingHome: React.FC<FloatingHomeProps> = ({ isLoggedIn }) => {
-  const navigate = useNavigate();
-  const isGuest = !isLoggedIn;
-
+export const FloatingHome: React.FC<FloatingHomeProps> = () => {
   return (
     <div className={styles.floatingHome}>
-
-      {isGuest && (
-        <div className={styles.guestSection}>
-          <div className={styles.guestHeader}>
-            <div className={styles.guestTitle}>You are in Guest Mode</div>
-            <div className={styles.guestSubtitle}>Limited to 3 basic tools · Low-reasoning model · Session lost on reload</div>
-          </div>
-
-          <div className={styles.featureGrid}>
-            {FEATURE_CARDS.map((card) => (
-              <div key={card.title} className={styles.featureCard} onClick={() => navigate('/login')} style={{ cursor: 'pointer' }}>
-                <card.icon className={styles.featureIcon} size={22} strokeWidth={1.5} />
-                <div className={styles.featureTitle}>{card.title}</div>
-                <div className={styles.featureDesc}>{card.desc}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className={styles.guestCta}>
-            <span className={styles.guestCtaText}>Get the full experience —</span>
-            <span className={styles.guestLink} onClick={() => navigate('/login')}>Log in</span>
-            <span className={styles.guestCtaText}> or </span>
-            <span className={styles.guestLink} onClick={() => navigate('/signup')}>Sign up free</span>
-          </div>
-        </div>
-      )}
-
 
       <footer className={styles.siteFooter}>
         <div className={styles.footerInfo}>

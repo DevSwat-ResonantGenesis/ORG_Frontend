@@ -283,26 +283,6 @@ const ResonantChatPage: React.FC = () => {
   };
   const { setMenuItems } = useResonantChatMenu();
   
-  // Guest mode: allow visitors to use AI Assistant without auth
-  const isGuestMode = !isLoggedIn;
-  
-  // In guest mode, force AI Assistant ON and load messages from localStorage
-  useEffect(() => {
-    if (isGuestMode) {
-      setAiAssistantEnabled(true);
-      // Load guest messages from localStorage
-      try {
-        const saved = localStorage.getItem('rg-guest-chat-messages');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            setMessages(parsed.map((m: any) => ({ ...m, timestamp: new Date(m.timestamp) })));
-          }
-        }
-      } catch { /* ignore */ }
-    }
-  }, [isGuestMode]);
-  
   // Get initial message from localStorage (from hero section) or navigation state (fallback)
   const initialMessage = localStorage.getItem('resonant-chat-pending-message') || 
     (location.state as { initialMessage?: string })?.initialMessage;
@@ -713,9 +693,6 @@ const ResonantChatPage: React.FC = () => {
   messagesRef.current = messages;
   
   useEffect(() => {
-    // Guest mode should NEVER sync from logged-in user's live messages
-    if (isGuestMode) return;
-
     const syncMessagesFromWidget = () => {
       const liveMessages = localStorage.getItem('resonant-chat-live-messages');
       if (liveMessages) {
@@ -750,7 +727,7 @@ const ResonantChatPage: React.FC = () => {
       window.removeEventListener('storage', syncMessagesFromWidget);
       window.removeEventListener('resonant-chat-sync', syncMessagesFromWidget);
     };
-  }, [isGuestMode]); // Re-run when auth state changes
+  }, []); // Sync widget messages on mount
 
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; id: string; type: 'message' | 'source' } | null>(null);
   const [showFiles, setShowFiles] = useState(false);
@@ -1202,8 +1179,8 @@ const ResonantChatPage: React.FC = () => {
         // Built-in agents unavailable
       }
 
-      // 2. Load user's custom agents from Agent Engine (if logged in)
-      if (!isGuestMode) {
+      // 2. Load user's custom agents from Agent Engine
+      {
         try {
           const userRes = await fetch('/api/v1/agents?limit=50');
           const userData = await userRes.json();
@@ -2191,18 +2168,12 @@ const ResonantChatPage: React.FC = () => {
           const systemContext = `[System context: ${now.toISOString()} | ${Intl.DateTimeFormat().resolvedOptions().timeZone} | ${now.toLocaleDateString('en-US', { weekday: 'long' })}]`;
           const enrichedMessage = `${systemContext}\n\n${queryWithContext}`;
 
-          const streamEndpoint = isGuestMode
-            ? `${apiUrl}/api/v1/public/agentic-chat/stream`
-            : `${apiUrl}/api/v1/agentic-chat/stream`;
+          const streamEndpoint = `${apiUrl}/api/v1/agentic-chat/stream`;
           const response = await fetch(streamEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            credentials: isGuestMode ? 'omit' : 'include',
-            body: JSON.stringify(isGuestMode ? {
-              message: enrichedMessage,
-              conversation_history: history,
-              max_loops: 5,
-            } : {
+            credentials: 'include',
+            body: JSON.stringify({
               message: enrichedMessage,
               conversation_id: agenticConvId || undefined,
               conversation_history: history,
@@ -2352,29 +2323,10 @@ const ResonantChatPage: React.FC = () => {
               .catch(() => {});
           }
 
-          // Guest mode: persist messages to localStorage
-          if (isGuestMode) {
-            try {
-              setMessages(prev => {
-                const toSave = prev.slice(-50).map(m => ({ ...m, timestamp: m.timestamp instanceof Date ? m.timestamp.toISOString() : m.timestamp }));
-                localStorage.setItem('rg-guest-chat-messages', JSON.stringify(toSave));
-                return prev;
-              });
-            } catch { /* localStorage full */ }
-          }
-
           return; // Agentic streaming succeeded — exit handleSend
         } catch (agenticError: any) {
           if (controller.signal.aborted || agenticError?.name === 'AbortError') throw agenticError;
           console.warn('[ResonantChat] Agentic streaming failed, falling back:', agenticError);
-          if (isGuestMode) {
-            // Guest mode: no fallback — show error directly
-            setMessages(prev => prev.map(m =>
-              m.id === agenticMsgId ? { ...m, content: 'Sorry, the service is temporarily unavailable. Please try again in a moment.' } : m
-            ));
-            setAgenticSteps([]);
-            return;
-          }
           setMessages(prev => prev.filter(m => m.id !== agenticMsgId));
           setAgenticSteps([]);
         }
@@ -3968,8 +3920,8 @@ const ResonantChatPage: React.FC = () => {
     <>
     
     <div className={styles.chatPage}>
-      {/* Enhanced Sidebar with User Info and Settings — hidden for guests */}
-      {!isGuestMode && <div className={`${styles.sidebarWrapper} ${sidebarOpen ? styles.sidebarOpen : styles.hidden}`}>
+      {/* Enhanced Sidebar with User Info and Settings */}
+      <div className={`${styles.sidebarWrapper} ${sidebarOpen ? styles.sidebarOpen : styles.hidden}`}>
         <EnhancedSidebar
           conversations={conversations}
           memories={memories}
@@ -4048,7 +4000,7 @@ const ResonantChatPage: React.FC = () => {
           selectedTeamId={selectedTeamId}
           onSelectTeam={setSelectedTeamId}
         />
-      </div>}
+      </div>
 
       {/* Hidden file input for attach file functionality - no accept filter to allow all files */}
       <input
@@ -4071,7 +4023,7 @@ const ResonantChatPage: React.FC = () => {
         }}
       />
 
-      <div className={`${styles.chatContainer} ${isGuestMode ? styles.sidebarClosed : (sidebarOpen ? styles.sidebarOpen : styles.sidebarClosed)}`}>
+      <div className={`${styles.chatContainer} ${sidebarOpen ? styles.sidebarOpen : styles.sidebarClosed}`}>
 
         {/* Project Builder - Show when project is being generated */}
         {generatedProject && (
@@ -4924,8 +4876,8 @@ const ResonantChatPage: React.FC = () => {
           selectedTeamId={selectedTeamId}
           onSelectTeam={setSelectedTeamId}
           teams={Array.isArray(teams) ? teams.map((t: AgentTeam) => ({ id: t.id, name: t.name })) : []}
-          onNewChat={isGuestMode ? (() => { setMessages([]); localStorage.removeItem('rg-guest-chat-messages'); }) : handleNewChat}
-          onClearChat={messages.length > 0 ? (isGuestMode ? () => { setMessages([]); localStorage.removeItem('rg-guest-chat-messages'); } : handleClearChat) : undefined}
+          onNewChat={handleNewChat}
+          onClearChat={messages.length > 0 ? handleClearChat : undefined}
           onBuild={() => {
             // Open Build Module inside Split View
             if (!splitViewEnabled) setSplitViewEnabled(true);
@@ -4938,27 +4890,27 @@ const ResonantChatPage: React.FC = () => {
           attachedFiles={attachedFiles}
           onRemoveFile={(index) => setAttachedFiles(prev => prev.filter((_, i) => i !== index))}
           onEnabledSkillsChange={setEnabledSkillIds}
-          aiAssistantEnabled={isGuestMode ? true : aiAssistantEnabled}
-          onToggleAiAssistant={isGuestMode ? undefined : () => setAiAssistantEnabled(prev => {
+          aiAssistantEnabled={aiAssistantEnabled}
+          onToggleAiAssistant={() => setAiAssistantEnabled(prev => {
             const next = !prev;
             try { localStorage.setItem('rg-ai-assistant-mode', String(next)); } catch {}
             return next;
           })}
-          memories={isGuestMode ? [] : memories}
-          onShowMemoryLibrary={isGuestMode ? undefined : (() => {
+          memories={memories}
+          onShowMemoryLibrary={() => {
             setShowMemoryLibrary(true);
             setShowThreadsSticker(false);
             setShowMetricsSticker(false);
             setShowSettingsSticker(false);
             setShowClustersSticker(false);
           })}
-          showMemoryLibrary={isGuestMode ? false : showMemoryLibrary}
-          onCloseMemoryLibrary={isGuestMode ? undefined : (() => setShowMemoryLibrary(false))}
+          showMemoryLibrary={showMemoryLibrary}
+          onCloseMemoryLibrary={() => setShowMemoryLibrary(false)}
           onMemoryClick={(memory) => {
             setInput(prev => prev + ` @${memory.name || memory.content?.substring(0, 20)} `);
             setShowMemoryLibrary(false);
           }}
-          onDeleteMemory={isGuestMode ? undefined : handleDeleteMemory}
+          onDeleteMemory={handleDeleteMemory}
           knowledgeBaseEntries={knowledgeBaseEntries}
           onAddKbEntry={(title, content, entryType) => {
             setKbTitle(title); setKbContent(content); setKbType(entryType as any);
@@ -4966,8 +4918,8 @@ const ResonantChatPage: React.FC = () => {
           }}
           onUploadKbFile={uploadKnowledgeBaseFile}
           onDeleteKbEntry={deleteKnowledgeBaseEntry}
-          conversations={isGuestMode ? [] : conversations}
-          onShowConversations={isGuestMode ? undefined : (() => setShowThreadsSticker(true))}
+          conversations={conversations}
+          onShowConversations={() => setShowThreadsSticker(true)}
           showConversations={showThreadsSticker}
           onCloseConversations={() => setShowThreadsSticker(false)}
           onConversationClick={(conv) => {
