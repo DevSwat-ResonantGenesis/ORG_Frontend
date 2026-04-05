@@ -373,7 +373,7 @@ export default function WalletPage() {
     setActionMsg('');
     try {
       const res = await fastapiClient.post('/crypto/transfer', {
-        to_user_id: transferTo,
+        to: transferTo,
         amount: parseFloat(transferAmount),
         description: transferDesc || undefined,
       });
@@ -868,9 +868,9 @@ export default function WalletPage() {
         <div className={s.overlay} onClick={() => setShowTransfer(false)}>
           <div className={s.modal} onClick={e => e.stopPropagation()}>
             <h3 className={s.modalTitle}>↔️ Transfer RGT</h3>
-            <label className={s.modalLabel}>Recipient User ID</label>
+            <label className={s.modalLabel}>Recipient (email, user ID, or blockchain hash)</label>
             <input type="text" className={s.modalInput} style={{ fontFamily: "'JetBrains Mono', monospace" }}
-              value={transferTo} onChange={e => setTransferTo(e.target.value)} placeholder="user-uuid..." />
+              value={transferTo} onChange={e => setTransferTo(e.target.value)} placeholder="user@email.com or 0x..." />
             <label className={s.modalLabel}>Amount (RGT)</label>
             <input type="number" min="1" step="0.01" className={s.modalInput}
               value={transferAmount} onChange={e => setTransferAmount(e.target.value)} placeholder="50.00" />
