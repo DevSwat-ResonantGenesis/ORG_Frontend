@@ -8,8 +8,9 @@ import agentOSApi from './services/api';
 import fastapiClient from "../../api/fastapiClient";
 import type { Agent } from '../../types';
 import styles from './AgentOSv2.module.css';
-import { CommandPalette } from '../../components/IDE/CommandPalette';
-import type { Command } from '../../components/IDE/CommandPalette';
+// IDE CommandPalette removed — inline stub
+type Command = { id: string; label: string; category?: string; disabled?: boolean };
+const CommandPalette = ({ open, onClose, onSelect, commands, files, mode, placeholder }: any) => open ? null : null;
 
 // All panels now inline in AgentsPanel — only AgentsPanel is loaded here
 const AgentsPanel = lazy(() => import('./components/Panels/AgentsPanel'));

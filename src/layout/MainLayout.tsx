@@ -4,7 +4,8 @@ import { Header } from '@/components/layout/Header/Header';
 import FloatingChatWidget from '@/components/ResonantChat/FloatingChatWidget';
 import { useGlobalKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import { deviceIsMobile } from '@/utils/deviceCheck';
-import localLLMTunnel from '@/services/localLLMTunnel';
+// Local LLM tunnel removed — service killed
+const localLLMTunnel = { isConnected: false, connect: (_ep: string) => {} };
 import { fetchUserApiKeys } from '@/api/userApiKeys';
 import { isAuthenticated as checkAuthStatus } from '@/utils/auth-cookies';
 import './MainLayout.css';

@@ -6,7 +6,8 @@ import { generateProject, type ProjectFile, type ProjectGenerationRequest } from
 import { uploadProject } from '@/api/code';
 import { logger } from '@/utils/logger';
 import { DownloadIcon, CloseIcon, ArrowLeftIcon, FileIcon } from '@/components/Icons/ResonantChatIcons';
-import { FileIcon as FileIconComponent } from '@/components/IDE/FileIcon';
+// IDE FileIcon removed — inline stub
+const FileIconComponent = ({ filename: _f, size: _s }: any) => null;
 import styles from './ProjectBuilder.module.css';
 
 interface ProjectBuilderProps {

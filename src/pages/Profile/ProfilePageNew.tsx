@@ -26,8 +26,8 @@ import {
   Link2
 } from 'lucide-react';
 import { useAuth } from '../../security/auth/AuthProvider';
-import { useEconomicState } from '../../context/EconomicStateContext';
-import { TierBadge } from '../../components/EconomicState';
+const useEconomicState = () => ({ state: null as any, loading: false, error: null, tier: 'free', tierDisplayName: 'Free', tierColor: '#888', canAccessFeature: () => true, refresh: () => {}, isDevOverride: false });
+const TierBadge = ({ size: _s }: { size?: string }) => null;
 import styles from './ProfilePageNew.module.css';
 
 export const ProfilePageNew: React.FC = () => {

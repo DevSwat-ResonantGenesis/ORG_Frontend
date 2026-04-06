@@ -5,7 +5,8 @@ import { connectGitHub, getGitHubStatus } from '@/api/github';
 import { initiateGoogleServiceConnection } from '@/api/sso';
 import fastapiClient from '@/api/fastapiClient';
 import { logger } from '@/utils/logger';
-import localLLMTunnel from '@/services/localLLMTunnel';
+// Local LLM tunnel removed — service killed
+const localLLMTunnel = { isConnected: false, connect: (_ep: string) => {}, disconnect: () => {} };
 import { fetchUserApiKeys, addUserApiKey, deleteUserApiKey, validateApiKey, API_KEY_PROVIDERS } from '@/api/userApiKeys';
 
 interface Integration {

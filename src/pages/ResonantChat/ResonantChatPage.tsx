@@ -43,7 +43,9 @@ import { createPortal } from 'react-dom';
 // Hash Sphere visualization removed - company secret
 import { listAgentTeams, type AgentTeam } from '@/api/agentTeams';
 import { getEvidenceGraph, getChatMetrics, getMessageMetrics, type ChatMetrics, type MessageMetrics } from '@/api/resonantChat';
-import { EvidenceGraphVisualization, type EvidenceGraphData } from '@/components/EvidenceGraph/EvidenceGraphVisualization';
+// EvidenceGraph removed — inline stubs
+type EvidenceGraphData = { nodes: any[]; edges: any[]; node_count: number; edge_count: number };
+const EvidenceGraphVisualization = ({ graphData, compact }: { graphData: any; compact?: boolean }) => null;
 import { AgentSelector } from '@/components/ResonantChat/AgentSelector';
 import { FeedbackButtons } from '@/components/ResonantChat/FeedbackButtons';
 import { MetricsDashboard } from '@/components/ResonantChat/MetricsDashboard';

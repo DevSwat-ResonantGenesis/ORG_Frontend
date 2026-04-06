@@ -29,9 +29,11 @@ import {
   Code,
   Database
 } from 'lucide-react';
-import { useEconomicState } from '../../context/EconomicStateContext';
+// EconomicState removed — inline stub
+const useEconomicState = () => ({ state: null as any, loading: false, error: null, tierDisplayName: 'Free', tierColor: '#888', canAccessFeature: () => true, refresh: () => {} });
 import { useAuth } from '../../security/auth/AuthProvider';
-import { TierBadge, CreditDisplay } from '../../components/EconomicState';
+const TierBadge = ({ size: _s }: { size?: string }) => null;
+const CreditDisplay = ({ variant: _v }: { variant?: string }) => null;
 import styles from './AccountPage.module.css';
 
 // Usage summary from billing service

@@ -3,7 +3,8 @@
 import React, { createContext, useContext, useEffect, useRef, ReactNode } from 'react';
 import { useSessionStore } from '../../stores/sessionStore';
 import { initPermissionChecker } from '../permissions';
-import { auditTrail } from '../../observability';
+// Observability module removed — inline no-op
+const auditTrail = { log: (..._args: any[]) => {} };
 import type { Permission } from '../../types';
 
 // Proactive token refresh interval (50 minutes - before 60 min expiry)
