@@ -15,7 +15,6 @@ const ExecutionPanel = lazy(() => import('../ExecutionPanel'));
 const UtilityPanel = lazy(() => import('../UtilityPanel'));
 const MemoryPanel = lazy(() => import('../MemoryPanel'));
 const GoalsPanel = lazy(() => import('../GoalsPanel'));
-const EconomyPanel = lazy(() => import('../EconomyPanel'));
 const NegotiationPanel = lazy(() => import('../NegotiationPanel'));
 const AuditPanel = lazy(() => import('../AuditPanel'));
 const DebugPanel = lazy(() => import('../DebugPanel'));
@@ -77,7 +76,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const [showFactory, setShowFactory] = useState(false);
 
   // Inline sub-panel state (all panels now open inline)
-  type InlinePanelType = 'execution' | 'utility' | 'memory' | 'capabilities' | 'goals' | 'economy' | 'negotiation' | 'governance' | 'audit' | 'debug' | 'workflow' | 'monitor' | 'external' | 'settings' | 'sessions';
+  type InlinePanelType = 'execution' | 'utility' | 'memory' | 'goals' | 'negotiation' | 'audit' | 'debug' | 'workflow' | 'monitor' | 'external' | 'settings' | 'sessions';
   const [inlinePanel, setInlinePanel] = useState<{ type: InlinePanelType; agentId?: string } | null>(null);
 
   // Publish pane state (inline, replaces sessions pane)
@@ -571,13 +570,10 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
         {/* Panel navigation icons — replaces sidebar */}
         <div className={styles.navIcons}>
           {([
-            { type: 'capabilities', icon: <Icons.Capabilities />, label: 'Capabilities' },
             { type: 'goals', icon: <Icons.Goals />, label: 'Goals' },
             { type: 'execution', icon: <Icons.Execution />, label: 'Execution' },
             { type: 'workflow', icon: <Icons.Fork />, label: 'Workflow' },
-            { type: 'economy', icon: <Icons.Economy />, label: 'Economy' },
             { type: 'negotiation', icon: <Icons.Negotiation />, label: 'Negotiation' },
-            { type: 'governance', icon: <Icons.Governance />, label: 'Governance' },
             { type: 'audit', icon: <Icons.Audit />, label: 'Audit' },
             { type: 'memory', icon: <Icons.Memory />, label: 'Memory' },
             { type: 'utility', icon: <Icons.TrendingUp />, label: 'Utility' },
@@ -881,9 +877,9 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
               {/* Inline panel header */}
               <div className={styles.publishHeader}>
-                {{ execution: <Icons.Execution />, utility: <Icons.TrendingUp />, memory: <Icons.Memory />, capabilities: <Icons.Capabilities />, goals: <Icons.Goals />, economy: <Icons.Economy />, negotiation: <Icons.Negotiation />, governance: <Icons.Governance />, audit: <Icons.Audit />, debug: <Icons.Health />, workflow: <Icons.Fork />, monitor: <Icons.Health />, external: <Icons.External />, settings: <Icons.Settings />, sessions: <Icons.Agents /> }[inlinePanel.type]}
+                {{ execution: <Icons.Execution />, utility: <Icons.TrendingUp />, memory: <Icons.Memory />, goals: <Icons.Goals />, negotiation: <Icons.Negotiation />, audit: <Icons.Audit />, debug: <Icons.Health />, workflow: <Icons.Fork />, monitor: <Icons.Health />, external: <Icons.External />, settings: <Icons.Settings />, sessions: <Icons.Agents /> }[inlinePanel.type]}
                 <span className={styles.publishTitle}>
-                  {{ execution: 'Execution', utility: 'Utility', memory: 'Memory', capabilities: 'Capabilities', goals: 'Goals', economy: 'Economy', negotiation: 'Negotiation', governance: 'Governance', audit: 'Audit', debug: 'Debug', workflow: 'Workflow', monitor: 'Monitor', external: 'External', settings: 'Settings', sessions: 'Sessions' }[inlinePanel.type]}
+                  {{ execution: 'Execution', utility: 'Utility', memory: 'Memory', goals: 'Goals', negotiation: 'Negotiation', audit: 'Audit', debug: 'Debug', workflow: 'Workflow', monitor: 'Monitor', external: 'External', settings: 'Settings', sessions: 'Sessions' }[inlinePanel.type]}
                 </span>
                 <button onClick={() => setInlinePanel(null)} className={styles.publishCloseBtn} title="Close">×</button>
               </div>
@@ -895,7 +891,6 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   {inlinePanel.type === 'utility' && <UtilityPanel />}
                   {inlinePanel.type === 'memory' && <MemoryPanel />}
                   {inlinePanel.type === 'goals' && <GoalsPanel />}
-                  {inlinePanel.type === 'economy' && <EconomyPanel />}
                   {inlinePanel.type === 'negotiation' && <NegotiationPanel />}
                   {inlinePanel.type === 'audit' && <AuditPanel />}
                   {inlinePanel.type === 'debug' && <DebugPanel />}
