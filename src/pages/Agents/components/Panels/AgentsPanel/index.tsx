@@ -403,38 +403,49 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     })();
   }, [toast, addAgent]);
 
-  // Clone agent
+  // Clone agent — deep copy all properties from the original
   const handleCloneAgent = useCallback(async (agent: Agent) => {
     try {
       const { createAgent } = await import('../../../../../api/agentEngine');
+      const srcConfig = agent.config || {} as any;
       const cloned = await createAgent({
         name: agent.name + ' (Clone)',
-        description: 'Cloned from ' + agent.name,
-        system_prompt: agent.config?.systemPrompt || '',
-        model: agent.config?.model || 'gpt-4-turbo-preview',
-        temperature: agent.config?.temperature || 0.7,
-        max_tokens: agent.config?.maxTokens || 4096,
-        tools: agent.capabilities || [],
+        description: 'Cloned from ' + agent.name + (agent.description ? '. ' + agent.description : ''),
+        system_prompt: srcConfig.systemPrompt || '',
+        model: srcConfig.model || 'gpt-4-turbo-preview',
+        temperature: srcConfig.temperature ?? 0.7,
+        max_tokens: srcConfig.maxTokens ?? 4096,
+        tools: srcConfig.tools?.map?.((t: any) => typeof t === 'string' ? t : t.name || t.id).filter(Boolean) || agent.capabilities || [],
+        safety_config: agent.safetyConfig || undefined,
       });
       toast.success('Agent cloned: ' + cloned.name);
-      // Add the cloned agent to the store
+      // Add the cloned agent to the store — preserve original type, config, capabilities
       addAgent({
         id: cloned.id,
         hash: '0x' + cloned.id.replace(/-/g, '').slice(0, 40),
         persisted: true,
         name: cloned.name,
-        type: 'executor',
+        type: agent.type || 'executor',
         status: 'idle' as const,
-        mode: 'governed' as const,
+        mode: agent.mode || 'governed' as const,
         version: String(cloned.version || 1) + '.0.0',
-        capabilities: [],
+        capabilities: [...(agent.capabilities || [])],
         executions: 0, costToday: 0, walletBalance: 0, pendingApprovals: 0,
-        riskLevel: 'low' as const, utilityScore: 0.5, ownerId: '',
+        riskLevel: agent.riskLevel || 'low' as const,
+        utilityScore: 0.5, ownerId: agent.ownerId || '',
         config: {
-          provider: 'openai', model: cloned.model || 'gpt-4-turbo-preview',
-          systemPrompt: '', temperature: 0.7, maxTokens: 4096, tools: [],
-          memoryConfig: { shortTermLimit: 10, longTermEnabled: false, vectorStoreEnabled: false, contextWindow: 4096 },
-          autonomyConfig: { canSpawnSubAgents: false, canModifySelf: false, canAccessNetwork: false, canExecuteCode: false, maxConcurrentTasks: 5 },
+          provider: srcConfig.provider || 'openai',
+          model: cloned.model || srcConfig.model || 'gpt-4-turbo-preview',
+          systemPrompt: srcConfig.systemPrompt || '',
+          temperature: srcConfig.temperature ?? 0.7,
+          maxTokens: srcConfig.maxTokens ?? 4096,
+          tools: srcConfig.tools ? [...srcConfig.tools] : [],
+          memoryConfig: srcConfig.memoryConfig
+            ? { ...srcConfig.memoryConfig }
+            : { shortTermLimit: 10, longTermEnabled: false, vectorStoreEnabled: false, contextWindow: 4096 },
+          autonomyConfig: srcConfig.autonomyConfig
+            ? { ...srcConfig.autonomyConfig }
+            : { canSpawnSubAgents: false, canModifySelf: false, canAccessNetwork: false, canExecuteCode: false, maxConcurrentTasks: 5 },
         },
         createdAt: new Date(), updatedAt: new Date(),
       });
