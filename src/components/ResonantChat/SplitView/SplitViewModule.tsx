@@ -13,10 +13,8 @@ import {
   VisualizerIcon
 } from '@/components/Icons/ResonantChatIcons';
 
-// Lazy load BuildModule
-const BuildModule = React.lazy(() => 
-  import('@/components/ResonantChat/BuildModule').then(m => ({ default: m.BuildModule }))
-);
+// BuildModule removed — service killed
+const BuildModule = ({ codeBlocks, onClose }: any) => null;
 
 // Types
 import type { ProjectFile, TabType } from './types';
