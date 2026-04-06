@@ -51,7 +51,6 @@ const ResonantChatSettingsPage = lazy(() => import('../pages/Settings/ResonantCh
 const PricingPage = lazy(() => import('../pages/Public/PricingPageComplete'));
 const APIDocsPage = lazy(() => import('../pages/API/APIDocsPage'));
 const ReviewQueuePage = lazy(() => import('../pages/AIReview/ReviewQueuePage'));
-const InvestorPitchDeckPage = lazy(() => import('../pages/Public/InvestorPitchDeckPage'));
 const AgentTeamsPage = lazy(() => import('../pages/AgentTeams/AgentTeamsPage'));
 const TeamDashboard = lazy(() => import('../pages/AgentTeams/TeamDashboard'));
 const WalletPage = lazy(() => import("../pages/Wallet/WalletPage"));
@@ -276,10 +275,6 @@ const router = createBrowserRouter([
   {
     path: '/pricing',
     element: withPublicShell(<PricingPage />)
-  },
-  {
-    path: '/investor-pitch-deck',
-    element: withPublicShell(<InvestorPitchDeckPage />)
   },
   {
     path: '/contact',

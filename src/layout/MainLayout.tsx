@@ -26,7 +26,6 @@ const MainLayout = ({ children }: Props) => {
   const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
 
   const isLandingPage = location.pathname === '/';
-  const isInvestorPitchDeckPage = location.pathname === '/investor-pitch-deck';
 
   // Enable global keyboard shortcuts
   useGlobalKeyboardShortcuts();
@@ -90,7 +89,7 @@ const MainLayout = ({ children }: Props) => {
   return (
     <div className="main-layout-wrapper">
       {/* Main Content Area */}
-      <div className={`main-content-area content-full${isAuthPage ? ' auth-page' : ''}${isLandingPage ? ' landing-page' : ''}${isInvestorPitchDeckPage ? ' investor-pitch-deck-page' : ''}`}>
+      <div className={`main-content-area content-full${isAuthPage ? ' auth-page' : ''}${isLandingPage ? ' landing-page' : ''}`}>
         {!isEmbedded && (
           <Header
             showLogout={true}
@@ -99,8 +98,8 @@ const MainLayout = ({ children }: Props) => {
             chatWidgetOpen={chatWidgetOpen}
           />
         )}
-        <main className={`main-content${isAuthPage ? ' auth-page-content' : ''}${isLandingPage ? ' landing-page-content' : ''}${isInvestorPitchDeckPage ? ' investor-pitch-deck-content' : ''}`}>
-          {isLandingPage || isInvestorPitchDeckPage ? children : <div className="page-wrapper">{children}</div>}
+        <main className={`main-content${isAuthPage ? ' auth-page-content' : ''}${isLandingPage ? ' landing-page-content' : ''}`}>
+          {isLandingPage ? children : <div className="page-wrapper">{children}</div>}
         </main>
         {/* Footer removed for cleaner UI */}
       </div>

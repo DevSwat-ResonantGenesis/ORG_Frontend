@@ -265,19 +265,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             </button>
 
 
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/investor-pitch-deck' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/investor-pitch-deck'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M2 12L8 4L14 12" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M5 8H11" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Investors</span>
-              {location.pathname === '/investor-pitch-deck' && <span className={styles.usmActiveIndicator} />}
-            </button>
 
           </div>
 
