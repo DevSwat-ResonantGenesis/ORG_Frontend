@@ -1,5 +1,7 @@
 import React, { Suspense, lazy, memo, useEffect, useCallback, useState, useRef } from 'react';
-import { useUIStore, useAgentStore, useExecutionStore, useEconomyStore } from '../../stores';
+import { useUIStore, useAgentStore, useExecutionStore } from '../../stores';
+// Economy store removed — inline stub
+const useEconomyStore = ((selector: any) => selector({ wallet: { totalBalance: 0, availableBalance: 0, stakedBalance: 0, pendingBalance: 0, dailySpent: 0, dailyLimit: 100 } })) as any;
 // Sidebar removed — all panels now inline in AgentsPanel
 import { PanelErrorBoundary, PanelSkeleton, Icons } from './components/shared';
 import { Header } from '../../components/layout/Header/Header';

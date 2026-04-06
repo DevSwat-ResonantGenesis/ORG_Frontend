@@ -1,5 +1,6 @@
 import React, { memo, useState, useCallback, useEffect } from 'react';
-import { useEconomyStore, useAgentStore } from '../../../../../stores';
+import { useAgentStore } from '../../../../../stores';
+const useEconomyStore = ((selector?: any) => selector ? selector({ wallet: { totalBalance: 0, availableBalance: 0 }, transactions: [], assets: [] }) : { credit: null }) as any;
 import { Icons } from '../../shared/Icons';
 import { getChainStats, getLatestBlock } from '../../../../../api/blockchain';
 import { fetchBillingOverview } from '../../../../../api/billing';

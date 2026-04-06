@@ -10,8 +10,7 @@ export { useUIStore, selectActiveSection, selectTheme, selectSidebarCollapsed } 
 // Execution Domain
 export { useExecutionStore, selectExecutions, selectActiveExecution, selectRunningExecutions, selectExecutionsByAgent } from './executionStore';
 
-// Economy Domain
-export { useEconomyStore, selectWallet, selectTransactions, selectAssets, selectTotalValue } from './economyStore';
+// Economy Domain — economyStore removed (service killed)
 
 // Workflow Domain
 export { useWorkflowStore, selectWorkflows, selectSelectedWorkflow, selectPublishedWorkflows } from './workflowStore';
