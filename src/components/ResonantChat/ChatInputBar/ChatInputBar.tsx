@@ -14,7 +14,8 @@ import {
   PlusIcon,
 } from '@/components/Icons/ResonantChatIcons';
 import { VoiceInput } from '@/components/ResonantChat/VoiceInput';
-import SkillsToolbar from '@/components/ResonantChat/SkillsToolbar/SkillsToolbar';
+// SkillsToolbar removed — inline stub
+const SkillsToolbar = ({ onEnabledSkillsChange }: any) => null;
 import styles from './ChatInputBar.module.css';
 import {
   SmartIcon,
