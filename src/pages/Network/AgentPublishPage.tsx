@@ -38,7 +38,6 @@ interface PublishResult {
 import { ENV } from '../../config/env';
 import { publishAgent as publishAgentAPI } from '../../services/nodeApi';
 import type { PublishAgentRequest } from '../../services/nodeApi';
-import { createAndPublishAgent } from '../../api/marketplace';
 import { useThemeStore } from '../../store/themeStore';
 
 const NODE_API_URL = ENV.apiUrl;
@@ -190,18 +189,6 @@ export default function AgentPublishPage() {
         await publishAgentAPI(publishRequest).catch(() => {});
       } catch { /* DSID network publish is best-effort */ }
 
-      // Publish to Marketplace Service (makes it appear in browse)
-      try {
-        await createAndPublishAgent({
-          name: manifest.name,
-          description: manifest.description,
-          category: manifest.category,
-          tags: manifest.tags,
-          agentConfig: fullManifest,
-        });
-      } catch (mpErr) {
-        console.warn('Marketplace publish failed:', mpErr);
-      }
       setResult({ success: true, manifestHash, codeChecksum });
     } catch (error: any) {
       setResult({ success: false, error: error.message });

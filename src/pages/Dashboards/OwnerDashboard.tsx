@@ -12,7 +12,8 @@ import V8ControlPanel from '../../components/owner/V8ControlPanel';
 import PlatformStatePhysics from '../../components/owner/PlatformStatePhysics';
 import DaemonControlPanel from '../../components/owner/DaemonControlPanel';
 import { getSystemMetrics, getServiceHealth, getDatabaseStats, getRaraAgents, getSystemOverview, getPlatformUsers, getPlatformAnalytics, getRecentActivity, getV8Data, getUsageAnalytics, SystemMetrics, ServiceHealthResponse, DatabaseStats, RaraData, PlatformAnalytics, ActivityResponse, V8Data, UsageAnalytics } from '../../api/system';
-import { getAdminLocStats, getLiveLocStats, type AdminLocStats, type LiveLocStats } from '../../api/ideLoc';
+type AdminLocStats = null;
+type LiveLocStats = null;
 
 // Icons
 const CrownIcon = () => (
@@ -423,14 +424,9 @@ const OwnerDashboard: React.FC = () => {
         console.warn('Auth metrics not available:', e);
       }
 
-      // Fetch LOC admin stats
+      // LOC admin stats removed — IDE service killed
       try {
-        const [locAdmin, liveLocData] = await Promise.all([
-          getAdminLocStats().catch(() => null),
-          getLiveLocStats().catch(() => null),
-        ]);
-        if (locAdmin) setLocAdminStats(locAdmin);
-        if (liveLocData) setLiveLoc(liveLocData);
+        // no-op
       } catch (e) {
         console.warn('LOC stats not available:', e);
       }

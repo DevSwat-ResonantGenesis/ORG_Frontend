@@ -10,7 +10,9 @@
  */
 
 import * as workflowsApi from '../api/workflows';
-import { createMarketplaceItem, publishMarketplaceListing } from '../api/marketplace';
+// Marketplace service removed — no-op stubs
+const createMarketplaceItem = async (..._args: any[]) => ({ id: 'stub' });
+const publishMarketplaceListing = async (..._args: any[]) => ({});
 
 // ── AI Events Scraper Workflow Definition ──
 const AI_EVENTS_SCRAPER_WORKFLOW = {

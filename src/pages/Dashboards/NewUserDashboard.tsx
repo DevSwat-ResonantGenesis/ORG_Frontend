@@ -8,7 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import { RefreshCw, Shield, Bot, Brain, Store, GitBranch, Activity, CheckCircle, XCircle, Zap, ArrowRight } from 'lucide-react';
 import { isAuthenticated } from '../../utils/auth-cookies';
 import { fetchDashboardData, type DashboardData } from '../../api/dashboard';
-import { getMyLocStats, getLiveLocStats, type UserLocStats, type LiveLocStats } from '../../api/ideLoc';
+type UserLocStats = null;
+type LiveLocStats = null;
 import { logger } from '../../utils/logger';
 import { Button } from '../../components/ui';
 import {
@@ -34,14 +35,8 @@ const NewUserDashboard: React.FC = () => {
 
   const loadDashboardData = useCallback(async () => {
     try {
-      const [dashboardData, locData, liveData] = await Promise.all([
-        fetchDashboardData(),
-        getMyLocStats().catch(() => null),
-        getLiveLocStats().catch(() => null),
-      ]);
+      const dashboardData = await fetchDashboardData();
       setData(dashboardData);
-      if (locData) setLocStats(locData);
-      if (liveData) setLiveLoc(liveData);
     } catch (err) {
       logger.error('Failed to load dashboard data', err);
     } finally {

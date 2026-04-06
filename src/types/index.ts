@@ -3,9 +3,7 @@
  * Import types from API modules when available, otherwise define here
  */
 
-import type { Prediction } from '../api/predictions';
 import type { Policy } from '../api/policies';
-import type { ComplianceSummary } from '../api/compliance';
 // import type { Thresholds } from '../api/settings'; // Commented - module not found
 import type { User } from '../api/users';
 
@@ -155,7 +153,7 @@ export interface SystemMetrics {
 }
 
 // Re-export API types for convenience
-export type { Prediction, Policy, ComplianceSummary, User };
+export type { Policy, User };
 
 // Define Thresholds locally since module not found
 export interface Thresholds {

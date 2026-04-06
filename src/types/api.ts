@@ -4,9 +4,7 @@
  */
 
 // Re-export types from API modules
-export type { Prediction } from '../api/predictions';
 export type { Policy } from '../api/policies';
-export type { ComplianceSummary } from '../api/compliance';
 export type { Thresholds } from '../api/settings';
 export type { User } from '../api/users';
 

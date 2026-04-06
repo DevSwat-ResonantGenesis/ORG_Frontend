@@ -1,4 +1,4 @@
-import type { Prediction } from '../api/predictions';
+type Prediction = { id: string; [key: string]: any };
 
 interface AnchorData {
   word: string;

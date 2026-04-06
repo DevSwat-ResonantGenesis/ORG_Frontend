@@ -4,8 +4,12 @@ import logger from '../../utils/logger';
 import { Button } from '../../components/ui';
 import { getSession } from '../../utils/auth';
 import { isAuthenticated } from '../../utils/auth-cookies';
-import { createPrediction, type Prediction } from '../../api/predictions';
-import { fetchEvidenceGraph, type EvidenceNode, type EvidenceEdge } from '../../api/evidence';
+// Predictions/Evidence services removed — inline stubs
+type Prediction = { id: string; [key: string]: any };
+type EvidenceNode = { id: string; label: string; type: string; [key: string]: any };
+type EvidenceEdge = { source: string; target: string; [key: string]: any };
+const createPrediction = async (..._args: any[]): Promise<Prediction> => ({ id: 'stub' });
+const fetchEvidenceGraph = async (_id: string): Promise<{ nodes: EvidenceNode[]; edges: EvidenceEdge[] }> => ({ nodes: [], edges: [] });
 import { createAIAuditLog } from '../../api/aiAudit';
 import { getMemoryAnchors } from '../../api/resonantChat';import { goToSignup } from '../../utils/navigation';
 

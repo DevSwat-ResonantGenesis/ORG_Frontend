@@ -7,7 +7,9 @@ import { anthropicProvider } from './anthropic';
 import { isProviderEnabled } from './config';
 import { type ProviderName, type ProviderRequest, type ProviderResponse, type ProviderError } from './types';
 import { logger } from '@/utils/logger';
-import { trackLLMUsage, trackResponseTime } from '@/api/dsidpAccelerator';
+// DSIDP tracking removed — service killed
+const trackLLMUsage = (..._args: unknown[]) => {};
+const trackResponseTime = (_duration: number) => {};
 
 /**
  * Provider Router
@@ -94,7 +96,7 @@ export async function routeToProvider(
         throw new Error(`Unknown provider: ${selectedProvider}`);
     }
 
-    // Track actual response time and LLM usage for DSIDP metrics
+    // Track response time and LLM usage (local no-op)
     const duration = performance.now() - startTime;
     trackResponseTime(duration);
     

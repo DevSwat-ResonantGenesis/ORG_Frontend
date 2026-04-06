@@ -14,7 +14,6 @@ import {
   goToHome,
   goToContact,
   goToLogin,
-  goToIDE,
 } from '@/utils/navigation';
 import styles from './UnifiedSidebarMenu.module.css';
 
@@ -206,19 +205,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               {location.pathname === '/code-visualizer' && <span className={styles.usmActiveIndicator} />}
             </button>
 
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/download-ide' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/download-ide'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="3" width="12" height="10" rx="1" />
-                  <path d="M8 6V10M6 8L8 10L10 8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Download IDE</span>
-              {location.pathname === '/download-ide' && <span className={styles.usmActiveIndicator} />}
-            </button>
 
             <button
               className={`${styles.usmItem} ${location.pathname === '/download-miner' ? styles.usmActive : ''}`}
@@ -233,19 +219,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               {location.pathname === '/download-miner' && <span className={styles.usmActiveIndicator} />}
             </button>
 
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/openclaw' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/openclaw'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="8" r="5.5" />
-                  <path d="M5.5 8h5M8 5.5v5" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>OpenClaw+</span>
-              {location.pathname === '/openclaw' && <span className={styles.usmActiveIndicator} />}
-            </button>
 
           </div>
 
@@ -291,19 +264,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               {location.pathname === '/pricing' && <span className={styles.usmActiveIndicator} />}
             </button>
 
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/marketplace' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/marketplace'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="6" width="12" height="8" rx="1" />
-                  <path d="M4 6V4C4 2.9 5.8 2 8 2C10.2 2 12 2.9 12 4V6" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Marketplace</span>
-              {location.pathname === '/marketplace' && <span className={styles.usmActiveIndicator} />}
-            </button>
 
             <button
               className={`${styles.usmItem} ${location.pathname === '/investor-pitch-deck' ? styles.usmActive : ''}`}

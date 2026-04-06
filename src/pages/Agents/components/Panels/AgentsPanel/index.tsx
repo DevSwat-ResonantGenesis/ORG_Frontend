@@ -6,7 +6,6 @@ import type { Agent } from '../../../../../types';
 import { deleteAgent } from '../../../../../api/agents';
 import { publishAgent as publishAgentAPI } from '../../../../../services/nodeApi';
 import type { PublishAgentRequest } from '../../../../../services/nodeApi';
-import { createAndPublishAgent } from '../../../../../api/marketplace';
 import fastapiClient from '../../../../../api/fastapiClient';
 import { executeAgentTask } from '../../../../../api/executions';
 import { useToastContext } from '../../../../../context/ToastContext';
@@ -15,11 +14,9 @@ import { FactoryPanel } from '../FactoryPanel';
 const ExecutionPanel = lazy(() => import('../ExecutionPanel'));
 const UtilityPanel = lazy(() => import('../UtilityPanel'));
 const MemoryPanel = lazy(() => import('../MemoryPanel'));
-const CapabilitiesPanel = lazy(() => import('../CapabilitiesPanel'));
 const GoalsPanel = lazy(() => import('../GoalsPanel'));
 const EconomyPanel = lazy(() => import('../EconomyPanel'));
 const NegotiationPanel = lazy(() => import('../NegotiationPanel'));
-const GovernancePanel = lazy(() => import('../GovernancePanel'));
 const AuditPanel = lazy(() => import('../AuditPanel'));
 const DebugPanel = lazy(() => import('../DebugPanel'));
 const WorkflowPanel = lazy(() => import('../WorkflowPanel'));
@@ -512,22 +509,8 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
         await publishAgentAPI(publishRequest).catch(() => {});
       } catch { /* DSID network publish is best-effort */ }
 
-      // Publish to Marketplace Service (this is what makes it appear in browse)
-      try {
-        await createAndPublishAgent({
-          name: publishManifest.name,
-          description: publishManifest.description,
-          category: publishManifest.category,
-          tags: publishManifest.tags,
-          agentConfig: fullManifest,
-        });
-        setPublishResult({ success: true, manifestHash, codeChecksum });
-        toast.success('Agent published to Marketplace');
-      } catch (mpError: any) {
-        console.warn('Marketplace publish failed:', mpError);
-        setPublishResult({ success: true, manifestHash, codeChecksum });
-        toast.success('Agent published (DSID only — marketplace listing may be delayed)');
-      }
+      setPublishResult({ success: true, manifestHash, codeChecksum });
+      toast.success('Agent published successfully');
     } catch (error: any) {
       setPublishResult({ success: false, error: error.message });
       toast.error('Publish failed: ' + error.message);
@@ -911,11 +894,9 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   {inlinePanel.type === 'execution' && <ExecutionPanel />}
                   {inlinePanel.type === 'utility' && <UtilityPanel />}
                   {inlinePanel.type === 'memory' && <MemoryPanel />}
-                  {inlinePanel.type === 'capabilities' && <CapabilitiesPanel />}
                   {inlinePanel.type === 'goals' && <GoalsPanel />}
                   {inlinePanel.type === 'economy' && <EconomyPanel />}
                   {inlinePanel.type === 'negotiation' && <NegotiationPanel />}
-                  {inlinePanel.type === 'governance' && <GovernancePanel />}
                   {inlinePanel.type === 'audit' && <AuditPanel />}
                   {inlinePanel.type === 'debug' && <DebugPanel />}
                   {inlinePanel.type === 'workflow' && <WorkflowPanel />}

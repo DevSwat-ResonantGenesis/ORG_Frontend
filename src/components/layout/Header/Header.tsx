@@ -340,18 +340,6 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            {/* V8 HashSphere - Superusers only */}
-            {(sessionData?.is_superuser || sessionData?.role === 'platform_owner') && (
-              <div className={styles.navItem}>
-                <a 
-                  className={styles.navButton}
-                  href="/v8/"
-                  style={{ color: '#f59e0b', textDecoration: 'none' }}
-                >
-                  ⭐ V8 HashSphere
-                </a>
-              </div>
-            )}
 
             {/* Agents - Top level */}
             <div className={styles.navItem}>
@@ -379,13 +367,6 @@ export const Header: React.FC<HeaderProps> = ({
               Investors
             </button>
 
-            {/* Download IDE */}
-            <button 
-              className={styles.navButton}
-              onClick={() => navigate('/download-ide')}
-            >
-              Download IDE
-            </button>
 
             {/* Download Miner */}
             <button 
@@ -395,21 +376,6 @@ export const Header: React.FC<HeaderProps> = ({
               Download Miner
             </button>
 
-            {/* OpenClaw+ */}
-            <button 
-              className={styles.navButton}
-              onClick={() => navigate('/openclaw')}
-            >
-              OpenClaw+
-            </button>
-
-            {/* Marketplace */}
-            <button 
-              className={styles.navButton}
-              onClick={() => navigate('/marketplace')}
-            >
-              Marketplace
-            </button>
 
           </nav>
 
@@ -578,13 +544,6 @@ export const Header: React.FC<HeaderProps> = ({
                     {/* Superuser/Platform Owner Tools */}
                     {(sessionData?.is_superuser || sessionData?.role === 'platform_owner') && (
                       <>
-                        <button className={styles.accountMenuItem} onClick={() => { navigate('/v8'); setShowAccountMenu(false); }}>
-                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <path d="M2 4L8 12L14 4" strokeLinecap="round" strokeLinejoin="round" />
-                            <text x="9" y="7" fontSize="6" fill="currentColor" stroke="none">8</text>
-                          </svg>
-                          V8 Engine
-                        </button>
                         <button className={styles.accountMenuItem} onClick={() => { navigate('/owner-dashboard?tab=control'); setShowAccountMenu(false); }}>
                           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                             <circle cx="8" cy="8" r="2" />

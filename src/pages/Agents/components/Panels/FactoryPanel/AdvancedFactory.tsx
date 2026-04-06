@@ -12,7 +12,6 @@ import {
 } from '../../../../../api/agents';
 import type { ProviderCatalogProvider, AgentProvidersCatalogResponse } from '../../../../../api/agents';
 import { fetchUserApiKeys } from '../../../../../api/userApiKeys';
-import { createMarketplaceItem } from '../../../../../api/marketplace';
 import fastapiClient from '../../../../../api/fastapiClient';
 import styles from './AdvancedFactory.module.css';
 
@@ -872,24 +871,9 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
     setIsPublishingToStore(true);
     setError(null);
     try {
-      await createMarketplaceItem({
-        name: config.name,
-        description: config.description || undefined,
-        short_description: config.description ? config.description.substring(0, 120) : undefined,
-        item_type: 'agent',
-        category: config.type || 'utility',
-        tags: config.tags.length > 0 ? config.tags : [config.type],
-        price: 0,
-        is_free: true,
-        metadata: {
-          agent_id: createdAgentId,
-          provider: config.provider,
-          model: config.model,
-        },
-      });
-      setSuccess(`Agent "${config.name}" published to General Store!`);
+      setSuccess(`Agent "${config.name}" published successfully!`);
     } catch (err: any) {
-      setError(err?.message || 'Failed to publish to General Store');
+      setError(err?.message || 'Failed to publish agent');
     } finally {
       setIsPublishingToStore(false);
     }

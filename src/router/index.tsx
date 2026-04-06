@@ -17,18 +17,8 @@ const UserDashboard = lazy(() => import('../pages/Dashboards/NewUserDashboard'))
 const PlusDashboard = lazy(() => import('../pages/Dashboards/PlusDashboard'));
 const EnterpriseDashboard = lazy(() => import('../pages/Dashboards/EnterpriseDashboard'));
 const OwnerDashboard = lazy(() => import('../pages/Dashboards/OwnerDashboard'));
-const V8Page = lazy(() => import('../pages/V8/V8Page'));
-const PredictionsPage = lazy(() =>
-  import('../pages/Predictions/PredictionsPage-2025')
-);
-
-const PredictionDetailPage = lazy(() =>
-  import('../pages/Predictions/PredictionDetailPage')
-);
-const EvidenceGraphPage = lazy(() => import('../pages/EvidenceGraph/EvidenceGraphPage'));
 const AnchorsPage = lazy(() => import('../pages/Anchors/AnchorsPage'));
 const PoliciesPage = lazy(() => import('../pages/Policies/PoliciesPage-2025'));
-const CompliancePage = lazy(() => import('../pages/Compliance/CompliancePage-2025'));
 const AuditLogsPage = lazy(() => import('../pages/Audit/AuditLogsPage-2025'));
 const SettingsPage = lazy(() => import('../pages/Settings/SettingsPage-2025'));
 const OrganizationPage = lazy(() => import('../pages/Organizations/OrganizationPage'));
@@ -39,13 +29,6 @@ const OwnerLoginPage = lazy(() => import('../pages/Auth/OwnerLoginPage'));
 const ForgotPasswordPage = lazy(() => import('../pages/Auth/ForgotPasswordPage-2025'));
 const HomeNew = lazy(() => import('../pages/HomeNew/HomeNew'));
 const SignupPage = lazy(() => import('../pages/Auth/SignupPageNew'));
-const TrainingJobsPage = lazy(() => import('../pages/ML/TrainingJobsPage'));
-const CreateTrainingJobPage = lazy(() => import('../pages/ML/CreateTrainingJobPage'));
-const TrainingJobDetailPage = lazy(() => import('../pages/ML/TrainingJobDetailPage'));
-const ModelVersionsPage = lazy(() => import('../pages/ML/ModelVersionsPage'));
-const WorkerMonitorPage = lazy(() => import('../pages/ML/WorkerMonitorPage'));
-const InvoicesPage = lazy(() => import('../pages/Finance/InvoicesPage'));
-const ReportsPage = lazy(() => import('../pages/Finance/ReportsPage'));
 const FeatureFlagsPage = lazy(() => import('../pages/Admin/FeatureFlagsPage'));
 const ProfilePage = lazy(() => import('../pages/Profile/ProfilePage'));
 const HelpCenterPage = lazy(() => import('../pages/Help/HelpCenterPage'));
@@ -56,41 +39,23 @@ const ValidationToolPage = lazy(() => import('../pages/Public/ValidationToolPage
 const LLMScannerPage = lazy(() => import('../pages/Public/LLMScannerPageFull'));
 const AIAuditDashboardPage = lazy(() => import('../pages/AIAudit/AIAuditDashboardPage'));
 const AIAuditLogDetailPage = lazy(() => import('../pages/AIAudit/AIAuditLogDetailPage'));
-const DSIDPPage = lazy(() => import('../pages/DSIDP/DSIDPPage'));
 const ResetPasswordPage = lazy(() => import('../pages/Auth/ResetPasswordPage-2025'));
 const OAuthCallbackPage = lazy(() => import('../pages/Auth/OAuthCallback'));
 const DesktopCallbackPage = lazy(() => import('../pages/Auth/DesktopCallbackPage'));
 const VerifyEmailPage = lazy(() => import('../pages/Auth/VerifyEmailPage'));
 const MFASetupPage = lazy(() => import('../pages/Settings/MFASetupPage'));
 const UserManagementPage = lazy(() => import('../pages/Admin/UserManagementPage'));
-const CreditsRefundsPage = lazy(() => import('../pages/Finance/CreditsRefundsPage'));
-const EvaluationDriftPage = lazy(() => import('../pages/ML/EvaluationDriftPage'));
-const HashSphereTestPage = lazy(() => import('../pages/HashSphereTest/HashSphereTestPage'));
 const HashSphereFullscreenPage = lazy(() => import('../pages/HashSphere/HashSphereFullscreenPage'));
-const TypographyShowcasePage = lazy(() => import('../pages/Typography/TypographyShowcasePage'));
 const ResonantChatPage = lazy(() => import('../pages/ResonantChat/ResonantChatPage'));
 const ResonantChatSettingsPage = lazy(() => import('../pages/Settings/ResonantChatSettings/ResonantChatSettingsPage'));
-const AIChatConsoleV2 = lazy(() => import('../pages/AIChatConsoleV2/AIChatConsoleV2'));
 const PricingPage = lazy(() => import('../pages/Public/PricingPageComplete'));
 const APIDocsPage = lazy(() => import('../pages/API/APIDocsPage'));
-const IDEPage = lazy(() => import('../pages/IDE/IDEPage'));
-const BuildPage = lazy(() => import('../pages/Build/BuildPage'));
-const EmbeddingTestPage = lazy(() => import('../pages/Test/EmbeddingTestPage'));
 const ReviewQueuePage = lazy(() => import('../pages/AIReview/ReviewQueuePage'));
 const InvestorPitchDeckPage = lazy(() => import('../pages/Public/InvestorPitchDeckPage'));
 const AgentTeamsPage = lazy(() => import('../pages/AgentTeams/AgentTeamsPage'));
 const TeamDashboard = lazy(() => import('../pages/AgentTeams/TeamDashboard'));
-const MarketplacePage = lazy(() => import('../pages/Marketplace/MarketplacePage'));
-const NFTMarketplace = lazy(() => import('../pages/Marketplace/NFTMarketplace'));
-const ItemDetailPage = lazy(() => import('../pages/Marketplace/ItemDetailPage'));
-const MyInstallationsPage = lazy(() => import('../pages/Marketplace/MyInstallationsPage'));
-const PurchasesPage = lazy(() => import('../pages/Marketplace/PurchasesPage'));
-const RabbitPage = lazy(() => import('../pages/Rabbit/RabbitPage'));
 const WalletPage = lazy(() => import("../pages/Wallet/WalletPage"));
-const AgenticChatPage = lazy(() => import("../pages/AgenticChat/AgenticChatPage"));
-const DownloadIDEPage = lazy(() => import("../pages/DownloadIDE/DownloadIDEPage"));
 const DownloadMinerPage = lazy(() => import("../pages/DownloadMiner/DownloadMinerPage"));
-const OpenClawPage = lazy(() => import("../pages/OpenClaw/OpenClawPage"));
 const AgentsPage = lazy(() => import('../pages/Agents/AgentOSv2'));
 const AgentDashboard = lazy(() => import('../pages/Agents/AgentOSv2'));
 const CreateTeamPage = lazy(() => import('../pages/AgentTeams/CreateTeamPage'));
@@ -98,24 +63,9 @@ const EditTeamPage = lazy(() => import('../pages/AgentTeams/EditTeamPage'));
 const AutonomousAgentDashboard = lazy(() => import('../pages/Dashboards/AutonomousAgentDashboard'));
 const NotFoundPage = lazy(() => import('../pages/NotFound/NotFoundPage'));
 
-// Owner-Only ML Training Page
-const MLTrainingPage = lazy(() => import('../pages/Owner/MLTraining'));
 const ChatSkillsControlPage = lazy(() => import('../pages/Owner/ChatSkillsControlPage'));
 const AgentsControlPage = lazy(() => import('../pages/Owner/AgentsControlPage'));
 
-// DSID-P Protocol Dashboard Pages
-const ProtocolDashboard = lazy(() => import('../pages/Protocol/ProtocolDashboard'));
-const SemanticExplorer = lazy(() => import('../pages/Protocol/SemanticExplorer'));
-const TrustDashboard = lazy(() => import('../pages/Protocol/TrustDashboard'));
-const GovernanceCenter = lazy(() => import('../pages/Protocol/GovernanceCenter'));
-const ComplianceHub = lazy(() => import('../pages/Protocol/ComplianceHub'));
-const SecurityMonitor = lazy(() => import('../pages/Protocol/SecurityMonitor'));
-const PerformanceDashboard = lazy(() => import('../pages/Protocol/PerformanceDashboard'));
-const BusinessDashboard = lazy(() => import('../pages/Protocol/BusinessDashboard'));
-const LiveExecutionMonitor = lazy(() => import('../pages/Protocol/LiveExecutionMonitor'));
-const GuidedScenarios = lazy(() => import('../pages/ControlPlane/GuidedScenarios'));
-const ControlPlaneOverview = lazy(() => import('../pages/ControlPlane/ControlPlaneOverview'));
-const ControlPlaneGuide = lazy(() => import('../pages/ControlPlane/ControlPlaneGuide'));
 
 // Decentralized Network Pages
 const AgentBrowserPage = lazy(() => import('../pages/Network/AgentBrowserPage'));
@@ -127,9 +77,6 @@ const ExecutionHistoryPage = lazy(() => import('../pages/Network/ExecutionHistor
 const AgentTemplatesPage = lazy(() => import('../pages/Network/AgentTemplatesPage'));
 const BlockchainDashboardPage = lazy(() => import("../pages/Network/BlockchainDashboardPage"));
 
-// Enterprise and Community Pages
-const EnterprisePage = lazy(() => import('../pages/Enterprise/EnterprisePage'));
-const CommunityPage = lazy(() => import('../pages/Community/CommunityPage'));
 
 // Developer Tools Pages
 const HashSpherePage = lazy(() => import('../pages/HashSphere/HashSpherePage'));
@@ -239,20 +186,6 @@ const router = createBrowserRouter([
     path: '/owner/agents-control',
     element: withShell(<AgentsControlPage />)
   },
-  // V8 Engine Page - For superusers only
-  {
-    path: '/v8',
-    element: withShell(<ProtectedRoute><V8Page /></ProtectedRoute>)
-  },
-  // ResonantGenesisPrivate - For superusers only
-  {
-    path: '/resonant-genesis-private',
-    element: withShell(<ProtectedRoute><V8Page /></ProtectedRoute>)
-  },
-  {
-    path: '/hash-sphere-test',
-    element: withShell(<HashSphereTestPage />)
-  },
   {
     path: '/hash-sphere/fullscreen',
     element: withShell(<HashSphereFullscreenPage />)
@@ -262,28 +195,12 @@ const router = createBrowserRouter([
     element: withShell(<ResonantChatPage />)
   },
   {
-    path: '/predictions',
-    element: withShell(<RoleRoute category="predictions"><PredictionsPage /></RoleRoute>)
-  },
-  {
-    path: '/predictions/:id',
-    element: withShell(<RoleRoute category="predictions"><PredictionDetailPage /></RoleRoute>)
-  },
-  {
-    path: '/evidence/:id',
-    element: withShell(<RoleRoute category="predictions"><EvidenceGraphPage /></RoleRoute>)
-  },
-  {
     path: '/anchors',
     element: withRole(<AnchorsPage />, ['admin', 'org_admin'])
   },
   {
     path: '/policies',
     element: withShell(<RoleRoute category="policies"><PoliciesPage /></RoleRoute>)
-  },
-  {
-    path: '/compliance',
-    element: withShell(<RoleRoute category="compliance"><CompliancePage /></RoleRoute>)
   },
   {
     path: '/audit',
@@ -311,36 +228,8 @@ const router = createBrowserRouter([
     element: withShell(<RoleRoute category="admin"><SystemDashboardPage /></RoleRoute>)
   },
   {
-    path: '/ml/training-jobs',
-    element: withShell(<RoleRoute category="ml_ops"><TrainingJobsPage /></RoleRoute>)
-  },
-  {
-    path: '/ml/training-jobs/new',
-    element: withShell(<RoleRoute category="ml_ops"><CreateTrainingJobPage /></RoleRoute>)
-  },
-  {
-    path: '/ml/training-jobs/:id',
-    element: withShell(<RoleRoute category="ml_ops"><TrainingJobDetailPage /></RoleRoute>)
-  },
-  {
-    path: '/ml/model-versions',
-    element: withShell(<RoleRoute category="ml_ops"><ModelVersionsPage /></RoleRoute>)
-  },
-  {
-    path: '/ml/worker',
-    element: withShell(<RoleRoute category="ml_ops"><WorkerMonitorPage /></RoleRoute>)
-  },
-  {
     path: '/autonomous-agents',
     element: withShell(<AutonomousAgentDashboard />)
-  },
-  {
-    path: '/finance/invoices',
-    element: withShell(<RoleRoute category="finance"><InvoicesPage /></RoleRoute>)
-  },
-  {
-    path: '/finance/reports',
-    element: withShell(<RoleRoute category="finance"><ReportsPage /></RoleRoute>)
   },
   {
     path: '/admin/feature-flags',
@@ -391,16 +280,6 @@ const router = createBrowserRouter([
   {
     path: '/investor-pitch-deck',
     element: withPublicShell(<InvestorPitchDeckPage />)
-  },
-  // Enterprise page
-  {
-    path: '/enterprise',
-    element: withPublicShell(<EnterprisePage />)
-  },
-  // Community page
-  {
-    path: '/community',
-    element: withPublicShell(<CommunityPage />)
   },
   {
     path: '/contact',
@@ -464,36 +343,16 @@ const router = createBrowserRouter([
     element: withShell(<RoleRoute category="predictions"><EditTeamPage /></RoleRoute>)
   },
   {
-    path: '/marketplace',
-    element: withShell(<ProtectedRoute><MarketplacePage /></ProtectedRoute>)
-  },
-  {
-    path: '/marketplace/nft',
-    element: withShell(<ProtectedRoute><NFTMarketplace /></ProtectedRoute>)
-  },
-  {
-    path: '/marketplace/items/:itemId',
-    element: withShell(<ProtectedRoute><ItemDetailPage /></ProtectedRoute>)
-  },
-  {
-    path: '/marketplace/installations',
-    element: withShell(<ProtectedRoute><MyInstallationsPage /></ProtectedRoute>)
-  },
-  {
-    path: '/marketplace/purchases',
-    element: withShell(<ProtectedRoute><PurchasesPage /></ProtectedRoute>)
-  },
-  {
     path: '/wallet',
     element: withShell(<ProtectedRoute><WalletPage /></ProtectedRoute>)
   },
   {
     path: '/resonant_assistant',
-    element: withShell(<ProtectedRoute><AgenticChatPage /></ProtectedRoute>)
+    element: <Navigate to="/chat" replace />
   },
   {
     path: '/agent',
-    element: <Navigate to="/resonant_assistant" replace />
+    element: <Navigate to="/chat" replace />
   },
   {
     path: '/reset-password',
@@ -512,37 +371,12 @@ const router = createBrowserRouter([
     element: withShell(<RoleRoute category="admin"><UserManagementPage /></RoleRoute>)
   },
   {
-    path: '/finance/credits-refunds',
-    element: withShell(<RoleRoute category="finance"><CreditsRefundsPage /></RoleRoute>)
-  },
-  {
-    path: '/ml/evaluation-drift',
-    element: withShell(<RoleRoute category="ml_ops"><EvaluationDriftPage /></RoleRoute>)
-  },
-  {
     path: '/resonant-chat',
     element: <Navigate to="/" replace /> // Resonant Chat is now the home page
-  },
-  // IDE disabled - using Build Page instead
-  {
-    path: '/ide',
-    element: withShell(<ProtectedRoute><IDEPage /></ProtectedRoute>) // IDE page - requires authentication
-  },
-  {
-    path: '/build',
-    element: withShell(<BuildPage />) // Standalone Project Builder page
-  },
-  {
-    path: '/ai-chat-console-v2',
-    element: withShell(<AIChatConsoleV2 />)
   },
   {
     path: '/api/docs',
     element: withPublicShell(<APIDocsPage />)
-  },
-  {
-    path: '/dsid-p',
-    element: withPublicShell(<DSIDPPage />)
   },
   // Decentralized Network - Protected routes (require authentication)
   {
@@ -600,10 +434,6 @@ const router = createBrowserRouter([
     element: <Navigate to="/network/templates" replace />
   },
   {
-    path: '/test-embedding',
-    element: withPublicShell(<EmbeddingTestPage />) // Public - no auth required for testing
-  },
-  {
     path: '/api',
     element: withPublicShell(<APIDocsPage />)
   },
@@ -632,43 +462,6 @@ const router = createBrowserRouter([
     path: '/hash-sphere-memory-api',
     element: withPublicShell(<HashSphereMemoryAPI />)
   },
-  // Control Plane - Requires Enterprise plan
-  {
-    path: '/control-plane',
-    element: withPlanRestriction(<ControlPlaneOverview />, 'enterprise')
-  },
-  {
-    path: '/control-plane/semantics',
-    element: withPlanRestriction(<SemanticExplorer />, 'enterprise')
-  },
-  {
-    path: '/control-plane/trust',
-    element: withPlanRestriction(<TrustDashboard />, 'enterprise')
-  },
-  {
-    path: '/control-plane/governance',
-    element: withPlanRestriction(<GovernanceCenter />, 'enterprise')
-  },
-  {
-    path: '/control-plane/compliance',
-    element: withPlanRestriction(<ComplianceHub />, 'enterprise')
-  },
-  {
-    path: '/control-plane/security',
-    element: withPlanRestriction(<SecurityMonitor />, 'enterprise')
-  },
-  {
-    path: '/control-plane/performance',
-    element: withPlanRestriction(<PerformanceDashboard />, 'enterprise')
-  },
-  {
-    path: '/control-plane/live',
-    element: withPlanRestriction(<LiveExecutionMonitor />, 'enterprise')
-  },
-  {
-    path: '/control-plane/guided',
-    element: withPlanRestriction(<ControlPlaneGuide />, 'enterprise')
-  },
   // Developer Tools
   {
     path: '/state-physics',
@@ -691,20 +484,8 @@ const router = createBrowserRouter([
     element: withPublicShell(<CodeVisualizerPage />)
   },
   {
-    path: '/rabbit',
-    element: withPublicShell(<RabbitPage />)
-  },
-  {
-    path: '/download-ide',
-    element: withPublicShell(<DownloadIDEPage />)
-  },
-  {
     path: '/download-miner',
     element: withPublicShell(<DownloadMinerPage />)
-  },
-  {
-    path: '/openclaw',
-    element: withPublicShell(<OpenClawPage />)
   },
 ]);
 
