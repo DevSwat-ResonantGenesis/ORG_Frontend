@@ -15,13 +15,6 @@ const distDir = path.resolve(__dirname, '..', 'dist');
 
 const OG_PAGES = [
   {
-    route: '/investor-pitch-deck',
-    title: 'Investor Pitch Deck – ResonantGenesis',
-    description: '~550K lines of production code. 30 microservices. 9 proprietary IP systems. Full-stack Agentic AI SaaS platform — production-deployed, available for acquisition. Built solo in 4 months.',
-    image: 'https://resonantgenesis.xyz/images/investorpitch/VR1.jpg',
-    url: 'https://resonantgenesis.xyz/investor-pitch-deck',
-  },
-  {
     route: '/pricing',
     title: 'Pricing – ResonantGenesis',
     description: 'Free tier, Plus, Enterprise, and Owner plans. Multi-agent orchestration, governed memory, Code Visualizer, hallucination detection, 7 LLM providers. Start free, scale to enterprise.',
@@ -97,13 +90,6 @@ const OG_PAGES = [
     description: 'Complete API reference for ResonantGenesis: authentication, chat, agents, billing, blockchain, memory, code analysis, skills, and 4,384+ endpoints across 30 microservices.',
     image: 'https://resonantgenesis.xyz/images/investorpitch/VR1.jpg',
     url: 'https://resonantgenesis.xyz/api/docs',
-  },
-  {
-    route: '/dsid-p',
-    title: 'DSID-P Protocol – Decentralized State Identity – ResonantGenesis',
-    description: 'Decentralized State Identity Protocol: custom blockchain with DSID records, HashNode graph, merkle roots, immutable audit entries, state snapshots, and anchor records.',
-    image: 'https://resonantgenesis.xyz/images/investorpitch/VR1.jpg',
-    url: 'https://resonantgenesis.xyz/dsid-p',
   },
   {
     route: '/validate',
