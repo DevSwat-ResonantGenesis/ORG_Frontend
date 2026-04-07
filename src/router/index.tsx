@@ -49,6 +49,7 @@ const AgentTeamsPage = lazy(() => import('../pages/AgentTeams/AgentTeamsPage'));
 const TeamDashboard = lazy(() => import('../pages/AgentTeams/TeamDashboard'));
 const WalletPage = lazy(() => import("../pages/Wallet/WalletPage"));
 const DownloadMinerPage = lazy(() => import("../pages/DownloadMiner/DownloadMinerPage"));
+const DownloadIDEPage = lazy(() => import("../pages/DownloadIDE/DownloadIDEPage"));
 const AgentsPage = lazy(() => import('../pages/Agents/AgentOSv2'));
 const CreateTeamPage = lazy(() => import('../pages/AgentTeams/CreateTeamPage'));
 const EditTeamPage = lazy(() => import('../pages/AgentTeams/EditTeamPage'));
@@ -459,6 +460,10 @@ const router = createBrowserRouter([
   {
     path: '/download-miner',
     element: withPublicShell(<DownloadMinerPage />)
+  },
+  {
+    path: '/download-ide',
+    element: withPublicShell(<DownloadIDEPage />)
   },
 ]);
 
