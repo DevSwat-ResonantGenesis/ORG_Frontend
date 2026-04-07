@@ -55,6 +55,12 @@ export const useThemeStore = create<ThemeState>((set) => {
         document.body.setAttribute('data-theme', t);
         document.documentElement.style.colorScheme = t;
 
+        // Update mobile safe area color
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', t === 'dark' ? '#000000' : '#ffffff');
+        // Also update any media-specific ones
+        document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute('content', t === 'dark' ? '#000000' : '#ffffff'));
+
         applyWarmthToDom(getWarmthFromStorage());
       }
       set({ theme: t });
@@ -73,6 +79,9 @@ export const useThemeStore = create<ThemeState>((set) => {
           document.documentElement.setAttribute('theme', next);
           document.body.setAttribute('data-theme', next);
           document.documentElement.style.colorScheme = next;
+
+          // Update mobile safe area color
+          document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute('content', next === 'dark' ? '#000000' : '#ffffff'));
 
           applyWarmthToDom(getWarmthFromStorage());
           
