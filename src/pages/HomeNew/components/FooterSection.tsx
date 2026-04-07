@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Twitter, Linkedin } from 'lucide-react';
+import { Twitter, Linkedin, Youtube, Mail } from 'lucide-react';
 
 // Custom Reddit icon since lucide-react doesn't have one
 const RedditIcon = ({ size = 18 }: { size?: number }) => (
@@ -59,8 +59,10 @@ export const FooterSection = () => {
                         }}>
                             {[
                                 { icon: Linkedin, href: 'https://www.linkedin.com/company/110915264' },
+                                { icon: Youtube, href: 'https://youtube.com/@resonantgenesis' },
                                 { icon: Twitter, href: 'https://x.com/resonantgenesis' },
                                 { icon: RedditIcon, href: 'https://www.reddit.com/r/resonantgenesis/' },
+                                { icon: Mail, href: 'mailto:info@dev-swat.com' },
                             ].map(({ icon: Icon, href }, i) => (
                                 <a
                                     key={i}
@@ -110,8 +112,10 @@ export const FooterSection = () => {
                         </h4>
                         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                             {[
-                                { label: 'About', to: '/about' },
                                 { label: 'Contact', to: '/contact' },
+                                { label: 'Pricing', to: '/pricing' },
+                                { label: 'Privacy Policy', to: '/privacy-policy' },
+                                { label: 'Terms of Service', to: '/terms-of-service' },
                             ].map(({ label, to }) => (
                                 <li key={label} style={{ marginBottom: '12px' }}>
                                     <Link
@@ -155,7 +159,7 @@ export const FooterSection = () => {
                         fontSize: '13px',
                         margin: 0,
                     }}>
-                        A product of DevSwat Inc. · Los Angeles, CA
+                        DevSwat Inc. San Francisco, California, USA · info@dev-swat.com
                     </p>
                 </div>
             </div>

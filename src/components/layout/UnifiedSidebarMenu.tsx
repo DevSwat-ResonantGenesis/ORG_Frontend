@@ -15,6 +15,7 @@ import {
   goToContact,
   goToLogin,
 } from '@/utils/navigation';
+import { useThemeStore } from '@/store/themeStore';
 import styles from './UnifiedSidebarMenu.module.css';
 
 interface UnifiedSidebarMenuProps {
@@ -29,6 +30,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { theme } = useThemeStore();
   const isLoggedIn = isAuthenticated();
   const sessionData = getSessionData();
   
@@ -206,15 +208,17 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             </button>
 
 
-            {/* Animated download items */}
+            {/* Download items with PNG icons */}
             <button
               className={styles.usmDownloadItem}
               onClick={() => { navigate('/download-miner'); onClose(); }}
             >
               <span className={styles.usmDlIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M8 2v6M8 8l-3-3M8 8l3-3M2 14h12" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                <img
+                  src={theme === 'dark' ? '/images/Header_icons/mining-light.png' : '/images/Header_icons/mining-dark.png'}
+                  alt="Miner"
+                  style={{ width: 18, height: 18, objectFit: 'contain' }}
+                />
               </span>
               <span className={styles.usmLabel}>Miner</span>
               {location.pathname === '/download-miner' && <span className={styles.usmActiveIndicator} />}
@@ -225,11 +229,11 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               onClick={() => { navigate('/download-ide'); onClose(); }}
             >
               <span className={styles.usmDlIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="1" y="2" width="14" height="10" rx="1" />
-                  <line x1="5" y1="14" x2="11" y2="14" strokeLinecap="round" />
-                  <line x1="8" y1="12" x2="8" y2="14" />
-                </svg>
+                <img
+                  src={theme === 'dark' ? '/images/Header_icons/ide-light.png' : '/images/Header_icons/ide-dark.png'}
+                  alt="IDE"
+                  style={{ width: 18, height: 18, objectFit: 'contain' }}
+                />
               </span>
               <span className={styles.usmLabel}>IDE</span>
               {location.pathname === '/download-ide' && <span className={styles.usmActiveIndicator} />}
@@ -240,11 +244,11 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               onClick={() => { navigate('/download-openclaw'); onClose(); }}
             >
               <span className={styles.usmDlIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M8 1L1 5l7 4 7-4-7-4z" />
-                  <path d="M1 11l7 4 7-4" />
-                  <path d="M1 8l7 4 7-4" />
-                </svg>
+                <img
+                  src="/images/Header_icons/openclaw.png"
+                  alt="OpenClaw"
+                  style={{ width: 18, height: 18, objectFit: 'contain' }}
+                />
               </span>
               <span className={styles.usmLabel}>OpenClaw+</span>
               {location.pathname === '/download-openclaw' && <span className={styles.usmActiveIndicator} />}

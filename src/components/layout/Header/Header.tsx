@@ -360,45 +360,45 @@ export const Header: React.FC<HeaderProps> = ({
 
 
 
-            {/* Download Miner — animated icon */}
+            {/* Download Miner — PNG icon */}
             <button 
               className={styles.navDownloadIcon}
               onClick={() => navigate('/download-miner')}
               title="Download Miner"
             >
-              <svg className={styles.dlIconSvg} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
+              <img
+                className={styles.dlIconImg}
+                src={theme === 'dark' ? '/images/Header_icons/mining-light.png' : '/images/Header_icons/mining-dark.png'}
+                alt="Miner"
+              />
               <span className={styles.dlLabel}>Miner</span>
             </button>
 
-            {/* Download IDE — animated icon */}
+            {/* Download IDE — PNG icon */}
             <button 
               className={styles.navDownloadIcon}
               onClick={() => navigate('/download-ide')}
               title="Download IDE"
             >
-              <svg className={styles.dlIconSvg} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-                <line x1="8" y1="21" x2="16" y2="21" />
-                <line x1="12" y1="17" x2="12" y2="21" />
-              </svg>
+              <img
+                className={styles.dlIconImg}
+                src={theme === 'dark' ? '/images/Header_icons/ide-light.png' : '/images/Header_icons/ide-dark.png'}
+                alt="IDE"
+              />
               <span className={styles.dlLabel}>IDE</span>
             </button>
 
-            {/* OpenClaw Extension — animated icon */}
+            {/* OpenClaw Extension — PNG icon */}
             <button 
               className={styles.navDownloadIcon}
               onClick={() => navigate('/download-openclaw')}
               title="OpenClaw Extension"
             >
-              <svg className={styles.dlIconSvg} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
-              </svg>
+              <img
+                className={styles.dlIconImg}
+                src="/images/Header_icons/openclaw.png"
+                alt="OpenClaw"
+              />
               <span className={styles.dlLabel}>OpenClaw</span>
             </button>
 

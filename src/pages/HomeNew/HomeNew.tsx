@@ -4,7 +4,8 @@ import styles from './HomeNew.module.css';
 
 // Import sub-components
 import { HeroSection } from './components/HeroSection';
- 
+import { FooterSection } from './components/FooterSection';
+
 
 const HomeNew = () => {
   useEffect(() => {
@@ -62,6 +63,7 @@ const HomeNew = () => {
       <main className={styles.main}>
         <HeroSection />
       </main>
+      <FooterSection />
     </div>
   );
 };
