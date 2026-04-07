@@ -28,7 +28,8 @@ const ProfilePage = lazy(() => import('../pages/Profile/ProfilePage'));
 const HelpCenterPage = lazy(() => import('../pages/Help/HelpCenterPage'));
 const HelpArticlePage = lazy(() => import('../pages/Help/HelpArticlePage'));
 const ContactPage = lazy(() => import('../pages/Public/ContactPageSimple'));
-// Legal pages removed - not needed for MVP
+const PrivacyPolicyPage = lazy(() => import('../pages/Public/PrivacyPolicyPage'));
+const TermsOfServicePage = lazy(() => import('../pages/Public/TermsOfServicePage'));
 const ValidationToolPage = lazy(() => import('../pages/Public/ValidationToolPageFull'));
 const LLMScannerPage = lazy(() => import('../pages/Public/LLMScannerPageFull'));
 const AIAuditDashboardPage = lazy(() => import('../pages/AIAudit/AIAuditDashboardPage'));
@@ -259,7 +260,14 @@ const router = createBrowserRouter([
     path: '/contact',
     element: withPublicShell(<ContactPage />)
   },
-  // Legal routes removed - not needed for MVP
+  {
+    path: '/privacy-policy',
+    element: withPublicShell(<PrivacyPolicyPage />)
+  },
+  {
+    path: '/terms-of-service',
+    element: withPublicShell(<TermsOfServicePage />)
+  },
   {
     path: '/validate',
     element: withPublicShell(<ValidationToolPage />)
