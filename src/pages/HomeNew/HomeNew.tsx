@@ -4,7 +4,6 @@ import styles from './HomeNew.module.css';
 
 // Import sub-components
 import { HeroSection } from './components/HeroSection';
-import { Link } from 'react-router-dom';
 
 
 const HomeNew = () => {
@@ -63,26 +62,6 @@ const HomeNew = () => {
       <main className={styles.main}>
         <HeroSection />
       </main>
-      {/* Simple one-line footer */}
-      <div style={{
-        padding: '12px 24px',
-        textAlign: 'center',
-        fontSize: '12px',
-        color: 'rgba(255,255,255,0.35)',
-        letterSpacing: '0.02em',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '16px',
-        flexWrap: 'wrap',
-      }}>
-        <span>© 2025 DevSwat Inc. San Francisco, CA</span>
-        <span style={{ opacity: 0.4 }}>·</span>
-        <Link to="/privacy-policy" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}>Privacy</Link>
-        <Link to="/terms-of-service" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}>Terms</Link>
-        <span style={{ opacity: 0.4 }}>·</span>
-        <a href="mailto:info@dev-swat.com" style={{ color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}>info@dev-swat.com</a>
-      </div>
     </div>
   );
 };

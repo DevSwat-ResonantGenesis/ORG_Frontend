@@ -452,7 +452,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
-              {showChatWidgetButton && onToggleChatWidget && !isResonantChatPage && (
+              {showChatWidgetButton && onToggleChatWidget && (
                 <button
                   type="button"
                   className={styles.chatWidgetButton}
