@@ -1371,11 +1371,11 @@
 }
 
 .dlIconImg {
-  width: 24px;
-  height: 24px;
+  width: 34px;
+  height: 34px;
   object-fit: contain;
   transition: all 0.25s ease;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .navDownloadIcon:hover .dlIconImg {
