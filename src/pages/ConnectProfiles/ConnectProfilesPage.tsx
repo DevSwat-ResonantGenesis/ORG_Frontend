@@ -258,9 +258,11 @@ const ConnectProfilesPage: React.FC = () => {
     if (service) {
       try {
         const result = await initiateGoogleServiceConnection(service);
-        // Store state for verification on callback
+        // Store state for verification on callback (both storages for resilience)
         sessionStorage.setItem(`sso_state_google-service-${service}`, result.state);
         sessionStorage.setItem('google_service_pending', service);
+        localStorage.setItem('google_service_pending', service);
+        localStorage.setItem(`sso_state_google-service-${service}`, result.state);
         window.location.href = result.authorization_url;
       } catch (e: any) {
         logger.error('Google service OAuth failed', e);

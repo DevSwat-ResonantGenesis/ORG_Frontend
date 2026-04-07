@@ -38,16 +38,20 @@ const OAuthCallbackPage: React.FC = () => {
         }
 
         // Check if this is a Google service connection callback (Drive/Calendar/Gmail)
-        const pendingService = sessionStorage.getItem('google_service_pending');
+        // Check BOTH sessionStorage and localStorage — sessionStorage can be lost during cross-origin redirects
+        const pendingService = sessionStorage.getItem('google_service_pending') || localStorage.getItem('google_service_pending');
         if (pendingService) {
           try {
             const result = await completeGoogleServiceConnection(code, state, pendingService);
+            // Clean up BOTH storages
             sessionStorage.removeItem('google_service_pending');
-            // Clean up all related state keys
-            for (let i = sessionStorage.length - 1; i >= 0; i--) {
-              const key = sessionStorage.key(i);
-              if (key && key.startsWith('sso_state_google-service-')) {
-                sessionStorage.removeItem(key);
+            localStorage.removeItem('google_service_pending');
+            for (const storage of [sessionStorage, localStorage]) {
+              for (let i = storage.length - 1; i >= 0; i--) {
+                const key = storage.key(i);
+                if (key && key.startsWith('sso_state_google-service-')) {
+                  storage.removeItem(key);
+                }
               }
             }
             // Redirect to connect-profiles with success
@@ -55,6 +59,7 @@ const OAuthCallbackPage: React.FC = () => {
             return;
           } catch (serviceError: any) {
             sessionStorage.removeItem('google_service_pending');
+            localStorage.removeItem('google_service_pending');
             logger.error('Google service connection failed', serviceError, { component: 'OAuthCallback' });
             navigate(`/connect-profiles?service=${pendingService}&status=error&message=${encodeURIComponent(serviceError?.response?.data?.detail || 'Connection failed')}`, { replace: true });
             return;
