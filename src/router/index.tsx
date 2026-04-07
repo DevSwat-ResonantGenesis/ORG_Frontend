@@ -7,15 +7,9 @@ import OwnerProtectedRoute from './OwnerProtectedRoute';
 import PlanRestrictedRoute from './PlanRestrictedRoute';
 import { isAuthenticated } from '@/utils/auth-cookies';
 
-// CANONICAL PAGES - Dashboard handles all billing features
-const AccountPage = lazy(() => import('../pages/Account/AccountPage'));
-// UsagePage removed - all metrics consolidated into Dashboard
-const ProfilePageNew = lazy(() => import('../pages/Profile/ProfilePageNew'));
-
-// Dashboards - 4 types: User, Plus, Enterprise, Owner
+// Dashboards
 const UserDashboard = lazy(() => import('../pages/Dashboards/NewUserDashboard'));
 const PlusDashboard = lazy(() => import('../pages/Dashboards/PlusDashboard'));
-const EnterpriseDashboard = lazy(() => import('../pages/Dashboards/EnterpriseDashboard'));
 const OwnerDashboard = lazy(() => import('../pages/Dashboards/OwnerDashboard'));
 const AnchorsPage = lazy(() => import('../pages/Anchors/AnchorsPage'));
 const PoliciesPage = lazy(() => import('../pages/Policies/PoliciesPage-2025'));
@@ -56,10 +50,8 @@ const TeamDashboard = lazy(() => import('../pages/AgentTeams/TeamDashboard'));
 const WalletPage = lazy(() => import("../pages/Wallet/WalletPage"));
 const DownloadMinerPage = lazy(() => import("../pages/DownloadMiner/DownloadMinerPage"));
 const AgentsPage = lazy(() => import('../pages/Agents/AgentOSv2'));
-const AgentDashboard = lazy(() => import('../pages/Agents/AgentOSv2'));
 const CreateTeamPage = lazy(() => import('../pages/AgentTeams/CreateTeamPage'));
 const EditTeamPage = lazy(() => import('../pages/AgentTeams/EditTeamPage'));
-const AutonomousAgentDashboard = lazy(() => import('../pages/Dashboards/AutonomousAgentDashboard'));
 const NotFoundPage = lazy(() => import('../pages/NotFound/NotFoundPage'));
 
 const ChatSkillsControlPage = lazy(() => import('../pages/Owner/ChatSkillsControlPage'));
@@ -82,7 +74,6 @@ const HashSpherePage = lazy(() => import('../pages/HashSphere/HashSpherePage'));
 const ResonantMemoryPage = lazy(() => import('../pages/ResonantMemory/ResonantMemoryPage'));
 const CodeVisualizerPage = lazy(() => import('../pages/CodeVisualizer/CodeVisualizerPage'));
 const StatePhysicsAPI = lazy(() => import('../pages/StatePhysicsAPI/StatePhysicsAPI'));
-const APIKeysPage = lazy(() => import('../pages/APIKeys/APIKeysPage'));
 const HashSphereMemoryAPI = lazy(() => import('../pages/HashSphereMemoryAPI/HashSphereMemoryAPI'));
 const ConnectProfilesPage = lazy(() => import('../pages/ConnectProfiles/ConnectProfilesPage'));
 
@@ -161,11 +152,6 @@ const router = createBrowserRouter([
     path: '/plus-dashboard',
     element: withShell(<PlusDashboard />)
   },
-  // /enterprise-dashboard - Enterprise clients (SSO, employees, roles, audit logs)
-  {
-    path: '/enterprise-dashboard',
-    element: withShell(<EnterpriseDashboard />)
-  },
   // Owner Dashboard - For superusers only (regular auth, superuser check in component)
   {
     path: '/owner-dashboard',
@@ -188,10 +174,6 @@ const router = createBrowserRouter([
   {
     path: '/hash-sphere/fullscreen',
     element: withShell(<HashSphereFullscreenPage />)
-  },
-  {
-    path: '/resonant-chat-next',
-    element: withShell(<ResonantChatPage />)
   },
   {
     path: '/anchors',
@@ -225,10 +207,6 @@ const router = createBrowserRouter([
   {
     path: '/admin/system',
     element: withShell(<RoleRoute category="admin"><SystemDashboardPage /></RoleRoute>)
-  },
-  {
-    path: '/autonomous-agents',
-    element: withShell(<AutonomousAgentDashboard />)
   },
   {
     path: '/admin/feature-flags',
@@ -315,7 +293,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/agents/:agentId',
-    element: <ProtectedRoute><AgentDashboard /></ProtectedRoute>
+    element: <ProtectedRoute><AgentsPage /></ProtectedRoute>
   },
   {
     path: '/agent-teams',

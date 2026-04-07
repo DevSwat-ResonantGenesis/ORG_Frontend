@@ -497,16 +497,6 @@ export const Header: React.FC<HeaderProps> = ({
                         </button>
                       )}
                       
-                      {/* 3. Enterprise/Org Dashboard - Superusers and Enterprise users */}
-                      {((sessionData?.is_superuser || sessionData?.role === 'platform_owner') || sessionData?.plan === 'enterprise' || sessionData?.role === 'org_admin') && (
-                        <button className={styles.accountMenuItem} onClick={() => { navigate('/enterprise-dashboard'); setShowAccountMenu(false); }}>
-                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <rect x="3" y="6" width="10" height="8" rx="1" />
-                            <path d="M5 6V4C5 2.9 5.9 2 7 2H9C10.1 2 11 2.9 11 4V6" />
-                          </svg>
-                          Enterprise Dashboard
-                        </button>
-                      )}
                       
                       {/* 4. Owner Platform Dashboard - Superusers only */}
                       {(sessionData?.is_superuser || sessionData?.role === 'platform_owner') && (

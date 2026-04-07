@@ -1,7 +1,5 @@
-import React, { Suspense, lazy, memo, useEffect, useCallback, useState, useRef } from 'react';
-import { useUIStore, useAgentStore, useExecutionStore } from '../../stores';
-// Economy store removed — inline stub
-const useEconomyStore = ((selector: any) => selector({ wallet: { totalBalance: 0, availableBalance: 0, stakedBalance: 0, pendingBalance: 0, dailySpent: 0, dailyLimit: 100 } })) as any;
+import React, { Suspense, lazy, memo, useEffect, useCallback, useState } from 'react';
+import { useAgentStore, useExecutionStore } from '../../stores';
 // Sidebar removed — all panels now inline in AgentsPanel
 import { PanelErrorBoundary, PanelSkeleton, Icons } from './components/shared';
 import { Header } from '../../components/layout/Header/Header';
@@ -10,9 +8,6 @@ import agentOSApi from './services/api';
 import fastapiClient from "../../api/fastapiClient";
 import type { Agent } from '../../types';
 import styles from './AgentOSv2.module.css';
-// IDE CommandPalette removed — inline stub
-type Command = { id: string; label: string; category?: string; disabled?: boolean };
-const CommandPalette = ({ open, onClose, onSelect, commands, files, mode, placeholder }: any) => open ? null : null;
 
 // All panels now inline in AgentsPanel — only AgentsPanel is loaded here
 const AgentsPanel = lazy(() => import('./components/Panels/AgentsPanel'));
@@ -20,47 +15,9 @@ const AgentsPanel = lazy(() => import('./components/Panels/AgentsPanel'));
 // AgentOS toolbar removed - now integrated into global Header component
 
 // ============== METRICS FOOTER COMPONENT ==============
-const NotificationBell: React.FC = memo(() => {
-  const [notifications, setNotifications] = useState<any[]>([]);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const unreadCount = notifications.filter(n => !n.read).length;
-
-  // Notifications endpoint not yet implemented — skip the API call
-  // to avoid 404 errors and wasted network round-trips
-
-  return (
-    <div style={{ position: 'relative', display: 'inline-block' }}>
-      <button
-        onClick={() => setShowDropdown(!showDropdown)}
-        style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', position: 'relative', padding: '4px' }}
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        {unreadCount > 0 && (
-          <span style={{ position: 'absolute', top: '-2px', right: '-2px', background: '#ef4444', color: '#fff', borderRadius: '50%', width: '14px', height: '14px', fontSize: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {unreadCount}
-          </span>
-        )}
-      </button>
-      {showDropdown && (
-        <div style={{ position: 'absolute', top: '100%', right: 0, width: '280px', background: '#1e1e2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', padding: '8px', zIndex: 1000, maxHeight: '300px', overflowY: 'auto' }}>
-          <div style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8f0', marginBottom: '8px', padding: '4px' }}>Notifications</div>
-          {notifications.map(n => (
-            <div key={n.id} style={{ padding: '8px', borderRadius: '6px', marginBottom: '4px', background: n.read ? 'transparent' : 'rgba(14,165,233,0.06)', fontSize: '11px', color: '#94a3b8' }}>
-              <div style={{ fontWeight: 600, color: n.type === 'warning' ? '#f59e0b' : n.type === 'error' ? '#ef4444' : '#e2e8f0', marginBottom: '2px' }}>{n.title}</div>
-              <div>{n.message}</div>
-            </div>
-          ))}
-          {notifications.length === 0 && <div style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontSize: '11px' }}>No notifications</div>}
-        </div>
-      )}
-    </div>
-  );
-});
-
 const MetricsFooter: React.FC = memo(() => {
   const agents = useAgentStore((state) => state.agents);
   const executions = useExecutionStore((state) => (Array.isArray(state.executions) ? state.executions : []));
-  const wallet = useEconomyStore((state) => state.wallet);
   const [platformMetrics, setPlatformMetrics] = useState<any>(null);
 
   // Poll real platform metrics from backend every 15 seconds
@@ -119,11 +76,6 @@ const MetricsFooter: React.FC = memo(() => {
         <span className={styles.metricLabel}>Success Rate</span>
       </div>
       <div className={styles.metricItem}>
-        <Icons.Wallet />
-        <span className={styles.metricValue}>${(wallet.totalBalance || 0).toFixed(2)}</span>
-        <span className={styles.metricLabel}>Balance</span>
-      </div>
-      <div className={styles.metricItem}>
         <span style={{ width: 8, height: 8, borderRadius: '50%', background: platformMetrics?.status === 'healthy' ? '#22c55e' : '#f59e0b', display: 'inline-block' }} />
         <span className={styles.metricValue}>{platformMetrics?.avg_response_ms || '—'}ms</span>
         <span className={styles.metricLabel}>Avg Response</span>
@@ -141,8 +93,6 @@ const AgentOSv2: React.FC = () => {
   const updateAgent = useAgentStore((state) => state.updateAgent);
   const agents = useAgentStore((state) => state.agents);
   const selectedAgentId = useAgentStore((state) => state.selectedAgentId);
-  const commandPaletteOpen = useUIStore((s) => s.commandPaletteOpen);
-  const setCommandPaletteOpen = useUIStore((s) => s.setCommandPaletteOpen);
 
   // Load agents from backend on mount
   useEffect(() => {
@@ -231,29 +181,6 @@ const AgentOSv2: React.FC = () => {
     loadAgentsFromBackend();
   }, [setAgents, setLoading, updateAgent]);
 
-  // Cmd/Ctrl+K opens Agents command palette
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      const isInputField =
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement ||
-        (e.target as HTMLElement)?.isContentEditable;
-
-      if (isInputField) return;
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        if (typeof setCommandPaletteOpen === 'function') setCommandPaletteOpen(true);
-      }
-
-      if (e.key === 'Escape' && commandPaletteOpen) {
-        e.preventDefault();
-        if (typeof setCommandPaletteOpen === 'function') setCommandPaletteOpen(false);
-      }
-    };
-
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [commandPaletteOpen, setCommandPaletteOpen]);
 
   // Poll OpenClaw agent connection status every 30s
   useEffect(() => {
@@ -279,51 +206,12 @@ const AgentOSv2: React.FC = () => {
     return () => clearInterval(interval);
   }, [agents, updateAgent]);
 
-  const buildCommands = useCallback((): Command[] => {
-    const canRun = Boolean(selectedAgentId);
-    return [
-      { id: 'agents:create', label: 'Create Agent', category: 'Agents' },
-      { id: 'agents:run', label: canRun ? 'Run Selected Agent' : 'Run Selected Agent (select one first)', category: 'Agents' },
-      { id: 'agents:details', label: canRun ? 'Open Selected Agent Details' : 'Open Selected Agent Details (select one first)', category: 'Agents' },
-      { id: 'agents:toggle-favorites', label: 'Toggle Favorites Filter', category: 'Agents' },
-      { id: 'agents:toggle-bulk', label: 'Toggle Bulk Mode', category: 'Agents' },
-      // All navigation now handled via inline panel icons in AgentsPanel header
-    ];
-  }, [selectedAgentId]);
-
-  const onCommandSelect = useCallback((cmd: Command) => {
-    if (cmd.id === 'agents:create') {
-      document.dispatchEvent(new CustomEvent('agentos:agents:openFactory'));
-    }
-
-    if (cmd.id === 'agents:run') {
-      if (!selectedAgentId) return;
-      document.dispatchEvent(new CustomEvent('agentos:agents:openModal', { detail: { type: 'run', agentId: selectedAgentId } }));
-    }
-
-    if (cmd.id === 'agents:details') {
-      if (!selectedAgentId) return;
-      document.dispatchEvent(new CustomEvent('agentos:agents:openModal', { detail: { type: 'detail', agentId: selectedAgentId } }));
-    }
-
-    if (cmd.id === 'agents:toggle-favorites') {
-      document.dispatchEvent(new CustomEvent('agentos:agents:toggleFavoritesFilter'));
-    }
-
-    if (cmd.id === 'agents:toggle-bulk') {
-      document.dispatchEvent(new CustomEvent('agentos:agents:toggleBulkMode'));
-    }
-
-  }, [selectedAgentId]);
 
   return (
     <>
       {!isEmbedded && <Header />}
       <div className={`${styles.agentOS} ${isEmbedded ? styles.embedded : ''}`}>
         <div className={styles.mainWrapper} style={{ marginLeft: 0, width: '100%' }}>
-          <div style={{ position: 'absolute', top: '8px', right: '16px', zIndex: 100 }}>
-            <NotificationBell />
-          </div>
           <main className={styles.mainContent}>
             <PanelErrorBoundary>
               <Suspense fallback={<PanelSkeleton />}>
@@ -335,16 +223,6 @@ const AgentOSv2: React.FC = () => {
           <MetricsFooter />
         </div>
       </div>
-
-      <CommandPalette
-        open={Boolean(commandPaletteOpen)}
-        mode="command"
-        commands={buildCommands()}
-        files={[]}
-        onSelect={onCommandSelect}
-        onClose={() => typeof setCommandPaletteOpen === 'function' && setCommandPaletteOpen(false)}
-        placeholder="Search agent commands…"
-      />
     </>
   );
 };
