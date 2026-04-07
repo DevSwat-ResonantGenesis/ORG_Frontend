@@ -185,6 +185,7 @@ const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties>
   },
   socialBtns: {
     display: 'flex',
+    flexDirection: 'column' as const,
     gap: '0.5rem',
   },
   socialBtn: {
@@ -344,14 +345,7 @@ export default function SignupPageNew() {
       <div style={styles.card}>
         <h1 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '0.5rem', textAlign: 'center' as const, paddingTop: '0.5rem' }}>Create your account</h1>
 
-        {plan !== 'free' && (
-          <div style={{ ...styles.planBadge, marginBottom: '1.5rem' }}>
-            <Check size={12} />
-            {plan.charAt(0).toUpperCase() + plan.slice(1)} Plan
-          </div>
-        )}
-
-        {plan === 'free' && <div style={{ marginBottom: '1rem' }} />}
+        <div style={{ marginBottom: '1rem' }} />
 
         {success ? (
           <div style={{ ...styles.success, flexDirection: 'column', alignItems: 'flex-start', gap: '0.75rem' }}>
@@ -419,9 +413,9 @@ export default function SignupPageNew() {
               />
               <span>
                 I agree to the{' '}
-                <Link to="/terms" style={styles.link}>Terms of Service</Link>
+                <Link to="/terms-of-service" style={styles.link}>Terms of Service</Link>
                 {' '}and{' '}
-                <Link to="/privacy" style={styles.link}>Privacy Policy</Link>
+                <Link to="/privacy-policy" style={styles.link}>Privacy Policy</Link>
               </span>
             </label>
 
