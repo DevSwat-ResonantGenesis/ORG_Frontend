@@ -444,24 +444,24 @@
 /* Light theme */
 [data-theme='light'] .heroCtaFuturistic {
   color: #000000;
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(8px);
+  background: transparent;
+  border-color: rgba(0, 0, 0, 0.08);
+  backdrop-filter: none;
 }
 
 [data-theme='light'] .heroCtaFuturistic:hover {
-  background: rgba(0, 0, 0, 0.04);
-  border-color: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.2);
 }
 
 [data-theme='light'] .heroCtaFuturistic::before,
 [data-theme='light'] .heroCtaFuturistic::after {
-  border-color: rgba(0, 0, 0, 0.4);
+  border-color: rgba(0, 0, 0, 0.12);
 }
 
 [data-theme='light'] .heroCtaFuturistic:hover::before,
 [data-theme='light'] .heroCtaFuturistic:hover::after {
-  border-color: rgba(0, 0, 0, 0.7);
+  border-color: rgba(0, 0, 0, 0.3);
 }
 
 [data-theme='light'] .heroCtaBorderGlow {

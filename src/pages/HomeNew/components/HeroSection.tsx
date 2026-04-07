@@ -90,7 +90,7 @@ export const HeroSection = () => {
                 <h1 className={heroTitleStyles.heroTitle}>
                     Own Your Intelligence.
                     <span className={heroTitleStyles.heroTitleTagline}>
-                        Simple as never before
+                        Simpler than ever
                     </span>
                 </h1>
 
@@ -100,7 +100,7 @@ export const HeroSection = () => {
 
                 <p className={heroTitleStyles.heroSubtitleSecondary}>
                     Build AI agents and projects with blockchain identity, enforced governance on every action, and a full economic layer built in.
-                    From agent factory &amp; code-execution IDE to mining in decentralized LLM training network. One ecosystem with unified cross-reasoning retrieval memory and economics. All yours.
+                    From agent factory &amp; code-execution IDE to mining on a decentralized LLM training network. One ecosystem with unified cross-reasoning retrieval memory and a full economic layer. All yours.
                 </p>
 
                 <button

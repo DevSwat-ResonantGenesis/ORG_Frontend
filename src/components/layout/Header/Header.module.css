@@ -392,22 +392,24 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: 0;
   background: transparent;
-  border: 1px solid transparent;
+  border: none;
   cursor: pointer;
   color: var(--text-primary);
-  transition: all 0.2s ease;
+  transition: opacity 0.15s ease;
 }
 
 .chatWidgetButton:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.10);
+  opacity: 0.7;
+  background: transparent;
+  border: none;
 }
 
 [data-theme='light'] .chatWidgetButton:hover {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.06);
+  opacity: 0.7;
+  background: transparent;
+  border: none;
 }
 .actions {
   display: flex;
@@ -912,29 +914,31 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+  border: none;
+  background: transparent;
   color: var(--text-primary);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: opacity 0.15s ease;
   padding: 0;
 }
 
 .authIconButton:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.25);
+  opacity: 0.7;
+  background: transparent;
+  border: none;
 }
 
 [data-theme='light'] .authIconButton {
-  border-color: rgba(0, 0, 0, 0.1);
-  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  background: transparent;
   color: var(--text-primary);
 }
 
 [data-theme='light'] .authIconButton:hover {
-  background: rgba(0, 0, 0, 0.1);
-  border-color: rgba(0, 0, 0, 0.15);
+  background: transparent;
+  border: none;
+  opacity: 0.7;
 }
 
 /* ============================================

@@ -26,8 +26,8 @@
 
 /* Floating Button - Clean icon only, no box */
 .floatingButton {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: transparent;
   border: none;
@@ -77,8 +77,8 @@
 }
 
 .floatingButton svg {
-  width: 16px;
-  height: 16px;
+  width: 22px;
+  height: 22px;
   color: rgba(255, 255, 255, 0.6) !important;
   fill: none;
   stroke: rgba(255, 255, 255, 0.6) !important;
