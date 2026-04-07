@@ -376,6 +376,14 @@ export const Header: React.FC<HeaderProps> = ({
               Download IDE
             </button>
 
+            {/* OpenClaw Extension */}
+            <button 
+              className={styles.navButton}
+              onClick={() => navigate('/download-openclaw')}
+            >
+              OpenClaw
+            </button>
+
           </nav>
 
           {/* AgentOS-specific elements when on /agents page */}
