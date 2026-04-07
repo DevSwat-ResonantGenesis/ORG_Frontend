@@ -402,6 +402,20 @@ export const Header: React.FC<HeaderProps> = ({
               <span className={styles.dlLabel}>OpenClaw</span>
             </button>
 
+            {/* API — PNG icon */}
+            <button 
+              className={styles.navDownloadIcon}
+              onClick={() => navigate('/api/docs')}
+              title="Connect Platform API"
+            >
+              <img
+                className={styles.dlIconImg}
+                src={theme === 'dark' ? '/images/Header_icons/api-light.png' : '/images/Header_icons/api-dark.png'}
+                alt="API"
+              />
+              <span className={styles.dlLabel}>API</span>
+            </button>
+
           </nav>
 
           {/* AgentOS-specific elements when on /agents page */}
