@@ -217,7 +217,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                 <img
                   src={theme === 'dark' ? '/images/Header_icons/mining-light.png' : '/images/Header_icons/mining-dark.png'}
                   alt="Miner"
-                  style={{ width: 18, height: 18, objectFit: 'contain' }}
+                  style={{ width: 28, height: 28, objectFit: 'contain' }}
                 />
               </span>
               <span className={styles.usmLabel}>Miner</span>
@@ -232,7 +232,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                 <img
                   src={theme === 'dark' ? '/images/Header_icons/ide-light.png' : '/images/Header_icons/ide-dark.png'}
                   alt="IDE"
-                  style={{ width: 18, height: 18, objectFit: 'contain' }}
+                  style={{ width: 28, height: 28, objectFit: 'contain' }}
                 />
               </span>
               <span className={styles.usmLabel}>IDE</span>
@@ -246,11 +246,11 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               <span className={styles.usmDlIcon}>
                 <img
                   src="/images/Header_icons/openclaw.png"
-                  alt="OpenClaw"
-                  style={{ width: 18, height: 18, objectFit: 'contain' }}
+                  alt="Connect"
+                  style={{ width: 28, height: 28, objectFit: 'contain' }}
                 />
               </span>
-              <span className={styles.usmLabel}>OpenClaw+</span>
+              <span className={styles.usmLabel}>Connect</span>
               {location.pathname === '/download-openclaw' && <span className={styles.usmActiveIndicator} />}
             </button>
 
@@ -262,7 +262,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                 <img
                   src={theme === 'dark' ? '/images/Header_icons/api-light.png' : '/images/Header_icons/api-dark.png'}
                   alt="API"
-                  style={{ width: 18, height: 18, objectFit: 'contain' }}
+                  style={{ width: 28, height: 28, objectFit: 'contain' }}
                 />
               </span>
               <span className={styles.usmLabel}>API</span>

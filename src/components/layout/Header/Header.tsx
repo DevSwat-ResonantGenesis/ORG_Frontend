@@ -399,7 +399,7 @@ export const Header: React.FC<HeaderProps> = ({
                 src="/images/Header_icons/openclaw.png"
                 alt="OpenClaw"
               />
-              <span className={styles.dlLabel}>OpenClaw</span>
+              <span className={styles.dlLabel}>Connect</span>
             </button>
 
             {/* API — PNG icon */}

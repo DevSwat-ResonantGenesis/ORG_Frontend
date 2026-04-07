@@ -104,9 +104,9 @@ const MainLayout = ({ children }: Props) => {
         {/* Footer removed for cleaner UI */}
       </div>
 
-      {/* Resonant Chat floating widget — desktop only (home page IS Resonant Chat) */}
-      {!isAuthPage && !isEmbedded && !isMobile && (
-        <FloatingChatWidget isOpen={chatWidgetOpen} onOpenChange={setChatWidgetOpen} hideLauncher={true} />
+      {/* Resonant Chat floating widget — desktop: header-controlled, mobile: floating bubble */}
+      {!isAuthPage && !isEmbedded && (
+        <FloatingChatWidget isOpen={chatWidgetOpen} onOpenChange={setChatWidgetOpen} hideLauncher={!isMobile} />
       )}
     </div>
   );
