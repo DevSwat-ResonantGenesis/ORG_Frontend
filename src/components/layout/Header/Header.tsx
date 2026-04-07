@@ -321,18 +321,18 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
               {activeDropdown === 'solutions' && (
                 <div className={styles.navDropdown}>
-                  <div className={styles.navDropdownGridTwoRows}>
+                  <div className={styles.navDropdownGridOneRow}>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-memory'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Synthetic Neural Memory</span>
-                      <span className={styles.navDropdownItemDesc}>A Physics-Informed, 9-Layer Cognitive Infrastructure for Autonomous Agents</span>
+                      <span className={styles.navDropdownItemTitle}>Hash Sphere Memory</span>
+                      <span className={styles.navDropdownItemDesc}>9-layer semantic memory — stores, links &amp; recalls knowledge across agents via dimensional resonance retrieval</span>
                     </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/state-physics'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Invariants SIM</span>
-                      <span className={styles.navDropdownItemDesc}>Economic constraint modeling</span>
+                      <span className={styles.navDropdownItemTitle}>State Physics SIM</span>
+                      <span className={styles.navDropdownItemDesc}>Constraint-based simulation — models token flows, governance rules &amp; system invariants before deploying live</span>
                     </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/code-visualizer'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>SAST & Dependency Graph Analysis</span>
-                      <span className={styles.navDropdownItemDesc}>Full-Stack Architecture Observability & Remediation Engine</span>
+                      <span className={styles.navDropdownItemTitle}>Code Visualizer</span>
+                      <span className={styles.navDropdownItemDesc}>Full-stack SAST — scans your codebase, maps dependency graphs, detects vulnerabilities &amp; visualizes architecture</span>
                     </button>
                   </div>
                 </div>
