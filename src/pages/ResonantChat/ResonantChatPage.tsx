@@ -4699,7 +4699,15 @@ const ResonantChatPage: React.FC = () => {
                             key={i}
                             onClick={() => {
                               setPresentedOptions(null);
-                              handleSend(opt.value);
+                              if (opt.url) {
+                                if (opt.url.startsWith('http')) {
+                                  window.open(opt.url, '_blank', 'noopener');
+                                } else {
+                                  navigate(opt.url);
+                                }
+                              } else {
+                                handleSend(opt.value);
+                              }
                             }}
                             style={{
                               display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px',
