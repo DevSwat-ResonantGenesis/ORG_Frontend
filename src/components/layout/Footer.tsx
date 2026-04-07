@@ -3,11 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   goToPricing, 
   goToHelp, 
-  goToAbout, 
   goToContact,
   goToPrivacy,
-  goToTerms,
-  goToCompliance
+  goToTerms
 } from '@/utils/navigation';
 import { useToolbar } from '@/context/ToolbarContext';
 import './Footer.css';
@@ -76,17 +74,14 @@ const Footer: React.FC<FooterProps> = ({ variant = 'default', toolbarActions: pr
           <div className="footer-section">
             <h4 className="footer-title">Company</h4>
             <div className="footer-links">
-              <a href="/about" onClick={(e) => { e.preventDefault(); goToAbout(navigate); }}>About</a>
-              <a href="/community" onClick={(e) => { e.preventDefault(); navigate('/community'); }}>Community Hub</a>
               <a href="/contact" onClick={(e) => { e.preventDefault(); goToContact(navigate); }}>Contact</a>
             </div>
           </div>
           <div className="footer-section">
             <h4 className="footer-title">Legal</h4>
             <div className="footer-links">
-              <a href="/public/legal/privacy" onClick={(e) => { e.preventDefault(); goToPrivacy(navigate); }}>Privacy</a>
-              <a href="/public/legal/terms" onClick={(e) => { e.preventDefault(); goToTerms(navigate); }}>Terms</a>
-              <a href="/public/legal/compliance" onClick={(e) => { e.preventDefault(); goToCompliance(navigate); }}>Compliance</a>
+              <a href="/privacy-policy" onClick={(e) => { e.preventDefault(); goToPrivacy(navigate); }}>Privacy</a>
+              <a href="/terms-of-service" onClick={(e) => { e.preventDefault(); goToTerms(navigate); }}>Terms</a>
             </div>
           </div>
         </div>

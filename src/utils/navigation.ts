@@ -155,31 +155,6 @@ export const goToHelp = (
   if (closeMenu) closeMenu();
 };
 
-/**
- * Navigate to About page
- * @param navigate - React Router navigate function
- * @param closeMenu - Optional callback to close menu
- */
-export const goToAbout = (
-  navigate: NavigateFunction,
-  closeMenu?: () => void
-) => {
-  navigate('/about');
-  if (closeMenu) closeMenu();
-};
-
-/**
- * Navigate to Careers page
- * @param navigate - React Router navigate function
- * @param closeMenu - Optional callback to close menu
- */
-export const goToCareers = (
-  navigate: NavigateFunction,
-  closeMenu?: () => void
-) => {
-  navigate('/careers');
-  if (closeMenu) closeMenu();
-};
 
 /**
  * Navigate to Contact page
@@ -229,7 +204,7 @@ export const goToPrivacy = (
   navigate: NavigateFunction,
   closeMenu?: () => void
 ) => {
-  navigate('/public/legal/privacy');
+  navigate('/privacy-policy');
   if (closeMenu) closeMenu();
 };
 
@@ -242,22 +217,10 @@ export const goToTerms = (
   navigate: NavigateFunction,
   closeMenu?: () => void
 ) => {
-  navigate('/public/legal/terms');
+  navigate('/terms-of-service');
   if (closeMenu) closeMenu();
 };
 
-/**
- * Navigate to Compliance page
- * @param navigate - React Router navigate function
- * @param closeMenu - Optional callback to close menu
- */
-export const goToCompliance = (
-  navigate: NavigateFunction,
-  closeMenu?: () => void
-) => {
-  navigate('/public/legal/compliance');
-  if (closeMenu) closeMenu();
-};
 
 /**
  * Navigate to Hash Sphere Test / Prototype page

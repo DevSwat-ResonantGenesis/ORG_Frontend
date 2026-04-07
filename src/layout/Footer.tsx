@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { goToPricing, goToHelp, goToAbout, goToContact, goToPrivacy, goToTerms, goToCompliance } from '../utils/navigation';
+import { goToPricing, goToHelp, goToContact, goToPrivacy, goToTerms } from '../utils/navigation';
 import styles from './Footer.module.css';
 
 interface FooterProps {
@@ -70,15 +70,6 @@ export const Footer: React.FC<FooterProps> = ({ variant = 'default' }) => {
             <h4 className={styles.title}>Company</h4>
             <div className={styles.links}>
               <a
-                href="/about"
-                onClick={(e) => {
-                  e.preventDefault();
-                  goToAbout(navigate);
-                }}
-              >
-                About
-              </a>
-              <a
                 href="/contact"
                 onClick={(e) => {
                   e.preventDefault();
@@ -94,7 +85,7 @@ export const Footer: React.FC<FooterProps> = ({ variant = 'default' }) => {
             <h4 className={styles.title}>Legal</h4>
             <div className={styles.links}>
               <a
-                href="/public/legal/privacy"
+                href="/privacy-policy"
                 onClick={(e) => {
                   e.preventDefault();
                   goToPrivacy(navigate);
@@ -103,22 +94,13 @@ export const Footer: React.FC<FooterProps> = ({ variant = 'default' }) => {
                 Privacy
               </a>
               <a
-                href="/public/legal/terms"
+                href="/terms-of-service"
                 onClick={(e) => {
                   e.preventDefault();
                   goToTerms(navigate);
                 }}
               >
                 Terms
-              </a>
-              <a
-                href="/public/legal/compliance"
-                onClick={(e) => {
-                  e.preventDefault();
-                  goToCompliance(navigate);
-                }}
-              >
-                Compliance
               </a>
             </div>
           </div>
