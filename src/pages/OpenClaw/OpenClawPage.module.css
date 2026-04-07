@@ -1,5 +1,5 @@
 /* ============================================
-   Download Miner Page — Black & white only
+   OpenClaw Page — Black & white only
    ============================================ */
 
 .page {
@@ -57,12 +57,6 @@
   font-size: 0.85rem;
   font-weight: 500;
   letter-spacing: 0.02em;
-}
-
-.heroBadgeLogo {
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
 }
 
 .heroTitle {
@@ -287,17 +281,6 @@
   background: rgba(255, 255, 255, 0.04);
 }
 
-.featureIcon {
-  margin-bottom: 14px;
-  color: var(--text-primary, #e4e4e7);
-  opacity: 0.85;
-  transition: transform 0.3s ease;
-}
-
-.featureCard:hover .featureIcon {
-  transform: translateY(-2px);
-}
-
 .featureTitle {
   margin: 0 0 8px;
   font-size: 1.05rem;
@@ -432,7 +415,7 @@
   color: #818cf8;
 }
 
-.faqLabelToken {
+.faqLabelAuth {
   background: rgba(52, 211, 153, 0.15);
   color: #34d399;
 }
@@ -607,6 +590,136 @@
 
 [data-theme='light'] .featureIcon {
   color: #18181b;
+}
+
+/* ── Tool Catalog ── */
+.toolCatalog {
+  padding: 80px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.catalogGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+}
+
+.catalogCategory {
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.catalogCategory:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.catalogHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: none;
+  border: none;
+  color: var(--text-primary, #e5e7eb);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.catalogCategoryName {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.catalogCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary, #a1a1aa);
+}
+
+.catalogChevron {
+  width: 18px;
+  height: 18px;
+  color: var(--text-secondary, #a1a1aa);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.catalogChevronOpen {
+  transform: rotate(180deg);
+}
+
+.catalogTools {
+  padding: 0 20px 16px;
+  display: grid;
+  gap: 6px;
+}
+
+.catalogTool {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.catalogToolName {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: var(--accent-color, #818cf8);
+  white-space: nowrap;
+}
+
+.catalogToolDesc {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #a1a1aa);
+  line-height: 1.45;
+}
+
+[data-theme='light'] .catalogCategory {
+  background: #fff;
+  border-color: #e4e4e7;
+}
+
+[data-theme='light'] .catalogCategory:hover {
+  border-color: #a1a1aa;
+}
+
+[data-theme='light'] .catalogCount {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .catalogTool {
+  border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme='light'] .catalogToolName {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 /* ── Responsive ── */

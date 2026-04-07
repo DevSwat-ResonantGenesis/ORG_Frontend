@@ -51,7 +51,7 @@ const TeamDashboard = lazy(() => import('../pages/AgentTeams/TeamDashboard'));
 const WalletPage = lazy(() => import("../pages/Wallet/WalletPage"));
 const DownloadMinerPage = lazy(() => import("../pages/DownloadMiner/DownloadMinerPage"));
 const DownloadIDEPage = lazy(() => import("../pages/DownloadIDE/DownloadIDEPage"));
-const DownloadOpenClawPage = lazy(() => import("../pages/DownloadOpenClaw/DownloadOpenClawPage"));
+const OpenClawPage = lazy(() => import("../pages/OpenClaw/OpenClawPage"));
 const AgentsPage = lazy(() => import('../pages/Agents/AgentOSv2'));
 const CreateTeamPage = lazy(() => import('../pages/AgentTeams/CreateTeamPage'));
 const EditTeamPage = lazy(() => import('../pages/AgentTeams/EditTeamPage'));
@@ -476,7 +476,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/download-openclaw',
-    element: withPublicShell(<DownloadOpenClawPage />)
+    element: withPublicShell(<OpenClawPage />)
   },
 ]);
 

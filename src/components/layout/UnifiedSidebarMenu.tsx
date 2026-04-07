@@ -206,44 +206,47 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             </button>
 
 
+            {/* Animated download items */}
             <button
-              className={`${styles.usmItem} ${location.pathname === '/download-miner' ? styles.usmActive : ''}`}
+              className={styles.usmDownloadItem}
               onClick={() => { navigate('/download-miner'); onClose(); }}
             >
-              <span className={styles.usmIcon}>
+              <span className={styles.usmDlIcon}>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M8 2v6M8 8l-3-3M8 8l3-3M2 14h12" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Download Miner</span>
+              <span className={styles.usmLabel}>Miner</span>
               {location.pathname === '/download-miner' && <span className={styles.usmActiveIndicator} />}
             </button>
 
             <button
-              className={`${styles.usmItem} ${location.pathname === '/download-ide' ? styles.usmActive : ''}`}
+              className={styles.usmDownloadItem}
               onClick={() => { navigate('/download-ide'); onClose(); }}
             >
-              <span className={styles.usmIcon}>
+              <span className={styles.usmDlIcon}>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="2" width="12" height="12" rx="1" />
-                  <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
+                  <rect x="1" y="2" width="14" height="10" rx="1" />
+                  <line x1="5" y1="14" x2="11" y2="14" strokeLinecap="round" />
+                  <line x1="8" y1="12" x2="8" y2="14" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Download IDE</span>
+              <span className={styles.usmLabel}>IDE</span>
               {location.pathname === '/download-ide' && <span className={styles.usmActiveIndicator} />}
             </button>
 
             <button
-              className={`${styles.usmItem} ${location.pathname === '/download-openclaw' ? styles.usmActive : ''}`}
+              className={styles.usmDownloadItem}
               onClick={() => { navigate('/download-openclaw'); onClose(); }}
             >
-              <span className={styles.usmIcon}>
+              <span className={styles.usmDlIcon}>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M4 3C4 2.5 4.5 2 5 2H11C11.5 2 12 2.5 12 3V13C12 13.5 11.5 14 11 14H5C4.5 14 4 13.5 4 13V3Z" />
-                  <path d="M7 6L9 8L7 10" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M8 1L1 5l7 4 7-4-7-4z" />
+                  <path d="M1 11l7 4 7-4" />
+                  <path d="M1 8l7 4 7-4" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>OpenClaw Extension</span>
+              <span className={styles.usmLabel}>OpenClaw+</span>
               {location.pathname === '/download-openclaw' && <span className={styles.usmActiveIndicator} />}
             </button>
 
