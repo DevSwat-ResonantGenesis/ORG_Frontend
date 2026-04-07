@@ -944,10 +944,10 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className, isOp
                   <div className={styles.emptyState}>
                     <ChatIcon className={styles.emptyIcon} />
                     <p className={styles.emptyText}>
-                      Start a conversation with Resonant Chat
+                      Ask Resonant about ResonantGenesis
                     </p>
                     <p className={styles.emptySubtext}>
-                      Ask questions, get insights, or continue your previous conversation
+                      Learn about the platform, tools, agents, mining, and more — your AI assistant knows it all
                     </p>
                   </div>
                 ) : (
@@ -1198,7 +1198,7 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className, isOp
                         textarea.style.height = `${Math.min(textarea.scrollHeight, 120)}px`;
                       }}
                       onKeyDown={handleKeyDown}
-                      placeholder="Type your message..."
+                      placeholder="Ask anything about ResonantGenesis..."
                       rows={1}
                       disabled={isLoading}
                     />
