@@ -21,14 +21,14 @@
   :global(html.resonant-chat-page),
   :global(body.resonant-chat-page),
   :global(body.resonant-chat-page #root) {
-    background: var(--color-bg-root, var(--bg-primary, #000000));
-    background-color: var(--color-bg-root, var(--bg-primary, #000000));
+    background: #000000 !important;
+    background-color: #000000 !important;
   }
   :global(html.resonant-chat-page[data-theme='light']),
   :global([data-theme='light'] body.resonant-chat-page),
   :global([data-theme='light'] body.resonant-chat-page #root) {
-    background: var(--color-bg-root, var(--bg-primary, #ffffff));
-    background-color: var(--color-bg-root, var(--bg-primary, #ffffff));
+    background: #ffffff !important;
+    background-color: #ffffff !important;
   }
 }
 

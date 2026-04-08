@@ -267,47 +267,13 @@ const ResonantChatPage: React.FC = () => {
     return () => document.body.classList.remove('resonant-chat-page');
   }, []);
 
-  // Mobile safe area: inject <style> tag + override theme-color metas
+  // Mobile safe area: update theme-color meta for Safari/Brave address bar only
   const { theme: safeAreaTheme } = useThemeStore();
   useEffect(() => {
-    // On mobile (< 768px), use home page background (black/white); on desktop use gray (#262321)
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-    const chatBg = safeAreaTheme === 'dark'
-      ? (isMobile ? '#000000' : '#262321')
-      : '#ffffff';
+    // Just update meta theme-color, let CSS handle the actual background
+    const chatBg = safeAreaTheme === 'dark' ? '#262321' : '#ffffff';
 
-    // 1. Inject a <style> tag — always loads LAST, beats all other CSS
-    // Remove any existing one first (prevents duplicates on re-render)
-    const existing = document.getElementById('resonant-chat-safe-area');
-    if (existing) existing.remove();
-    const style = document.createElement('style');
-    style.id = 'resonant-chat-safe-area';
-    style.textContent = `
-      :root, html, html[data-theme="dark"], html[data-theme="light"],
-      html:not([data-theme="light"]), html[data-theme=""],
-      body, body[data-theme="dark"], body[data-theme="light"],
-      body:not([data-theme="light"]), body[data-theme=""],
-      #root {
-        --bg-primary: ${chatBg} !important;
-        --color-bg-root: ${chatBg} !important;
-        background: ${chatBg} !important;
-        background-color: ${chatBg} !important;
-      }
-    `;
-    document.head.appendChild(style);
-
-    // 2. Also set inline styles directly — ultimate fallback
-    document.documentElement.style.setProperty('background', chatBg, 'important');
-    document.documentElement.style.setProperty('background-color', chatBg, 'important');
-    document.body.style.setProperty('background', chatBg, 'important');
-    document.body.style.setProperty('background-color', chatBg, 'important');
-    const rootEl = document.getElementById('root');
-    if (rootEl) {
-      rootEl.style.setProperty('background', chatBg, 'important');
-      rootEl.style.setProperty('background-color', chatBg, 'important');
-    }
-
-    // 2. Override all theme-color meta tags for Safari/Brave address bar
+    // Override theme-color meta tags for Safari/Brave address bar only
     const allMetas = document.querySelectorAll('meta[name="theme-color"]') as NodeListOf<HTMLMetaElement>;
     const prevValues: { meta: HTMLMetaElement; content: string }[] = [];
     allMetas.forEach(m => {
@@ -322,53 +288,7 @@ const ResonantChatPage: React.FC = () => {
       document.head.appendChild(created);
     }
 
-    // Handle resize to update background when crossing mobile/desktop breakpoint
-    const handleResize = () => {
-      const nowMobile = window.innerWidth < 768;
-      const newBg = safeAreaTheme === 'dark'
-        ? (nowMobile ? '#000000' : '#262321')
-        : '#ffffff';
-      if (newBg !== chatBg) {
-        // Re-trigger effect by updating a dummy state or just reload
-        // For simplicity, we update the style directly
-        const updatedStyle = document.getElementById('resonant-chat-safe-area');
-        if (updatedStyle) {
-          updatedStyle.textContent = `
-            :root, html, body, #root {
-              --bg-primary: ${newBg} !important;
-              --color-bg-root: ${newBg} !important;
-              background: ${newBg} !important;
-              background-color: ${newBg} !important;
-            }
-          `;
-        }
-        document.documentElement.style.setProperty('background', newBg, 'important');
-        document.documentElement.style.setProperty('background-color', newBg, 'important');
-        document.body.style.setProperty('background', newBg, 'important');
-        document.body.style.setProperty('background-color', newBg, 'important');
-        if (rootEl) {
-          rootEl.style.setProperty('background', newBg, 'important');
-          rootEl.style.setProperty('background-color', newBg, 'important');
-        }
-      }
-    };
-    window.addEventListener('resize', handleResize);
-
     return () => {
-      window.removeEventListener('resize', handleResize);
-      // Remove injected style
-      const el = document.getElementById('resonant-chat-safe-area');
-      if (el) el.remove();
-      // Remove inline styles
-      document.documentElement.style.removeProperty('background');
-      document.documentElement.style.removeProperty('background-color');
-      document.body.style.removeProperty('background');
-      document.body.style.removeProperty('background-color');
-      const rootCleanup = document.getElementById('root');
-      if (rootCleanup) {
-        rootCleanup.style.removeProperty('background');
-        rootCleanup.style.removeProperty('background-color');
-      }
       // Restore meta tags
       prevValues.forEach(({ meta, content }) => { meta.content = content; });
       if (created?.parentNode) created.parentNode.removeChild(created);
