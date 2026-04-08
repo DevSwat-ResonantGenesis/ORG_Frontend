@@ -31,19 +31,19 @@ body {
   /* transition removed — was causing slow typing & animations */
 }
 
-/* Remove default margins - EXCLUDE IDE and all its descendants */
-:not(.ide-container):not(.ide-container *) h1, 
-:not(.ide-container):not(.ide-container *) h2, 
-:not(.ide-container):not(.ide-container *) h3, 
-:not(.ide-container):not(.ide-container *) h4, 
-:not(.ide-container):not(.ide-container *) h5, 
-:not(.ide-container):not(.ide-container *) h6, 
-:not(.ide-container):not(.ide-container *) p, 
-:not(.ide-container):not(.ide-container *) ul, 
-:not(.ide-container):not(.ide-container *) ol, 
-:not(.ide-container):not(.ide-container *) li, 
-:not(.ide-container):not(.ide-container *) blockquote, 
-:not(.ide-container):not(.ide-container *) pre {
+/* Remove default margins - EXCLUDE IDE descendants AND CSS module elements */
+:not(.ide-container):not(.ide-container *) h1:not([class*="_"]), 
+:not(.ide-container):not(.ide-container *) h2:not([class*="_"]), 
+:not(.ide-container):not(.ide-container *) h3:not([class*="_"]), 
+:not(.ide-container):not(.ide-container *) h4:not([class*="_"]), 
+:not(.ide-container):not(.ide-container *) h5:not([class*="_"]), 
+:not(.ide-container):not(.ide-container *) h6:not([class*="_"]), 
+:not(.ide-container):not(.ide-container *) p:not([class*="_"]), 
+:not(.ide-container):not(.ide-container *) ul:not([class*="_"]), 
+:not(.ide-container):not(.ide-container *) ol:not([class*="_"]), 
+:not(.ide-container):not(.ide-container *) li:not([class*="_"]), 
+:not(.ide-container):not(.ide-container *) blockquote:not([class*="_"]), 
+:not(.ide-container):not(.ide-container *) pre:not([class*="_"]) {
   margin: 0;
 }
 
