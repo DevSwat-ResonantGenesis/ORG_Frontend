@@ -384,6 +384,14 @@
   width: 100%;
 }
 
+.message.assistant .messageContent {
+  font-size: 15px;
+  line-height: 1.78;
+  letter-spacing: 0.01em;
+  word-spacing: 0.02em;
+  color: rgba(248, 250, 252, 0.85);
+}
+
 /* Assistant (output) messages: remove all hover/selected/transition effects */
 .message.assistant {
   transition: none;
@@ -510,7 +518,9 @@
 /* Message Content - Reduced contrast for better readability */
 .messageContent {
   font-size: 15px;
-  line-height: 1.72;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+  word-spacing: 0.02em;
   color: rgba(255, 255, 255, 0.88);
 }
 
@@ -710,8 +720,10 @@
    Markdown Styles - Enhanced Visual Hierarchy
    ============================================================ */
 .markdownParagraph {
-  margin: 0 0 12px 0;
-  line-height: 1.75;
+  margin: 0 0 14px 0;
+  line-height: 1.78;
+  letter-spacing: 0.01em;
+  word-spacing: 0.02em;
 }
 
 .markdownList {
@@ -1964,8 +1976,8 @@
 }
 
 [data-theme='light'] .message.user {
-  background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.10);
+  background: rgba(0, 0, 0, 0.04);
+  border: none;
 }
 
 /* ============================================================
@@ -3262,8 +3274,8 @@
 }
 
 [data-theme='light'] .message.user {
-  background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.10);
+  background: rgba(0, 0, 0, 0.04);
+  border: none;
 }
 
 [data-theme='light'] .inputBar {
