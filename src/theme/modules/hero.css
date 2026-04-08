@@ -202,10 +202,10 @@
   font-size: clamp(20px, 3vw, 28px) !important;
 }
 
-.landing-page p,
-.landing-page .body-text {
-  font-size: clamp(16px, 2vw, 18px) !important;
-  line-height: var(--line-height-relaxed) !important;
+.landing-page p:not([class*="_"]),
+.landing-page .body-text:not([class*="_"]) {
+  font-size: clamp(16px, 2vw, 18px);
+  line-height: var(--line-height-relaxed);
 }
 
 .landing-page small,

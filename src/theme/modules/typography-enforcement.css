@@ -95,13 +95,13 @@ p:not([class*="_"]),
 .body-text:not([class*="_"]), 
 .description:not([class*="_"]), 
 .subtitle:not([class*="_"]) {
-  font-family: var(--font-family) !important;
-  font-size: var(--font-base) !important;
-  font-weight: var(--font-normal) !important;
-  letter-spacing: var(--tracking-normal) !important;
-  line-height: var(--leading-relaxed) !important;
-  color: var(--text-secondary) !important;
-  margin: 0 !important;
+  font-family: var(--font-family);
+  font-size: var(--font-base);
+  font-weight: var(--font-normal);
+  letter-spacing: var(--tracking-normal);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+  margin: 0;
 }
 
 [data-theme='dark'] p:not([class*="_"]),
