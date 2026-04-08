@@ -264,21 +264,23 @@ interface Message {
 const ResonantChatPage: React.FC = () => {
   useEffect(() => {
     document.body.classList.add('resonant-chat-page');
-    return () => document.body.classList.remove('resonant-chat-page');
+    document.documentElement.classList.add('resonant-chat-page');
+    return () => {
+      document.body.classList.remove('resonant-chat-page');
+      document.documentElement.classList.remove('resonant-chat-page');
+    };
   }, []);
 
-  // Mobile safe area: override ALL theme-color metas + body/html bg to match chat page
+  // Mobile safe area: override theme-color metas for Safari/Brave address bar
   const { theme: safeAreaTheme } = useThemeStore();
   useEffect(() => {
     const chatBg = safeAreaTheme === 'dark' ? '#262321' : '#ffffff';
-    // Override all theme-color meta tags (index.html has media-specific ones)
     const allMetas = document.querySelectorAll('meta[name="theme-color"]') as NodeListOf<HTMLMetaElement>;
     const prevValues: { meta: HTMLMetaElement; content: string }[] = [];
     allMetas.forEach(m => {
       prevValues.push({ meta: m, content: m.content });
       m.content = chatBg;
     });
-    // If none exist, create one
     let created: HTMLMetaElement | null = null;
     if (allMetas.length === 0) {
       created = document.createElement('meta');
@@ -286,14 +288,7 @@ const ResonantChatPage: React.FC = () => {
       created.content = chatBg;
       document.head.appendChild(created);
     }
-    // Set body + html bg for bottom safe area (home indicator area)
-    const prevBodyBg = document.body.style.backgroundColor;
-    const prevHtmlBg = document.documentElement.style.backgroundColor;
-    document.body.style.backgroundColor = chatBg;
-    document.documentElement.style.backgroundColor = chatBg;
     return () => {
-      document.body.style.backgroundColor = prevBodyBg;
-      document.documentElement.style.backgroundColor = prevHtmlBg;
       prevValues.forEach(({ meta, content }) => { meta.content = content; });
       if (created?.parentNode) created.parentNode.removeChild(created);
     };

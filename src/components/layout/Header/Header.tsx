@@ -402,20 +402,6 @@ export const Header: React.FC<HeaderProps> = ({
               <span className={styles.dlLabel}>Connect</span>
             </button>
 
-            {/* API — PNG icon */}
-            <button 
-              className={styles.navDownloadIcon}
-              onClick={() => navigate('/api/docs')}
-              title="Connect Platform API"
-            >
-              <img
-                className={styles.dlIconImg}
-                src={theme === 'dark' ? '/images/Header_icons/api-light.png' : '/images/Header_icons/api-dark.png'}
-                alt="API"
-              />
-              <span className={styles.dlLabel}>API</span>
-            </button>
-
           </nav>
 
           {/* AgentOS-specific elements when on /agents page */}
@@ -445,9 +431,9 @@ export const Header: React.FC<HeaderProps> = ({
                   aria-label="Integrations"
                 >
                   <img
-                    src={document.documentElement.getAttribute('data-theme') === 'light' ? '/images/connect-icons/Integration black icon.png' : '/images/connect-icons/integration white icon.png'}
+                    src={theme === 'dark' ? '/images/Header_icons/api-light.png' : '/images/Header_icons/api-dark.png'}
                     alt="Integrations"
-                    style={{ width: '60px', height: '60px', objectFit: 'contain' }}
+                    style={{ width: '20px', height: '20px', objectFit: 'contain' }}
                   />
                 </button>
               )}

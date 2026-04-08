@@ -2,6 +2,20 @@
    Resonant Chat Page 2025 - Clean Professional Design
    ============================================================ */
 
+/* Mobile safe area: override global bg when on Resonant Chat page */
+:global(html.resonant-chat-page),
+:global(body.resonant-chat-page),
+:global(body.resonant-chat-page #root) {
+  background: #262321 !important;
+  background-color: #262321 !important;
+}
+:global(html.resonant-chat-page[data-theme='light']),
+:global([data-theme='light'] body.resonant-chat-page),
+:global([data-theme='light'] body.resonant-chat-page #root) {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
 /* CSS Variables */
 :root {
   --chat-header-height: 56px;

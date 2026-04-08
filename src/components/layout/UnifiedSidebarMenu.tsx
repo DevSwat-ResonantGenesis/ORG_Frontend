@@ -254,21 +254,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               {location.pathname === '/download-openclaw' && <span className={styles.usmActiveIndicator} />}
             </button>
 
-            <button
-              className={styles.usmDownloadItem}
-              onClick={() => { navigate('/api/docs'); onClose(); }}
-            >
-              <span className={styles.usmDlIcon}>
-                <img
-                  src={theme === 'dark' ? '/images/Header_icons/api-light.png' : '/images/Header_icons/api-dark.png'}
-                  alt="API"
-                  style={{ width: 36, height: 36, objectFit: 'contain' }}
-                />
-              </span>
-              <span className={styles.usmLabel}>API</span>
-              {location.pathname === '/api/docs' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
           </div>
 
           <div className={styles.usmDivider} />
