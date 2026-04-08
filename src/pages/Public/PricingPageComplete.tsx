@@ -15,6 +15,7 @@ import {
   FAQ,
   STATE_PHYSICS_API_PLANS,
   HASH_SPHERE_MEMORY_API_PLANS,
+  CODE_VISUALIZER_API_PLANS,
   type Plan,
   type CoreFeature,
 } from '../../config/pricing';
@@ -343,7 +344,7 @@ const PricingPage: React.FC = () => {
   );
 
   // Handle API subscription checkout
-  const handleApiSubscribe = async (apiType: 'state_physics' | 'hash_sphere_memory', planId: string, isEnterprise: boolean = false) => {
+  const handleApiSubscribe = async (apiType: 'state_physics' | 'hash_sphere_memory' | 'code_visualizer', planId: string, isEnterprise: boolean = false) => {
     if (isEnterprise) {
       navigate(`/contact?api=${apiType}&plan=enterprise`);
       return;
@@ -366,6 +367,8 @@ const PricingPage: React.FC = () => {
         body: JSON.stringify({
           plan_id: apiType === 'state_physics' 
           ? `state_physics_${planId}`  // "state_physics_dev", "state_physics_startup"
+          : apiType === 'code_visualizer'
+          ? `code_visualizer_${planId}`  // "code_visualizer_dev", "code_visualizer_startup"
           : `hash_sphere_memory_${planId === 'starter' ? 'dev' : planId === 'builder' ? 'startup' : planId}`,  // Map pricing page IDs to backend IDs
           billing_cycle: 'monthly',  // API subscriptions are monthly
           success_url: `${window.location.origin}/api-keys?success=true&api=${apiType}`,
@@ -708,6 +711,61 @@ const PricingPage: React.FC = () => {
                     <button
                       className={`${styles.apiPlanCta} ${plan.id === 'startup' ? styles.apiPlanCtaPrimary : ''}`}
                       onClick={() => handleApiSubscribe('state_physics', plan.id, isEnterprise)}
+                      disabled={apiCheckoutLoading === loadingKey}
+                    >
+                      {apiCheckoutLoading === loadingKey ? 'Redirecting...' : isEnterprise ? 'Contact Sales' : 'Subscribe'}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Code Visualizer API */}
+          <div className={styles.apiProductSection}>
+            <div className={styles.apiProductHeader}>
+              <div className={styles.apiProductIcon} style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>
+                <Code size={32} />
+              </div>
+              <div className={styles.apiProductInfo}>
+                <h3 className={styles.apiProductName}>Code Visualizer API</h3>
+                <p className={styles.apiProductDescription}>
+                  AST analysis, dependency graph generation, and interactive code visualization. Understand complex codebases at scale with structural insights.
+                </p>
+              </div>
+            </div>
+            
+            <div className={styles.apiPlansGrid}>
+              {CODE_VISUALIZER_API_PLANS.map((plan) => {
+                const isEnterprise = plan.id === 'enterprise';
+                const loadingKey = `code_visualizer_${plan.id}`;
+                
+                return (
+                  <div key={plan.id} className={`${styles.apiPlanCard} ${plan.id === 'startup' ? styles.apiPlanCardPopular : ''}`}>
+                    {plan.id === 'startup' && (
+                      <span className={styles.apiPlanBadge}>Popular</span>
+                    )}
+                    <h4 className={styles.apiPlanName}>{plan.name}</h4>
+                    <div className={styles.apiPlanPrice}>
+                      <span className={styles.apiPriceAmount}>
+                        {isEnterprise ? '$2k+' : `$${plan.price}`}
+                      </span>
+                      <span className={styles.apiPricePeriod}>/{plan.period}</span>
+                    </div>
+                    <div className={styles.apiPlanUnits}>
+                      {plan.analysisUnits === -1 ? 'Custom AU' : `${(plan.analysisUnits / 1000).toLocaleString()}k AU/month`}
+                    </div>
+                    <ul className={styles.apiPlanFeatures}>
+                      {plan.features.slice(0, 4).map((feature, idx) => (
+                        <li key={idx} className={styles.apiPlanFeature}>
+                          <Check size={14} className={styles.checkIcon} />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <button
+                      className={`${styles.apiPlanCta} ${plan.id === 'startup' ? styles.apiPlanCtaPrimary : ''}`}
+                      onClick={() => handleApiSubscribe('code_visualizer', plan.id, isEnterprise)}
                       disabled={apiCheckoutLoading === loadingKey}
                     >
                       {apiCheckoutLoading === loadingKey ? 'Redirecting...' : isEnterprise ? 'Contact Sales' : 'Subscribe'}

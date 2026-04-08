@@ -662,6 +662,66 @@ export const MEMORY_UNIT_DEFINITION = {
   note: 'Aligns billing to semantic impact, not raw compute.',
 };
 
+// ============================================================
+// CODE VISUALIZER API PRICING
+// AST analysis, code graph exploration, and visualization
+// ============================================================
+
+export interface CodeVisualizerAPIPlan {
+  id: string;
+  name: string;
+  price: number;
+  period: string;
+  analysisUnits: number;
+  features: string[];
+}
+
+export const CODE_VISUALIZER_API_PLANS: CodeVisualizerAPIPlan[] = [
+  {
+    id: 'dev',
+    name: 'Dev / Indie',
+    price: 49,
+    period: 'month',
+    analysisUnits: 100000,  // 100k AU/month
+    features: [
+      '100k Analysis Units/month',
+      'AST parsing & visualization',
+      'Dependency graph generation',
+      'Up to 50 repos',
+      'Community support',
+    ],
+  },
+  {
+    id: 'startup',
+    name: 'Startup',
+    price: 299,
+    period: 'month',
+    analysisUnits: 2000000,  // 2M AU/month
+    features: [
+      '2M Analysis Units/month',
+      'Real-time code graph updates',
+      'Cross-repo dependency analysis',
+      'Unlimited repos',
+      'Priority support + webhooks',
+      '99.9% uptime SLA',
+    ],
+  },
+  {
+    id: 'enterprise',
+    name: 'Enterprise',
+    price: 2000,
+    period: 'month',
+    analysisUnits: -1,  // Custom
+    features: [
+      'Custom AU allocation',
+      'On-prem / VPC deployment',
+      'Custom language support',
+      'Dedicated support + SLA',
+      'Audit trail & compliance',
+    ],
+  },
+];
+
 export const FAQ: FaqItem[] = [
   {
     question: 'What happens when I run out of credits?',

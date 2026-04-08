@@ -359,8 +359,8 @@
 }
 
 .message.user {
-  background: transparent;
-  border: 1px solid rgba(248, 250, 252, 0.14);
+  background: rgba(248, 250, 252, 0.06);
+  border: none;
   align-self: flex-end;
   margin-left: auto;
   margin-right: 0;
@@ -370,7 +370,7 @@
 
 
 .message.user:hover {
-  background: transparent;
+  background: rgba(248, 250, 252, 0.09);
   box-shadow: none;
 }
 
@@ -3223,7 +3223,7 @@
 /* User and Assistant Message Variants */
 .user {
   background: var(--surface-accent, rgba(14, 165, 233, 0.08));
-  border: 1px solid rgba(14, 165, 233, 0.15);
+  border: none;
 }
 
 .user:hover {
