@@ -8,7 +8,7 @@ h1.heroTitle {
   font-family: 'Playfair Display', 'Georgia', 'Times New Roman', serif;
   font-size: clamp(52px, 13vw, 140px);
   font-weight: 300;
-  margin: 0 0 32px 0;
+  margin: 0 0 48px 0;
   padding: 0;
   line-height: 0.9;
   letter-spacing: -0.02em;
@@ -27,14 +27,14 @@ h1.heroTitle {
 @media (min-width: 640px) {
   .heroTitle {
     font-size: clamp(80px, 13vw, 140px);
-    margin-bottom: 28px;
+    margin-bottom: 44px;
   }
 }
 
 @media (min-width: 1024px) {
   .heroTitle {
     font-size: 140px;
-    margin-bottom: 32px;
+    margin-bottom: 48px;
     line-height: 0.88;
   }
 }
@@ -51,7 +51,8 @@ h1.heroTitle {
 /* Tagline under title — light weight, smaller */
 .heroTitleTagline {
   display: block;
-  margin-top: 20px;
+  margin-top: 8px;
+  margin-bottom: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
   font-size: clamp(18px, 3vw, 28px);
   font-weight: 300;
@@ -65,7 +66,7 @@ h1.heroTitle {
 @media (min-width: 1024px) {
   .heroTitleTagline {
     font-size: 28px;
-    margin-top: 20px;
+    margin-top: 8px;
   }
 }
 
@@ -79,7 +80,7 @@ h1.heroTitle {
   font-size: clamp(11px, 1.8vw, 14px);
   font-weight: 400;
   color: rgba(255, 255, 255, 0.6);
-  margin: 24px auto 28px;
+  margin: 32px auto 24px;
   line-height: 1.6;
   padding: 0;
   text-align: center;
@@ -109,7 +110,7 @@ h1.heroTitle {
   font-size: 10px;
   font-weight: 300;
   color: rgba(255, 255, 255, 0.3);
-  margin: 16px auto 40px;
+  margin: 20px auto 48px;
   line-height: 1.6;
   padding: 0 20px;
   text-align: center;
