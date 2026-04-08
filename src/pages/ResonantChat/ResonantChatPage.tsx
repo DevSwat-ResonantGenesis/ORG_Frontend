@@ -264,17 +264,26 @@ interface Message {
 const ResonantChatPage: React.FC = () => {
   useEffect(() => {
     document.body.classList.add('resonant-chat-page');
-    document.documentElement.classList.add('resonant-chat-page');
-    return () => {
-      document.body.classList.remove('resonant-chat-page');
-      document.documentElement.classList.remove('resonant-chat-page');
-    };
+    return () => document.body.classList.remove('resonant-chat-page');
   }, []);
 
-  // Mobile safe area: override theme-color metas for Safari/Brave address bar
+  // Mobile safe area: inject <style> tag + override theme-color metas
   const { theme: safeAreaTheme } = useThemeStore();
   useEffect(() => {
     const chatBg = safeAreaTheme === 'dark' ? '#262321' : '#ffffff';
+
+    // 1. Inject a <style> tag — always loads LAST, beats all other CSS
+    const style = document.createElement('style');
+    style.id = 'resonant-chat-safe-area';
+    style.textContent = `
+      html, body, #root {
+        background: ${chatBg} !important;
+        background-color: ${chatBg} !important;
+      }
+    `;
+    document.head.appendChild(style);
+
+    // 2. Override all theme-color meta tags for Safari/Brave address bar
     const allMetas = document.querySelectorAll('meta[name="theme-color"]') as NodeListOf<HTMLMetaElement>;
     const prevValues: { meta: HTMLMetaElement; content: string }[] = [];
     allMetas.forEach(m => {
@@ -288,7 +297,12 @@ const ResonantChatPage: React.FC = () => {
       created.content = chatBg;
       document.head.appendChild(created);
     }
+
     return () => {
+      // Remove injected style
+      const el = document.getElementById('resonant-chat-safe-area');
+      if (el) el.remove();
+      // Restore meta tags
       prevValues.forEach(({ meta, content }) => { meta.content = content; });
       if (created?.parentNode) created.parentNode.removeChild(created);
     };
