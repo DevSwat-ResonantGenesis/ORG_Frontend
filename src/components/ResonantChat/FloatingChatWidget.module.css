@@ -405,12 +405,14 @@
   font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
+  opacity: 0.4;
   margin: 0 0 6px 0;
 }
 
 .emptySubtext {
   font-size: 13px;
   color: var(--text-tertiary);
+  opacity: 0.45;
   margin: 0;
   line-height: 1.5;
 }
@@ -654,11 +656,11 @@
 }
 
 .inputField::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.2);
 }
 
 [data-theme='light'] .inputField::placeholder {
-  color: rgba(0, 0, 0, 0.35);
+  color: rgba(0, 0, 0, 0.25);
 }
 
 .inputField:focus {
