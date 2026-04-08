@@ -3,13 +3,13 @@
  */
 
 .footer {
-  background: var(--bg-primary);
-  border-top: 1px solid var(--border);
-  margin-top: auto;
-  padding: 48px 0 32px;
-  width: 100%;
-  position: relative;
-  z-index: 1;
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
 }
 
 .container {

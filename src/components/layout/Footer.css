@@ -1,13 +1,13 @@
 /* Footer Styles - Proper static footer, flush at bottom */
 
 .footer {
-  position: relative;
-  width: 100%;
-  background: var(--bg-primary);
-  border-top: 1px solid var(--border);
-  margin-top: auto;
-  padding: 32px 24px;
-  z-index: 10;
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
 }
 
 .footer-minimal {

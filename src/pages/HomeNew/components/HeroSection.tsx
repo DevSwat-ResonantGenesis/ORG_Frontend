@@ -136,10 +136,10 @@ export const HeroSection = () => {
                 </div>
                 {/* Links + company row */}
                 <div className={styles.heroBottomLinks}>
-                    <Link to="/privacy-policy" style={{ color: 'rgba(96,165,250,0.4)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = 'rgba(96,165,250,1)')} onMouseLeave={e => (e.currentTarget.style.color = 'rgba(96,165,250,0.4)')}>Privacy</Link>
-                    <Link to="/terms-of-service" style={{ color: 'rgba(96,165,250,0.4)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = 'rgba(96,165,250,1)')} onMouseLeave={e => (e.currentTarget.style.color = 'rgba(96,165,250,0.4)')}>Terms</Link>
+                    <Link to="/privacy-policy" style={{ color: 'rgba(96,165,250,0.6)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = 'rgba(96,165,250,1)')} onMouseLeave={e => (e.currentTarget.style.color = 'rgba(96,165,250,0.6)')}>Privacy</Link>
+                    <Link to="/terms-of-service" style={{ color: 'rgba(96,165,250,0.6)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = 'rgba(96,165,250,1)')} onMouseLeave={e => (e.currentTarget.style.color = 'rgba(96,165,250,0.6)')}>Terms</Link>
                     <span style={{ color: 'rgba(96,165,250,0.3)' }}>·</span>
-                    <span style={{ color: 'rgba(96,165,250,0.4)' }}>© 2025 DevSwat Inc. · San Francisco, CA · info@dev-swat.com</span>
+                    <span style={{ color: 'rgba(96,165,250,0.6)' }}>© 2026 DevSwat Inc. · San Francisco, CA · info@dev-swat.com</span>
                 </div>
             </div>
         </section>
