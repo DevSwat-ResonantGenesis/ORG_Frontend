@@ -176,6 +176,21 @@ const PricingPage: React.FC = () => {
     loadPricing();
   }, []);
 
+  // Silently refresh access token cookie before authenticated calls.
+  // The rg_access_token cookie (60 min) may expire while rg_session (30 day) persists.
+  // This uses the rg_refresh_token HttpOnly cookie to get a fresh access token.
+  const ensureAuth = async (): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/auth/refresh', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  };
+
   // Handle credit pack purchase
   const handleCreditPackPurchase = async (pack: CreditPack) => {
     if (!isAuthenticated()) {
@@ -191,13 +206,10 @@ const PricingPage: React.FC = () => {
 
     setCreditPackLoading(pack.id);
     try {
-      const authToken = localStorage.getItem('access_token');
+      await ensureAuth();
       const response = await fetch('/api/billing/checkout/credits', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {}),
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
           pack_id: pack.id,
@@ -242,13 +254,10 @@ const PricingPage: React.FC = () => {
     
     setCheckoutLoading(plan.id);
     try {
-      const authToken = localStorage.getItem('access_token');
+      await ensureAuth();
       const response = await fetch('/api/billing/checkout/subscription', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {}),
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
           plan_id: plan.id,
@@ -349,13 +358,10 @@ const PricingPage: React.FC = () => {
     setApiCheckoutLoading(loadingKey);
     
     try {
-      const authToken = localStorage.getItem('access_token');
+      await ensureAuth();
       const response = await fetch('/api/billing/checkout/subscription', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {}),
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
           plan_id: apiType === 'state_physics' 
