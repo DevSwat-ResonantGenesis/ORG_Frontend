@@ -359,7 +359,7 @@
 }
 
 .message.user {
-  background: rgba(248, 250, 252, 0.06);
+  background: transparent;
   border: none;
   align-self: flex-end;
   margin-left: auto;
@@ -368,10 +368,21 @@
   border-radius: 16px 16px 4px 16px;
 }
 
+.message.user .messageContent {
+  background: rgba(248, 250, 252, 0.06);
+  padding: 10px 14px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
 
 .message.user:hover {
-  background: rgba(248, 250, 252, 0.09);
+  background: transparent;
   box-shadow: none;
+}
+
+.message.user:hover .messageContent {
+  background: rgba(248, 250, 252, 0.09);
 }
 
 .message.assistant {
@@ -1976,8 +1987,12 @@
 }
 
 [data-theme='light'] .message.user {
-  background: rgba(0, 0, 0, 0.04);
+  background: transparent;
   border: none;
+}
+
+[data-theme='light'] .message.user .messageContent {
+  background: rgba(0, 0, 0, 0.04);
 }
 
 /* ============================================================
@@ -3234,7 +3249,7 @@
 
 /* User and Assistant Message Variants */
 .user {
-  background: var(--surface-accent, rgba(14, 165, 233, 0.08));
+  background: transparent;
   border: none;
 }
 
@@ -3274,8 +3289,12 @@
 }
 
 [data-theme='light'] .message.user {
-  background: rgba(0, 0, 0, 0.04);
+  background: transparent;
   border: none;
+}
+
+[data-theme='light'] .message.user .messageContent {
+  background: rgba(0, 0, 0, 0.04);
 }
 
 [data-theme='light'] .inputBar {
