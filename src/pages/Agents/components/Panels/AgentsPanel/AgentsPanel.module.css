@@ -2224,15 +2224,27 @@
   .collapsibleToolbar {
     max-height: 0;
     overflow: hidden;
-    padding: 0 12px;
+    padding: 0;
     border-bottom: none;
     transition: max-height 0.25s ease, padding 0.25s ease;
+    flex-direction: column;
   }
 
   .collapsibleToolbarOpen {
     max-height: 200px;
-    padding: 6px 12px;
+    padding: 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* headerMeta row gets its own padding inside collapsible */
+  .collapsibleToolbar .headerMeta {
+    padding: 6px 12px;
+    width: 100%;
+  }
+
+  /* mobileTabs must stretch full width inside collapsible */
+  .collapsibleToolbar .mobileTabs {
+    width: 100%;
   }
 
   /* Nav icons flow inline after title */
