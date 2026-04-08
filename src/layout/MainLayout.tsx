@@ -8,6 +8,7 @@ import { deviceIsMobile } from '@/utils/deviceCheck';
 const localLLMTunnel = { isConnected: false, connect: (_ep: string) => {} };
 import { fetchUserApiKeys } from '@/api/userApiKeys';
 import { isAuthenticated as checkAuthStatus } from '@/utils/auth-cookies';
+import { useThemeStore } from '@/store/themeStore';
 import './MainLayout.css';
 import './clickability-fix.css';
 
@@ -20,12 +21,32 @@ const MainLayout = ({ children }: Props) => {
   const [isLandingScrollLockViewport, setIsLandingScrollLockViewport] = useState(false);
   const [chatWidgetOpen, setChatWidgetOpen] = useState(false);
   const location = useLocation();
+  const { theme } = useThemeStore();
   const isEmbedded = new URLSearchParams(location.search).get('embed') === '1';
 
   // Hide header on auth pages (login/signup)
   const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
 
   const isLandingPage = location.pathname === '/';
+  const isResonantChatPage = location.pathname.startsWith('/resonant-chat');
+
+  // Dynamic theme-color meta tag — matches theme + page-specific bg
+  useEffect(() => {
+    let color: string;
+    if (isResonantChatPage) {
+      color = theme === 'dark' ? '#262321' : '#ffffff';
+    } else if (isLandingPage) {
+      color = theme === 'dark' ? '#000000' : '#ffffff';
+    } else {
+      color = theme === 'dark' ? '#000000' : '#ffffff';
+    }
+    // Update all theme-color meta tags
+    document.querySelectorAll('meta[name="theme-color"]').forEach(el => {
+      (el as HTMLMetaElement).content = color;
+    });
+    // Also set body bg to match for safe-area bleed
+    document.body.style.backgroundColor = color;
+  }, [theme, location.pathname, isResonantChatPage, isLandingPage]);
 
   // Enable global keyboard shortcuts
   useGlobalKeyboardShortcuts();
@@ -104,8 +125,8 @@ const MainLayout = ({ children }: Props) => {
         {/* Footer removed for cleaner UI */}
       </div>
 
-      {/* Resonant Chat floating widget — desktop: header-controlled, mobile: floating bubble */}
-      {!isAuthPage && !isEmbedded && (
+      {/* Resonant Chat floating widget — only on landing/hero page */}
+      {isLandingPage && !isEmbedded && (
         <FloatingChatWidget isOpen={chatWidgetOpen} onOpenChange={setChatWidgetOpen} hideLauncher={!isMobile} />
       )}
     </div>

@@ -737,7 +737,7 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className, isOp
       className={`${styles.floatingWidget} ${className || ''} ${isDragging ? styles.dragging : ''} ${isResizing ? styles.resizing : ''}`}
       style={{
         left: isMobile ? '16px' : `${isOpen ? Math.max(16, Math.min(position.x, window.innerWidth - 396)) : position.x}px`,
-        bottom: isMobile ? '20px' : `${window.innerHeight - position.y - (isOpen ? panelHeight : 64)}px`,
+        bottom: isMobile ? 'calc(20px + env(safe-area-inset-bottom, 0px))' : `${window.innerHeight - position.y - (isOpen ? panelHeight : 64)}px`,
         top: 'auto'
       }}
     >
@@ -876,7 +876,9 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className, isOp
           </svg>
         ) : (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
           </svg>
         )}
         {!isOpen && messages.length > 0 && (
