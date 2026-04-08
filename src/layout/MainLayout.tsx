@@ -127,7 +127,7 @@ const MainLayout = ({ children }: Props) => {
 
       {/* Resonant Chat floating widget — only on landing/hero page */}
       {isLandingPage && !isEmbedded && (
-        <FloatingChatWidget isOpen={chatWidgetOpen} onOpenChange={setChatWidgetOpen} hideLauncher={!isMobile} />
+        <FloatingChatWidget isOpen={chatWidgetOpen} onOpenChange={setChatWidgetOpen} hideLauncher={true} />
       )}
     </div>
   );

@@ -13,7 +13,7 @@ export { Text } from './ui/Text';
 
 // Layout Components
 export { Header } from './layout/Header/Header';
-export { default as Footer } from './layout/Footer';
+
 export { default as Sidebar } from './layout/UnifiedSidebarMenu';
 
 // Feature Components
