@@ -433,7 +433,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <img
                     src={theme === 'dark' ? '/images/Header_icons/api-light.png' : '/images/Header_icons/api-dark.png'}
                     alt="Integrations"
-                    style={{ width: '20px', height: '20px', objectFit: 'contain' }}
+                    style={{ width: '36px', height: '36px', objectFit: 'contain' }}
                   />
                 </button>
               )}

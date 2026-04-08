@@ -4,7 +4,7 @@
    ============================================================ */
 
 html {
-  background: var(--color-bg-root, var(--bg-primary)) !important;
+  background: var(--color-bg-root, var(--bg-primary));
 
   height: 100%;
   margin: 0;
@@ -19,7 +19,7 @@ html {
 
 body {
   /* Light mode: Pearl white, Dark mode: Dark */
-  background: var(--color-bg-root, var(--bg-primary)) !important;
+  background: var(--color-bg-root, var(--bg-primary));
   color: var(--text-primary) !important;
   /* Modern, readable system font stack */
   font-family: var(--font-sans);
@@ -105,7 +105,7 @@ html::-webkit-scrollbar-thumb:hover {
 
 #root {
   /* Light mode: Pearl white, Dark mode: Dark */
-  background: var(--color-bg-root, var(--bg-primary)) !important;
+  background: var(--color-bg-root, var(--bg-primary));
   min-height: 100dvh;
 }
 

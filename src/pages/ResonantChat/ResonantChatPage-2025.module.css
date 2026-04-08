@@ -6,14 +6,14 @@
 :global(html.resonant-chat-page),
 :global(body.resonant-chat-page),
 :global(body.resonant-chat-page #root) {
-  background: #262321 !important;
-  background-color: #262321 !important;
+  background: #262321;
+  background-color: #262321;
 }
 :global(html.resonant-chat-page[data-theme='light']),
 :global([data-theme='light'] body.resonant-chat-page),
 :global([data-theme='light'] body.resonant-chat-page #root) {
-  background: #ffffff !important;
-  background-color: #ffffff !important;
+  background: #ffffff;
+  background-color: #ffffff;
 }
 
 /* CSS Variables */

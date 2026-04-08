@@ -254,6 +254,21 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               {location.pathname === '/download-openclaw' && <span className={styles.usmActiveIndicator} />}
             </button>
 
+            <button
+              className={styles.usmDownloadItem}
+              onClick={() => { navigate('/connect-profiles'); onClose(); }}
+            >
+              <span className={styles.usmDlIcon}>
+                <img
+                  src={theme === 'dark' ? '/images/Header_icons/api-light.png' : '/images/Header_icons/api-dark.png'}
+                  alt="Integrations"
+                  style={{ width: 36, height: 36, objectFit: 'contain' }}
+                />
+              </span>
+              <span className={styles.usmLabel}>Integrations</span>
+              {location.pathname === '/connect-profiles' && <span className={styles.usmActiveIndicator} />}
+            </button>
+
           </div>
 
           <div className={styles.usmDivider} />

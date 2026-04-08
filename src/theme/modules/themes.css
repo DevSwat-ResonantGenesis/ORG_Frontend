@@ -7,8 +7,8 @@
 html:not([data-theme="light"]),
 html[data-theme=""] {
   /* Use new token system - warm gray */
-  --color-bg-root: var(--bg-primary) !important;
-  background: var(--color-bg-root) !important;
+  --color-bg-root: var(--bg-primary);
+  background: var(--color-bg-root);
   color: var(--text-primary) !important;
   color-scheme: dark;
 }
@@ -16,7 +16,7 @@ html[data-theme=""] {
 body:not([data-theme="light"]),
 body[data-theme=""] {
   /* Use new token system - warm gray */
-  background: var(--color-bg-root, var(--bg-primary)) !important;
+  background: var(--color-bg-root, var(--bg-primary));
   color: var(--text-primary) !important;
 }
 
@@ -25,8 +25,8 @@ body[data-theme=""] {
 /* Dark Mode Theme - Use new token system (warm gray) */
 html[data-theme="dark"] {
   /* All colors now come from tokens-2025.css */
-  --color-bg-root: var(--bg-primary) !important;
-  background: var(--color-bg-root) !important;
+  --color-bg-root: var(--bg-primary);
+  background: var(--color-bg-root);
   /* Warm gray #262321 */
   color: var(--text-primary) !important;
   color-scheme: dark;
@@ -38,7 +38,7 @@ html[data-theme="dark"] {
 } */
 
 [data-theme="dark"] .page-container {
-  background: var(--bg-primary) !important;
+  background: var(--bg-primary);
   /* Use new token system */
 }
 
@@ -84,7 +84,7 @@ html[data-theme="dark"] {
 [data-theme='dark'] body,
 [data-theme='dark'] #root,
 [data-theme='dark'] .page-container {
-  background: var(--color-bg-root, var(--bg-primary)) !important;
+  background: var(--color-bg-root, var(--bg-primary));
   /* Use new token system */
 }
 
