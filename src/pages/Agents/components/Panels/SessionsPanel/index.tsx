@@ -1,5 +1,7 @@
 import React, { memo, useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useAgentStore, selectSelectedAgent } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import * as agentEngine from '../../../../../api/agentEngine';
@@ -378,7 +380,38 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
                 {selectedSession.final_output && (
                   <div className={styles.finalOutput}>
                     <h4>Final Output</h4>
-                    <p>{selectedSession.final_output}</p>
+                    <div className={styles.finalOutputBody}>
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          h1: ({ children }) => <h1 className={styles.foH1}>{children}</h1>,
+                          h2: ({ children }) => <h2 className={styles.foH2}>{children}</h2>,
+                          h3: ({ children }) => <h3 className={styles.foH3}>{children}</h3>,
+                          h4: ({ children }) => <h4 className={styles.foH4}>{children}</h4>,
+                          p: ({ children }) => <p className={styles.foParagraph}>{children}</p>,
+                          strong: ({ children }) => <strong className={styles.foStrong}>{children}</strong>,
+                          em: ({ children }) => <em className={styles.foEm}>{children}</em>,
+                          ul: ({ children }) => <ul className={styles.foList}>{children}</ul>,
+                          ol: ({ children }) => <ol className={styles.foListOrdered}>{children}</ol>,
+                          li: ({ children }) => <li className={styles.foListItem}>{children}</li>,
+                          blockquote: ({ children }) => <blockquote className={styles.foBlockquote}>{children}</blockquote>,
+                          code: ({ children, className: codeClassName }) => {
+                            const isBlock = codeClassName?.includes('language-');
+                            return isBlock
+                              ? <pre className={styles.foCodeBlock}><code>{children}</code></pre>
+                              : <code className={styles.foInlineCode}>{children}</code>;
+                          },
+                          hr: () => <hr className={styles.foDivider} />,
+                          a: ({ href, children }) => <a href={href} className={styles.foLink} target="_blank" rel="noopener noreferrer">{children}</a>,
+                          table: ({ children }) => <div className={styles.foTableWrap}><table className={styles.foTable}>{children}</table></div>,
+                          thead: ({ children }) => <thead className={styles.foThead}>{children}</thead>,
+                          th: ({ children }) => <th className={styles.foTh}>{children}</th>,
+                          td: ({ children }) => <td className={styles.foTd}>{children}</td>,
+                        }}
+                      >
+                        {selectedSession.final_output}
+                      </ReactMarkdown>
+                    </div>
                   </div>
                 )}
 

@@ -459,19 +459,229 @@
 .finalOutput,
 .errorOutput {
   margin-top: 20px;
-  padding: 16px;
-  border-radius: 10px;
+  padding: 20px;
+  border-radius: 12px;
 }
 
 .finalOutput {
-  background: rgba(34, 197, 94, 0.1);
-  border: 1px solid rgba(34, 197, 94, 0.2);
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  backdrop-filter: blur(8px);
 }
 
 .finalOutput h4 {
-  margin: 0 0 10px;
+  margin: 0 0 16px;
   color: #22c55e;
   font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(34, 197, 94, 0.12);
+}
+
+/* Final Output Body */
+.finalOutputBody {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* Headings */
+.foH1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 20px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  letter-spacing: -0.01em;
+}
+
+.foH2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 18px 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.foH3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #cbd5e1;
+  margin: 14px 0 6px;
+}
+
+.foH4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin: 12px 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Paragraphs */
+.foParagraph {
+  margin: 0 0 10px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.foParagraph:last-child {
+  margin-bottom: 0;
+}
+
+/* Bold / Italic */
+.foStrong {
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.foEm {
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+}
+
+/* Lists */
+.foList,
+.foListOrdered {
+  margin: 8px 0 12px;
+  padding-left: 20px;
+}
+
+.foListOrdered {
+  list-style: decimal;
+}
+
+.foList {
+  list-style: none;
+  padding-left: 0;
+}
+
+.foListItem {
+  position: relative;
+  margin-bottom: 6px;
+  padding: 4px 0 4px 18px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.foList > .foListItem::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.5);
+}
+
+.foListOrdered > .foListItem {
+  padding-left: 4px;
+}
+
+.foListOrdered > .foListItem::before {
+  display: none;
+}
+
+/* Blockquote */
+.foBlockquote {
+  margin: 12px 0;
+  padding: 10px 16px;
+  border-left: 3px solid rgba(99, 102, 241, 0.5);
+  background: rgba(99, 102, 241, 0.06);
+  border-radius: 0 8px 8px 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+}
+
+.foBlockquote .foParagraph {
+  margin-bottom: 4px;
+}
+
+/* Code */
+.foInlineCode {
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 12px;
+  color: #a5b4fc;
+}
+
+.foCodeBlock {
+  margin: 10px 0;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Divider */
+.foDivider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 16px 0;
+}
+
+/* Links */
+.foLink {
+  color: #38bdf8;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.foLink:hover {
+  color: #7dd3fc;
+  border-bottom-color: rgba(125, 211, 252, 0.5);
+}
+
+/* Tables */
+.foTableWrap {
+  margin: 12px 0;
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.foTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.foThead {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.foTh {
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #94a3b8;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.foTd {
+  padding: 8px 12px;
+  color: rgba(255, 255, 255, 0.75);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .errorOutput {
@@ -717,13 +927,39 @@
 
 /* --- Final Output / Error --- */
 [data-theme='light'] .finalOutput {
-  background: #f0fdf4;
+  background: #f8fdf9;
   border-color: #bbf7d0;
+  backdrop-filter: none;
 }
 
 [data-theme='light'] .finalOutput h4 {
   color: #16a34a;
+  border-bottom-color: rgba(22, 163, 106, 0.12);
 }
+
+[data-theme='light'] .finalOutputBody {
+  color: #334155;
+}
+
+[data-theme='light'] .foH1 { color: #0f172a; border-bottom-color: #e2e8f0; }
+[data-theme='light'] .foH2 { color: #1e293b; border-bottom-color: #f1f5f9; }
+[data-theme='light'] .foH3 { color: #334155; }
+[data-theme='light'] .foH4 { color: #64748b; }
+[data-theme='light'] .foParagraph { color: #475569; }
+[data-theme='light'] .foStrong { color: #1e293b; }
+[data-theme='light'] .foEm { color: #64748b; }
+[data-theme='light'] .foListItem { color: #475569; }
+[data-theme='light'] .foList > .foListItem::before { background: rgba(22, 163, 106, 0.5); }
+[data-theme='light'] .foBlockquote { background: rgba(99, 102, 241, 0.04); border-left-color: rgba(99, 102, 241, 0.4); color: #64748b; }
+[data-theme='light'] .foInlineCode { background: rgba(0, 0, 0, 0.05); color: #6366f1; }
+[data-theme='light'] .foCodeBlock { background: #f1f5f9; border-color: #e2e8f0; color: #334155; }
+[data-theme='light'] .foDivider { border-top-color: #e2e8f0; }
+[data-theme='light'] .foLink { color: #2563eb; border-bottom-color: rgba(37, 99, 235, 0.3); }
+[data-theme='light'] .foLink:hover { color: #1d4ed8; }
+[data-theme='light'] .foTableWrap { border-color: #e2e8f0; }
+[data-theme='light'] .foThead { background: #f8fafc; }
+[data-theme='light'] .foTh { color: #64748b; border-bottom-color: #e2e8f0; }
+[data-theme='light'] .foTd { color: #475569; border-bottom-color: #f1f5f9; }
 
 [data-theme='light'] .errorOutput {
   background: #fef2f2;
