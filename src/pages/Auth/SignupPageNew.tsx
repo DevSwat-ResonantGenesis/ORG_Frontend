@@ -129,7 +129,7 @@ const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties>
     display: 'flex',
     flexDirection: 'row' as const,
     flexWrap: 'nowrap' as const,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: '8px',
     fontSize: '0.75rem',
     color: theme === 'dark' ? '#aaa' : '#666',
@@ -137,18 +137,24 @@ const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties>
     lineHeight: '1.4',
   },
   checkboxInput: {
-    WebkitAppearance: 'checkbox' as any,
-    appearance: 'checkbox' as any,
+    WebkitAppearance: 'none' as any,
+    appearance: 'none' as any,
     width: '16px',
     height: '16px',
     minWidth: '16px',
     minHeight: '16px',
-    maxWidth: '16px',
-    maxHeight: '16px',
-    accentColor: '#6366f1',
+    border: theme === 'dark' ? '1.5px solid rgba(255,255,255,0.3)' : '1.5px solid rgba(0,0,0,0.3)',
+    borderRadius: '3px',
+    background: 'transparent',
     cursor: 'pointer',
     flexShrink: 0,
     margin: 0,
+    marginTop: '1px',
+    position: 'relative' as const,
+  },
+  checkboxText: {
+    flex: 1,
+    minWidth: 0,
   },
   link: {
     color: '#6366f1',
@@ -409,13 +415,26 @@ export default function SignupPageNew() {
             </div>
 
             <label style={styles.checkbox}>
-              <input
-                type="checkbox"
-                style={styles.checkboxInput}
-                checked={agreeTerms}
-                onChange={(e) => setAgreeTerms(e.target.checked)}
-              />
-              <span>
+              <div style={{ position: 'relative' as const, flexShrink: 0, width: '16px', height: '16px', marginTop: '1px' }}>
+                <input
+                  type="checkbox"
+                  style={{
+                    ...styles.checkboxInput,
+                    ...(agreeTerms ? {
+                      background: '#6366f1',
+                      borderColor: '#6366f1',
+                    } : {}),
+                  }}
+                  checked={agreeTerms}
+                  onChange={(e) => setAgreeTerms(e.target.checked)}
+                />
+                {agreeTerms && (
+                  <svg width="10" height="8" viewBox="0 0 10 8" fill="none" style={{ position: 'absolute' as const, left: '3px', top: '4px', pointerEvents: 'none' as const }}>
+                    <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+              </div>
+              <span style={styles.checkboxText}>
                 I agree to the{' '}
                 <Link to="/terms-of-service" style={styles.link}>Terms of Service</Link>
                 {' '}and{' '}

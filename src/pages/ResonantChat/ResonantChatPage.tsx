@@ -266,6 +266,37 @@ const ResonantChatPage: React.FC = () => {
     document.body.classList.add('resonant-chat-page');
     return () => document.body.classList.remove('resonant-chat-page');
   }, []);
+
+  // Mobile safe area: set theme-color + body bg to match chat page bg
+  const { theme: safeAreaTheme } = useThemeStore();
+  useEffect(() => {
+    const chatBg = safeAreaTheme === 'dark' ? '#262321' : '#ffffff';
+    // Set theme-color meta tag for Safari/Brave address bar & safe areas
+    let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement;
+    const hadMeta = !!meta;
+    const prevContent = meta?.content;
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.name = 'theme-color';
+      document.head.appendChild(meta);
+    }
+    meta.content = chatBg;
+    // Also set body + html bg for bottom safe area
+    const prevBodyBg = document.body.style.backgroundColor;
+    const prevHtmlBg = document.documentElement.style.backgroundColor;
+    document.body.style.backgroundColor = chatBg;
+    document.documentElement.style.backgroundColor = chatBg;
+    return () => {
+      // Restore on unmount
+      document.body.style.backgroundColor = prevBodyBg;
+      document.documentElement.style.backgroundColor = prevHtmlBg;
+      if (hadMeta && prevContent) {
+        meta.content = prevContent;
+      } else if (!hadMeta && meta.parentNode) {
+        meta.parentNode.removeChild(meta);
+      }
+    };
+  }, [safeAreaTheme]);
   const navigate = useNavigate();
   const location = useLocation();
   const session = getSession();
