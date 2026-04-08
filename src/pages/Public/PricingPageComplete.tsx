@@ -191,10 +191,12 @@ const PricingPage: React.FC = () => {
 
     setCreditPackLoading(pack.id);
     try {
+      const authToken = localStorage.getItem('access_token');
       const response = await fetch('/api/billing/checkout/credits', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
+          ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {}),
         },
         credentials: 'include',
         body: JSON.stringify({
@@ -240,9 +242,13 @@ const PricingPage: React.FC = () => {
     
     setCheckoutLoading(plan.id);
     try {
+      const authToken = localStorage.getItem('access_token');
       const response = await fetch('/api/billing/checkout/subscription', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {}),
+        },
         credentials: 'include',
         body: JSON.stringify({
           plan_id: plan.id,
@@ -343,9 +349,13 @@ const PricingPage: React.FC = () => {
     setApiCheckoutLoading(loadingKey);
     
     try {
+      const authToken = localStorage.getItem('access_token');
       const response = await fetch('/api/billing/checkout/subscription', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(authToken ? { 'Authorization': `Bearer ${authToken}` } : {}),
+        },
         credentials: 'include',
         body: JSON.stringify({
           plan_id: apiType === 'state_physics' 
@@ -380,7 +390,7 @@ const PricingPage: React.FC = () => {
           <h1 className={styles.sectionTitle}>Simple, Transparent Pricing</h1>
           <p className={styles.sectionDescription}>
             All plans include full platform access. Developer and Plus share the same features — only credits and rollover differ.
-            Usage is metered via Resonant Credits ({creditRateDescription}).
+            Usage is metered via Resonant Credits.
           </p>
           
         </div>
