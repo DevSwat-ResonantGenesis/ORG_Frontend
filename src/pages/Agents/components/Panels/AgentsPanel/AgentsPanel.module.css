@@ -2135,6 +2135,11 @@
   border-bottom: none;
 }
 
+/* Mobile tab bar — hidden on desktop */
+.mobileTabs {
+  display: none;
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
   .detailGrid {
@@ -2143,119 +2148,234 @@
 }
 
 @media (max-width: 768px) {
-  .agentsGrid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 8px;
-    padding: 10px;
-  }
-
-  .agentCard {
-    min-height: 160px;
-  }
-
-  .cardActions {
-    margin-top: auto;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    gap: 4px;
-    padding: 8px;
-  }
-
-  .actionBtn {
-    width: 28px;
-    min-width: 28px;
-    height: 28px;
-  }
-
-  .actionBtn svg {
-    width: 13px;
-    height: 13px;
-  }
-
+  /* ===== MOBILE HEADER ===== */
   .panelHeader {
-    flex-direction: column;
-    gap: 8px;
-    align-items: stretch;
-    padding: 8px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    padding: 6px 10px;
   }
 
+  .panelHeader h2 {
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-right: 2px;
+  }
+
+  /* Nav icons flow inline after title */
+  .navIcons {
+    order: 0;
+    flex: 1;
+    margin: 0;
+    padding: 0;
+    gap: 1px;
+    width: auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .navIconBtn {
+    padding: 4px 5px;
+    min-width: 26px;
+    height: 26px;
+  }
+
+  .navIconBtn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Hide filter/sort dropdowns on mobile */
+  .filterSelect {
+    display: none !important;
+  }
+
+  /* Search + controls full width row below */
   .headerControls {
+    order: 1;
+    width: 100%;
     padding-left: 0;
-    flex-wrap: wrap;
     gap: 6px;
   }
 
   .searchBox {
     width: 100% !important;
     min-width: 0 !important;
+    flex: 1;
   }
 
-  .filterSelect {
-    flex: 1 !important;
-    width: auto !important;
-    min-width: 0 !important;
-    max-width: none !important;
-  }
-
-  .navIcons {
-    margin: 0;
-    padding: 4px 0;
-    gap: 2px;
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .navIconBtn {
-    padding: 5px 6px;
-    min-width: 30px;
-    height: 30px;
-  }
-
-  .navIconBtn svg {
-    width: 16px;
-    height: 16px;
-  }
-
+  /* Count + Create + Bulk compact, stays in first row */
   .headerMeta {
-    justify-content: flex-end;
-    width: 100%;
+    order: 0;
+    flex-shrink: 0;
   }
-  
+
+  /* ===== MOBILE SWIPE TAB BAR ===== */
+  .mobileTabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+  }
+
+  .mobileTab {
+    flex: 1;
+    padding: 10px 12px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    text-transform: capitalize;
+  }
+
+  .mobileTab:active {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .mobileTabActive {
+    color: #0ea5e9;
+    border-bottom-color: #0ea5e9;
+  }
+
+  /* ===== SWIPEABLE SPLIT CONTAINER ===== */
+  .splitContainer {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .splitContainer::-webkit-scrollbar {
+    display: none;
+  }
+
+  .agentsPane {
+    min-width: 100%;
+    max-width: 100%;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    overflow-y: auto;
+  }
+
+  .agentsPane.hasSessions {
+    min-width: 100%;
+    max-width: 100%;
+    flex: 0 0 100%;
+    max-height: none;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  .sessionsPane {
+    min-width: 100%;
+    max-width: 100%;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    overflow-y: auto;
+  }
+
+  /* ===== AGENT LIST: COMPACT FLAT LIST ===== */
+  .agentsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+  }
+
+  .agentCard {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    min-height: auto;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .agentCard:hover {
+    transform: none;
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .agentCard.selected {
+    background: rgba(14, 165, 233, 0.08);
+    border-color: transparent;
+    border-bottom-color: rgba(14, 165, 233, 0.2);
+    box-shadow: none;
+  }
+
+  /* Hide status bar on mobile */
+  .statusBar {
+    display: none;
+  }
+
+  /* Card header inline */
+  .cardHeader {
+    flex: 1;
+    padding: 0;
+    min-width: 0;
+    gap: 8px;
+  }
+
+  /* Stats compact */
+  .cardStats {
+    padding: 0;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  /* Hide card action buttons on mobile — user swipes to sessions instead */
+  .cardActions {
+    display: none;
+  }
+
+  /* Hide pin/star top actions on mobile */
+  .cardTopActions {
+    display: none;
+  }
+
+  /* ===== OTHER MOBILE FIXES ===== */
   .panelToolbar {
     flex-direction: column;
   }
-  
+
   .detailGrid {
     grid-template-columns: 1fr;
   }
-  
+
   .agentIdRow {
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
   }
-  
+
   .agentIdValue {
     width: 100%;
   }
+}
 
-  .splitContainer {
-    flex-direction: column;
-  }
-
-  .agentsPane.hasSessions {
-    flex: 0 0 auto;
-    max-width: 100%;
-    max-height: 220px;
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  }
-
-  .sessionsPane {
-    min-height: 0;
-    flex: 1;
-  }
+/* Light theme mobile tabs */
+[data-theme='light'] .mobileTab {
+  color: rgba(0, 0, 0, 0.4);
+}
+[data-theme='light'] .mobileTabActive {
+  color: #0ea5e9;
+}
+[data-theme='light'] .mobileTabs {
+  background: rgba(0, 0, 0, 0.03);
+  border-bottom-color: #e5e7eb;
 }
 
 /* ============== STATUS INDICATOR ============== */

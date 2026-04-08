@@ -93,6 +93,10 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // Mobile swipe navigation
+  const splitContainerRef = useRef<HTMLDivElement>(null);
+  const [mobilePanel, setMobilePanel] = useState(0);
+
   const pinnedSet = useMemo(() => new Set(pinnedAgentIds || []), [pinnedAgentIds]);
 
   const filteredAgents = useMemo(() => {
@@ -265,6 +269,30 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [selectedAgent?.id, togglePinnedAgent]);
+
+  // Mobile swipe: detect which panel is visible
+  const handleMobileSplitScroll = useCallback(() => {
+    if (!splitContainerRef.current) return;
+    const { scrollLeft, clientWidth } = splitContainerRef.current;
+    setMobilePanel(scrollLeft > clientWidth * 0.4 ? 1 : 0);
+  }, []);
+
+  // Mobile swipe: scroll to a specific panel
+  const scrollToMobilePanel = useCallback((index: number) => {
+    if (!splitContainerRef.current) return;
+    splitContainerRef.current.scrollTo({ left: index * splitContainerRef.current.clientWidth, behavior: 'smooth' });
+    setMobilePanel(index);
+  }, []);
+
+  // Auto-scroll to right panel on mobile when it opens
+  const hasRightPanel = !!(selectedAgent || showFactory || inlinePanel || chatAgentId || detailAgentId || publishAgentId);
+  const activePanelLabel = showFactory ? 'Factory' : publishAgentId ? 'Publish' : detailAgentId ? 'Details' : chatAgentId ? 'Chat' : inlinePanel ? inlinePanel.type.charAt(0).toUpperCase() + inlinePanel.type.slice(1) : selectedAgent ? 'Sessions' : null;
+
+  useEffect(() => {
+    if (hasRightPanel && typeof window !== 'undefined' && window.innerWidth <= 768) {
+      setTimeout(() => scrollToMobilePanel(1), 150);
+    }
+  }, [hasRightPanel, selectedAgent?.id, showFactory, inlinePanel?.type, chatAgentId, detailAgentId, publishAgentId, scrollToMobilePanel]);
 
   // Handle send message (inline chat pane)
   const handleSendMessage = useCallback(async () => {
@@ -610,7 +638,25 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
         </div>
       </div>
 
-      <div className={styles.splitContainer}>
+      {/* Mobile swipe tab bar */}
+      {hasRightPanel && (
+        <div className={styles.mobileTabs}>
+          <button
+            className={`${styles.mobileTab} ${mobilePanel === 0 ? styles.mobileTabActive : ''}`}
+            onClick={() => scrollToMobilePanel(0)}
+          >
+            Agents
+          </button>
+          <button
+            className={`${styles.mobileTab} ${mobilePanel === 1 ? styles.mobileTabActive : ''}`}
+            onClick={() => scrollToMobilePanel(1)}
+          >
+            {activePanelLabel}
+          </button>
+        </div>
+      )}
+
+      <div className={styles.splitContainer} ref={splitContainerRef} onScroll={handleMobileSplitScroll}>
         {/* Left pane: agents grid */}
         <div className={`${styles.agentsPane} ${(selectedAgent || showFactory || inlinePanel || chatAgentId || detailAgentId || publishAgentId) ? styles.hasSessions : ''}`}>
           {bulkMode && (

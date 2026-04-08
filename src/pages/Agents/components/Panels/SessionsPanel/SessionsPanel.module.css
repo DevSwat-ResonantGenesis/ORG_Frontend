@@ -724,13 +724,62 @@
 /* Responsive */
 @media (max-width: 900px) {
   .splitView {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
-  
+
+  .splitView::-webkit-scrollbar {
+    display: none;
+  }
+
   .sessionsList {
-    max-height: 200px;
+    min-width: 100%;
+    max-width: 100%;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    max-height: none;
     border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    overflow-y: auto;
+  }
+
+  .sessionDetail {
+    min-width: 100%;
+    max-width: 100%;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    overflow-y: auto;
+  }
+
+  .panelHeader {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px 10px;
+  }
+
+  .panelHeader h2 {
+    font-size: 13px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .newSessionBtn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .statsBar {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 10px;
+    font-size: 11px;
   }
 }
 
