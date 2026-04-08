@@ -273,10 +273,16 @@ const ResonantChatPage: React.FC = () => {
     const chatBg = safeAreaTheme === 'dark' ? '#262321' : '#ffffff';
 
     // 1. Inject a <style> tag — always loads LAST, beats all other CSS
+    // Remove any existing one first (prevents duplicates on re-render)
+    const existing = document.getElementById('resonant-chat-safe-area');
+    if (existing) existing.remove();
     const style = document.createElement('style');
     style.id = 'resonant-chat-safe-area';
     style.textContent = `
-      html, body, #root {
+      html, html[data-theme="dark"], html[data-theme="light"],
+      html:not([data-theme="light"]),
+      body, body:not([data-theme="light"]),
+      #root {
         background: ${chatBg} !important;
         background-color: ${chatBg} !important;
       }

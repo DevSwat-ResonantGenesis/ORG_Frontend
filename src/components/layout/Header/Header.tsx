@@ -433,7 +433,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <img
                     src={theme === 'dark' ? '/images/Header_icons/api-light.png' : '/images/Header_icons/api-dark.png'}
                     alt="Integrations"
-                    style={{ width: '36px', height: '36px', objectFit: 'contain' }}
+                    style={{ width: '48px', height: '48px', objectFit: 'contain' }}
                   />
                 </button>
               )}
@@ -446,7 +446,7 @@ export const Header: React.FC<HeaderProps> = ({
                   aria-label="Resonant Chat"
                   title={chatWidgetOpen ? 'Close Resonant Chat' : 'Open Resonant Chat'}
                 >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
                     <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -456,7 +456,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             </div>
 
-            {isMobileViewport && (
+            {isMobileViewport && !isLoggedIn && isLandingPage && (
               <a
                 href="https://github.com/DevSwat-ResonantGenesis"
                 target="_blank"
@@ -479,7 +479,7 @@ export const Header: React.FC<HeaderProps> = ({
                 aria-label="Resonant Chat"
                 title={chatWidgetOpen ? 'Close Resonant Chat' : 'Open Resonant Chat'}
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" />
                   <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
                   <line x1="12" y1="17" x2="12.01" y2="17" />

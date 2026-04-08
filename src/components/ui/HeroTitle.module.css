@@ -106,14 +106,14 @@ h1.heroTitle {
 /* Secondary — clean sans, muted, readable */
 .heroSubtitleSecondary {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  font-size: clamp(11px, 1.5vw, 13px);
+  font-size: 10px;
   font-weight: 300;
   color: rgba(255, 255, 255, 0.3);
-  margin: 0 auto 44px;
-  line-height: 1.7;
-  padding: 0 16px;
+  margin: 0 auto 32px;
+  line-height: 1.6;
+  padding: 0 20px;
   text-align: center;
-  max-width: 860px;
+  max-width: 600px;
   letter-spacing: 0.02em;
   display: block;
   -webkit-font-smoothing: antialiased;
@@ -121,9 +121,9 @@ h1.heroTitle {
 
 @media (min-width: 1024px) {
   .heroSubtitleSecondary {
-    font-size: 13px;
-    margin-bottom: 48px;
-    max-width: 760px;
+    font-size: 12px;
+    margin-bottom: 40px;
+    max-width: 680px;
   }
 }
 
