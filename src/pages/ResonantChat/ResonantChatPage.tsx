@@ -280,8 +280,9 @@ const ResonantChatPage: React.FC = () => {
     style.id = 'resonant-chat-safe-area';
     style.textContent = `
       html, html[data-theme="dark"], html[data-theme="light"],
-      html:not([data-theme="light"]),
-      body, body:not([data-theme="light"]),
+      html:not([data-theme="light"]), html[data-theme=""],
+      body, body[data-theme="dark"], body[data-theme="light"],
+      body:not([data-theme="light"]), body[data-theme=""],
       #root {
         background: ${chatBg} !important;
         background-color: ${chatBg} !important;
