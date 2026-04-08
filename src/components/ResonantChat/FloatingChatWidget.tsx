@@ -737,7 +737,7 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className, isOp
       className={`${styles.floatingWidget} ${className || ''} ${isDragging ? styles.dragging : ''} ${isResizing ? styles.resizing : ''}`}
       style={{
         left: isMobile ? '16px' : `${isOpen ? Math.max(16, Math.min(position.x, window.innerWidth - 396)) : position.x}px`,
-        bottom: isMobile ? '90px' : `${window.innerHeight - position.y - (isOpen ? panelHeight : 64)}px`,
+        bottom: isMobile ? '140px' : `${window.innerHeight - position.y - (isOpen ? panelHeight : 64)}px`,
         top: 'auto'
       }}
     >

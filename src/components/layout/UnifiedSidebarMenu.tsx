@@ -217,7 +217,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                 <img
                   src={theme === 'dark' ? '/images/Header_icons/mining-light.png' : '/images/Header_icons/mining-dark.png'}
                   alt="Miner"
-                  style={{ width: 28, height: 28, objectFit: 'contain' }}
+                  style={{ width: 36, height: 36, objectFit: 'contain' }}
                 />
               </span>
               <span className={styles.usmLabel}>Miner</span>
@@ -232,7 +232,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                 <img
                   src={theme === 'dark' ? '/images/Header_icons/ide-light.png' : '/images/Header_icons/ide-dark.png'}
                   alt="IDE"
-                  style={{ width: 28, height: 28, objectFit: 'contain' }}
+                  style={{ width: 36, height: 36, objectFit: 'contain' }}
                 />
               </span>
               <span className={styles.usmLabel}>IDE</span>
@@ -247,7 +247,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                 <img
                   src="/images/Header_icons/openclaw.png"
                   alt="Connect"
-                  style={{ width: 28, height: 28, objectFit: 'contain' }}
+                  style={{ width: 36, height: 36, objectFit: 'contain' }}
                 />
               </span>
               <span className={styles.usmLabel}>Connect</span>
@@ -262,7 +262,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                 <img
                   src={theme === 'dark' ? '/images/Header_icons/api-light.png' : '/images/Header_icons/api-dark.png'}
                   alt="API"
-                  style={{ width: 28, height: 28, objectFit: 'contain' }}
+                  style={{ width: 36, height: 36, objectFit: 'contain' }}
                 />
               </span>
               <span className={styles.usmLabel}>API</span>

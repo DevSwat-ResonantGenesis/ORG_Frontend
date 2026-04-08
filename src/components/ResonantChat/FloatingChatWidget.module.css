@@ -656,11 +656,11 @@
 }
 
 .inputField::placeholder {
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.12);
 }
 
 [data-theme='light'] .inputField::placeholder {
-  color: rgba(0, 0, 0, 0.25);
+  color: rgba(0, 0, 0, 0.15);
 }
 
 .inputField:focus {
