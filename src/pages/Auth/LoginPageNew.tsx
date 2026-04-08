@@ -144,7 +144,7 @@ const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties>
     gap: '0.5rem',
   },
   socialBtn: {
-    width: '100%',
+    flex: 1,
     padding: '0.75rem',
     borderRadius: '8px',
     border: theme === 'dark' ? '1px solid rgba(255,255,255,0.1)' : '1px solid #000',

@@ -185,7 +185,7 @@ const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties>
   },
   socialBtns: {
     display: 'flex',
-    flexDirection: 'column' as const,
+    flexDirection: 'row' as const,
     gap: '0.5rem',
   },
   socialBtn: {
