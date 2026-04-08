@@ -139,6 +139,15 @@ const normalizeBreakdown = (
 export const fetchDashboardData = async (): Promise<DashboardData> => {
   // Track which endpoints failed for error reporting
   const errors: string[] = [];
+
+  // Helper: fetch with a short timeout so one dead service doesn't block the whole dashboard
+  const quickGet = (url: string, timeoutMs = 5000) => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    return fastapiClient
+      .get(url, { signal: controller.signal })
+      .finally(() => clearTimeout(timer));
+  };
   
   // Fetch data from multiple REAL endpoints in parallel
   // Group 1: Billing (credits, subscription, usage history)
@@ -157,19 +166,19 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
     marketplaceStatsRes,
     workflowsRes,
   ] = await Promise.all([
-    fastapiClient.get('/billing/dashboard/me').catch((e) => { errors.push('dashboard'); return { data: null }; }),
-    fastapiClient.get('/billing/credits').catch((e) => { errors.push('credits'); return { data: null }; }),
-    fastapiClient.get('/billing/subscription').catch((e) => { errors.push('subscription'); return { data: null }; }),
-    fastapiClient.get('/billing/dashboard/me/breakdown').catch((e) => { errors.push('breakdown'); return { data: null }; }),
-    fastapiClient.get('/billing/usage/tokens/history?days=30').catch(() => ({ data: null })),
+    quickGet('/billing/dashboard/me').catch((e) => { errors.push('dashboard'); return { data: null }; }),
+    quickGet('/billing/credits').catch((e) => { errors.push('credits'); return { data: null }; }),
+    quickGet('/billing/subscription').catch((e) => { errors.push('subscription'); return { data: null }; }),
+    quickGet('/billing/dashboard/me/breakdown').catch((e) => { errors.push('breakdown'); return { data: null }; }),
+    quickGet('/billing/usage/tokens/history?days=30').catch(() => ({ data: null })),
     // Per-user REAL data from actual services
-    fastapiClient.get('/api/v1/agents').catch(() => ({ data: null })),
-    fastapiClient.get('/memory/stats').catch(() => ({ data: null })),
-    fastapiClient.get('/resonant-chat/conversations').catch(() => ({ data: null })),
-    fastapiClient.get('/rag/conversations?limit=10000').catch(() => ({ data: null })),
+    quickGet('/api/v1/agents').catch(() => ({ data: null })),
+    quickGet('/memory/stats').catch(() => ({ data: null })),
+    quickGet('/resonant-chat/conversations').catch(() => ({ data: null })),
+    quickGet('/rag/conversations?limit=10000').catch(() => ({ data: null })),
     // Platform-wide metrics (marketplace only — compliance removed from user dashboard)
-    fastapiClient.get('/marketplace/stats').catch(() => ({ data: null })),
-    fastapiClient.get('/api/v1/workflow/workflows').catch(() => ({ data: null })),
+    quickGet('/marketplace/stats').catch(() => ({ data: null })),
+    quickGet('/api/v1/workflow/workflows').catch(() => ({ data: null })),
   ]);
 
   // Extract data
