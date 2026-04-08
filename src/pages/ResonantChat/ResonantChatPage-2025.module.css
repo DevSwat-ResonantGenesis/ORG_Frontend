@@ -16,6 +16,22 @@
   background-color: #ffffff;
 }
 
+/* Mobile: use home page background (black/white) instead of gray */
+@media (max-width: 768px) {
+  :global(html.resonant-chat-page),
+  :global(body.resonant-chat-page),
+  :global(body.resonant-chat-page #root) {
+    background: var(--color-bg-root, var(--bg-primary, #000000));
+    background-color: var(--color-bg-root, var(--bg-primary, #000000));
+  }
+  :global(html.resonant-chat-page[data-theme='light']),
+  :global([data-theme='light'] body.resonant-chat-page),
+  :global([data-theme='light'] body.resonant-chat-page #root) {
+    background: var(--color-bg-root, var(--bg-primary, #ffffff));
+    background-color: var(--color-bg-root, var(--bg-primary, #ffffff));
+  }
+}
+
 /* CSS Variables */
 :root {
   --chat-header-height: 56px;
