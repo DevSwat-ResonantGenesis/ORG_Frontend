@@ -267,34 +267,35 @@ const ResonantChatPage: React.FC = () => {
     return () => document.body.classList.remove('resonant-chat-page');
   }, []);
 
-  // Mobile safe area: set theme-color + body bg to match chat page bg
+  // Mobile safe area: override ALL theme-color metas + body/html bg to match chat page
   const { theme: safeAreaTheme } = useThemeStore();
   useEffect(() => {
     const chatBg = safeAreaTheme === 'dark' ? '#262321' : '#ffffff';
-    // Set theme-color meta tag for Safari/Brave address bar & safe areas
-    let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement;
-    const hadMeta = !!meta;
-    const prevContent = meta?.content;
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.name = 'theme-color';
-      document.head.appendChild(meta);
+    // Override all theme-color meta tags (index.html has media-specific ones)
+    const allMetas = document.querySelectorAll('meta[name="theme-color"]') as NodeListOf<HTMLMetaElement>;
+    const prevValues: { meta: HTMLMetaElement; content: string }[] = [];
+    allMetas.forEach(m => {
+      prevValues.push({ meta: m, content: m.content });
+      m.content = chatBg;
+    });
+    // If none exist, create one
+    let created: HTMLMetaElement | null = null;
+    if (allMetas.length === 0) {
+      created = document.createElement('meta');
+      created.name = 'theme-color';
+      created.content = chatBg;
+      document.head.appendChild(created);
     }
-    meta.content = chatBg;
-    // Also set body + html bg for bottom safe area
+    // Set body + html bg for bottom safe area (home indicator area)
     const prevBodyBg = document.body.style.backgroundColor;
     const prevHtmlBg = document.documentElement.style.backgroundColor;
     document.body.style.backgroundColor = chatBg;
     document.documentElement.style.backgroundColor = chatBg;
     return () => {
-      // Restore on unmount
       document.body.style.backgroundColor = prevBodyBg;
       document.documentElement.style.backgroundColor = prevHtmlBg;
-      if (hadMeta && prevContent) {
-        meta.content = prevContent;
-      } else if (!hadMeta && meta.parentNode) {
-        meta.parentNode.removeChild(meta);
-      }
+      prevValues.forEach(({ meta, content }) => { meta.content = content; });
+      if (created?.parentNode) created.parentNode.removeChild(created);
     };
   }, [safeAreaTheme]);
   const navigate = useNavigate();
