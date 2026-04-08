@@ -270,7 +270,11 @@ const ResonantChatPage: React.FC = () => {
   // Mobile safe area: inject <style> tag + override theme-color metas
   const { theme: safeAreaTheme } = useThemeStore();
   useEffect(() => {
-    const chatBg = safeAreaTheme === 'dark' ? '#262321' : '#ffffff';
+    // On mobile (< 768px), use home page background (black/white); on desktop use gray (#262321)
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const chatBg = safeAreaTheme === 'dark'
+      ? (isMobile ? '#000000' : '#262321')
+      : '#ffffff';
 
     // 1. Inject a <style> tag — always loads LAST, beats all other CSS
     // Remove any existing one first (prevents duplicates on re-render)
@@ -318,7 +322,40 @@ const ResonantChatPage: React.FC = () => {
       document.head.appendChild(created);
     }
 
+    // Handle resize to update background when crossing mobile/desktop breakpoint
+    const handleResize = () => {
+      const nowMobile = window.innerWidth < 768;
+      const newBg = safeAreaTheme === 'dark'
+        ? (nowMobile ? '#000000' : '#262321')
+        : '#ffffff';
+      if (newBg !== chatBg) {
+        // Re-trigger effect by updating a dummy state or just reload
+        // For simplicity, we update the style directly
+        const updatedStyle = document.getElementById('resonant-chat-safe-area');
+        if (updatedStyle) {
+          updatedStyle.textContent = `
+            :root, html, body, #root {
+              --bg-primary: ${newBg} !important;
+              --color-bg-root: ${newBg} !important;
+              background: ${newBg} !important;
+              background-color: ${newBg} !important;
+            }
+          `;
+        }
+        document.documentElement.style.setProperty('background', newBg, 'important');
+        document.documentElement.style.setProperty('background-color', newBg, 'important');
+        document.body.style.setProperty('background', newBg, 'important');
+        document.body.style.setProperty('background-color', newBg, 'important');
+        if (rootEl) {
+          rootEl.style.setProperty('background', newBg, 'important');
+          rootEl.style.setProperty('background-color', newBg, 'important');
+        }
+      }
+    };
+    window.addEventListener('resize', handleResize);
+
     return () => {
+      window.removeEventListener('resize', handleResize);
       // Remove injected style
       const el = document.getElementById('resonant-chat-safe-area');
       if (el) el.remove();
