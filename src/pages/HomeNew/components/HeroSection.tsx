@@ -95,7 +95,7 @@ export const HeroSection = () => {
             {/* Centered content */}
             <div ref={contentRef} className={styles.heroContent}>
                 <h1 className={heroTitleStyles.heroTitle}>
-                    Own Your <span style={{ fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, sans-serif", fontWeight: 700, letterSpacing: '-0.02em' }}>Intelligence.</span>
+                    Own Your <span style={{ fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, sans-serif", fontWeight: 700, fontStyle: 'normal', letterSpacing: '-0.02em' }}>Intelligence.</span>
                     <span className={heroTitleStyles.heroTitleTagline}>
                         Simpler than ever
                     </span>

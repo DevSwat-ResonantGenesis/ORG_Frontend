@@ -8039,31 +8039,31 @@
 }
 
 [data-theme='light'] .heroBottomSocial a {
-  color: rgba(59, 130, 246, 0.7) !important;
+  color: rgba(0, 0, 0, 0.5) !important;
   background: none !important;
   border: none !important;
   box-shadow: none !important;
 }
 [data-theme='light'] .heroBottomSocial a:hover {
-  color: rgba(59, 130, 246, 1) !important;
+  color: rgba(0, 0, 0, 1) !important;
 }
 [data-theme='light'] .heroBottomSocial a svg {
   fill: currentColor !important;
 }
 
 [data-theme='light'] .heroBottomLinks a {
-  color: rgba(59, 130, 246, 0.6) !important;
+  color: rgba(0, 0, 0, 0.5) !important;
   background: none !important;
   border: none !important;
   box-shadow: none !important;
   text-decoration: none !important;
 }
 [data-theme='light'] .heroBottomLinks a:hover {
-  color: rgba(59, 130, 246, 1) !important;
+  color: rgba(0, 0, 0, 1) !important;
 }
 
 [data-theme='light'] .heroBottomLinks span {
-  color: rgba(59, 130, 246, 0.4) !important;
+  color: rgba(0, 0, 0, 0.3) !important;
   background: none !important;
   border: none !important;
   box-shadow: none !important;
@@ -8075,25 +8075,25 @@
 }
 
 [data-theme='dark'] .heroBottomSocial a {
-  color: rgba(96, 165, 250, 0.6) !important;
+  color: rgba(255, 255, 255, 0.6) !important;
 }
 [data-theme='dark'] .heroBottomSocial a:hover {
-  color: rgba(96, 165, 250, 1) !important;
+  color: rgba(255, 255, 255, 1) !important;
 }
 [data-theme='dark'] .heroBottomSocial a svg {
   fill: currentColor !important;
 }
 
 [data-theme='dark'] .heroBottomLinks a {
-  color: rgba(96, 165, 250, 0.5) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
   text-decoration: none !important;
 }
 [data-theme='dark'] .heroBottomLinks a:hover {
-  color: rgba(96, 165, 250, 1) !important;
+  color: rgba(255, 255, 255, 1) !important;
 }
 
 [data-theme='dark'] .heroBottomLinks span {
-  color: rgba(96, 165, 250, 0.4) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
 }
 
 @media (max-width: 768px) {
