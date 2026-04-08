@@ -350,3 +350,97 @@
   background: rgba(99, 102, 241, 0.06);
   border-color: rgba(99, 102, 241, 0.25);
 }
+
+/* ============== RESPONSIVE - MOBILE ============== */
+@media (max-width: 640px) {
+  .widget {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .header {
+    margin-bottom: 14px;
+  }
+
+  .balanceValue {
+    font-size: 32px;
+  }
+
+  .balanceLabel {
+    font-size: 13px;
+  }
+
+  .balanceSecondary {
+    font-size: 12px;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .statValue {
+    font-size: 16px;
+  }
+
+  .statLabel {
+    font-size: 11px;
+  }
+
+  .planCards {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+  }
+
+  .planPrice {
+    font-size: 18px;
+  }
+
+  .planCredits {
+    font-size: 11px;
+  }
+
+  .alertBar {
+    flex-wrap: wrap;
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .freeHeading {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 400px) {
+  .widget {
+    padding: 12px;
+  }
+
+  .balanceValue {
+    font-size: 28px;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .statValue {
+    font-size: 14px;
+  }
+
+  .planCards {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .planCard {
+    padding: 10px 12px;
+  }
+
+  .planPrice {
+    font-size: 16px;
+  }
+}

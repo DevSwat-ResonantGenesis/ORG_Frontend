@@ -109,3 +109,40 @@
   font-size: 12px;
   color: var(--color-text-tertiary, #707080);
 }
+
+/* ============== RESPONSIVE - MOBILE ============== */
+@media (max-width: 640px) {
+  .widget {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .header {
+    margin-bottom: 14px;
+  }
+
+  .feed {
+    gap: 8px;
+  }
+
+  .item {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .description {
+    font-size: 12px;
+  }
+
+  .amount {
+    font-size: 11px;
+  }
+
+  .time {
+    font-size: 10px;
+  }
+
+  .empty {
+    padding: 24px 16px;
+  }
+}

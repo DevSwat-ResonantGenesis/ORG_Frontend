@@ -96,3 +96,33 @@
   color: var(--color-text-tertiary, #707080);
   flex-shrink: 0;
 }
+
+/* ============== RESPONSIVE - MOBILE ============== */
+@media (max-width: 640px) {
+  .widget {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .header {
+    margin-bottom: 12px;
+  }
+
+  .actions {
+    gap: 6px;
+  }
+
+  .action {
+    padding: 10px 12px;
+    gap: 10px;
+    border-radius: 8px;
+  }
+
+  .label {
+    font-size: 13px;
+  }
+
+  .description {
+    font-size: 11px;
+  }
+}

@@ -85,3 +85,60 @@
   margin-top: 2px;
   display: block;
 }
+
+/* ============== RESPONSIVE - MOBILE ============== */
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .card {
+    padding: 12px;
+    gap: 10px;
+    border-radius: 10px;
+  }
+
+  .iconWrapper {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+  .iconWrapper svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .value {
+    font-size: 20px;
+  }
+
+  .limit {
+    font-size: 13px;
+  }
+
+  .label {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 400px) {
+  .card {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .iconWrapper {
+    width: 30px;
+    height: 30px;
+  }
+
+  .value {
+    font-size: 18px;
+  }
+
+  .label {
+    font-size: 10px;
+  }
+}

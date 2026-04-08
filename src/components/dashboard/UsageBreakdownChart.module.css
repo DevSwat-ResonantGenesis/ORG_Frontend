@@ -114,3 +114,55 @@
   min-width: 60px;
   text-align: right;
 }
+
+/* ============== RESPONSIVE - MOBILE ============== */
+@media (max-width: 640px) {
+  .widget {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .header {
+    margin-bottom: 14px;
+  }
+
+  .chart {
+    width: 120px;
+    height: 120px;
+  }
+
+  .chartContainer {
+    margin-bottom: 14px;
+  }
+
+  .centerValue {
+    font-size: 18px;
+  }
+
+  .centerLabel {
+    font-size: 9px;
+  }
+
+  .legendItem {
+    padding: 6px 10px;
+    gap: 6px;
+  }
+
+  .legendLabel {
+    font-size: 12px;
+  }
+
+  .legendValue {
+    font-size: 12px;
+    min-width: 32px;
+  }
+
+  .legendCredits {
+    font-size: 11px;
+    min-width: 50px;
+  }
+
+  .legend {
+    gap: 6px;
+  }
+}

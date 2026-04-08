@@ -170,3 +170,41 @@
   font-size: 13px;
   color: var(--color-text-tertiary, #707080);
 }
+
+/* ============== RESPONSIVE - MOBILE ============== */
+@media (max-width: 640px) {
+  .widget {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .header {
+    margin-bottom: 12px;
+  }
+
+  .stats {
+    gap: 12px;
+  }
+
+  .statValue {
+    font-size: 14px;
+  }
+
+  .statLabel {
+    font-size: 10px;
+  }
+
+  .trend {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  .xAxis {
+    font-size: 9px;
+    padding: 0 4px;
+  }
+
+  .empty {
+    padding: 30px 16px;
+  }
+}

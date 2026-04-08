@@ -86,6 +86,61 @@
   animation: spin 1s linear infinite;
 }
 
+/* ============== OVERVIEW CARDS ============== */
+.overviewGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.overviewCard {
+  background: var(--surface, #262321);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  border-radius: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.overviewCard:hover {
+  border-color: var(--color-primary, #6366f1);
+}
+
+.overviewCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.overviewCardLabel {
+  color: var(--color-text-secondary, #a0a0b0);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.overviewCardValue {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.overviewNumber {
+  color: var(--color-text-primary, #ffffff);
+  font-size: 28px;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.overviewUnit {
+  color: var(--color-text-tertiary, #707080);
+  font-size: 14px;
+}
+
+/* ============== TOP ROW ============== */
 .topRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -93,18 +148,100 @@
   margin-bottom: 20px;
 }
 
-@media (max-width: 900px) {
-  .topRow {
-    grid-template-columns: 1fr;
-  }
+/* ============== CODE STATS ============== */
+.codeStatsCard {
+  background: var(--surface, #262321);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
 }
 
-@media (max-width: 640px) {
-  .dashboard {
-    padding: 16px;
-  }
+.codeStatsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
+.codeStatsTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-primary, #ffffff);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.codeStatsLive {
+  font-size: 11px;
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  display: inline-block;
+}
+
+.codeStatsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.codeStatItem {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 10px 12px;
+  text-align: center;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.06));
+}
+
+.codeStatValue {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.codeStatLabel {
+  color: var(--color-text-tertiary, #707080);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+.langTags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.langTag {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-secondary, #a0a0b0);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.codeStatsEmpty {
+  color: var(--color-text-tertiary, #707080);
+  font-size: 13px;
+  text-align: center;
+  padding: 16px 0;
+}
+
+/* ============== BOTTOM ROW ============== */
 .bottomRow {
   display: grid;
   grid-template-columns: 1fr 350px;
@@ -112,13 +249,134 @@
   margin-top: 20px;
 }
 
-@media (max-width: 900px) {
-  .bottomRow {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* Override for activity grid spacing */
 .dashboard > :global(.grid) {
   margin-top: 20px;
+}
+
+/* ============== RESPONSIVE - TABLET ============== */
+@media (max-width: 900px) {
+  .topRow {
+    grid-template-columns: 1fr;
+  }
+
+  .bottomRow {
+    grid-template-columns: 1fr;
+  }
+
+  .overviewGrid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+  }
+
+  .overviewNumber {
+    font-size: 22px;
+  }
+}
+
+/* ============== RESPONSIVE - MOBILE ============== */
+@media (max-width: 640px) {
+  .dashboard {
+    padding: 12px;
+  }
+
+  .header {
+    margin-bottom: 16px;
+    gap: 10px;
+  }
+
+  .headerLeft h1 {
+    font-size: 20px;
+  }
+
+  .headerLeft p {
+    font-size: 12px;
+  }
+
+  .refreshBtn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+  }
+
+  .overviewGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .overviewCard {
+    padding: 12px 14px;
+    border-radius: 10px;
+  }
+
+  .overviewCardLabel {
+    font-size: 10px;
+  }
+
+  .overviewNumber {
+    font-size: 20px;
+  }
+
+  .overviewUnit {
+    font-size: 12px;
+  }
+
+  .topRow {
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .codeStatsCard {
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+
+  .codeStatsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .codeStatItem {
+    padding: 8px 6px;
+  }
+
+  .codeStatValue {
+    font-size: 16px;
+  }
+
+  .codeStatLabel {
+    font-size: 9px;
+  }
+
+  .bottomRow {
+    gap: 12px;
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .dashboard {
+    padding: 8px;
+  }
+
+  .overviewGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .overviewCard {
+    padding: 10px 12px;
+  }
+
+  .overviewCardHeader {
+    margin-bottom: 4px;
+  }
+
+  .overviewNumber {
+    font-size: 18px;
+  }
+
+  .codeStatsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
