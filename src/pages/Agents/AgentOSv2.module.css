@@ -220,10 +220,31 @@
   }
   
   .metricsFooter {
-    flex-wrap: wrap;
-    height: auto;
-    padding: 12px;
-    gap: 12px;
+    flex-wrap: nowrap;
+    height: 40px;
+    min-height: 40px;
+    padding: 0 8px;
+    gap: 0;
+    justify-content: space-between;
+    overflow-x: auto;
+  }
+
+  .metricItem {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .metricLabel {
+    display: none;
+  }
+
+  .metricValue {
+    font-size: 12px;
+  }
+
+  .metricItem svg {
+    width: 13px;
+    height: 13px;
   }
 }
 
@@ -336,5 +357,32 @@
   
   .mainContent {
     padding: 12px;
+  }
+
+  .metricsFooter {
+    flex-wrap: nowrap;
+    height: 36px;
+    min-height: 36px;
+    padding: 0 6px;
+    gap: 0;
+    justify-content: space-between;
+  }
+
+  .metricLabel {
+    display: none;
+  }
+
+  .metricValue {
+    font-size: 11px;
+  }
+
+  .metricItem {
+    gap: 3px;
+    flex-shrink: 0;
+  }
+
+  .metricItem svg {
+    width: 12px;
+    height: 12px;
   }
 }
