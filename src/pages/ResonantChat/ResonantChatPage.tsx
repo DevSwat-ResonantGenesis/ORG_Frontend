@@ -279,16 +279,29 @@ const ResonantChatPage: React.FC = () => {
     const style = document.createElement('style');
     style.id = 'resonant-chat-safe-area';
     style.textContent = `
-      html, html[data-theme="dark"], html[data-theme="light"],
+      :root, html, html[data-theme="dark"], html[data-theme="light"],
       html:not([data-theme="light"]), html[data-theme=""],
       body, body[data-theme="dark"], body[data-theme="light"],
       body:not([data-theme="light"]), body[data-theme=""],
       #root {
+        --bg-primary: ${chatBg} !important;
+        --color-bg-root: ${chatBg} !important;
         background: ${chatBg} !important;
         background-color: ${chatBg} !important;
       }
     `;
     document.head.appendChild(style);
+
+    // 2. Also set inline styles directly — ultimate fallback
+    document.documentElement.style.setProperty('background', chatBg, 'important');
+    document.documentElement.style.setProperty('background-color', chatBg, 'important');
+    document.body.style.setProperty('background', chatBg, 'important');
+    document.body.style.setProperty('background-color', chatBg, 'important');
+    const rootEl = document.getElementById('root');
+    if (rootEl) {
+      rootEl.style.setProperty('background', chatBg, 'important');
+      rootEl.style.setProperty('background-color', chatBg, 'important');
+    }
 
     // 2. Override all theme-color meta tags for Safari/Brave address bar
     const allMetas = document.querySelectorAll('meta[name="theme-color"]') as NodeListOf<HTMLMetaElement>;
@@ -309,6 +322,16 @@ const ResonantChatPage: React.FC = () => {
       // Remove injected style
       const el = document.getElementById('resonant-chat-safe-area');
       if (el) el.remove();
+      // Remove inline styles
+      document.documentElement.style.removeProperty('background');
+      document.documentElement.style.removeProperty('background-color');
+      document.body.style.removeProperty('background');
+      document.body.style.removeProperty('background-color');
+      const rootCleanup = document.getElementById('root');
+      if (rootCleanup) {
+        rootCleanup.style.removeProperty('background');
+        rootCleanup.style.removeProperty('background-color');
+      }
       // Restore meta tags
       prevValues.forEach(({ meta, content }) => { meta.content = content; });
       if (created?.parentNode) created.parentNode.removeChild(created);

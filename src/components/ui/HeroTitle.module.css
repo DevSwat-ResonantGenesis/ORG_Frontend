@@ -79,7 +79,7 @@ h1.heroTitle {
   font-size: clamp(11px, 1.8vw, 14px);
   font-weight: 400;
   color: rgba(255, 255, 255, 0.6);
-  margin: 0 auto 28px;
+  margin: 24px auto 28px;
   line-height: 1.6;
   padding: 0;
   text-align: center;
@@ -109,7 +109,7 @@ h1.heroTitle {
   font-size: 10px;
   font-weight: 300;
   color: rgba(255, 255, 255, 0.3);
-  margin: 0 auto 32px;
+  margin: 16px auto 40px;
   line-height: 1.6;
   padding: 0 20px;
   text-align: center;
