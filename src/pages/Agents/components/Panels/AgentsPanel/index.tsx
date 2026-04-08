@@ -665,10 +665,16 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
               Agents
             </button>
             <button
-              className={`${styles.mobileTab} ${mobilePanel === 1 ? styles.mobileTabActive : ''}`}
-              onClick={() => scrollToMobilePanel(1)}
+              className={`${styles.mobileTab} ${mobilePanel === 1 && inlinePanel?.type !== 'execution' ? styles.mobileTabActive : ''}`}
+              onClick={() => { if (inlinePanel?.type === 'execution') { setInlinePanel(null); } scrollToMobilePanel(1); }}
             >
               {activePanelLabel}
+            </button>
+            <button
+              className={`${styles.mobileTab} ${mobilePanel === 1 && inlinePanel?.type === 'execution' ? styles.mobileTabActive : ''}`}
+              onClick={() => { setInlinePanel({ type: 'execution' }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); scrollToMobilePanel(1); }}
+            >
+              Steps
             </button>
           </div>
         )}
