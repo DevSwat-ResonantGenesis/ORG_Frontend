@@ -49,24 +49,7 @@
   }
 }
 
-/* Section Badge */
-.sectionBadge {
-  display: inline-block;
-  padding: 8px 16px;
-  background: rgba(37, 99, 235, 0.1);
-  color: #2563eb;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 16px;
-}
-
-[data-theme='dark'] .sectionBadge {
-  background: rgba(96, 165, 250, 0.15);
-  color: rgba(96, 165, 250, 0.9);
-}
+/* Section Badge — removed globally per design */
 
 /* Section Title */
 .sectionTitle {
@@ -97,269 +80,147 @@
 }
 
 /* ============================================================
-   Pricing Plans Grid
+   Pricing Plans Grid — Compact dashboard-style cards
    ============================================================ */
 .plansGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
-  margin-bottom: 80px;
+  gap: 12px;
+  margin-bottom: 64px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @media (min-width: 768px) {
   .plansGrid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: 12px;
   }
 }
 
-@media (min-width: 1024px) {
-  .plansGrid {
-    gap: 32px;
-  }
-}
-
-/* Plan Card - Matches InterfacesSection card style */
+/* Plan Card — compact, matches CreditWidget dashboard cards */
 .planCard {
-  padding: 32px 24px;
-  background: transparent;
-  border: none;
-  border-radius: 16px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  position: relative;
-}
-
-@media (min-width: 640px) {
-  .planCard {
-    padding: 40px 32px;
-  }
-}
-
-[data-theme='dark'] .planCard {
-  background: transparent;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  gap: 6px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: inherit;
 }
 
 .planCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.3);
+  transform: translateY(-1px);
 }
 
-[data-theme='dark'] .planCard:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+[data-theme='light'] .planCard {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
-/* Recommended Plan */
+[data-theme='light'] .planCard:hover {
+  background: rgba(99, 102, 241, 0.06);
+  border-color: rgba(99, 102, 241, 0.25);
+}
+
+/* Recommended variant — purple border */
 .planCardRecommended {
-  border: 2px solid #3b82f6;
-  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.2);
+  border-color: rgba(168, 85, 247, 0.3);
+  background: rgba(168, 85, 247, 0.04);
+}
+
+.planCardRecommended:hover {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+/* Enterprise variant */
+.planCardEnterprise {
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+.planCardEnterprise:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+/* Card header row — icon + name + badge */
+.planCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-secondary, #a0a0b0);
+}
+
+.planCardRecommended .planCardHeader {
+  color: #a855f7;
+}
+
+.planName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary, #ffffff);
+}
+
+[data-theme='light'] .planName {
+  color: #111827;
 }
 
 .recommendedBadge {
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 4px 16px;
-  background: #3b82f6;
-  color: white;
-  font-size: 11px;
+  margin-left: auto;
+  font-size: 10px;
   font-weight: 600;
-  border-radius: 20px;
+  padding: 2px 6px;
+  background: rgba(168, 85, 247, 0.2);
+  color: #c084fc;
+  border-radius: 4px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
-/* Plan Icon */
-.planIcon {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #3b82f6;
-}
-
-[data-theme='dark'] .planIcon {
-  color: #60a5fa;
-}
-
-/* Plan Name */
-.planName {
-  font-family: 'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+/* Price — large bold */
+.planPrice {
   font-size: 24px;
   font-weight: 700;
-  margin: 0;
+  color: var(--color-text-primary, #ffffff);
+  line-height: 1.2;
+}
+
+[data-theme='light'] .planPrice {
   color: #111827;
 }
 
-[data-theme='dark'] .planName {
-  color: #f9fafb;
+.planPrice span {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text-tertiary, #707080);
 }
 
-/* Plan Badge */
-.planBadge {
-  display: inline-block;
-  padding: 4px 12px;
-  background: rgba(0, 0, 0, 0.08);
-  color: #374151;
-  border-radius: 12px;
+/* Credits line */
+.planCredits {
   font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  width: fit-content;
+  font-weight: 500;
+  color: var(--color-text-secondary, #a0a0b0);
 }
 
-[data-theme='dark'] .planBadge {
-  background: rgba(255, 255, 255, 0.1);
-  color: #e5e7eb;
+/* Note line */
+.planNote {
+  font-size: 11px;
+  color: var(--color-text-tertiary, #707080);
 }
 
-/* Plan Price */
-.planPrice {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-}
-
-.priceAmount {
-  font-size: 48px;
-  font-weight: 700;
-  color: #111827;
-  line-height: 1;
-}
-
-[data-theme='dark'] .priceAmount {
-  color: #f9fafb;
-}
-
-.pricePeriod {
-  font-size: 16px;
-  color: #6b7280;
-}
-
-[data-theme='dark'] .pricePeriod {
-  color: #94a3b8;
-}
-
-/* Plan Description */
-.planDescription {
-  font-size: 15px;
-  color: #374151;
-  line-height: 1.7;
-}
-
-[data-theme='dark'] .planDescription {
-  color: #cbd5e1;
-}
-
-.planDescription strong {
-  color: #111827;
-  font-weight: 600;
-}
-
-[data-theme='dark'] .planDescription strong {
-  color: #f1f5f9;
-}
-
-/* Credits Info */
-.creditsInfo {
-  padding: 16px;
-  background: rgba(0, 0, 0, 0.03);
-  border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-[data-theme='dark'] .creditsInfo {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.creditsTitle {
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-[data-theme='dark'] .creditsTitle {
-  color: #e5e7eb;
-}
-
-.creditsValue {
-  font-size: 20px;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 4px;
-}
-
-[data-theme='dark'] .creditsValue {
-  color: #f9fafb;
-}
-
-.creditsNote {
-  font-size: 13px;
-  color: #6b7280;
-}
-
-[data-theme='dark'] .creditsNote {
-  color: #94a3b8;
-}
-
-/* Plan CTA Button */
-.planCta {
-  width: 100%;
-  padding: 14px 24px;
-  border: none;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  margin-top: auto;
-}
-
-.planCtaPrimary {
-  background: #111827;
-  color: white;
-}
-
-[data-theme='dark'] .planCtaPrimary {
-  background: #f9fafb;
-  color: #111827;
-}
-
-.planCtaPrimary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-[data-theme='dark'] .planCtaPrimary:hover {
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
-}
-
-.planCtaSecondary {
-  background: rgba(0, 0, 0, 0.05);
-  color: #374151;
-}
-
-[data-theme='dark'] .planCtaSecondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: #e5e7eb;
-}
-
-.planCtaSecondary:hover {
-  background: rgba(0, 0, 0, 0.1);
-}
-
-[data-theme='dark'] .planCtaSecondary:hover {
-  background: rgba(255, 255, 255, 0.15);
+/* Loading state */
+.planLoading {
+  font-size: 11px;
+  color: #a855f7;
+  font-weight: 500;
+  margin-top: 4px;
 }
 
 /* ============================================================

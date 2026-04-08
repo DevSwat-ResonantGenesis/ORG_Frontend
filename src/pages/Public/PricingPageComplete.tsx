@@ -279,47 +279,39 @@ const PricingPage: React.FC = () => {
       : `$${Math.round(plan.price.yearly / 12)}`;
   };
 
+  const planIcons: Record<string, React.ReactNode> = {
+    developer: <Zap size={14} />,
+    plus: <Shield size={14} />,
+    enterprise: <Network size={14} />,
+  };
+
   const renderPlanCard = (plan: Plan) => {
     const isRecommended = plan.recommended;
+    const isEnterprise = plan.contactSales;
     
     return (
       <div 
         key={plan.id}
-        className={`${styles.planCard} ${isRecommended ? styles.planCardRecommended : ''}`}
+        className={`${styles.planCard} ${isRecommended ? styles.planCardRecommended : ''} ${isEnterprise ? styles.planCardEnterprise : ''}`}
+        onClick={() => handlePlanSelect(plan)}
+        role="button"
+        tabIndex={0}
       >
-        {isRecommended && (
-          <span className={styles.recommendedBadge}>Recommended</span>
-        )}
-        
-        <div className={styles.planIcon}>
-          <Zap size={32} />
-        </div>
-        
-        <h3 className={styles.planName}>{plan.name}</h3>
-        <span className={styles.planBadge}>{plan.badge}</span>
-        
-        <div className={styles.planPrice}>
-          <span className={styles.priceAmount}>{getDisplayPrice(plan)}</span>
-          {plan.price.period && (
-            <span className={styles.pricePeriod}>{plan.price.period}</span>
+        <div className={styles.planCardHeader}>
+          {planIcons[plan.id]}
+          <span className={styles.planName}>{plan.name}</span>
+          {isRecommended && (
+            <span className={styles.recommendedBadge}>Recommended</span>
           )}
         </div>
-        
-        <p className={styles.planDescription}>{plan.description}</p>
-        
-        <div className={styles.creditsInfo}>
-          <div className={styles.creditsTitle}>Credits</div>
-          <div className={styles.creditsValue}>{plan.credits.display}</div>
-          <div className={styles.creditsNote}>{plan.credits.note}</div>
+        <div className={styles.planPrice}>
+          {getDisplayPrice(plan)}<span>{plan.price.period}</span>
         </div>
-        
-        <button
-          className={`${styles.planCta} ${plan.cta.style === 'primary' ? styles.planCtaPrimary : styles.planCtaSecondary}`}
-          onClick={() => handlePlanSelect(plan)}
-          disabled={checkoutLoading === plan.id}
-        >
-          {checkoutLoading === plan.id ? 'Redirecting...' : plan.cta.text}
-        </button>
+        <div className={styles.planCredits}>{plan.credits.display}</div>
+        <div className={styles.planNote}>{plan.credits.note}</div>
+        {checkoutLoading === plan.id && (
+          <div className={styles.planLoading}>Redirecting...</div>
+        )}
       </div>
     );
   };
@@ -385,7 +377,6 @@ const PricingPage: React.FC = () => {
       <div className={styles.sectionContent}>
         {/* Header */}
         <div className={styles.sectionHeader}>
-          <span className={styles.sectionBadge}>Pricing</span>
           <h1 className={styles.sectionTitle}>Simple, Transparent Pricing</h1>
           <p className={styles.sectionDescription}>
             All plans include full platform access. Developer and Plus share the same features — only credits and rollover differ.
@@ -416,7 +407,6 @@ const PricingPage: React.FC = () => {
         {/* Credit Cost Breakdown */}
         <section className={styles.creditBreakdownSection}>
           <div className={styles.sectionHeader}>
-            <span className={styles.sectionBadge}>Credit Costs</span>
             <h2 className={styles.sectionTitle}>What Do Credits Cost?</h2>
             <p className={styles.sectionDescription}>
               Every action on the platform has a transparent credit cost. 1 credit ≈ $0.001.
@@ -550,7 +540,6 @@ const PricingPage: React.FC = () => {
         {/* Credit Packs Section */}
         <section className={styles.creditPacksSection}>
           <div className={styles.sectionHeader}>
-            <span className={styles.sectionBadge}>Credit Packs</span>
             <h2 className={styles.sectionTitle}>Buy Credits</h2>
             <p className={styles.sectionDescription}>
               {canPurchaseCredits 
@@ -597,7 +586,6 @@ const PricingPage: React.FC = () => {
         {/* API Subscriptions Section */}
         <section className={styles.apiSection}>
           <div className={styles.sectionHeader}>
-            <span className={styles.sectionBadge}>API Subscriptions</span>
             <h2 className={styles.sectionTitle}>Standalone API Products</h2>
             <p className={styles.sectionDescription}>
               Add specialized APIs to any platform plan. Billed separately from platform credits.
@@ -718,7 +706,6 @@ const PricingPage: React.FC = () => {
         {/* Limits Section */}
         <section className={styles.limitsSection}>
           <div className={styles.sectionHeader}>
-            <span className={styles.sectionBadge}>Plan Details</span>
             <h2 className={styles.sectionTitle}>Detailed Plan Limits</h2>
             <p className={styles.sectionDescription}>
               Compare features and limits across all plans
@@ -924,7 +911,6 @@ const PricingPage: React.FC = () => {
         {/* Core Features */}
         <section className={styles.featuresSection}>
           <div className={styles.featuresSectionHeader}>
-            <span className={styles.sectionBadge}>Platform Features</span>
             <h2 className={styles.sectionTitle}>Everything You Need</h2>
             <p className={styles.sectionDescription}>
               All plans include access to our core platform features
@@ -939,7 +925,6 @@ const PricingPage: React.FC = () => {
         {/* FAQ */}
         <section className={styles.faqSection}>
           <div className={styles.sectionHeader}>
-            <span className={styles.sectionBadge}>FAQ</span>
             <h2 className={styles.sectionTitle}>Frequently Asked Questions</h2>
           </div>
           
