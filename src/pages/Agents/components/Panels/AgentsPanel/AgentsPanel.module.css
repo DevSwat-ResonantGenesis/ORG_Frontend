@@ -91,6 +91,37 @@
   font-weight: 600;
 }
 
+/* Mobile toggle button — hidden on desktop, visible on mobile */
+.mobileToggleBtn {
+  display: none;
+}
+
+.desktopAgentIcon {
+  display: inline-flex;
+}
+
+.mobileToggleChevron {
+  display: inline-block;
+  font-size: 10px;
+  transition: transform 0.2s ease;
+  transform: rotate(-90deg);
+  margin-left: -2px;
+}
+
+.mobileToggleOpen {
+  transform: rotate(0deg);
+}
+
+/* Collapsible toolbar — always visible on desktop */
+.collapsibleToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
 .viewTabs {
   display: flex;
   gap: 4px;
@@ -2161,6 +2192,47 @@
     font-size: 13px;
     flex-shrink: 0;
     margin-right: 2px;
+  }
+
+  /* Show toggle button on mobile, hide desktop icon */
+  .mobileToggleBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 4px;
+  }
+
+  .mobileToggleBtn:active {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .mobileToggleBtn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .desktopAgentIcon {
+    display: none;
+  }
+
+  /* Collapsible toolbar — collapsed by default on mobile */
+  .collapsibleToolbar {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 12px;
+    border-bottom: none;
+    transition: max-height 0.25s ease, padding 0.25s ease;
+  }
+
+  .collapsibleToolbarOpen {
+    max-height: 200px;
+    padding: 6px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   /* Nav icons flow inline after title */

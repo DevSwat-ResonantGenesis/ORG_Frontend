@@ -97,6 +97,9 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const splitContainerRef = useRef<HTMLDivElement>(null);
   const [mobilePanel, setMobilePanel] = useState(0);
 
+  // Mobile toolbar collapse toggle
+  const [mobileToolbarOpen, setMobileToolbarOpen] = useState(true);
+
   const pinnedSet = useMemo(() => new Set(pinnedAgentIds || []), [pinnedAgentIds]);
 
   const filteredAgents = useMemo(() => {
@@ -553,48 +556,20 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   return (
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
-        <h2><Icons.Agents /> Agent Management</h2>
+        <h2>
+          <button
+            className={styles.mobileToggleBtn}
+            type="button"
+            onClick={() => setMobileToolbarOpen(prev => !prev)}
+            title={mobileToolbarOpen ? 'Collapse toolbar' : 'Expand toolbar'}
+          >
+            <Icons.Agents />
+            <span className={`${styles.mobileToggleChevron} ${mobileToolbarOpen ? styles.mobileToggleOpen : ''}`}>▾</span>
+          </button>
+          <span className={styles.desktopAgentIcon}><Icons.Agents /></span>
+          {' '}Agent Management
+        </h2>
         
-        <div className={styles.headerControls}>
-          <div className={styles.searchBox}>
-            <Icons.Search />
-            <input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search agents"
-            />
-            {searchQuery && (
-              <button className={styles.clearBtn} type="button" onClick={() => setSearchQuery('')} title="Clear">
-                <Icons.X />
-              </button>
-            )}
-          </div>
-
-          <select className={styles.filterSelect} value={filter} onChange={(e) => setFilter(e.target.value)} style={{ width: '80px', minWidth: '80px', maxWidth: '80px' }}>
-            <option value="all">All</option>
-            <option value="favorites">Favorites</option>
-            <option value="openclaw">OpenClaw</option>
-            <option value="active">Active</option>
-            <option value="idle">Idle</option>
-            <option value="paused">Paused</option>
-            <option value="archived">Archived</option>
-          </select>
-
-          <select className={styles.filterSelect} value={`${sortKey}:${sortDir}`} onChange={(e) => {
-            const [k, d] = String(e.target.value).split(':');
-            setSortKey(k as any);
-            setSortDir(d as any);
-          }} style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>
-            <option value="name:asc">Name (A→Z)</option>
-            <option value="name:desc">Name (Z→A)</option>
-            <option value="status:asc">Status</option>
-            <option value="executions:desc">Executions (high→low)</option>
-            <option value="executions:asc">Executions (low→high)</option>
-            <option value="costToday:desc">Cost (high→low)</option>
-            <option value="costToday:asc">Cost (low→high)</option>
-          </select>
-        </div>
-
         {/* Panel navigation icons — replaces sidebar */}
         <div className={styles.navIcons}>
           {([
@@ -621,7 +596,10 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
             </button>
           ))}
         </div>
+      </div>
 
+      {/* Collapsible toolbar area — toggled on mobile via Agent icon */}
+      <div className={`${styles.collapsibleToolbar} ${mobileToolbarOpen ? styles.collapsibleToolbarOpen : ''}`}>
         <div className={styles.headerMeta}>
           <span className={styles.countPill}>{filteredAgents.length}</span>
           <button className={styles.toolbarBtn} type="button" onClick={() => { setShowFactory(true); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setInlinePanel(null); }} title="Create agent">
@@ -635,26 +613,66 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           >
             <Icons.MousePointer /> {bulkMode ? 'Done' : 'Bulk'}
           </button>
-        </div>
-      </div>
 
-      {/* Mobile swipe tab bar */}
-      {hasRightPanel && (
-        <div className={styles.mobileTabs}>
-          <button
-            className={`${styles.mobileTab} ${mobilePanel === 0 ? styles.mobileTabActive : ''}`}
-            onClick={() => scrollToMobilePanel(0)}
-          >
-            Agents
-          </button>
-          <button
-            className={`${styles.mobileTab} ${mobilePanel === 1 ? styles.mobileTabActive : ''}`}
-            onClick={() => scrollToMobilePanel(1)}
-          >
-            {activePanelLabel}
-          </button>
+          <div className={styles.headerControls}>
+            <div className={styles.searchBox}>
+              <Icons.Search />
+              <input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search agents"
+              />
+              {searchQuery && (
+                <button className={styles.clearBtn} type="button" onClick={() => setSearchQuery('')} title="Clear">
+                  <Icons.X />
+                </button>
+              )}
+            </div>
+
+            <select className={styles.filterSelect} value={filter} onChange={(e) => setFilter(e.target.value)} style={{ width: '80px', minWidth: '80px', maxWidth: '80px' }}>
+              <option value="all">All</option>
+              <option value="favorites">Favorites</option>
+              <option value="openclaw">OpenClaw</option>
+              <option value="active">Active</option>
+              <option value="idle">Idle</option>
+              <option value="paused">Paused</option>
+              <option value="archived">Archived</option>
+            </select>
+
+            <select className={styles.filterSelect} value={`${sortKey}:${sortDir}`} onChange={(e) => {
+              const [k, d] = String(e.target.value).split(':');
+              setSortKey(k as any);
+              setSortDir(d as any);
+            }} style={{ width: '100px', minWidth: '100px', maxWidth: '100px' }}>
+              <option value="name:asc">Name (A→Z)</option>
+              <option value="name:desc">Name (Z→A)</option>
+              <option value="status:asc">Status</option>
+              <option value="executions:desc">Executions (high→low)</option>
+              <option value="executions:asc">Executions (low→high)</option>
+              <option value="costToday:desc">Cost (high→low)</option>
+              <option value="costToday:asc">Cost (low→high)</option>
+            </select>
+          </div>
         </div>
-      )}
+
+        {/* Mobile swipe tab bar */}
+        {hasRightPanel && (
+          <div className={styles.mobileTabs}>
+            <button
+              className={`${styles.mobileTab} ${mobilePanel === 0 ? styles.mobileTabActive : ''}`}
+              onClick={() => scrollToMobilePanel(0)}
+            >
+              Agents
+            </button>
+            <button
+              className={`${styles.mobileTab} ${mobilePanel === 1 ? styles.mobileTabActive : ''}`}
+              onClick={() => scrollToMobilePanel(1)}
+            >
+              {activePanelLabel}
+            </button>
+          </div>
+        )}
+      </div>
 
       <div className={styles.splitContainer} ref={splitContainerRef} onScroll={handleMobileSplitScroll}>
         {/* Left pane: agents grid */}
