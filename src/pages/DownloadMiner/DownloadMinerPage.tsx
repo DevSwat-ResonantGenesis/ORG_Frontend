@@ -4,6 +4,7 @@ import styles from './DownloadMinerPage.module.css';
 
 const GITHUB_REPO = 'https://github.com/DevSwat-ResonantGenesis/RG_miner_app';
 const GITHUB_DOWNLOAD = 'https://github.com/DevSwat-ResonantGenesis/RG_miner_app/archive/refs/heads/main.zip';
+const ONE_LINE_INSTALL = `bash -lc 'set -e; command -v brew >/dev/null 2>&1 || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; brew install ffmpeg pkg-config; [ -d RG_miner_app ] || git clone https://github.com/DevSwat-ResonantGenesis/RG_miner_app.git; cd RG_miner_app; python3 -m venv venv; source venv/bin/activate; pip install -r requirements.txt; python server.py'`;
 
 const SETUP_STEPS = [
   { cmd: '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"', note: 'Install Homebrew (skip if you have it)' },
@@ -140,6 +141,7 @@ const FAQ_ITEMS = [
 const DownloadMinerPage: React.FC = () => {
   const { theme } = useThemeStore();
   const [copied, setCopied] = useState(false);
+  const [copiedOneLiner, setCopiedOneLiner] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const fullCloneScript = SETUP_STEPS.map(s => s.cmd).join('\n');
@@ -148,6 +150,12 @@ const DownloadMinerPage: React.FC = () => {
     navigator.clipboard.writeText(fullCloneScript);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyOneLiner = () => {
+    navigator.clipboard.writeText(ONE_LINE_INSTALL);
+    setCopiedOneLiner(true);
+    setTimeout(() => setCopiedOneLiner(false), 2000);
   };
 
   return (
@@ -193,6 +201,19 @@ const DownloadMinerPage: React.FC = () => {
           </div>
           <div className={styles.heroPlatforms}>
             Python 3.9+ &bull; PyTorch 2.1+ &bull; CUDA / MPS / CPU &bull; AGPL-3.0 License
+          </div>
+          <div style={{ marginTop: 16, width: '100%', maxWidth: 980 }}>
+            <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 8 }}>One-line install (copy/paste in Terminal)</div>
+            <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 10, padding: '10px 12px', overflowX: 'auto', textAlign: 'left' }}>
+              <code style={{ color: '#e6edf3', fontSize: 12, fontFamily: "'JetBrains Mono', 'Fira Code', monospace", whiteSpace: 'pre' }}>{ONE_LINE_INSTALL}</code>
+            </div>
+            <button
+              type="button"
+              onClick={handleCopyOneLiner}
+              style={{ marginTop: 8, background: 'none', border: '1px solid #30363d', borderRadius: 6, color: copiedOneLiner ? '#3fb950' : '#8b949e', fontSize: 12, padding: '6px 10px', cursor: 'pointer' }}
+            >
+              {copiedOneLiner ? 'One-line copied!' : 'Copy one-line command'}
+            </button>
           </div>
         </div>
       </section>

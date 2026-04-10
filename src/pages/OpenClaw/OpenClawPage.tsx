@@ -4,6 +4,7 @@ import styles from './OpenClawPage.module.css';
 
 const GITHUB_REPO = 'https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw';
 const GITHUB_DOWNLOAD = 'https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw/archive/refs/heads/main.zip';
+const ONE_LINE_INSTALL = `bash -lc 'set -e; [ -d RG_OpenClaw ] || git clone https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw.git; cd RG_OpenClaw; python3 -m venv venv; source venv/bin/activate; pip install -r requirements.txt; cp -n .env.example .env; echo "Edit .env with your credentials, then press Ctrl+X to save"; \${EDITOR:-nano} .env; uvicorn app.main:app --port 8000 --reload'`;
 
 const SETUP_STEPS = [
   { cmd: 'git clone https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw.git', note: 'Clone the repo' },
@@ -311,6 +312,7 @@ const FAQ_ITEMS = [
 const OpenClawPage: React.FC = () => {
   const { theme } = useThemeStore();
   const [copied, setCopied] = useState(false);
+  const [copiedOneLiner, setCopiedOneLiner] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [openCat, setOpenCat] = useState<number | null>(null);
 
@@ -320,6 +322,12 @@ const OpenClawPage: React.FC = () => {
     navigator.clipboard.writeText(fullCloneScript);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyOneLiner = () => {
+    navigator.clipboard.writeText(ONE_LINE_INSTALL);
+    setCopiedOneLiner(true);
+    setTimeout(() => setCopiedOneLiner(false), 2000);
   };
 
   return (
@@ -365,6 +373,19 @@ const OpenClawPage: React.FC = () => {
           </div>
           <div className={styles.heroPlatforms}>
             Python 3.9+ &bull; FastAPI &bull; WebSocket RPC &bull; Same auth as Resonant IDE &amp; Miner
+          </div>
+          <div style={{ marginTop: 16, width: '100%', maxWidth: 980 }}>
+            <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 8 }}>One-line install (copy/paste in Terminal)</div>
+            <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 10, padding: '10px 12px', overflowX: 'auto', textAlign: 'left' }}>
+              <code style={{ color: '#e6edf3', fontSize: 12, fontFamily: "'JetBrains Mono', 'Fira Code', monospace", whiteSpace: 'pre' }}>{ONE_LINE_INSTALL}</code>
+            </div>
+            <button
+              type="button"
+              onClick={handleCopyOneLiner}
+              style={{ marginTop: 8, background: 'none', border: '1px solid #30363d', borderRadius: 6, color: copiedOneLiner ? '#3fb950' : '#8b949e', fontSize: 12, padding: '6px 10px', cursor: 'pointer' }}
+            >
+              {copiedOneLiner ? 'One-line copied!' : 'Copy one-line command'}
+            </button>
           </div>
         </div>
       </section>
