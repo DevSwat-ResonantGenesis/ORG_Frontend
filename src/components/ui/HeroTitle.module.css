@@ -4,9 +4,9 @@
 
 .heroTitle,
 h1.heroTitle {
-  font-family: 'Abril Fatface', Georgia, 'Times New Roman', serif;
-  font-size: clamp(80px, 22vw, 193px);
-  font-weight: 400;
+  font-family: 'Abril Fatface', Georgia, 'Times New Roman', serif !important;
+  font-size: clamp(100px, 26vw, 193px) !important;
+  font-weight: 400 !important;
   margin: 0;
   padding: 0;
   line-height: 0.92;
@@ -31,11 +31,11 @@ h1.heroTitle {
 }
 
 @media (min-width: 768px) {
-  .heroTitle { font-size: clamp(140px, 16vw, 193px); }
+  .heroTitle { font-size: clamp(140px, 16vw, 193px) !important; }
 }
 
 @media (min-width: 1280px) {
-  .heroTitle { font-size: 193px; }
+  .heroTitle { font-size: 193px !important; }
 }
 
 [data-theme='light'] .heroTitle,
