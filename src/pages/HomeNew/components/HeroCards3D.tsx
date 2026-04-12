@@ -34,15 +34,16 @@ interface Card3D {
     vertical?: boolean;
 }
 
-/* Cards — moderate gaps, not overlapping but not too spread. */
+/* Cards — Tetris mosaic: tiles fit together with ~0.1 unit gaps */
 const CARDS: Card3D[] = [
-    { label: 'Code',       desc: 'AI dev',               color: '#121214', textColor: '#ffffff', px: 0.5,  py: 2.4,  pz: -0.2, w: 3.8, h: 2.3, chaosX: -1.8, chaosRx: 0.8,  chaosRy: -0.6, chaosRz: 0.35, delay: 0.0 },
-    { label: 'Governance', desc: 'Compliance',            color: '#FFD800', textColor: '#121214', px: 3.8,  py: 0.7,  pz: 0.3,  w: 2.7, h: 6.0, chaosX: 2.0,  chaosRx: -0.7, chaosRy: 0.8,  chaosRz: -0.3, delay: 0.18, vertical: true },
-    { label: '',           desc: '',                      color: '#FAA525', textColor: '#121214', px: -2.6, py: 0.25, pz: 0.15, w: 2.1, h: 2.1, chaosX: -1.2, chaosRx: 0.9,  chaosRy: -0.4, chaosRz: 0.2,  delay: 0.35 },
-    { label: 'Agents',     desc: 'Workflows',             color: '#01A6BC', textColor: '#ffffff', px: 0.5,  py: -0.25,pz: -0.3, w: 3.3, h: 2.1, chaosX: 1.4,  chaosRx: -0.5, chaosRy: 0.6,  chaosRz: -0.4, delay: 0.12 },
-    { label: '',           desc: '',                      color: '#FA547C', textColor: '#ffffff', px: 0.5,  py: -2.7, pz: 0.2,  w: 2.5, h: 2.7, chaosX: -1.0, chaosRx: 0.7,  chaosRy: -0.7, chaosRz: 0.45, delay: 0.28 },
-    { label: '',           desc: '',                      color: '#FFFFFF', textColor: '#121214', px: 3.3,  py: -3.4, pz: -0.4, w: 1.7, h: 2.1, chaosX: 1.6,  chaosRx: -0.8, chaosRy: 0.5,  chaosRz: -0.3, delay: 0.22 },
-    { label: 'Memory',     desc: 'Knowledge',             color: '#71C23E', textColor: '#121214', px: -2.6, py: -2.7, pz: 0.4,  w: 3.8, h: 2.1, chaosX: -0.8, chaosRx: 0.6,  chaosRy: -0.8, chaosRz: 0.5,  delay: 0.4 },
+    /*           label          desc            color       textColor       px     py     pz     w    h     chaosX  chaosRx chaosRy chaosRz delay */
+    { label: 'Code',       desc: 'AI dev',      color: '#121214', textColor: '#ffffff', px: -0.2,  py: 2.2,   pz: 0.0,  w: 3.8, h: 2.2, chaosX: -1.8, chaosRx: 0.8,  chaosRy: -0.6, chaosRz: 0.35, delay: 0.0 },
+    { label: 'Governance', desc: 'Compliance',   color: '#FFD800', textColor: '#121214', px: 3.0,   py: 0.8,   pz: 0.2,  w: 2.5, h: 5.5, chaosX: 2.0,  chaosRx: -0.7, chaosRy: 0.8,  chaosRz: -0.3, delay: 0.18, vertical: true },
+    { label: '',           desc: '',             color: '#FAA525', textColor: '#121214', px: -2.0,  py: 0.0,   pz: 0.3,  w: 2.0, h: 2.0, chaosX: -1.2, chaosRx: 0.9,  chaosRy: -0.4, chaosRz: 0.2,  delay: 0.35 },
+    { label: 'Agents',     desc: 'Workflows',    color: '#01A6BC', textColor: '#ffffff', px: 0.5,   py: -0.1,  pz: -0.1, w: 2.6, h: 2.1, chaosX: 1.4,  chaosRx: -0.5, chaosRy: 0.6,  chaosRz: -0.4, delay: 0.12 },
+    { label: '',           desc: '',             color: '#FA547C', textColor: '#ffffff', px: 2.1,   py: -2.5,  pz: 0.25, w: 2.4, h: 2.6, chaosX: -1.0, chaosRx: 0.7,  chaosRy: -0.7, chaosRz: 0.45, delay: 0.28 },
+    { label: '',           desc: '',             color: '#FFFFFF', textColor: '#121214', px: 3.8,   py: -3.2,  pz: -0.2, w: 1.5, h: 1.8, chaosX: 1.6,  chaosRx: -0.8, chaosRy: 0.5,  chaosRz: -0.3, delay: 0.22 },
+    { label: 'Memory',     desc: 'Knowledge',    color: '#71C23E', textColor: '#121214', px: -1.0,  py: -2.4,  pz: 0.15, w: 3.2, h: 2.0, chaosX: -0.8, chaosRx: 0.6,  chaosRy: -0.8, chaosRz: 0.5,  delay: 0.4 },
 ];
 
 /* ── Input tracker — mouse + device orientation (gyroscope) ── */
