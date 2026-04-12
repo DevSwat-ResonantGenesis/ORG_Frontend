@@ -32,15 +32,15 @@ interface Card3D {
     delay: number;
 }
 
-/* Wide asymmetric spread — NOT a square grid. Cards vary in size and depth. */
+/* Wide asymmetric spread — shifted RIGHT, not centered. Yellow card is 3× taller. */
 const CARDS: Card3D[] = [
-    { label: 'Code',       desc: 'AI-powered dev',      color: '#121214', textColor: '#ffffff', px: -1.4, py: 2.0,   pz: -0.4, w: 3.2, h: 1.8, chaosX: -2.0, chaosRx: 0.8,  chaosRy: -0.6, chaosRz: 0.35, delay: 0.0 },
-    { label: '',           desc: '',                     color: '#FFD800', textColor: '#121214', px: 2.2,  py: 2.4,   pz: 0.6,  w: 2.4, h: 1.7, chaosX: 2.2,  chaosRx: -0.7, chaosRy: 0.8,  chaosRz: -0.3, delay: 0.18 },
-    { label: '',           desc: '',                     color: '#FAA525', textColor: '#121214', px: -2.4, py: -0.6,  pz: 0.25, w: 1.8, h: 3.4, chaosX: -1.2, chaosRx: 0.9,  chaosRy: -0.4, chaosRz: 0.2,  delay: 0.35 },
-    { label: 'Governance', desc: 'On-chain compliance',  color: '#01A6BC', textColor: '#ffffff', px: 0.2,  py: 0.0,   pz: -0.5, w: 2.8, h: 1.6, chaosX: 1.4,  chaosRx: -0.5, chaosRy: 0.6,  chaosRz: -0.4, delay: 0.12 },
-    { label: 'Agents',     desc: 'Autonomous workflows', color: '#FA547C', textColor: '#ffffff', px: -0.3, py: -2.2,  pz: 0.35, w: 2.0, h: 1.7, chaosX: -1.0, chaosRx: 0.7,  chaosRy: -0.7, chaosRz: 0.45, delay: 0.28 },
-    { label: 'Memory',     desc: 'Persistent knowledge', color: '#FFFFFF', textColor: '#121214', px: 2.8,  py: -0.4,  pz: -0.65, w: 1.4, h: 3.4, chaosX: 1.6,  chaosRx: -0.8, chaosRy: 0.5,  chaosRz: -0.3, delay: 0.22 },
-    { label: '',           desc: '',                     color: '#71C23E', textColor: '#121214', px: 2.0,  py: -2.5,  pz: 0.5,  w: 1.4, h: 1.7, chaosX: -0.8, chaosRx: 0.6,  chaosRy: -0.8, chaosRz: 0.5,  delay: 0.4 },
+    { label: 'Code',       desc: 'AI-powered dev',      color: '#121214', textColor: '#ffffff', px: -0.2, py: 2.2,   pz: -0.4, w: 3.8, h: 2.2, chaosX: -2.0, chaosRx: 0.8,  chaosRy: -0.6, chaosRz: 0.35, delay: 0.0 },
+    { label: '',           desc: '',                     color: '#FFD800', textColor: '#121214', px: 3.4,  py: 0.0,   pz: 0.6,  w: 2.8, h: 5.0, chaosX: 2.2,  chaosRx: -0.7, chaosRy: 0.8,  chaosRz: -0.3, delay: 0.18 },
+    { label: '',           desc: '',                     color: '#FAA525', textColor: '#121214', px: -1.2, py: -0.8,  pz: 0.25, w: 2.2, h: 4.0, chaosX: -1.2, chaosRx: 0.9,  chaosRy: -0.4, chaosRz: 0.2,  delay: 0.35 },
+    { label: 'Governance', desc: 'On-chain compliance',  color: '#01A6BC', textColor: '#ffffff', px: 1.4,  py: -0.2,  pz: -0.5, w: 3.2, h: 2.0, chaosX: 1.4,  chaosRx: -0.5, chaosRy: 0.6,  chaosRz: -0.4, delay: 0.12 },
+    { label: 'Agents',     desc: 'Autonomous workflows', color: '#FA547C', textColor: '#ffffff', px: 0.8,  py: -2.6,  pz: 0.35, w: 2.4, h: 2.0, chaosX: -1.0, chaosRx: 0.7,  chaosRy: -0.7, chaosRz: 0.45, delay: 0.28 },
+    { label: 'Memory',     desc: 'Persistent knowledge', color: '#FFFFFF', textColor: '#121214', px: 3.8,  py: -0.6,  pz: -0.65, w: 1.8, h: 4.0, chaosX: 1.6,  chaosRx: -0.8, chaosRy: 0.5,  chaosRz: -0.3, delay: 0.22 },
+    { label: '',           desc: '',                     color: '#71C23E', textColor: '#121214', px: 3.0,  py: -2.8,  pz: 0.5,  w: 1.8, h: 2.0, chaosX: -0.8, chaosRx: 0.6,  chaosRy: -0.8, chaosRz: 0.5,  delay: 0.4 },
 ];
 
 /* ── Mouse tracker ── */
@@ -227,7 +227,7 @@ export function HeroCards3DScene() {
 
     return (
         <Canvas
-            camera={{ position: [0, 0, isMobile ? 5 : 8], fov: isMobile ? 55 : 45 }}
+            camera={{ position: [isMobile ? 0 : 1.5, 0, isMobile ? 5 : 9], fov: isMobile ? 55 : 48 }}
             style={{
                 position: isMobile ? 'relative' : 'absolute',
                 right: isMobile ? 'auto' : 0,
