@@ -21,21 +21,78 @@ export const HeroSection = () => {
 
     return (
         <section className={styles.hero}>
-            {/* Inline style block — ID + data-attr = max specificity, guaranteed to override any global CSS */}
+            {/* ===== STANDALONE STYLES — ID selectors = highest CSS specificity possible ===== */}
             <style dangerouslySetInnerHTML={{__html: `
-                [data-hero-cta] { color: #0a0a0c !important; background: #FFD800 !important; }
-                [data-hero-cta] * { color: #0a0a0c !important; }
-                [data-hero-cta]:hover { background: #71C23E !important; color: #fff !important; }
-                [data-hero-cta]:hover * { color: #fff !important; }
+                #hero-title {
+                    display: block !important;
+                    font-family: 'Abril Fatface', serif !important;
+                    font-weight: 400 !important;
+                    font-size: 72px !important;
+                    line-height: 0.95 !important;
+                    color: #ffffff !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    background: none !important;
+                    text-transform: none !important;
+                    letter-spacing: normal !important;
+                    animation: none !important;
+                    opacity: 1 !important;
+                    -webkit-text-size-adjust: none !important;
+                }
+                @media (min-width: 768px)  { #hero-title { font-size: 110px !important; } }
+                @media (min-width: 1280px) { #hero-title { font-size: 140px !important; } }
+
+                #hero-subtitle {
+                    display: block !important;
+                    font-family: 'Work Sans', sans-serif !important;
+                    font-weight: 700 !important;
+                    font-size: 20px !important;
+                    line-height: 1.2 !important;
+                    color: rgba(255,255,255,0.75) !important;
+                    margin: 14px 0 0 0 !important;
+                    padding: 0 !important;
+                    background: none !important;
+                    animation: none !important;
+                    opacity: 1 !important;
+                }
+                @media (min-width: 768px)  { #hero-subtitle { font-size: 32px !important; } }
+                @media (min-width: 1280px) { #hero-subtitle { font-size: 38px !important; } }
+
+                #hero-cta-btn {
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    gap: 8px !important;
+                    margin-top: 32px !important;
+                    padding: 14px 36px !important;
+                    background: #FFD800 !important;
+                    color: #0a0a0c !important;
+                    font-family: 'Work Sans', sans-serif !important;
+                    font-size: 14px !important;
+                    font-weight: 700 !important;
+                    letter-spacing: 0.06em !important;
+                    text-transform: uppercase !important;
+                    border-radius: 9999px !important;
+                    cursor: pointer !important;
+                    border: none !important;
+                    outline: none !important;
+                    opacity: 1 !important;
+                    animation: none !important;
+                    transition: background 0.2s ease !important;
+                }
+                #hero-cta-btn * { color: #0a0a0c !important; }
+                #hero-cta-btn svg { stroke: #0a0a0c !important; }
+                #hero-cta-btn:hover { background: #71C23E !important; color: #ffffff !important; }
+                #hero-cta-btn:hover * { color: #ffffff !important; }
+                #hero-cta-btn:hover svg { stroke: #ffffff !important; }
             `}} />
             <div className={styles.heroTextBlock}>
-                <h1 className={heroTitleStyles.heroTitle}>
+                <h1 id="hero-title">
                     Digitalize<br />Your Vision
                 </h1>
-                <p className={heroTitleStyles.heroTitleTagline}>Simpler Than Ever</p>
-                <button data-hero-cta="" className={buttonStyles.heroButton} onClick={() => navigate('/signup')}>
-                    <span className={buttonStyles.heroButtonText}>Get Started</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block', flexShrink: 0 }}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                <p id="hero-subtitle">Simpler Than Ever</p>
+                <button id="hero-cta-btn" onClick={() => navigate('/signup')}>
+                    <span>Get Started</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </button>
             </div>
 
