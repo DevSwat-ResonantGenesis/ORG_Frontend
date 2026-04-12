@@ -1,30 +1,38 @@
-/* v2 — written from scratch 2026-04-12 */
+/* v3 — 2026-04-12 — !important everywhere to beat global theme */
 
 .heroTitle {
-  all: unset;
-  display: block;
-  font-family: 'Abril Fatface', serif;
-  font-weight: 400;
-  font-size: 48px;
-  line-height: 1;
-  color: #fff;
-  margin: 0;
+  display: block !important;
+  font-family: 'Abril Fatface', serif !important;
+  font-weight: 400 !important;
+  font-size: 48px !important;
+  line-height: 1 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  animation: none !important;
+  opacity: 1 !important;
 }
-@media (min-width: 768px)  { .heroTitle { font-size: 80px; } }
-@media (min-width: 1280px) { .heroTitle { font-size: 96px; } }
+@media (min-width: 768px)  { .heroTitle { font-size: 80px !important; } }
+@media (min-width: 1280px) { .heroTitle { font-size: 96px !important; } }
 
 .heroTitleTagline {
-  all: unset;
-  display: block;
-  font-family: 'Work Sans', sans-serif;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 1.2;
-  color: rgba(255, 255, 255, 0.8);
-  margin-top: 14px;
+  display: block !important;
+  font-family: 'Work Sans', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 20px !important;
+  line-height: 1.2 !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  margin: 14px 0 0 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  animation: none !important;
+  opacity: 1 !important;
 }
-@media (min-width: 768px)  { .heroTitleTagline { font-size: 32px; } }
-@media (min-width: 1280px) { .heroTitleTagline { font-size: 38px; } }
+@media (min-width: 768px)  { .heroTitleTagline { font-size: 32px !important; } }
+@media (min-width: 1280px) { .heroTitleTagline { font-size: 38px !important; } }
 
-.heroSubtitle       { display: none; }
-.heroSubtitleSecondary { display: none; }
+.heroSubtitle       { display: none !important; }
+.heroSubtitleSecondary { display: none !important; }
