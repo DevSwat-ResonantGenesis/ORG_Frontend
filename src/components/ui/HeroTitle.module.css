@@ -1,135 +1,30 @@
-/* ============================================================
-   HeroTitle — Abril Fatface Regular / Work Sans Bold
-   Brand new clean style
-   ============================================================ */
+/* v2 — written from scratch 2026-04-12 */
 
-.heroTitle,
-h1.heroTitle {
-  font-family: 'Abril Fatface', Georgia, 'Times New Roman', serif;
-  font-size: clamp(52px, 11vw, 88px);
+.heroTitle {
+  all: unset;
+  display: block;
+  font-family: 'Abril Fatface', serif;
   font-weight: 400;
+  font-size: 48px;
+  line-height: 1;
+  color: #fff;
   margin: 0;
-  padding: 0;
-  line-height: 0.95;
-  letter-spacing: -0.015em;
-  color: #ffffff !important;
-  display: block;
-  width: 100%;
-  text-align: left;
-  position: relative;
-  z-index: 2;
-  background: none;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  font-style: normal;
-  opacity: 0;
-  animation: heroTitleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
 }
+@media (min-width: 768px)  { .heroTitle { font-size: 80px; } }
+@media (min-width: 1280px) { .heroTitle { font-size: 96px; } }
 
-@keyframes heroTitleReveal {
-  from { opacity: 0; transform: translateY(32px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@media (min-width: 768px) {
-  .heroTitle { font-size: clamp(72px, 9vw, 110px); }
-}
-
-@media (min-width: 1280px) {
-  .heroTitle { font-size: 110px; }
-}
-
-[data-theme='light'] .heroTitle,
-[data-theme='light'] h1.heroTitle { color: #ffffff !important; }
-
-.heroTitle::after { display: none; }
-
-/* Tagline — Work Sans Bold */
 .heroTitleTagline {
+  all: unset;
   display: block;
-  margin-top: 16px;
-  margin-bottom: 0;
-  font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  font-size: clamp(22px, 4vw, 42px);
+  font-family: 'Work Sans', sans-serif;
   font-weight: 700;
-  font-style: normal;
-  line-height: 1.15;
-  letter-spacing: -0.01em;
-  color: rgba(255, 255, 255, 0.85);
-  text-align: left;
-  opacity: 0;
-  animation: heroTaglineReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+  font-size: 20px;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 14px;
 }
+@media (min-width: 768px)  { .heroTitleTagline { font-size: 32px; } }
+@media (min-width: 1280px) { .heroTitleTagline { font-size: 38px; } }
 
-@keyframes heroTaglineReveal {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@media (min-width: 768px) {
-  .heroTitleTagline { font-size: clamp(30px, 3.5vw, 42px); }
-}
-
-@media (min-width: 1280px) {
-  .heroTitleTagline { font-size: 42px; }
-}
-
-[data-theme='light'] .heroTitleTagline { color: rgba(255, 255, 255, 0.85); }
-
-/* Subtitle tagline — uppercase, wide tracking, thin weight */
-.heroSubtitle {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  font-size: clamp(11px, 1.8vw, 14px);
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.6);
-  margin: 12px auto 8px;
-  line-height: 1.6;
-  padding: 0;
-  text-align: center;
-  max-width: none;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  display: block;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-@media (min-width: 1024px) {
-  .heroSubtitle {
-    font-size: 14px;
-    margin-bottom: 10px;
-    letter-spacing: 0.3em;
-  }
-}
-
-[data-theme='light'] .heroSubtitle {
-  color: rgba(0, 0, 0, 0.5);
-}
-
-/* Secondary — clean sans, muted, readable */
-.heroSubtitleSecondary {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  font-size: 12px;
-  font-weight: 300;
-  color: rgba(255, 255, 255, 0.3);
-  margin: 6px auto 24px;
-  line-height: 1.6;
-  padding: 0 20px;
-  text-align: center;
-  max-width: 700px;
-  letter-spacing: 0.02em;
-  display: block;
-  -webkit-font-smoothing: antialiased;
-}
-
-@media (min-width: 1024px) {
-  .heroSubtitleSecondary {
-    font-size: 13px;
-    margin-bottom: 28px;
-    max-width: 900px;
-  }
-}
-
-[data-theme='light'] .heroSubtitleSecondary {
-  color: rgba(0, 0, 0, 0.35);
-}
+.heroSubtitle       { display: none; }
+.heroSubtitleSecondary { display: none; }

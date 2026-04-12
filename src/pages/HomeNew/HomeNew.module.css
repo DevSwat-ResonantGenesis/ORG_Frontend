@@ -517,58 +517,29 @@
   }
 }
 
-/* CTA Button — solid yellow, no animation, always visible */
+/* v2 CTA — written from scratch 2026-04-12 */
 .heroCtaFuturistic {
+  all: unset;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 16px 44px;
-  font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 15px;
+  gap: 8px;
+  margin-top: 32px;
+  padding: 14px 36px;
+  background: #FFD800;
+  color: #0a0a0c;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #0a0a0c !important;
-  background: #FFD800 !important;
-  border: none !important;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  margin-top: 36px;
-  box-shadow: 0 2px 12px rgba(255, 216, 0, 0.25);
-  opacity: 1;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  text-decoration: none;
 }
-
 .heroCtaFuturistic:hover {
-  background: #ffe533 !important;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(255, 216, 0, 0.35);
+  background: #ffe640;
 }
 
-.heroCtaFuturistic:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 12px rgba(255, 216, 0, 0.25);
-}
-
-.heroCtaFuturistic svg {
-  transition: transform 0.2s ease;
-  color: #0a0a0c !important;
-}
-
-.heroCtaFuturistic:hover svg {
-  transform: translateX(4px);
-}
-
-.heroCtaText {
-  position: relative;
-  z-index: 1;
-  color: #0a0a0c !important;
-}
+.heroCtaText { color: inherit; }
 
 /* Desktop line break helper */
 .desktopBr {
