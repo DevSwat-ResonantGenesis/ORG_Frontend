@@ -96,7 +96,7 @@ function SceneRotation({ children }: { children: React.ReactNode }) {
 const hoverState = { index: -1 };
 
 /* ── Single card — emerges from deep, reacts to hover on arrival ── */
-function ZoomCard({ card, index, allCards }: { card: Card3D; index: number; allCards: Card3D[] }) {
+function ZoomCard({ card, index, allCards, isMobile }: { card: Card3D; index: number; allCards: Card3D[]; isMobile?: boolean }) {
     const meshRef = useRef<THREE.Group>(null!);
     const startTime = useRef<number | null>(null);
     const [arrived, setArrived] = useState(false);
@@ -211,6 +211,7 @@ function ZoomCard({ card, index, allCards }: { card: Card3D; index: number; allC
 
     const color = useMemo(() => new THREE.Color(card.color), [card.color]);
     const txtColor = useMemo(() => new THREE.Color(card.textColor), [card.textColor]);
+    const ts = isMobile ? MOBILE_SCALE : 1; // text scale factor
 
     const handlePointerEnter = () => { hoverState.index = index; };
     const handlePointerLeave = () => { if (hoverState.index === index) hoverState.index = -1; };
@@ -247,25 +248,25 @@ function ZoomCard({ card, index, allCards }: { card: Card3D; index: number; allC
 
             {card.label && !card.vertical && (
                 <Text
-                    position={[-card.w / 2 + 0.25, -card.h / 2 + 0.55, 0.06]}
-                    fontSize={0.38}
+                    position={[-card.w / 2 + 0.15 * ts + 0.1, -card.h / 2 + 0.35 * ts + 0.1, 0.06]}
+                    fontSize={0.38 * ts}
                     font="/fonts/WorkSans-Bold.ttf"
                     color={txtColor}
                     anchorX="left"
                     anchorY="bottom"
-                    maxWidth={card.w - 0.5}
+                    maxWidth={card.w - 0.3}
                 >
                     {card.label}
                 </Text>
             )}
             {card.desc && !card.vertical && (
                 <Text
-                    position={[-card.w / 2 + 0.25, -card.h / 2 + 0.2, 0.06]}
-                    fontSize={0.17}
+                    position={[-card.w / 2 + 0.15 * ts + 0.1, -card.h / 2 + 0.08 * ts + 0.05, 0.06]}
+                    fontSize={0.17 * ts}
                     color={txtColor}
                     anchorX="left"
                     anchorY="bottom"
-                    maxWidth={card.w - 0.5}
+                    maxWidth={card.w - 0.3}
                     fillOpacity={0.5}
                 >
                     {card.desc}
@@ -273,27 +274,27 @@ function ZoomCard({ card, index, allCards }: { card: Card3D; index: number; allC
             )}
             {card.label && card.vertical && (
                 <Text
-                    position={[-card.w / 2 + 0.4, 0, 0.06]}
-                    fontSize={0.42}
+                    position={[-card.w / 2 + 0.25 * ts + 0.08, 0, 0.06]}
+                    fontSize={0.42 * ts}
                     font="/fonts/WorkSans-Bold.ttf"
                     color={txtColor}
                     anchorX="center"
                     anchorY="middle"
                     rotation={[0, 0, Math.PI / 2]}
-                    maxWidth={card.h - 0.8}
+                    maxWidth={card.h - 0.4}
                 >
                     {card.label}
                 </Text>
             )}
             {card.desc && card.vertical && (
                 <Text
-                    position={[card.w / 2 - 0.4, 0, 0.06]}
-                    fontSize={0.16}
+                    position={[card.w / 2 - 0.25 * ts - 0.08, 0, 0.06]}
+                    fontSize={0.16 * ts}
                     color={txtColor}
                     anchorX="center"
                     anchorY="middle"
                     rotation={[0, 0, Math.PI / 2]}
-                    maxWidth={card.h - 0.8}
+                    maxWidth={card.h - 0.4}
                     fillOpacity={0.5}
                 >
                     {card.desc}
@@ -303,15 +304,16 @@ function ZoomCard({ card, index, allCards }: { card: Card3D; index: number; allC
     );
 }
 
-/* ── Mobile-scaled cards — smaller, no subtitles ── */
+/* ── Mobile-scaled cards — smaller, no subtitles, scale factor 0.42 ── */
+const MOBILE_SCALE = 0.42;
 const CARDS_MOBILE: Card3D[] = CARDS.map(c => ({
     ...c,
-    desc: '',           // hide subtitles on mobile
-    px: c.px * 0.38,
-    py: c.py * 0.38,
+    desc: '',                       // hide subtitles on mobile
+    px: c.px * MOBILE_SCALE,
+    py: c.py * MOBILE_SCALE,
     pz: c.pz * 0.2,
-    w: c.w * 0.38,
-    h: c.h * 0.38,
+    w: c.w * MOBILE_SCALE,
+    h: c.h * MOBILE_SCALE,
     chaosX: c.chaosX * 0.3,
 }));
 
@@ -342,7 +344,7 @@ export function HeroCards3DScene() {
 
             <SceneRotation>
                 {cards.map((card, i) => (
-                    <ZoomCard key={i} card={card} index={i} allCards={cards} />
+                    <ZoomCard key={i} card={card} index={i} allCards={cards} isMobile={isMobile} />
                 ))}
             </SceneRotation>
         </Canvas>
