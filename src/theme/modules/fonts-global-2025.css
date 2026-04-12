@@ -8,12 +8,6 @@
 /* Dynamic tokens are now in tokens-2025.css */
 
 /* Apply system fonts globally - EXCLUDE IDE */
-:not(.ide-container) * {
-  font-family: var(--font-sans) !important;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-}
 
 /* Monospace for code, pre, and code elements - EXCLUDE IDE */
 :not(.ide-container) code,

@@ -1,10 +1,11 @@
-/* Hero Button v3 — !important to beat global theme */
+/* Hero Button v4 — doubled class for max specificity */
 .heroButton {
   display: inline-flex !important;
   align-items: center !important;
   gap: 8px !important;
   margin-top: 32px !important;
   padding: 14px 36px !important;
+  background-color: #FFD800 !important;
   background: #FFD800 !important;
   color: #0a0a0c !important;
   font-family: 'Work Sans', sans-serif !important;
@@ -18,12 +19,24 @@
   outline: none !important;
   opacity: 1 !important;
   animation: none !important;
+  transition: background-color 0.2s ease, background 0.2s ease !important;
 }
-.heroButton:hover {
-  background: #ffe640 !important;
+/* doubled class = specificity (0,2,0) — beats any single-class global rule */
+.heroButton.heroButton {
+  color: #0a0a0c !important;
+  background: #FFD800 !important;
+}
+.heroButton:hover,
+.heroButton.heroButton:hover {
+  background-color: #22c55e !important;
+  background: #22c55e !important;
+  color: #ffffff !important;
 }
 .heroButtonText {
-  color: #0a0a0c !important;
+  color: inherit !important;
   font-family: inherit !important;
   font-weight: inherit !important;
+}
+.heroButton.heroButton .heroButtonText {
+  color: inherit !important;
 }

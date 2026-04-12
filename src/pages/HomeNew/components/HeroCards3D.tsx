@@ -342,11 +342,13 @@ export function HeroCards3DScene() {
             <directionalLight position={[-3, -2, 4]} intensity={0.3} color="#FFD800" />
             <pointLight position={[0, -3, 3]} intensity={0.4} color="#01A6BC" />
 
-            <SceneRotation>
-                {cards.map((card, i) => (
-                    <ZoomCard key={i} card={card} index={i} allCards={cards} isMobile={isMobile} />
-                ))}
-            </SceneRotation>
+            <group position={[isMobile ? 0 : 2, 0, 0]}>
+                <SceneRotation>
+                    {cards.map((card, i) => (
+                        <ZoomCard key={i} card={card} index={i} allCards={cards} isMobile={isMobile} />
+                    ))}
+                </SceneRotation>
+            </group>
         </Canvas>
     );
 }
