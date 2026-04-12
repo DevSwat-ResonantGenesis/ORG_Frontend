@@ -235,7 +235,7 @@ export function HeroCards3DScene() {
 
     return (
         <Canvas
-            camera={{ position: [isMobile ? 0.4 : 1.5, 0, isMobile ? 4 : 9], fov: isMobile ? 50 : 48 }}
+            camera={{ position: [isMobile ? 0.4 : 1.5, 0, isMobile ? 4 : 7], fov: isMobile ? 50 : 60 }}
             style={{
                 position: isMobile ? 'relative' : 'absolute',
                 right: isMobile ? 'auto' : 0,
