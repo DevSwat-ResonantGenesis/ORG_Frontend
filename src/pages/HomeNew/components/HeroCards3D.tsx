@@ -77,27 +77,29 @@ function SceneRotation({ children }: { children: React.ReactNode }) {
     return <group ref={groupRef}>{children}</group>;
 }
 
-/* ── Single falling card ── */
-function FallingCard({ card }: { card: Card3D }) {
+/* ── Single card — emerges from deep behind screen, rotates randomly, settles at front ── */
+function ZoomCard({ card }: { card: Card3D }) {
     const meshRef = useRef<THREE.Group>(null!);
     const startTime = useRef<number | null>(null);
-    const [landed, setLanded] = useState(false);
+    const [arrived, setArrived] = useState(false);
 
-    /* Physics state */
+    /* Each card gets unique random spin speeds */
+    const spin = useMemo(() => ({
+        sx: (card.chaosRx + 0.5) * 1.2,   /* spin speed X */
+        sy: (card.chaosRy - 0.3) * 1.4,   /* spin speed Y */
+        sz: (card.chaosRz + 0.2) * 0.9,   /* spin speed Z */
+    }), [card]);
+
+    /* Animation state */
     const state = useRef({
-        y: 10,           /* start above viewport */
-        vy: 0,           /* vertical velocity */
-        x: card.chaosX,  /* lateral chaos offset */
-        rx: card.chaosRx * 2,
-        ry: card.chaosRy * 2,
-        rz: card.chaosRz * 2,
+        progress: 0,       /* 0 = deep behind, 1 = arrived at front */
         started: false,
     });
 
-    const gravity = -7;
-    const bounceDamping = 0.25;
-    const rotDamping = 0.96;
-    const lateralDamping = 0.97;
+    /* Start deep behind the screen */
+    const startZ = -25;
+    /* Duration in seconds for the card to travel from deep to front */
+    const duration = 3.5 + card.delay * 2;
 
     useFrame((_, delta) => {
         if (!meshRef.current) return;
@@ -114,48 +116,44 @@ function FallingCard({ card }: { card: Card3D }) {
 
         const dt = Math.min(delta, 0.05);
 
-        if (!landed) {
-            /* Gravity */
-            s.vy += gravity * dt;
-            s.y += s.vy * dt;
+        if (!arrived) {
+            /* Ease-out progress: fast start, slow approach */
+            s.progress += (1 - s.progress) * dt * (1.2 / duration);
 
-            /* Lateral drift toward target */
-            s.x += (0 - s.x) * (1 - Math.pow(lateralDamping, dt * 60));
-
-            /* Rotation damping toward 0 */
-            const rDamp = Math.pow(rotDamping, dt * 60);
-            s.rx *= rDamp;
-            s.ry *= rDamp;
-            s.rz *= rDamp;
-
-            /* Bounce off target Y */
-            if (s.y <= card.py) {
-                s.y = card.py;
-                if (Math.abs(s.vy) < 0.15) {
-                    /* Settled */
-                    s.vy = 0;
-                    s.x = 0;
-                    s.rx = 0; s.ry = 0; s.rz = 0;
-                    setLanded(true);
-                } else {
-                    s.vy = Math.abs(s.vy) * bounceDamping;
-                }
+            /* Clamp and check arrival */
+            if (s.progress > 0.995) {
+                s.progress = 1;
+                setArrived(true);
             }
 
-            meshRef.current.position.set(
-                card.px + s.x,
-                s.y,
-                card.pz
+            const t = s.progress;
+            /* Smooth ease-out curve */
+            const ease = 1 - Math.pow(1 - t, 3);
+
+            /* Position: lerp from deep behind to final position */
+            const x = card.px * ease + card.chaosX * (1 - ease);
+            const y = card.py * ease + (card.chaosRx * 2) * (1 - ease);
+            const z = startZ * (1 - ease) + card.pz * ease;
+
+            meshRef.current.position.set(x, y, z);
+
+            /* Rotation: spins freely while traveling, slows as it arrives */
+            const spinFactor = (1 - ease) * 4;
+            const elapsed = now - (startTime.current ?? now) - card.delay;
+            meshRef.current.rotation.set(
+                spin.sx * elapsed * spinFactor,
+                spin.sy * elapsed * spinFactor,
+                spin.sz * elapsed * spinFactor
             );
-            meshRef.current.rotation.set(s.rx, s.ry, s.rz);
         } else {
-            /* Subtle float when landed */
-            const t = now * 0.8;
+            /* Subtle float when arrived */
+            const t = now * 0.6;
             meshRef.current.position.set(
                 card.px,
-                card.py + Math.sin(t + card.delay * 10) * 0.03,
+                card.py + Math.sin(t + card.delay * 10) * 0.04,
                 card.pz
             );
+            /* Gentle settled rotation — not perfectly flat */
             meshRef.current.rotation.set(0, 0, 0);
         }
     });
@@ -255,7 +253,7 @@ export function HeroCards3DScene() {
 
             <SceneRotation>
                 {cards.map((card, i) => (
-                    <FallingCard key={i} card={card} />
+                    <ZoomCard key={i} card={card} />
                 ))}
             </SceneRotation>
         </Canvas>
