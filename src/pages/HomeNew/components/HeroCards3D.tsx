@@ -32,23 +32,22 @@ interface Card3D {
     delay: number;
 }
 
-/* 3-column mosaic — NO overlaps. Yellow tall pillar right, Orange tall pillar left. */
+/* Mirrored-L layout:
+ *   Top row (wide):  [Code]  [Governance]
+ *   Middle:     [Orange]     [Yellow tall]
+ *   Bottom:     [Green] [Agents] [Memory]
+ */
 const CARDS: Card3D[] = [
-    /*            label          desc                    color      text       px     py     pz     w    h    chaosX  chaosRx chaosRy chaosRz delay */
-    /* Top center-left: wide */
-    { label: 'Code',       desc: 'AI-powered dev',      color: '#121214', textColor: '#ffffff', px: 0.6,  py: 2.8,  pz: -0.3, w: 3.5, h: 2.0, chaosX: -1.8, chaosRx: 0.8,  chaosRy: -0.6, chaosRz: 0.35, delay: 0.0 },
-    /* Right pillar: TALL yellow — sits BESIDE center cards, not over them */
-    { label: '',           desc: '',                     color: '#FFD800', textColor: '#121214', px: 3.2,  py: 1.0,  pz: 0.4,  w: 2.5, h: 5.0, chaosX: 2.0,  chaosRx: -0.7, chaosRy: 0.8,  chaosRz: -0.3, delay: 0.18 },
-    /* Left pillar: tall orange */
-    { label: '',           desc: '',                     color: '#FAA525', textColor: '#121214', px: -1.6, py: 0.5,  pz: 0.2,  w: 1.8, h: 3.5, chaosX: -1.2, chaosRx: 0.9,  chaosRy: -0.4, chaosRz: 0.2,  delay: 0.35 },
-    /* Center: wide governance */
-    { label: 'Governance', desc: 'On-chain compliance',  color: '#01A6BC', textColor: '#ffffff', px: 0.8,  py: 0.0,  pz: -0.4, w: 3.0, h: 1.8, chaosX: 1.4,  chaosRx: -0.5, chaosRy: 0.6,  chaosRz: -0.4, delay: 0.12 },
-    /* Bottom center: agents */
-    { label: 'Agents',     desc: 'Autonomous workflows', color: '#FA547C', textColor: '#ffffff', px: 0.8,  py: -2.2, pz: 0.3,  w: 2.2, h: 1.8, chaosX: -1.0, chaosRx: 0.7,  chaosRy: -0.7, chaosRz: 0.45, delay: 0.28 },
-    /* Bottom right: memory */
-    { label: 'Memory',     desc: 'Persistent knowledge', color: '#FFFFFF', textColor: '#121214', px: 3.2,  py: -2.5, pz: -0.5, w: 1.5, h: 2.0, chaosX: 1.6,  chaosRx: -0.8, chaosRy: 0.5,  chaosRz: -0.3, delay: 0.22 },
-    /* Bottom left: green */
-    { label: '',           desc: '',                     color: '#71C23E', textColor: '#121214', px: -1.6, py: -2.5, pz: 0.5,  w: 1.5, h: 1.8, chaosX: -0.8, chaosRx: 0.6,  chaosRy: -0.8, chaosRz: 0.5,  delay: 0.4 },
+    /* TOP ROW — wide horizontal bar of the L */
+    { label: 'Code',       desc: 'AI-powered dev',      color: '#121214', textColor: '#ffffff', px: -0.4, py: 2.2,  pz: -0.3, w: 2.4, h: 1.4, chaosX: -1.5, chaosRx: 0.8,  chaosRy: -0.6, chaosRz: 0.35, delay: 0.0 },
+    { label: 'Governance', desc: 'On-chain compliance',  color: '#01A6BC', textColor: '#ffffff', px: 2.0,  py: 2.5,  pz: -0.2, w: 2.0, h: 1.3, chaosX: 1.2,  chaosRx: -0.5, chaosRy: 0.6,  chaosRz: -0.4, delay: 0.12 },
+    /* MIDDLE — corner of the L */
+    { label: '',           desc: '',                     color: '#FAA525', textColor: '#121214', px: -0.6, py: 0.2,  pz: 0.2,  w: 1.5, h: 2.5, chaosX: -1.0, chaosRx: 0.9,  chaosRy: -0.4, chaosRz: 0.2,  delay: 0.3 },
+    { label: '',           desc: '',                     color: '#FFD800', textColor: '#121214', px: 2.2,  py: 0.0,  pz: 0.4,  w: 1.8, h: 3.5, chaosX: 1.8,  chaosRx: -0.7, chaosRy: 0.8,  chaosRz: -0.3, delay: 0.18 },
+    /* BOTTOM — vertical bar of the L extends down-right */
+    { label: '',           desc: '',                     color: '#71C23E', textColor: '#121214', px: -0.8, py: -2.0, pz: 0.3,  w: 1.3, h: 1.3, chaosX: -0.6, chaosRx: 0.6,  chaosRy: -0.8, chaosRz: 0.5,  delay: 0.38 },
+    { label: 'Agents',     desc: 'Autonomous workflows', color: '#FA547C', textColor: '#ffffff', px: 1.2,  py: -2.4, pz: 0.15, w: 1.8, h: 1.3, chaosX: -0.8, chaosRx: 0.7,  chaosRy: -0.7, chaosRz: 0.45, delay: 0.25 },
+    { label: 'Memory',     desc: 'Persistent knowledge', color: '#FFFFFF', textColor: '#121214', px: 2.8,  py: -2.2, pz: -0.4, w: 1.3, h: 1.5, chaosX: 1.2,  chaosRx: -0.8, chaosRy: 0.5,  chaosRz: -0.3, delay: 0.32 },
 ];
 
 /* ── Mouse tracker ── */
@@ -60,17 +59,17 @@ if (typeof window !== 'undefined') {
     }, { passive: true });
 }
 
-/* ── Scene rotation from mouse (parallax) ── */
+/* ── Scene rotation from mouse (parallax) — more responsive ── */
 function SceneRotation({ children }: { children: React.ReactNode }) {
     const groupRef = useRef<THREE.Group>(null!);
     const lerped = useRef({ x: 0, y: 0 });
 
     useFrame(() => {
-        lerped.current.x += (mouse.x - lerped.current.x) * 0.03;
-        lerped.current.y += (mouse.y - lerped.current.y) * 0.03;
+        lerped.current.x += (mouse.x - lerped.current.x) * 0.05;
+        lerped.current.y += (mouse.y - lerped.current.y) * 0.05;
         if (groupRef.current) {
-            groupRef.current.rotation.y = lerped.current.x * 0.15;
-            groupRef.current.rotation.x = -lerped.current.y * 0.10;
+            groupRef.current.rotation.y = lerped.current.x * 0.22;
+            groupRef.current.rotation.x = -lerped.current.y * 0.15;
         }
     });
 
@@ -146,15 +145,25 @@ function ZoomCard({ card }: { card: Card3D }) {
                 spin.sz * elapsed * spinFactor
             );
         } else {
-            /* Subtle float when arrived */
+            /* Arrived: react to mouse — tilt toward cursor + subtle lift */
             const t = now * 0.6;
+            const floatY = Math.sin(t + card.delay * 10) * 0.04;
+
+            /* Mouse proximity: cards tilt and lift when mouse is near */
+            const dx = mouse.x - (card.px / 4);
+            const dy = mouse.y + (card.py / 4);
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const proximity = Math.max(0, 1 - dist / 1.8);
+            const tiltX = -dy * proximity * 0.15;
+            const tiltY = dx * proximity * 0.12;
+            const liftZ = proximity * 0.4;
+
             meshRef.current.position.set(
                 card.px,
-                card.py + Math.sin(t + card.delay * 10) * 0.04,
-                card.pz
+                card.py + floatY,
+                card.pz + liftZ
             );
-            /* Gentle settled rotation — not perfectly flat */
-            meshRef.current.rotation.set(0, 0, 0);
+            meshRef.current.rotation.set(tiltX, tiltY, 0);
         }
     });
 
@@ -241,7 +250,7 @@ export function HeroCards3DScene() {
                 width: isMobile ? '100%' : '55vw',
                 height: isMobile ? '45vh' : '100vh',
                 zIndex: 2,
-                pointerEvents: 'none',
+                pointerEvents: 'auto',
             }}
             gl={{ alpha: true, antialias: true }}
             dpr={[1, isMobile ? 1.5 : 2]}
