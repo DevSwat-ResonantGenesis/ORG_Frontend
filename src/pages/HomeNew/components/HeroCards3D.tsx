@@ -34,46 +34,58 @@ interface Card3D {
     vertical?: boolean;
 }
 
-/* 3-column mosaic — NO overlaps. Yellow tall pillar right, Orange tall pillar left. */
-/* All positions computed so NO card bounding boxes overlap (0.25 unit gap minimum) */
+/* Cards — bigger, closer together. All brand colors. */
 const CARDS: Card3D[] = [
-    /*            label          desc                    color      text       px     py     pz     w    h    chaosX  chaosRx chaosRy chaosRz delay */
-    /* Top center: wide code card              x[-1.0, 2.5]   y[1.2, 3.2]  */
-    { label: 'Code',       desc: 'AI-powered dev',      color: '#121214', textColor: '#ffffff', px: 0.75, py: 2.2,  pz: -0.3, w: 3.5, h: 2.0, chaosX: -1.8, chaosRx: 0.8,  chaosRy: -0.6, chaosRz: 0.35, delay: 0.0 },
-    /* Right pillar: TALL yellow               x[2.55, 5.05]  y[-2.0, 4.0]  */
-    { label: 'Governance', desc: 'On-chain compliance',  color: '#FFD800', textColor: '#121214', px: 3.8,  py: 1.0,  pz: 0.4,  w: 2.5, h: 6.0, chaosX: 2.0,  chaosRx: -0.7, chaosRy: 0.8,  chaosRz: -0.3, delay: 0.18, vertical: true },
-    /* Left: orange square                     x[-3.75, -1.25] y[-1.25, 1.25] */
-    { label: '',           desc: '',                     color: '#FAA525', textColor: '#121214', px: -2.5, py: 0.0,  pz: 0.2,  w: 1.8, h: 1.8, chaosX: -1.2, chaosRx: 0.9,  chaosRy: -0.4, chaosRz: 0.2,  delay: 0.35 },
-    /* Center: governance                      x[-0.75, 2.25]  y[-0.9, 0.9] */
-    { label: 'Agents',     desc: 'Autonomous workflows', color: '#01A6BC', textColor: '#ffffff', px: 0.75, py: 0.0,  pz: -0.4, w: 3.0, h: 1.8, chaosX: 1.4,  chaosRx: -0.5, chaosRy: 0.6,  chaosRz: -0.4, delay: 0.12 },
-    /* Bottom center: agents                   x[-0.35, 1.85]  y[-3.1, -1.3] */
-    { label: '',           desc: '',                     color: '#FA547C', textColor: '#ffffff', px: 0.75, py: -2.55, pz: 0.3,  w: 2.2, h: 2.5, chaosX: -1.0, chaosRx: 0.7,  chaosRy: -0.7, chaosRz: 0.45, delay: 0.28 },
-    /* Bottom right: memory                    x[2.45, 3.95]   y[-4.3, -2.3] */
-    { label: '',           desc: '',                     color: '#FFFFFF', textColor: '#121214', px: 3.2,  py: -3.3, pz: -0.5, w: 1.5, h: 2.0, chaosX: 1.6,  chaosRx: -0.8, chaosRy: 0.5,  chaosRz: -0.3, delay: 0.22 },
-    /* Bottom left: wide green                 x[-4.375, -0.625] y[-3.4, -1.6] */
-    { label: 'Memory',     desc: 'Persistent knowledge', color: '#71C23E', textColor: '#121214', px: -2.5, py: -2.5, pz: 0.5,  w: 3.75, h: 1.8, chaosX: -0.8, chaosRx: 0.6,  chaosRy: -0.8, chaosRz: 0.5,  delay: 0.4 },
+    { label: 'Code',       desc: 'AI dev',               color: '#121214', textColor: '#ffffff', px: 0.4,  py: 2.0,  pz: -0.2, w: 4.0, h: 2.4, chaosX: -1.8, chaosRx: 0.8,  chaosRy: -0.6, chaosRz: 0.35, delay: 0.0 },
+    { label: 'Governance', desc: 'Compliance',            color: '#FFD800', textColor: '#121214', px: 3.2,  py: 0.6,  pz: 0.3,  w: 2.8, h: 6.2, chaosX: 2.0,  chaosRx: -0.7, chaosRy: 0.8,  chaosRz: -0.3, delay: 0.18, vertical: true },
+    { label: '',           desc: '',                      color: '#FAA525', textColor: '#121214', px: -2.2, py: 0.2,  pz: 0.15, w: 2.2, h: 2.2, chaosX: -1.2, chaosRx: 0.9,  chaosRy: -0.4, chaosRz: 0.2,  delay: 0.35 },
+    { label: 'Agents',     desc: 'Workflows',             color: '#01A6BC', textColor: '#ffffff', px: 0.4,  py: -0.2, pz: -0.3, w: 3.4, h: 2.2, chaosX: 1.4,  chaosRx: -0.5, chaosRy: 0.6,  chaosRz: -0.4, delay: 0.12 },
+    { label: '',           desc: '',                      color: '#FA547C', textColor: '#ffffff', px: 0.4,  py: -2.3, pz: 0.2,  w: 2.6, h: 2.8, chaosX: -1.0, chaosRx: 0.7,  chaosRy: -0.7, chaosRz: 0.45, delay: 0.28 },
+    { label: '',           desc: '',                      color: '#FFFFFF', textColor: '#121214', px: 2.8,  py: -3.0, pz: -0.4, w: 1.8, h: 2.2, chaosX: 1.6,  chaosRx: -0.8, chaosRy: 0.5,  chaosRz: -0.3, delay: 0.22 },
+    { label: 'Memory',     desc: 'Knowledge',             color: '#71C23E', textColor: '#121214', px: -2.2, py: -2.2, pz: 0.4,  w: 4.0, h: 2.2, chaosX: -0.8, chaosRx: 0.6,  chaosRy: -0.8, chaosRz: 0.5,  delay: 0.4 },
 ];
 
-/* ── Mouse tracker ── */
-const mouse = { x: 0, y: 0 };
+/* ── Input tracker — mouse + device orientation (gyroscope) ── */
+const input = { x: 0, y: 0 };
 if (typeof window !== 'undefined') {
     window.addEventListener('mousemove', (e) => {
-        mouse.x = (e.clientX / window.innerWidth - 0.5) * 2;
-        mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
+        input.x = (e.clientX / window.innerWidth - 0.5) * 2;
+        input.y = (e.clientY / window.innerHeight - 0.5) * 2;
     }, { passive: true });
+
+    /* Gyroscope — phone tilt moves the scene */
+    const handleOrientation = (e: DeviceOrientationEvent) => {
+        const gamma = e.gamma ?? 0; // left-right tilt [-90, 90]
+        const beta = e.beta ?? 0;   // front-back tilt [-180, 180]
+        input.x = Math.max(-1, Math.min(1, gamma / 30));
+        input.y = Math.max(-1, Math.min(1, (beta - 45) / 30));
+    };
+    if ('DeviceOrientationEvent' in window) {
+        const doe = DeviceOrientationEvent as any;
+        if (typeof doe.requestPermission === 'function') {
+            // iOS 13+ — permission will be requested on first user gesture
+            document.addEventListener('touchstart', () => {
+                doe.requestPermission().then((p: string) => {
+                    if (p === 'granted') window.addEventListener('deviceorientation', handleOrientation, { passive: true });
+                }).catch(() => {});
+            }, { once: true });
+        } else {
+            window.addEventListener('deviceorientation', handleOrientation, { passive: true });
+        }
+    }
 }
 
-/* ── Scene rotation from mouse (parallax) ── */
+/* ── Scene rotation from mouse/gyroscope (parallax) ── */
 function SceneRotation({ children }: { children: React.ReactNode }) {
     const groupRef = useRef<THREE.Group>(null!);
     const lerped = useRef({ x: 0, y: 0 });
 
     useFrame(() => {
-        lerped.current.x += (mouse.x - lerped.current.x) * 0.03;
-        lerped.current.y += (mouse.y - lerped.current.y) * 0.03;
+        lerped.current.x += (input.x - lerped.current.x) * 0.04;
+        lerped.current.y += (input.y - lerped.current.y) * 0.04;
         if (groupRef.current) {
-            groupRef.current.rotation.y = lerped.current.x * 0.15;
-            groupRef.current.rotation.x = -lerped.current.y * 0.10;
+            groupRef.current.rotation.y = lerped.current.x * 0.18;
+            groupRef.current.rotation.x = -lerped.current.y * 0.12;
         }
     });
 
@@ -168,8 +180,8 @@ function ZoomCard({ card, index, allCards }: { card: Card3D; index: number; allC
             if (hoverState.index === index) {
                 /* THIS card is hovered — pull forward */
                 targetZ = card.pz + 1.2;
-                targetRx = -mouse.y * 0.08;
-                targetRy = mouse.x * 0.08;
+                targetRx = -input.y * 0.08;
+                targetRy = input.x * 0.08;
             } else if (hoverState.index >= 0) {
                 /* Another card is hovered — push away from it */
                 const hovered = allCards[hoverState.index];
@@ -235,52 +247,54 @@ function ZoomCard({ card, index, allCards }: { card: Card3D; index: number; allC
 
             {card.label && !card.vertical && (
                 <Text
-                    position={[-card.w / 2 + 0.2, -card.h / 2 + 0.45, 0.06]}
-                    fontSize={0.28}
+                    position={[-card.w / 2 + 0.25, -card.h / 2 + 0.55, 0.06]}
+                    fontSize={0.38}
+                    font="/fonts/WorkSans-Bold.ttf"
                     color={txtColor}
                     anchorX="left"
                     anchorY="bottom"
-                    maxWidth={card.w - 0.4}
+                    maxWidth={card.w - 0.5}
                 >
                     {card.label}
                 </Text>
             )}
             {card.desc && !card.vertical && (
                 <Text
-                    position={[-card.w / 2 + 0.2, -card.h / 2 + 0.18, 0.06]}
-                    fontSize={0.14}
+                    position={[-card.w / 2 + 0.25, -card.h / 2 + 0.2, 0.06]}
+                    fontSize={0.17}
                     color={txtColor}
                     anchorX="left"
                     anchorY="bottom"
-                    maxWidth={card.w - 0.4}
-                    fillOpacity={0.55}
+                    maxWidth={card.w - 0.5}
+                    fillOpacity={0.5}
                 >
                     {card.desc}
                 </Text>
             )}
             {card.label && card.vertical && (
                 <Text
-                    position={[-card.w / 2 + 0.35, 0, 0.06]}
-                    fontSize={0.32}
+                    position={[-card.w / 2 + 0.4, 0, 0.06]}
+                    fontSize={0.42}
+                    font="/fonts/WorkSans-Bold.ttf"
                     color={txtColor}
                     anchorX="center"
                     anchorY="middle"
                     rotation={[0, 0, Math.PI / 2]}
-                    maxWidth={card.h - 0.6}
+                    maxWidth={card.h - 0.8}
                 >
                     {card.label}
                 </Text>
             )}
             {card.desc && card.vertical && (
                 <Text
-                    position={[card.w / 2 - 0.35, 0, 0.06]}
-                    fontSize={0.14}
+                    position={[card.w / 2 - 0.4, 0, 0.06]}
+                    fontSize={0.16}
                     color={txtColor}
                     anchorX="center"
                     anchorY="middle"
                     rotation={[0, 0, Math.PI / 2]}
-                    maxWidth={card.h - 0.6}
-                    fillOpacity={0.55}
+                    maxWidth={card.h - 0.8}
+                    fillOpacity={0.5}
                 >
                     {card.desc}
                 </Text>
@@ -289,9 +303,10 @@ function ZoomCard({ card, index, allCards }: { card: Card3D; index: number; allC
     );
 }
 
-/* ── Mobile-scaled cards — smaller to fit screen, no cutoff ── */
+/* ── Mobile-scaled cards — smaller, no subtitles ── */
 const CARDS_MOBILE: Card3D[] = CARDS.map(c => ({
     ...c,
+    desc: '',           // hide subtitles on mobile
     px: c.px * 0.38,
     py: c.py * 0.38,
     pz: c.pz * 0.2,
@@ -307,12 +322,12 @@ export function HeroCards3DScene() {
 
     return (
         <Canvas
-            camera={{ position: [isMobile ? 0.4 : 1.2, 0, isMobile ? 4 : 12], fov: isMobile ? 50 : 52 }}
+            camera={{ position: [isMobile ? 0.4 : 1.2, 0, isMobile ? 4 : 10], fov: isMobile ? 50 : 50 }}
             style={{
                 position: isMobile ? 'relative' : 'absolute',
                 right: isMobile ? 'auto' : 0,
                 top: isMobile ? 'auto' : 0,
-                width: isMobile ? '100%' : '55vw',
+                width: isMobile ? '100%' : '58vw',
                 height: isMobile ? '45vh' : '100vh',
                 zIndex: 2,
                 pointerEvents: 'auto',

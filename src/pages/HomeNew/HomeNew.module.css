@@ -517,62 +517,57 @@
   }
 }
 
-/* CTA Button — clean, modern, minimal */
+/* CTA Button — solid yellow, brand new */
 .heroCtaFuturistic {
-  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 16px 40px;
+  padding: 18px 48px;
   font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #121214;
+  color: #0a0a0c;
   background: #FFD800;
   border: none;
-  border-radius: 60px;
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  margin-top: 48px;
-  box-shadow: 0 4px 20px rgba(255, 216, 0, 0.25);
+  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+  margin-top: 40px;
+  box-shadow: none;
+  opacity: 0;
+  animation: heroCtaReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
+}
+
+@keyframes heroCtaReveal {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .heroCtaFuturistic:hover {
-  background: #ffe033;
+  background: #ffe533;
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(255, 216, 0, 0.35);
+  box-shadow: 0 8px 32px rgba(255, 216, 0, 0.3);
 }
 
 .heroCtaFuturistic:active {
   transform: translateY(0);
+  box-shadow: none;
 }
 
 .heroCtaFuturistic svg {
-  transition: transform 0.3s ease;
+  transition: transform 0.25s ease;
 }
 
 .heroCtaFuturistic:hover svg {
-  transform: translateX(3px);
+  transform: translateX(4px);
 }
 
 .heroCtaText {
   position: relative;
   z-index: 1;
-}
-
-[data-theme='light'] .heroCtaFuturistic {
-  color: #121214;
-  background: #FFD800;
-  border: none;
-  box-shadow: 0 4px 20px rgba(255, 216, 0, 0.25);
-}
-
-[data-theme='light'] .heroCtaFuturistic:hover {
-  background: #ffe033;
-  box-shadow: 0 12px 40px rgba(255, 216, 0, 0.35);
 }
 
 /* Desktop line break helper */
