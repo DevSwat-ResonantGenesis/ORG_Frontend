@@ -275,12 +275,12 @@ function ZoomCard({ card, index, allCards, isMobile }: { card: Card3D; index: nu
             )}
             {card.label && card.vertical && (
                 <Text
-                    position={[-card.w / 2 + 0.25 * ts + 0.08, card.h / 2 - 0.6, 0.06]}
+                    position={[-card.w / 2 + 0.25 * ts + 0.08, card.h * 0.2, 0.06]}
                     fontSize={0.42 * ts}
                     font="/fonts/WorkSans-Bold.ttf"
                     color={txtColor}
-                    anchorX="left"
-                    anchorY="top"
+                    anchorX="center"
+                    anchorY="middle"
                     rotation={[0, 0, Math.PI / 2]}
                     maxWidth={card.h - 0.4}
                 >
@@ -289,11 +289,11 @@ function ZoomCard({ card, index, allCards, isMobile }: { card: Card3D; index: nu
             )}
             {card.desc && card.vertical && (
                 <Text
-                    position={[card.w / 2 - 0.25 * ts - 0.08, -card.h / 2 + 0.6, 0.06]}
+                    position={[card.w / 2 - 0.25 * ts - 0.08, -card.h * 0.2, 0.06]}
                     fontSize={0.16 * ts}
                     color={txtColor}
-                    anchorX="left"
-                    anchorY="bottom"
+                    anchorX="center"
+                    anchorY="middle"
                     rotation={[0, 0, Math.PI / 2]}
                     maxWidth={card.h - 0.4}
                     fillOpacity={0.5}
