@@ -21,12 +21,19 @@ export const HeroSection = () => {
 
     return (
         <section className={styles.hero}>
+            {/* Inline style block — ID + data-attr = max specificity, guaranteed to override any global CSS */}
+            <style dangerouslySetInnerHTML={{__html: `
+                [data-hero-cta] { color: #0a0a0c !important; background: #FFD800 !important; }
+                [data-hero-cta] * { color: #0a0a0c !important; }
+                [data-hero-cta]:hover { background: #71C23E !important; color: #fff !important; }
+                [data-hero-cta]:hover * { color: #fff !important; }
+            `}} />
             <div className={styles.heroTextBlock}>
                 <h1 className={heroTitleStyles.heroTitle}>
                     Digitalize<br />Your Vision
                 </h1>
                 <p className={heroTitleStyles.heroTitleTagline}>Simpler Than Ever</p>
-                <button className={buttonStyles.heroButton} onClick={() => navigate('/signup')}>
+                <button data-hero-cta="" className={buttonStyles.heroButton} onClick={() => navigate('/signup')}>
                     <span className={buttonStyles.heroButtonText}>Get Started</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block', flexShrink: 0 }}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </button>
