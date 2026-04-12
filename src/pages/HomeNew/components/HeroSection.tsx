@@ -71,7 +71,7 @@ export const HeroSection = () => {
                     font-weight: 700 !important;
                     letter-spacing: 0.06em !important;
                     text-transform: uppercase !important;
-                    border-radius: 9999px !important;
+                    border-radius: 14px !important;
                     cursor: pointer !important;
                     border: none !important;
                     outline: none !important;
