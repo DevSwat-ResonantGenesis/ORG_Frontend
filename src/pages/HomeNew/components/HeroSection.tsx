@@ -8,21 +8,23 @@ import { useThemeStore } from '@/store/themeStore';
 interface CardDef {
     label: string;
     desc: string;
-    bg: string;
+    tint: string;
+    glow: string;
     text: string;
-    area: string;
-    z: number;
+    /* position & size in 3D scene (px) */
+    x: number; y: number; w: number; h: number; z: number;
+    /* chaos offsets for fall animation */
     cx: number; crx: number; cry: number; crz: number;
 }
 
 const CARDS: CardDef[] = [
-    { label: 'Code',       desc: 'AI-powered development', bg: '#121214', text: '#fff',    area: 'code',   z: -30, cx: -80, crx: 30, cry: -20, crz: 12 },
-    { label: '',           desc: '',                        bg: '#FFD800', text: '#121214', area: 'yellow', z: 45,  cx: 100, crx: -25, cry: 28, crz: -10 },
-    { label: '',           desc: '',                        bg: '#FAA525', text: '#121214', area: 'orange', z: 20,  cx: -50, crx: 38, cry: -16, crz: 8 },
-    { label: 'Governance', desc: 'On-chain compliance',     bg: '#01A6BC', text: '#fff',    area: 'gov',    z: -55, cx: 75, crx: -20, cry: 22, crz: -15 },
-    { label: 'Agents',     desc: 'Autonomous workflows',    bg: '#FA547C', text: '#fff',    area: 'agents', z: 35,  cx: -65, crx: 28, cry: -25, crz: 18 },
-    { label: 'Memory',     desc: 'Persistent knowledge',    bg: '#FFFFFF', text: '#121214', area: 'white',  z: -65, cx: 90, crx: -32, cry: 18, crz: -12 },
-    { label: '',           desc: '',                        bg: '#71C23E', text: '#121214', area: 'green',  z: 55,  cx: -35, crx: 22, cry: -30, crz: 20 },
+    { label: 'Code',       desc: 'AI-powered development', tint: 'rgba(18,18,20,0.55)',   glow: 'rgba(255,255,255,0.05)', text: '#fff',                  x: 0,   y: 0,   w: 295, h: 155, z: -30,  cx: -80,  crx: 30,  cry: -20, crz: 12 },
+    { label: '',           desc: '',                        tint: 'rgba(255,216,0,0.14)',   glow: 'rgba(255,216,0,0.15)',   text: '#121214',               x: 303, y: 0,   w: 195, h: 155, z: 45,   cx: 100,  crx: -25, cry: 28,  crz: -10 },
+    { label: '',           desc: '',                        tint: 'rgba(250,165,37,0.18)',  glow: 'rgba(250,165,37,0.12)', text: '#121214',               x: 0,   y: 163, w: 145, h: 305, z: 20,   cx: -50,  crx: 38,  cry: -16, crz: 8 },
+    { label: 'Governance', desc: 'On-chain compliance',     tint: 'rgba(1,166,188,0.20)',   glow: 'rgba(1,166,188,0.14)', text: '#fff',                  x: 153, y: 163, w: 240, h: 147, z: -55,  cx: 75,   crx: -20, cry: 22,  crz: -15 },
+    { label: 'Agents',     desc: 'Autonomous workflows',    tint: 'rgba(250,84,124,0.18)',  glow: 'rgba(250,84,124,0.12)', text: '#fff',                  x: 153, y: 318, w: 145, h: 150, z: 35,   cx: -65,  crx: 28,  cry: -25, crz: 18 },
+    { label: 'Memory',     desc: 'Persistent knowledge',    tint: 'rgba(255,255,255,0.07)', glow: 'rgba(255,255,255,0.06)', text: 'rgba(255,255,255,0.9)', x: 401, y: 163, w: 97,  h: 305, z: -65,  cx: 90,   crx: -32, cry: 18,  crz: -12 },
+    { label: '',           desc: '',                        tint: 'rgba(113,194,62,0.16)',  glow: 'rgba(113,194,62,0.12)', text: '#121214',               x: 306, y: 318, w: 87,  h: 150, z: 55,   cx: -35,  crx: 22,  cry: -30, crz: 20 },
 ];
 
 export const HeroSection = () => {
@@ -53,7 +55,7 @@ export const HeroSection = () => {
             const { x, y } = mouseLerp.current;
             /* Rotate entire scene — perspective does the rest */
             mosaicRef.current.style.transform =
-                `perspective(800px) rotateX(${-y * 5}deg) rotateY(${x * 7}deg)`;
+                `translateY(-50%) perspective(900px) rotateX(${-y * 8}deg) rotateY(${x * 10}deg)`;
         }
         rafRef.current = requestAnimationFrame(tick);
     }, []);
@@ -92,18 +94,22 @@ export const HeroSection = () => {
                 <div className={styles.mosaicGlow} />
                 {CARDS.map((c, i) => (
                     <div
-                        key={c.area}
+                        key={i}
                         className={styles.mCard}
                         style={{
-                            '--mc-bg': c.bg,
-                            '--mc-text': c.text,
+                            '--card-x': `${c.x}px`,
+                            '--card-y': `${c.y}px`,
+                            '--card-w': `${c.w}px`,
+                            '--card-h': `${c.h}px`,
                             '--card-z': `${c.z}px`,
-                            gridArea: c.area,
+                            '--mc-tint': c.tint,
+                            '--mc-glow': c.glow,
+                            '--mc-text': c.text,
                             '--cx': `${c.cx}px`,
                             '--crx': `${c.crx}deg`,
                             '--cry': `${c.cry}deg`,
                             '--crz': `${c.crz}deg`,
-                            '--fall-delay': `${i * 0.18 + 0.1}s`,
+                            '--fall-delay': `${i * 0.18 + 0.15}s`,
                         } as React.CSSProperties}
                     >
                         <div className={styles.mCardShine} />
