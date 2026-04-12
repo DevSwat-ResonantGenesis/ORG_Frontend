@@ -1,17 +1,16 @@
 /* ============================================================
-   HeroTitle — Brand new editorial typography
+   HeroTitle — Premium editorial typography
    ============================================================ */
 
-/* Main Title — massive, thin serif, dramatic */
 .heroTitle,
 h1.heroTitle {
-  font-family: 'Abril Fatface', 'Times New Roman', serif;
-  font-size: clamp(68px, 10vw, 193px);
+  font-family: 'Abril Fatface', Georgia, 'Times New Roman', serif;
+  font-size: clamp(52px, 12vw, 193px);
   font-weight: 400;
   margin: 0;
   padding: 0;
-  line-height: 0.96;
-  letter-spacing: -0.015em;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
   color: #ffffff !important;
   display: block;
   width: 100%;
@@ -22,18 +21,36 @@ h1.heroTitle {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-style: normal;
+  opacity: 0;
+  animation: heroTitleReveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+}
+
+@keyframes heroTitleReveal {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (min-width: 640px) {
   .heroTitle {
-    font-size: clamp(92px, 11vw, 193px);
+    font-size: clamp(80px, 13vw, 193px);
   }
 }
 
 @media (min-width: 1024px) {
   .heroTitle {
+    font-size: 160px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .heroTitle {
     font-size: 193px;
-    line-height: 0.92;
   }
 }
 
@@ -46,31 +63,49 @@ h1.heroTitle {
   display: none;
 }
 
-/* Tagline under title — light weight, smaller */
+/* Tagline — Work Sans bold */
 .heroTitleTagline {
   display: block;
-  margin-top: 14px;
+  margin-top: 20px;
   margin-bottom: 0;
   font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-  font-size: clamp(28px, 5vw, 64px);
+  font-size: clamp(24px, 4.5vw, 64px);
   font-weight: 700;
   font-style: normal;
-  line-height: 1.05;
-  letter-spacing: -0.015em;
-  color: rgba(255, 255, 255, 0.95);
-  opacity: 1;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: rgba(255, 255, 255, 0.5);
   text-align: left;
+  opacity: 0;
+  animation: heroTaglineReveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+}
+
+@keyframes heroTaglineReveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (min-width: 1024px) {
   .heroTitleTagline {
+    font-size: 56px;
+    margin-top: 16px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .heroTitleTagline {
     font-size: 64px;
-    margin-top: 12px;
   }
 }
 
 [data-theme='light'] .heroTitleTagline {
-  color: rgba(255, 255, 255, 0.95);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* Subtitle tagline — uppercase, wide tracking, thin weight */
