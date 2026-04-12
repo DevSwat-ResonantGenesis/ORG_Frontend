@@ -12,19 +12,17 @@ interface CardDef {
     text: string;
     area: string;
     depth: number;
-    chaosX: number;
-    chaosRY: number;
-    chaosRZ: number;
+    cx: number; crx: number; cry: number; crz: number;
 }
 
 const CARDS: CardDef[] = [
-    { label: 'Code',       desc: 'AI-powered development', bg: '#121214', text: '#fff',    area: 'code',   depth: 0.50, chaosX: -80,  chaosRY: -20, chaosRZ: 12 },
-    { label: '',           desc: '',                        bg: '#FFD800', text: '#121214', area: 'yellow', depth: 0.85, chaosX: 100,  chaosRY: 25,  chaosRZ: -8 },
-    { label: '',           desc: '',                        bg: '#FAA525', text: '#121214', area: 'orange', depth: 0.40, chaosX: -40,  chaosRY: -15, chaosRZ: 6 },
-    { label: 'Governance', desc: 'On-chain compliance',     bg: '#01A6BC', text: '#fff',    area: 'gov',    depth: 0.65, chaosX: 70,   chaosRY: 18,  chaosRZ: -14 },
-    { label: 'Agents',     desc: 'Autonomous workflows',    bg: '#FA547C', text: '#fff',    area: 'agents', depth: 0.75, chaosX: -60,  chaosRY: -22, chaosRZ: 16 },
-    { label: 'Memory',     desc: 'Persistent knowledge',    bg: '#FFFFFF', text: '#121214', area: 'white',  depth: 0.35, chaosX: 90,   chaosRY: 14,  chaosRZ: -10 },
-    { label: '',           desc: '',                        bg: '#71C23E', text: '#121214', area: 'green',  depth: 0.95, chaosX: -30,  chaosRY: -28, chaosRZ: 20 },
+    { label: 'Code',       desc: 'AI-powered development', bg: '#121214', text: '#fff',    area: 'code',   depth: 0.50, cx: -90,  crx: 35,  cry: -25, crz: 15 },
+    { label: '',           desc: '',                        bg: '#FFD800', text: '#121214', area: 'yellow', depth: 0.85, cx: 110,  crx: -28, cry: 30,  crz: -12 },
+    { label: '',           desc: '',                        bg: '#FAA525', text: '#121214', area: 'orange', depth: 0.40, cx: -50,  crx: 40,  cry: -18, crz: 8 },
+    { label: 'Governance', desc: 'On-chain compliance',     bg: '#01A6BC', text: '#fff',    area: 'gov',    depth: 0.65, cx: 80,   crx: -22, cry: 24,  crz: -18 },
+    { label: 'Agents',     desc: 'Autonomous workflows',    bg: '#FA547C', text: '#fff',    area: 'agents', depth: 0.75, cx: -70,  crx: 30,  cry: -28, crz: 20 },
+    { label: 'Memory',     desc: 'Persistent knowledge',    bg: '#FFFFFF', text: '#121214', area: 'white',  depth: 0.35, cx: 100,  crx: -35, cry: 20,  crz: -14 },
+    { label: '',           desc: '',                        bg: '#71C23E', text: '#121214', area: 'green',  depth: 0.95, cx: -40,  crx: 25,  cry: -32, crz: 22 },
 ];
 
 export const HeroSection = () => {
@@ -50,17 +48,17 @@ export const HeroSection = () => {
 
     const tick = useCallback(() => {
         if (mosaicRef.current && readyRef.current) {
-            mouseLerp.current.x += (mouseTarget.current.x - mouseLerp.current.x) * 0.06;
-            mouseLerp.current.y += (mouseTarget.current.y - mouseLerp.current.y) * 0.06;
+            mouseLerp.current.x += (mouseTarget.current.x - mouseLerp.current.x) * 0.05;
+            mouseLerp.current.y += (mouseTarget.current.y - mouseLerp.current.y) * 0.05;
             const { x, y } = mouseLerp.current;
+            /* Tilt entire mosaic for true 3D scene rotation */
+            mosaicRef.current.style.transform =
+                `translateY(-50%) rotateX(${-y * 6}deg) rotateY(${x * 6}deg)`;
+            /* Per-card depth shift for layered parallax */
             const els = mosaicRef.current.querySelectorAll<HTMLElement>('[data-depth]');
             els.forEach(el => {
                 const d = parseFloat(el.dataset.depth || '0.5');
-                const tx = x * d * 30;
-                const ty = y * d * 20;
-                const ry = x * d * 5;
-                const rx = -y * d * 3.5;
-                el.style.transform = `translate3d(${tx}px,${ty}px,0) rotateX(${rx}deg) rotateY(${ry}deg)`;
+                el.style.transform = `translateZ(${d * 28}px) translate(${x * d * 12}px,${y * d * 8}px)`;
             });
         }
         rafRef.current = requestAnimationFrame(tick);
@@ -106,10 +104,11 @@ export const HeroSection = () => {
                             '--mc-bg': c.bg,
                             '--mc-text': c.text,
                             gridArea: c.area,
-                            '--chaos-x': `${c.chaosX}px`,
-                            '--chaos-ry': `${c.chaosRY}deg`,
-                            '--chaos-rz': `${c.chaosRZ}deg`,
-                            '--fall-delay': `${i * 0.12 + 0.1}s`,
+                            '--cx': `${c.cx}px`,
+                            '--crx': `${c.crx}deg`,
+                            '--cry': `${c.cry}deg`,
+                            '--crz': `${c.crz}deg`,
+                            '--fall-delay': `${i * 0.15 + 0.1}s`,
                         } as React.CSSProperties}
                     >
                         <div className={styles.mCardGlass} />

@@ -248,7 +248,7 @@
 /* Main content width management removed - side menu is now global in Header */
 
 /* ============================================================
-   Hero — Asymmetric Mosaic Cards + 3D Chaotic Fall
+   Hero — Tight Asymmetric Mosaic + Physics 3D Fall
    ============================================================ */
 .hero {
   min-height: 100dvh;
@@ -256,7 +256,7 @@
   display: block;
   padding: 0;
   margin: 0;
-  background: #0b0b0d;
+  background: #0a0a0c;
   position: relative;
   z-index: 1;
   overflow: hidden;
@@ -266,83 +266,83 @@
 .hero::before,
 .hero::after { display: none; }
 
-[data-theme='light'] .hero { background: #0b0b0d; }
+[data-theme='light'] .hero { background: #0a0a0c; }
 
-/* ---- Title block — left, vertically centred ---- */
+/* ---- Title — absolute left, vertically centred ---- */
 .heroTextBlock {
   position: absolute;
-  left: clamp(24px, 5vw, 80px);
+  left: clamp(20px, 4vw, 72px);
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  max-width: 540px;
+  max-width: 50vw;
 }
 
-/* ---- Card mosaic — right side, tight asymmetric grid ---- */
+/* ---- Mosaic — tight, zero empty cells ---- */
 .heroMosaic {
   position: absolute;
-  right: 4%;
+  right: 3%;
   top: 50%;
   transform: translateY(-50%);
   z-index: 2;
   display: grid;
-  grid-template-columns: 155px 150px 130px 115px;
-  grid-template-rows: 160px 165px 155px;
-  gap: 8px;
+  grid-template-columns: 150px 140px 125px 120px;
+  grid-template-rows: 152px 158px 148px;
+  gap: 6px;
   grid-template-areas:
-    "code   code   .      yellow"
-    "orange gov    gov    ."
-    "orange agents white  green";
-  perspective: 1000px;
+    "code   code   yellow yellow"
+    "orange gov    gov    white"
+    "orange agents green  white";
+  perspective: 900px;
   transform-style: preserve-3d;
 }
 
-/* ---- Card base ---- */
+/* ---- Card ---- */
 .mCard {
   background: var(--mc-bg);
   color: var(--mc-text);
-  border-radius: 18px;
+  border-radius: 16px;
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
-  padding: 20px;
+  padding: 18px;
   position: relative;
   overflow: hidden;
   cursor: default;
   transform-style: preserve-3d;
   will-change: transform;
   box-shadow:
-    0 24px 48px -8px rgba(0,0,0,0.45),
-    0 4px 14px rgba(0,0,0,0.2),
+    0 20px 44px -6px rgba(0,0,0,0.50),
+    0 4px 12px rgba(0,0,0,0.22),
     inset 0 1px 0 rgba(255,255,255,0.10);
   opacity: 0;
-  animation: mCardChaos 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: physFall 2s linear forwards;
   animation-delay: var(--fall-delay);
   transition: box-shadow 0.3s ease;
 }
 
 .mCard:hover {
   box-shadow:
-    0 32px 64px -8px rgba(0,0,0,0.55),
-    0 8px 24px rgba(0,0,0,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.16);
+    0 30px 56px -6px rgba(0,0,0,0.6),
+    0 8px 22px rgba(0,0,0,0.28),
+    inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
-/* ---- Glass overlay ---- */
+/* ---- Glass ---- */
 .mCardGlass {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   background: linear-gradient(
     135deg,
-    rgba(255,255,255,0.30) 0%,
-    rgba(255,255,255,0.08) 28%,
+    rgba(255,255,255,0.28) 0%,
+    rgba(255,255,255,0.07) 28%,
     transparent 50%,
-    rgba(255,255,255,0.03) 78%,
-    rgba(255,255,255,0.06) 100%
+    rgba(255,255,255,0.03) 80%,
+    rgba(255,255,255,0.05) 100%
   );
   pointer-events: none;
   z-index: 1;
@@ -352,10 +352,10 @@
   content: '';
   position: absolute;
   top: 0;
-  left: 12%;
-  right: 12%;
+  left: 10%;
+  right: 10%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.32), transparent);
 }
 
 .mCardGlass::after {
@@ -363,11 +363,11 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.11);
   pointer-events: none;
 }
 
-/* ---- Card body ---- */
+/* ---- Body ---- */
 .mCardBody {
   position: relative;
   z-index: 2;
@@ -378,7 +378,7 @@
 
 .mCardLabel {
   font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.01em;
@@ -389,81 +389,93 @@
   font-size: 11px;
   font-weight: 500;
   opacity: 0.6;
-  letter-spacing: 0.01em;
 }
 
-/* ---- Chaotic fall-from-top ---- */
-@keyframes mCardChaos {
+/* ---- Physics fall — gravity + tumble + bounce ---- */
+@keyframes physFall {
   0% {
     opacity: 0;
     transform:
-      translate3d(var(--chaos-x), -110vh, 80px)
-      rotateY(var(--chaos-ry))
-      rotateZ(var(--chaos-rz))
-      scale(0.7);
+      translate3d(var(--cx), -115vh, 60px)
+      rotateX(var(--crx))
+      rotateY(var(--cry))
+      rotateZ(var(--crz))
+      scale(0.6);
   }
-  55% {
+  8% {
     opacity: 1;
+  }
+  20% {
     transform:
-      translate3d(calc(var(--chaos-x) * 0.12), 10px, 15px)
-      rotateY(calc(var(--chaos-ry) * 0.08))
-      rotateZ(calc(var(--chaos-rz) * 0.04))
-      scale(1.02);
+      translate3d(calc(var(--cx) * 0.75), -70vh, 45px)
+      rotateX(calc(var(--crx) * 1.3))
+      rotateY(calc(var(--cry) * 1.2))
+      rotateZ(calc(var(--crz) * 1.15))
+      scale(0.72);
+  }
+  45% {
+    transform:
+      translate3d(calc(var(--cx) * 0.3), -18vh, 20px)
+      rotateX(calc(var(--crx) * 0.55))
+      rotateY(calc(var(--cry) * 0.4))
+      rotateZ(calc(var(--crz) * 0.25))
+      scale(0.92);
+  }
+  65% {
+    transform:
+      translate3d(calc(var(--cx) * 0.06), 14px, 6px)
+      rotateX(calc(var(--crx) * 0.06))
+      rotateY(calc(var(--cry) * 0.04))
+      rotateZ(calc(var(--crz) * 0.02))
+      scale(1.025);
   }
   78% {
     transform:
-      translate3d(0, -5px, 0)
-      rotateY(0deg)
-      rotateZ(0deg)
-      scale(0.995);
+      translate3d(0, -7px, 0)
+      rotateX(0deg) rotateY(0deg) rotateZ(0deg)
+      scale(0.993);
+  }
+  90% {
+    transform:
+      translate3d(0, 3px, 0)
+      rotateX(0deg) rotateY(0deg) rotateZ(0deg)
+      scale(1.004);
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0) rotateY(0) rotateZ(0) scale(1);
+    transform: translate3d(0,0,0) rotateX(0) rotateY(0) rotateZ(0) scale(1);
   }
 }
 
 /* ---- Responsive ---- */
 @media (max-width: 1100px) {
   .heroMosaic {
-    grid-template-columns: 125px 120px 105px 95px;
-    grid-template-rows: 130px 135px 125px;
-    right: 2%;
+    grid-template-columns: 115px 110px 100px 95px;
+    grid-template-rows: 120px 126px 118px;
   }
-  .mCardLabel { font-size: 22px; }
+  .mCardLabel { font-size: 20px; }
 }
 
 @media (max-width: 768px) {
-  .hero {
-    display: flex;
-    flex-direction: column;
-    min-height: auto;
-  }
+  .hero { display: flex; flex-direction: column; min-height: auto; }
   .heroTextBlock {
-    position: relative;
-    left: auto;
-    top: auto;
-    transform: none;
-    padding: 120px 24px 40px;
-    max-width: 100%;
+    position: relative; left: auto; top: auto; transform: none;
+    padding: 110px 20px 32px; max-width: 100%;
   }
   .heroMosaic {
-    position: relative;
-    right: auto;
-    top: auto;
-    transform: none;
-    margin: 0 auto 80px;
+    position: relative; right: auto; top: auto; transform: none;
+    margin: 0 auto 70px;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 110px);
-    gap: 6px;
+    grid-template-rows: repeat(3, 100px);
+    gap: 5px;
     grid-template-areas:
       "code   code   yellow"
       "orange gov    gov"
       "agents white  green";
-    max-width: 360px;
+    max-width: 340px;
   }
-  .mCardLabel { font-size: 20px; }
-  .mCard { padding: 14px; border-radius: 14px; }
+  .mCardLabel { font-size: 18px; }
+  .mCard { padding: 12px; border-radius: 12px; }
 }
 
 /* CTA Button — clean, modern, minimal */
@@ -3064,35 +3076,7 @@
     padding: var(--space-md);
   }
 
-  .hero {
-    min-height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
-    padding: calc(var(--header-height, 56px) + env(safe-area-inset-top) + 18px) 16px 44px;
-    overflow-x: hidden;
-    overflow: hidden;
-    align-items: flex-start;
-  }
-
-  .heroInner {
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 30px;
-  }
-
-  .heroContent {
-    width: 100%;
-    padding: 0;
-  }
-
-  .heroCardsStage {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .heroCardsGrid {
-    width: min(100%, 560px);
-    gap: 12px;
-  }
+  /* (old hero mobile overrides removed) */
 
   .heroDescription {
     font-size: 18px;
@@ -3140,31 +3124,7 @@
   }
 }
 
-@media (max-width: 767px) {
-  .hero {
-    min-height: 100dvh;
-  }
-
-  .heroCardsGrid {
-    grid-template-columns: 1fr 1fr;
-    width: 100%;
-  }
-
-  .heroGlassCardWide {
-    grid-column: span 2;
-    min-height: 96px;
-  }
-
-  .heroGlassCardTall,
-  .heroGlassCardSquare,
-  .heroGlassCardSmall {
-    min-height: 92px;
-  }
-
-  .heroGlassCard span {
-    font-size: clamp(20px, 8vw, 34px);
-  }
-}
+/* (old glass card mobile overrides removed) */
 
 
 /* ============================================================
@@ -5133,40 +5093,7 @@
   }
 }
 
-/* Force transparency for hero content in dark mode to fix parallax issue */
-[data-theme='dark'] .hero,
-[data-theme='dark'] .hero::before,
-[data-theme='dark'] .hero::after,
-[data-theme='dark'] .heroContent,
-[data-theme='dark'] .heroDescription,
-[data-theme='dark'] .heroStats,
-[data-theme='dark'] .heroTitle,
-[data-theme='dark'] .heroSubtitle,
-[data-theme='dark'] .heroActions {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* Ensure text colors are correct on transparency */
-[data-theme='dark'] .heroTitle {
-  color: #ffffff !important;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  /* Add shadow for readability over parallax */
-}
-
-[data-theme='dark'] .heroSubtitle {
-  color: #e2e8f0 !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-}
-
-[data-theme='dark'] .heroDescription {
-  color: #cbd5e1 !important;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
+/* (old dark-mode hero overrides removed — new hero handles its own theming) */
 
 /* governedSection and flowStep styles REMOVED - now uses interfacesSection and interfaceCard */
 
