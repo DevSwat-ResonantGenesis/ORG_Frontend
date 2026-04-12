@@ -33,13 +33,7 @@ const MainLayout = ({ children }: Props) => {
   // Dynamic theme-color meta tag — matches theme + page-specific bg
   useEffect(() => {
     let color: string;
-    if (isResonantChatPage) {
-      color = theme === 'dark' ? '#0a0a0c' : '#ffffff';
-    } else if (isLandingPage) {
-      color = theme === 'dark' ? '#000000' : '#ffffff';
-    } else {
-      color = theme === 'dark' ? '#000000' : '#ffffff';
-    }
+    color = theme === 'dark' ? '#0a0a0c' : '#ffffff';
     // Update all theme-color meta tags
     document.querySelectorAll('meta[name="theme-color"]').forEach(el => {
       (el as HTMLMetaElement).content = color;

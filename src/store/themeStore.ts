@@ -49,9 +49,9 @@ export const useThemeStore = create<ThemeState>((set) => {
 
         // Update mobile safe area color
         const metaTheme = document.querySelector('meta[name="theme-color"]');
-        if (metaTheme) metaTheme.setAttribute('content', t === 'dark' ? '#000000' : '#ffffff');
+        if (metaTheme) metaTheme.setAttribute('content', t === 'dark' ? '#0a0a0c' : '#ffffff');
         // Also update any media-specific ones
-        document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute('content', t === 'dark' ? '#000000' : '#ffffff'));
+        document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute('content', t === 'dark' ? '#0a0a0c' : '#ffffff'));
 
         applyWarmthToDom(getWarmthFromStorage());
       }
@@ -73,7 +73,7 @@ export const useThemeStore = create<ThemeState>((set) => {
           document.documentElement.style.colorScheme = next;
 
           // Update mobile safe area color
-          document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute('content', next === 'dark' ? '#000000' : '#ffffff'));
+          document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute('content', next === 'dark' ? '#0a0a0c' : '#ffffff'));
 
           applyWarmthToDom(getWarmthFromStorage());
           
