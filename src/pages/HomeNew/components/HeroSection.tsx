@@ -18,13 +18,13 @@ interface CardDef {
 }
 
 const CARDS: CardDef[] = [
-    { label: 'Code',       desc: 'AI-powered development', tint: 'rgba(18,18,20,0.55)',   glow: 'rgba(255,255,255,0.05)', text: '#fff',                  x: 0,   y: 0,   w: 295, h: 155, z: -30,  cx: -80,  crx: 30,  cry: -20, crz: 12 },
-    { label: '',           desc: '',                        tint: 'rgba(255,216,0,0.14)',   glow: 'rgba(255,216,0,0.15)',   text: '#121214',               x: 303, y: 0,   w: 195, h: 155, z: 45,   cx: 100,  crx: -25, cry: 28,  crz: -10 },
-    { label: '',           desc: '',                        tint: 'rgba(250,165,37,0.18)',  glow: 'rgba(250,165,37,0.12)', text: '#121214',               x: 0,   y: 163, w: 145, h: 305, z: 20,   cx: -50,  crx: 38,  cry: -16, crz: 8 },
-    { label: 'Governance', desc: 'On-chain compliance',     tint: 'rgba(1,166,188,0.20)',   glow: 'rgba(1,166,188,0.14)', text: '#fff',                  x: 153, y: 163, w: 240, h: 147, z: -55,  cx: 75,   crx: -20, cry: 22,  crz: -15 },
-    { label: 'Agents',     desc: 'Autonomous workflows',    tint: 'rgba(250,84,124,0.18)',  glow: 'rgba(250,84,124,0.12)', text: '#fff',                  x: 153, y: 318, w: 145, h: 150, z: 35,   cx: -65,  crx: 28,  cry: -25, crz: 18 },
-    { label: 'Memory',     desc: 'Persistent knowledge',    tint: 'rgba(255,255,255,0.07)', glow: 'rgba(255,255,255,0.06)', text: 'rgba(255,255,255,0.9)', x: 401, y: 163, w: 97,  h: 305, z: -65,  cx: 90,   crx: -32, cry: 18,  crz: -12 },
-    { label: '',           desc: '',                        tint: 'rgba(113,194,62,0.16)',  glow: 'rgba(113,194,62,0.12)', text: '#121214',               x: 306, y: 318, w: 87,  h: 150, z: 55,   cx: -35,  crx: 22,  cry: -30, crz: 20 },
+    { label: 'Code',       desc: 'AI-powered development', tint: 'rgba(18,18,20,0.75)',    glow: 'rgba(255,255,255,0.05)', text: '#fff',    x: 0,   y: 0,   w: 295, h: 155, z: -30,  cx: -80,  crx: 30,  cry: -20, crz: 12 },
+    { label: '',           desc: '',                        tint: 'rgba(255,216,0,0.65)',    glow: 'rgba(255,216,0,0.18)',   text: '#121214', x: 303, y: 0,   w: 195, h: 155, z: 45,   cx: 100,  crx: -25, cry: 28,  crz: -10 },
+    { label: '',           desc: '',                        tint: 'rgba(250,165,37,0.65)',   glow: 'rgba(250,165,37,0.15)', text: '#121214', x: 0,   y: 163, w: 145, h: 305, z: 20,   cx: -50,  crx: 38,  cry: -16, crz: 8 },
+    { label: 'Governance', desc: 'On-chain compliance',     tint: 'rgba(1,166,188,0.65)',    glow: 'rgba(1,166,188,0.16)', text: '#fff',    x: 153, y: 163, w: 240, h: 147, z: -55,  cx: 75,   crx: -20, cry: 22,  crz: -15 },
+    { label: 'Agents',     desc: 'Autonomous workflows',    tint: 'rgba(250,84,124,0.60)',   glow: 'rgba(250,84,124,0.14)', text: '#fff',    x: 153, y: 318, w: 145, h: 150, z: 35,   cx: -65,  crx: 28,  cry: -25, crz: 18 },
+    { label: 'Memory',     desc: 'Persistent knowledge',    tint: 'rgba(255,255,255,0.55)',  glow: 'rgba(255,255,255,0.08)', text: '#121214', x: 401, y: 163, w: 97,  h: 305, z: -65,  cx: 90,   crx: -32, cry: 18,  crz: -12 },
+    { label: '',           desc: '',                        tint: 'rgba(113,194,62,0.60)',   glow: 'rgba(113,194,62,0.14)', text: '#121214', x: 306, y: 318, w: 87,  h: 150, z: 55,   cx: -35,  crx: 22,  cry: -30, crz: 20 },
 ];
 
 export const HeroSection = () => {
