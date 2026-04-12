@@ -517,48 +517,47 @@
   }
 }
 
-/* CTA Button — solid yellow, brand new */
+/* CTA Button — solid yellow, no animation, always visible */
 .heroCtaFuturistic {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 18px 48px;
+  padding: 16px 44px;
   font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #0a0a0c;
-  background: #FFD800;
-  border: none;
-  border-radius: 14px;
+  color: #0a0a0c !important;
+  background: #FFD800 !important;
+  border: none !important;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
-  margin-top: 40px;
-  box-shadow: none;
-  opacity: 0;
-  animation: heroCtaReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
-}
-
-@keyframes heroCtaReveal {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  margin-top: 36px;
+  box-shadow: 0 2px 12px rgba(255, 216, 0, 0.25);
+  opacity: 1;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  text-decoration: none;
 }
 
 .heroCtaFuturistic:hover {
-  background: #ffe533;
+  background: #ffe533 !important;
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(255, 216, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(255, 216, 0, 0.35);
 }
 
 .heroCtaFuturistic:active {
   transform: translateY(0);
-  box-shadow: none;
+  box-shadow: 0 2px 12px rgba(255, 216, 0, 0.25);
 }
 
 .heroCtaFuturistic svg {
-  transition: transform 0.25s ease;
+  transition: transform 0.2s ease;
+  color: #0a0a0c !important;
 }
 
 .heroCtaFuturistic:hover svg {
@@ -568,6 +567,7 @@
 .heroCtaText {
   position: relative;
   z-index: 1;
+  color: #0a0a0c !important;
 }
 
 /* Desktop line break helper */
