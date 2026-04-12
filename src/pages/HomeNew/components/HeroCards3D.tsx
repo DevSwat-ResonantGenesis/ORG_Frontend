@@ -40,7 +40,7 @@ const CARDS: Card3D[] = [
     /* Right pillar: TALL yellow — sits BESIDE center cards, not over them */
     { label: '',           desc: '',                     color: '#FFD800', textColor: '#121214', px: 3.2,  py: 1.0,  pz: 0.4,  w: 2.5, h: 5.0, chaosX: 2.0,  chaosRx: -0.7, chaosRy: 0.8,  chaosRz: -0.3, delay: 0.18 },
     /* Left pillar: tall orange */
-    { label: '',           desc: '',                     color: '#FAA525', textColor: '#121214', px: -1.6, py: 0.5,  pz: 0.2,  w: 1.8, h: 3.5, chaosX: -1.2, chaosRx: 0.9,  chaosRy: -0.4, chaosRz: 0.2,  delay: 0.35 },
+    { label: '',           desc: '',                     color: '#FAA525', textColor: '#121214', px: -1.6, py: 0.5,  pz: 0.2,  w: 2.5, h: 2.5, chaosX: -1.2, chaosRx: 0.9,  chaosRy: -0.4, chaosRz: 0.2,  delay: 0.35 },
     /* Center: wide governance */
     { label: 'Governance', desc: 'On-chain compliance',  color: '#01A6BC', textColor: '#ffffff', px: 0.8,  py: 0.0,  pz: -0.4, w: 3.0, h: 1.8, chaosX: 1.4,  chaosRx: -0.5, chaosRy: 0.6,  chaosRz: -0.4, delay: 0.12 },
     /* Bottom center: agents */
@@ -48,7 +48,7 @@ const CARDS: Card3D[] = [
     /* Bottom right: memory */
     { label: 'Memory',     desc: 'Persistent knowledge', color: '#FFFFFF', textColor: '#121214', px: 3.2,  py: -2.5, pz: -0.5, w: 1.5, h: 2.0, chaosX: 1.6,  chaosRx: -0.8, chaosRy: 0.5,  chaosRz: -0.3, delay: 0.22 },
     /* Bottom left: green */
-    { label: '',           desc: '',                     color: '#71C23E', textColor: '#121214', px: -1.6, py: -2.5, pz: 0.5,  w: 1.5, h: 1.8, chaosX: -0.8, chaosRx: 0.6,  chaosRy: -0.8, chaosRz: 0.5,  delay: 0.4 },
+    { label: '',           desc: '',                     color: '#71C23E', textColor: '#121214', px: -1.6, py: -2.5, pz: 0.5,  w: 3.75, h: 1.8, chaosX: -0.8, chaosRx: 0.6,  chaosRy: -0.8, chaosRz: 0.5,  delay: 0.4 },
 ];
 
 /* ── Mouse tracker ── */
