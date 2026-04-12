@@ -1,7 +1,19 @@
 import React, { useRef, useMemo, useState, useEffect } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { RoundedBox, Text } from '@react-three/drei';
 import * as THREE from 'three';
+
+function useIsMobile(breakpoint = 768) {
+    const [mobile, setMobile] = useState(
+        typeof window !== 'undefined' ? window.innerWidth < breakpoint : false
+    );
+    useEffect(() => {
+        const check = () => setMobile(window.innerWidth < breakpoint);
+        window.addEventListener('resize', check, { passive: true });
+        return () => window.removeEventListener('resize', check);
+    }, [breakpoint]);
+    return mobile;
+}
 
 /* ── Card definitions ── */
 interface Card3D {
@@ -196,22 +208,36 @@ function FallingCard({ card }: { card: Card3D }) {
     );
 }
 
+/* ── Mobile-scaled cards ── */
+const CARDS_MOBILE: Card3D[] = CARDS.map(c => ({
+    ...c,
+    px: c.px * 0.55,
+    py: c.py * 0.55,
+    pz: c.pz * 0.4,
+    w: c.w * 0.55,
+    h: c.h * 0.55,
+    chaosX: c.chaosX * 0.5,
+}));
+
 /* ── Main 3D Canvas ── */
 export function HeroCards3DScene() {
+    const isMobile = useIsMobile();
+    const cards = isMobile ? CARDS_MOBILE : CARDS;
+
     return (
         <Canvas
-            camera={{ position: [0, 0, 8], fov: 45 }}
+            camera={{ position: [0, 0, isMobile ? 6 : 8], fov: isMobile ? 50 : 45 }}
             style={{
-                position: 'absolute',
-                right: 0,
-                top: 0,
-                width: '55vw',
-                height: '100vh',
+                position: isMobile ? 'relative' : 'absolute',
+                right: isMobile ? 'auto' : 0,
+                top: isMobile ? 'auto' : 0,
+                width: isMobile ? '100%' : '55vw',
+                height: isMobile ? '50vh' : '100vh',
                 zIndex: 2,
                 pointerEvents: 'none',
             }}
             gl={{ alpha: true, antialias: true }}
-            dpr={[1, 2]}
+            dpr={[1, isMobile ? 1.5 : 2]}
         >
             <ambientLight intensity={0.6} />
             <directionalLight position={[5, 8, 5]} intensity={0.8} />
@@ -219,7 +245,7 @@ export function HeroCards3DScene() {
             <pointLight position={[0, -3, 3]} intensity={0.4} color="#01A6BC" />
 
             <SceneRotation>
-                {CARDS.map((card, i) => (
+                {cards.map((card, i) => (
                     <FallingCard key={i} card={card} />
                 ))}
             </SceneRotation>
