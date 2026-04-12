@@ -275,12 +275,12 @@ function ZoomCard({ card, index, allCards, isMobile }: { card: Card3D; index: nu
             )}
             {card.label && card.vertical && (
                 <Text
-                    position={[-card.w / 2 + 0.25 * ts + 0.08, card.h * 0.2, 0.06]}
+                    position={[-card.w / 2 + 0.3 * ts + 0.08, -card.h / 2 + 0.35 * ts + 0.1, 0.06]}
                     fontSize={0.42 * ts}
                     font="/fonts/WorkSans-Bold.ttf"
                     color={txtColor}
-                    anchorX="center"
-                    anchorY="middle"
+                    anchorX="left"
+                    anchorY="bottom"
                     rotation={[0, 0, Math.PI / 2]}
                     maxWidth={card.h - 0.4}
                 >
@@ -289,11 +289,11 @@ function ZoomCard({ card, index, allCards, isMobile }: { card: Card3D; index: nu
             )}
             {card.desc && card.vertical && (
                 <Text
-                    position={[card.w / 2 - 0.25 * ts - 0.08, -card.h * 0.2, 0.06]}
+                    position={[-card.w / 2 + 0.3 * ts + 0.08 + 0.5, -card.h / 2 + 0.1 * ts + 0.05, 0.06]}
                     fontSize={0.16 * ts}
                     color={txtColor}
-                    anchorX="center"
-                    anchorY="middle"
+                    anchorX="left"
+                    anchorY="bottom"
                     rotation={[0, 0, Math.PI / 2]}
                     maxWidth={card.h - 0.4}
                     fillOpacity={0.5}
@@ -325,7 +325,7 @@ export function HeroCards3DScene() {
 
     return (
         <Canvas
-            camera={{ position: [isMobile ? 0.4 : 1.2, 0, isMobile ? 4 : 10], fov: isMobile ? 50 : 50 }}
+            camera={{ position: [isMobile ? 0.4 : 1.2, isMobile ? -0.3 : 0, isMobile ? 7 : 10], fov: isMobile ? 50 : 50 }}
             style={{
                 position: 'absolute',
                 top: 0,
