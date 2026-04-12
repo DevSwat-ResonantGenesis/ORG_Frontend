@@ -1,107 +1,29 @@
-:global(:root) {
-  --home-hero-cta-font: 'Work Sans', sans-serif;
-  --home-hero-cta-bg-start: #ffe16f;
-  --home-hero-cta-bg-end: #ffc531;
-  --home-hero-cta-text: #0d1117;
-  --home-hero-cta-outline: rgba(255, 230, 140, 0.65);
-  --home-hero-cta-shadow: 0 16px 36px rgba(0, 0, 0, 0.34), 0 0 38px rgba(255, 199, 64, 0.3);
-}
-
+/* Hero Button v3 — !important to beat global theme */
 .heroButton {
-  position: relative;
-  isolation: isolate;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: clamp(22px, 3vw, 36px);
-  padding: 14px 30px;
-  border-radius: 999px;
-  border: 1px solid var(--home-hero-cta-outline);
-  background: linear-gradient(135deg, var(--home-hero-cta-bg-start), var(--home-hero-cta-bg-end));
-  color: var(--home-hero-cta-text);
-  box-shadow: var(--home-hero-cta-shadow);
-  font-family: var(--home-hero-cta-font);
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-  cursor: pointer;
-  outline: none;
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
-  will-change: transform;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-top: 32px !important;
+  padding: 14px 36px !important;
+  background: #FFD800 !important;
+  color: #0a0a0c !important;
+  font-family: 'Work Sans', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  border: none !important;
+  outline: none !important;
+  opacity: 1 !important;
+  animation: none !important;
 }
-
-.heroButton::before,
-.heroButton::after {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  pointer-events: none;
-}
-
-.heroButton::before {
-  z-index: -2;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 38%, rgba(255, 220, 110, 0.65) 100%);
-  filter: blur(12px);
-  transform: translate3d(0, 0, 0);
-  animation: ctaParallaxDrift 5.2s ease-in-out infinite;
-}
-
-.heroButton::after {
-  z-index: -1;
-  inset: 0;
-  background: linear-gradient(100deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.04) 28%, rgba(255, 255, 255, 0) 52%);
-  mix-blend-mode: screen;
-}
-
 .heroButton:hover {
-  transform: perspective(900px) rotateX(6deg) rotateY(-6deg) translateY(-3px);
-  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.4), 0 0 54px rgba(255, 200, 70, 0.44);
+  background: #ffe640 !important;
 }
-
-.heroButton:active {
-  transform: translateY(1px);
-}
-
-.heroButtonLabel,
 .heroButtonText {
-  position: relative;
-  z-index: 2;
-  color: var(--home-hero-cta-text);
-}
-
-.heroButtonIcon {
-  position: relative;
-  z-index: 2;
-  display: block;
-  flex-shrink: 0;
-  color: var(--home-hero-cta-text);
-  stroke: currentColor;
-  transform: translateX(0);
-  transition: transform 0.25s ease;
-}
-
-.heroButton:hover .heroButtonIcon {
-  transform: translateX(3px);
-}
-
-@keyframes ctaParallaxDrift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-
-  50% {
-    transform: translate3d(6px, -5px, 0) scale(1.02);
-  }
-}
-
-@media (max-width: 768px) {
-  .heroButton {
-    padding: 13px 24px;
-    letter-spacing: 0.09em;
-    font-size: 0.76rem;
-  }
+  color: #0a0a0c !important;
+  font-family: inherit !important;
+  font-weight: inherit !important;
 }
