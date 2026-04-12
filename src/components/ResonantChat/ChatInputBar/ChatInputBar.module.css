@@ -145,7 +145,7 @@
 }
 
 :global([data-theme='dark'] body.resonant-chat-page) .agentSelect option {
-  background: #32312E;
+  background: #161616;
   color: #f8fafc;
 }
 
@@ -318,7 +318,7 @@
 }
 
 .agentSelect option {
-  background: #262321;
+  background: #0a0a0c;
   color: #fff;
   padding: 8px;
 }

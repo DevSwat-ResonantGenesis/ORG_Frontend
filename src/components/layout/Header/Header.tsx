@@ -12,7 +12,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { clearSession } from '@/utils/auth';
 import { isAuthenticated, getSessionData } from '@/utils/auth-cookies';
 import { logout as apiLogout } from '@/api/auth';
-import { ThemeToggle } from '@/components/ThemeToggle';
+// ThemeToggle removed — dark mode only
 import { Button } from '@/components/ui';
 import { useResonantChatMenu } from '@/context/ResonantChatMenuContext';
 import { useThemeStore } from '@/store/themeStore';
@@ -438,20 +438,6 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
 
-              {showChatWidgetButton && onToggleChatWidget && (
-                <button
-                  type="button"
-                  className={styles.chatWidgetButton}
-                  onClick={onToggleChatWidget}
-                  aria-label="Resonant Chat"
-                  title={chatWidgetOpen ? 'Close Resonant Chat' : 'Open Resonant Chat'}
-                >
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                    <line x1="12" y1="17" x2="12.01" y2="17" />
-                  </svg>
-                </button>
-              )}
 
             </div>
 
@@ -470,22 +456,6 @@ export const Header: React.FC<HeaderProps> = ({
               </a>
             )}
 
-            {isMobileViewport && isLandingPage && onToggleChatWidget && (
-              <button
-                type="button"
-                className={styles.chatWidgetButton}
-                onClick={onToggleChatWidget}
-                aria-label="Resonant Chat"
-                title={chatWidgetOpen ? 'Close Resonant Chat' : 'Open Resonant Chat'}
-              >
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                  <line x1="12" y1="17" x2="12.01" y2="17" />
-                </svg>
-              </button>
-            )}
-
-            <ThemeToggle />
 
             {isResonantChatPage && isLoggedIn && (
               <button

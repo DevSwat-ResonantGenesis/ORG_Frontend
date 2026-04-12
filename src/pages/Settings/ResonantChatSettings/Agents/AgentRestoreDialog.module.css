@@ -13,7 +13,7 @@
 }
 
 .dialog {
-    background: var(--settings-bg-card, #262321);
+    background: var(--settings-bg-card, #0a0a0c);
     border: 1px solid var(--settings-border, rgba(255, 255, 255, 0.15));
     border-radius: 8px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);

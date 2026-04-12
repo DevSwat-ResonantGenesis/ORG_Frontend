@@ -271,7 +271,7 @@ const ResonantChatPage: React.FC = () => {
   const { theme: safeAreaTheme } = useThemeStore();
   useEffect(() => {
     // Just update meta theme-color, let CSS handle the actual background
-    const chatBg = safeAreaTheme === 'dark' ? '#262321' : '#ffffff';
+    const chatBg = safeAreaTheme === 'dark' ? '#0a0a0c' : '#ffffff';
 
     // Override theme-color meta tags for Safari/Brave address bar only
     const allMetas = document.querySelectorAll('meta[name="theme-color"]') as NodeListOf<HTMLMetaElement>;

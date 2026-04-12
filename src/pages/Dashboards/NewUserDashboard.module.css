@@ -95,7 +95,7 @@
 }
 
 .overviewCard {
-  background: var(--surface, #262321);
+  background: var(--surface, #0a0a0c);
   border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
   border-radius: 12px;
   padding: 16px 20px;
@@ -150,7 +150,7 @@
 
 /* ============== CODE STATS ============== */
 .codeStatsCard {
-  background: var(--surface, #262321);
+  background: var(--surface, #0a0a0c);
   border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
   border-radius: 12px;
   padding: 20px;

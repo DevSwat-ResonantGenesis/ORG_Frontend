@@ -564,14 +564,15 @@
 }
 
 [data-theme='light'] .heroCtaFuturistic {
-  color: #FFD800;
-  background: transparent;
-  border-color: rgba(255, 216, 0, 0.4);
+  color: #121214;
+  background: #FFD800;
+  border: none;
+  box-shadow: 0 4px 20px rgba(255, 216, 0, 0.25);
 }
 
 [data-theme='light'] .heroCtaFuturistic:hover {
-  background: rgba(255, 216, 0, 0.10);
-  border-color: #FFD800;
+  background: #ffe033;
+  box-shadow: 0 12px 40px rgba(255, 216, 0, 0.35);
 }
 
 /* Desktop line break helper */
@@ -4993,7 +4994,7 @@
 
 [data-theme='dark'] .trust {
   background: var(--bg-primary) !important;
-  /* Warm gray #262321 - same as dark theme */
+  /* Warm gray #0a0a0c - same as dark theme */
 }
 
 .trustGrid {

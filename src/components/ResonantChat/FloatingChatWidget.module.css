@@ -467,7 +467,7 @@
 }
 
 [data-theme='dark'] .codeBlock pre {
-  background: #262321 !important;
+  background: #0a0a0c !important;
   border-color: rgba(255, 255, 255, 0.1);
 }
 

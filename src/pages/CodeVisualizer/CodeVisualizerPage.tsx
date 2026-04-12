@@ -184,7 +184,7 @@ const CodeVisualizerPage: React.FC = () => {
         onClick={() => setPanelOpen(o => !o)}
         style={{
           position: 'fixed', top: 16, right: panelOpen ? 368 : 16, zIndex: 1000,
-          background: '#32312E', color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.1)',
+          background: '#161616', color: 'rgba(255,255,255,0.7)', border: '1px solid rgba(255,255,255,0.1)',
           borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 600,
           cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
           boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
@@ -205,7 +205,7 @@ const CodeVisualizerPage: React.FC = () => {
       {panelOpen && (
         <div style={{
           position: 'fixed', top: 0, right: 0, width: 360, height: '100vh',
-          background: '#262321', borderLeft: '1px solid rgba(255,255,255,0.06)',
+          background: '#0a0a0c', borderLeft: '1px solid rgba(255,255,255,0.06)',
           zIndex: 999, display: 'flex', flexDirection: 'column',
           boxShadow: '-4px 0 24px rgba(0,0,0,0.5)',
           fontFamily: 'system-ui, -apple-system, sans-serif',

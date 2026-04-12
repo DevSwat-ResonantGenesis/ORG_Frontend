@@ -27,7 +27,7 @@ html[data-theme="dark"] {
   /* All colors now come from tokens-2025.css */
   --color-bg-root: var(--bg-primary);
   background: var(--color-bg-root);
-  /* Warm gray #262321 */
+  /* Warm gray #0a0a0c */
   color: var(--text-primary) !important;
   color-scheme: dark;
 }

@@ -10,17 +10,9 @@ interface ThemeState {
   toggleTheme: () => void;
 }
 
-// Default theme: dark everywhere
-// Users can override via ThemeToggle (saved to localStorage)
+// Default theme: dark always — light mode toggle removed
 const getInitialTheme = (): Theme => {
-  if (typeof window === 'undefined') return 'dark';
-  try {
-    const saved = localStorage.getItem('rg_theme');
-    if (saved) return saved as Theme;
-    return 'dark';
-  } catch {
-    return 'dark';
-  }
+  return 'dark';
 };
 
 export const useThemeStore = create<ThemeState>((set) => {

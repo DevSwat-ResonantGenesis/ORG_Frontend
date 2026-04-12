@@ -34,7 +34,7 @@ const MainLayout = ({ children }: Props) => {
   useEffect(() => {
     let color: string;
     if (isResonantChatPage) {
-      color = theme === 'dark' ? '#262321' : '#ffffff';
+      color = theme === 'dark' ? '#0a0a0c' : '#ffffff';
     } else if (isLandingPage) {
       color = theme === 'dark' ? '#000000' : '#ffffff';
     } else {

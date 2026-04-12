@@ -187,7 +187,7 @@ const StepNodeComponent = React.memo(({ data, selected }: NodeProps<StepNodeData
 
   return (
     <div style={{
-      background: '#32312E',
+      background: '#161616',
       border: `2px solid ${selected ? 'rgba(255,255,255,0.7)' : color}`,
       borderRadius: 10,
       minWidth: 200,
@@ -195,7 +195,7 @@ const StepNodeComponent = React.memo(({ data, selected }: NodeProps<StepNodeData
       boxShadow: selected ? `0 0 16px ${color}50` : '0 2px 10px rgba(0,0,0,0.3)',
       transition: 'all 0.2s',
     }}>
-      <Handle type="target" position={Position.Top} style={{ background: color, width: 10, height: 10, border: '2px solid #262321' }} />
+      <Handle type="target" position={Position.Top} style={{ background: color, width: 10, height: 10, border: '2px solid #0a0a0c' }} />
 
       {/* Header */}
       <div style={{
@@ -233,11 +233,11 @@ const StepNodeComponent = React.memo(({ data, selected }: NodeProps<StepNodeData
         )}
       </div>
 
-      <Handle type="source" position={Position.Bottom} style={{ background: color, width: 10, height: 10, border: '2px solid #262321' }} />
+      <Handle type="source" position={Position.Bottom} style={{ background: color, width: 10, height: 10, border: '2px solid #0a0a0c' }} />
       {data.stepType === 'condition' && (
         <>
-          <Handle type="source" position={Position.Right} id="true" style={{ background: '#10b981', width: 8, height: 8, border: '2px solid #262321', top: '65%' }} />
-          <Handle type="source" position={Position.Left} id="false" style={{ background: '#ef4444', width: 8, height: 8, border: '2px solid #262321', top: '65%' }} />
+          <Handle type="source" position={Position.Right} id="true" style={{ background: '#10b981', width: 8, height: 8, border: '2px solid #0a0a0c', top: '65%' }} />
+          <Handle type="source" position={Position.Left} id="false" style={{ background: '#ef4444', width: 8, height: 8, border: '2px solid #0a0a0c', top: '65%' }} />
         </>
       )}
     </div>
@@ -305,7 +305,7 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ node, onUpdate, onClose }) =>
   return (
     <div style={{
       width: 340,
-      background: '#32312E',
+      background: '#161616',
       borderLeft: '1px solid rgba(255,255,255,0.06)',
       padding: 0,
       overflowY: 'auto',
@@ -674,11 +674,11 @@ function VisualWorkflowInner() {
   }, [setNodes, setEdges, pushHistory]);
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: '#262321' }}>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: '#0a0a0c' }}>
       {/* ── Top Bar ── */}
       <div style={{
         display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px',
-        background: '#32312E', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0,
+        background: '#161616', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0,
       }}>
         <button onClick={() => navigate('/network/workflows')} style={{
           display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px',
@@ -756,7 +756,7 @@ function VisualWorkflowInner() {
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
         {/* Left: Step Palette */}
         <div style={{
-          width: 200, background: '#32312E', borderRight: '1px solid rgba(255,255,255,0.06)',
+          width: 200, background: '#161616', borderRight: '1px solid rgba(255,255,255,0.06)',
           padding: '8px', overflowY: 'auto', flexShrink: 0,
         }}>
           <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8, padding: '0 4px' }}>
@@ -797,18 +797,18 @@ function VisualWorkflowInner() {
             onNodeDoubleClick={(_, node) => { setSelectedNodeId(node.id); setShowConfig(true); }}
             onPaneClick={() => { setSelectedNodeId(null); setShowConfig(false); }}
             fitView
-            style={{ background: '#262321' }}
+            style={{ background: '#0a0a0c' }}
             defaultEdgeOptions={{ animated: true, style: { stroke: 'rgba(255,255,255,0.25)', strokeWidth: 2 } }}
             snapToGrid snapGrid={[15, 15]}
           >
             <Background color="rgba(255,255,255,0.05)" gap={20} />
-            <Controls style={{ background: '#32312E', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 8 }} />
-            <MiniMap style={{ background: '#32312E', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8 }}
+            <Controls style={{ background: '#161616', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 8 }} />
+            <MiniMap style={{ background: '#161616', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8 }}
               nodeColor={(n: Node) => COLORS[(n.data as StepNodeData)?.stepType] || '#6366f1'} />
             {nodes.length === 0 && (
               <Panel position="top-center">
                 <div style={{
-                  background: '#32312E', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12,
+                  background: '#161616', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12,
                   padding: '24px 32px', color: 'rgba(255,255,255,0.5)', fontSize: 14, textAlign: 'center',
                   marginTop: 100, maxWidth: 400,
                 }}>

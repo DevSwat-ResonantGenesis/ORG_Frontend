@@ -96,7 +96,7 @@
   min-width: 8px;
   min-height: 8px;
   border-radius: 50%;
-  border: 2px solid #262321;
+  border: 2px solid #0a0a0c;
 }
 
 .avatarStatus.online { background: #22c55e; }
@@ -392,7 +392,7 @@
   top: 100%;
   margin-top: 4px;
   min-width: 160px;
-  background: #262321;
+  background: #0a0a0c;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 4px;
@@ -451,7 +451,7 @@
 }
 
 .modal {
-  background: #262321;
+  background: #0a0a0c;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   max-height: 90vh;

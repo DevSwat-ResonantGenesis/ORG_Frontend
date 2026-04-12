@@ -60,7 +60,7 @@
   min-width: 200px;
   max-width: 280px;
   padding: 6px;
-  background: var(--surface-dark, #262321) !important;
+  background: var(--surface-dark, #0a0a0c) !important;
   backdrop-filter: blur(10px);
   border: 1px solid var(--surface-border-dark, rgba(255, 255, 255, 0.1)) !important;
   border-radius: 8px;
