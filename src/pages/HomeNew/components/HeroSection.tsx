@@ -27,8 +27,8 @@ export const HeroSection = () => {
                 </h1>
                 <p className={heroTitleStyles.heroTitleTagline}>Simpler Than Ever</p>
                 <button className={buttonStyles.heroButton} onClick={() => navigate('/signup')}>
-                    <span className={buttonStyles.heroButtonText}>Get Started</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a0a0c" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block', flexShrink: 0 }}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    <span className={buttonStyles.heroButtonLabel}>Get Started</span>
+                    <svg className={buttonStyles.heroButtonIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </button>
             </div>
 

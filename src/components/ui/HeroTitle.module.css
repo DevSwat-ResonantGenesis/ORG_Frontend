@@ -1,38 +1,54 @@
-/* v3 — 2026-04-12 — !important everywhere to beat global theme */
+:global(:root) {
+  --home-hero-title-font: 'Abril Fatface', serif;
+  --home-hero-subtitle-font: 'Work Sans', sans-serif;
+  --home-hero-title-size: clamp(3.2rem, 9.2vw, 8.4rem);
+  --home-hero-title-line: 0.9;
+  --home-hero-title-spacing: -0.02em;
+  --home-hero-title-color: #f8f9ff;
+  --home-hero-title-shadow: 0 14px 36px rgba(0, 0, 0, 0.34);
+  --home-hero-subtitle-size: clamp(1.15rem, 2.6vw, 2rem);
+  --home-hero-subtitle-line: 1.15;
+  --home-hero-subtitle-spacing: 0.01em;
+  --home-hero-subtitle-color: rgba(231, 239, 255, 0.84);
+}
 
 .heroTitle {
-  display: block !important;
-  font-family: 'Abril Fatface', serif !important;
-  font-weight: 400 !important;
-  font-size: 48px !important;
-  line-height: 1 !important;
-  color: #ffffff !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  background: none !important;
-  text-transform: none !important;
-  letter-spacing: normal !important;
-  animation: none !important;
-  opacity: 1 !important;
+  margin: 0;
+  padding: 0;
+  display: block;
+  font-family: var(--home-hero-title-font);
+  font-weight: 400;
+  font-size: var(--home-hero-title-size);
+  line-height: var(--home-hero-title-line);
+  letter-spacing: var(--home-hero-title-spacing);
+  color: var(--home-hero-title-color);
+  text-wrap: balance;
+  text-shadow: var(--home-hero-title-shadow);
 }
-@media (min-width: 768px)  { .heroTitle { font-size: 80px !important; } }
-@media (min-width: 1280px) { .heroTitle { font-size: 96px !important; } }
 
 .heroTitleTagline {
-  display: block !important;
-  font-family: 'Work Sans', sans-serif !important;
-  font-weight: 700 !important;
-  font-size: 20px !important;
-  line-height: 1.2 !important;
-  color: rgba(255, 255, 255, 0.75) !important;
-  margin: 14px 0 0 0 !important;
-  padding: 0 !important;
-  background: none !important;
-  animation: none !important;
-  opacity: 1 !important;
+  margin: clamp(14px, 2.2vw, 22px) 0 0;
+  padding: 0;
+  display: block;
+  font-family: var(--home-hero-subtitle-font);
+  font-weight: 700;
+  font-size: var(--home-hero-subtitle-size);
+  line-height: var(--home-hero-subtitle-line);
+  letter-spacing: var(--home-hero-subtitle-spacing);
+  color: var(--home-hero-subtitle-color);
 }
-@media (min-width: 768px)  { .heroTitleTagline { font-size: 32px !important; } }
-@media (min-width: 1280px) { .heroTitleTagline { font-size: 38px !important; } }
 
-.heroSubtitle       { display: none !important; }
-.heroSubtitleSecondary { display: none !important; }
+@media (max-width: 768px) {
+  .heroTitle {
+    line-height: 0.94;
+    letter-spacing: -0.01em;
+  }
+}
+
+.heroSubtitle {
+  display: none;
+}
+
+.heroSubtitleSecondary {
+  display: none;
+}
