@@ -5,27 +5,26 @@ import styles from '../HomeNew.module.css';
 import { isAuthenticated } from '@/utils/auth-cookies';
 import { useThemeStore } from '@/store/themeStore';
 
-interface FloatingCard {
+interface CardDef {
     label: string;
     desc: string;
     bg: string;
     text: string;
-    w: number;
-    h: number;
-    x: number;
-    y: number;
-    z: number;
-    rot: number;
+    area: string;
+    depth: number;
+    chaosX: number;
+    chaosRY: number;
+    chaosRZ: number;
 }
 
-const CARDS: FloatingCard[] = [
-    { label: 'Code',       desc: 'AI-powered development',  bg: '#121214', text: '#fff', w: 220, h: 150, x: 55, y: 12, z: 80,  rot: -3 },
-    { label: '',           desc: '',                         bg: '#FFD800', text: '#121214', w: 130, h: 130, x: 78, y: 8,  z: 140, rot: 4 },
-    { label: '',           desc: '',                         bg: '#FAA525', text: '#121214', w: 110, h: 220, x: 55, y: 38, z: 60,  rot: 2 },
-    { label: 'Governance', desc: 'On-chain compliance',      bg: '#01A6BC', text: '#fff', w: 240, h: 150, x: 66, y: 42, z: 100, rot: -2 },
-    { label: 'Agents',     desc: 'Autonomous workflows',     bg: '#FA547C', text: '#fff', w: 150, h: 150, x: 53, y: 72, z: 120, rot: 3 },
-    { label: 'Memory',     desc: 'Persistent knowledge',     bg: '#FFFFFF', text: '#121214', w: 140, h: 130, x: 70, y: 75, z: 50,  rot: -4 },
-    { label: '',           desc: '',                         bg: '#71C23E', text: '#121214', w: 110, h: 110, x: 87, y: 70, z: 160, rot: 5 },
+const CARDS: CardDef[] = [
+    { label: 'Code',       desc: 'AI-powered development', bg: '#121214', text: '#fff',    area: 'code',   depth: 0.50, chaosX: -80,  chaosRY: -20, chaosRZ: 12 },
+    { label: '',           desc: '',                        bg: '#FFD800', text: '#121214', area: 'yellow', depth: 0.85, chaosX: 100,  chaosRY: 25,  chaosRZ: -8 },
+    { label: '',           desc: '',                        bg: '#FAA525', text: '#121214', area: 'orange', depth: 0.40, chaosX: -40,  chaosRY: -15, chaosRZ: 6 },
+    { label: 'Governance', desc: 'On-chain compliance',     bg: '#01A6BC', text: '#fff',    area: 'gov',    depth: 0.65, chaosX: 70,   chaosRY: 18,  chaosRZ: -14 },
+    { label: 'Agents',     desc: 'Autonomous workflows',    bg: '#FA547C', text: '#fff',    area: 'agents', depth: 0.75, chaosX: -60,  chaosRY: -22, chaosRZ: 16 },
+    { label: 'Memory',     desc: 'Persistent knowledge',    bg: '#FFFFFF', text: '#121214', area: 'white',  depth: 0.35, chaosX: 90,   chaosRY: 14,  chaosRZ: -10 },
+    { label: '',           desc: '',                        bg: '#71C23E', text: '#121214', area: 'green',  depth: 0.95, chaosX: -30,  chaosRY: -28, chaosRZ: 20 },
 ];
 
 export const HeroSection = () => {
@@ -38,40 +37,49 @@ export const HeroSection = () => {
     const textColor = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.4)';
     const textDim = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.25)';
 
-    const sceneRef = useRef<HTMLDivElement>(null);
+    const mosaicRef = useRef<HTMLDivElement>(null);
     const rafRef = useRef<number>(0);
-    const mouseRef = useRef({ x: 0, y: 0 });
+    const mouseTarget = useRef({ x: 0, y: 0 });
+    const mouseLerp = useRef({ x: 0, y: 0 });
+    const readyRef = useRef(false);
 
-    const animate = useCallback(() => {
-        if (!sceneRef.current) return;
-        const { x, y } = mouseRef.current;
-        const cards = sceneRef.current.querySelectorAll<HTMLElement>('[data-depth]');
-        cards.forEach(card => {
-            const depth = parseFloat(card.dataset.depth || '1');
-            const moveX = x * depth * 40;
-            const moveY = y * depth * 25;
-            const rotY = x * depth * 6;
-            const rotX = -y * depth * 4;
-            card.style.transform =
-                `translate3d(${moveX}px, ${moveY}px, ${depth * 40}px) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
-        });
-        rafRef.current = requestAnimationFrame(animate);
+    useEffect(() => {
+        const t = setTimeout(() => { readyRef.current = true; }, 2200);
+        return () => clearTimeout(t);
+    }, []);
+
+    const tick = useCallback(() => {
+        if (mosaicRef.current && readyRef.current) {
+            mouseLerp.current.x += (mouseTarget.current.x - mouseLerp.current.x) * 0.06;
+            mouseLerp.current.y += (mouseTarget.current.y - mouseLerp.current.y) * 0.06;
+            const { x, y } = mouseLerp.current;
+            const els = mosaicRef.current.querySelectorAll<HTMLElement>('[data-depth]');
+            els.forEach(el => {
+                const d = parseFloat(el.dataset.depth || '0.5');
+                const tx = x * d * 30;
+                const ty = y * d * 20;
+                const ry = x * d * 5;
+                const rx = -y * d * 3.5;
+                el.style.transform = `translate3d(${tx}px,${ty}px,0) rotateX(${rx}deg) rotateY(${ry}deg)`;
+            });
+        }
+        rafRef.current = requestAnimationFrame(tick);
     }, []);
 
     useEffect(() => {
         const onMove = (e: MouseEvent) => {
-            mouseRef.current = {
+            mouseTarget.current = {
                 x: (e.clientX / window.innerWidth - 0.5) * 2,
                 y: (e.clientY / window.innerHeight - 0.5) * 2,
             };
         };
         window.addEventListener('mousemove', onMove, { passive: true });
-        rafRef.current = requestAnimationFrame(animate);
+        rafRef.current = requestAnimationFrame(tick);
         return () => {
             window.removeEventListener('mousemove', onMove);
             cancelAnimationFrame(rafRef.current);
         };
-    }, [animate]);
+    }, [tick]);
 
     if (isLoggedIn) return null;
 
@@ -88,28 +96,27 @@ export const HeroSection = () => {
                 </button>
             </div>
 
-            <div className={styles.heroScene} ref={sceneRef}>
+            <div className={styles.heroMosaic} ref={mosaicRef}>
                 {CARDS.map((c, i) => (
                     <div
-                        key={i}
-                        data-depth={((c.z / 160) * 0.8 + 0.2).toFixed(2)}
-                        className={styles.fCard}
+                        key={c.area}
+                        data-depth={c.depth.toFixed(2)}
+                        className={styles.mCard}
                         style={{
-                            '--fc-bg': c.bg,
-                            '--fc-text': c.text,
-                            '--fc-w': `${c.w}px`,
-                            '--fc-h': `${c.h}px`,
-                            '--fc-x': `${c.x}%`,
-                            '--fc-y': `${c.y}%`,
-                            '--fc-rot': `${c.rot}deg`,
-                            '--fc-delay': `${i * 0.12 + 0.15}s`,
+                            '--mc-bg': c.bg,
+                            '--mc-text': c.text,
+                            gridArea: c.area,
+                            '--chaos-x': `${c.chaosX}px`,
+                            '--chaos-ry': `${c.chaosRY}deg`,
+                            '--chaos-rz': `${c.chaosRZ}deg`,
+                            '--fall-delay': `${i * 0.12 + 0.1}s`,
                         } as React.CSSProperties}
                     >
-                        <div className={styles.fCardShine} />
+                        <div className={styles.mCardGlass} />
                         {c.label && (
-                            <div className={styles.fCardContent}>
-                                <span className={styles.fCardLabel}>{c.label}</span>
-                                {c.desc && <span className={styles.fCardDesc}>{c.desc}</span>}
+                            <div className={styles.mCardBody}>
+                                <span className={styles.mCardLabel}>{c.label}</span>
+                                {c.desc && <span className={styles.mCardDesc}>{c.desc}</span>}
                             </div>
                         )}
                     </div>

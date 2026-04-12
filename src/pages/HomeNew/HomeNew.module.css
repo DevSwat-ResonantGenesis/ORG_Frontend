@@ -248,7 +248,7 @@
 /* Main content width management removed - side menu is now global in Header */
 
 /* ============================================================
-   Hero — Floating 3D Parallax Cards
+   Hero — Asymmetric Mosaic Cards + 3D Chaotic Fall
    ============================================================ */
 .hero {
   min-height: 100dvh;
@@ -268,7 +268,7 @@
 
 [data-theme='light'] .hero { background: #0b0b0d; }
 
-/* ---- Title block — absolute, left, vertically centred ---- */
+/* ---- Title block — left, vertically centred ---- */
 .heroTextBlock {
   position: absolute;
   left: clamp(24px, 5vw, 80px);
@@ -278,129 +278,192 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  max-width: 600px;
+  max-width: 540px;
 }
 
-/* ---- 3D Scene — full viewport ---- */
-.heroScene {
+/* ---- Card mosaic — right side, tight asymmetric grid ---- */
+.heroMosaic {
   position: absolute;
-  inset: 0;
-  perspective: 1200px;
+  right: 4%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 155px 150px 130px 115px;
+  grid-template-rows: 160px 165px 155px;
+  gap: 8px;
+  grid-template-areas:
+    "code   code   .      yellow"
+    "orange gov    gov    ."
+    "orange agents white  green";
+  perspective: 1000px;
   transform-style: preserve-3d;
-  z-index: 1;
-  pointer-events: none;
 }
 
-/* ---- Floating card ---- */
-.fCard {
-  position: absolute;
-  width: var(--fc-w);
-  height: var(--fc-h);
-  left: var(--fc-x);
-  top: var(--fc-y);
-  background: var(--fc-bg);
-  color: var(--fc-text);
-  border-radius: 20px;
+/* ---- Card base ---- */
+.mCard {
+  background: var(--mc-bg);
+  color: var(--mc-text);
+  border-radius: 18px;
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
-  padding: 22px;
+  padding: 20px;
+  position: relative;
   overflow: hidden;
+  cursor: default;
   transform-style: preserve-3d;
   will-change: transform;
-  pointer-events: auto;
-  cursor: default;
   box-shadow:
-    0 30px 60px -10px rgba(0,0,0,0.5),
-    0 6px 18px rgba(0,0,0,0.25),
-    inset 0 1px 0 rgba(255,255,255,0.12);
+    0 24px 48px -8px rgba(0,0,0,0.45),
+    0 4px 14px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.10);
   opacity: 0;
-  animation: fCardDrop 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  animation-delay: var(--fc-delay);
+  animation: mCardChaos 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--fall-delay);
   transition: box-shadow 0.3s ease;
 }
 
-.fCard:hover {
+.mCard:hover {
   box-shadow:
-    0 40px 80px -10px rgba(0,0,0,0.6),
-    0 10px 28px rgba(0,0,0,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.18);
+    0 32px 64px -8px rgba(0,0,0,0.55),
+    0 8px 24px rgba(0,0,0,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.16);
 }
 
-/* Glass shine */
-.fCardShine {
+/* ---- Glass overlay ---- */
+.mCardGlass {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   background: linear-gradient(
     135deg,
     rgba(255,255,255,0.30) 0%,
-    rgba(255,255,255,0.05) 35%,
-    transparent 55%
+    rgba(255,255,255,0.08) 28%,
+    transparent 50%,
+    rgba(255,255,255,0.03) 78%,
+    rgba(255,255,255,0.06) 100%
   );
   pointer-events: none;
   z-index: 1;
 }
 
-.fCardShine::after {
+.mCardGlass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+}
+
+.mCardGlass::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 1px solid rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.12);
   pointer-events: none;
 }
 
-/* Card content */
-.fCardContent {
+/* ---- Card body ---- */
+.mCardBody {
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
 }
 
-.fCardLabel {
+.mCardLabel {
   font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.01em;
 }
 
-.fCardDesc {
+.mCardDesc {
   font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
-  opacity: 0.65;
+  opacity: 0.6;
+  letter-spacing: 0.01em;
 }
 
-/* Fall-from-top animation */
-@keyframes fCardDrop {
+/* ---- Chaotic fall-from-top ---- */
+@keyframes mCardChaos {
   0% {
     opacity: 0;
-    transform: translate3d(0, -260px, 0) rotateX(22deg) rotateY(var(--fc-rot)) scale(0.85);
+    transform:
+      translate3d(var(--chaos-x), -110vh, 80px)
+      rotateY(var(--chaos-ry))
+      rotateZ(var(--chaos-rz))
+      scale(0.7);
   }
-  70% {
+  55% {
     opacity: 1;
-    transform: translate3d(0, 8px, 0) rotateX(-2deg) rotateY(var(--fc-rot)) scale(1.01);
+    transform:
+      translate3d(calc(var(--chaos-x) * 0.12), 10px, 15px)
+      rotateY(calc(var(--chaos-ry) * 0.08))
+      rotateZ(calc(var(--chaos-rz) * 0.04))
+      scale(1.02);
+  }
+  78% {
+    transform:
+      translate3d(0, -5px, 0)
+      rotateY(0deg)
+      rotateZ(0deg)
+      scale(0.995);
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0) rotateX(0) rotateY(0) scale(1);
+    transform: translate3d(0, 0, 0) rotateY(0) rotateZ(0) scale(1);
   }
 }
 
-/* Responsive */
+/* ---- Responsive ---- */
+@media (max-width: 1100px) {
+  .heroMosaic {
+    grid-template-columns: 125px 120px 105px 95px;
+    grid-template-rows: 130px 135px 125px;
+    right: 2%;
+  }
+  .mCardLabel { font-size: 22px; }
+}
+
 @media (max-width: 768px) {
+  .hero {
+    display: flex;
+    flex-direction: column;
+    min-height: auto;
+  }
   .heroTextBlock {
-    top: 15%;
+    position: relative;
+    left: auto;
+    top: auto;
     transform: none;
-    max-width: 90%;
+    padding: 120px 24px 40px;
+    max-width: 100%;
   }
-  .heroScene {
-    display: none;
+  .heroMosaic {
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+    margin: 0 auto 80px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 110px);
+    gap: 6px;
+    grid-template-areas:
+      "code   code   yellow"
+      "orange gov    gov"
+      "agents white  green";
+    max-width: 360px;
   }
+  .mCardLabel { font-size: 20px; }
+  .mCard { padding: 14px; border-radius: 14px; }
 }
 
 /* CTA Button — clean, modern, minimal */
@@ -416,9 +479,9 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: #FFD800;
   background: transparent;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border: 1.5px solid rgba(255, 216, 0, 0.4);
   border-radius: 60px;
   cursor: pointer;
   transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
@@ -429,10 +492,10 @@
 }
 
 .heroCtaFuturistic:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 216, 0, 0.10);
+  border-color: #FFD800;
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(255, 255, 255, 0.06);
+  box-shadow: 0 12px 40px rgba(255, 216, 0, 0.15);
 }
 
 .heroCtaFuturistic:active {
@@ -453,14 +516,14 @@
 }
 
 [data-theme='light'] .heroCtaFuturistic {
-  color: #ffffff;
+  color: #FFD800;
   background: transparent;
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 216, 0, 0.4);
 }
 
 [data-theme='light'] .heroCtaFuturistic:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 216, 0, 0.10);
+  border-color: #FFD800;
 }
 
 /* Desktop line break helper */
