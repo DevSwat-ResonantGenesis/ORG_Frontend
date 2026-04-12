@@ -496,18 +496,24 @@
   .hero {
     display: flex;
     flex-direction: column;
-    min-height: auto;
-    padding-bottom: 60px;
+    min-height: 100dvh;
+    padding-bottom: 0;
+    gap: 0;
+    background: #0a0a0c;
   }
   .heroTextBlock {
     position: relative;
     left: auto;
     top: auto;
     transform: none;
-    padding: 100px 20px 24px;
+    padding: 90px 20px 16px;
     max-width: 100%;
     text-align: center;
     align-items: center;
+    flex-shrink: 0;
+  }
+  .heroBottomBar {
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
   }
 }
 
