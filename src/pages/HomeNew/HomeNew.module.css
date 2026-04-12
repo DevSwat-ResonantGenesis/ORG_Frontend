@@ -506,9 +506,8 @@
     left: auto;
     top: auto;
     transform: none;
-    padding: 80px 16px 12px;
-    max-width: 100% !important;
-    width: 100%;
+    padding: 90px 20px 16px;
+    max-width: 100%;
     text-align: left;
     align-items: flex-start;
     flex-shrink: 0;
