@@ -248,7 +248,7 @@
 /* Main content width management removed - side menu is now global in Header */
 
 /* ============================================================
-   Hero — Tight Asymmetric Mosaic + Physics 3D Fall
+   Hero — True 3D Parallax Scene with Frosted Glass Cards
    ============================================================ */
 .hero {
   min-height: 100dvh;
@@ -281,179 +281,215 @@
   max-width: 50vw;
 }
 
-/* ---- Mosaic — tight, zero empty cells ---- */
+/* ---- 3D Scene container — real perspective ---- */
 .heroMosaic {
   position: absolute;
-  right: 3%;
+  right: 4%;
   top: 50%;
+  width: 520px;
+  height: 480px;
   transform: translateY(-50%);
-  z-index: 2;
-  display: grid;
-  grid-template-columns: 150px 140px 125px 120px;
-  grid-template-rows: 152px 158px 148px;
-  gap: 6px;
-  grid-template-areas:
-    "code   code   yellow yellow"
-    "orange gov    gov    white"
-    "orange agents green  white";
-  perspective: 900px;
   transform-style: preserve-3d;
+  z-index: 2;
 }
 
-/* ---- Card ---- */
+/* ---- Ambient glow orbs — gives glass something to refract ---- */
+.mosaicGlow {
+  position: absolute;
+  inset: -80px;
+  z-index: 0;
+  pointer-events: none;
+}
+.mosaicGlow::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -20px;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(255,216,0,0.10) 0%, rgba(250,165,37,0.06) 40%, transparent 70%);
+  filter: blur(50px);
+}
+.mosaicGlow::after {
+  content: '';
+  position: absolute;
+  bottom: -30px;
+  left: 20px;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(1,166,188,0.08) 0%, rgba(250,84,124,0.05) 40%, transparent 70%);
+  filter: blur(50px);
+}
+
+/* ---- Card — absolutely positioned in 3D space ---- */
 .mCard {
-  background: var(--mc-bg);
+  position: absolute;
+  left: var(--card-x);
+  top: var(--card-y);
+  width: var(--card-w);
+  height: var(--card-h);
   color: var(--mc-text);
-  border-radius: 16px;
+  border-radius: 20px;
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
-  padding: 18px;
-  position: relative;
+  padding: 20px;
   overflow: hidden;
   cursor: default;
   transform-style: preserve-3d;
   will-change: transform;
+
+  /* Frosted glass base */
+  background: var(--mc-tint);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(255,255,255,0.10);
+
+  /* Depth shadow + colored glow */
   box-shadow:
-    0 20px 44px -6px rgba(0,0,0,0.50),
-    0 4px 12px rgba(0,0,0,0.22),
-    inset 0 1px 0 rgba(255,255,255,0.10);
+    0 20px 50px -8px rgba(0,0,0,0.50),
+    0 8px 20px -4px rgba(0,0,0,0.25),
+    0 0 40px -8px var(--mc-glow),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+
+  /* Initial state — hidden, will animate in */
   opacity: 0;
-  animation: physFall 2s linear forwards;
+  animation: glassCardFall 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   animation-delay: var(--fall-delay);
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.35s ease;
 }
 
 .mCard:hover {
   box-shadow:
-    0 30px 56px -6px rgba(0,0,0,0.6),
-    0 8px 22px rgba(0,0,0,0.28),
-    inset 0 1px 0 rgba(255,255,255,0.15);
+    0 28px 64px -8px rgba(0,0,0,0.55),
+    0 12px 28px -4px rgba(0,0,0,0.3),
+    0 0 60px -6px var(--mc-glow),
+    inset 0 1px 0 rgba(255,255,255,0.12);
 }
 
-/* ---- Glass ---- */
-.mCardGlass {
+/* ---- Glass shine — diagonal gradient + top edge highlight + border ---- */
+.mCardShine {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   background: linear-gradient(
     135deg,
-    rgba(255,255,255,0.28) 0%,
-    rgba(255,255,255,0.07) 28%,
+    rgba(255,255,255,0.22) 0%,
+    rgba(255,255,255,0.06) 25%,
     transparent 50%,
-    rgba(255,255,255,0.03) 80%,
-    rgba(255,255,255,0.05) 100%
+    rgba(255,255,255,0.02) 75%,
+    rgba(255,255,255,0.04) 100%
   );
   pointer-events: none;
   z-index: 1;
 }
 
-.mCardGlass::before {
+.mCardShine::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 10%;
-  right: 10%;
+  left: 8%;
+  right: 8%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.32), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
 }
 
-.mCardGlass::after {
+.mCardShine::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 1px solid rgba(255,255,255,0.11);
+  border: 1px solid rgba(255,255,255,0.06);
   pointer-events: none;
 }
 
-/* ---- Body ---- */
+/* ---- Card body ---- */
 .mCardBody {
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .mCardLabel {
   font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
 }
 
 .mCardDesc {
   font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 11px;
   font-weight: 500;
-  opacity: 0.6;
+  opacity: 0.55;
+  letter-spacing: 0.01em;
 }
 
-/* ---- Physics fall — gravity + tumble + bounce ---- */
-@keyframes physFall {
+/* ---- Physics fall — chaotic tumble from above with bounce landing ---- */
+@keyframes glassCardFall {
   0% {
     opacity: 0;
     transform:
-      translate3d(var(--cx), -115vh, 60px)
+      translateZ(var(--card-z))
+      translate3d(var(--cx), -120vh, 0)
       rotateX(var(--crx))
       rotateY(var(--cry))
       rotateZ(var(--crz))
-      scale(0.6);
+      scale(0.55);
   }
-  8% {
-    opacity: 1;
-  }
-  20% {
+  10% { opacity: 1; }
+  25% {
     transform:
-      translate3d(calc(var(--cx) * 0.75), -70vh, 45px)
-      rotateX(calc(var(--crx) * 1.3))
-      rotateY(calc(var(--cry) * 1.2))
-      rotateZ(calc(var(--crz) * 1.15))
+      translateZ(var(--card-z))
+      translate3d(calc(var(--cx) * 0.6), -55vh, 0)
+      rotateX(calc(var(--crx) * 1.25))
+      rotateY(calc(var(--cry) * 1.15))
+      rotateZ(calc(var(--crz) * 1.1))
       scale(0.72);
   }
-  45% {
+  50% {
     transform:
-      translate3d(calc(var(--cx) * 0.3), -18vh, 20px)
-      rotateX(calc(var(--crx) * 0.55))
-      rotateY(calc(var(--cry) * 0.4))
-      rotateZ(calc(var(--crz) * 0.25))
-      scale(0.92);
+      translateZ(var(--card-z))
+      translate3d(calc(var(--cx) * 0.15), -8vh, 0)
+      rotateX(calc(var(--crx) * 0.3))
+      rotateY(calc(var(--cry) * 0.2))
+      rotateZ(calc(var(--crz) * 0.1))
+      scale(0.95);
   }
-  65% {
+  70% {
     transform:
-      translate3d(calc(var(--cx) * 0.06), 14px, 6px)
-      rotateX(calc(var(--crx) * 0.06))
-      rotateY(calc(var(--cry) * 0.04))
-      rotateZ(calc(var(--crz) * 0.02))
-      scale(1.025);
-  }
-  78% {
-    transform:
-      translate3d(0, -7px, 0)
+      translateZ(var(--card-z))
+      translate3d(0, 10px, 0)
       rotateX(0deg) rotateY(0deg) rotateZ(0deg)
-      scale(0.993);
+      scale(1.015);
   }
-  90% {
+  84% {
     transform:
-      translate3d(0, 3px, 0)
+      translateZ(var(--card-z))
+      translate3d(0, -5px, 0)
       rotateX(0deg) rotateY(0deg) rotateZ(0deg)
-      scale(1.004);
+      scale(0.997);
+  }
+  94% {
+    transform:
+      translateZ(var(--card-z))
+      translate3d(0, 2px, 0)
+      rotateX(0deg) rotateY(0deg) rotateZ(0deg)
+      scale(1.002);
   }
   100% {
     opacity: 1;
-    transform: translate3d(0,0,0) rotateX(0) rotateY(0) rotateZ(0) scale(1);
+    transform: translateZ(var(--card-z)) translate3d(0,0,0) scale(1);
   }
 }
 
 /* ---- Responsive ---- */
-@media (max-width: 1100px) {
-  .heroMosaic {
-    grid-template-columns: 115px 110px 100px 95px;
-    grid-template-rows: 120px 126px 118px;
-  }
-  .mCardLabel { font-size: 20px; }
+@media (max-width: 1200px) {
+  .heroMosaic { width: 420px; height: 400px; right: 2%; }
+  .mCardLabel { font-size: 22px; }
 }
 
 @media (max-width: 768px) {
@@ -464,18 +500,11 @@
   }
   .heroMosaic {
     position: relative; right: auto; top: auto; transform: none;
+    width: 100%; max-width: 340px; height: 360px;
     margin: 0 auto 70px;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 100px);
-    gap: 5px;
-    grid-template-areas:
-      "code   code   yellow"
-      "orange gov    gov"
-      "agents white  green";
-    max-width: 340px;
   }
   .mCardLabel { font-size: 18px; }
-  .mCard { padding: 12px; border-radius: 12px; }
+  .mCard { padding: 14px; border-radius: 14px; }
 }
 
 /* CTA Button — clean, modern, minimal */
