@@ -669,7 +669,7 @@ const PricingPage: React.FC = () => {
           {/* State Physics API */}
           <div className={styles.apiProductSection}>
             <div className={styles.apiProductHeader}>
-              <div className={styles.apiProductIcon} style={{ background: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)' }}>
+              <div className={styles.apiProductIcon} style={{ background: 'linear-gradient(135deg, #FAA525 0%, #e6941e 100%)' }}>
                 <Atom size={32} />
               </div>
               <div className={styles.apiProductInfo}>
@@ -724,7 +724,7 @@ const PricingPage: React.FC = () => {
           {/* Code Visualizer API */}
           <div className={styles.apiProductSection}>
             <div className={styles.apiProductHeader}>
-              <div className={styles.apiProductIcon} style={{ background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>
+              <div className={styles.apiProductIcon} style={{ background: 'linear-gradient(135deg, #71C23E 0%, #5da832 100%)' }}>
                 <Code size={32} />
               </div>
               <div className={styles.apiProductInfo}>

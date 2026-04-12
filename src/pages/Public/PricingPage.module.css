@@ -115,8 +115,8 @@
 }
 
 .planCard:hover {
-  background: rgba(99, 102, 241, 0.08);
-  border-color: rgba(99, 102, 241, 0.3);
+  background: rgba(255, 216, 0, 0.06);
+  border-color: rgba(255, 216, 0, 0.3);
   transform: translateY(-1px);
 }
 
@@ -126,28 +126,28 @@
 }
 
 [data-theme='light'] .planCard:hover {
-  background: rgba(99, 102, 241, 0.06);
-  border-color: rgba(99, 102, 241, 0.25);
+  background: rgba(255, 216, 0, 0.06);
+  border-color: rgba(255, 216, 0, 0.25);
 }
 
 /* Recommended variant — purple border */
 .planCardRecommended {
-  border-color: rgba(168, 85, 247, 0.3);
-  background: rgba(168, 85, 247, 0.04);
+  border-color: rgba(255, 216, 0, 0.3);
+  background: rgba(255, 216, 0, 0.04);
 }
 
 .planCardRecommended:hover {
-  background: rgba(168, 85, 247, 0.1);
-  border-color: rgba(168, 85, 247, 0.5);
+  background: rgba(255, 216, 0, 0.1);
+  border-color: rgba(255, 216, 0, 0.5);
 }
 
 /* Enterprise variant */
 .planCardEnterprise {
-  border-color: rgba(99, 102, 241, 0.2);
+  border-color: rgba(250, 165, 37, 0.2);
 }
 
 .planCardEnterprise:hover {
-  border-color: rgba(99, 102, 241, 0.4);
+  border-color: rgba(250, 165, 37, 0.4);
 }
 
 /* Card header row — icon + name + badge */
@@ -159,7 +159,7 @@
 }
 
 .planCardRecommended .planCardHeader {
-  color: #a855f7;
+  color: #FFD800;
 }
 
 .planName {
@@ -177,8 +177,8 @@
   font-size: 10px;
   font-weight: 600;
   padding: 2px 6px;
-  background: rgba(168, 85, 247, 0.2);
-  color: #c084fc;
+  background: rgba(255, 216, 0, 0.2);
+  color: #FFD800;
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -218,7 +218,7 @@
 /* Loading state */
 .planLoading {
   font-size: 11px;
-  color: #a855f7;
+  color: #FFD800;
   font-weight: 500;
   margin-top: 4px;
 }
@@ -296,11 +296,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #3b82f6;
+  color: #01A6BC;
 }
 
 [data-theme='dark'] .featureIcon {
-  color: #60a5fa;
+  color: #01A6BC;
 }
 
 .featureTitle {
@@ -399,11 +399,11 @@
 }
 
 .checkIcon {
-  color: #10b981;
+  color: #71C23E;
 }
 
 .crossIcon {
-  color: #ef4444;
+  color: #FA547C;
 }
 
 /* Responsive Table Wrapper */
@@ -647,11 +647,11 @@
 }
 
 .limitValueUnlimited {
-  color: #10b981;
+  color: #71C23E;
 }
 
 .limitValueDisabled {
-  color: #ef4444;
+  color: #FA547C;
 }
 
 /* ============================================================
@@ -687,7 +687,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  background: linear-gradient(135deg, #01A6BC 0%, #018a9e 100%);
   border-radius: 16px;
   color: white;
   flex-shrink: 0;
@@ -761,12 +761,12 @@
 }
 
 .apiPlanCardPopular {
-  border-color: #06b6d4;
+  border-color: #FFD800;
   border-width: 2px;
 }
 
 [data-theme='dark'] .apiPlanCardPopular {
-  border-color: #06b6d4;
+  border-color: #FFD800;
 }
 
 .apiPlanBadge {
@@ -775,8 +775,8 @@
   left: 50%;
   transform: translateX(-50%);
   padding: 4px 12px;
-  background: #06b6d4;
-  color: white;
+  background: #FFD800;
+  color: #0a0a0c;
   font-size: 11px;
   font-weight: 600;
   border-radius: 12px;
@@ -823,7 +823,7 @@
 
 .apiPlanUnits {
   font-size: 13px;
-  color: #06b6d4;
+  color: #01A6BC;
   font-weight: 600;
   margin-bottom: 16px;
 }
@@ -848,7 +848,7 @@
 }
 
 .apiPlanFeature .checkIcon {
-  color: #10b981;
+  color: #71C23E;
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -885,21 +885,21 @@
 }
 
 .apiPlanCtaPrimary {
-  background: #06b6d4;
-  color: white;
+  background: #FFD800;
+  color: #0a0a0c;
 }
 
 [data-theme='dark'] .apiPlanCtaPrimary {
-  background: #06b6d4;
-  color: white;
+  background: #FFD800;
+  color: #0a0a0c;
 }
 
 .apiPlanCtaPrimary:hover {
-  background: #0891b2;
+  background: #e6c200;
 }
 
 [data-theme='dark'] .apiPlanCtaPrimary:hover {
-  background: #0891b2;
+  background: #e6c200;
 }
 
 /* ============================================================
@@ -955,8 +955,8 @@
 }
 
 .creditPackRecommended {
-  border-color: #06b6d4;
-  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
+  border-color: #FFD800;
+  box-shadow: 0 0 0 2px rgba(255, 216, 0, 0.2);
 }
 
 .creditPackName {
@@ -973,7 +973,7 @@
 .creditPackCredits {
   font-size: 20px;
   font-weight: 700;
-  color: #06b6d4;
+  color: #01A6BC;
   margin-bottom: 8px;
 }
 
@@ -1006,7 +1006,7 @@
 
 .creditPackSavings {
   display: inline-block;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #71C23E, #5da832);
   color: white;
   font-size: 11px;
   font-weight: 600;
@@ -1035,12 +1035,12 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  background: linear-gradient(135deg, #06b6d4, #0891b2);
-  color: white;
+  background: linear-gradient(135deg, #FFD800, #e6c200);
+  color: #0a0a0c;
 }
 
 .creditPackButton:hover {
-  background: linear-gradient(135deg, #0891b2, #0e7490);
+  background: linear-gradient(135deg, #e6c200, #cca800);
   transform: scale(1.02);
 }
 
@@ -1086,8 +1086,8 @@
 }
 
 .creditBreakdownCard:hover {
-  border-color: #06b6d4;
-  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.1);
+  border-color: #01A6BC;
+  box-shadow: 0 4px 20px rgba(1, 166, 188, 0.1);
   transform: translateY(-2px);
 }
 
@@ -1097,8 +1097,8 @@
 }
 
 [data-theme='dark'] .creditBreakdownCard:hover {
-  border-color: #06b6d4;
-  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.15);
+  border-color: #01A6BC;
+  box-shadow: 0 4px 20px rgba(1, 166, 188, 0.15);
 }
 
 .creditBreakdownTitle {
@@ -1152,7 +1152,7 @@
 }
 
 .creditBreakdownList li strong {
-  color: #06b6d4;
+  color: #01A6BC;
   font-weight: 600;
   font-size: 13px;
   text-align: right;
@@ -1161,7 +1161,7 @@
 }
 
 [data-theme='dark'] .creditBreakdownList li strong {
-  color: #22d3ee;
+  color: #01A6BC;
 }
 
 .creditBreakdownProviders {
@@ -1204,19 +1204,19 @@
 }
 
 .creditBreakdownExample {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(8, 145, 178, 0.05));
-  border: 1px solid rgba(6, 182, 212, 0.15);
+  background: linear-gradient(135deg, rgba(1, 166, 188, 0.08), rgba(1, 138, 158, 0.05));
+  border: 1px solid rgba(1, 166, 188, 0.15);
   border-radius: 8px;
   padding: 10px 12px;
   font-size: 12px;
-  color: #0e7490;
+  color: #01A6BC;
   font-weight: 500;
   text-align: center;
   line-height: 1.4;
 }
 
 [data-theme='dark'] .creditBreakdownExample {
-  background: rgba(6, 182, 212, 0.08);
-  border-color: rgba(6, 182, 212, 0.2);
-  color: #22d3ee;
+  background: rgba(1, 166, 188, 0.08);
+  border-color: rgba(1, 166, 188, 0.2);
+  color: #01A6BC;
 }
