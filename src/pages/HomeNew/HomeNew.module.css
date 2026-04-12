@@ -519,7 +519,6 @@
 
 /* v2 CTA — written from scratch 2026-04-12 */
 .heroCtaFuturistic {
-  all: unset;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -534,6 +533,8 @@
   text-transform: uppercase;
   border-radius: 10px;
   cursor: pointer;
+  border: none;
+  outline: none;
 }
 .heroCtaFuturistic:hover {
   background: #ffe640;
