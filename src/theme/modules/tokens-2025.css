@@ -98,15 +98,15 @@
      ============================================================ */
 
   [data-theme='dark'] {
-    --bg-primary: #000000;
-    /* Black background - dark mode */
+    --bg-primary: #0a0a0c;
+    /* Near-black background - dark mode */
     --bg-secondary: #0a0a0a;
     /* Near-black surface - dark mode */
     --bg-tertiary: #32312E;
     /* Resonant Chat hover - warm dark */
 
-    --bg: #000000;
-    --color-bg-root: #000000;
+    --bg: #0a0a0c;
+    --color-bg-root: #0a0a0c;
 
     --surface: #0a0a0a;
     /* Dark surface */
