@@ -1,5 +1,5 @@
 import React, { useRef, useMemo, useState, useEffect } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { RoundedBox, Text } from '@react-three/drei';
 import * as THREE from 'three';
 
@@ -77,32 +77,10 @@ function SceneRotation({ children }: { children: React.ReactNode }) {
     return <group ref={groupRef}>{children}</group>;
 }
 
-/* Shared mouse world position — computed once per frame by MouseTracker */
-const mouseWorld = { x: 0, y: 0, active: false };
+/* Shared hover state — all cards react to whichever is hovered */
+const hoverState = { index: -1 };
 
-/* Computes mouse position on the z=0 plane in world space */
-function MouseTracker() {
-    const { camera } = useThree();
-    const raycaster = useMemo(() => new THREE.Raycaster(), []);
-    const mouseVec = useMemo(() => new THREE.Vector2(), []);
-    const plane = useMemo(() => new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), []);
-    const intersection = useMemo(() => new THREE.Vector3(), []);
-
-    useFrame(() => {
-        mouseVec.set(mouse.x, -mouse.y);
-        raycaster.setFromCamera(mouseVec, camera);
-        raycaster.ray.intersectPlane(plane, intersection);
-        if (intersection) {
-            mouseWorld.x = intersection.x;
-            mouseWorld.y = intersection.y;
-            mouseWorld.active = Math.abs(mouse.x) < 0.98 && Math.abs(mouse.y) < 0.98;
-        }
-    });
-
-    return null;
-}
-
-/* ── Single card — emerges from deep, reacts to mouse proximity on arrival ── */
+/* ── Single card — emerges from deep, reacts to hover on arrival ── */
 function ZoomCard({ card, index, allCards }: { card: Card3D; index: number; allCards: Card3D[] }) {
     const meshRef = useRef<THREE.Group>(null!);
     const startTime = useRef<number | null>(null);
@@ -172,11 +150,11 @@ function ZoomCard({ card, index, allCards }: { card: Card3D; index: number; allC
                 spin.sz * elapsed * spinFactor
             );
         } else {
-            /* Arrived: proximity-based mouse interaction */
+            /* Arrived: hover interaction */
             const t = now * 0.6;
             const floatY = Math.sin(t + card.delay * 10) * 0.04;
             const lp = lerpPos.current;
-            const lerpSpeed = 5 * dt;
+            const lerpSpeed = 6 * dt;
 
             let targetX = card.px;
             let targetY = card.py;
@@ -184,29 +162,23 @@ function ZoomCard({ card, index, allCards }: { card: Card3D; index: number; allC
             let targetRx = 0;
             let targetRy = 0;
 
-            if (mouseWorld.active) {
-                /* Distance from mouse to this card's center */
-                const dx = mouseWorld.x - card.px;
-                const dy = mouseWorld.y - card.py;
+            if (hoverState.index === index) {
+                /* THIS card is hovered — pull forward */
+                targetZ = card.pz + 1.2;
+                targetRx = -mouse.y * 0.08;
+                targetRy = mouse.x * 0.08;
+            } else if (hoverState.index >= 0) {
+                /* Another card is hovered — push away from it */
+                const hovered = allCards[hoverState.index];
+                const dx = card.px - hovered.px;
+                const dy = card.py - hovered.py;
                 const dist = Math.sqrt(dx * dx + dy * dy);
-                const cardRadius = Math.max(card.w, card.h) * 0.6;
-
-                if (dist < cardRadius) {
-                    /* Mouse IS on this card — pull forward + tilt */
-                    const strength = 1 - dist / cardRadius;
-                    targetZ = card.pz + 1.5 * strength;
-                    targetRx = -(dy / cardRadius) * 0.12 * strength;
-                    targetRy = (dx / cardRadius) * 0.12 * strength;
-                } else if (dist < 4.0) {
-                    /* Mouse is nearby — push card away slightly */
-                    const pushStrength = (1 - dist / 4.0) * 0.35;
-                    const nx = (card.px - mouseWorld.x) / dist;
-                    const ny = (card.py - mouseWorld.y) / dist;
+                if (dist < 4.0 && dist > 0.01) {
+                    const pushStrength = (1 - dist / 4.0) * 0.5;
+                    const nx = dx / dist;
+                    const ny = dy / dist;
                     targetX = card.px + nx * pushStrength;
                     targetY = card.py + ny * pushStrength;
-                    /* Slight tilt away */
-                    targetRx = ny * pushStrength * 0.15;
-                    targetRy = -nx * pushStrength * 0.15;
                 }
             }
 
@@ -225,8 +197,16 @@ function ZoomCard({ card, index, allCards }: { card: Card3D; index: number; allC
     const color = useMemo(() => new THREE.Color(card.color), [card.color]);
     const txtColor = useMemo(() => new THREE.Color(card.textColor), [card.textColor]);
 
+    const handlePointerEnter = () => { hoverState.index = index; };
+    const handlePointerLeave = () => { if (hoverState.index === index) hoverState.index = -1; };
+
     return (
-        <group ref={meshRef} visible={false}>
+        <group
+            ref={meshRef}
+            visible={false}
+            onPointerEnter={handlePointerEnter}
+            onPointerLeave={handlePointerLeave}
+        >
             <RoundedBox
                 args={[card.w, card.h, 0.08]}
                 radius={0.12}
@@ -315,7 +295,6 @@ export function HeroCards3DScene() {
             <directionalLight position={[-3, -2, 4]} intensity={0.3} color="#FFD800" />
             <pointLight position={[0, -3, 3]} intensity={0.4} color="#01A6BC" />
 
-            <MouseTracker />
             <SceneRotation>
                 {cards.map((card, i) => (
                     <ZoomCard key={i} card={card} index={i} allCards={cards} />
