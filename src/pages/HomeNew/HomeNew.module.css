@@ -530,23 +530,20 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #FFD800;
-  background: transparent;
-  border: 1.5px solid rgba(255, 216, 0, 0.4);
+  color: #121214;
+  background: #FFD800;
+  border: none;
   border-radius: 60px;
   cursor: pointer;
   transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   margin-top: 48px;
-  box-shadow: none;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  box-shadow: 0 4px 20px rgba(255, 216, 0, 0.25);
 }
 
 .heroCtaFuturistic:hover {
-  background: rgba(255, 216, 0, 0.10);
-  border-color: #FFD800;
+  background: #ffe033;
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(255, 216, 0, 0.15);
+  box-shadow: 0 12px 40px rgba(255, 216, 0, 0.35);
 }
 
 .heroCtaFuturistic:active {
