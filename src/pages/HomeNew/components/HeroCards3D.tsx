@@ -39,7 +39,7 @@ const CARDS: Card3D[] = [
     /* Top center: wide code card              x[-1.0, 2.5]   y[1.2, 3.2]  */
     { label: 'Code',       desc: 'AI-powered dev',      color: '#121214', textColor: '#ffffff', px: 0.75, py: 2.2,  pz: -0.3, w: 3.5, h: 2.0, chaosX: -1.8, chaosRx: 0.8,  chaosRy: -0.6, chaosRz: 0.35, delay: 0.0 },
     /* Right pillar: TALL yellow               x[2.55, 5.05]  y[-2.0, 3.0]  */
-    { label: '',           desc: '',                     color: '#FFD800', textColor: '#121214', px: 3.8,  py: 0.5,  pz: 0.4,  w: 2.5, h: 5.0, chaosX: 2.0,  chaosRx: -0.7, chaosRy: 0.8,  chaosRz: -0.3, delay: 0.18 },
+    { label: '',           desc: '',                     color: '#FFD800', textColor: '#121214', px: 3.8,  py: 0.5,  pz: 0.4,  w: 2.5, h: 6.0, chaosX: 2.0,  chaosRx: -0.7, chaosRy: 0.8,  chaosRz: -0.3, delay: 0.18 },
     /* Left: orange square                     x[-3.75, -1.25] y[-1.25, 1.25] */
     { label: '',           desc: '',                     color: '#FAA525', textColor: '#121214', px: -2.5, py: 0.0,  pz: 0.2,  w: 2.5, h: 2.5, chaosX: -1.2, chaosRx: 0.9,  chaosRy: -0.4, chaosRz: 0.2,  delay: 0.35 },
     /* Center: governance                      x[-0.75, 2.25]  y[-0.9, 0.9] */
@@ -278,7 +278,7 @@ export function HeroCards3DScene() {
 
     return (
         <Canvas
-            camera={{ position: [isMobile ? 0.4 : 1.2, 0, isMobile ? 4 : 10.5], fov: isMobile ? 50 : 52 }}
+            camera={{ position: [isMobile ? 0.4 : 1.2, 0, isMobile ? 4 : 12], fov: isMobile ? 50 : 52 }}
             style={{
                 position: isMobile ? 'relative' : 'absolute',
                 right: isMobile ? 'auto' : 0,
