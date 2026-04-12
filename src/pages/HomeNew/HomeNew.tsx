@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router-dom';
-import styles from './HomeRebuild.module.css';
+import styles from './HomeNew.module.css';
+
+// Import sub-components
+import { HeroSection } from './components/HeroSection';
 
 
 const HomeNew = () => {
-  const navigate = useNavigate();
-
   useEffect(() => {
     // Scroll to top on mount
     window.scrollTo(0, 0);
@@ -58,34 +58,9 @@ const HomeNew = () => {
         </script>
       </Helmet>
 
-      <main className={styles.hero}>
-        <section className={styles.left}>
-          <h1 className={styles.title}>
-            Digitalize Your
-            <br />
-            Vision
-          </h1>
-          <p className={styles.subtitle}>Simpler Than Ever</p>
-          <button className={styles.cta} onClick={() => navigate('/signup')}>
-            GET STARTED
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M5 12h14" />
-              <path d="m12 5 7 7-7 7" />
-            </svg>
-          </button>
-        </section>
-
-        <section className={styles.right} aria-hidden="true">
-          <div className={`${styles.card} ${styles.cardDark}`} />
-          <div className={`${styles.card} ${styles.cardYellowTall}`} />
-          <div className={`${styles.card} ${styles.cardOrange}`} />
-          <div className={`${styles.card} ${styles.cardBlueWide}`} />
-          <div className={`${styles.card} ${styles.cardPink}`} />
-          <div className={`${styles.card} ${styles.cardLight}`} />
-          <div className={`${styles.card} ${styles.cardGreen}`} />
-          <span className={styles.labelCode}>Code</span>
-          <span className={styles.labelGov}>Governance</span>
-        </section>
+      {/* Main Content - Streamlined for conversion */}
+      <main className={styles.main}>
+        <HeroSection />
       </main>
     </div>
   );
