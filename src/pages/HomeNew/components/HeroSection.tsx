@@ -1,31 +1,10 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { Suspense } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import heroTitleStyles from '@/components/ui/HeroTitle.module.css';
 import styles from '../HomeNew.module.css';
 import { isAuthenticated } from '@/utils/auth-cookies';
 import { useThemeStore } from '@/store/themeStore';
-
-interface CardDef {
-    label: string;
-    desc: string;
-    tint: string;
-    glow: string;
-    text: string;
-    /* position & size in 3D scene (px) */
-    x: number; y: number; w: number; h: number; z: number;
-    /* chaos offsets for fall animation */
-    cx: number; crx: number; cry: number; crz: number;
-}
-
-const CARDS: CardDef[] = [
-    { label: 'Code',       desc: 'AI-powered development', tint: 'rgba(18,18,20,0.75)',    glow: 'rgba(255,255,255,0.05)', text: '#fff',    x: 0,   y: 0,   w: 295, h: 155, z: -30,  cx: -80,  crx: 30,  cry: -20, crz: 12 },
-    { label: '',           desc: '',                        tint: 'rgba(255,216,0,0.65)',    glow: 'rgba(255,216,0,0.18)',   text: '#121214', x: 303, y: 0,   w: 195, h: 155, z: 45,   cx: 100,  crx: -25, cry: 28,  crz: -10 },
-    { label: '',           desc: '',                        tint: 'rgba(250,165,37,0.65)',   glow: 'rgba(250,165,37,0.15)', text: '#121214', x: 0,   y: 163, w: 145, h: 305, z: 20,   cx: -50,  crx: 38,  cry: -16, crz: 8 },
-    { label: 'Governance', desc: 'On-chain compliance',     tint: 'rgba(1,166,188,0.65)',    glow: 'rgba(1,166,188,0.16)', text: '#fff',    x: 153, y: 163, w: 240, h: 147, z: -55,  cx: 75,   crx: -20, cry: 22,  crz: -15 },
-    { label: 'Agents',     desc: 'Autonomous workflows',    tint: 'rgba(250,84,124,0.60)',   glow: 'rgba(250,84,124,0.14)', text: '#fff',    x: 153, y: 318, w: 145, h: 150, z: 35,   cx: -65,  crx: 28,  cry: -25, crz: 18 },
-    { label: 'Memory',     desc: 'Persistent knowledge',    tint: 'rgba(255,255,255,0.55)',  glow: 'rgba(255,255,255,0.08)', text: '#121214', x: 401, y: 163, w: 97,  h: 305, z: -65,  cx: 90,   crx: -32, cry: 18,  crz: -12 },
-    { label: '',           desc: '',                        tint: 'rgba(113,194,62,0.60)',   glow: 'rgba(113,194,62,0.14)', text: '#121214', x: 306, y: 318, w: 87,  h: 150, z: 55,   cx: -35,  crx: 22,  cry: -30, crz: 20 },
-];
+import { HeroCards3DScene } from './HeroCards3D';
 
 export const HeroSection = () => {
     const navigate = useNavigate();
@@ -36,44 +15,6 @@ export const HeroSection = () => {
     const iconHover = isDark ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,1)';
     const textColor = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.4)';
     const textDim = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.25)';
-
-    const mosaicRef = useRef<HTMLDivElement>(null);
-    const rafRef = useRef<number>(0);
-    const mouseTarget = useRef({ x: 0, y: 0 });
-    const mouseLerp = useRef({ x: 0, y: 0 });
-    const readyRef = useRef(false);
-
-    useEffect(() => {
-        const t = setTimeout(() => { readyRef.current = true; }, 2200);
-        return () => clearTimeout(t);
-    }, []);
-
-    const tick = useCallback(() => {
-        if (mosaicRef.current && readyRef.current) {
-            mouseLerp.current.x += (mouseTarget.current.x - mouseLerp.current.x) * 0.04;
-            mouseLerp.current.y += (mouseTarget.current.y - mouseLerp.current.y) * 0.04;
-            const { x, y } = mouseLerp.current;
-            /* Rotate entire scene — perspective does the rest */
-            mosaicRef.current.style.transform =
-                `translateY(-50%) perspective(900px) rotateX(${-y * 8}deg) rotateY(${x * 10}deg)`;
-        }
-        rafRef.current = requestAnimationFrame(tick);
-    }, []);
-
-    useEffect(() => {
-        const onMove = (e: MouseEvent) => {
-            mouseTarget.current = {
-                x: (e.clientX / window.innerWidth - 0.5) * 2,
-                y: (e.clientY / window.innerHeight - 0.5) * 2,
-            };
-        };
-        window.addEventListener('mousemove', onMove, { passive: true });
-        rafRef.current = requestAnimationFrame(tick);
-        return () => {
-            window.removeEventListener('mousemove', onMove);
-            cancelAnimationFrame(rafRef.current);
-        };
-    }, [tick]);
 
     if (isLoggedIn) return null;
 
@@ -90,38 +31,9 @@ export const HeroSection = () => {
                 </button>
             </div>
 
-            <div className={styles.heroMosaic} ref={mosaicRef}>
-                <div className={styles.mosaicGlow} />
-                {CARDS.map((c, i) => (
-                    <div
-                        key={i}
-                        className={styles.mCard}
-                        style={{
-                            '--card-x': `${c.x}px`,
-                            '--card-y': `${c.y}px`,
-                            '--card-w': `${c.w}px`,
-                            '--card-h': `${c.h}px`,
-                            '--card-z': `${c.z}px`,
-                            '--mc-tint': c.tint,
-                            '--mc-glow': c.glow,
-                            '--mc-text': c.text,
-                            '--cx': `${c.cx}px`,
-                            '--crx': `${c.crx}deg`,
-                            '--cry': `${c.cry}deg`,
-                            '--crz': `${c.crz}deg`,
-                            '--fall-delay': `${i * 0.18 + 0.15}s`,
-                        } as React.CSSProperties}
-                    >
-                        <div className={styles.mCardShine} />
-                        {c.label && (
-                            <div className={styles.mCardBody}>
-                                <span className={styles.mCardLabel}>{c.label}</span>
-                                {c.desc && <span className={styles.mCardDesc}>{c.desc}</span>}
-                            </div>
-                        )}
-                    </div>
-                ))}
-            </div>
+            <Suspense fallback={null}>
+                <HeroCards3DScene />
+            </Suspense>
 
             <div className={styles.heroBottomBar}>
                 <div className={styles.heroBottomSocial}>

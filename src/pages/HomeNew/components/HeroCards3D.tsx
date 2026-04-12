@@ -1,0 +1,228 @@
+import React, { useRef, useMemo, useState, useEffect } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { RoundedBox, Text } from '@react-three/drei';
+import * as THREE from 'three';
+
+/* ── Card definitions ── */
+interface Card3D {
+    label: string;
+    desc: string;
+    color: string;
+    textColor: string;
+    /* final resting position in 3D world */
+    px: number; py: number; pz: number;
+    /* size */
+    w: number; h: number;
+    /* initial chaos: random lateral offset + rotation */
+    chaosX: number;
+    chaosRx: number; chaosRy: number; chaosRz: number;
+    /* stagger delay (seconds) */
+    delay: number;
+}
+
+const CARDS: Card3D[] = [
+    { label: 'Code',       desc: 'AI-powered dev',      color: '#121214', textColor: '#ffffff', px: -0.6, py: 0.9,  pz: -0.3, w: 2.6, h: 1.5, chaosX: -1.5, chaosRx: 1.2,  chaosRy: -0.8, chaosRz: 0.5,  delay: 0.0 },
+    { label: '',           desc: '',                     color: '#FFD800', textColor: '#121214', px: 2.2,  py: 1.2,  pz: 0.5,  w: 1.9, h: 1.5, chaosX: 2.0,  chaosRx: -0.9, chaosRy: 1.1,  chaosRz: -0.4, delay: 0.15 },
+    { label: '',           desc: '',                     color: '#FAA525', textColor: '#121214', px: -1.2, py: -0.8, pz: 0.2,  w: 1.4, h: 2.8, chaosX: -1.0, chaosRx: 1.4,  chaosRy: -0.6, chaosRz: 0.3,  delay: 0.3 },
+    { label: 'Governance', desc: 'On-chain compliance',  color: '#01A6BC', textColor: '#ffffff', px: 0.8,  py: -0.6, pz: -0.5, w: 2.2, h: 1.4, chaosX: 1.5,  chaosRx: -0.7, chaosRy: 0.9,  chaosRz: -0.6, delay: 0.1 },
+    { label: 'Agents',     desc: 'Autonomous workflows', color: '#FA547C', textColor: '#ffffff', px: 0.6,  py: -2.2, pz: 0.4,  w: 1.6, h: 1.5, chaosX: -1.2, chaosRx: 1.0,  chaosRy: -1.0, chaosRz: 0.7,  delay: 0.25 },
+    { label: 'Memory',     desc: 'Persistent knowledge', color: '#FFFFFF', textColor: '#121214', px: 3.0,  py: -0.9, pz: -0.6, w: 1.1, h: 2.8, chaosX: 1.8,  chaosRx: -1.1, chaosRy: 0.7,  chaosRz: -0.5, delay: 0.2 },
+    { label: '',           desc: '',                     color: '#71C23E', textColor: '#121214', px: 2.5,  py: -2.3, pz: 0.6,  w: 1.1, h: 1.5, chaosX: -0.8, chaosRx: 0.8,  chaosRy: -1.2, chaosRz: 0.9,  delay: 0.35 },
+];
+
+/* ── Mouse tracker ── */
+const mouse = { x: 0, y: 0 };
+if (typeof window !== 'undefined') {
+    window.addEventListener('mousemove', (e) => {
+        mouse.x = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouse.y = (e.clientY / window.innerHeight - 0.5) * 2;
+    }, { passive: true });
+}
+
+/* ── Scene rotation from mouse (parallax) ── */
+function SceneRotation({ children }: { children: React.ReactNode }) {
+    const groupRef = useRef<THREE.Group>(null!);
+    const lerped = useRef({ x: 0, y: 0 });
+
+    useFrame(() => {
+        lerped.current.x += (mouse.x - lerped.current.x) * 0.03;
+        lerped.current.y += (mouse.y - lerped.current.y) * 0.03;
+        if (groupRef.current) {
+            groupRef.current.rotation.y = lerped.current.x * 0.15;
+            groupRef.current.rotation.x = -lerped.current.y * 0.10;
+        }
+    });
+
+    return <group ref={groupRef}>{children}</group>;
+}
+
+/* ── Single falling card ── */
+function FallingCard({ card }: { card: Card3D }) {
+    const meshRef = useRef<THREE.Group>(null!);
+    const startTime = useRef<number | null>(null);
+    const [landed, setLanded] = useState(false);
+
+    /* Physics state */
+    const state = useRef({
+        y: 12,           /* start high above */
+        vy: 0,           /* vertical velocity */
+        x: card.chaosX,  /* lateral chaos offset */
+        rx: card.chaosRx * 3,
+        ry: card.chaosRy * 3,
+        rz: card.chaosRz * 3,
+        started: false,
+    });
+
+    const gravity = -18;
+    const bounceDamping = 0.35;
+    const rotDamping = 0.92;
+    const lateralDamping = 0.94;
+
+    useFrame((_, delta) => {
+        if (!meshRef.current) return;
+        const s = state.current;
+        const now = performance.now() / 1000;
+
+        /* Stagger: don't start until delay */
+        if (!s.started) {
+            if (startTime.current === null) startTime.current = now;
+            if (now - startTime.current < card.delay) return;
+            s.started = true;
+            meshRef.current.visible = true;
+        }
+
+        const dt = Math.min(delta, 0.05);
+
+        if (!landed) {
+            /* Gravity */
+            s.vy += gravity * dt;
+            s.y += s.vy * dt;
+
+            /* Lateral drift toward target */
+            s.x += (0 - s.x) * (1 - Math.pow(lateralDamping, dt * 60));
+
+            /* Rotation damping toward 0 */
+            const rDamp = Math.pow(rotDamping, dt * 60);
+            s.rx *= rDamp;
+            s.ry *= rDamp;
+            s.rz *= rDamp;
+
+            /* Bounce off target Y */
+            if (s.y <= card.py) {
+                s.y = card.py;
+                if (Math.abs(s.vy) < 0.3) {
+                    /* Settled */
+                    s.vy = 0;
+                    s.x = 0;
+                    s.rx = 0; s.ry = 0; s.rz = 0;
+                    setLanded(true);
+                } else {
+                    s.vy = Math.abs(s.vy) * bounceDamping;
+                }
+            }
+
+            meshRef.current.position.set(
+                card.px + s.x,
+                s.y,
+                card.pz
+            );
+            meshRef.current.rotation.set(s.rx, s.ry, s.rz);
+        } else {
+            /* Subtle float when landed */
+            const t = now * 0.8;
+            meshRef.current.position.set(
+                card.px,
+                card.py + Math.sin(t + card.delay * 10) * 0.03,
+                card.pz
+            );
+            meshRef.current.rotation.set(0, 0, 0);
+        }
+    });
+
+    const color = useMemo(() => new THREE.Color(card.color), [card.color]);
+    const txtColor = useMemo(() => new THREE.Color(card.textColor), [card.textColor]);
+
+    return (
+        <group ref={meshRef} visible={false}>
+            <RoundedBox
+                args={[card.w, card.h, 0.08]}
+                radius={0.12}
+                smoothness={4}
+            >
+                <meshPhysicalMaterial
+                    color={color}
+                    transparent
+                    opacity={0.78}
+                    roughness={0.15}
+                    metalness={0.05}
+                    clearcoat={0.6}
+                    clearcoatRoughness={0.2}
+                    envMapIntensity={0.8}
+                />
+            </RoundedBox>
+
+            {/* Glass shine edge — top highlight */}
+            <mesh position={[0, card.h / 2 - 0.02, 0.045]}>
+                <planeGeometry args={[card.w * 0.7, 0.02]} />
+                <meshBasicMaterial color="#ffffff" transparent opacity={0.18} />
+            </mesh>
+
+            {card.label && (
+                <Text
+                    position={[-card.w / 2 + 0.2, -card.h / 2 + 0.45, 0.06]}
+                    fontSize={0.28}
+                    color={txtColor}
+                    anchorX="left"
+                    anchorY="bottom"
+                    maxWidth={card.w - 0.4}
+                >
+                    {card.label}
+                </Text>
+            )}
+            {card.desc && (
+                <Text
+                    position={[-card.w / 2 + 0.2, -card.h / 2 + 0.18, 0.06]}
+                    fontSize={0.14}
+                    color={txtColor}
+                    anchorX="left"
+                    anchorY="bottom"
+                    maxWidth={card.w - 0.4}
+                    fillOpacity={0.55}
+                >
+                    {card.desc}
+                </Text>
+            )}
+        </group>
+    );
+}
+
+/* ── Main 3D Canvas ── */
+export function HeroCards3DScene() {
+    return (
+        <Canvas
+            camera={{ position: [0, 0, 8], fov: 45 }}
+            style={{
+                position: 'absolute',
+                right: 0,
+                top: 0,
+                width: '55vw',
+                height: '100vh',
+                zIndex: 2,
+                pointerEvents: 'none',
+            }}
+            gl={{ alpha: true, antialias: true }}
+            dpr={[1, 2]}
+        >
+            <ambientLight intensity={0.6} />
+            <directionalLight position={[5, 8, 5]} intensity={0.8} />
+            <directionalLight position={[-3, -2, 4]} intensity={0.3} color="#FFD800" />
+            <pointLight position={[0, -3, 3]} intensity={0.4} color="#01A6BC" />
+
+            <SceneRotation>
+                {CARDS.map((card, i) => (
+                    <FallingCard key={i} card={card} />
+                ))}
+            </SceneRotation>
+        </Canvas>
+    );
+}
