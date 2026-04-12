@@ -326,12 +326,12 @@ export function HeroCards3DScene() {
         <Canvas
             camera={{ position: [isMobile ? 0.4 : 1.2, 0, isMobile ? 4 : 10], fov: isMobile ? 50 : 50 }}
             style={{
-                position: isMobile ? 'relative' : 'absolute',
-                right: isMobile ? 'auto' : 0,
-                top: isMobile ? 'auto' : 0,
-                width: isMobile ? '100%' : '58vw',
-                height: isMobile ? '45vh' : '100vh',
-                zIndex: 2,
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 0,
                 pointerEvents: 'auto',
             }}
             gl={{ alpha: true, antialias: true }}

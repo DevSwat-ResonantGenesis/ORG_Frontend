@@ -4,8 +4,8 @@
   display: block !important;
   font-family: 'Abril Fatface', serif !important;
   font-weight: 400 !important;
-  font-size: 48px !important;
-  line-height: 1 !important;
+  font-size: 72px !important;
+  line-height: 0.95 !important;
   color: #ffffff !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -15,8 +15,8 @@
   animation: none !important;
   opacity: 1 !important;
 }
-@media (min-width: 768px)  { .heroTitle { font-size: 80px !important; } }
-@media (min-width: 1280px) { .heroTitle { font-size: 96px !important; } }
+@media (min-width: 768px)  { .heroTitle { font-size: 110px !important; } }
+@media (min-width: 1280px) { .heroTitle { font-size: 140px !important; } }
 
 .heroTitleTagline {
   display: block !important;
