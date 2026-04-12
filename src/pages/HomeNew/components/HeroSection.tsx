@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import heroTitleStyles from '@/components/ui/HeroTitle.module.css';
 import styles from '../HomeNew.module.css';
+import buttonStyles from './HeroButton.module.css';
 import { isAuthenticated } from '@/utils/auth-cookies';
 import { useThemeStore } from '@/store/themeStore';
 import { HeroCards3DScene } from './HeroCards3D';
@@ -25,8 +26,8 @@ export const HeroSection = () => {
                     Digitalize<br />Your Vision
                 </h1>
                 <p className={heroTitleStyles.heroTitleTagline}>Simpler Than Ever</p>
-                <button className={styles.heroCtaFuturistic} onClick={() => navigate('/signup')} style={{ color: '#0a0a0c' }}>
-                    Get Started
+                <button className={buttonStyles.heroButton} onClick={() => navigate('/signup')}>
+                    <span className={buttonStyles.heroButtonText}>Get Started</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a0a0c" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block', flexShrink: 0 }}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </button>
             </div>

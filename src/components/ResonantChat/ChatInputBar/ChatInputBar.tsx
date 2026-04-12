@@ -173,10 +173,7 @@ interface ChatInputBarProps {
 
   ttsText?: string;
 
-  // AI Assistant mode
-  aiAssistantEnabled?: boolean;
-  onToggleAiAssistant?: () => void;
-}
+  }
 
 const ChatInputBar: React.FC<ChatInputBarProps> = ({
   value,
@@ -239,8 +236,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   onCopyChat,
   onVoiceConversation,
   ttsText,
-  aiAssistantEnabled = true,
-  onToggleAiAssistant,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const inputWrapperRef = useRef<HTMLDivElement>(null);
@@ -1320,24 +1315,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           }}
         >
           <div className={styles.toolsLeft}>
-            {onToggleAiAssistant && (
-              <button
-                className={`${styles.aiAssistantToggle} ${aiAssistantEnabled ? styles.aiAssistantToggleActive : styles.aiAssistantToggleResonant}`}
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleAiAssistant(); }}
-                title={aiAssistantEnabled ? 'AI Assistant ON — click to switch to Resonant Chat' : 'Resonant Chat ON — click to switch to AI Assistant'}
-                type="button"
-              >
-                <img
-                  src={document.documentElement.getAttribute('data-theme') === 'light' ? '/logo black.png' : '/logo white.png'}
-                  alt=""
-                  className={styles.aiAssistantLogo}
-                />
-                <span>{aiAssistantEnabled ? 'AI Assistant' : 'Resonant Chat'}</span>
-                <span className={`${styles.modePill} ${styles.modePillOn}`}>
-                  ON
-                </span>
-              </button>
-            )}
+            {/* Assistant AI toggle removed - Resonant Chat is the primary interface */}
           </div>
 
           <div className={styles.toolsRight}>

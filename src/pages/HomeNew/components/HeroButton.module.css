@@ -1,0 +1,23 @@
+/* Hero Button - standalone file to avoid CSS parsing issues */
+.heroButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 32px;
+  padding: 14px 36px;
+  background: #FFD800;
+  color: #0a0a0c;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+.heroButton:hover {
+  background: #ffe640;
+}
+.heroButtonText { color: inherit; }
