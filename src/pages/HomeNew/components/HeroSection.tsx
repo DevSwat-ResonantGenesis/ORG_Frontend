@@ -27,7 +27,7 @@ export const HeroSection = () => {
                     display: block !important;
                     font-family: 'Abril Fatface', serif !important;
                     font-weight: 400 !important;
-                    font-size: 72px !important;
+                    font-size: 56px !important;
                     line-height: 0.95 !important;
                     color: #ffffff !important;
                     margin: 0 !important;
@@ -39,8 +39,8 @@ export const HeroSection = () => {
                     opacity: 1 !important;
                     -webkit-text-size-adjust: none !important;
                 }
-                @media (min-width: 768px)  { #hero-title { font-size: 110px !important; } }
-                @media (min-width: 1280px) { #hero-title { font-size: 140px !important; } }
+                @media (min-width: 768px)  { #hero-title { font-size: 80px !important; } }
+                @media (min-width: 1280px) { #hero-title { font-size: 100px !important; } }
 
                 #hero-subtitle {
                     display: block !important;
@@ -48,7 +48,7 @@ export const HeroSection = () => {
                     font-weight: 700 !important;
                     font-size: 20px !important;
                     line-height: 1.2 !important;
-                    color: rgba(255,255,255,0.75) !important;
+                    color: #ffffff !important;
                     margin: 14px 0 0 0 !important;
                     padding: 0 !important;
                     background: none !important;
