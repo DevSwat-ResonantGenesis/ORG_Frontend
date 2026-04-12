@@ -1,10 +1,10 @@
 :global(:root) {
   --home-hero-cta-font: 'Work Sans', sans-serif;
-  --home-hero-cta-bg-solid: #ffd400;
-  --home-hero-cta-bg-hover: #ffdf3a;
-  --home-hero-cta-text: #111111;
-  --home-hero-cta-outline: rgba(255, 224, 74, 0.95);
-  --home-hero-cta-shadow: 0 14px 30px rgba(0, 0, 0, 0.34), 0 0 42px rgba(255, 212, 0, 0.5);
+  --home-hero-cta-bg-start: #ffe16f;
+  --home-hero-cta-bg-end: #ffc531;
+  --home-hero-cta-text: #0d1117;
+  --home-hero-cta-outline: rgba(255, 230, 140, 0.65);
+  --home-hero-cta-shadow: 0 16px 36px rgba(0, 0, 0, 0.34), 0 0 38px rgba(255, 199, 64, 0.3);
 }
 
 .heroButton {
@@ -15,21 +15,20 @@
   justify-content: center;
   gap: 10px;
   margin-top: clamp(22px, 3vw, 36px);
-  padding: 14px 32px;
+  padding: 14px 30px;
   border-radius: 999px;
-  border: 1px solid #f7ca00;
-  background: var(--home-hero-cta-bg-solid);
-  color: var(--home-hero-cta-text) !important;
+  border: 1px solid var(--home-hero-cta-outline);
+  background: linear-gradient(135deg, var(--home-hero-cta-bg-start), var(--home-hero-cta-bg-end));
+  color: var(--home-hero-cta-text);
   box-shadow: var(--home-hero-cta-shadow);
   font-family: var(--home-hero-cta-font);
-  font-size: 0.92rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
   cursor: pointer;
   outline: none;
-  transform-style: preserve-3d;
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, background 0.25s ease;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
   will-change: transform;
 }
 
@@ -37,43 +36,40 @@
 .heroButton::after {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: -2px;
   border-radius: inherit;
   pointer-events: none;
 }
 
 .heroButton::before {
   z-index: -2;
-  inset: -8px;
-  background: radial-gradient(circle at 30% 40%, rgba(255, 238, 128, 0.75), rgba(255, 212, 0, 0) 62%);
-  filter: blur(10px);
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 38%, rgba(255, 220, 110, 0.65) 100%);
+  filter: blur(12px);
   transform: translate3d(0, 0, 0);
-  animation: ctaParallaxDrift 4.2s ease-in-out infinite;
+  animation: ctaParallaxDrift 5.2s ease-in-out infinite;
 }
 
 .heroButton::after {
-  z-index: 1;
-  background: linear-gradient(110deg, rgba(255, 255, 255, 0.52) 0%, rgba(255, 255, 255, 0.1) 22%, rgba(255, 255, 255, 0) 45%);
-  opacity: 0.95;
-  transform: translateX(-30%);
-  animation: ctaShineSweep 3.8s ease-in-out infinite;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.04) 28%, rgba(255, 255, 255, 0) 52%);
+  mix-blend-mode: screen;
 }
 
 .heroButton:hover {
-  background: var(--home-hero-cta-bg-hover);
-  transform: perspective(900px) rotateX(9deg) rotateY(-10deg) translateY(-3px) translateZ(0);
-  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.42), 0 0 56px rgba(255, 212, 0, 0.62);
+  transform: perspective(900px) rotateX(6deg) rotateY(-6deg) translateY(-3px);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.4), 0 0 54px rgba(255, 200, 70, 0.44);
 }
 
 .heroButton:active {
-  transform: translateY(1px) scale(0.99);
+  transform: translateY(1px);
 }
 
 .heroButtonLabel,
 .heroButtonText {
   position: relative;
   z-index: 2;
-  color: var(--home-hero-cta-text) !important;
+  color: var(--home-hero-cta-text);
 }
 
 .heroButtonIcon {
@@ -81,7 +77,7 @@
   z-index: 2;
   display: block;
   flex-shrink: 0;
-  color: var(--home-hero-cta-text) !important;
+  color: var(--home-hero-cta-text);
   stroke: currentColor;
   transform: translateX(0);
   transition: transform 0.25s ease;
@@ -98,20 +94,7 @@
   }
 
   50% {
-    transform: translate3d(8px, -6px, 0) scale(1.04);
-  }
-}
-
-@keyframes ctaShineSweep {
-  0%,
-  100% {
-    transform: translateX(-32%);
-    opacity: 0.75;
-  }
-
-  50% {
-    transform: translateX(24%);
-    opacity: 1;
+    transform: translate3d(6px, -5px, 0) scale(1.02);
   }
 }
 

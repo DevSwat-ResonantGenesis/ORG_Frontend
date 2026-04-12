@@ -1,9 +1,9 @@
 :global(:root) {
   --home-hero-title-font: 'Abril Fatface', serif;
   --home-hero-subtitle-font: 'Work Sans', sans-serif;
-  --home-hero-title-size: clamp(3.6rem, 9.8vw, 9rem);
+  --home-hero-title-size: clamp(3.2rem, 9.2vw, 8.4rem);
   --home-hero-title-line: 0.9;
-  --home-hero-title-spacing: -0.01em;
+  --home-hero-title-spacing: -0.02em;
   --home-hero-title-color: #f8f9ff;
   --home-hero-title-shadow: 0 14px 36px rgba(0, 0, 0, 0.34);
   --home-hero-subtitle-size: clamp(1.15rem, 2.6vw, 2rem);
@@ -16,34 +16,32 @@
   margin: 0;
   padding: 0;
   display: block;
-  font-family: var(--home-hero-title-font) !important;
-  font-weight: 400 !important;
-  font-size: var(--home-hero-title-size) !important;
-  line-height: var(--home-hero-title-line) !important;
-  letter-spacing: var(--home-hero-title-spacing) !important;
-  color: var(--home-hero-title-color) !important;
+  font-family: var(--home-hero-title-font);
+  font-weight: 400;
+  font-size: var(--home-hero-title-size);
+  line-height: var(--home-hero-title-line);
+  letter-spacing: var(--home-hero-title-spacing);
+  color: var(--home-hero-title-color);
   text-wrap: balance;
-  text-shadow: var(--home-hero-title-shadow) !important;
-  text-transform: none !important;
+  text-shadow: var(--home-hero-title-shadow);
 }
 
 .heroTitleTagline {
   margin: clamp(14px, 2.2vw, 22px) 0 0;
   padding: 0;
   display: block;
-  font-family: var(--home-hero-subtitle-font) !important;
-  font-weight: 700 !important;
-  font-size: var(--home-hero-subtitle-size) !important;
-  line-height: var(--home-hero-subtitle-line) !important;
-  letter-spacing: var(--home-hero-subtitle-spacing) !important;
-  color: var(--home-hero-subtitle-color) !important;
-  text-transform: none !important;
+  font-family: var(--home-hero-subtitle-font);
+  font-weight: 700;
+  font-size: var(--home-hero-subtitle-size);
+  line-height: var(--home-hero-subtitle-line);
+  letter-spacing: var(--home-hero-subtitle-spacing);
+  color: var(--home-hero-subtitle-color);
 }
 
 @media (max-width: 768px) {
   .heroTitle {
-    line-height: 0.94 !important;
-    letter-spacing: 0 !important;
+    line-height: 0.94;
+    letter-spacing: -0.01em;
   }
 }
 
