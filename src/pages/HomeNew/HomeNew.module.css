@@ -255,12 +255,11 @@
   min-height: 100dvh;
   width: 100vw;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding: 0;
-  padding-top: 18vh;
+  padding: 0 40px;
   margin: 0;
-  background: #000000;
+  background: #121214;
   position: relative;
   z-index: 1;
   overflow: hidden;
@@ -273,47 +272,32 @@
 }
 
 [data-theme='light'] .hero {
-  background: #ffffff;
+  background: #121214;
 }
 
-/* Mouse-following white glow */
-.heroMouseGlow {
-  position: fixed;
-  width: 250px;
-  height: 250px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.03) 40%, transparent 70%);
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0;
-  transform: translate(-50%, -50%);
-  transition: opacity 0.3s ease;
-  will-change: left, top, opacity;
-}
-
-[data-theme='light'] .heroMouseGlow {
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.02) 40%, transparent 70%);
-}
-
-/* Hero Content — centered column */
-.heroContent {
-  max-width: none;
-  width: 100%;
-  text-align: center;
+.heroInner {
+  width: min(1400px, 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
   margin: 0 auto;
+}
+
+.heroContent {
+  width: min(55%, 760px);
+  text-align: left;
+  margin: 0;
   position: relative;
   z-index: 2;
-  padding: 0 40px;
+  padding: 0;
   background: transparent !important;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   box-shadow: none;
   border: none;
-  transform-style: preserve-3d;
-  will-change: transform;
-  transition: transform 0.15s ease-out;
 }
 
 @media (max-width: 768px) {
@@ -330,146 +314,50 @@
 /* CTA Button — rounded outline, B&W */
 /* Futuristic CTA — transparent glass, animated border, mouse parallax */
 .heroCtaFuturistic {
-  --glow-x: 50%;
-  --glow-y: 50%;
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 16px 52px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
+  padding: 14px 36px;
+  font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 0;
+  color: #121214;
+  background: #ffd800;
+  border: 1px solid rgba(255, 216, 0, 0.8);
+  border-radius: 14px;
   cursor: pointer;
-  overflow: hidden;
-  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), border-color 0.3s ease, background 0.3s ease;
-  transform-style: preserve-3d;
-  will-change: transform;
-  -webkit-font-smoothing: antialiased;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  margin-top: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  margin-top: 24px;
+  box-shadow: 0 12px 30px rgba(255, 216, 0, 0.3);
 }
 
 .heroCtaFuturistic:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: #ffe44a;
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px rgba(255, 216, 0, 0.35);
 }
 
 .heroCtaFuturistic:active {
-  transform: perspective(600px) scale(0.97) !important;
+  transform: translateY(0);
 }
 
-/* Animated scanline sweep */
-.heroCtaScanline {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.04) 40%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.04) 60%, transparent 100%);
-  animation: ctaScanSweep 4s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes ctaScanSweep {
-  0% { left: -100%; }
-  50% { left: 100%; }
-  100% { left: 100%; }
-}
-
-/* Mouse-follow border glow */
-.heroCtaBorderGlow {
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  background: radial-gradient(
-    120px circle at var(--glow-x) var(--glow-y),
-    rgba(255, 255, 255, 0.25),
-    transparent 70%
-  );
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.heroCtaFuturistic:hover .heroCtaBorderGlow {
-  opacity: 1;
-}
-
-/* Button text with slight tracking */
 .heroCtaText {
   position: relative;
   z-index: 1;
 }
 
-/* Corner accents */
-.heroCtaFuturistic::before,
-.heroCtaFuturistic::after {
-  content: '';
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  border-color: rgba(255, 255, 255, 0.5);
-  border-style: solid;
-  pointer-events: none;
-  transition: border-color 0.3s ease, width 0.3s ease, height 0.3s ease;
-}
-
-.heroCtaFuturistic::before {
-  top: -1px;
-  left: -1px;
-  border-width: 1px 0 0 1px;
-}
-
-.heroCtaFuturistic::after {
-  bottom: -1px;
-  right: -1px;
-  border-width: 0 1px 1px 0;
-}
-
-.heroCtaFuturistic:hover::before,
-.heroCtaFuturistic:hover::after {
-  width: 18px;
-  height: 18px;
-  border-color: rgba(255, 255, 255, 0.8);
-}
-
 /* Light theme */
 [data-theme='light'] .heroCtaFuturistic {
-  color: #000000;
-  background: transparent;
-  border-color: rgba(0, 0, 0, 0.08);
-  backdrop-filter: none;
+  color: #121214;
+  background: #ffd800;
+  border-color: rgba(255, 216, 0, 0.8);
 }
 
 [data-theme='light'] .heroCtaFuturistic:hover {
-  background: rgba(0, 0, 0, 0.03);
-  border-color: rgba(0, 0, 0, 0.2);
-}
-
-[data-theme='light'] .heroCtaFuturistic::before,
-[data-theme='light'] .heroCtaFuturistic::after {
-  border-color: rgba(0, 0, 0, 0.12);
-}
-
-[data-theme='light'] .heroCtaFuturistic:hover::before,
-[data-theme='light'] .heroCtaFuturistic:hover::after {
-  border-color: rgba(0, 0, 0, 0.3);
-}
-
-[data-theme='light'] .heroCtaBorderGlow {
-  background: radial-gradient(
-    120px circle at var(--glow-x) var(--glow-y),
-    rgba(0, 0, 0, 0.15),
-    transparent 70%
-  );
+  background: #ffe44a;
 }
 
 /* Desktop line break helper */
@@ -581,91 +469,90 @@
 }
 
 
-.heroParallax {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, 65%);
-  width: calc(100vw + 4in);
-  height: calc(100vw + 4in);
-  z-index: 0;
-  pointer-events: none;
-  overflow: visible;
+.heroCardsStage {
+  width: min(45%, 640px);
+  display: flex;
+  justify-content: flex-end;
+  perspective: 1400px;
+}
+
+.heroCardsGrid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 0.95fr 1.2fr 0.9fr;
+  gap: 14px;
+  align-items: end;
+  transform-style: preserve-3d;
+}
+
+.heroGlassCard {
+  background: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: var(--card-text);
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.85;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .heroParallax {
-    transform: translate(-50%, 65%);
-  }
-}
-
-.heroParallax > * {
+  text-align: center;
+  font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   position: relative;
-  width: 100%;
-  height: 100%;
+  transform-style: preserve-3d;
+  animation: heroCardFall 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--fall-delay);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.heroGlassCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, transparent 45%, rgba(255, 255, 255, 0.1) 100%);
   pointer-events: none;
-  overflow: visible !important;
 }
 
-/* Hide the launch demo button */
-.heroParallax .launch-demo-button {
-  display: none !important;
+.heroGlassCard:hover {
+  transform: translateY(-6px) translateZ(14px) rotateX(-2deg) rotateY(2deg);
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
-
-/* Mobile: big nebula at bottom */
-@media (max-width: 768px) {
-  .heroParallax {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    right: auto;
-    transform: translate(-50%, 60%);
-    width: calc(100vw + 4in);
-    height: calc(100vw + 4in);
-    z-index: 0;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.7;
-    overflow: visible;
-  }
-
-  .heroParallaxInner {
-    width: 100%;
-    height: 100%;
-    aspect-ratio: 1 / 1;
-    transform: none;
-    display: block;
-    margin: 0 auto;
-  }
-
-  .heroParallax > * {
-    overflow: visible !important;
-    max-width: none;
-    max-height: none;
-  }
-
-  .heroParallax canvas {
-    width: 100% !important;
-    height: 100% !important;
-  }
+.heroGlassCard span {
+  font-size: clamp(22px, 3vw, 44px);
+  line-height: 1;
+  position: relative;
+  z-index: 1;
 }
 
-/* Tablet */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .heroParallax {
-    opacity: 0.9;
-  }
+.heroGlassCardWide {
+  min-height: 124px;
+  grid-column: span 2;
 }
 
-/* Desktop - Full opacity */
-@media (min-width: 1025px) {
-  .heroParallax {
+.heroGlassCardTall {
+  min-height: 200px;
+}
+
+.heroGlassCardSquare {
+  min-height: 132px;
+}
+
+.heroGlassCardSmall {
+  min-height: 118px;
+}
+
+@keyframes heroCardFall {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -140px, 0) rotateX(10deg) scale(0.94);
+  }
+  to {
     opacity: 1;
+    transform: translate3d(0, 0, 0) rotateX(0deg) scale(1);
   }
 }
 
@@ -3098,13 +2985,32 @@
 
   .hero {
     min-height: calc(100dvh - (var(--header-height, 56px) + env(safe-area-inset-top)));
-    padding: calc(var(--header-height, 56px) + env(safe-area-inset-top) + 24px) 16px 44px;
+    padding: calc(var(--header-height, 56px) + env(safe-area-inset-top) + 18px) 16px 44px;
     overflow-x: hidden;
     overflow: hidden;
+    align-items: flex-start;
+  }
+
+  .heroInner {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 30px;
   }
 
   .heroContent {
+    width: 100%;
     padding: 0;
+  }
+
+  .heroCardsStage {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .heroCardsGrid {
+    width: min(100%, 560px);
+    gap: 12px;
   }
 
   .heroDescription {
@@ -3158,30 +3064,24 @@
     min-height: 100dvh;
   }
 
-  /* Hero Parallax - Mobile: big nebula at bottom */
-  .heroParallax {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    right: auto;
-    transform: translate(-50%, 60%);
-    width: calc(100vw + 4in);
-    height: calc(100vw + 4in);
-    z-index: 0;
-    pointer-events: none;
-    overflow: visible;
-    opacity: 0.7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .heroCardsGrid {
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
   }
 
-  .heroParallaxInner {
-    width: 100%;
-    height: 100%;
-    aspect-ratio: 1 / 1;
-    transform: none;
-    margin: 0 auto;
+  .heroGlassCardWide {
+    grid-column: span 2;
+    min-height: 96px;
+  }
+
+  .heroGlassCardTall,
+  .heroGlassCardSquare,
+  .heroGlassCardSmall {
+    min-height: 92px;
+  }
+
+  .heroGlassCard span {
+    font-size: clamp(20px, 8vw, 34px);
   }
 }
 

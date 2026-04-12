@@ -1,12 +1,9 @@
-import React, { Suspense, useRef, useCallback, useEffect } from 'react';
+import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import heroTitleStyles from '@/components/ui/HeroTitle.module.css';
 import styles from '../HomeNew.module.css';
 import { isAuthenticated } from '@/utils/auth-cookies';
 import { useThemeStore } from '@/store/themeStore';
-
-// Lazy load particle sphere — used as nebula trace background
-const ThreeParticleSphere = React.lazy(() => import('@/components/features/landing/ThreeParticleSphere'));
 
 export const HeroSection = () => {
     const navigate = useNavigate();
@@ -17,113 +14,54 @@ export const HeroSection = () => {
     const iconHover = isDark ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,1)';
     const textColor = isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)';
     const textDim = isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)';
-    const btnRef = useRef<HTMLButtonElement>(null);
-    const heroRef = useRef<HTMLElement>(null);
-
-    const contentRef = useRef<HTMLDivElement>(null);
-    const glowRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (isLoggedIn) return;
-        const hero = heroRef.current;
-        const btn = btnRef.current;
-        const content = contentRef.current;
-        const glow = glowRef.current;
-        if (!hero || !btn) return;
-
-        const onMove = (e: MouseEvent) => {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            const x = (e.clientX / w - 0.5) * 2;
-            const y = (e.clientY / h - 0.5) * 2;
-
-            // CTA button — 3D tilt (stronger)
-            btn.style.transform = `perspective(600px) rotateY(${x * 14}deg) rotateX(${-y * 14}deg) translateZ(8px)`;
-            const rect = btn.getBoundingClientRect();
-            btn.style.setProperty('--glow-x', `${((e.clientX - rect.left) / rect.width) * 100}%`);
-            btn.style.setProperty('--glow-y', `${((e.clientY - rect.top) / rect.height) * 100}%`);
-
-            // Entire hero content — subtle 3D tilt
-            if (content) {
-                content.style.transform = `perspective(1200px) rotateY(${x * 2}deg) rotateX(${-y * 2}deg) translateZ(0px)`;
-            }
-
-            // Page-wide white glow that follows mouse
-            if (glow) {
-                glow.style.opacity = '1';
-                glow.style.left = `${e.clientX}px`;
-                glow.style.top = `${e.clientY}px`;
-            }
-        };
-
-        const onLeave = () => {
-            btn.style.transform = 'perspective(600px) rotateY(0deg) rotateX(0deg) translateZ(0px)';
-            if (content) {
-                content.style.transform = 'perspective(1200px) rotateY(0deg) rotateX(0deg) translateZ(0px)';
-            }
-            if (glow) {
-                glow.style.opacity = '0';
-            }
-        };
-
-        hero.addEventListener('mousemove', onMove);
-        hero.addEventListener('mouseleave', onLeave);
-        return () => {
-            hero.removeEventListener('mousemove', onMove);
-            hero.removeEventListener('mouseleave', onLeave);
-        };
-    }, [isLoggedIn]);
 
     if (isLoggedIn) return null;
 
-    const isReactSnap = typeof navigator !== 'undefined' && navigator.userAgent === 'ReactSnap';
+    const cards = [
+        { label: 'Code', size: 'Wide', color: '#121214', text: '#FFFFFF' },
+        { label: '', size: 'Tall', color: '#FFD800', text: '#121214' },
+        { label: '', size: 'Tall', color: '#FAA525', text: '#121214' },
+        { label: 'Governance', size: 'Wide', color: '#01A6BC', text: '#FFFFFF' },
+        { label: 'Agents', size: 'Square', color: '#FA547C', text: '#121214' },
+        { label: 'Memory', size: 'Small', color: '#FFFFFF', text: '#121214' },
+        { label: '', size: 'Square', color: '#71C23E', text: '#121214' }
+    ];
 
     return (
-        <section ref={heroRef} className={styles.hero}>
-            {/* Mouse-following white glow */}
-            <div ref={glowRef} className={styles.heroMouseGlow} aria-hidden="true" />
+        <section className={styles.hero}>
+            <div className={styles.heroInner}>
+                <div className={styles.heroContent}>
+                    <h1 className={heroTitleStyles.heroTitle}>Digitalize Your Vision</h1>
+                    <p className={heroTitleStyles.heroTitleTagline}>Simpler Than Ever</p>
 
-            {/* Nebula trace — particle sphere behind content */}
-            <div className={styles.heroParallax} aria-hidden="true">
-                <Suspense fallback={<div className={styles.parallaxPlaceholder} />}>
-                    <div className={styles.heroParallaxInner}>
-                        {isReactSnap ? <div className={styles.parallaxPlaceholder} /> : <ThreeParticleSphere />}
+                    <button
+                        className={styles.heroCtaFuturistic}
+                        onClick={() => navigate('/signup')}
+                    >
+                        <span className={styles.heroCtaText}>Get Started</span>
+                    </button>
+                </div>
+
+                <div className={styles.heroCardsStage} aria-hidden="true">
+                    <div className={styles.heroCardsGrid}>
+                        {cards.map((card, index) => (
+                            <div
+                                key={`${card.label}-${index}`}
+                                className={`${styles.heroGlassCard} ${styles[`heroGlassCard${card.size}`]}`}
+                                style={{
+                                    ['--card-bg' as '--card-bg']: card.color,
+                                    ['--card-text' as '--card-text']: card.text,
+                                    ['--fall-delay' as '--fall-delay']: `${index * 0.12}s`
+                                } as React.CSSProperties}
+                            >
+                                {card.label && <span>{card.label}</span>}
+                            </div>
+                        ))}
                     </div>
-                </Suspense>
+                </div>
             </div>
 
-            {/* Centered content */}
-            <div ref={contentRef} className={styles.heroContent}>
-                <h1 className={heroTitleStyles.heroTitle}>
-                    Own Your <span style={{ fontFamily: "'Outfit', -apple-system, BlinkMacSystemFont, sans-serif", fontWeight: 700, fontStyle: 'normal', letterSpacing: '-0.02em' }}>Intelligence.</span>
-                    <span className={heroTitleStyles.heroTitleTagline}>
-                        Simpler than ever
-                    </span>
-                </h1>
-
-                <p className={heroTitleStyles.heroSubtitle}>
-                    create, code, connect, agents, projects, govern &amp; monetize, mine
-                </p>
-
-                <p className={heroTitleStyles.heroSubtitleSecondary}>
-                    Build AI agents and projects with blockchain identity, enforced governance on every action, and a full economic layer built in.
-                    From agent factory &amp; code-execution IDE to mining on a decentralized LLM training network. One ecosystem with unified cross-reasoning retrieval memory and a full economic layer. All yours.
-                </p>
-
-                <button
-                    ref={btnRef}
-                    className={styles.heroCtaFuturistic}
-                    onClick={() => navigate('/signup')}
-                >
-                    <span className={styles.heroCtaScanline} />
-                    <span className={styles.heroCtaBorderGlow} />
-                    <span className={styles.heroCtaText}>Get Started</span>
-                </button>
-            </div>
-
-            {/* Bottom info bar — over parallax */}
             <div className={styles.heroBottomBar}>
-                {/* Social icons row */}
                 <div className={styles.heroBottomSocial}>
                     <a href="https://www.linkedin.com/company/devswat" target="_blank" rel="noopener noreferrer" title="LinkedIn" style={{ color: iconColor, transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = iconHover)} onMouseLeave={e => (e.currentTarget.style.color = iconColor)}>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
@@ -141,7 +79,6 @@ export const HeroSection = () => {
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                     </a>
                 </div>
-                {/* Links + company row */}
                 <div className={styles.heroBottomLinks}>
                     <Link to="/privacy-policy" style={{ color: textColor, textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = iconHover)} onMouseLeave={e => (e.currentTarget.style.color = textColor)}>Privacy</Link>
                     <Link to="/terms-of-service" style={{ color: textColor, textDecoration: 'none', transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = iconHover)} onMouseLeave={e => (e.currentTarget.style.color = textColor)}>Terms</Link>

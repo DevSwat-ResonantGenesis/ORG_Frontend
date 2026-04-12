@@ -286,7 +286,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </svg>
               ) : (
                 <img
-                  src={theme === 'dark' ? '/logo white.png' : '/logo black.png'}
+                  src="/devswat/devswat_logo.png"
                   alt="Menu"
                   className={styles.burgerLogo}
                 />
@@ -299,11 +299,11 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => (isLandingPage && landingChatActive ? navigate('/resonant-chat') : goToHome(navigate))}
           >
             <img
-              src={theme === 'dark' ? '/logo white.png' : '/logo black.png'}
-              alt="ResonantGenesis"
+              src="/devswat/devswat_logo.png"
+              alt="DevSwat"
               className={`${styles.logoIcon} ${isMobileViewport ? styles.logoIconHiddenMobile : ''}`}
             />
-            {isLandingPage ? (landingChatActive ? 'AGI Neural Hub' : 'ResonantGenesis') : 'ResonantGenesis'}
+            DevSwat
           </div>
 
           {/* Main Navigation - Desktop */}

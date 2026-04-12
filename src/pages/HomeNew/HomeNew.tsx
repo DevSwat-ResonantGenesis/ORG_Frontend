@@ -16,20 +16,20 @@ const HomeNew = () => {
     <div className={styles.page}>
       {/* SEO meta tags */}
       <Helmet>
-        <title>ResonantGenesis — Agentic AI SaaS Platform</title>
-        <meta name="description" content="ResonantGenesis — full-stack Agentic AI SaaS platform. ~550K lines of production code, 30 microservices, 9 proprietary IP systems, 85+ routes. Multi-agent orchestration, governed memory, physics-based state simulation, and complete billing infrastructure. Production-deployed and available for acquisition." />
-        <link rel="canonical" href="https://resonantgenesis.xyz/" />
-        <meta property="og:title" content="ResonantGenesis — Agentic AI SaaS Platform" />
-        <meta property="og:description" content="Full-stack Agentic AI platform: ~550K lines of production code, 30 microservices, 9 proprietary IP systems. Multi-agent orchestration, governed memory, physics-based state simulation, and complete SaaS billing. Production-deployed and available for acquisition." />
-        <meta property="og:url" content="https://resonantgenesis.xyz/" />
+        <title>DevSwat — Digitalize Your Vision</title>
+        <meta name="description" content="DevSwat helps you digitalize your vision with governed AI systems, code automation, memory, and autonomous workflows." />
+        <link rel="canonical" href="https://dev-swat.com/" />
+        <meta property="og:title" content="DevSwat — Digitalize Your Vision" />
+        <meta property="og:description" content="Digitalize your vision with DevSwat. Simpler than ever." />
+        <meta property="og:url" content="https://dev-swat.com/" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonantgenesis.xyz/images/investorpitch/VR1.jpg" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
         <meta property="og:image:width" content="1408" />
         <meta property="og:image:height" content="768" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="ResonantGenesis — Agentic AI SaaS Platform" />
-        <meta name="twitter:description" content="Full-stack Agentic AI platform: ~550K lines of production code, 30 microservices, 9 proprietary IP systems. Production-deployed and available for acquisition." />
-        <meta name="twitter:image" content="https://resonantgenesis.xyz/images/investorpitch/VR1.jpg" />
+        <meta name="twitter:title" content="DevSwat — Digitalize Your Vision" />
+        <meta name="twitter:description" content="Digitalize your vision with DevSwat. Simpler than ever." />
+        <meta name="twitter:image" content="https://dev-swat.com/devswat/DevSwat.png" />
         <script type="application/ld+json">
           {`
             {
@@ -37,18 +37,18 @@ const HomeNew = () => {
               "@graph": [
                 {
                   "@type": "Organization",
-                  "name": "ResonantGenesis",
-                  "url": "https://resonantgenesis.xyz",
-                  "logo": "https://resonantgenesis.xyz/favicon.svg",
-                  "description": "Autonomous agent infrastructure for action, memory, invariant-based constraint simulation, and full-stack observability."
+                  "name": "DevSwat",
+                  "url": "https://dev-swat.com",
+                  "logo": "https://dev-swat.com/devswat/favicon.svg",
+                  "description": "Digitalize your vision with governed autonomous systems, code, memory, and orchestration."
                 },
                 {
                   "@type": "WebSite",
-                  "name": "ResonantGenesis",
-                  "url": "https://resonantgenesis.xyz",
+                  "name": "DevSwat",
+                  "url": "https://dev-swat.com",
                   "potentialAction": {
                     "@type": "SearchAction",
-                    "target": "https://resonantgenesis.xyz/search?q={search_term_string}",
+                    "target": "https://dev-swat.com/search?q={search_term_string}",
                     "query-input": "required name=search_term_string"
                   }
                 }
