@@ -77,11 +77,15 @@ function SceneRotation({ children }: { children: React.ReactNode }) {
     return <group ref={groupRef}>{children}</group>;
 }
 
-/* ── Single card — emerges from deep behind screen, rotates randomly, settles at front ── */
-function ZoomCard({ card }: { card: Card3D }) {
+/* Shared hover state — all cards react to whichever is hovered */
+const hoverState = { index: -1 };
+
+/* ── Single card — emerges from deep, reacts to hover on arrival ── */
+function ZoomCard({ card, index, allCards }: { card: Card3D; index: number; allCards: Card3D[] }) {
     const meshRef = useRef<THREE.Group>(null!);
     const startTime = useRef<number | null>(null);
     const [arrived, setArrived] = useState(false);
+    const lerpPos = useRef({ x: card.px, y: card.py, z: card.pz, rx: 0, ry: 0 });
 
     /* Each card gets unique random spin speeds */
     const spin = useMemo(() => ({
@@ -146,23 +150,63 @@ function ZoomCard({ card }: { card: Card3D }) {
                 spin.sz * elapsed * spinFactor
             );
         } else {
-            /* Subtle float when arrived */
+            /* Arrived: hover interaction */
             const t = now * 0.6;
-            meshRef.current.position.set(
-                card.px,
-                card.py + Math.sin(t + card.delay * 10) * 0.04,
-                card.pz
-            );
-            /* Gentle settled rotation — not perfectly flat */
-            meshRef.current.rotation.set(0, 0, 0);
+            const floatY = Math.sin(t + card.delay * 10) * 0.04;
+            const lp = lerpPos.current;
+            const lerpSpeed = 6 * dt;
+
+            let targetX = card.px;
+            let targetY = card.py;
+            let targetZ = card.pz;
+            let targetRx = 0;
+            let targetRy = 0;
+
+            if (hoverState.index === index) {
+                /* THIS card is hovered — pull forward */
+                targetZ = card.pz + 1.2;
+                targetRx = -mouse.y * 0.08;
+                targetRy = mouse.x * 0.08;
+            } else if (hoverState.index >= 0) {
+                /* Another card is hovered — push away from it */
+                const hovered = allCards[hoverState.index];
+                const dx = card.px - hovered.px;
+                const dy = card.py - hovered.py;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 4.0 && dist > 0.01) {
+                    const pushStrength = (1 - dist / 4.0) * 0.5;
+                    const nx = dx / dist;
+                    const ny = dy / dist;
+                    targetX = card.px + nx * pushStrength;
+                    targetY = card.py + ny * pushStrength;
+                }
+            }
+
+            /* Smooth lerp to target */
+            lp.x += (targetX - lp.x) * lerpSpeed;
+            lp.y += (targetY + floatY - lp.y) * lerpSpeed;
+            lp.z += (targetZ - lp.z) * lerpSpeed;
+            lp.rx += (targetRx - lp.rx) * lerpSpeed;
+            lp.ry += (targetRy - lp.ry) * lerpSpeed;
+
+            meshRef.current.position.set(lp.x, lp.y, lp.z);
+            meshRef.current.rotation.set(lp.rx, lp.ry, 0);
         }
     });
 
     const color = useMemo(() => new THREE.Color(card.color), [card.color]);
     const txtColor = useMemo(() => new THREE.Color(card.textColor), [card.textColor]);
 
+    const handlePointerEnter = () => { hoverState.index = index; };
+    const handlePointerLeave = () => { if (hoverState.index === index) hoverState.index = -1; };
+
     return (
-        <group ref={meshRef} visible={false}>
+        <group
+            ref={meshRef}
+            visible={false}
+            onPointerEnter={handlePointerEnter}
+            onPointerLeave={handlePointerLeave}
+        >
             <RoundedBox
                 args={[card.w, card.h, 0.08]}
                 radius={0.12}
@@ -241,7 +285,7 @@ export function HeroCards3DScene() {
                 width: isMobile ? '100%' : '55vw',
                 height: isMobile ? '45vh' : '100vh',
                 zIndex: 2,
-                pointerEvents: 'none',
+                pointerEvents: 'auto',
             }}
             gl={{ alpha: true, antialias: true }}
             dpr={[1, isMobile ? 1.5 : 2]}
@@ -253,7 +297,7 @@ export function HeroCards3DScene() {
 
             <SceneRotation>
                 {cards.map((card, i) => (
-                    <ZoomCard key={i} card={card} />
+                    <ZoomCard key={i} card={card} index={i} allCards={cards} />
                 ))}
             </SceneRotation>
         </Canvas>
