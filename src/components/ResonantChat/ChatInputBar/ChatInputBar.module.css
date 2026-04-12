@@ -808,7 +808,81 @@
   opacity: 1;
 }
 
-/* AI Assistant toggle removed - Resonant Chat is primary interface */
+/* AI Assistant Toggle */
+.aiAssistantToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border: none;
+  border-radius: 0;
+  background: none;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease, opacity 0.2s ease;
+  opacity: 0.7;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.aiAssistantToggle:hover {
+  opacity: 1;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.aiAssistantToggleActive {
+  opacity: 1;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.aiAssistantToggleActive:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='light'] .aiAssistantToggle {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+[data-theme='light'] .aiAssistantToggle:hover {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+[data-theme='light'] .aiAssistantToggleActive {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.aiAssistantToggleResonant {
+  opacity: 1;
+  color: rgba(100, 200, 255, 0.85);
+}
+
+.aiAssistantToggleResonant:hover {
+  color: rgba(100, 200, 255, 1);
+}
+
+[data-theme='light'] .aiAssistantToggleResonant {
+  color: rgba(0, 100, 180, 0.7);
+}
+
+[data-theme='light'] .aiAssistantToggleResonant:hover {
+  color: rgba(0, 100, 180, 0.9);
+}
+
+.modePill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
 
 .modePillOn {
   background: rgba(74, 222, 128, 0.2);

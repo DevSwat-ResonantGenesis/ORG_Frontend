@@ -366,7 +366,16 @@ const ResonantChatPage: React.FC = () => {
   const [providerStats, setProviderStats] = useState<Record<string, { health: string; latency?: number; available?: boolean }>>({});
   const [userAnalytics, setUserAnalytics] = useState<UserAnalytics | null>(null);
   const [agentMode, setAgentMode] = useState(false);
-      const [pipelineSteps, setPipelineSteps] = useState<Array<{ step: string; message: string; timestamp: number }>>([]);
+  const [aiAssistantEnabled, setAiAssistantEnabled] = useState(() => {
+    try {
+      const saved = localStorage.getItem('rg-ai-assistant-mode');
+      if (saved !== null) return saved === 'true';
+    } catch {}
+    return true;
+  });
+  const [agenticSteps, setAgenticSteps] = useState<Array<{ type: string; data: any; timestamp: number }>>([]);
+  const [presentedOptions, setPresentedOptions] = useState<{ title: string; options: Array<{ label: string; value: string; description: string; icon?: string }>; allow_custom?: boolean } | null>(null);
+  const [pipelineSteps, setPipelineSteps] = useState<Array<{ step: string; message: string; timestamp: number }>>([]);
   const [temperature, setTemperature] = useState(0.7);
   const [maxTokens, setMaxTokens] = useState(2000);
   const [selectedModel, setSelectedModel] = useState<string>('');
@@ -2161,7 +2170,198 @@ const ResonantChatPage: React.FC = () => {
       const chatIdToUse = currentConversationId || undefined;
       console.log('💬 Using chatId:', chatIdToUse, 'currentConversationId:', currentConversationId);
 
-      
+      // === AGENTIC AI ASSISTANT PATH (tools, thinking, real-time steps) ===
+      if (aiAssistantEnabled) {
+        const agenticMsgId = crypto.randomUUID();
+        let agenticContent = '';
+        const steps: Array<{ type: string; data: any; timestamp: number }> = [];
+        let doneStats: { loops: number; tokens: number; elapsed: number } | null = null;
+        let agenticConvId = currentConversationId || '';
+
+        // Add streaming placeholder
+        setMessages(prev => [...prev, {
+          id: agenticMsgId,
+          role: 'assistant' as const,
+          content: '',
+          timestamp: new Date(),
+          aiProvider: 'AI Assistant',
+        }]);
+        setAgenticSteps([]);
+        setPresentedOptions(null);
+
+        try {
+          const apiUrl = (await import('@/utils/apiUrl')).getApiUrl();
+          const history = messages.slice(-10).map(m => ({ role: m.role, content: m.content }));
+
+          // Inject system context (time, timezone) into the message
+          const now = new Date();
+          const systemContext = `[System context: ${now.toISOString()} | ${Intl.DateTimeFormat().resolvedOptions().timeZone} | ${now.toLocaleDateString('en-US', { weekday: 'long' })}]`;
+          const enrichedMessage = `${systemContext}\n\n${queryWithContext}`;
+
+          const streamEndpoint = `${apiUrl}/api/v1/agentic-chat/stream`;
+          const response = await fetch(streamEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              message: enrichedMessage,
+              conversation_id: agenticConvId || undefined,
+              conversation_history: history,
+              enabled_tools: enabledSkillIds.length > 0 ? enabledSkillIds : undefined,
+              preferred_provider: selectedProvider !== 'auto' ? selectedProvider : undefined,
+              max_loops: 50,
+            }),
+            signal: controller.signal,
+          });
+
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          const reader = response.body?.getReader();
+          if (!reader) throw new Error('No response body');
+
+          const decoder = new TextDecoder();
+          let buffer = '';
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+            let eventType = '';
+
+            for (const line of lines) {
+              if (line.startsWith('event: ')) {
+                eventType = line.slice(7).trim();
+              } else if (line.startsWith('data: ') && eventType) {
+                try {
+                  const data = JSON.parse(line.slice(6));
+                  const step = { type: eventType, data, timestamp: Date.now() };
+                  steps.push(step);
+                  setAgenticSteps([...steps]);
+
+                  if (eventType === 'status' && data.conversation_id && !agenticConvId) {
+                    agenticConvId = data.conversation_id;
+                  }
+                  if (eventType === 'tool_result' && data.tool === 'present_options') {
+                    try {
+                      const resultData = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
+                      if (resultData?._type === 'present_options' && resultData?.options) {
+                        setPresentedOptions({ title: resultData.title, options: resultData.options, allow_custom: resultData.allow_custom });
+                      }
+                    } catch { /* not present_options */ }
+                  }
+                  if (eventType === 'chunk') {
+                    // Token-by-token streaming — accumulate chunks in real-time
+                    agenticContent += data.content || '';
+                    setMessages(prev => prev.map(m =>
+                      m.id === agenticMsgId ? { ...m, content: agenticContent } : m
+                    ));
+                  }
+                  if (eventType === 'response') {
+                    // Final response (backward compat + non-streamed responses)
+                    agenticContent = data.content || agenticContent;
+                    setMessages(prev => prev.map(m =>
+                      m.id === agenticMsgId ? { ...m, content: agenticContent } : m
+                    ));
+                  }
+                  if (eventType === 'credit_warning') {
+                    if (data.type === 'zero') {
+                      showError(`Credits exhausted! ${data.message || 'Please upgrade your plan or purchase credits.'} Click to upgrade.`, 15000, () => navigate('/pricing'));
+                    } else if (data.type === 'low') {
+                      warning(`${data.message || `Low credit balance: ${data.balance} credits remaining.`}`, 10000);
+                    }
+                  }
+                  if (eventType === 'done') {
+                    doneStats = { loops: data.loops, tokens: data.tokens, elapsed: data.elapsed_seconds };
+                    if (data.credits_balance !== null && data.credits_balance !== undefined) {
+                      if (data.credits_balance <= 0) {
+                        showError('Your credit balance has reached zero. Click here to upgrade your plan or purchase credits.', 15000, () => navigate('/pricing'));
+                      } else if (data.credits_balance < 3000) {
+                        warning(`Credit balance low: ${data.credits_balance} credits remaining. Consider upgrading your plan.`, 10000);
+                      }
+                    }
+                  }
+                } catch { /* skip malformed */ }
+                eventType = '';
+              }
+            }
+          }
+
+          // Finalize message with tool results
+          const toolResults = steps
+            .filter(s => s.type === 'tool_result')
+            .map(s => ({
+              tool_name: s.data.tool || 'unknown',
+              success: !s.data.error,
+              result: s.data.result ? { raw: s.data.result } : undefined,
+              error: s.data.error,
+            }));
+
+          if (agenticContent) {
+            setMessages(prev => prev.map(m =>
+              m.id === agenticMsgId
+                ? { ...m, content: agenticContent, aiProvider: 'AI Assistant', toolResults: toolResults.length > 0 ? toolResults : undefined }
+                : m
+            ));
+          } else {
+            const errStep = steps.find(s => s.type === 'error');
+            setMessages(prev => prev.map(m =>
+              m.id === agenticMsgId
+                ? { ...m, content: errStep ? `Error: ${errStep.data?.error || 'Unknown'}` : 'No response received.', aiProvider: errStep ? 'error' : 'AI Assistant' }
+                : m
+            ));
+          }
+
+          setAgenticSteps([]);
+          triggerChatSync();
+
+          // Cross-save agentic messages into resonant chat pipeline
+          // (hashing, DSID, memory ingestion, PMI) so they persist on reload
+          if (isLoggedIn && agenticContent && !agenticContent.startsWith('Error:')) {
+            const agenticToolCalls = steps
+              .filter(s => s.type === 'tool_call')
+              .map(s => ({ tool: s.data.tool || 'unknown', args: s.data.args }));
+            saveAgenticToResonant(
+              currentInput,
+              agenticContent,
+              currentConversationId || undefined,
+              {
+                toolResults,
+                toolCalls: agenticToolCalls,
+                tokensUsed: doneStats?.tokens || 0,
+                loops: doneStats?.loops || 0,
+              },
+            ).then(result => {
+              if (result.chat_id && !currentConversationId) {
+                setCurrentConversationId(result.chat_id);
+              }
+              console.log(`[Agentic→Resonant] Saved to resonant pipeline: chat_id=${result.chat_id}`);
+            }).catch(() => {});
+          }
+
+          if (soundNotifications) {
+            try {
+              const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OSdTgwOUKzn8LZjGwU7k9jzzHksBSR3x/DdkEAKFF606euoVRQKRp/g8r5sIQUrgc7y2Yk2CBtpvfDknU4MDlCs5/C2YxsFO5PY88x5LAUkd8fw3ZBAC');
+              audio.play().catch(() => {});
+            } catch { /* ignore */ }
+          }
+
+          if (isLoggedIn && currentInput && agenticContent && !agenticContent.startsWith('Error:')) {
+            extractMemories(currentInput, agenticContent, agenticConvId || '')
+              .then(result => { if (result.count > 0) { console.log(`[Memory] Auto-extracted ${result.count} memories`); loadMemories(); } })
+              .catch(() => {});
+          }
+
+          return; // Agentic streaming succeeded — exit handleSend
+        } catch (agenticError: any) {
+          if (controller.signal.aborted || agenticError?.name === 'AbortError') throw agenticError;
+          console.warn('[ResonantChat] Agentic streaming failed, falling back:', agenticError);
+          setMessages(prev => prev.filter(m => m.id !== agenticMsgId));
+          setAgenticSteps([]);
+        }
+      }
+
       // === RESONANT CHAT FULL PIPELINE (agent routing, skills, autonomous daemon, web search, image gen) ===
       // Use sendResonantMessage for all users (Hash Sphere-powered messaging)
       // Extract immediate context from last few messages to help AI focus on current task
@@ -2282,6 +2482,27 @@ const ResonantChatPage: React.FC = () => {
               setSplitViewPane('split');
             }
           }
+        }
+      }
+
+      // Extract present_options from regular skill toolResults (e.g., Agent Architect)
+      if (resonantResponse.toolResults && resonantResponse.toolResults.length > 0) {
+        const presentOptionsResult = resonantResponse.toolResults.find(
+          (tr: any) => tr.tool_name === 'present_options' && tr.success && tr.result
+        );
+        if (presentOptionsResult?.result?._type === 'present_options' && presentOptionsResult.result?.options) {
+          setPresentedOptions({
+            title: presentOptionsResult.result.title || 'Options',
+            options: presentOptionsResult.result.options,
+            allow_custom: presentOptionsResult.result.allow_custom,
+          });
+        }
+      }
+
+      // Save chatId from response if provided (backend creates chat if not provided)
+      if (resonantResponse.chatId && !currentConversationId) {
+        console.log('💬 Saving new chatId:', resonantResponse.chatId);
+        setCurrentConversationId(resonantResponse.chatId);
         // NOTE: No localStorage - conversations are loaded only from backend
       }
 
@@ -4441,6 +4662,50 @@ const ResonantChatPage: React.FC = () => {
                                   return null;
                               }
                             })}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '2px 0' }}>
+                            <div className={styles.thinkingSpinner} />
+                            <span className={styles.thinkingText} style={{ fontSize: '11px' }}>
+                              {agenticSteps.filter(s => s.type === 'tool_call').length} tool calls · {agenticSteps.filter(s => s.type === 'thinking').length} loops
+                            </span>
+                          </div>
+                        </div>
+                      ) : pipelineSteps.length > 0 ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', width: '100%', maxWidth: '85%' }}>
+                          {pipelineSteps.slice(-6).map((ps, i) => {
+                            const base: React.CSSProperties = { padding: '5px 10px', borderRadius: '6px', fontSize: '12px', fontFamily: "'SF Mono','Fira Code','Consolas', monospace" };
+                            const icons: Record<string, string> = {
+                              hashing: '\u{1F517}',
+                              memory_search: '\u{1F9E0}',
+                              memory_found: '\u{1F4BE}',
+                              context: '\u{1F4DD}',
+                              routing: '\u{1F680}',
+                              generating_done: '\u2705',
+                              post_processing: '\u{1F50D}',
+                              memory_ingest: '\u{1F4E5}',
+                            };
+                            const colors: Record<string, { bg: string; fg: string }> = {
+                              hashing: { bg: 'rgba(14,165,233,0.12)', fg: '#38bdf8' },
+                              memory_search: { bg: 'rgba(168,85,247,0.12)', fg: '#c084fc' },
+                              memory_found: { bg: 'rgba(16,185,129,0.12)', fg: '#6ee7b7' },
+                              context: { bg: 'rgba(59,130,246,0.12)', fg: '#93c5fd' },
+                              routing: { bg: 'rgba(234,179,8,0.12)', fg: '#fde047' },
+                              generating_done: { bg: 'rgba(16,185,129,0.12)', fg: '#6ee7b7' },
+                              post_processing: { bg: 'rgba(14,165,233,0.12)', fg: '#38bdf8' },
+                              memory_ingest: { bg: 'rgba(14,165,233,0.12)', fg: '#38bdf8' },
+                            };
+                            const c = colors[ps.step] || { bg: 'rgba(255,255,255,0.06)', fg: '#888' };
+                            return (
+                              <div key={i} style={{ ...base, background: c.bg, color: c.fg, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <span>{icons[ps.step] || '\u2699\uFE0F'}</span> {ps.message}
+                              </div>
+                            );
+                          })}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '2px 0' }}>
+                            <div className={styles.thinkingSpinner} />
+                            <span className={styles.thinkingText} style={{ fontSize: '11px' }}>
+                              {pipelineSteps.length} pipeline steps
+                            </span>
+                          </div>
                         </div>
                       ) : (
                         <>
@@ -4450,7 +4715,55 @@ const ResonantChatPage: React.FC = () => {
                       )}
                     </div>
                   )}
-                                    <div className={styles.messagesBottomSpacer} />
+                  {/* Interactive Options Cards (from present_options tool) */}
+                  {presentedOptions && !isLoading && (
+                    <div style={{ padding: '12px 16px', maxWidth: '85%' }}>
+                      <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '10px', color: 'var(--text-primary, #e2e8f0)' }}>
+                        {presentedOptions.title}
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        {presentedOptions.options.map((opt, i) => (
+                          <button
+                            key={i}
+                            onClick={() => {
+                              setPresentedOptions(null);
+                              if (opt.url) {
+                                if (opt.url.startsWith('http')) {
+                                  window.open(opt.url, '_blank', 'noopener');
+                                } else {
+                                  navigate(opt.url);
+                                }
+                              } else {
+                                handleSend(opt.value);
+                              }
+                            }}
+                            style={{
+                              display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px',
+                              padding: '12px 16px', borderRadius: '12px', border: '1px solid rgba(99, 102, 241, 0.3)',
+                              background: 'rgba(99, 102, 241, 0.08)', cursor: 'pointer', textAlign: 'left',
+                              minWidth: '140px', maxWidth: '260px', flex: '1 1 auto',
+                              transition: 'all 0.2s ease', color: 'var(--text-primary, #e2e8f0)',
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(99, 102, 241, 0.18)'; e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.6)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(99, 102, 241, 0.08)'; e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                          >
+                            <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                              {opt.icon ? `${opt.icon} ` : ''}{opt.label}
+                            </span>
+                            {opt.description && (
+                              <span style={{ fontSize: '11px', opacity: 0.65, lineHeight: 1.3 }}>{opt.description}</span>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                      {presentedOptions.allow_custom !== false && (
+                        <div style={{ fontSize: '11px', opacity: 0.4, marginTop: '8px' }}>
+                          Or type your own response below
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <div className={styles.messagesBottomSpacer} />
                   <div ref={messagesEndRef} className={styles.messagesEndAnchor} />
                 </div>
               )}
@@ -4615,6 +4928,12 @@ const ResonantChatPage: React.FC = () => {
           attachedFiles={attachedFiles}
           onRemoveFile={(index) => setAttachedFiles(prev => prev.filter((_, i) => i !== index))}
           onEnabledSkillsChange={setEnabledSkillIds}
+          aiAssistantEnabled={aiAssistantEnabled}
+          onToggleAiAssistant={() => setAiAssistantEnabled(prev => {
+            const next = !prev;
+            try { localStorage.setItem('rg-ai-assistant-mode', String(next)); } catch {}
+            return next;
+          })}
           memories={memories}
           onShowMemoryLibrary={() => {
             setShowMemoryLibrary(true);
