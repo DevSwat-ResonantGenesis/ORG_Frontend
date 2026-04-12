@@ -32,15 +32,23 @@ interface Card3D {
     delay: number;
 }
 
-/* Wide asymmetric spread — shifted RIGHT, not centered. Yellow card is 3× taller. */
+/* 3-column mosaic — NO overlaps. Yellow tall pillar right, Orange tall pillar left. */
 const CARDS: Card3D[] = [
-    { label: 'Code',       desc: 'AI-powered dev',      color: '#121214', textColor: '#ffffff', px: -0.2, py: 2.2,   pz: -0.4, w: 3.8, h: 2.2, chaosX: -2.0, chaosRx: 0.8,  chaosRy: -0.6, chaosRz: 0.35, delay: 0.0 },
-    { label: '',           desc: '',                     color: '#FFD800', textColor: '#121214', px: 3.4,  py: 0.0,   pz: 0.6,  w: 2.8, h: 5.0, chaosX: 2.2,  chaosRx: -0.7, chaosRy: 0.8,  chaosRz: -0.3, delay: 0.18 },
-    { label: '',           desc: '',                     color: '#FAA525', textColor: '#121214', px: -1.2, py: -0.8,  pz: 0.25, w: 2.2, h: 4.0, chaosX: -1.2, chaosRx: 0.9,  chaosRy: -0.4, chaosRz: 0.2,  delay: 0.35 },
-    { label: 'Governance', desc: 'On-chain compliance',  color: '#01A6BC', textColor: '#ffffff', px: 1.4,  py: -0.2,  pz: -0.5, w: 3.2, h: 2.0, chaosX: 1.4,  chaosRx: -0.5, chaosRy: 0.6,  chaosRz: -0.4, delay: 0.12 },
-    { label: 'Agents',     desc: 'Autonomous workflows', color: '#FA547C', textColor: '#ffffff', px: 0.8,  py: -2.6,  pz: 0.35, w: 2.4, h: 2.0, chaosX: -1.0, chaosRx: 0.7,  chaosRy: -0.7, chaosRz: 0.45, delay: 0.28 },
-    { label: 'Memory',     desc: 'Persistent knowledge', color: '#FFFFFF', textColor: '#121214', px: 3.8,  py: -0.6,  pz: -0.65, w: 1.8, h: 4.0, chaosX: 1.6,  chaosRx: -0.8, chaosRy: 0.5,  chaosRz: -0.3, delay: 0.22 },
-    { label: '',           desc: '',                     color: '#71C23E', textColor: '#121214', px: 3.0,  py: -2.8,  pz: 0.5,  w: 1.8, h: 2.0, chaosX: -0.8, chaosRx: 0.6,  chaosRy: -0.8, chaosRz: 0.5,  delay: 0.4 },
+    /*            label          desc                    color      text       px     py     pz     w    h    chaosX  chaosRx chaosRy chaosRz delay */
+    /* Top center-left: wide */
+    { label: 'Code',       desc: 'AI-powered dev',      color: '#121214', textColor: '#ffffff', px: 0.6,  py: 2.8,  pz: -0.3, w: 3.5, h: 2.0, chaosX: -1.8, chaosRx: 0.8,  chaosRy: -0.6, chaosRz: 0.35, delay: 0.0 },
+    /* Right pillar: TALL yellow — sits BESIDE center cards, not over them */
+    { label: '',           desc: '',                     color: '#FFD800', textColor: '#121214', px: 3.8,  py: 1.0,  pz: 0.4,  w: 2.5, h: 5.0, chaosX: 2.0,  chaosRx: -0.7, chaosRy: 0.8,  chaosRz: -0.3, delay: 0.18 },
+    /* Left pillar: tall orange */
+    { label: '',           desc: '',                     color: '#FAA525', textColor: '#121214', px: -1.6, py: 0.5,  pz: 0.2,  w: 1.8, h: 3.5, chaosX: -1.2, chaosRx: 0.9,  chaosRy: -0.4, chaosRz: 0.2,  delay: 0.35 },
+    /* Center: wide governance */
+    { label: 'Governance', desc: 'On-chain compliance',  color: '#01A6BC', textColor: '#ffffff', px: 0.8,  py: 0.0,  pz: -0.4, w: 3.0, h: 1.8, chaosX: 1.4,  chaosRx: -0.5, chaosRy: 0.6,  chaosRz: -0.4, delay: 0.12 },
+    /* Bottom center: agents */
+    { label: 'Agents',     desc: 'Autonomous workflows', color: '#FA547C', textColor: '#ffffff', px: 0.8,  py: -2.2, pz: 0.3,  w: 2.2, h: 1.8, chaosX: -1.0, chaosRx: 0.7,  chaosRy: -0.7, chaosRz: 0.45, delay: 0.28 },
+    /* Bottom right: memory */
+    { label: 'Memory',     desc: 'Persistent knowledge', color: '#FFFFFF', textColor: '#121214', px: 3.8,  py: -2.5, pz: -0.5, w: 1.5, h: 2.0, chaosX: 1.6,  chaosRx: -0.8, chaosRy: 0.5,  chaosRz: -0.3, delay: 0.22 },
+    /* Bottom left: green */
+    { label: '',           desc: '',                     color: '#71C23E', textColor: '#121214', px: -1.6, py: -2.5, pz: 0.5,  w: 1.5, h: 1.8, chaosX: -0.8, chaosRx: 0.6,  chaosRy: -0.8, chaosRz: 0.5,  delay: 0.4 },
 ];
 
 /* ── Mouse tracker ── */

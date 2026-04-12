@@ -31,11 +31,11 @@ h1.heroTitle {
 }
 
 @media (min-width: 768px) {
-  .heroTitle { font-size: clamp(140px, 16vw, 193px); }
+  .heroTitle { font-size: clamp(160px, 17vw, 220px); }
 }
 
 @media (min-width: 1280px) {
-  .heroTitle { font-size: 193px; }
+  .heroTitle { font-size: 220px; }
 }
 
 [data-theme='light'] .heroTitle,
