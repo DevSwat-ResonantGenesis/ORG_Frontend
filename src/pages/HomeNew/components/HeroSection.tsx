@@ -5,14 +5,27 @@ import styles from '../HomeNew.module.css';
 import { isAuthenticated } from '@/utils/auth-cookies';
 import { useThemeStore } from '@/store/themeStore';
 
-const SERVICE_CARDS = [
-    { label: 'Code', desc: 'AI-powered development', color: '#121214', text: '#FFFFFF', span: 'wide' },
-    { label: '', desc: '', color: '#FFD800', text: '#121214', span: 'square' },
-    { label: '', desc: '', color: '#FAA525', text: '#121214', span: 'tall' },
-    { label: 'Governance', desc: 'On-chain compliance', color: '#01A6BC', text: '#FFFFFF', span: 'wide' },
-    { label: 'Agents', desc: 'Autonomous workflows', color: '#FA547C', text: '#FFFFFF', span: 'square' },
-    { label: 'Memory', desc: 'Persistent knowledge', color: '#FFFFFF', text: '#121214', span: 'square' },
-    { label: '', desc: '', color: '#71C23E', text: '#121214', span: 'square' },
+interface FloatingCard {
+    label: string;
+    desc: string;
+    bg: string;
+    text: string;
+    w: number;
+    h: number;
+    x: number;
+    y: number;
+    z: number;
+    rot: number;
+}
+
+const CARDS: FloatingCard[] = [
+    { label: 'Code',       desc: 'AI-powered development',  bg: '#121214', text: '#fff', w: 220, h: 150, x: 55, y: 12, z: 80,  rot: -3 },
+    { label: '',           desc: '',                         bg: '#FFD800', text: '#121214', w: 130, h: 130, x: 78, y: 8,  z: 140, rot: 4 },
+    { label: '',           desc: '',                         bg: '#FAA525', text: '#121214', w: 110, h: 220, x: 55, y: 38, z: 60,  rot: 2 },
+    { label: 'Governance', desc: 'On-chain compliance',      bg: '#01A6BC', text: '#fff', w: 240, h: 150, x: 66, y: 42, z: 100, rot: -2 },
+    { label: 'Agents',     desc: 'Autonomous workflows',     bg: '#FA547C', text: '#fff', w: 150, h: 150, x: 53, y: 72, z: 120, rot: 3 },
+    { label: 'Memory',     desc: 'Persistent knowledge',     bg: '#FFFFFF', text: '#121214', w: 140, h: 130, x: 70, y: 75, z: 50,  rot: -4 },
+    { label: '',           desc: '',                         bg: '#71C23E', text: '#121214', w: 110, h: 110, x: 87, y: 70, z: 160, rot: 5 },
 ];
 
 export const HeroSection = () => {
@@ -25,83 +38,82 @@ export const HeroSection = () => {
     const textColor = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.4)';
     const textDim = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.25)';
 
-    const heroRef = useRef<HTMLDivElement>(null);
-    const gridRef = useRef<HTMLDivElement>(null);
+    const sceneRef = useRef<HTMLDivElement>(null);
+    const rafRef = useRef<number>(0);
+    const mouseRef = useRef({ x: 0, y: 0 });
 
-    const handleMouseMove = useCallback((e: MouseEvent) => {
-        if (!heroRef.current) return;
-        const mx = (e.clientX / window.innerWidth - 0.5) * 2;
-        const my = (e.clientY / window.innerHeight - 0.5) * 2;
-        heroRef.current.style.setProperty('--mx', String(mx));
-        heroRef.current.style.setProperty('--my', String(my));
-
-        if (!gridRef.current) return;
-        const cards = gridRef.current.children;
-        for (let i = 0; i < cards.length; i++) {
-            const card = cards[i] as HTMLElement;
-            const rect = card.getBoundingClientRect();
-            const cx = e.clientX - (rect.left + rect.width / 2);
-            const cy = e.clientY - (rect.top + rect.height / 2);
-            const rx = -(cy / rect.height) * 8;
-            const ry = (cx / rect.width) * 8;
-            card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
-        }
-    }, []);
-
-    const handleMouseLeave = useCallback(() => {
-        if (!gridRef.current) return;
-        const cards = gridRef.current.children;
-        for (let i = 0; i < cards.length; i++) {
-            (cards[i] as HTMLElement).style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateZ(0)';
-        }
+    const animate = useCallback(() => {
+        if (!sceneRef.current) return;
+        const { x, y } = mouseRef.current;
+        const cards = sceneRef.current.querySelectorAll<HTMLElement>('[data-depth]');
+        cards.forEach(card => {
+            const depth = parseFloat(card.dataset.depth || '1');
+            const moveX = x * depth * 40;
+            const moveY = y * depth * 25;
+            const rotY = x * depth * 6;
+            const rotX = -y * depth * 4;
+            card.style.transform =
+                `translate3d(${moveX}px, ${moveY}px, ${depth * 40}px) rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+        });
+        rafRef.current = requestAnimationFrame(animate);
     }, []);
 
     useEffect(() => {
-        window.addEventListener('mousemove', handleMouseMove, { passive: true });
-        return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, [handleMouseMove]);
+        const onMove = (e: MouseEvent) => {
+            mouseRef.current = {
+                x: (e.clientX / window.innerWidth - 0.5) * 2,
+                y: (e.clientY / window.innerHeight - 0.5) * 2,
+            };
+        };
+        window.addEventListener('mousemove', onMove, { passive: true });
+        rafRef.current = requestAnimationFrame(animate);
+        return () => {
+            window.removeEventListener('mousemove', onMove);
+            cancelAnimationFrame(rafRef.current);
+        };
+    }, [animate]);
 
     if (isLoggedIn) return null;
 
     return (
-        <section className={styles.hero} ref={heroRef} onMouseLeave={handleMouseLeave}>
-            <div className={styles.heroInner}>
-                <div className={styles.heroContent}>
-                    <h1 className={heroTitleStyles.heroTitle}>
-                        Digitalize<br />Your Vision
-                    </h1>
-                    <p className={heroTitleStyles.heroTitleTagline}>Simpler Than Ever</p>
+        <section className={styles.hero}>
+            <div className={styles.heroTextBlock}>
+                <h1 className={heroTitleStyles.heroTitle}>
+                    Digitalize<br />Your Vision
+                </h1>
+                <p className={heroTitleStyles.heroTitleTagline}>Simpler Than Ever</p>
+                <button className={styles.heroCtaFuturistic} onClick={() => navigate('/signup')}>
+                    <span className={styles.heroCtaText}>Get Started</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+            </div>
 
-                    <button
-                        className={styles.heroCtaFuturistic}
-                        onClick={() => navigate('/signup')}
+            <div className={styles.heroScene} ref={sceneRef}>
+                {CARDS.map((c, i) => (
+                    <div
+                        key={i}
+                        data-depth={((c.z / 160) * 0.8 + 0.2).toFixed(2)}
+                        className={styles.fCard}
+                        style={{
+                            '--fc-bg': c.bg,
+                            '--fc-text': c.text,
+                            '--fc-w': `${c.w}px`,
+                            '--fc-h': `${c.h}px`,
+                            '--fc-x': `${c.x}%`,
+                            '--fc-y': `${c.y}%`,
+                            '--fc-rot': `${c.rot}deg`,
+                            '--fc-delay': `${i * 0.12 + 0.15}s`,
+                        } as React.CSSProperties}
                     >
-                        <span className={styles.heroCtaText}>Get Started</span>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                    </button>
-                </div>
-
-                <div className={styles.heroCardsStage} ref={gridRef}>
-                    {SERVICE_CARDS.map((card, i) => (
-                        <div
-                            key={i}
-                            className={`${styles.svcCard} ${styles[`svcCard_${card.span}`]}`}
-                            style={{
-                                '--svc-bg': card.color,
-                                '--svc-text': card.text,
-                                '--fall-i': `${i}`,
-                            } as React.CSSProperties}
-                        >
-                            <div className={styles.svcCardGlass} />
-                            {card.label && (
-                                <div className={styles.svcCardBody}>
-                                    <span className={styles.svcCardLabel}>{card.label}</span>
-                                    {card.desc && <span className={styles.svcCardDesc}>{card.desc}</span>}
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </div>
+                        <div className={styles.fCardShine} />
+                        {c.label && (
+                            <div className={styles.fCardContent}>
+                                <span className={styles.fCardLabel}>{c.label}</span>
+                                {c.desc && <span className={styles.fCardDesc}>{c.desc}</span>}
+                            </div>
+                        )}
+                    </div>
+                ))}
             </div>
 
             <div className={styles.heroBottomBar}>
