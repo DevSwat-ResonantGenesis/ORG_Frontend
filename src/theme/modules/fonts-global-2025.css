@@ -82,3 +82,14 @@
 :not(.ide-container) label {
   font-family: var(--font-sans) !important;
 }
+
+/* Homepage hero typography exception */
+:not(.ide-container) [class*="heroTitle"] {
+  font-family: 'Abril Fatface', serif !important;
+  font-weight: 400 !important;
+}
+
+:not(.ide-container) [class*="heroTitleTagline"] {
+  font-family: 'Work Sans', sans-serif !important;
+  font-weight: 700 !important;
+}

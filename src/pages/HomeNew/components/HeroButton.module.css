@@ -16,9 +16,9 @@
   gap: 10px;
   margin-top: clamp(22px, 3vw, 36px);
   padding: 14px 32px;
-  border-radius: 999px;
-  border: 1px solid #f7ca00;
-  background: var(--home-hero-cta-bg-solid);
+  border-radius: 999px !important;
+  border: 1px solid #f7ca00 !important;
+  background: var(--home-hero-cta-bg-solid) !important;
   color: var(--home-hero-cta-text) !important;
   box-shadow: var(--home-hero-cta-shadow);
   font-family: var(--home-hero-cta-font);
@@ -52,15 +52,11 @@
 }
 
 .heroButton::after {
-  z-index: 1;
-  background: linear-gradient(110deg, rgba(255, 255, 255, 0.52) 0%, rgba(255, 255, 255, 0.1) 22%, rgba(255, 255, 255, 0) 45%);
-  opacity: 0.95;
-  transform: translateX(-30%);
-  animation: ctaShineSweep 3.8s ease-in-out infinite;
+  display: none;
 }
 
 .heroButton:hover {
-  background: var(--home-hero-cta-bg-hover);
+  background: var(--home-hero-cta-bg-hover) !important;
   transform: perspective(900px) rotateX(9deg) rotateY(-10deg) translateY(-3px) translateZ(0);
   box-shadow: 0 22px 44px rgba(0, 0, 0, 0.42), 0 0 56px rgba(255, 212, 0, 0.62);
 }
@@ -91,6 +87,11 @@
   transform: translateX(3px);
 }
 
+.heroButton > * {
+  position: relative;
+  z-index: 2;
+}
+
 @keyframes ctaParallaxDrift {
   0%,
   100% {
@@ -99,19 +100,6 @@
 
   50% {
     transform: translate3d(8px, -6px, 0) scale(1.04);
-  }
-}
-
-@keyframes ctaShineSweep {
-  0%,
-  100% {
-    transform: translateX(-32%);
-    opacity: 0.75;
-  }
-
-  50% {
-    transform: translateX(24%);
-    opacity: 1;
   }
 }
 
