@@ -5,7 +5,7 @@
 .heroTitle,
 h1.heroTitle {
   font-family: 'Abril Fatface', Georgia, 'Times New Roman', serif;
-  font-size: clamp(56px, 12vw, 193px);
+  font-size: clamp(80px, 22vw, 193px);
   font-weight: 400;
   margin: 0;
   padding: 0;
@@ -31,7 +31,7 @@ h1.heroTitle {
 }
 
 @media (min-width: 768px) {
-  .heroTitle { font-size: clamp(100px, 14vw, 193px); }
+  .heroTitle { font-size: clamp(140px, 16vw, 193px); }
 }
 
 @media (min-width: 1280px) {

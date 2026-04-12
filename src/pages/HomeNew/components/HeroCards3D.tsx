@@ -209,15 +209,15 @@ function FallingCard({ card }: { card: Card3D }) {
     );
 }
 
-/* ── Mobile-scaled cards ── */
+/* ── Mobile-scaled cards — smaller to fit screen, no cutoff ── */
 const CARDS_MOBILE: Card3D[] = CARDS.map(c => ({
     ...c,
-    px: c.px * 0.65,
-    py: c.py * 0.65,
-    pz: c.pz * 0.3,
-    w: c.w * 0.65,
-    h: c.h * 0.65,
-    chaosX: c.chaosX * 0.4,
+    px: c.px * 0.38,
+    py: c.py * 0.38,
+    pz: c.pz * 0.2,
+    w: c.w * 0.38,
+    h: c.h * 0.38,
+    chaosX: c.chaosX * 0.3,
 }));
 
 /* ── Main 3D Canvas ── */
@@ -227,7 +227,7 @@ export function HeroCards3DScene() {
 
     return (
         <Canvas
-            camera={{ position: [isMobile ? 0 : 1.5, 0, isMobile ? 5 : 9], fov: isMobile ? 55 : 48 }}
+            camera={{ position: [isMobile ? 0.4 : 1.5, 0, isMobile ? 4 : 9], fov: isMobile ? 50 : 48 }}
             style={{
                 position: isMobile ? 'relative' : 'absolute',
                 right: isMobile ? 'auto' : 0,
