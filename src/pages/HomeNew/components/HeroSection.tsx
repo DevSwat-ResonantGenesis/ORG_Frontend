@@ -5,6 +5,16 @@ import styles from '../HomeNew.module.css';
 import { isAuthenticated } from '@/utils/auth-cookies';
 import { useThemeStore } from '@/store/themeStore';
 
+const SERVICE_CARDS = [
+    { label: 'Code', desc: 'AI-powered development', color: '#121214', text: '#FFFFFF', span: 'wide' },
+    { label: '', desc: '', color: '#FFD800', text: '#121214', span: 'square' },
+    { label: '', desc: '', color: '#FAA525', text: '#121214', span: 'tall' },
+    { label: 'Governance', desc: 'On-chain compliance', color: '#01A6BC', text: '#FFFFFF', span: 'wide' },
+    { label: 'Agents', desc: 'Autonomous workflows', color: '#FA547C', text: '#FFFFFF', span: 'square' },
+    { label: 'Memory', desc: 'Persistent knowledge', color: '#FFFFFF', text: '#121214', span: 'square' },
+    { label: '', desc: '', color: '#71C23E', text: '#121214', span: 'square' },
+];
+
 export const HeroSection = () => {
     const navigate = useNavigate();
     const isLoggedIn = isAuthenticated();
@@ -15,15 +25,35 @@ export const HeroSection = () => {
     const textColor = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.4)';
     const textDim = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.25)';
 
-    const parallaxRef = useRef<HTMLDivElement>(null);
+    const heroRef = useRef<HTMLDivElement>(null);
+    const gridRef = useRef<HTMLDivElement>(null);
 
     const handleMouseMove = useCallback((e: MouseEvent) => {
-        if (!parallaxRef.current) return;
-        const { clientX, clientY } = e;
-        const cx = (clientX / window.innerWidth - 0.5) * 2;
-        const cy = (clientY / window.innerHeight - 0.5) * 2;
-        parallaxRef.current.style.setProperty('--mx', String(cx));
-        parallaxRef.current.style.setProperty('--my', String(cy));
+        if (!heroRef.current) return;
+        const mx = (e.clientX / window.innerWidth - 0.5) * 2;
+        const my = (e.clientY / window.innerHeight - 0.5) * 2;
+        heroRef.current.style.setProperty('--mx', String(mx));
+        heroRef.current.style.setProperty('--my', String(my));
+
+        if (!gridRef.current) return;
+        const cards = gridRef.current.children;
+        for (let i = 0; i < cards.length; i++) {
+            const card = cards[i] as HTMLElement;
+            const rect = card.getBoundingClientRect();
+            const cx = e.clientX - (rect.left + rect.width / 2);
+            const cy = e.clientY - (rect.top + rect.height / 2);
+            const rx = -(cy / rect.height) * 8;
+            const ry = (cx / rect.width) * 8;
+            card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+        }
+    }, []);
+
+    const handleMouseLeave = useCallback(() => {
+        if (!gridRef.current) return;
+        const cards = gridRef.current.children;
+        for (let i = 0; i < cards.length; i++) {
+            (cards[i] as HTMLElement).style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateZ(0)';
+        }
     }, []);
 
     useEffect(() => {
@@ -34,27 +64,7 @@ export const HeroSection = () => {
     if (isLoggedIn) return null;
 
     return (
-        <section className={styles.hero} ref={parallaxRef}>
-            {/* Ambient glow orbs */}
-            <div className={styles.heroAmbient} aria-hidden="true">
-                <div className={`${styles.heroOrb} ${styles.heroOrb1}`} />
-                <div className={`${styles.heroOrb} ${styles.heroOrb2}`} />
-                <div className={`${styles.heroOrb} ${styles.heroOrb3}`} />
-            </div>
-
-            {/* 3D Parallax floating shapes */}
-            <div className={styles.heroParallaxField} aria-hidden="true">
-                <div className={`${styles.heroShape} ${styles.heroShapeRing}`} />
-                <div className={`${styles.heroShape} ${styles.heroShapeSphere}`} />
-                <div className={`${styles.heroShape} ${styles.heroShapeCube}`} />
-                <div className={`${styles.heroShape} ${styles.heroShapeBar}`} />
-                <div className={`${styles.heroShape} ${styles.heroShapeDot1}`} />
-                <div className={`${styles.heroShape} ${styles.heroShapeDot2}`} />
-                <div className={`${styles.heroShape} ${styles.heroShapeDot3}`} />
-                <div className={`${styles.heroShape} ${styles.heroShapeLine1}`} />
-                <div className={`${styles.heroShape} ${styles.heroShapeLine2}`} />
-            </div>
-
+        <section className={styles.hero} ref={heroRef} onMouseLeave={handleMouseLeave}>
             <div className={styles.heroInner}>
                 <div className={styles.heroContent}>
                     <h1 className={heroTitleStyles.heroTitle}>
@@ -69,6 +79,28 @@ export const HeroSection = () => {
                         <span className={styles.heroCtaText}>Get Started</span>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                     </button>
+                </div>
+
+                <div className={styles.heroCardsStage} ref={gridRef}>
+                    {SERVICE_CARDS.map((card, i) => (
+                        <div
+                            key={i}
+                            className={`${styles.svcCard} ${styles[`svcCard_${card.span}`]}`}
+                            style={{
+                                '--svc-bg': card.color,
+                                '--svc-text': card.text,
+                                '--fall-i': `${i}`,
+                            } as React.CSSProperties}
+                        >
+                            <div className={styles.svcCardGlass} />
+                            {card.label && (
+                                <div className={styles.svcCardBody}>
+                                    <span className={styles.svcCardLabel}>{card.label}</span>
+                                    {card.desc && <span className={styles.svcCardDesc}>{card.desc}</span>}
+                                </div>
+                            )}
+                        </div>
+                    ))}
                 </div>
             </div>
 
