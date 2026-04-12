@@ -508,8 +508,8 @@
     transform: none;
     padding: 90px 20px 16px;
     max-width: 100%;
-    text-align: center;
-    align-items: center;
+    text-align: left;
+    align-items: flex-start;
     flex-shrink: 0;
   }
   .heroBottomBar {
