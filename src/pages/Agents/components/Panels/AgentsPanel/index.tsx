@@ -104,7 +104,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     const list = agents
       .filter((agent: Agent) => {
         if (filter === 'favorites' && !pinnedSet.has(agent.id)) return false;
-        if (filter === 'openclaw' && agent.agent_source !== 'openclaw') return false;
+        if (filter === 'openclaw' && agent.agent_source !== 'openclaw' && agent.agent_source !== 'federated') return false;
         if (filter !== 'all' && filter !== 'favorites' && filter !== 'openclaw' && agent.status !== filter) return false;
         if (q && !agent.name.toLowerCase().includes(q)) return false;
         return true;
@@ -735,7 +735,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                       <h3>{agent.name}</h3>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                         <span className={styles.typeBadge}>{agent.type}</span>
-                        {agent.agent_source === 'openclaw' && (
+                        {(agent.agent_source === 'openclaw' || agent.agent_source === 'federated') && (
                           <span style={{
                             display: 'inline-flex', alignItems: 'center', gap: 3,
                             padding: '1px 6px', borderRadius: 4, fontSize: 9, fontWeight: 700,
