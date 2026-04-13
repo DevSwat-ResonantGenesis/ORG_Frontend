@@ -142,6 +142,7 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
   const [availableTools, setAvailableTools] = useState<AvailableTool[]>([]);
   const [toolsLoading, setToolsLoading] = useState(false);
   const [mode, setMode] = useState<'governed' | 'unbounded'>('governed');
+  const [agentSource, setAgentSource] = useState<'cloud' | 'federated'>('cloud');
   const [goal, setGoal] = useState('');
   const [schedulePreset, setSchedulePreset] = useState('none');
   const [customCron, setCustomCron] = useState('');
@@ -331,21 +332,43 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
     setError(null);
 
     try {
+      let result: any;
+
       const agentData = {
         name: name.trim(),
-        description: description.trim() || `A ${agentType} agent`,
+        description: description.trim() || (agentSource === 'federated' ? `Federated ${agentType} agent` : `A ${agentType} agent`),
         type: agentType,
-        mode,
+        mode: agentSource === 'federated' ? 'unbounded' : mode,
         provider,
         model,
         tool_mode: toolMode,
-        tools: toolMode === 'smart' ? [] : selectedTools,
+        tools: agentSource === 'federated'
+          ? (toolMode === 'smart' ? ['web_search', 'memory_read', 'memory_write', 'fetch_url', 'deep_research'] : selectedTools)
+          : (toolMode === 'smart' ? [] : selectedTools),
         system_prompt: '',
         temperature: 0.7,
         max_tokens: 4096,
       };
 
-      const result = await createAgentApi(agentData);
+      if (agentSource === 'federated') {
+        // Federated: use federation/register endpoint
+        const fedClient = (await import('../../../../../api/fastapiClient')).default;
+        const resp = await fedClient.post('/api/v1/agents/federation/register', {
+          name: agentData.name,
+          description: agentData.description,
+          connection_url: 'http://localhost:8000',
+          tools: agentData.tools,
+          provider: agentData.provider,
+          model: agentData.model,
+          mode: 'unbounded',
+        });
+        result = resp.data;
+        // Normalize: federation returns agent_id, standard returns id
+        if (!result.id && result.agent_id) result.id = result.agent_id;
+      } else {
+        // Cloud: standard create
+        result = await createAgentApi(agentData);
+      }
 
       // Assign goal if provided
       if (result?.id && goal.trim()) {
@@ -499,6 +522,42 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                   </button>
                 );
               })}
+            </div>
+
+            {/* Cloud vs Federated toggle */}
+            <div style={{ marginTop: 16, padding: '12px 16px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 10 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary, #a1a1aa)', marginBottom: 8, display: 'block' }}>Where does this agent run?</label>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button
+                  type="button"
+                  onClick={() => { setAgentSource('cloud'); setMode('governed'); }}
+                  style={{
+                    flex: 1, padding: '10px 12px', border: `1px solid ${agentSource === 'cloud' ? 'rgba(1,166,188,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                    borderRadius: 8, background: agentSource === 'cloud' ? 'rgba(1,166,188,0.08)' : 'rgba(255,255,255,0.02)',
+                    cursor: 'pointer', textAlign: 'left', color: agentSource === 'cloud' ? '#01A6BC' : 'var(--text-secondary, #a1a1aa)',
+                  }}
+                >
+                  <div style={{ fontSize: 13, fontWeight: 600 }}>☁ Cloud</div>
+                  <div style={{ fontSize: 11, opacity: 0.7, marginTop: 2 }}>Runs on platform servers</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setAgentSource('federated'); setMode('unbounded'); }}
+                  style={{
+                    flex: 1, padding: '10px 12px', border: `1px solid ${agentSource === 'federated' ? 'rgba(113,194,62,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                    borderRadius: 8, background: agentSource === 'federated' ? 'rgba(113,194,62,0.08)' : 'rgba(255,255,255,0.02)',
+                    cursor: 'pointer', textAlign: 'left', color: agentSource === 'federated' ? '#71C23E' : 'var(--text-secondary, #a1a1aa)',
+                  }}
+                >
+                  <div style={{ fontSize: 13, fontWeight: 600 }}>⚡ Federated (Local)</div>
+                  <div style={{ fontSize: 11, opacity: 0.7, marginTop: 2 }}>Runs on YOUR hardware via OpenClaw</div>
+                </button>
+              </div>
+              {agentSource === 'federated' && (
+                <div style={{ marginTop: 8, fontSize: 11, color: '#71C23E', background: 'rgba(113,194,62,0.05)', padding: '6px 10px', borderRadius: 6 }}>
+                  Your local OpenClaw connector must be running (localhost:8000). The platform will dispatch tasks to your machine.
+                </div>
+              )}
             </div>
           </div>
         );
