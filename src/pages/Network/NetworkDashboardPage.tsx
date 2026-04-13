@@ -3,6 +3,7 @@
  * blockchain activity, and model training.
  */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Activity,
   Coins,
@@ -22,8 +23,6 @@ import {
 } from 'lucide-react';
 import { useThemeStore } from '@/store/themeStore';
 import { ENV } from '../../config/env';
-import { isAuthenticated } from '@/utils/auth-cookies';
-
 const API_BASE = ENV.apiUrl;
 
 // ─── Types ───
@@ -71,6 +70,8 @@ interface TokenTransaction {
   status: string;
   description?: string;
   created_at: string;
+  from_address?: string;
+  to_address?: string;
 }
 
 interface PublicTokenStats {
@@ -129,7 +130,15 @@ const statusBadge = (status: string) => {
 };
 
 // ─── Component ───
+const shortHash = (h: string | null | undefined) => {
+  if (!h) return '—';
+  if (h === 'NETWORK') return 'NETWORK';
+  if (h.length > 16) return `${h.slice(0, 8)}...${h.slice(-6)}`;
+  return h;
+};
+
 const NetworkDashboardPage: React.FC = () => {
+  const navigate = useNavigate();
   const { theme } = useThemeStore();
   const isDark = theme === 'dark';
   const [loading, setLoading] = useState(true);
@@ -149,17 +158,15 @@ const NetworkDashboardPage: React.FC = () => {
         fetch(`${API_BASE}/crypto/token/stats`).then(r => r.ok ? r.json() : null),
         fetch(`${API_BASE}/mining/dashboard/blocks?limit=5`).then(r => r.ok ? r.json() : null),
       ];
-      // If logged in, also fetch user's transactions
-      if (isAuthenticated()) {
-        fetches.push(
-          fetch(`${API_BASE}/crypto/transactions?limit=20`, { credentials: 'include' }).then(r => r.ok ? r.json() : [])
-        );
-      }
+      // Public: all network transactions (no auth needed)
+      fetches.push(
+        fetch(`${API_BASE}/crypto/transactions/recent?limit=30`).then(r => r.ok ? r.json() : [])
+      );
       const results = await Promise.allSettled(fetches);
       if (results[0].status === 'fulfilled' && results[0].value) setDashData(results[0].value);
       if (results[1].status === 'fulfilled' && results[1].value) setTokenStats(results[1].value);
       if (results[2].status === 'fulfilled' && results[2].value) setRecentBlocks(results[2].value?.blocks || []);
-      if (results.length > 3 && results[3].status === 'fulfilled') {
+      if (results[3].status === 'fulfilled') {
         const txData = results[3].value;
         setTransactions(Array.isArray(txData) ? txData : []);
       }
@@ -412,65 +419,56 @@ const NetworkDashboardPage: React.FC = () => {
           <div style={cardStyle}>
             <h3 style={{ fontSize: 16, fontWeight: 600, margin: '0 0 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
               <Coins size={18} style={{ color: colors.yellow }} />
-              {isAuthenticated() ? 'Your Recent Transactions' : 'Token Transactions'}
+              Recent Network Transactions
             </h3>
-            {!isAuthenticated() ? (
-              <div style={{ textAlign: 'center', padding: '32px 16px' }}>
-                <p style={{ color: colors.textMuted, fontSize: 14, margin: '0 0 16px' }}>
-                  Sign in to view your personal mining rewards, token transactions, and wallet activity.
-                </p>
-                <a href="/login" style={{
-                  display: 'inline-block', padding: '10px 28px', borderRadius: 8,
-                  background: colors.accent, color: '#fff', fontWeight: 600, fontSize: 14,
-                  textDecoration: 'none',
-                }}>Sign In</a>
-                <span style={{ margin: '0 12px', color: colors.textMuted }}>or</span>
-                <a href="/wallet" style={{
-                  display: 'inline-block', padding: '10px 28px', borderRadius: 8,
-                  border: `1px solid ${colors.cardBorder}`, color: colors.text, fontWeight: 600, fontSize: 14,
-                  textDecoration: 'none',
-                }}>Open Wallet</a>
-              </div>
-            ) : transactions.length > 0 ? (
+            {transactions.length > 0 ? (
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                   <thead>
                     <tr style={{ borderBottom: `1px solid ${colors.cardBorder}` }}>
-                      {['Type', 'Amount', 'Fee', 'Status', 'Description', 'Time'].map(h => (
+                      {['Type', 'From', '', 'To', 'Amount', 'Status', 'Time'].map(h => (
                         <th key={h} style={{ textAlign: 'left', padding: '8px 10px', fontWeight: 600, color: colors.textMuted, fontSize: 11 }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {transactions.map((tx, i) => (
-                      <tr key={tx.id || i} style={{ borderBottom: `1px solid ${colors.cardBorder}22` }}>
-                        <td style={{ padding: '10px 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
-                          {txIcon(tx.tx_type)}
-                          <span style={{ fontWeight: 600, textTransform: 'capitalize' }}>{tx.tx_type}</span>
-                        </td>
-                        <td style={{ padding: '10px 10px', fontWeight: 600, fontFamily: 'monospace' }}>
-                          {parseFloat(tx.amount || '0').toFixed(2)} RGT
-                        </td>
-                        <td style={{ padding: '10px 10px', color: colors.textMuted, fontFamily: 'monospace' }}>
-                          {parseFloat(tx.fee || '0').toFixed(4)}
-                        </td>
-                        <td style={{ padding: '10px 10px' }}>{statusBadge(tx.status)}</td>
-                        <td style={{ padding: '10px 10px', color: colors.textMuted, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {tx.description || '—'}
-                        </td>
-                        <td style={{ padding: '10px 10px', color: colors.textMuted, whiteSpace: 'nowrap' }}>
-                          <Clock size={12} style={{ marginRight: 4, verticalAlign: 'middle' }} />
-                          {tx.created_at ? timeAgo(tx.created_at) : '—'}
-                        </td>
-                      </tr>
-                    ))}
+                    {transactions.map((tx, i) => {
+                      const hashEl = (h: string | null | undefined) => {
+                        if (!h) return <span style={{ color: colors.textMuted }}>—</span>;
+                        if (h === 'NETWORK') return <span style={{ color: colors.orange, fontWeight: 600, fontSize: 11 }}>NETWORK</span>;
+                        return (
+                          <a
+                            href={`/network/address/${h}`}
+                            onClick={(e) => { e.preventDefault(); navigate(`/network/address/${h}`); }}
+                            style={{ color: colors.accent, textDecoration: 'none', fontFamily: 'monospace', fontSize: 11 }}
+                            title={h}
+                          >
+                            {shortHash(h)}
+                          </a>
+                        );
+                      };
+                      return (
+                        <tr key={tx.id || i} style={{ borderBottom: `1px solid ${colors.cardBorder}22` }}>
+                          <td style={{ padding: '10px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                            {txIcon(tx.tx_type)}
+                            <span style={{ fontWeight: 600, textTransform: 'capitalize' }}>{tx.tx_type}</span>
+                          </td>
+                          <td style={{ padding: '10px' }}>{hashEl(tx.from_address)}</td>
+                          <td style={{ padding: '4px 2px', color: colors.textMuted, fontSize: 11 }}>&rarr;</td>
+                          <td style={{ padding: '10px' }}>{hashEl(tx.to_address)}</td>
+                          <td style={{ padding: '10px', fontWeight: 600, fontFamily: 'monospace' }}>
+                            {parseFloat(tx.amount || '0').toFixed(2)} RGT
+                          </td>
+                          <td style={{ padding: '10px' }}>{statusBadge(tx.status)}</td>
+                          <td style={{ padding: '10px', color: colors.textMuted, whiteSpace: 'nowrap' }}>
+                            <Clock size={12} style={{ marginRight: 4, verticalAlign: 'middle' }} />
+                            {tx.created_at ? timeAgo(tx.created_at) : '—'}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
-                <div style={{ textAlign: 'center', marginTop: 12 }}>
-                  <a href="/wallet" style={{ color: colors.accent, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>
-                    View full wallet &rarr;
-                  </a>
-                </div>
               </div>
             ) : (
               <div style={{ color: colors.textMuted, fontSize: 13, padding: 24, textAlign: 'center' }}>

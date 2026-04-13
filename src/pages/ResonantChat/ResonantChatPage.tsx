@@ -63,6 +63,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import { detectProjectIntent } from '@/utils/semanticIntentDetector';
+import { enhanceToMarkdown } from '@/utils/markdownEnhancer';
 // @ts-ignore - react-syntax-highlighter types
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 // @ts-ignore
@@ -4175,7 +4176,9 @@ const ResonantChatPage: React.FC = () => {
                     >
                       {/** Visual typing effect only changes render pacing, not backend generation speed. */}
                       {(() => {
-                        const renderedMessageContent = message.content;
+                        const renderedMessageContent = message.role === 'assistant'
+                          ? enhanceToMarkdown(message.content)
+                          : message.content;
 
                         return (
                           <>

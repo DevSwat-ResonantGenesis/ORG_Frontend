@@ -13,6 +13,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import styles from './FloatingChatWidget.module.css';
 import messageStyles from './FloatingChatWidgetMessages.module.css';
+import { enhanceToMarkdown } from '@/utils/markdownEnhancer';
 import { ModuleOutputs } from '@/components/ResonantChat/ModuleOutputs';
 import { VoiceInput } from '@/components/ResonantChat/VoiceInput';
 
@@ -1085,7 +1086,9 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className, isOp
                               },
                             }}
                           >
-                            {typeof msg.content === 'string' ? msg.content : String(msg.content || '')}
+                            {msg.role === 'assistant'
+                              ? enhanceToMarkdown(typeof msg.content === 'string' ? msg.content : String(msg.content || ''))
+                              : (typeof msg.content === 'string' ? msg.content : String(msg.content || ''))}
                           </ReactMarkdown>
                         </div>
                         {msg.role === 'assistant' && msg.webSearchResults && msg.webSearchResults.length > 0 && (

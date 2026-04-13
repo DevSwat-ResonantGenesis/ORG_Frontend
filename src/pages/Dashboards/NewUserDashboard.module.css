@@ -649,10 +649,10 @@
 .promoInput {
   flex: 1;
   padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
-  color: var(--color-text-primary, #fff);
+  color: #ffffff !important;
   font-size: 14px;
   font-family: monospace;
   letter-spacing: 1.5px;
@@ -662,7 +662,7 @@
 }
 
 .promoInput::placeholder {
-  color: var(--color-text-tertiary, #707080);
+  color: rgba(255, 255, 255, 0.4) !important;
   text-transform: none;
   letter-spacing: normal;
   font-family: inherit;

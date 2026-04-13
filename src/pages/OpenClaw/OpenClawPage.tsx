@@ -12,18 +12,20 @@ const SETUP_STEPS = [
   { cmd: 'python3 -m venv venv && source venv/bin/activate', note: 'Create & activate venv' },
   { cmd: 'pip install -r requirements.txt', note: 'Install dependencies' },
   { cmd: 'cp .env.example .env', note: 'Config ready (defaults work out of the box)' },
-  { cmd: 'uvicorn app.main:app --port 8000 --reload', note: 'Start the connector' },
-  { cmd: 'curl -X POST http://localhost:8000/auth/login -H "Content-Type: application/json" -d \'{"email":"you@example.com","password":"your-password"}\'', note: 'Authenticate with your dev-swat.com account' },
+  { cmd: 'uvicorn app.main:app --port 8000 --reload', note: 'Start the connector (open localhost:8000 to verify)' },
+  { cmd: 'curl -X POST http://localhost:8000/auth/login -H "Content-Type: application/json" -d \'{"email":"you@example.com","password":"your-pass"}\'', note: 'Authenticate with your dev-swat.com account' },
   { cmd: 'curl http://localhost:8000/auth/status', note: 'Verify — should show authenticated: true' },
+  { cmd: 'curl -X POST http://localhost:8000/agents/register -H "Content-Type: application/json" -d \'{"name":"my-agent","tools":["web_search","memory_read","memory_write"]}\'', note: 'Register a federated agent on the platform' },
+  { cmd: '# Go to dev-swat.com/agents → find your agent → click Run', note: 'Run your agent from the platform UI!' },
 ];
 
 const FEATURES = [
-  { title: '162 Platform Tools', desc: 'Your OpenClaw agent gets instant access to all 162 tools on the DevSwat platform — web search, memory, code analysis, media generation, GitHub, email, and more. No per-tool API keys needed for platform tools.' },
-  { title: 'Bidirectional Bridge', desc: 'Two-way WebSocket RPC between your local OpenClaw agent and the platform. Your agent calls platform tools, the platform can dispatch tasks to your agent. Real-time streaming of tool events, results, and lifecycle status.' },
-  { title: '560+ Platform APIs', desc: 'Beyond tools, your agent can discover and call any of 560+ REST APIs across 42 platform services — AI, memory, blockchain, community, developer tools, integrations, and more. Dynamic discovery, no hardcoded endpoints.' },
-  { title: 'Hash Sphere Memory', desc: 'Persistent cross-session memory for your OpenClaw agent. Store facts, preferences, and context into the Hash Sphere semantic memory system. Memories persist across sessions and are retrievable by any of your agents.' },
-  { title: 'RARA Governance', desc: 'Enroll your agent in the DevSwat Autonomous Regulatory Authority governance framework. Get a compliance score, DSID identity anchor, and eligibility for the agent marketplace.' },
-  { title: 'Custom Skill Import', desc: 'Export skills from your OpenClaw agent back to the platform. Other users and agents can discover and use your custom skills. Skills execute on your hardware — you control the compute.' },
+  { title: '162 Platform Tools', desc: 'Your agent gets instant access to all 162 tools — web search, memory, code analysis, media generation, GitHub, email, and more. No per-tool API keys needed. Call any tool by name.' },
+  { title: 'Run from Platform UI', desc: 'Click "Run" on your federated agent at dev-swat.com/agents. The platform dispatches the task to your local connector, which executes using web_search, memory, and other tools. Results appear in the platform session viewer.' },
+  { title: 'Federated Agent Identity', desc: 'Your agent is registered with agent_source=\'federated\' and a blockchain DSID identity. Hardware info, tools, and connection URL are stored on the platform. Visible on the Agents page with full metadata.' },
+  { title: 'Hash Sphere Memory', desc: 'Persistent cross-session memory. Store facts, preferences, and context into Hash Sphere. Memories persist across sessions, are searchable, and retrievable by any of your agents.' },
+  { title: '560+ Platform APIs', desc: 'Beyond tools, discover and call any of 560+ REST APIs across 42 microservices — AI, memory, blockchain, community, developer tools, integrations. Dynamic discovery, no hardcoded endpoints.' },
+  { title: 'Your Hardware, Your Data', desc: 'Your agent runs locally with your LLM (Ollama, Groq, etc.). The connector only sends tool requests you explicitly make. No telemetry, no background data collection. Disconnect any time.' },
 ];
 
 const TOOL_CATALOG = [
@@ -201,19 +203,19 @@ const TOOL_CATALOG = [
 const REQUIREMENTS = [
   { label: 'Python 3.9+', detail: '(3.11+ recommended)' },
   { label: 'pip', detail: 'Package manager' },
-  { label: 'OpenClaw runtime', detail: '(brew install openclaw or pi-agent-core)' },
   { label: 'Free account', detail: 'at dev-swat.com (same login as IDE & Miner)' },
+  { label: 'Terminal', detail: '5 minutes to full setup' },
 ];
 
 const NETWORK_FLOW = [
-  { step: '1', title: 'Register', desc: 'Create a free account at dev-swat.com. You get a platform UUID, blockchain identity (crypto_hash), and Hash Sphere identity (user_hash).' },
-  { step: '2', title: 'Install Connector', desc: 'Clone the RG_OpenClaw repo and start it with uvicorn. The connector runs locally on your machine — no ports exposed to the internet.' },
-  { step: '3', title: 'Authenticate', desc: 'POST /auth/login with your dev-swat.com credentials. JWT is stored securely at ~/.openclaw/tokens.json (chmod 600). Tokens auto-refresh — no manual re-login needed.' },
-  { step: '4', title: 'Register Agent', desc: 'POST /agents/register creates your OpenClaw agent on the platform with a DSID blockchain identity, RARA governance enrollment, and webhook trigger.' },
-  { step: '5', title: 'Discover Tools', desc: 'GET /skills/available returns all 162 platform tools across 16 categories. Your agent picks tools by name — no per-tool API keys needed.' },
-  { step: '6', title: 'Execute', desc: 'POST /skills/execute with {skill_name, parameters}. All traffic routes through the platform\'s HTTPS gateway with JWT auth. Results returned in real-time.' },
-  { step: '7', title: 'Heartbeat', desc: 'Your agent sends periodic heartbeats (POST /agents/heartbeat) so the platform knows it\'s online. If offline >2 min, status updates automatically.' },
-  { step: '8', title: 'Contribute', desc: 'Import custom skills, list your agent on the marketplace, participate in the decentralized agent ecosystem. Your hardware, your compute, your choice.' },
+  { step: '1', title: 'Create Account', desc: 'Sign up at dev-swat.com. You get a platform UUID, blockchain identity (crypto_hash), and Hash Sphere identity.' },
+  { step: '2', title: 'Start Connector', desc: 'Clone RG_OpenClaw, pip install, uvicorn start. Open localhost:8000 to see the status dashboard. No ports exposed to the internet.' },
+  { step: '3', title: 'Authenticate', desc: 'POST /auth/login with your dev-swat.com credentials. JWT stored at ~/.openclaw/tokens.json. Auto-refreshes — no re-login needed.' },
+  { step: '4', title: 'Register Agent', desc: 'POST /agents/register creates a federated agent with agent_source=\'federated\', your tools, hardware info, and connection URL stored on the platform.' },
+  { step: '5', title: 'Discover Tools', desc: 'GET /skills/available returns all 162 platform tools. Your agent picks tools by name — web_search, memory_read, deep_research, and more.' },
+  { step: '6', title: 'Execute Tools', desc: 'POST /skills/execute with {skill_name, parameters}. Routed through HTTPS gateway with JWT auth. Results returned in real-time.' },
+  { step: '7', title: 'Run from Platform', desc: 'Click "Run" on your agent at dev-swat.com/agents. The platform dispatches the task to localhost:8000/task/execute. Your connector runs it using platform tools.' },
+  { step: '8', title: 'Memory & Heartbeat', desc: 'POST /memory/ingest to store memories. POST /agents/heartbeat to stay online. Your agent appears on the Agents page with full metadata and tools.' },
 ];
 
 const FAQ_ITEMS = [
@@ -346,9 +348,9 @@ const OpenClawPage: React.FC = () => {
             Open<span className={styles.heroAccent}>Claw</span>+
           </h1>
           <p className={styles.heroSubtitle}>
-            Connect your local OpenClaw agent to the full DevSwat platform.
-            162 tools, 560+ APIs, persistent memory, blockchain identity, and a decentralized agent marketplace —
-            all accessible from your own hardware through the platform's secure HTTPS gateway. Zero ports exposed.
+            Run AI agents on YOUR hardware. Connect to 162 platform tools, 560+ APIs, persistent memory, and blockchain identity.
+            Register as a federated agent — run from the platform UI, execute locally, results displayed on dev-swat.com/agents.
+            Your compute, your data, your control. Zero ports exposed.
           </p>
           <div className={styles.heroActions}>
             <a href={GITHUB_DOWNLOAD} className={styles.downloadButton}>
@@ -372,7 +374,7 @@ const OpenClawPage: React.FC = () => {
             </a>
           </div>
           <div className={styles.heroPlatforms}>
-            Python 3.9+ &bull; FastAPI &bull; JWT Auth &bull; HTTPS Gateway &bull; Zero Ports Exposed
+            Python 3.9+ &bull; FastAPI &bull; JWT Auth &bull; Federated Agents &bull; Platform Task Dispatch &bull; Zero Ports Exposed
           </div>
           <div style={{ marginTop: 16, width: '100%', maxWidth: 980 }}>
             <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 8 }}>One-line install (copy/paste in Terminal)</div>
@@ -444,8 +446,8 @@ const OpenClawPage: React.FC = () => {
       <section className={styles.networkFlow}>
         <h2 className={styles.sectionTitle}>How It Works</h2>
         <p className={styles.sectionDesc}>
-          Your OpenClaw agent connects to the platform through the secure HTTPS gateway.
-          Authenticate once, discover tools, execute them by name, and receive results in real-time.
+          Two-way connection: your agent calls platform tools, and the platform dispatches tasks to your machine.
+          Authenticate once, register as federated, and run your agent from dev-swat.com/agents.
           Same auth, same identity, same security as the Resonant IDE and Mining App.
         </p>
         <div className={styles.flowGrid}>

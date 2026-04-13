@@ -71,6 +71,7 @@ const ExecutionHistoryPage = lazy(() => import('../pages/Network/ExecutionHistor
 const AgentTemplatesPage = lazy(() => import('../pages/Network/AgentTemplatesPage'));
 const BlockchainDashboardPage = lazy(() => import("../pages/Network/BlockchainDashboardPage"));
 const NetworkDashboardPage = lazy(() => import("../pages/Network/NetworkDashboardPage"));
+const AddressPage = lazy(() => import("../pages/Network/AddressPage"));
 
 
 // Developer Tools Pages
@@ -394,6 +395,10 @@ const router = createBrowserRouter([
   {
     path: "/network",
     element: withPublicShell(<NetworkDashboardPage />)
+  },
+  {
+    path: "/network/address/:hash",
+    element: withPublicShell(<AddressPage />)
   },
   {
     path: "/network/blockchain",
