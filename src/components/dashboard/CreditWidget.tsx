@@ -16,6 +16,8 @@ interface CreditWidgetProps {
   tier: string | null;
   unlimited?: boolean;
   onUpgrade?: () => void;
+  onSubscribe?: (plan: string) => void;
+  subscribeLoading?: string | null;
 }
 
 export const CreditWidget: React.FC<CreditWidgetProps> = ({
@@ -27,6 +29,8 @@ export const CreditWidget: React.FC<CreditWidgetProps> = ({
   tier,
   unlimited = false,
   onUpgrade,
+  onSubscribe,
+  subscribeLoading,
 }) => {
   // Check if we have real data
   const hasData = balance !== null && limit !== null;
@@ -83,12 +87,12 @@ export const CreditWidget: React.FC<CreditWidgetProps> = ({
         </div>
 
         <div className={styles.freeHero}>
-          <p className={styles.freeHeading}>Subscribe to get started</p>
-          <p className={styles.freeSubtext}>Choose a plan to unlock AI credits and full platform access.</p>
+          <p className={styles.freeHeading}>Subscribe to unlock all features</p>
+          <p className={styles.freeSubtext}>Choose a plan to get AI credits and full platform access.</p>
         </div>
 
         <div className={styles.planCards}>
-          <a href="/pricing?plan=developer" className={styles.planCard}>
+          <button className={styles.planCard} onClick={() => onSubscribe?.('developer')} disabled={!!subscribeLoading}>
             <div className={styles.planCardHeader}>
               <Rocket size={14} />
               <span className={styles.planName}>Developer</span>
@@ -96,8 +100,9 @@ export const CreditWidget: React.FC<CreditWidgetProps> = ({
             <div className={styles.planPrice}>$15<span>/mo</span></div>
             <div className={styles.planCredits}>15,000 credits/mo</div>
             <div className={styles.planNote}>All features unlocked</div>
-          </a>
-          <a href="/pricing?plan=plus" className={`${styles.planCard} ${styles.planCardRecommended}`}>
+            <div className={styles.planCta}>{subscribeLoading === 'developer' ? 'Redirecting…' : 'Subscribe Now →'}</div>
+          </button>
+          <button className={`${styles.planCard} ${styles.planCardRecommended}`} onClick={() => onSubscribe?.('plus')} disabled={!!subscribeLoading}>
             <div className={styles.planCardHeader}>
               <Crown size={14} />
               <span className={styles.planName}>Plus</span>
@@ -106,7 +111,8 @@ export const CreditWidget: React.FC<CreditWidgetProps> = ({
             <div className={styles.planPrice}>$499<span>/mo</span></div>
             <div className={styles.planCredits}>499,000 credits/mo</div>
             <div className={styles.planNote}>Rollover + Top-ups</div>
-          </a>
+            <div className={styles.planCta}>{subscribeLoading === 'plus' ? 'Redirecting…' : 'Subscribe Now →'}</div>
+          </button>
         </div>
       </div>
     );

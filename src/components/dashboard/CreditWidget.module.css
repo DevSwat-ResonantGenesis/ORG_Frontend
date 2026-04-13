@@ -34,7 +34,7 @@
 }
 
 .icon {
-  color: var(--color-primary, #6366f1);
+  color: #01A6BC;
 }
 
 .title {
@@ -50,7 +50,7 @@
   align-items: center;
   gap: 4px;
   padding: 4px 10px;
-  background: var(--color-primary, #6366f1);
+  background: #01A6BC;
   color: white;
   border-radius: 20px;
   font-size: 12px;
@@ -96,17 +96,17 @@
 
 .progressFill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-primary, #6366f1), var(--color-success, #22c55e));
+  background: linear-gradient(90deg, #01A6BC, #71C23E);
   border-radius: 4px;
   transition: width 0.5s ease;
 }
 
 .widget.low .progressFill {
-  background: linear-gradient(90deg, var(--color-warning, #f59e0b), var(--color-error, #ef4444));
+  background: linear-gradient(90deg, #FAA525, #FA547C);
 }
 
 .widget.critical .progressFill {
-  background: var(--color-error, #ef4444);
+  background: #FA547C;
 }
 
 .statsGrid {
@@ -152,7 +152,7 @@
 .upgradeBtn {
   margin-left: auto;
   padding: 6px 12px;
-  background: var(--color-primary, #6366f1);
+  background: #01A6BC;
   color: white;
   border: none;
   border-radius: 6px;
@@ -163,7 +163,7 @@
 }
 
 .upgradeBtn:hover {
-  background: var(--color-primary-hover, #5558e3);
+  background: #019aad;
 }
 
 /* Loading state */
@@ -193,7 +193,7 @@
 
 .spinner {
   animation: spin 1s linear infinite;
-  color: var(--color-primary, #6366f1);
+  color: #01A6BC;
 }
 
 @keyframes spin {
@@ -216,7 +216,7 @@
 .freeHeading {
   font-size: 20px;
   font-weight: 700;
-  color: var(--color-text-primary, #ffffff);
+  color: #FFD800;
   margin: 0 0 6px;
 }
 
@@ -252,24 +252,24 @@
 }
 
 .planCard:hover {
-  background: rgba(99, 102, 241, 0.08);
-  border-color: rgba(99, 102, 241, 0.3);
+  background: rgba(1, 166, 188, 0.08);
+  border-color: rgba(1, 166, 188, 0.3);
   transform: translateY(-1px);
 }
 
 .planCardActive {
-  border-color: rgba(99, 102, 241, 0.4);
-  background: rgba(99, 102, 241, 0.06);
+  border-color: rgba(1, 166, 188, 0.4);
+  background: rgba(1, 166, 188, 0.06);
 }
 
 .planCardRecommended {
-  border-color: rgba(168, 85, 247, 0.3);
-  background: rgba(168, 85, 247, 0.04);
+  border-color: rgba(250, 84, 124, 0.3);
+  background: rgba(250, 84, 124, 0.04);
 }
 
 .planCardRecommended:hover {
-  background: rgba(168, 85, 247, 0.1);
-  border-color: rgba(168, 85, 247, 0.5);
+  background: rgba(250, 84, 124, 0.1);
+  border-color: rgba(250, 84, 124, 0.5);
 }
 
 .planCardHeader {
@@ -280,7 +280,7 @@
 }
 
 .planCardRecommended .planCardHeader {
-  color: #a855f7;
+  color: #FA547C;
 }
 
 .planName {
@@ -294,8 +294,8 @@
   font-size: 10px;
   font-weight: 600;
   padding: 2px 6px;
-  background: rgba(99, 102, 241, 0.2);
-  color: #818cf8;
+  background: rgba(1, 166, 188, 0.2);
+  color: #01A6BC;
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -306,8 +306,8 @@
   font-size: 10px;
   font-weight: 600;
   padding: 2px 6px;
-  background: rgba(168, 85, 247, 0.2);
-  color: #c084fc;
+  background: rgba(250, 84, 124, 0.2);
+  color: #FA547C;
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -337,6 +337,21 @@
   color: var(--color-text-tertiary, #707080);
 }
 
+.planCta {
+  margin-top: 6px;
+  padding: 6px 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #FFD800;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  letter-spacing: 0.3px;
+}
+
+.planCardRecommended .planCta {
+  color: #FA547C;
+}
+
 [data-theme='light'] .planCards {
   border-top-color: rgba(0, 0, 0, 0.06);
 }
@@ -347,8 +362,8 @@
 }
 
 [data-theme='light'] .planCard:hover {
-  background: rgba(99, 102, 241, 0.06);
-  border-color: rgba(99, 102, 241, 0.25);
+  background: rgba(1, 166, 188, 0.06);
+  border-color: rgba(1, 166, 188, 0.25);
 }
 
 /* ============== RESPONSIVE - MOBILE ============== */

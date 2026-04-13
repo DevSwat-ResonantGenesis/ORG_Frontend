@@ -150,6 +150,40 @@ const NewUserDashboard: React.FC = () => {
 
   const handleRefresh = () => { setRefreshing(true); loadDashboardData(); };
   const handleUpgrade = () => navigate('/pricing');
+  const [subscribeLoading, setSubscribeLoading] = useState<string | null>(null);
+  const handleSubscribe = async (plan: string) => {
+    setSubscribeLoading(plan);
+    try {
+      // Refresh auth token first
+      await fetch('/api/auth/refresh', { method: 'POST', credentials: 'include' }).catch(() => {});
+      const response = await fetch('/api/billing/checkout/subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          plan_id: plan,
+          billing_cycle: 'monthly',
+          success_url: `${window.location.origin}/dashboard?success=true&plan=${plan}`,
+          cancel_url: `${window.location.origin}/dashboard?canceled=true`,
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.checkout_url || data.url) {
+          window.location.href = data.checkout_url || data.url;
+        } else {
+          setError('Checkout session created but no redirect URL received.');
+        }
+      } else {
+        const errData = await response.json().catch(() => ({}));
+        setError(errData.detail || 'Checkout failed. Please try again.');
+      }
+    } catch (err: any) {
+      setError('Checkout failed. Please try again.');
+    } finally {
+      setSubscribeLoading(null);
+    }
+  };
   const handleSaveName = async () => {
     setError(''); setMessage(''); setSavingSettings(true);
     try { await fastapiClient.put(`/users/${userId}`, { full_name: fullName }); setMessage('Name saved'); } catch (err: any) { setError(err?.response?.data?.detail || 'Failed to save'); } finally { setSavingSettings(false); }
@@ -241,7 +275,22 @@ const NewUserDashboard: React.FC = () => {
       {/* ══════════════ OVERVIEW TAB ══════════════ */}
       {activeTab === 'overview' && (
         <>
-          {data.alerts && Array.isArray(data.alerts) && data.alerts.length > 0 && (
+          {/* Subscribe banner for free users */}
+          {data.tier?.toLowerCase() === 'free' && (
+            <div className={styles.subscribeBanner}>
+              <div className={styles.subscribeBannerBg} />
+              <div className={styles.subscribeBannerContent}>
+                <Zap size={18} className={styles.subscribeBannerIcon} />
+                <span className={styles.subscribeBannerText}>Please subscribe to unlock all features</span>
+                <button className={styles.subscribeBannerBtn} onClick={() => handleSubscribe('developer')}>
+                  {subscribeLoading === 'developer' ? 'Redirecting…' : 'Subscribe Now'}
+                  <ArrowRight size={14} />
+                </button>
+              </div>
+            </div>
+          )}
+          {/* Regular alerts for paid users */}
+          {data.tier?.toLowerCase() !== 'free' && data.alerts && Array.isArray(data.alerts) && data.alerts.length > 0 && (
             <AlertBanner alerts={data.alerts.map(a => ({ ...a, action: a.type === 'error' ? { label: 'Buy Credits', onClick: handleUpgrade } : undefined }))} />
           )}
 
@@ -269,7 +318,7 @@ const NewUserDashboard: React.FC = () => {
           </div>
 
           <div className={styles.topRow}>
-            <CreditWidget balance={data.credits.balance} limit={data.credits.limit} usedThisMonth={data.credits.usedThisMonth} daysRemaining={data.credits.daysRemaining} burnRate={data.credits.burnRate} tier={data.tier} unlimited={data.credits.unlimited} onUpgrade={handleUpgrade} />
+            <CreditWidget balance={data.credits.balance} limit={data.credits.limit} usedThisMonth={data.credits.usedThisMonth} daysRemaining={data.credits.daysRemaining} burnRate={data.credits.burnRate} tier={data.tier} unlimited={data.credits.unlimited} onUpgrade={handleUpgrade} onSubscribe={handleSubscribe} subscribeLoading={subscribeLoading} />
             <UsageBreakdownChart data={data.usageBreakdown} totalCredits={data.credits.usedThisMonth} />
           </div>
 
