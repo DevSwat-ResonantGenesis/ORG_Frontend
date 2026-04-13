@@ -4,16 +4,17 @@ import styles from './OpenClawPage.module.css';
 
 const GITHUB_REPO = 'https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw';
 const GITHUB_DOWNLOAD = 'https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw/archive/refs/heads/main.zip';
-const ONE_LINE_INSTALL = `bash -lc 'set -e; [ -d RG_OpenClaw ] || git clone https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw.git; cd RG_OpenClaw; python3 -m venv venv; source venv/bin/activate; pip install -r requirements.txt; cp -n .env.example .env; echo "Edit .env with your credentials, then press Ctrl+X to save"; \${EDITOR:-nano} .env; uvicorn app.main:app --port 8000 --reload'`;
+const ONE_LINE_INSTALL = `bash -lc 'set -e; [ -d RG_OpenClaw ] || git clone https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw.git; cd RG_OpenClaw; python3 -m venv venv; source venv/bin/activate; pip install -r requirements.txt; cp -n .env.example .env; uvicorn app.main:app --port 8000 &; sleep 2; echo "Connector running. Authenticate:"; echo "curl -X POST http://localhost:8000/auth/login -H Content-Type:application/json -d {email:YOUR_EMAIL,password:YOUR_PASS}"'`;
 
 const SETUP_STEPS = [
   { cmd: 'git clone https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw.git', note: 'Clone the repo' },
   { cmd: 'cd RG_OpenClaw', note: 'Enter directory' },
-  { cmd: 'python3 -m venv venv', note: 'Create virtual environment' },
-  { cmd: 'source venv/bin/activate', note: 'Activate venv' },
+  { cmd: 'python3 -m venv venv && source venv/bin/activate', note: 'Create & activate venv' },
   { cmd: 'pip install -r requirements.txt', note: 'Install dependencies' },
-  { cmd: 'cp .env.example .env && nano .env', note: 'Configure your environment' },
-  { cmd: 'uvicorn app.main:app --port 8000 --reload', note: 'Start OpenClaw connector' },
+  { cmd: 'cp .env.example .env', note: 'Config ready (defaults work out of the box)' },
+  { cmd: 'uvicorn app.main:app --port 8000 --reload', note: 'Start the connector' },
+  { cmd: 'curl -X POST http://localhost:8000/auth/login -H "Content-Type: application/json" -d \'{"email":"you@example.com","password":"your-password"}\'', note: 'Authenticate with your dev-swat.com account' },
+  { cmd: 'curl http://localhost:8000/auth/status', note: 'Verify — should show authenticated: true' },
 ];
 
 const FEATURES = [
@@ -200,20 +201,19 @@ const TOOL_CATALOG = [
 const REQUIREMENTS = [
   { label: 'Python 3.9+', detail: '(3.11+ recommended)' },
   { label: 'pip', detail: 'Package manager' },
-  { label: 'OpenClaw runtime', detail: '(pi-agent-core installed on your machine)' },
-  { label: 'Free account', detail: 'at dev-swat.com (required for authentication)' },
-  { label: 'Network', detail: 'Broadband internet for WebSocket connection' },
+  { label: 'OpenClaw runtime', detail: '(brew install openclaw or pi-agent-core)' },
+  { label: 'Free account', detail: 'at dev-swat.com (same login as IDE & Miner)' },
 ];
 
 const NETWORK_FLOW = [
   { step: '1', title: 'Register', desc: 'Create a free account at dev-swat.com. You get a platform UUID, blockchain identity (crypto_hash), and Hash Sphere identity (user_hash).' },
-  { step: '2', title: 'Install Connector', desc: 'Clone the RG_OpenClaw repo. The connector is a lightweight FastAPI service that bridges your local OpenClaw agent to the platform.' },
-  { step: '3', title: 'Authenticate', desc: 'Your OpenClaw agent authenticates with the same JWT flow as the DevSwat IDE and Mining App. Credentials sent to platform auth, JWT stored locally.' },
-  { step: '4', title: 'Agent Registration', desc: 'The connector registers your OpenClaw agent on the platform — creates a DSID identity anchor and optional RARA governance enrollment.' },
-  { step: '5', title: 'Tool Discovery', desc: 'On connect, the platform sends your agent the full list of 162 available tools across 16 categories. Your agent picks tools by name.' },
-  { step: '6', title: 'Execute Tasks', desc: 'Your agent thinks, picks a platform tool (e.g. web_search, memory.read), sends a tool_call via WebSocket. The platform executes and returns results.' },
-  { step: '7', title: 'Heartbeat', desc: 'Your agent sends periodic heartbeats so the platform knows it\'s online. If offline >2 min, status updates automatically.' },
-  { step: '8', title: 'Earn & Contribute', desc: 'Import custom skills back to the platform. List your agent on the marketplace. Participate in the decentralized agent ecosystem.' },
+  { step: '2', title: 'Install Connector', desc: 'Clone the RG_OpenClaw repo and start it with uvicorn. The connector runs locally on your machine — no ports exposed to the internet.' },
+  { step: '3', title: 'Authenticate', desc: 'POST /auth/login with your dev-swat.com credentials. JWT is stored securely at ~/.openclaw/tokens.json (chmod 600). Tokens auto-refresh — no manual re-login needed.' },
+  { step: '4', title: 'Register Agent', desc: 'POST /agents/register creates your OpenClaw agent on the platform with a DSID blockchain identity, RARA governance enrollment, and webhook trigger.' },
+  { step: '5', title: 'Discover Tools', desc: 'GET /skills/available returns all 162 platform tools across 16 categories. Your agent picks tools by name — no per-tool API keys needed.' },
+  { step: '6', title: 'Execute', desc: 'POST /skills/execute with {skill_name, parameters}. All traffic routes through the platform\'s HTTPS gateway with JWT auth. Results returned in real-time.' },
+  { step: '7', title: 'Heartbeat', desc: 'Your agent sends periodic heartbeats (POST /agents/heartbeat) so the platform knows it\'s online. If offline >2 min, status updates automatically.' },
+  { step: '8', title: 'Contribute', desc: 'Import custom skills, list your agent on the marketplace, participate in the decentralized agent ecosystem. Your hardware, your compute, your choice.' },
 ];
 
 const FAQ_ITEMS = [
@@ -348,7 +348,7 @@ const OpenClawPage: React.FC = () => {
           <p className={styles.heroSubtitle}>
             Connect your local OpenClaw agent to the full DevSwat platform.
             162 tools, 560+ APIs, persistent memory, blockchain identity, and a decentralized agent marketplace —
-            all accessible from your own hardware through a single WebSocket bridge.
+            all accessible from your own hardware through the platform's secure HTTPS gateway. Zero ports exposed.
           </p>
           <div className={styles.heroActions}>
             <a href={GITHUB_DOWNLOAD} className={styles.downloadButton}>
@@ -372,7 +372,7 @@ const OpenClawPage: React.FC = () => {
             </a>
           </div>
           <div className={styles.heroPlatforms}>
-            Python 3.9+ &bull; FastAPI &bull; WebSocket RPC &bull; Same auth as Resonant IDE &amp; Miner
+            Python 3.9+ &bull; FastAPI &bull; JWT Auth &bull; HTTPS Gateway &bull; Zero Ports Exposed
           </div>
           <div style={{ marginTop: 16, width: '100%', maxWidth: 980 }}>
             <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 8 }}>One-line install (copy/paste in Terminal)</div>
@@ -408,10 +408,12 @@ const OpenClawPage: React.FC = () => {
             </div>
             {/* Tip */}
             <div style={{ marginTop: 16, padding: '14px 18px', background: 'var(--bg-secondary, #111827)', border: '1px solid var(--border-color, #1f2937)', borderRadius: 10, fontSize: 13, color: 'var(--text-secondary, #94a3b8)', lineHeight: 1.6 }}>
-              <strong style={{ color: 'var(--text-primary, #e5e7eb)' }}>Tip:</strong> The connector uses the same auth as the Resonant IDE and Mining App.
-              If you already have an account at{' '}
+              <strong style={{ color: 'var(--text-primary, #e5e7eb)' }}>Tip:</strong> Defaults work out of the box — no .env editing needed.
+              After starting the connector, run{' '}
+              <code style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>POST /auth/login</code>{' '}
+              with your{' '}
               <a href="https://dev-swat.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-color, #818cf8)' }}>dev-swat.com</a>
-              {' '}you're already set — just provide your credentials in the <code style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>.env</code> file.
+              {' '}credentials. JWT is stored securely and auto-refreshes.
             </div>
           </div>
 
@@ -442,9 +444,9 @@ const OpenClawPage: React.FC = () => {
       <section className={styles.networkFlow}>
         <h2 className={styles.sectionTitle}>How It Works</h2>
         <p className={styles.sectionDesc}>
-          Your OpenClaw agent connects to the platform through a WebSocket bridge.
-          It discovers available tools, calls them by name, and receives results in real-time.
-          Same auth, same identity, same security as every other platform entry point.
+          Your OpenClaw agent connects to the platform through the secure HTTPS gateway.
+          Authenticate once, discover tools, execute them by name, and receive results in real-time.
+          Same auth, same identity, same security as the Resonant IDE and Mining App.
         </p>
         <div className={styles.flowGrid}>
           {NETWORK_FLOW.map((item, i) => (
