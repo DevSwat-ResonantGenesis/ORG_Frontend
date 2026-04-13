@@ -28,6 +28,8 @@ export interface AgentSession {
   total_tokens_used: number;
   final_output?: string;
   error_message?: string;
+  created_at?: string;
+  completed_at?: string;
 }
 
 export interface AgentStep {

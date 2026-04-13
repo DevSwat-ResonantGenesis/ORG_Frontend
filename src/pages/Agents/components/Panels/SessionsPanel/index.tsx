@@ -281,6 +281,10 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
                   <span><Icons.Repeat /> {session.loop_count} loops</span>
                   <span><Icons.Zap /> {session.total_tokens_used} tokens</span>
                 </div>
+                <div style={{ display: 'flex', gap: 8, padding: '2px 0 0', fontSize: 9, color: 'rgba(255,255,255,0.35)' }}>
+                  {session.created_at && <span><Icons.Clock /> {new Date(session.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>}
+                  {session.completed_at && <span>→ {new Date(session.completed_at).toLocaleString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>}
+                </div>
               </div>
             ))}
           </div>
@@ -304,6 +308,12 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
                     <strong>Goal:</strong> {selectedSession.current_goal}
                   </div>
                 )}
+
+                {/* Session timestamps */}
+                <div style={{ display: 'flex', gap: 12, padding: '4px 8px', fontSize: 10, color: 'rgba(255,255,255,0.4)', flexWrap: 'wrap' }}>
+                  {selectedSession.created_at && <span>Started: {new Date(selectedSession.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>}
+                  {selectedSession.completed_at && <span>Completed: {new Date(selectedSession.completed_at).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>}
+                </div>
 
                 <div className={styles.stepsList}>
                   {sessionSteps.length === 0 && (

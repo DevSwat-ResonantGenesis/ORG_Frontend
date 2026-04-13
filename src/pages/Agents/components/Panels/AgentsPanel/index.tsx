@@ -727,7 +727,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                             display: 'inline-flex', alignItems: 'center', gap: 3,
                             padding: '1px 6px', borderRadius: 4, fontSize: 9, fontWeight: 700,
                             background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                            color: '#1a1a2e', letterSpacing: '0.5px', textTransform: 'uppercase',
+                            color: '#121214', letterSpacing: '0.5px', textTransform: 'uppercase',
                           }}>
                             <span style={{
                               width: 6, height: 6, borderRadius: '50%',
@@ -779,6 +779,12 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                     <div className={`${styles.modeBadge} ${agent.mode === 'unbounded' ? styles.unbounded : ''}`}>
                       {agent.mode === 'governed' ? <Icons.Lock /> : <Icons.Unlock />}
                     </div>
+                  </div>
+
+                  {/* Created timestamp */}
+                  <div style={{ padding: '2px 8px 0', fontSize: 9, color: 'rgba(255,255,255,0.35)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <Icons.Clock />
+                    <span>Created {agent.createdAt ? new Date(agent.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}</span>
                   </div>
 
                   {/* OpenClaw hardware info row */}

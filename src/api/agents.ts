@@ -22,6 +22,8 @@ export interface AgentResponse {
   dsid?: string | null;
   personality_config?: Record<string, any> | null;
   meta_data?: Record<string, any> | null;
+  created_at?: string | null;
+  updated_at?: string | null;
 }
 
 /**

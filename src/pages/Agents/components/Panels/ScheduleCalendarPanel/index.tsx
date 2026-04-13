@@ -353,8 +353,11 @@ const ScheduleCalendarPanelComponent: React.FC = () => {
                         {entry.schedule.failure_count > 0 && (
                           <span className={styles.metaChip} style={{ color: '#FA547C' }}>{entry.schedule.failure_count} fail</span>
                         )}
+                        {entry.schedule.last_run_at && (
+                          <span className={styles.metaChip}>Last: {new Date(entry.schedule.last_run_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                        )}
                         {entry.schedule.next_run_at && (
-                          <span className={styles.metaChip}>Next: {new Date(entry.schedule.next_run_at).toLocaleString()}</span>
+                          <span className={styles.metaChip} style={{ color: '#01A6BC' }}>Next: {new Date(entry.schedule.next_run_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                         )}
                       </div>
                     </div>

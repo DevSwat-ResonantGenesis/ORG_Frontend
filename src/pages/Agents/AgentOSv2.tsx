@@ -140,8 +140,8 @@ const AgentOSv2: React.FC = () => {
               maxConcurrentTasks: 5,
             },
           },
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: (a as any).created_at ? new Date((a as any).created_at) : new Date(),
+          updatedAt: (a as any).updated_at ? new Date((a as any).updated_at) : new Date(),
           // OpenClaw federation fields
           agent_source: ((a as any).agent_source || 'cloud') as 'cloud' | 'openclaw',
           openclaw_config: (a as any).openclaw_config || undefined,
