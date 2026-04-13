@@ -596,7 +596,7 @@
 }
 
 .formCard {
-  background: #1a1a2e;
+  background: #121214;
   border: 1px solid rgba(1, 166, 188, 0.2);
   border-radius: 12px;
   width: 100%;
@@ -665,7 +665,7 @@
 }
 
 .formSelect option {
-  background: #1a1a2e;
+  background: #121214;
   color: #fff;
 }
 
