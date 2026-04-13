@@ -144,9 +144,9 @@
 }
 
 .viewTab.active {
-  background: rgba(14, 165, 233, 0.15);
-  border-color: rgba(14, 165, 233, 0.3);
-  color: #0ea5e9;
+  background: rgba(1, 166, 188, 0.15);
+  border-color: rgba(1, 166, 188, 0.3);
+  color: #01A6BC;
 }
 
 .panelToolbar {
@@ -252,15 +252,15 @@
   gap: 4px;
   padding: 4px 8px;
   border-radius: 6px;
-  border: 1px solid rgba(14, 165, 233, 0.3);
-  background: rgba(14, 165, 233, 0.12);
-  color: #0ea5e9;
+  border: 1px solid rgba(1, 166, 188, 0.3);
+  background: rgba(1, 166, 188, 0.12);
+  color: #01A6BC;
   font-size: 11px;
   cursor: pointer;
 }
 
 .toolbarBtn:hover {
-  background: rgba(14, 165, 233, 0.18);
+  background: rgba(1, 166, 188, 0.18);
   color: #fff;
 }
 
@@ -303,15 +303,15 @@
 }
 
 .navIconBtn:hover {
-  background: rgba(14, 165, 233, 0.12);
-  border-color: rgba(14, 165, 233, 0.25);
-  color: #0ea5e9;
+  background: rgba(1, 166, 188, 0.12);
+  border-color: rgba(1, 166, 188, 0.25);
+  color: #01A6BC;
 }
 
 .navIconBtn.navIconActive {
-  background: rgba(14, 165, 233, 0.15);
-  border-color: rgba(14, 165, 233, 0.3);
-  color: #0ea5e9;
+  background: rgba(1, 166, 188, 0.15);
+  border-color: rgba(1, 166, 188, 0.3);
+  color: #01A6BC;
   opacity: 1;
 }
 
@@ -389,9 +389,9 @@
 }
 
 .agentCard.selected {
-  background: rgba(14, 165, 233, 0.1);
-  border-color: rgba(14, 165, 233, 0.4);
-  box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.2);
+  background: rgba(1, 166, 188, 0.1);
+  border-color: rgba(1, 166, 188, 0.4);
+  box-shadow: 0 0 0 1px rgba(1, 166, 188, 0.2);
 }
 
 /* Status bar at top of card */
@@ -410,7 +410,7 @@
 }
 
 .statusBar.paused {
-  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  background: linear-gradient(90deg, #FAA525, #fbbf24);
 }
 
 .statusBar.failed {
@@ -469,9 +469,9 @@
   width: 24px;
   height: 24px;
   min-width: 24px;
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(168, 85, 247, 0.2));
+  background: linear-gradient(135deg, rgba(1, 166, 188, 0.2), rgba(250, 84, 124, 0.2));
   border-radius: 6px;
-  color: #0ea5e9;
+  color: #01A6BC;
 }
 
 .agentIcon svg {
@@ -553,9 +553,9 @@
 }
 
 .actionBtn:hover {
-  background: rgba(14, 165, 233, 0.2);
-  border-color: rgba(14, 165, 233, 0.4);
-  color: #0ea5e9;
+  background: rgba(1, 166, 188, 0.2);
+  border-color: rgba(1, 166, 188, 0.4);
+  color: #01A6BC;
 }
 
 .actionBtn svg {
@@ -603,7 +603,7 @@
 }
 
 .statusDot.paused {
-  background: #f59e0b;
+  background: #FAA525;
 }
 
 .statusDot.failed {
@@ -613,7 +613,7 @@
 .typeBadge {
   display: inline-block;
   padding: 1px 4px;
-  background: rgba(168, 85, 247, 0.15);
+  background: rgba(250, 84, 124, 0.15);
   border-radius: 3px;
   font-size: 8px;
   color: #a855f7;
@@ -653,7 +653,7 @@
 
 .modeBadge.unbounded {
   background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
+  color: #FAA525;
 }
 
 .agentActions {
@@ -677,8 +677,8 @@
 }
 
 .agentActions button:hover {
-  background: rgba(14, 165, 233, 0.2);
-  border-color: rgba(14, 165, 233, 0.3);
+  background: rgba(1, 166, 188, 0.2);
+  border-color: rgba(1, 166, 188, 0.3);
 }
 
 /* Agent Detail */
@@ -706,8 +706,8 @@
   flex-direction: column;
   gap: 6px;
   padding: 10px;
-  background: rgba(14, 165, 233, 0.05);
-  border: 1px solid rgba(14, 165, 233, 0.1);
+  background: rgba(1, 166, 188, 0.05);
+  border: 1px solid rgba(1, 166, 188, 0.1);
   border-radius: 8px;
   margin-bottom: 10px;
 }
@@ -738,7 +738,7 @@
   background: rgba(0, 0, 0, 0.3);
   border-radius: 4px;
   font-size: 9px;
-  color: #0ea5e9;
+  color: #01A6BC;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -764,9 +764,9 @@
 }
 
 .copyBtn:hover {
-  background: rgba(14, 165, 233, 0.15);
-  border-color: rgba(14, 165, 233, 0.25);
-  color: #0ea5e9;
+  background: rgba(1, 166, 188, 0.15);
+  border-color: rgba(1, 166, 188, 0.25);
+  color: #01A6BC;
 }
 
 .detailGrid {
@@ -803,7 +803,7 @@
 }
 
 .detailValue.medium {
-  color: #f59e0b;
+  color: #FAA525;
 }
 
 .detailValue.high {
@@ -958,7 +958,7 @@
 
 .inputGroup textarea:focus {
   outline: none;
-  border-color: rgba(14, 165, 233, 0.4);
+  border-color: rgba(1, 166, 188, 0.4);
 }
 
 /* Messages Area */
@@ -1001,14 +1001,14 @@
 }
 
 .message.user {
-  background: rgba(14, 165, 233, 0.15);
-  border: 1px solid rgba(14, 165, 233, 0.2);
+  background: rgba(1, 166, 188, 0.15);
+  border: 1px solid rgba(1, 166, 188, 0.2);
   margin-left: auto;
 }
 
 .message.agent {
-  background: rgba(168, 85, 247, 0.12);
-  border: 1px solid rgba(168, 85, 247, 0.2);
+  background: rgba(250, 84, 124, 0.12);
+  border: 1px solid rgba(250, 84, 124, 0.2);
   margin-right: auto;
 }
 
@@ -1043,7 +1043,7 @@
 
 .messageInputArea input:focus {
   outline: none;
-  border-color: rgba(14, 165, 233, 0.4);
+  border-color: rgba(1, 166, 188, 0.4);
 }
 
 .sendBtn {
@@ -1052,7 +1052,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+  background: linear-gradient(135deg, #01A6BC, #FA547C);
   border: none;
   border-radius: 50%;
   color: #fff;
@@ -1085,7 +1085,7 @@
 
 .thinkingMessage {
   background: rgba(99, 102, 241, 0.12);
-  border-color: rgba(129, 140, 248, 0.32);
+  border-color: rgba(1, 166, 188, 0.32);
 }
 
 .thinkingRow {
@@ -1098,8 +1098,8 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 2px solid rgba(129, 140, 248, 0.3);
-  border-top-color: #818cf8;
+  border: 2px solid rgba(1, 166, 188, 0.3);
+  border-top-color: #01A6BC;
   animation: spin 0.8s linear infinite;
 }
 
@@ -1131,7 +1131,7 @@
   align-items: center;
   gap: 4px;
   padding: 8px 14px;
-  background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+  background: linear-gradient(135deg, #01A6BC, #FA547C);
   border: none;
   border-radius: 6px;
   color: #fff;
@@ -1148,7 +1148,7 @@
 
 .primaryBtn:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 3px 10px rgba(14, 165, 233, 0.25);
+  box-shadow: 0 3px 10px rgba(1, 166, 188, 0.25);
 }
 
 .primaryBtn:disabled {
@@ -1175,15 +1175,15 @@
 }
 
 .messageBtn:hover {
-  background: rgba(168, 85, 247, 0.2) !important;
-  border-color: rgba(168, 85, 247, 0.4) !important;
+  background: rgba(250, 84, 124, 0.2) !important;
+  border-color: rgba(250, 84, 124, 0.4) !important;
   color: #a855f7 !important;
 }
 
 .detailBtn:hover {
-  background: rgba(14, 165, 233, 0.2) !important;
-  border-color: rgba(14, 165, 233, 0.4) !important;
-  color: #0ea5e9 !important;
+  background: rgba(1, 166, 188, 0.2) !important;
+  border-color: rgba(1, 166, 188, 0.4) !important;
+  color: #01A6BC !important;
 }
 
 .capsList {
@@ -1194,7 +1194,7 @@
 
 .capBadge {
   padding: 3px 8px;
-  background: rgba(168, 85, 247, 0.12);
+  background: rgba(250, 84, 124, 0.12);
   border-radius: 4px;
   font-size: 9px;
   color: #a855f7;
@@ -1309,7 +1309,7 @@
 }
 
 [data-theme='light'] .searchBox input:focus {
-  border-bottom-color: #0ea5e9;
+  border-bottom-color: #01A6BC;
   box-shadow: none;
   outline: none;
 }
@@ -1390,14 +1390,14 @@
 
 [data-theme='light'] .agentCard.selected {
   background: #f0f9ff;
-  border-color: #0ea5e9;
-  box-shadow: 0 0 0 1px rgba(14, 165, 233, 0.15);
+  border-color: #01A6BC;
+  box-shadow: 0 0 0 1px rgba(1, 166, 188, 0.15);
 }
 
 /* --- Card Header --- */
 [data-theme='light'] .agentIcon {
   background: transparent;
-  color: #0ea5e9;
+  color: #01A6BC;
 }
 
 [data-theme='light'] .agentInfo h3 {
@@ -1461,7 +1461,7 @@
 [data-theme='light'] .actionBtn:hover {
   background: transparent;
   border: none;
-  color: #0ea5e9;
+  color: #01A6BC;
 }
 
 [data-theme='light'] .runBtn:hover {
@@ -1479,7 +1479,7 @@
 [data-theme='light'] .detailBtn:hover {
   background: transparent !important;
   border-color: transparent !important;
-  color: #0ea5e9 !important;
+  color: #01A6BC !important;
 }
 
 /* --- Agent Actions (legacy) --- */
@@ -1535,7 +1535,7 @@
 [data-theme='light'] .agentIdValue code {
   background: #ffffff;
   border: 1px solid #e5e7eb;
-  color: #0ea5e9;
+  color: #01A6BC;
 }
 
 [data-theme='light'] .copyBtn {
@@ -1546,7 +1546,7 @@
 
 [data-theme='light'] .copyBtn:hover {
   background: #f3f4f6;
-  color: #0ea5e9;
+  color: #01A6BC;
 }
 
 /* --- Modal --- */
@@ -1599,8 +1599,8 @@
 }
 
 [data-theme='light'] .inputGroup textarea:focus {
-  border-color: #0ea5e9;
-  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
+  border-color: #01A6BC;
+  box-shadow: 0 0 0 2px rgba(1, 166, 188, 0.1);
 }
 
 /* --- Buttons --- */
@@ -1659,8 +1659,8 @@
 }
 
 [data-theme='light'] .messageInputArea input:focus {
-  border-color: #0ea5e9;
-  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.1);
+  border-color: #01A6BC;
+  box-shadow: 0 0 0 2px rgba(1, 166, 188, 0.1);
 }
 
 /* --- Empty State --- */
@@ -1744,7 +1744,7 @@
 }
 
 [data-theme='light'] .thinkingText {
-  color: #4f46e5;
+  color: #01A6BC;
 }
 
 /* ============== PUBLISH FORM ============== */
@@ -1768,7 +1768,7 @@
 
 .publishBtn {
   padding: 4px 12px;
-  background: linear-gradient(135deg,#6366f1,#8b5cf6);
+  background: linear-gradient(135deg,#01A6BC,#FA547C);
   border: none;
   border-radius: 4px;
   color: #fff;
@@ -1880,8 +1880,8 @@
   align-items: center;
   gap: 2px;
   padding: 1px 5px;
-  background: rgba(99,102,241,0.15);
-  color: #6366f1;
+  background: rgba(1,166,188,0.15);
+  color: #01A6BC;
   border-radius: 3px;
   font-size: 10px;
 }
@@ -1921,8 +1921,8 @@
 }
 
 .trustTierBtn.active {
-  border-color: #6366f1;
-  background: rgba(99,102,241,0.15);
+  border-color: #01A6BC;
+  background: rgba(1,166,188,0.15);
 }
 
 .trustTierLabel {
@@ -1954,9 +1954,9 @@
 }
 
 .permBtn.active {
-  border-color: rgba(99,102,241,0.5);
-  background: rgba(99,102,241,0.15);
-  color: #6366f1;
+  border-color: rgba(1,166,188,0.5);
+  background: rgba(1,166,188,0.15);
+  color: #01A6BC;
 }
 
 .permCheck {
@@ -1974,8 +1974,8 @@
 }
 
 .permCheck.active {
-  border-color: #6366f1;
-  background: #6366f1;
+  border-color: #01A6BC;
+  background: #01A6BC;
 }
 
 .codeRow {
@@ -2054,7 +2054,7 @@
 }
 
 [data-theme='light'] .publishInput:focus {
-  border-bottom-color: #0ea5e9;
+  border-bottom-color: #01A6BC;
 }
 
 [data-theme='light'] .publishTextarea {
@@ -2066,7 +2066,7 @@
 }
 
 [data-theme='light'] .publishTextarea:focus {
-  border-bottom-color: #0ea5e9;
+  border-bottom-color: #01A6BC;
 }
 
 [data-theme='light'] .publishSelect {
@@ -2095,9 +2095,9 @@
 }
 
 [data-theme='light'] .trustTierBtn.active {
-  border-color: #6366f1;
+  border-color: #01A6BC;
   background: #eef2ff;
-  color: #4f46e5;
+  color: #01A6BC;
 }
 
 [data-theme='light'] .trustTierDesc {
@@ -2111,9 +2111,9 @@
 }
 
 [data-theme='light'] .permBtn.active {
-  border-color: rgba(99,102,241,0.5);
+  border-color: rgba(1,166,188,0.5);
   background: #eef2ff;
-  color: #4f46e5;
+  color: #01A6BC;
 }
 
 [data-theme='light'] .permCheck {
@@ -2121,8 +2121,8 @@
 }
 
 [data-theme='light'] .permCheck.active {
-  border-color: #6366f1;
-  background: #6366f1;
+  border-color: #01A6BC;
+  background: #01A6BC;
 }
 
 [data-theme='light'] .codeSelect {
@@ -2324,8 +2324,8 @@
   }
 
   .mobileTabActive {
-    color: #0ea5e9;
-    border-bottom-color: #0ea5e9;
+    color: #01A6BC;
+    border-bottom-color: #01A6BC;
   }
 
   /* ===== SWIPEABLE SPLIT CONTAINER ===== */
@@ -2394,9 +2394,9 @@
   }
 
   .agentCard.selected {
-    background: rgba(14, 165, 233, 0.08);
+    background: rgba(1, 166, 188, 0.08);
     border-color: transparent;
-    border-bottom-color: rgba(14, 165, 233, 0.2);
+    border-bottom-color: rgba(1, 166, 188, 0.2);
     box-shadow: none;
   }
 
@@ -2455,7 +2455,7 @@
   color: rgba(0, 0, 0, 0.4);
 }
 [data-theme='light'] .mobileTabActive {
-  color: #0ea5e9;
+  color: #01A6BC;
 }
 [data-theme='light'] .mobileTabs {
   background: rgba(0, 0, 0, 0.03);
@@ -2483,7 +2483,7 @@
 
 .statusIndicator[data-status="starting"] .statusDot,
 .statusIndicator[data-status="running"] .statusDot {
-  background: #0ea5e9;
+  background: #01A6BC;
   animation: pulse 1.5s ease-in-out infinite;
 }
 
@@ -2517,8 +2517,8 @@
 .statusLoader {
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(14, 165, 233, 0.2);
-  border-top-color: #0ea5e9;
+  border: 2px solid rgba(1, 166, 188, 0.2);
+  border-top-color: #01A6BC;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -2598,7 +2598,7 @@
 
 .versionNumber {
   font-weight: 700;
-  color: #0ea5e9;
+  color: #01A6BC;
   min-width: 30px;
 }
 

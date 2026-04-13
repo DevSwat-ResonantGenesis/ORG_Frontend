@@ -17,6 +17,7 @@ interface Goal {
   progress: number;
   deadline?: Date;
   agentId: string;
+  agentName: string;
   subGoals: { id: string; title: string; completed: boolean }[];
 }
 
@@ -46,46 +47,77 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
   const [newGoalTitle, setNewGoalTitle] = useState('');
   const [showNewGoalForm, setShowNewGoalForm] = useState(false);
 
-  // Fetch goals from backend
+  // Parse backend goal response into our Goal interface
+  const parseGoal = (g: any, agentId: string, agentName: string): Goal => ({
+    id: g.id,
+    title: g.description?.substring(0, 50) || 'Unnamed Goal',
+    description: g.description || '',
+    priority: typeof g.priority === 'number' ? (g.priority <= 3 ? 'high' : g.priority <= 5 ? 'medium' : 'low') : (g.priority || 'medium'),
+    status: g.status === 'completed' ? 'completed' : g.status === 'failed' ? 'failed' : g.status === 'paused' ? 'paused' : 'active',
+    progress: g.completion_percentage ?? g.progress ?? 0,
+    deadline: g.deadline ? new Date(g.deadline) : undefined,
+    agentId,
+    agentName,
+    subGoals: g.sub_goals?.map((sg: any) => ({
+      id: sg.id,
+      title: sg.description,
+      completed: sg.status === 'completed'
+    })) || []
+  });
+
+  // Fetch goals — for selected agent or ALL agents
   const fetchGoals = useCallback(async () => {
-    if (!selectedAgent?.id) return;
-    
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fastapiClient.get(`/api/v1/agents/goals/${selectedAgent.id}`);
-      const backendGoals = (response.data || []).map((g: any) => ({
-        id: g.id,
-        title: g.description?.substring(0, 50) || 'Unnamed Goal',
-        description: g.description || '',
-        priority: typeof g.priority === 'number' ? (g.priority <= 3 ? 'high' : g.priority <= 5 ? 'medium' : 'low') : (g.priority || 'medium'),
-        status: g.status === 'completed' ? 'completed' : g.status === 'failed' ? 'failed' : g.status === 'paused' ? 'paused' : 'active',
-        progress: g.completion_percentage ?? g.progress ?? 0,
-        deadline: g.deadline ? new Date(g.deadline) : undefined,
-        agentId: selectedAgent.id,
-        subGoals: g.sub_goals?.map((sg: any) => ({
-          id: sg.id,
-          title: sg.description,
-          completed: sg.status === 'completed'
-        })) || []
-      }));
-      setGoals(backendGoals);
+      if (selectedAgent?.id) {
+        // Fetch for single agent
+        const response = await fastapiClient.get(`/api/v1/agents/goals/${selectedAgent.id}`);
+        const backendGoals = (response.data || []).map((g: any) => parseGoal(g, selectedAgent.id, selectedAgent.name));
+        setGoals(backendGoals);
+      } else {
+        // Fetch for ALL agents
+        const allGoals: Goal[] = [];
+        const persistedAgents = agents.filter((a: any) => a.persisted);
+        const results = await Promise.allSettled(
+          persistedAgents.map(async (agent: any) => {
+            const response = await fastapiClient.get(`/api/v1/agents/goals/${agent.id}`);
+            return { agent, data: response.data || [] };
+          })
+        );
+        for (const r of results) {
+          if (r.status === 'fulfilled') {
+            for (const g of r.value.data) {
+              allGoals.push(parseGoal(g, r.value.agent.id, r.value.agent.name));
+            }
+          }
+        }
+        setGoals(allGoals);
+      }
     } catch (err: any) {
       console.error('Failed to fetch goals:', err);
-      // Fall back to empty array - goals will be created as needed
       setGoals([]);
     } finally {
       setIsLoading(false);
     }
+  }, [selectedAgent?.id, selectedAgent?.name, agents]);
+
+  // For creating goals, use selected agent or let user pick
+  const [createAgentId, setCreateAgentId] = useState(selectedAgent?.id || '');
+
+  // Sync createAgentId when selectedAgent changes
+  useEffect(() => {
+    if (selectedAgent?.id) setCreateAgentId(selectedAgent.id);
   }, [selectedAgent?.id]);
 
   // Create new goal
   const handleCreateGoal = useCallback(async () => {
-    if (!selectedAgent?.id || !newGoalTitle.trim()) return;
+    const targetAgentId = selectedAgent?.id || createAgentId;
+    if (!targetAgentId || !newGoalTitle.trim()) return;
     
     setIsLoading(true);
     try {
-      await fastapiClient.post(`/api/v1/agents/goals/${selectedAgent.id}/assign`, {
+      await fastapiClient.post(`/api/v1/agents/goals/${selectedAgent?.id || createAgentId}/assign`, {
         description: newGoalTitle,
         priority: 5
       });
@@ -98,14 +130,15 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedAgent?.id, newGoalTitle, fetchGoals]);
+  }, [selectedAgent?.id, createAgentId, newGoalTitle, fetchGoals]);
 
   // Update goal status
-  const handleUpdateGoalStatus = useCallback(async (goalId: string, newStatus: string) => {
-    if (!selectedAgent?.id) return;
+  const handleUpdateGoalStatus = useCallback(async (goalId: string, newStatus: string, agentId?: string) => {
+    const targetAgentId = agentId || selectedAgent?.id;
+    if (!targetAgentId) return;
     setIsLoading(true);
     try {
-      await fastapiClient.patch(`/api/v1/agents/goals/${selectedAgent.id}/goals/${goalId}`, {
+      await fastapiClient.patch(`/api/v1/agents/goals/${targetAgentId}/goals/${goalId}`, {
         status: newStatus
       });
       fetchGoals();
@@ -118,12 +151,13 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
   }, [selectedAgent?.id, fetchGoals]);
 
   // Delete goal
-  const handleDeleteGoal = useCallback(async (goalId: string) => {
-    if (!selectedAgent?.id) return;
+  const handleDeleteGoal = useCallback(async (goalId: string, agentId?: string) => {
+    const targetAgentId = agentId || selectedAgent?.id;
+    if (!targetAgentId) return;
     if (!confirm('Delete this goal?')) return;
     setIsLoading(true);
     try {
-      await fastapiClient.delete(`/api/v1/agents/goals/${selectedAgent.id}/goals/${goalId}`);
+      await fastapiClient.delete(`/api/v1/agents/goals/${targetAgentId}/goals/${goalId}`);
       fetchGoals();
     } catch (err: any) {
       setError(err.response?.data?.detail || err.message || 'Failed to delete goal');
@@ -167,20 +201,35 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
       <div className={styles.panelHeader}>
         <h2><Icons.Goals /> Goals & Objectives {isLoading && '(loading...)'}</h2>
         <button onClick={handleExportGoals} style={{ padding: "4px 10px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "6px", color: "#94a3b8", fontSize: "11px", cursor: "pointer" }}><Icons.Download /> Export</button>
-        <button className={styles.addBtn} onClick={() => setShowNewGoalForm(true)} disabled={!selectedAgent}>
+        <button className={styles.addBtn} onClick={() => setShowNewGoalForm(true)}>
           <Icons.Plus /> New Goal
         </button>
       </div>
 
       <div className={styles.panelContent}>
-        {/* Agent Selection Notice */}
-        {!selectedAgent && (
-          <div className={styles.notice}>Select an agent to view and manage goals</div>
+        {/* Agent scope indicator */}
+        {!selectedAgent && agents.length > 0 && (
+          <div className={styles.notice} style={{ background: 'rgba(1,166,188,0.08)', borderColor: 'rgba(1,166,188,0.2)', color: '#01A6BC' }}>
+            Showing goals for all {agents.filter((a: any) => a.persisted).length} agents. Select an agent for single-agent view.
+          </div>
         )}
 
         {/* New Goal Form */}
-        {showNewGoalForm && selectedAgent && (
+        {showNewGoalForm && (
           <div className={styles.newGoalForm}>
+            {!selectedAgent && (
+              <select
+                value={createAgentId}
+                onChange={(e) => setCreateAgentId(e.target.value)}
+                className={styles.goalInput}
+                style={{ marginBottom: 8 }}
+              >
+                <option value="">Select agent...</option>
+                {agents.filter((a: any) => a.persisted).map((a: any) => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </select>
+            )}
             <input
               type="text"
               value={newGoalTitle}
@@ -189,7 +238,7 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
               className={styles.goalInput}
             />
             <div className={styles.formActions}>
-              <button onClick={handleCreateGoal} disabled={!newGoalTitle.trim() || isLoading}>
+              <button onClick={handleCreateGoal} disabled={!newGoalTitle.trim() || isLoading || (!selectedAgent && !createAgentId)}>
                 {isLoading ? 'Creating...' : 'Create Goal'}
               </button>
               <button onClick={() => setShowNewGoalForm(false)}>Cancel</button>
@@ -238,6 +287,7 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
                     {goal.priority}
                   </span>
                   <h4>{goal.title}</h4>
+                  {!selectedAgent && <span style={{ fontSize: 10, color: '#01A6BC', marginLeft: 6, opacity: 0.7 }}>{goal.agentName}</span>}
                 </div>
                 <span className={`${styles.statusBadge} ${getStatusColor(goal.status)}`}>
                   {goal.status}
@@ -278,21 +328,21 @@ const GoalsPanelComponent: React.FC<GoalsPanelProps> = ({ className }) => {
 
               <div className={styles.goalActions}>
                 {goal.status === 'active' && (
-                  <button className={styles.actionBtn} onClick={() => handleUpdateGoalStatus(goal.id, 'completed')}>
+                  <button className={styles.actionBtn} onClick={() => handleUpdateGoalStatus(goal.id, 'completed', goal.agentId)}>
                     <Icons.CheckCircle /> Complete
                   </button>
                 )}
                 {goal.status === 'active' && (
-                  <button className={styles.actionBtn} onClick={() => handleUpdateGoalStatus(goal.id, 'paused')}>
+                  <button className={styles.actionBtn} onClick={() => handleUpdateGoalStatus(goal.id, 'paused', goal.agentId)}>
                     <Icons.Pause /> Pause
                   </button>
                 )}
                 {goal.status === 'paused' && (
-                  <button className={styles.actionBtn} onClick={() => handleUpdateGoalStatus(goal.id, 'active')}>
+                  <button className={styles.actionBtn} onClick={() => handleUpdateGoalStatus(goal.id, 'active', goal.agentId)}>
                     <Icons.Play /> Resume
                   </button>
                 )}
-                <button className={`${styles.actionBtn} ${styles.deleteAction}`} onClick={() => handleDeleteGoal(goal.id)}>
+                <button className={`${styles.actionBtn} ${styles.deleteAction}`} onClick={() => handleDeleteGoal(goal.id, goal.agentId)}>
                   <Icons.Trash /> Delete
                 </button>
               </div>
