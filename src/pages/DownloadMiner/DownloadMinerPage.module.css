@@ -29,7 +29,7 @@
   transform: translateX(-50%);
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(1, 166, 188, 0.10) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -74,7 +74,7 @@
 }
 
 .heroAccent {
-  background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 50%, #ffffff 100%);
+  background: linear-gradient(135deg, #FFD800 0%, #FAA525 50%, #FFD800 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -104,19 +104,19 @@
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
-  background: linear-gradient(135deg, #fff 0%, #d4d4d8 100%);
-  color: #0a0a0f !important;
+  background: linear-gradient(135deg, #FFD800 0%, #FAA525 100%);
+  color: #121214 !important;
   border: none;
   cursor: pointer;
   text-decoration: none !important;
   transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px rgba(255, 216, 0, 0.18);
 }
 
 .downloadButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(255, 255, 255, 0.18);
-  color: #0a0a0f !important;
+  box-shadow: 0 8px 30px rgba(255, 216, 0, 0.28);
+  color: #121214 !important;
 }
 
 .downloadButtonOutline {
@@ -129,7 +129,7 @@
   font-weight: 600;
   background: transparent;
   color: #e5e7eb !important;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(1, 166, 188, 0.4);
   cursor: pointer;
   text-decoration: none !important;
   transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
@@ -137,7 +137,7 @@
 
 .downloadButtonOutline:hover {
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: #01A6BC;
   color: #ffffff !important;
 }
 
@@ -428,28 +428,28 @@
 }
 
 .faqLabelArch {
-  background: rgba(129, 140, 248, 0.15);
-  color: #818cf8;
+  background: rgba(1, 166, 188, 0.15);
+  color: #01A6BC;
 }
 
 .faqLabelToken {
-  background: rgba(52, 211, 153, 0.15);
-  color: #34d399;
+  background: rgba(113, 194, 62, 0.15);
+  color: #71C23E;
 }
 
 .faqLabelPlatform {
-  background: rgba(251, 191, 36, 0.15);
-  color: #fbbf24;
+  background: rgba(255, 216, 0, 0.15);
+  color: #FFD800;
 }
 
 .faqLabelTrust {
-  background: rgba(96, 165, 250, 0.15);
-  color: #60a5fa;
+  background: rgba(250, 165, 37, 0.15);
+  color: #FAA525;
 }
 
 .faqLabelLicense {
-  background: rgba(244, 114, 182, 0.15);
-  color: #f472b6;
+  background: rgba(250, 84, 124, 0.15);
+  color: #FA547C;
 }
 
 /* light theme FAQ */

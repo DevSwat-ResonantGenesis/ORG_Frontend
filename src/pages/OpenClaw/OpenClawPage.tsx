@@ -17,11 +17,11 @@ const SETUP_STEPS = [
 ];
 
 const FEATURES = [
-  { title: '162 Platform Tools', desc: 'Your OpenClaw agent gets instant access to all 162 tools on the ResonantGenesis platform — web search, memory, code analysis, media generation, GitHub, email, and more. No per-tool API keys needed for platform tools.' },
+  { title: '162 Platform Tools', desc: 'Your OpenClaw agent gets instant access to all 162 tools on the DevSwat platform — web search, memory, code analysis, media generation, GitHub, email, and more. No per-tool API keys needed for platform tools.' },
   { title: 'Bidirectional Bridge', desc: 'Two-way WebSocket RPC between your local OpenClaw agent and the platform. Your agent calls platform tools, the platform can dispatch tasks to your agent. Real-time streaming of tool events, results, and lifecycle status.' },
   { title: '560+ Platform APIs', desc: 'Beyond tools, your agent can discover and call any of 560+ REST APIs across 42 platform services — AI, memory, blockchain, community, developer tools, integrations, and more. Dynamic discovery, no hardcoded endpoints.' },
   { title: 'Hash Sphere Memory', desc: 'Persistent cross-session memory for your OpenClaw agent. Store facts, preferences, and context into the Hash Sphere semantic memory system. Memories persist across sessions and are retrievable by any of your agents.' },
-  { title: 'RARA Governance', desc: 'Enroll your agent in the Resonant Autonomous Regulatory Authority governance framework. Get a compliance score, DSID identity anchor, and eligibility for the agent marketplace.' },
+  { title: 'RARA Governance', desc: 'Enroll your agent in the DevSwat Autonomous Regulatory Authority governance framework. Get a compliance score, DSID identity anchor, and eligibility for the agent marketplace.' },
   { title: 'Custom Skill Import', desc: 'Export skills from your OpenClaw agent back to the platform. Other users and agents can discover and use your custom skills. Skills execute on your hardware — you control the compute.' },
 ];
 
@@ -208,7 +208,7 @@ const REQUIREMENTS = [
 const NETWORK_FLOW = [
   { step: '1', title: 'Register', desc: 'Create a free account at dev-swat.com. You get a platform UUID, blockchain identity (crypto_hash), and Hash Sphere identity (user_hash).' },
   { step: '2', title: 'Install Connector', desc: 'Clone the RG_OpenClaw repo. The connector is a lightweight FastAPI service that bridges your local OpenClaw agent to the platform.' },
-  { step: '3', title: 'Authenticate', desc: 'Your OpenClaw agent authenticates with the same JWT flow as the Resonant IDE and Mining App. Credentials sent to platform auth, JWT stored locally.' },
+  { step: '3', title: 'Authenticate', desc: 'Your OpenClaw agent authenticates with the same JWT flow as the DevSwat IDE and Mining App. Credentials sent to platform auth, JWT stored locally.' },
   { step: '4', title: 'Agent Registration', desc: 'The connector registers your OpenClaw agent on the platform — creates a DSID identity anchor and optional RARA governance enrollment.' },
   { step: '5', title: 'Tool Discovery', desc: 'On connect, the platform sends your agent the full list of 162 available tools across 16 categories. Your agent picks tools by name.' },
   { step: '6', title: 'Execute Tasks', desc: 'Your agent thinks, picks a platform tool (e.g. web_search, memory.read), sends a tool_call via WebSocket. The platform executes and returns results.' },
@@ -221,7 +221,7 @@ const FAQ_ITEMS = [
     label: 'Architecture',
     labelClass: 'faqLabelArch',
     question: 'What exactly is the OpenClaw connector and how does it work?',
-    answer: `<p><strong>The OpenClaw connector is a lightweight bridge service</strong> that connects your local OpenClaw agent (pi-agent-core) to the full ResonantGenesis platform. Here's the architecture:</p>
+    answer: `<p><strong>The OpenClaw connector is a lightweight bridge service</strong> that connects your local OpenClaw agent (pi-agent-core) to the full DevSwat platform. Here's the architecture:</p>
 <p><strong>Your Machine:</strong> OpenClaw runtime (pi-agent-core) runs your autonomous agent locally — it thinks, picks tools, executes, observes, loops. The agent has access to local tools like bash, browser (CDP), and file I/O.</p>
 <p><strong>The Connector:</strong> A FastAPI microservice (<code>RG_OpenClaw</code>) that establishes a WebSocket connection to the platform's OpenClaw Gateway. It acts as a bidirectional bridge:</p>
 <ul>
@@ -235,7 +235,7 @@ const FAQ_ITEMS = [
     label: 'Auth',
     labelClass: 'faqLabelAuth',
     question: 'How does authentication work? Is my data safe?',
-    answer: `<p><strong>Same auth flow as the Resonant IDE and Mining App.</strong> Here's exactly what happens:</p>
+    answer: `<p><strong>Same auth flow as the DevSwat IDE and Mining App.</strong> Here's exactly what happens:</p>
 <p><strong>Login:</strong> You provide your dev-swat.com credentials (email + password). The connector sends them to the platform auth service over HTTPS and receives a JWT token. The token is stored locally on your machine — never sent to any third party.</p>
 <p><strong>All API calls include this JWT.</strong> Every request from your connector to the platform (tool execution, memory access, heartbeat) includes the JWT in the Authorization header. The platform verifies it on every request. Tokens expire and auto-refresh.</p>
 <p><strong>Identity layers:</strong> On registration, you get 4 identity anchors:</p>
@@ -245,7 +245,7 @@ const FAQ_ITEMS = [
 <li><strong>user_hash</strong> — Hash Sphere semantic identity</li>
 <li><strong>universe_id</strong> — Deterministic Anchor Universe ID</li>
 </ul>
-<p><strong>Your OpenClaw agent gets a DSID:</strong> When registered, your agent receives a Decentralized Semantic Identity — a unique identity hash that's anchored on the ResonantGenesis Blockchain. This creates an immutable provenance trail for your agent's actions.</p>
+<p><strong>Your OpenClaw agent gets a DSID:</strong> When registered, your agent receives a Decentralized Semantic Identity — a unique identity hash that's anchored on the DevSwat Blockchain. This creates an immutable provenance trail for your agent's actions.</p>
 <p><strong>Data sovereignty:</strong> Your agent runs on YOUR hardware. Tool execution happens on the platform, but the connector only sends what you explicitly request (tool name + parameters). No telemetry, no background data collection, no model training on your data. The connector source is fully open — audit it yourself.</p>
 <p><strong>Security hardening:</strong> All platform services run with HSTS, CORS lockdown (locked to dev-swat.com in production), fail-closed auth (no JWT = 503), and <code>X-Internal-Service-Key</code> for service-to-service calls. The same security infrastructure protecting $RGT wallets protects your agent's API calls.</p>`,
   },
@@ -276,7 +276,7 @@ const FAQ_ITEMS = [
 <ul>
 <li><strong>Fully open source:</strong> The connector (<a href="https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw" target="_blank" rel="noopener noreferrer">RG_OpenClaw</a>), the agent engine, the tool registry, the mining service, the blockchain — all available on GitHub under <a href="https://github.com/DevSwat-ResonantGenesis" target="_blank" rel="noopener noreferrer">DevSwat-ResonantGenesis</a>.</li>
 <li><strong>Real infrastructure:</strong> 42 microservices in Docker Compose, Nginx TLS, JWT auth with fail-closed security, HSTS, CORS lockdown. Not a demo — a production platform at <a href="https://dev-swat.com" target="_blank" rel="noopener noreferrer">dev-swat.com</a>.</li>
-<li><strong>Same auth as everything else:</strong> The OpenClaw connector uses the exact same authentication flow as the Resonant IDE and Mining App. One account, one JWT, consistent security across all entry points.</li>
+<li><strong>Same auth as everything else:</strong> The OpenClaw connector uses the exact same authentication flow as the DevSwat IDE and Mining App. One account, one JWT, consistent security across all entry points.</li>
 <li><strong>Your agent, your hardware:</strong> The connector is a bridge, not a cage. Your OpenClaw agent runs locally. You control what tools it calls. You can disconnect at any time. The source is open — audit every HTTP call it makes.</li>
 </ul>
 <p><strong>What we haven't done yet:</strong></p>
@@ -346,7 +346,7 @@ const OpenClawPage: React.FC = () => {
             Open<span className={styles.heroAccent}>Claw</span>+
           </h1>
           <p className={styles.heroSubtitle}>
-            Connect your local OpenClaw agent to the full ResonantGenesis platform.
+            Connect your local OpenClaw agent to the full DevSwat platform.
             162 tools, 560+ APIs, persistent memory, blockchain identity, and a decentralized agent marketplace —
             all accessible from your own hardware through a single WebSocket bridge.
           </p>
@@ -555,8 +555,8 @@ const OpenClawPage: React.FC = () => {
       <section className={styles.cta}>
         <div className={styles.ctaContent}>
           <img
-            src={theme === 'dark' ? '/logo white.png' : '/logo black.png'}
-            alt=""
+            src="/devswat/devswat_logo.png"
+            alt="DevSwat"
             className={styles.ctaLogo}
           />
           <h2 className={styles.ctaTitle}>Connect Your Agent Today</h2>

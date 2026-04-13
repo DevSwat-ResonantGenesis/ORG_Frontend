@@ -21,9 +21,9 @@ const FEATURES = [
   { title: 'Real GPU Training', desc: 'Actual PyTorch forward/backward passes on CUDA, MPS, or CPU. Auto-scales batch size for your device — batch_size=1, seq_len=512 for MPS/CPU fallback.' },
   { title: 'Pipeline-Parallel Training', desc: '1F1B microbatch scheduling across multi-GPU pipelines. Large models (7B–405B) split across multiple miners automatically using the ModelShard architecture.' },
   { title: 'P2P Weight Transfer', desc: 'Download model weights directly from peer miners via /p2p/serve-weights. No central bottleneck — liquid redistribution if miners go offline.' },
-  { title: '$RGT Rewards', desc: 'Earn ResonantGenesis Tokens for every accepted gradient. Top-K gradient compression (100x) for efficient submission with SHA256 verification.' },
+  { title: '$RGT Rewards', desc: 'Earn DevSwat Tokens for every accepted gradient. Top-K gradient compression (100x) for efficient submission with SHA256 verification.' },
   { title: 'Live Dashboard', desc: 'Real-time loss curves, reward tracking, training logs at http://localhost:3000. WebSocket-powered updates with network status monitoring.' },
-  { title: 'Platform Integration', desc: 'Authenticate with your ResonantGenesis account (same credentials as Resonant IDE). JWT tokens stored locally, all mining calls include proper auth headers.' },
+  { title: 'Platform Integration', desc: 'Authenticate with your DevSwat account (same credentials as DevSwat IDE). JWT tokens stored locally, all mining calls include proper auth headers.' },
 ];
 
 const REQUIREMENTS = [
@@ -46,7 +46,7 @@ const NETWORK_FLOW = [
   { step: '7', title: 'Receive Task', desc: 'Get a training task (epoch, batch index, hyperparameters)' },
   { step: '8', title: 'Train (1F1B pipeline)', desc: 'Run 1F1B microbatch schedule — forward/backward passes interleaved for GPU efficiency' },
   { step: '9', title: 'Submit Gradient', desc: 'Compressed gradient (Top-K with SHA256 hash) sent to parameter server' },
-  { step: '10', title: 'Earn $RGT', desc: 'ResonantGenesis Tokens credited for accepted gradients' },
+  { step: '10', title: 'Earn $RGT', desc: 'DevSwat Tokens credited for accepted gradients' },
 ];
 
 const FAQ_ITEMS = [
@@ -61,7 +61,7 @@ const FAQ_ITEMS = [
 <p><strong>P2P via WebRTC:</strong> Miners behind home routers (NAT) discover each other through WebRTC signaling — no manual port forwarding needed. The <code>P2PDiscovery</code> service handles ICE candidate exchange and establishes DataChannels for direct miner-to-miner communication.</p>
 <p><strong>Gradient Aggregation:</strong> Each pipeline stage has its own <code>ShardParameterServer</code> that collects and aggregates gradients using staleness-aware weighted averaging. A <code>GlobalAggregator</code> coordinates step advancement across all shards with O(log N) hierarchical consensus — scalable from 4 miners to millions.</p>
 <p><strong>Fault Tolerance:</strong> If a miner disconnects, "liquid redistribution" automatically reassigns its shard to the best available replacement miner and re-links the pipeline. No human intervention needed.</p>
-<p><strong>Current phase:</strong> The seed model (<code>resonant-seed-1b</code>, 1B params, 24 layers) fits entirely in 2 GB VRAM, so each miner holds a full copy and trains independently with compressed gradient submission. Pipeline sharding activates automatically when the network scales to larger models that don't fit on a single GPU.</p>`,
+<p><strong>Current phase:</strong> The seed model (<code>devswat-seed-1b</code>, 1B params, 24 layers) fits entirely in 2 GB VRAM, so each miner holds a full copy and trains independently with compressed gradient submission. Pipeline sharding activates automatically when the network scales to larger models that don't fit on a single GPU.</p>`,
   },
   {
     label: 'Token',
@@ -76,10 +76,10 @@ const FAQ_ITEMS = [
 </ul>
 <p><strong>Halving schedule:</strong> Block rewards halve yearly — Year 1: 100 $RGT/block, Year 2: 50, Year 3: 25, Year 4: 12.5. This is a deflationary model similar to Bitcoin's halving mechanism.</p>
 <p><strong>A closed utility economy, not speculation:</strong> $RGT isn't trying to be traded on exchanges — it's a platform currency. You mine it by contributing compute, and spend it on IDE access, LLM API calls, agent creation and management. That's a closed utility loop: earn by training models, spend on platform services. This is actually more sustainable than "earn tokens and hope someone buys them" — value comes from real usage, not exchange speculation.</p>
-<p><strong>The real break-even question:</strong> It's not "when does $RGT hit X price on a DEX" — it's "does my GPU mining output cover what I'd otherwise pay in platform fees?" If you're already using the Resonant IDE, LLM APIs, or AI agents, mining essentially makes those services free. Your cost is electricity + GPU wear instead of subscription fees.</p>
-<p><strong>On-chain recording:</strong> Every gradient submission and reward distribution is recorded as a <code>training_gradient</code> transaction on the ResonantGenesis Blockchain (chain ID: <code>resonant-genesis-external-1</code>), which uses Raft consensus with Merkle-tree block validation. This creates an immutable provenance trail for all training contributions.</p>
+<p><strong>The real break-even question:</strong> It's not "when does $RGT hit X price on a DEX" — it's "does my GPU mining output cover what I'd otherwise pay in platform fees?" If you're already using the DevSwat IDE, LLM APIs, or AI agents, mining essentially makes those services free. Your cost is electricity + GPU wear instead of subscription fees.</p>
+<p><strong>On-chain recording:</strong> Every gradient submission and reward distribution is recorded as a <code>training_gradient</code> transaction on the DevSwat Blockchain (chain ID: <code>resonant-genesis-external-1</code>), which uses Raft consensus with Merkle-tree block validation. This creates an immutable provenance trail for all training contributions.</p>
 <p><strong>Staking & slashing:</strong> The <code>WalletService</code> supports staking (with lock periods) and slashing penalties for misbehavior. Minimum stake for RG_TOKEN is 1,000 $RGT. This is an economic incentive layer to ensure honest training contributions.</p>
-<p><strong>Future Base L2 anchor:</strong> $RGT currently lives on the ResonantGenesis sovereign chain. A cross-chain bridge to Base/ETH mainnet is planned as the network matures and more contributors join — we're building the utility first, not the speculation layer.</p>`,
+<p><strong>Future Base L2 anchor:</strong> $RGT currently lives on the DevSwat sovereign chain. A cross-chain bridge to Base/ETH mainnet is planned as the network matures and more contributors join — we're building the utility first, not the speculation layer.</p>`,
   },
   {
     label: 'Platform',
@@ -87,9 +87,9 @@ const FAQ_ITEMS = [
     question: 'Why does it require a free account at dev-swat.com?',
     answer: `<p><strong>Authentication prevents abuse, not lock-in.</strong> Here's why and how it works:</p>
 <p><strong>Why auth is required:</strong> Without identity verification, anyone could submit garbage gradients and claim rewards. The auth system ensures every gradient submission is tied to a verified account, making it possible to enforce quality control, slashing penalties for bad actors, and fair reward distribution.</p>
-<p><strong>How login works:</strong> The miner app sends your credentials to the platform auth service and receives a JWT token, stored locally on your machine. All subsequent API calls (mining tasks, gradient submission, reward claims) include this token. This is the exact same auth flow used by the Resonant IDE — one account for the entire platform.</p>
+<p><strong>How login works:</strong> The miner app sends your credentials to the platform auth service and receives a JWT token, stored locally on your machine. All subsequent API calls (mining tasks, gradient submission, reward claims) include this token. This is the exact same auth flow used by the DevSwat IDE — one account for the entire platform.</p>
 <p><strong>Identity layers:</strong> On registration, each user gets 4 identity anchors: a platform UUID, a SHA-256 blockchain identity (crypto_hash), a Hash Sphere semantic identity (user_hash), and a deterministic Anchor Universe ID (universe_id). Your blockchain identity is anchored on-chain via the <code>/identity/register</code> endpoint.</p>
-<p><strong>About the domain:</strong> <code>dev-swat.com</code> is the production domain for the ResonantGenesis platform, operated by the DevSwat-ResonantGenesis organization (same org that owns all the GitHub repos). The name "DevSwat" is the parent organization. All services (auth, mining, blockchain, lighthouse) run behind HTTPS on this domain with HSTS, CORS lockdown, and fail-closed auth in production.</p>
+<p><strong>About the domain:</strong> <code>dev-swat.com</code> is the production domain for the DevSwat platform, operated by the DevSwat-ResonantGenesis organization (same org that owns all the GitHub repos). The name "DevSwat" is the parent organization. All services (auth, mining, blockchain, lighthouse) run behind HTTPS on this domain with HSTS, CORS lockdown, and fail-closed auth in production.</p>
 <p><strong>No vendor lock-in:</strong> The miner app is fully open-source. The <code>RG_PLATFORM_URL</code> is configurable — you can point it at any compatible backend. The code for all 3 backend services (Mining, Lighthouse, External Blockchain) is also open-source under AGPL-3.0.</p>`,
   },
   {
@@ -103,7 +103,7 @@ const FAQ_ITEMS = [
 <li><strong>7+ repos on GitHub</strong> under <a href="https://github.com/DevSwat-ResonantGenesis" target="_blank" rel="noopener noreferrer">DevSwat-ResonantGenesis</a> — miner app, mining service, blockchain, lighthouse, crypto service, memory service, frontend. All open-source under AGPL-3.0.</li>
 <li><strong>Real ML engineering:</strong> Raft consensus from scratch, 1F1B pipeline parallelism, GQA+RoPE+SwiGLU transformer architecture, Top-K gradient compression with SHA-256 verification, WebRTC P2P NAT traversal, slashing with Merkle proof verification.</li>
 <li><strong>Production infrastructure:</strong> Docker-composed microservices, Nginx TLS termination, JWT auth with fail-closed security, HSTS, CORS lockdown. This isn't a weekend hackathon project.</li>
-<li><strong>Live platform:</strong> <a href="https://dev-swat.com" target="_blank" rel="noopener noreferrer">dev-swat.com</a> runs the Resonant IDE, AI agents, LLM APIs, Hash Sphere memory, and Code Visualizer — the services that $RGT pays for.</li>
+<li><strong>Live platform:</strong> <a href="https://dev-swat.com" target="_blank" rel="noopener noreferrer">dev-swat.com</a> runs the DevSwat IDE, AI agents, LLM APIs, Hash Sphere memory, and Code Visualizer — the services that $RGT pays for.</li>
 </ul>
 <p><strong>What we haven't done yet:</strong></p>
 <ul>
@@ -171,10 +171,10 @@ const DownloadMinerPage: React.FC = () => {
             Open Source on GitHub
           </div>
           <h1 className={styles.heroTitle}>
-            RG <span className={styles.heroAccent}>Miner</span>
+            DevSwat <span className={styles.heroAccent}>Miner</span>
           </h1>
           <p className={styles.heroSubtitle}>
-            Standalone mining client for the ResonantGenesis decentralized LLM training network.
+            Standalone mining client for the DevSwat decentralized LLM training network.
             Download, login, and start earning $RGT tokens by training AI models on your GPU.
             Your machine becomes a node in a global pipeline-parallel training swarm.
           </p>
@@ -340,13 +340,13 @@ const DownloadMinerPage: React.FC = () => {
       <section className={styles.cta}>
         <div className={styles.ctaContent}>
           <img
-            src={theme === 'dark' ? '/logo white.png' : '/logo black.png'}
-            alt=""
+            src="/devswat/devswat_logo.png"
+            alt="DevSwat"
             className={styles.ctaLogo}
           />
           <h2 className={styles.ctaTitle}>Start Mining Today</h2>
           <p className={styles.ctaDesc}>
-            Join the ResonantGenesis decentralized training network. Contribute compute, earn $RGT, help train the next generation of open-source AI.
+            Join the DevSwat decentralized training network. Contribute compute, earn $RGT, help train the next generation of open-source AI.
           </p>
           <div className={styles.ctaActions}>
             <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className={styles.downloadButton}>
