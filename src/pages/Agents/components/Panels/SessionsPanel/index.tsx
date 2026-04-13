@@ -356,6 +356,24 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
                         </div>
                       )}
 
+                      {step.output_data?.output && (
+                        <div style={{ marginTop: '8px', borderLeft: '3px solid #01A6BC', paddingLeft: '12px', fontSize: '13px', lineHeight: '1.6' }}>
+                          {step.output_data.federated && (
+                            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+                              {(step.output_data.tools_used as string[] || []).map((t: string) => (
+                                <span key={t} style={{ background: 'rgba(1,166,188,0.12)', color: '#01A6BC', padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600 }}>{t}</span>
+                              ))}
+                              {step.output_data.duration_ms && (
+                                <span style={{ background: 'rgba(250,165,37,0.12)', color: '#FAA525', padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 600 }}>{String(step.output_data.duration_ms)}ms</span>
+                              )}
+                            </div>
+                          )}
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {String(step.output_data.output)}
+                          </ReactMarkdown>
+                        </div>
+                      )}
+
                       {!step.safety_check_passed && step.safety_violations && (
                         <div className={styles.safetyWarning}>
                           <Icons.AlertTriangle />

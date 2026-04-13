@@ -4,15 +4,14 @@ import styles from './DownloadMinerPage.module.css';
 
 const GITHUB_REPO = 'https://github.com/DevSwat-ResonantGenesis/RG_miner_app';
 const GITHUB_DOWNLOAD = 'https://github.com/DevSwat-ResonantGenesis/RG_miner_app/archive/refs/heads/main.zip';
-const ONE_LINE_INSTALL = `bash -lc 'set -e; command -v brew >/dev/null 2>&1 || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; brew install ffmpeg pkg-config; [ -d RG_miner_app ] || git clone https://github.com/DevSwat-ResonantGenesis/RG_miner_app.git; cd RG_miner_app; python3 -m venv venv; source venv/bin/activate; pip install -r requirements.txt; python server.py'`;
+const ONE_LINE_INSTALL = `bash -lc 'set -e; [ -d RG_miner_app ] || git clone https://github.com/DevSwat-ResonantGenesis/RG_miner_app.git; cd RG_miner_app; python3 -m venv venv; source venv/bin/activate; pip install --upgrade pip; pip install -r requirements.txt; python server.py'`;
 
 const SETUP_STEPS = [
-  { cmd: '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"', note: 'Install Homebrew (skip if you have it)' },
-  { cmd: 'brew install ffmpeg pkg-config', note: 'Install P2P prerequisites' },
   { cmd: 'git clone https://github.com/DevSwat-ResonantGenesis/RG_miner_app.git', note: 'Clone the repo' },
   { cmd: 'cd RG_miner_app', note: 'Enter directory' },
   { cmd: 'python3 -m venv venv', note: 'Create virtual environment' },
   { cmd: 'source venv/bin/activate', note: 'Activate venv' },
+  { cmd: 'pip install --upgrade pip', note: 'Upgrade pip (recommended)' },
   { cmd: 'pip install -r requirements.txt', note: 'Install dependencies' },
   { cmd: 'python server.py', note: 'Start the miner (open localhost:3000)' },
 ];
