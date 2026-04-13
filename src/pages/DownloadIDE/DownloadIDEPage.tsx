@@ -15,7 +15,7 @@ const SETUP_STEPS = [
   { cmd: 'npm install', note: 'Install dependencies (2-5 min)' },
   { cmd: 'cd extensions/resonant-ai && npm install && npx tsc -p tsconfig.json && cd ../..', note: 'Build the AI extension' },
   { cmd: 'npm run compile', note: 'Compile the IDE (~2 min)' },
-  { cmd: './scripts/code.sh', note: 'Launch Resonant IDE' },
+  { cmd: './scripts/code.sh', note: 'Launch DevSwat IDE' },
 ];
 
 const FEATURES = [
@@ -24,7 +24,7 @@ const FEATURES = [
   { title: '14 Code Visualizer Tools', desc: 'AST-based static analysis engine with 14 dedicated tools: scan projects, trace dependency flows, run SAST security audits, detect dead code, score governance compliance (0–100), compare multi-repo drift, verify formal invariants, and compile reversible Graph Analysis Language patches.' },
   { title: 'Hash Sphere Memory', desc: 'Persistent cross-session memory synced with dev-swat.com via save_memory, read_memory, and create_memory tools. The AI stores project context, coding preferences, and decisions — retrieves them semantically across machines.' },
   { title: 'Agentic Chat Loop', desc: 'LLM plans → calls tools → reads results → iterates. Configurable loop depth (1 to unlimited). Smart context compression summarizes large tool outputs to reduce token usage. Interactive terminals let the AI run REPLs, dev servers, and SSH sessions persistently.' },
-  { title: 'Platform API Access', desc: 'platform_api_search indexes 450+ backend endpoints across agents, billing, memory, blockchain, marketplace, Invariants SIM, and more. platform_api_call lets the AI invoke any endpoint directly — turning the IDE into a full control plane for the Resonant Genesis platform.' },
+  { title: 'Platform API Access', desc: 'platform_api_search indexes 450+ backend endpoints across agents, billing, memory, blockchain, marketplace, Invariants SIM, and more. platform_api_call lets the AI invoke any endpoint directly — turning the IDE into a full control plane for the DevSwat platform.' },
 ];
 
 const IDE_TOOL_CATALOG = [
@@ -207,8 +207,8 @@ const IDE_FAQ_ITEMS = [
   {
     label: 'Architecture',
     labelClass: 'faqLabelArch',
-    question: 'What exactly is the Resonant IDE and how does it work?',
-    answer: `<p><strong>Resonant IDE is a fork of VS Code Open Source</strong> (Code-OSS) with a built-in AI extension called <code>resonant-ai</code>. Here's the architecture:</p>
+    question: 'What exactly is the DevSwat IDE and how does it work?',
+    answer: `<p><strong>DevSwat IDE is a fork of VS Code Open Source</strong> (Code-OSS) with a built-in AI extension called <code>resonant-ai</code>. Here's the architecture:</p>
 <p><strong>The IDE (Electron):</strong> A full VS Code editor that runs locally on your machine. All file I/O, terminal commands, git operations, and code editing happen through local Electron IPC — nothing goes to the server for tool execution.</p>
 <p><strong>The AI Extension:</strong> A TypeScript extension (<code>extensions/resonant-ai/</code>) that provides an agentic chat panel inside the IDE. The AI can plan multi-step workflows, call tools, observe results, and iterate. It supports configurable loop depth (1 to unlimited).</p>
 <p><strong>Server provides only:</strong></p>
@@ -237,7 +237,7 @@ const IDE_FAQ_ITEMS = [
 <li>Your git credentials</li>
 <li>Your local file system structure</li>
 </ul>
-<p><strong>Identity layers:</strong> On registration, you get 4 identity anchors: UUID (platform), crypto_hash (blockchain), user_hash (Hash Sphere), universe_id (deterministic anchor). All anchored on the ResonantGenesis Blockchain.</p>
+<p><strong>Identity layers:</strong> On registration, you get 4 identity anchors: UUID (platform), crypto_hash (blockchain), user_hash (Hash Sphere), universe_id (deterministic anchor). All anchored on the DevSwat Blockchain.</p>
 <p><strong>Security hardening:</strong> HSTS, CORS lockdown to dev-swat.com, fail-closed auth (no JWT = 503), rate limiting. Same infrastructure protecting $RGT wallets.</p>`,
   },
   {
@@ -269,7 +269,7 @@ const IDE_FAQ_ITEMS = [
     labelClass: 'faqLabelTrust',
     question: 'Why should I use this IDE over VS Code or Cursor?',
     answer: `<p><strong>Honest comparison — here's what we offer vs. what we don't:</strong></p>
-<p><strong>What Resonant IDE does that others don't:</strong></p>
+<p><strong>What DevSwat IDE does that others don't:</strong></p>
 <ul>
 <li><strong>Full platform integration:</strong> Your AI assistant isn't just a code helper — it can create agents, search the web, store persistent memories, interact with Google/Slack/GitHub/Figma, run physics simulations, and call 560+ platform APIs. No other IDE AI has this breadth.</li>
 <li><strong>14 Code Visualizer tools:</strong> AST-based static analysis with dependency tracing, governance scoring, dead code detection, and architecture drift monitoring. Not just syntax highlighting — actual program analysis.</li>
@@ -284,13 +284,13 @@ const IDE_FAQ_ITEMS = [
 <li>Smaller community than VS Code — we need early adopters</li>
 <li>No inline code completions (tab-complete) yet — the AI works through the chat panel</li>
 </ul>
-<p><strong>The pitch:</strong> If you want an AI IDE that does more than autocomplete — one that can research, remember, build agents, analyze architecture, and integrate with your entire workflow — Resonant IDE is that. It's free, open source, and you can fork it.</p>`,
+<p><strong>The pitch:</strong> If you want an AI IDE that does more than autocomplete — one that can research, remember, build agents, analyze architecture, and integrate with your entire workflow — DevSwat IDE is that. It's free, open source, and you can fork it.</p>`,
   },
   {
     label: 'License',
     labelClass: 'faqLabelLicense',
     question: 'What license is this under? Can I modify it?',
-    answer: `<p><strong>Resonant IDE is built on Code-OSS</strong> (VS Code Open Source), which is MIT licensed. Our modifications and the <code>resonant-ai</code> extension are source-available under the RG Source Available License.</p>
+    answer: `<p><strong>DevSwat IDE is built on Code-OSS</strong> (VS Code Open Source), which is MIT licensed. Our modifications and the <code>resonant-ai</code> extension are source-available under the RG Source Available License.</p>
 <p><strong>What it means:</strong></p>
 <ul>
 <li><strong>Full source access:</strong> Every line of the IDE, the AI extension, the tool implementations, and the platform integration is on GitHub.</li>
@@ -350,7 +350,7 @@ const DownloadIDEPage: React.FC = () => {
             Open Source on GitHub
           </div>
           <h1 className={styles.heroTitle}>
-            Resonant <span className={styles.heroAccent}>IDE</span>
+            DevSwat <span className={styles.heroAccent}>IDE</span>
           </h1>
           <p className={styles.heroSubtitle}>
             Fork of VS Code Open Source with a built-in AI extension — 71 local tools across 13 categories,
@@ -454,7 +454,7 @@ const DownloadIDEPage: React.FC = () => {
         <div className={styles.screenshotGrid}>
           <div className={styles.screenshotCard}>
             <div className={styles.screenshotImageWrap}>
-              <img src="/images/showcase/resonant-ide-answer.png" alt="Resonant AI IDE — Code Analysis" className={styles.screenshotImage} />
+              <img src="/images/showcase/resonant-ide-answer.png" alt="DevSwat IDE — Code Analysis" className={styles.screenshotImage} />
             </div>
             <div className={styles.screenshotCaption}>
               <h3>Deep Code Analysis</h3>
@@ -463,7 +463,7 @@ const DownloadIDEPage: React.FC = () => {
           </div>
           <div className={styles.screenshotCard}>
             <div className={styles.screenshotImageWrap}>
-              <img src="/images/showcase/resonant-ide-inquiry.png" alt="Resonant AI IDE — Agentic Tool Execution" className={styles.screenshotImage} />
+              <img src="/images/showcase/resonant-ide-inquiry.png" alt="DevSwat IDE — Agentic Tool Execution" className={styles.screenshotImage} />
             </div>
             <div className={styles.screenshotCaption}>
               <h3>Agentic Tool Execution</h3>
@@ -566,11 +566,11 @@ const DownloadIDEPage: React.FC = () => {
       <section className={styles.cta}>
         <div className={styles.ctaContent}>
           <img
-            src={theme === 'dark' ? '/logo white.png' : '/logo black.png'}
-            alt=""
+            src="/devswat/devswat_logo.png"
+            alt="DevSwat"
             className={styles.ctaLogo}
           />
-          <h2 className={styles.ctaTitle}>Build with Resonant AI</h2>
+          <h2 className={styles.ctaTitle}>Build with DevSwat</h2>
           <p className={styles.ctaDesc}>
             Open source. Clone it, build it, run it. Your code stays on your machine.
           </p>

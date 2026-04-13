@@ -256,6 +256,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const [agentPanelStyle, setAgentPanelStyle] = useState<React.CSSProperties | null>(null);
   const [voiceInterimTranscript, setVoiceInterimTranscript] = useState('');
   const [showEmbeddedTools, setShowEmbeddedTools] = useState(false);
+  const [showTools, setShowTools] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [attachmentsExpanded, setAttachmentsExpanded] = useState(false);
   const [kbUploading, setKbUploading] = useState(false);
@@ -1319,6 +1320,39 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           </div>
 
           <div className={styles.toolsRight}>
+            {/* Tools toggle button - orange */}
+            <button
+              className={styles.toolButton}
+              onClick={() => setShowTools(prev => !prev)}
+              title={showTools ? 'Hide Tools' : 'Show Tools'}
+              type="button"
+              style={{ color: '#FFD800', opacity: showTools ? 1 : 0.5, fontSize: '16px' }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+              </svg>
+            </button>
+
+            {/* Mic icon - moved before LLM provider */}
+            <VoiceInput
+              key={`voice-input-${speechRecognitionLanguage}`}
+              onTranscript={(text) => {
+                const currentValue = valueRef.current;
+                const newValue = `${currentValue}${currentValue ? ' ' : ''}${text}`.trim();
+                onChange(newValue);
+                if (voiceInInput && newValue.length > 0) {
+                  pendingVoiceSendTextRef.current = newValue;
+                }
+                textareaRef.current?.focus();
+              }}
+              onInterimTranscriptChange={setVoiceInterimTranscript}
+              renderInterimTranscript={false}
+              iconSize={voiceIconSize}
+              disabled={isLoading || disabled}
+              forceListening={voiceInInput}
+              speechLanguage={speechRecognitionLanguage}
+            />
+
             {!hideProviderSelector && (
               <div style={{ position: 'relative', zIndex: 10000 }}>
                 {/* Custom Provider Selector - No external styles */}
@@ -1510,7 +1544,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                           e.stopPropagation();
                           setShowProviderDropdown(false);
                           // Navigate to settings/API keys
-                          window.location.href = '/profile?tab=api-keys';
+                          window.location.href = '/dashboard?tab=api-keys';
                         }}
                         style={{
                           width: '100%',
@@ -1537,7 +1571,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </div>
             )}
 
-            {onShowConversations && (
+            {showTools && onShowConversations && (
               <button
                 className={`${styles.toolButton} ${showConversations ? styles.active : ''}`}
                 onClick={showConversations ? onCloseConversations : handleShowConversations}
@@ -1547,7 +1581,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
 
-            {onAttachFile && (
+            {showTools && onAttachFile && (
               <button
                 className={`${styles.toolButton} ${styles.animatedIcon}`}
                 onClick={(e) => {
@@ -1564,7 +1598,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
 
-            {onShareChat && (
+            {showTools && onShareChat && (
               <button
                 className={styles.toolButton}
                 onClick={onShareChat}
@@ -1581,7 +1615,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
 
-            {onCopyChat && (
+            {showTools && onCopyChat && (
               <button
                 className={styles.toolButton}
                 onClick={onCopyChat}
@@ -1594,7 +1628,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
 
-            {onClearChat && (
+            {showTools && onClearChat && (
               <button
                 className={`${styles.toolButton} ${styles.danger}`}
                 onClick={onClearChat}
@@ -1605,7 +1639,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
 
-            {onShowMemoryLibrary && (
+            {showTools && onShowMemoryLibrary && (
               <button
                 className={`${styles.toolButton} ${showMemoryLibrary ? styles.active : ''}`}
                 onClick={showMemoryLibrary ? onCloseMemoryLibrary : handleShowMemoryLibrary}
@@ -1614,25 +1648,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 <MemoryLibraryIcon />
               </button>
             )}
-
-            <VoiceInput
-              key={`voice-input-${speechRecognitionLanguage}`}
-              onTranscript={(text) => {
-                const currentValue = valueRef.current;
-                const newValue = `${currentValue}${currentValue ? ' ' : ''}${text}`.trim();
-                onChange(newValue);
-                if (voiceInInput && newValue.length > 0) {
-                  pendingVoiceSendTextRef.current = newValue;
-                }
-                textareaRef.current?.focus();
-              }}
-              onInterimTranscriptChange={setVoiceInterimTranscript}
-              renderInterimTranscript={false}
-              iconSize={voiceIconSize}
-              disabled={isLoading || disabled}
-              forceListening={voiceInInput}
-              speechLanguage={speechRecognitionLanguage}
-            />
 
             <button
               className={`${styles.toolButton} ${isSpeaking ? styles.active : ''}`}
@@ -1648,7 +1663,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               <SpeakerIcon />
             </button>
 
-            {onToggleAgentMode && (
+            {showTools && onToggleAgentMode && (
               <button
                 ref={agentButtonRef}
                 className={`${styles.providerButton} ${styles.agentSelectorButton} ${agentMode ? styles.agentSelectorActive : ''}`}
@@ -1662,9 +1677,9 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
 
-            <SkillsToolbar onEnabledSkillsChange={onEnabledSkillsChange} />
+            {showTools && <SkillsToolbar onEnabledSkillsChange={onEnabledSkillsChange} />}
 
-            {onShowSettings && (
+            {showTools && onShowSettings && (
               <button
                 className={`${styles.toolButton} ${showSettings ? styles.active : ''}`}
                 onClick={onShowSettings}

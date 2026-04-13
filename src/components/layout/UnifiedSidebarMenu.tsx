@@ -273,7 +273,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
 
             <button
               className={styles.usmDownloadItem}
-              onClick={() => { navigate('/connect-profiles'); onClose(); }}
+              onClick={() => { navigate('/dashboard?tab=integrations'); onClose(); }}
             >
               <span className={styles.usmDlIcon}>
                 <img
@@ -283,7 +283,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                 />
               </span>
               <span className={styles.usmLabel}>Integrations</span>
-              {location.pathname === '/connect-profiles' && <span className={styles.usmActiveIndicator} />}
+              {location.pathname === '/dashboard' && location.search.includes('tab=integrations') && <span className={styles.usmActiveIndicator} />}
             </button>
 
           </div>

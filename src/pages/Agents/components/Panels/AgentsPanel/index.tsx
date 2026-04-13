@@ -22,6 +22,7 @@ const WorkflowPanel = lazy(() => import('../WorkflowPanel'));
 const MonitorPanel = lazy(() => import('../MonitorPanel'));
 const ExternalPanel = lazy(() => import('../ExternalPanel'));
 const SettingsPanel = lazy(() => import('../SettingsPanel'));
+const ScheduleCalendarPanel = lazy(() => import('../ScheduleCalendarPanel'));
 import styles from './AgentsPanel.module.css';
 
 // ============== AGENTS PANEL ==============
@@ -76,7 +77,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const [showFactory, setShowFactory] = useState(false);
 
   // Inline sub-panel state (all panels now open inline)
-  type InlinePanelType = 'execution' | 'utility' | 'memory' | 'goals' | 'negotiation' | 'audit' | 'debug' | 'workflow' | 'monitor' | 'external' | 'settings' | 'sessions';
+  type InlinePanelType = 'execution' | 'utility' | 'memory' | 'goals' | 'negotiation' | 'audit' | 'debug' | 'workflow' | 'monitor' | 'external' | 'settings' | 'sessions' | 'calendar';
   const [inlinePanel, setInlinePanel] = useState<{ type: InlinePanelType; agentId?: string } | null>(null);
 
   // Publish pane state (inline, replaces sessions pane)
@@ -583,6 +584,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
             { type: 'monitor', icon: <Icons.Health />, label: 'Monitor' },
             { type: 'debug', icon: <Icons.Health />, label: 'Debug' },
             { type: 'external', icon: <Icons.External />, label: 'External' },
+            { type: 'calendar', icon: <Icons.Calendar />, label: 'Schedule Calendar' },
             { type: 'settings', icon: <Icons.Settings />, label: 'Settings' },
           ] as { type: string; icon: React.ReactNode; label: string }[]).map((nav) => (
             <button
@@ -947,9 +949,9 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
               {/* Inline panel header */}
               <div className={styles.publishHeader}>
-                {{ execution: <Icons.Execution />, utility: <Icons.TrendingUp />, memory: <Icons.Memory />, goals: <Icons.Goals />, negotiation: <Icons.Negotiation />, audit: <Icons.Audit />, debug: <Icons.Health />, workflow: <Icons.Fork />, monitor: <Icons.Health />, external: <Icons.External />, settings: <Icons.Settings />, sessions: <Icons.Agents /> }[inlinePanel.type]}
+                {{ execution: <Icons.Execution />, utility: <Icons.TrendingUp />, memory: <Icons.Memory />, goals: <Icons.Goals />, negotiation: <Icons.Negotiation />, audit: <Icons.Audit />, debug: <Icons.Health />, workflow: <Icons.Fork />, monitor: <Icons.Health />, external: <Icons.External />, settings: <Icons.Settings />, sessions: <Icons.Agents />, calendar: <Icons.Calendar /> }[inlinePanel.type]}
                 <span className={styles.publishTitle}>
-                  {{ execution: 'Execution', utility: 'Utility', memory: 'Memory', goals: 'Goals', negotiation: 'Negotiation', audit: 'Audit', debug: 'Debug', workflow: 'Workflow', monitor: 'Monitor', external: 'External', settings: 'Settings', sessions: 'Sessions' }[inlinePanel.type]}
+                  {{ execution: 'Execution', utility: 'Utility', memory: 'Memory', goals: 'Goals', negotiation: 'Negotiation', audit: 'Audit', debug: 'Debug', workflow: 'Workflow', monitor: 'Monitor', external: 'External', settings: 'Settings', sessions: 'Sessions', calendar: 'Schedule Calendar' }[inlinePanel.type]}
                 </span>
                 <button onClick={() => setInlinePanel(null)} className={styles.publishCloseBtn} title="Close">×</button>
               </div>
@@ -969,6 +971,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   {inlinePanel.type === 'external' && <ExternalPanel />}
                   {inlinePanel.type === 'settings' && <SettingsPanel />}
                   {inlinePanel.type === 'sessions' && <SessionsPanel />}
+                  {inlinePanel.type === 'calendar' && <ScheduleCalendarPanel />}
                 </Suspense>
               </div>
             </div>

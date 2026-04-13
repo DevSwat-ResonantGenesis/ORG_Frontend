@@ -98,7 +98,7 @@ export const TrialBanner: React.FC<TrialBannerProps> = ({
           </div>
         </div>
         <div className={styles.bannerActions}>
-          <Button variant="primary" size="sm" onClick={() => navigate('/profile')}>
+          <Button variant="primary" size="sm" onClick={() => navigate('/dashboard?tab=api-keys')}>
             Add API Key
           </Button>
         </div>

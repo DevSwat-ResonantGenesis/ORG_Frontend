@@ -426,7 +426,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   type="button"
                   className={styles.chatWidgetButton}
-                  onClick={() => navigate('/connect-profiles')}
+                  onClick={() => navigate('/dashboard?tab=integrations')}
                   title="Integrations"
                   aria-label="Integrations"
                 >
@@ -476,7 +476,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className={styles.accountButton}
                   onClick={() => {
                     if (isMobileViewport) {
-                      navigate('/profile');
+                      navigate('/dashboard?tab=profile');
                       return;
                     }
                     setShowAccountMenu(!showAccountMenu);
@@ -571,13 +571,6 @@ export const Header: React.FC<HeaderProps> = ({
                       </>
                     )}
                     
-                    <button className={styles.accountMenuItem} onClick={() => { navigate('/profile'); setShowAccountMenu(false); }}>
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <circle cx="8" cy="5" r="3" />
-                        <path d="M2 14C2 11 4.5 9 8 9C11.5 9 14 11 14 14" strokeLinecap="round" />
-                      </svg>
-                      Profile
-                    </button>
                     <div className={styles.accountMenuDivider} />
                     <button className={`${styles.accountMenuItem} ${styles.accountMenuItemDanger}`} onClick={handleLogout}>
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">

@@ -49,7 +49,7 @@ export const LLMErrorNotification: React.FC<LLMErrorNotificationProps> = ({
   };
 
   const handleAddKey = () => {
-    navigate('/profile');
+    navigate('/dashboard?tab=api-keys');
   };
 
   const containerStyle: React.CSSProperties = inline ? {

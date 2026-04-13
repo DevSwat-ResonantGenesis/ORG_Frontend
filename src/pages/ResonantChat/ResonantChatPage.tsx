@@ -148,7 +148,7 @@ const formatProviderName = (provider: string | undefined): string => {
     'anthropic': 'Claude',
     'claude': 'Claude',
     'mistral': 'Mistral',
-    'resonant-brain': 'Resonant',
+    'resonant-brain': 'DevSwat',
     'debate_engine': 'Multi-Agent Debate',
     'debate': 'Multi-Agent',
     'agent_debug': 'Debug Agent',
@@ -4662,8 +4662,8 @@ const ResonantChatPage: React.FC = () => {
                                   return null;
                               }
                             })}
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '2px 0' }}>
-                            <div className={styles.thinkingSpinner} />
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '2px 0' }}>
+                            <div className={styles.thinkingSpinner}><span className={styles.thinkingDot1} /></div>
                             <span className={styles.thinkingText} style={{ fontSize: '11px' }}>
                               {agenticSteps.filter(s => s.type === 'tool_call').length} tool calls · {agenticSteps.filter(s => s.type === 'thinking').length} loops
                             </span>
@@ -4673,35 +4673,36 @@ const ResonantChatPage: React.FC = () => {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', width: '100%', maxWidth: '85%' }}>
                           {pipelineSteps.slice(-6).map((ps, i) => {
                             const base: React.CSSProperties = { padding: '5px 10px', borderRadius: '6px', fontSize: '12px', fontFamily: "'SF Mono','Fira Code','Consolas', monospace" };
-                            const icons: Record<string, string> = {
-                              hashing: '\u{1F517}',
-                              memory_search: '\u{1F9E0}',
-                              memory_found: '\u{1F4BE}',
-                              context: '\u{1F4DD}',
-                              routing: '\u{1F680}',
-                              generating_done: '\u2705',
-                              post_processing: '\u{1F50D}',
-                              memory_ingest: '\u{1F4E5}',
+                            const iconSvgs: Record<string, React.ReactNode> = {
+                              hashing: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#01A6BC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>,
+                              memory_search: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FA547C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+                              memory_found: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71C23E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>,
+                              context: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFD800" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+                              routing: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FAA525" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>,
+                              generating_done: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71C23E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+                              post_processing: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#01A6BC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09c-.658.003-1.25.396-1.51 1z"/></svg>,
+                              memory_ingest: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FA547C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
                             };
+                            const defaultIcon = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FAA525" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09c-.658.003-1.25.396-1.51 1z"/></svg>;
                             const colors: Record<string, { bg: string; fg: string }> = {
-                              hashing: { bg: 'rgba(14,165,233,0.12)', fg: '#38bdf8' },
-                              memory_search: { bg: 'rgba(168,85,247,0.12)', fg: '#c084fc' },
-                              memory_found: { bg: 'rgba(16,185,129,0.12)', fg: '#6ee7b7' },
-                              context: { bg: 'rgba(59,130,246,0.12)', fg: '#93c5fd' },
-                              routing: { bg: 'rgba(234,179,8,0.12)', fg: '#fde047' },
-                              generating_done: { bg: 'rgba(16,185,129,0.12)', fg: '#6ee7b7' },
-                              post_processing: { bg: 'rgba(14,165,233,0.12)', fg: '#38bdf8' },
-                              memory_ingest: { bg: 'rgba(14,165,233,0.12)', fg: '#38bdf8' },
+                              hashing: { bg: 'rgba(1,166,188,0.12)', fg: '#01A6BC' },
+                              memory_search: { bg: 'rgba(250,84,124,0.12)', fg: '#FA547C' },
+                              memory_found: { bg: 'rgba(113,194,62,0.12)', fg: '#71C23E' },
+                              context: { bg: 'rgba(255,216,0,0.12)', fg: '#FFD800' },
+                              routing: { bg: 'rgba(250,165,37,0.12)', fg: '#FAA525' },
+                              generating_done: { bg: 'rgba(113,194,62,0.12)', fg: '#71C23E' },
+                              post_processing: { bg: 'rgba(1,166,188,0.12)', fg: '#01A6BC' },
+                              memory_ingest: { bg: 'rgba(250,84,124,0.12)', fg: '#FA547C' },
                             };
-                            const c = colors[ps.step] || { bg: 'rgba(255,255,255,0.06)', fg: '#888' };
+                            const c = colors[ps.step] || { bg: 'rgba(255,255,255,0.06)', fg: '#FFFFFF' };
                             return (
                               <div key={i} style={{ ...base, background: c.bg, color: c.fg, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <span>{icons[ps.step] || '\u2699\uFE0F'}</span> {ps.message}
+                                <span style={{ display: 'inline-flex', flexShrink: 0 }}>{iconSvgs[ps.step] || defaultIcon}</span> {ps.message}
                               </div>
                             );
                           })}
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '2px 0' }}>
-                            <div className={styles.thinkingSpinner} />
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '2px 0' }}>
+                            <div className={styles.thinkingSpinner}><span className={styles.thinkingDot1} /></div>
                             <span className={styles.thinkingText} style={{ fontSize: '11px' }}>
                               {pipelineSteps.length} pipeline steps
                             </span>
@@ -4709,7 +4710,7 @@ const ResonantChatPage: React.FC = () => {
                         </div>
                       ) : (
                         <>
-                          <div className={styles.thinkingSpinner} />
+                          <div className={styles.thinkingSpinner}><span className={styles.thinkingDot1} /></div>
                           <span className={styles.thinkingText}>Thinking...</span>
                         </>
                       )}

@@ -237,7 +237,7 @@ export const AdminDashboard: React.FC = () => {
             <Button variant="secondary" onClick={() => navigate('/settings')} style={{ width: '100%' }}>
               Settings
             </Button>
-            <Button variant="secondary" onClick={() => navigate('/profile')} style={{ width: '100%' }}>
+            <Button variant="secondary" onClick={() => navigate('/dashboard?tab=profile')} style={{ width: '100%' }}>
               Profile
             </Button>
             <Button variant="secondary" onClick={() => navigate('/help')} style={{ width: '100%' }}>

@@ -29,7 +29,7 @@
   transform: translateX(-50%);
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 216, 0, 0.06) 0%, rgba(1, 166, 188, 0.03) 40%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -74,7 +74,7 @@
 }
 
 .heroAccent {
-  background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 50%, #ffffff 100%);
+  background: linear-gradient(135deg, #FFD800 0%, #FAA525 50%, #FFD800 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -104,19 +104,19 @@
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
-  background: linear-gradient(135deg, #fff 0%, #d4d4d8 100%);
-  color: #0a0a0f !important;
+  background: linear-gradient(135deg, #FFD800 0%, #FAA525 100%);
+  color: #121214 !important;
   border: none;
   cursor: pointer;
   text-decoration: none !important;
   transition: transform 0.15s, box-shadow 0.15s;
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px rgba(255, 216, 0, 0.2);
 }
 
 .downloadButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(255, 255, 255, 0.18);
-  color: #0a0a0f !important;
+  box-shadow: 0 8px 30px rgba(255, 216, 0, 0.3);
+  color: #121214 !important;
 }
 
 .downloadButtonOutline {
@@ -128,8 +128,8 @@
   font-size: 1rem;
   font-weight: 600;
   background: transparent;
-  color: #e5e7eb !important;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #FFFFFF !important;
+  border: 1px solid rgba(1, 166, 188, 0.4);
   cursor: pointer;
   text-decoration: none !important;
   transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
@@ -137,8 +137,8 @@
 
 .downloadButtonOutline:hover {
   transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.5);
-  color: #ffffff !important;
+  border-color: #01A6BC;
+  color: #FFFFFF !important;
 }
 
 .downloadButtonOutline svg {
@@ -538,10 +538,10 @@
   flex-shrink: 0;
   font-size: 0.8rem;
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(1, 166, 188, 0.1);
   padding: 2px 8px;
   border-radius: 4px;
-  color: var(--accent-color, #818cf8);
+  color: #01A6BC;
   white-space: nowrap;
 }
 
@@ -609,11 +609,11 @@
   vertical-align: middle;
 }
 
-.faqLabelArch { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
-.faqLabelAuth { background: rgba(52, 211, 153, 0.15); color: #34d399; }
-.faqLabelPlatform { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
-.faqLabelTrust { background: rgba(244, 114, 182, 0.15); color: #f472b6; }
-.faqLabelLicense { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+.faqLabelArch { background: rgba(1, 166, 188, 0.15); color: #01A6BC; }
+.faqLabelAuth { background: rgba(113, 194, 62, 0.15); color: #71C23E; }
+.faqLabelPlatform { background: rgba(255, 216, 0, 0.15); color: #FFD800; }
+.faqLabelTrust { background: rgba(250, 84, 124, 0.15); color: #FA547C; }
+.faqLabelLicense { background: rgba(250, 165, 37, 0.15); color: #FAA525; }
 
 .faqChevron {
   width: 20px;
@@ -646,7 +646,7 @@
   border-radius: 4px;
   font-size: 0.82rem;
 }
-.faqAnswer a { color: var(--accent-color, #818cf8); text-decoration: none; }
+.faqAnswer a { color: #FFD800; text-decoration: none; }
 .faqAnswer a:hover { text-decoration: underline; }
 
 /* ── Light theme overrides for new sections ── */

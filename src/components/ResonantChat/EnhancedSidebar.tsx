@@ -248,7 +248,7 @@ const EnhancedSidebar: React.FC<EnhancedSidebarProps> = ({
   };
 
   const handleProfile = () => {
-    navigate('/profile');
+    navigate('/dashboard?tab=profile');
     if (onClose) onClose();
   };
 

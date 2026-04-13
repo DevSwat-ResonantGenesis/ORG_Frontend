@@ -24,7 +24,7 @@ const ForgotPasswordPage = lazy(() => import('../pages/Auth/ForgotPasswordPage-2
 const HomeNew = lazy(() => import('../pages/HomeNew/HomeNew'));
 const SignupPage = lazy(() => import('../pages/Auth/SignupPageNew'));
 const FeatureFlagsPage = lazy(() => import('../pages/Admin/FeatureFlagsPage'));
-const ProfilePage = lazy(() => import('../pages/Profile/ProfilePage'));
+// ProfilePage deleted - consolidated into NewUserDashboard
 const HelpCenterPage = lazy(() => import('../pages/Help/HelpCenterPage'));
 const HelpArticlePage = lazy(() => import('../pages/Help/HelpArticlePage'));
 const ContactPage = lazy(() => import('../pages/Public/ContactPageSimple'));
@@ -202,10 +202,10 @@ const router = createBrowserRouter([
     path: '/organization',
     element: withShell(<RoleRoute category="organization"><OrganizationPage /></RoleRoute>)
   },
-  // Billing redirects to profile (billing features merged into profile)
+  // Billing redirects to dashboard billing tab
   {
     path: '/billing',
-    element: <Navigate to="/profile" replace />
+    element: <Navigate to="/dashboard?tab=billing" replace />
   },
   {
     path: '/admin/system',
@@ -215,10 +215,10 @@ const router = createBrowserRouter([
     path: '/admin/feature-flags',
     element: withShell(<RoleRoute category="admin"><FeatureFlagsPage /></RoleRoute>)
   },
-  // CANONICAL: /profile for user identity with API keys
+  // Profile now consolidated into dashboard
   {
     path: '/profile',
-    element: withShell(<ProfilePage />)
+    element: <Navigate to="/dashboard?tab=profile" replace />
   },
   {
     path: '/help',
@@ -425,20 +425,20 @@ const router = createBrowserRouter([
     path: '/state-physics-api',
     element: withPublicShell(<StatePhysicsAPI />)
   },
-  // Connect Your Profiles - integrations hub
+  // Connect Your Profiles - now consolidated into dashboard integrations tab
   {
     path: '/connect-profiles',
-    element: withShell(<ConnectProfilesPage />)
+    element: <Navigate to="/dashboard?tab=integrations" replace />
   },
-  // API Keys Management - Redirect to Profile page
+  // API Keys Management - Redirect to dashboard api-keys tab
   {
     path: '/api-keys',
-    element: <Navigate to="/profile" replace />
+    element: <Navigate to="/dashboard?tab=api-keys" replace />
   },
-  // Settings API Keys - Redirect to Profile page
+  // Settings API Keys - Redirect to dashboard api-keys tab
   {
     path: '/settings/api-keys',
-    element: <Navigate to="/profile" replace />
+    element: <Navigate to="/dashboard?tab=api-keys" replace />
   },
     // Hash Sphere Memory API - Public pricing and documentation page
   {
