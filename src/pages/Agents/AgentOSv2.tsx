@@ -107,9 +107,9 @@ const AgentOSv2: React.FC = () => {
           dsid: a.dsid || undefined,
           persisted: true,
           name: a.name,
-          type: (a as any).agent_source === 'openclaw' ? 'openclaw' : 'executor',
+          type: ((a as any).agent_source === 'openclaw' || (a as any).agent_source === 'federated') ? 'openclaw' : ((a as any).type || 'executor'),
           status: (a.is_active ? 'active' : 'idle') as 'idle' | 'active' | 'paused' | 'archived',
-          mode: 'governed' as const,
+          mode: ((a as any).mode === 'unbounded' ? 'unbounded' : 'governed') as 'governed' | 'unbounded',
           version: String(a.version) + '.0.0',
           capabilities: Array.isArray((a as any).tools) ? ((a as any).tools as string[]) : [],
           executions: 0,
@@ -143,7 +143,7 @@ const AgentOSv2: React.FC = () => {
           createdAt: (a as any).created_at ? new Date((a as any).created_at) : new Date(),
           updatedAt: (a as any).updated_at ? new Date((a as any).updated_at) : new Date(),
           // OpenClaw federation fields
-          agent_source: ((a as any).agent_source || 'cloud') as 'cloud' | 'openclaw',
+          agent_source: ((a as any).agent_source || 'cloud') as 'cloud' | 'openclaw' | 'federated',
           openclaw_config: (a as any).openclaw_config || undefined,
         }));
         setAgents(agents);

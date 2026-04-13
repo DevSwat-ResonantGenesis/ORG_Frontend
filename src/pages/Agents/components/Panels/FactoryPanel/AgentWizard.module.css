@@ -217,8 +217,11 @@
   border-color: rgba(255,255,255,.12);
 }
 .typeCard.selected {
-  background: rgba(255,216,0,.08);
-  border-color: rgba(255,216,0,.4);
+  background: rgba(255,216,0,.12);
+  border-color: rgba(255,216,0,.5);
+  color: #FFD800;
+  font-weight: 700;
+  box-shadow: 0 0 8px rgba(255,216,0,.12);
 }
 
 .typeIcon {

@@ -327,6 +327,32 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
                       <Icons.X />
                     </button>
                   )}
+                  {session.status === 'waiting_approval' && (
+                    <div style={{ display: 'flex', gap: 4, marginLeft: 'auto' }}>
+                      <button
+                        style={{ background: '#22c55e', color: '#fff', border: 'none', borderRadius: 4, padding: '2px 8px', fontSize: 10, fontWeight: 700, cursor: 'pointer' }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const pendingStep = sessionSteps.find(s => s.approval_status === 'pending');
+                          if (pendingStep) handleApproveStep(pendingStep.id, true);
+                          else agentEngine.approveStep(session.id, '', true).then(() => loadSessions(selectedAgent?.id || ''));
+                        }}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: 4, padding: '2px 8px', fontSize: 10, fontWeight: 700, cursor: 'pointer' }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const pendingStep = sessionSteps.find(s => s.approval_status === 'pending');
+                          if (pendingStep) handleApproveStep(pendingStep.id, false);
+                          else agentEngine.approveStep(session.id, '', false).then(() => loadSessions(selectedAgent?.id || ''));
+                        }}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <p className={styles.sessionGoal}>{session.current_goal || 'No goal set'}</p>
                 <div className={styles.sessionMeta}>
@@ -358,6 +384,49 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
                 {selectedSession.current_goal && (
                   <div className={styles.goalDisplay}>
                     <strong>Goal:</strong> {selectedSession.current_goal}
+                  </div>
+                )}
+
+                {/* Session-level approval banner */}
+                {selectedSession.status === 'waiting_approval' && (
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', margin: '8px 0',
+                    background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: 8,
+                    fontSize: 13, color: '#f59e0b',
+                  }}>
+                    <Icons.AlertTriangle />
+                    <span style={{ flex: 1, fontWeight: 600 }}>This session requires your approval to continue</span>
+                    <button
+                      style={{ background: '#22c55e', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
+                      onClick={() => {
+                        const pendingStep = sessionSteps.find(s => s.approval_status === 'pending');
+                        if (pendingStep) handleApproveStep(pendingStep.id, true);
+                        else {
+                          // Fetch fresh steps to find the pending one
+                          agentEngine.getSessionSteps(selectedSession.id).then(steps => {
+                            const ps = steps.find((s: any) => s.approval_status === 'pending');
+                            if (ps) handleApproveStep(ps.id, true);
+                          });
+                        }
+                      }}
+                    >
+                      ✓ Approve
+                    </button>
+                    <button
+                      style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}
+                      onClick={() => {
+                        const pendingStep = sessionSteps.find(s => s.approval_status === 'pending');
+                        if (pendingStep) handleApproveStep(pendingStep.id, false);
+                        else {
+                          agentEngine.getSessionSteps(selectedSession.id).then(steps => {
+                            const ps = steps.find((s: any) => s.approval_status === 'pending');
+                            if (ps) handleApproveStep(ps.id, false);
+                          });
+                        }
+                      }}
+                    >
+                      ✕ Reject
+                    </button>
                   </div>
                 )}
 
