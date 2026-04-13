@@ -31,6 +31,58 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
   const [creditActionUrl, setCreditActionUrl] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // Follow-up chat state
+  const [followUpInput, setFollowUpInput] = useState('');
+  const [followUpMessages, setFollowUpMessages] = useState<Array<{ role: 'user' | 'agent'; content: string; timestamp: Date }>>([]);
+  const [isSendingFollowUp, setIsSendingFollowUp] = useState(false);
+
+  // Follow-up: send a new message as a continuation session
+  const handleSendFollowUp = useCallback(async () => {
+    if (!selectedAgent || !followUpInput.trim() || isSendingFollowUp) return;
+    const content = followUpInput.trim();
+    setFollowUpMessages(prev => [...prev, { role: 'user', content, timestamp: new Date() }]);
+    setFollowUpInput('');
+    setIsSendingFollowUp(true);
+    try {
+      const session = await agentEngine.startSession(selectedAgent.id, content);
+      const maxWait = 90_000;
+      const pollInterval = 2000;
+      const start = Date.now();
+      let finalSession = session;
+      while (Date.now() - start < maxWait) {
+        await new Promise(r => setTimeout(r, pollInterval));
+        try {
+          finalSession = await agentEngine.getSession(session.id);
+          if (finalSession.status === 'completed' || finalSession.status === 'failed') break;
+        } catch { /* keep polling */ }
+      }
+      let outputText = '';
+      if (finalSession.status === 'completed' && finalSession.final_output) {
+        outputText = finalSession.final_output;
+      } else if (finalSession.status === 'completed') {
+        try {
+          const steps = await agentEngine.getSessionSteps(session.id);
+          const fedStep = steps.find(s => s.output_data?.output);
+          outputText = (fedStep?.output_data?.output as string) || 'Task completed.';
+        } catch { outputText = 'Task completed.'; }
+      } else if (finalSession.status === 'failed') {
+        outputText = finalSession.error_message || 'Task failed.';
+      } else {
+        outputText = `Task is still ${finalSession.status}. Check your connector.`;
+      }
+      setFollowUpMessages(prev => [...prev, { role: 'agent', content: outputText, timestamp: new Date() }]);
+      // Refresh sessions list to show the new session
+      if (selectedAgent) {
+        const updated = await agentEngine.listSessions(selectedAgent.id);
+        setSessions(updated);
+      }
+    } catch (err: any) {
+      setFollowUpMessages(prev => [...prev, { role: 'agent', content: `Error: ${err.message || 'Failed'}`, timestamp: new Date() }]);
+    } finally {
+      setIsSendingFollowUp(false);
+    }
+  }, [selectedAgent, followUpInput, isSendingFollowUp]);
+
   const handleExportSessions = () => {
     const exportData = { exported_at: new Date().toISOString(), sessions };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -259,7 +311,7 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
               <div 
                 key={session.id}
                 className={`${styles.sessionCard} ${selectedSession?.id === session.id ? styles.selected : ''}`}
-                onClick={() => setSelectedSession(session)}
+                onClick={() => { setSelectedSession(session); setFollowUpMessages([]); setFollowUpInput(''); }}
               >
                 <div className={styles.sessionHeader}>
                   <span 
@@ -444,6 +496,79 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
                   <div className={styles.errorOutput}>
                     <h4>Error</h4>
                     <p>{selectedSession.error_message}</p>
+                  </div>
+                )}
+
+                {/* Follow-up conversation */}
+                {(selectedSession.status === 'completed' || selectedSession.status === 'failed') && (
+                  <div style={{ marginTop: 16, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 12 }}>
+                    {followUpMessages.length > 0 && (
+                      <div style={{ marginBottom: 12, maxHeight: 300, overflowY: 'auto' }}>
+                        {followUpMessages.map((msg, i) => (
+                          <div key={i} style={{
+                            padding: '8px 12px',
+                            marginBottom: 6,
+                            borderRadius: 8,
+                            fontSize: 13,
+                            lineHeight: 1.6,
+                            background: msg.role === 'user' ? 'rgba(250,165,37,0.08)' : 'rgba(1,166,188,0.08)',
+                            borderLeft: `3px solid ${msg.role === 'user' ? '#FAA525' : '#01A6BC'}`,
+                          }}>
+                            <div style={{ fontSize: 11, color: '#888', marginBottom: 4, fontWeight: 600 }}>
+                              {msg.role === 'user' ? 'You' : selectedAgent?.name || 'Agent'} &middot; {msg.timestamp.toLocaleTimeString()}
+                            </div>
+                            {msg.role === 'agent' ? (
+                              <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                            ) : (
+                              <span>{msg.content}</span>
+                            )}
+                          </div>
+                        ))}
+                        {isSendingFollowUp && (
+                          <div style={{ padding: '8px 12px', fontSize: 13, color: '#888' }}>
+                            <span style={{ display: 'inline-block', animation: 'pulse 1.5s infinite' }}>Thinking...</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                      <input
+                        type="text"
+                        value={followUpInput}
+                        onChange={e => setFollowUpInput(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendFollowUp(); } }}
+                        placeholder="Ask a follow-up question..."
+                        disabled={isSendingFollowUp}
+                        style={{
+                          flex: 1,
+                          padding: '10px 14px',
+                          borderRadius: 8,
+                          border: '1px solid rgba(255,255,255,0.12)',
+                          background: 'rgba(255,255,255,0.04)',
+                          color: '#fff',
+                          fontSize: 13,
+                          outline: 'none',
+                        }}
+                      />
+                      <button
+                        onClick={handleSendFollowUp}
+                        disabled={!followUpInput.trim() || isSendingFollowUp}
+                        style={{
+                          padding: '10px 16px',
+                          borderRadius: 8,
+                          border: 'none',
+                          background: followUpInput.trim() ? '#01A6BC' : 'rgba(255,255,255,0.08)',
+                          color: followUpInput.trim() ? '#fff' : '#666',
+                          fontSize: 13,
+                          fontWeight: 600,
+                          cursor: followUpInput.trim() ? 'pointer' : 'default',
+                          transition: '0.15s',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {isSendingFollowUp ? '...' : 'Send'}
+                      </button>
+                    </div>
                   </div>
                 )}
               </>
