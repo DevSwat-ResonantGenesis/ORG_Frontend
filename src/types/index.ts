@@ -191,7 +191,7 @@ export type AgentStatus = 'idle' | 'active' | 'paused' | 'failed' | 'terminated'
 export type AgentMode = 'governed' | 'unbounded';
 export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
 
-export type AgentSource = 'cloud' | 'openclaw';
+export type AgentSource = 'cloud' | 'openclaw' | 'federated';
 export type OpenClawConnectionStatus = 'online' | 'offline' | 'registered' | 'degraded';
 
 export interface OpenClawConfig {

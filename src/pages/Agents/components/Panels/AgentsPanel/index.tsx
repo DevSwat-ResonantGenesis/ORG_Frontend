@@ -8,6 +8,7 @@ import { publishAgent as publishAgentAPI } from '../../../../../services/nodeApi
 import type { PublishAgentRequest } from '../../../../../services/nodeApi';
 import fastapiClient from '../../../../../api/fastapiClient';
 import { executeAgentTask } from '../../../../../api/executions';
+import * as agentEngine from '../../../../../api/agentEngine';
 import { useToastContext } from '../../../../../context/ToastContext';
 import { SessionsPanel } from '../SessionsPanel';
 import { FactoryPanel } from '../FactoryPanel';
@@ -320,13 +321,35 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
     try {
       let outputText = '';
-      if (chatAgent.agent_source === 'openclaw') {
-        // Route through OpenClaw webhook relay
-        const resp = await fastapiClient.post(`/api/v1/openclaw/relay/${chatAgent.id}`, {
-          type: 'chat',
-          payload: { message: content, context: (agentMessages[chatAgent.id] || []).slice(-10).map(m => ({ role: m.role === 'agent' ? 'assistant' : m.role, content: m.content })) },
-        });
-        outputText = resp.data?.response || resp.data?.output || JSON.stringify(resp.data || {});
+      if (chatAgent.agent_source === 'federated' || chatAgent.agent_source === 'openclaw') {
+        // Federated agents: start session (queues task for local connector to poll)
+        const session = await agentEngine.startSession(chatAgent.id, content, { mode: 'chat' });
+        // Poll for completion (connector picks up, executes, submits result)
+        const maxWait = 60_000; // 60s timeout
+        const pollInterval = 2000;
+        const start = Date.now();
+        let finalSession = session;
+        while (Date.now() - start < maxWait) {
+          await new Promise(r => setTimeout(r, pollInterval));
+          try {
+            finalSession = await agentEngine.getSession(session.id);
+            if (finalSession.status === 'completed' || finalSession.status === 'failed') break;
+          } catch { /* keep polling */ }
+        }
+        if (finalSession.status === 'completed' && finalSession.final_output) {
+          outputText = finalSession.final_output;
+        } else if (finalSession.status === 'failed') {
+          outputText = finalSession.error_message || 'Task failed on local connector.';
+        } else if (finalSession.status === 'completed') {
+          // final_output might not be set for older tasks, check steps
+          try {
+            const steps = await agentEngine.getSessionSteps(session.id);
+            const fedStep = steps.find(s => s.output_data?.output);
+            outputText = fedStep?.output_data?.output as string || 'Task completed (no output text).';
+          } catch { outputText = 'Task completed.'; }
+        } else {
+          outputText = `Task is still ${finalSession.status}. Check your OpenClaw connector at localhost:8000.`;
+        }
       } else {
         const result = await executeAgentTask(chatAgent.id, content, { mode: 'chat' });
         outputText = typeof result?.output === 'string'

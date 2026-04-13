@@ -46,6 +46,7 @@ import { getEvidenceGraph, getChatMetrics, getMessageMetrics, type ChatMetrics, 
 // EvidenceGraph removed — inline stubs
 type EvidenceGraphData = { nodes: any[]; edges: any[]; node_count: number; edge_count: number };
 const EvidenceGraphVisualization = ({ graphData, compact }: { graphData: any; compact?: boolean }) => null;
+import * as agentEngine from '@/api/agentEngine';
 import { AgentSelector } from '@/components/ResonantChat/AgentSelector';
 import { FeedbackButtons } from '@/components/ResonantChat/FeedbackButtons';
 import { MetricsDashboard } from '@/components/ResonantChat/MetricsDashboard';
@@ -2170,6 +2171,78 @@ const ResonantChatPage: React.FC = () => {
       // Get chatId from state only - no localStorage fallback
       const chatIdToUse = currentConversationId || undefined;
       console.log('💬 Using chatId:', chatIdToUse, 'currentConversationId:', currentConversationId);
+
+      // === PLATFORM AGENT PATH (federated/cloud agents from Agent Engine) ===
+      // Detect if selected agent is a platform agent (long hash/UUID) vs built-in chat agent (short ID like "research")
+      const isPlatformAgent = selectedAgentHash && selectedAgentHash.length > 30;
+      if (isPlatformAgent) {
+        const fedMsgId = crypto.randomUUID();
+        setMessages(prev => [...prev, {
+          id: fedMsgId,
+          role: 'assistant' as const,
+          content: '⏳ Running task on your agent...',
+          timestamp: new Date(),
+          aiProvider: 'Federated Agent',
+        }]);
+
+        try {
+          // Find the agent ID from the hash — try listing agents
+          let agentId = selectedAgentHash;
+          try {
+            const agentsList = await agentEngine.listAgents();
+            const matched = agentsList.find((a: any) => (a.agent_public_hash === selectedAgentHash || a.id === selectedAgentHash));
+            if (matched) agentId = matched.id;
+          } catch { /* use hash as-is */ }
+
+          // Start session (queues task for federated agents, runs for cloud agents)
+          const session = await agentEngine.startSession(agentId, queryWithContext);
+
+          // Poll for completion
+          const maxWait = 90_000;
+          const pollInterval = 2000;
+          const start = Date.now();
+          let finalSession = session;
+          while (Date.now() - start < maxWait) {
+            await new Promise(r => setTimeout(r, pollInterval));
+            try {
+              finalSession = await agentEngine.getSession(session.id);
+              if (finalSession.status === 'completed' || finalSession.status === 'failed') break;
+              // Update with progress indicator
+              const elapsed = Math.round((Date.now() - start) / 1000);
+              setMessages(prev => prev.map(m => m.id === fedMsgId ? { ...m, content: `⏳ Running task on your agent... (${elapsed}s)` } : m));
+            } catch { /* keep polling */ }
+          }
+
+          let outputText = '';
+          if (finalSession.status === 'completed' && finalSession.final_output) {
+            outputText = finalSession.final_output;
+          } else if (finalSession.status === 'completed') {
+            try {
+              const steps = await agentEngine.getSessionSteps(session.id);
+              const fedStep = steps.find(s => s.output_data?.output);
+              outputText = (fedStep?.output_data?.output as string) || 'Task completed.';
+            } catch { outputText = 'Task completed.'; }
+          } else if (finalSession.status === 'failed') {
+            outputText = finalSession.error_message || 'Task failed.';
+          } else {
+            outputText = `Task is still ${finalSession.status}. Check your OpenClaw connector.`;
+          }
+
+          setMessages(prev => prev.map(m => m.id === fedMsgId ? { ...m, content: outputText, aiProvider: 'Federated Agent' } : m));
+
+          // Save to resonant chat pipeline for persistence
+          if (isLoggedIn && outputText && !outputText.startsWith('Task failed')) {
+            saveAgenticToResonant(currentInput, outputText, currentConversationId || undefined, {})
+              .then(result => { if (result.chat_id && !currentConversationId) setCurrentConversationId(result.chat_id); })
+              .catch(() => {});
+          }
+        } catch (err: any) {
+          setMessages(prev => prev.map(m => m.id === fedMsgId ? { ...m, content: `Error: ${err.message || 'Failed to run agent task.'}`, aiProvider: 'error' } : m));
+        } finally {
+          setIsLoading(false);
+        }
+        return; // Platform agent handled — skip resonant/agentic paths
+      }
 
       // === AGENTIC AI ASSISTANT PATH (tools, thinking, real-time steps) ===
       if (aiAssistantEnabled) {
