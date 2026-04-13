@@ -557,3 +557,143 @@
   color: #666;
   font-size: 13px;
 }
+
+/* ============== UTILITY ANALYTICS STYLES ============== */
+
+.utilityView {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.utilityHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.utilityHeader h3 {
+  font-size: 14px;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.utilityControls {
+  display: flex;
+  gap: 8px;
+}
+
+.utilityOverview {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.overallScore {
+  flex-shrink: 0;
+}
+
+.scoreCircle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.scoreValue {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.scoreLabel {
+  font-size: 9px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.quickStats {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+.quickStat {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 10px 14px;
+  flex: 1;
+}
+
+.quickValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.quickLabel {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.agentRanking {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.agentRanking h4 {
+  font-size: 13px;
+  color: #e2e8f0;
+  margin: 0 0 4px 0;
+}
+
+.rankCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+}
+
+.rankNumber {
+  font-size: 12px;
+  font-weight: 700;
+  color: #01A6BC;
+  min-width: 28px;
+}
+
+.rankInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.rankName {
+  font-size: 12px;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+.rankStats {
+  display: flex;
+  gap: 8px;
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.rankScore {
+  font-size: 18px;
+  font-weight: 700;
+}

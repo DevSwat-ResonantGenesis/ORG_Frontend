@@ -70,6 +70,7 @@ const VisualWorkflowPage = lazy(() => import("../pages/Network/VisualWorkflowPag
 const ExecutionHistoryPage = lazy(() => import('../pages/Network/ExecutionHistoryPage'));
 const AgentTemplatesPage = lazy(() => import('../pages/Network/AgentTemplatesPage'));
 const BlockchainDashboardPage = lazy(() => import("../pages/Network/BlockchainDashboardPage"));
+const NetworkDashboardPage = lazy(() => import("../pages/Network/NetworkDashboardPage"));
 
 
 // Developer Tools Pages
@@ -389,6 +390,10 @@ const router = createBrowserRouter([
   {
     path: '/network/history',
     element: withShell(<ExecutionHistoryPage />)
+  },
+  {
+    path: "/network",
+    element: withPublicShell(<NetworkDashboardPage />)
   },
   {
     path: "/network/blockchain",

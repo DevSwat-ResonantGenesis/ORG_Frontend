@@ -350,6 +350,16 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
+            {/* Network - Live monitoring */}
+            <div className={styles.navItem}>
+              <button
+                className={styles.navButton}
+                onClick={() => { navigate('/network'); setActiveDropdown(null); }}
+              >
+                Network
+              </button>
+            </div>
+
             {/* Pricing Link */}
             <button 
               className={styles.navButton}

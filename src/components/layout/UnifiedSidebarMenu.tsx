@@ -207,6 +207,21 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               {location.pathname === '/code-visualizer' && <span className={styles.usmActiveIndicator} />}
             </button>
 
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/network' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/network'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <circle cx="8" cy="3" r="2" />
+                  <circle cx="3" cy="13" r="2" />
+                  <circle cx="13" cy="13" r="2" />
+                  <path d="M8 5V8M8 8L3.5 11M8 8L12.5 11" strokeLinecap="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>Network Monitor</span>
+              {location.pathname === '/network' && <span className={styles.usmActiveIndicator} />}
+            </button>
 
             {/* GitHub */}
             <a

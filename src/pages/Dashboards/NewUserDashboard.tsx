@@ -68,6 +68,9 @@ const NewUserDashboard: React.FC = () => {
   const [creditPacks, setCreditPacks] = useState<CreditPack[]>([]);
   const [referralCode, setReferralCode] = useState('');
   const [copiedReferral, setCopiedReferral] = useState(false);
+  const [promoCode, setPromoCode] = useState('');
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoResult, setPromoResult] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [totalConversations, setTotalConversations] = useState(0);
   const [totalMessages, setTotalMessages] = useState(0);
   const [totalCreditsUsed, setTotalCreditsUsed] = useState(0);
@@ -192,6 +195,21 @@ const NewUserDashboard: React.FC = () => {
   const handleCopyReferral = () => {
     navigator.clipboard.writeText(`${window.location.origin}/signup?ref=${referralCode}`);
     setCopiedReferral(true); setTimeout(() => setCopiedReferral(false), 2000);
+  };
+  const handleRedeemPromo = async () => {
+    if (!promoCode.trim()) return;
+    setPromoLoading(true);
+    setPromoResult(null);
+    try {
+      const response = await fastapiClient.post('/billing/promo/redeem', { code: promoCode.trim() });
+      setPromoResult({ type: 'success', message: `${response.data.credits_granted.toLocaleString()} credits added! New balance: ${response.data.new_balance.toLocaleString()}` });
+      setPromoCode('');
+      loadDashboardData();
+    } catch (err: any) {
+      setPromoResult({ type: 'error', message: err?.response?.data?.detail || 'Invalid promo code' });
+    } finally {
+      setPromoLoading(false);
+    }
   };
   const handlePurchaseCredits = async (packId: string) => {
     try {
@@ -490,6 +508,30 @@ const NewUserDashboard: React.FC = () => {
               <div><div className={styles.settingLabel}>Auto refill credits</div><div className={styles.settingDesc}>Automatically adds credits when your balance is low.</div></div>
               <label className={styles.toggle}><input type="checkbox" checked={autoRefillEnabled} onChange={e => setAutoRefillEnabled(e.target.checked)} /><span className={styles.toggleSlider} /></label>
             </div>
+          </div>
+
+          <div className={styles.sectionCard}>
+            <h3 className={styles.sectionTitle}><Gift size={16} style={{ color: '#FFD800' }} /> Redeem Promo Code</h3>
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: 13, margin: '0 0 12px' }}>Have a promo code? Enter it below to receive bonus credits — works on any plan.</p>
+            <div className={styles.promoRow}>
+              <input
+                type="text"
+                className={styles.promoInput}
+                placeholder="Enter promo code"
+                value={promoCode}
+                onChange={e => { setPromoCode(e.target.value.toUpperCase()); setPromoResult(null); }}
+                onKeyDown={e => e.key === 'Enter' && handleRedeemPromo()}
+                disabled={promoLoading}
+              />
+              <button className={styles.promoBtn} onClick={handleRedeemPromo} disabled={promoLoading || !promoCode.trim()}>
+                {promoLoading ? 'Redeeming…' : 'Redeem'}
+              </button>
+            </div>
+            {promoResult && (
+              <div className={`${styles.promoMsg} ${promoResult.type === 'success' ? styles.promoSuccess : styles.promoError}`}>
+                {promoResult.message}
+              </div>
+            )}
           </div>
 
           {creditPacks.length > 0 && (

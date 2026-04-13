@@ -639,6 +639,84 @@
 .packTokens { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
 .packPrice { font-size: 20px; font-weight: 700; color: var(--color-text-primary, #fff); margin-bottom: 10px; }
 
+/* ============== PROMO CODE ============== */
+.promoRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.promoInput {
+  flex: 1;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--color-text-primary, #fff);
+  font-size: 14px;
+  font-family: monospace;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.promoInput::placeholder {
+  color: var(--color-text-tertiary, #707080);
+  text-transform: none;
+  letter-spacing: normal;
+  font-family: inherit;
+}
+
+.promoInput:focus {
+  border-color: #FFD800;
+  box-shadow: 0 0 0 2px rgba(255, 216, 0, 0.15);
+}
+
+.promoBtn {
+  padding: 10px 20px;
+  background: #FFD800;
+  color: #121214;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.promoBtn:hover:not(:disabled) {
+  background: #ffe534;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 10px rgba(255, 216, 0, 0.3);
+}
+
+.promoBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.promoMsg {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.promoSuccess {
+  background: rgba(113, 194, 62, 0.12);
+  color: #71C23E;
+  border: 1px solid rgba(113, 194, 62, 0.25);
+}
+
+.promoError {
+  background: rgba(250, 84, 124, 0.12);
+  color: #FA547C;
+  border: 1px solid rgba(250, 84, 124, 0.25);
+}
+
 /* ============== SUBSCRIBE BANNER (free users) ============== */
 .subscribeBanner {
   position: relative;

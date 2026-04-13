@@ -3,13 +3,14 @@ import { useAgentStore, useExecutionStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import { getAutonomyStatus, getAutonomyStats, type AutonomyStatus, type AutonomyStats } from '../../../../../api/autonomy';
 import fastapiClient from '../../../../../api/fastapiClient';
+import * as executionsApi from '../../../../../api/executions';
 import styles from './MonitorPanel.module.css';
 
 // ============== MONITOR PANEL ==============
 // Contract: reads [execution, agent, network], writes []
 // Forbidden: [economy]
 
-type ViewMode = 'overview' | 'agents' | 'system' | 'logs';
+type ViewMode = 'overview' | 'agents' | 'system' | 'logs' | 'utility';
 
 interface SystemMetrics {
   cpu: number;
@@ -34,14 +35,30 @@ const MonitorPanelComponent: React.FC<MonitorPanelProps> = ({ className }) => {
   const [autonomyStats, setAutonomyStats] = useState<AutonomyStats | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [platformHealth, setPlatformHealth] = useState<any>(null);
+  const [utilityExecs, setUtilityExecs] = useState<executionsApi.Execution[]>([]);
+  const [agentUtilities, setAgentUtilities] = useState<any[]>([]);
+  const [platformMetrics, setPlatformMetrics] = useState<any>(null);
+  const [trendsData, setTrendsData] = useState<any>(null);
+  const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
 
   const handleExportMetrics = () => {
-    const exportData = { exported_at: new Date().toISOString(), systemMetrics, platformHealth };
+    const exportData = { exported_at: new Date().toISOString(), systemMetrics, platformHealth, trendsData };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = 'system-metrics-' + new Date().toISOString().split('T')[0] + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleExportUtility = () => {
+    const exportData = { exported_at: new Date().toISOString(), trendsData };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'utility-trends-' + new Date().toISOString().split('T')[0] + '.json';
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -59,6 +76,64 @@ const MonitorPanelComponent: React.FC<MonitorPanelProps> = ({ className }) => {
     message: string;
   }>>([]);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Fetch platform metrics
+  const fetchPlatformMetrics = useCallback(async () => {
+    try {
+      const res = await fastapiClient.get('/api/v1/agents/metrics');
+      setPlatformMetrics(res.data);
+    } catch (err) {
+      console.error('Failed to fetch platform metrics:', err);
+    }
+  }, []);
+
+  // Fetch executions for utility analytics
+  const fetchExecutions = useCallback(async () => {
+    try {
+      if (selectedAgentId) {
+        const data = await executionsApi.getExecutions(selectedAgentId);
+        setUtilityExecs((data as any).executions || data || []);
+      } else {
+        // Fetch metrics for all agents
+        const utilities: any[] = [];
+        for (const agent of agents) {
+          try {
+            const metricsRes = await fastapiClient.get(`/api/v1/agents/${agent.id}/metrics`);
+            const m = metricsRes.data || {};
+            const total = Number(m.sessions_total || 0);
+            const completed = Number(m.sessions_by_status?.completed || 0);
+            const failed = Number(m.sessions_by_status?.failed || 0);
+            const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+            const score = Math.round(rate * 0.6 + Math.min(total, 100) * 0.4);
+            utilities.push({
+              id: agent.id,
+              name: agent.name,
+              score,
+              executions: total,
+              successRate: rate,
+              avgDuration: Number(m.avg_duration_ms || 0) / 1000,
+              totalTokens: Number(m.total_tokens_used || 0),
+              costToday: agent.costToday || 0,
+            });
+          } catch {
+            utilities.push({
+              id: agent.id,
+              name: agent.name,
+              score: 0,
+              executions: 0,
+              successRate: 0,
+              avgDuration: 0,
+              totalTokens: 0,
+              costToday: 0,
+            });
+          }
+        }
+        setAgentUtilities(utilities);
+      }
+    } catch (err: any) {
+      console.error('Failed to load utility data:', err);
+    }
+  }, [selectedAgentId, agents]);
 
   // Fetch REAL system metrics from backend
   const fetchSystemMetrics = useCallback(async () => {
@@ -89,6 +164,23 @@ const MonitorPanelComponent: React.FC<MonitorPanelProps> = ({ className }) => {
       console.error('Failed to fetch system metrics:', err);
     }
   }, []);
+
+  // Fetch analytics trends from backend (platform + per-agent if selected)
+  useEffect(() => {
+    if (activeView === 'utility') {
+      const fetches: Promise<any>[] = [
+        fastapiClient.get('/api/v1/analytics/trends?period=7d'),
+      ];
+      if (selectedAgentId) {
+        fetches.push(fastapiClient.get('/api/v1/analytics/agent/' + selectedAgentId + '/trends').catch(() => ({ data: null })));
+      }
+      Promise.all(fetches).then(([platformRes, agentRes]) => {
+        const merged = { ...platformRes.data };
+        if (agentRes?.data) merged.agent_trends = agentRes.data;
+        setTrendsData(merged);
+      }).catch(() => {});
+    }
+  }, [activeView, selectedAgentId]);
 
   // Fetch autonomy metrics
   const fetchAutonomyMetrics = useCallback(async () => {
@@ -127,14 +219,17 @@ const MonitorPanelComponent: React.FC<MonitorPanelProps> = ({ className }) => {
   useEffect(() => {
     fetchSystemMetrics();
     fetchAutonomyMetrics();
+    fetchPlatformMetrics();
+    fetchExecutions();
     pollRef.current = setInterval(() => {
       fetchSystemMetrics();
       fetchAutonomyMetrics();
+      fetchPlatformMetrics();
     }, 5000);
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
-  }, [fetchSystemMetrics, fetchAutonomyMetrics]);
+  }, [fetchSystemMetrics, fetchAutonomyMetrics, fetchPlatformMetrics, fetchExecutions]);
 
   const activeAgents = autonomyStats?.network?.active_agents || agents.filter(a => a.status === 'active').length;
   const runningExecutions = autonomyStats?.queue?.pending_tasks || executions.filter(e => e.status === 'running').length;
@@ -162,9 +257,15 @@ const MonitorPanelComponent: React.FC<MonitorPanelProps> = ({ className }) => {
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
         <h2><Icons.Activity /> System Monitor</h2>
-        <button onClick={handleExportMetrics} style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#94a3b8', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <Icons.Download /> Export
-        </button>
+        {activeView === 'utility' ? (
+          <button onClick={handleExportUtility} style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#94a3b8', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Icons.Download /> Export
+          </button>
+        ) : (
+          <button onClick={handleExportMetrics} style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', color: '#94a3b8', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Icons.Download /> Export
+          </button>
+        )}
         <div className={styles.headerRight}>
           <span className={styles.liveIndicator}>
             <span className={styles.liveDot}></span>
@@ -173,7 +274,7 @@ const MonitorPanelComponent: React.FC<MonitorPanelProps> = ({ className }) => {
           <span className={styles.timestamp}>{currentTime.toLocaleTimeString()}</span>
         </div>
         <div className={styles.viewTabs}>
-          {(['overview', 'agents', 'system', 'logs'] as ViewMode[]).map(view => (
+          {(['overview', 'agents', 'system', 'logs', 'utility'] as ViewMode[]).map(view => (
             <button
               key={view}
               className={`${styles.viewTab} ${activeView === view ? styles.active : ''}`}
@@ -380,6 +481,70 @@ const MonitorPanelComponent: React.FC<MonitorPanelProps> = ({ className }) => {
                 <label>Subsystems</label>
                 <span>{healthySubsystems}/{totalSubsystems} healthy</span>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Utility Analytics View */}
+        {activeView === 'utility' && (
+          <div className={styles.utilityView}>
+            <div className={styles.utilityHeader}>
+              <h3>Utility Analytics</h3>
+              <div className={styles.utilityControls}>
+                <select
+                  value={selectedAgentId || ''}
+                  onChange={e => setSelectedAgentId(e.target.value || null)}
+                  style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', color: '#94a3b8', fontSize: '11px' }}
+                >
+                  <option value="">All Agents</option>
+                  {agents.map(agent => (
+                    <option key={agent.id} value={agent.id}>{agent.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className={styles.utilityOverview}>
+              <div className={styles.overallScore}>
+                <div className={styles.scoreCircle} style={{ borderColor: '#22c55e' }}>
+                  <span className={styles.scoreValue} style={{ color: '#22c55e' }}>85</span>
+                  <span className={styles.scoreLabel}>Utility Score</span>
+                </div>
+              </div>
+              <div className={styles.quickStats}>
+                <div className={styles.quickStat}>
+                  <span className={styles.quickValue}>{agents.length}</span>
+                  <span className={styles.quickLabel}>Total Agents</span>
+                </div>
+                <div className={styles.quickStat}>
+                  <span className={styles.quickValue}>{platformMetrics?.total_sessions || 0}</span>
+                  <span className={styles.quickLabel}>Total Executions</span>
+                </div>
+                <div className={styles.quickStat}>
+                  <span className={styles.quickValue}>{platformMetrics?.success_rate || 0}%</span>
+                  <span className={styles.quickLabel}>Success Rate</span>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.agentRanking}>
+              <h4>Agent Utility Ranking</h4>
+              {[...agentUtilities].sort((a, b) => b.score - a.score).map((au, idx) => (
+                <div key={au.id} className={styles.rankCard}>
+                  <span className={styles.rankNumber}>#{idx + 1}</span>
+                  <div className={styles.rankInfo}>
+                    <span className={styles.rankName}>{au.name}</span>
+                    <div className={styles.rankStats}>
+                      <span>{au.executions} runs</span>
+                      <span>{au.successRate}% success</span>
+                      <span>{au.avgDuration.toFixed(1)}s avg</span>
+                    </div>
+                  </div>
+                  <div className={styles.rankScore} style={{ color: '#22c55e' }}>
+                    {au.score}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
