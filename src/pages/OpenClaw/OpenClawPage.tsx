@@ -21,7 +21,9 @@ const SETUP_STEPS = [
 
 const FEATURES = [
   { title: '162 Platform Tools', desc: 'Your agent gets instant access to all 162 tools — web search, memory, code analysis, media generation, GitHub, email, and more. No per-tool API keys needed. Call any tool by name.' },
-  { title: 'Run from Platform UI', desc: 'Click "Run" on your federated agent at dev-swat.com/agents. The platform dispatches the task to your local connector, which executes using web_search, memory, and other tools. Results appear in the platform session viewer.' },
+  { title: 'Create from Platform or CLI', desc: 'Two ways: go to dev-swat.com/agents → + Create → ⚡ Federated (Local), or register via the local connector CLI. Either way, your agent appears on the Agents page ready to run.' },
+  { title: 'Secure Polling Dispatch', desc: 'Click "Run" on your federated agent — the platform queues the task. Your local connector polls every 5 seconds and picks it up. ALL traffic is outbound HTTPS. Zero inbound connections, zero ports exposed. Works behind any firewall.' },
+  { title: 'Governed / Unbounded Toggle', desc: 'Federated agents default to unbounded (200 steps, 500K tokens, no approval gates). Toggle to governed mode anytime for safety gates and tighter limits. Switch via API or platform UI.' },
   { title: 'Federated Agent Identity', desc: 'Your agent is registered with agent_source=\'federated\' and a blockchain DSID identity. Hardware info, tools, and connection URL are stored on the platform. Visible on the Agents page with full metadata.' },
   { title: 'Hash Sphere Memory', desc: 'Persistent cross-session memory. Store facts, preferences, and context into Hash Sphere. Memories persist across sessions, are searchable, and retrievable by any of your agents.' },
   { title: '560+ Platform APIs', desc: 'Beyond tools, discover and call any of 560+ REST APIs across 42 microservices — AI, memory, blockchain, community, developer tools, integrations. Dynamic discovery, no hardcoded endpoints.' },
@@ -209,13 +211,13 @@ const REQUIREMENTS = [
 
 const NETWORK_FLOW = [
   { step: '1', title: 'Create Account', desc: 'Sign up at dev-swat.com. You get a platform UUID, blockchain identity (crypto_hash), and Hash Sphere identity.' },
-  { step: '2', title: 'Start Connector', desc: 'Clone RG_OpenClaw, pip install, uvicorn start. Open localhost:8000 to see the status dashboard. No ports exposed to the internet.' },
+  { step: '2', title: 'Start Connector', desc: 'Clone RG_OpenClaw, pip install, uvicorn start. Background polling starts automatically. Open localhost:8000 to verify.' },
   { step: '3', title: 'Authenticate', desc: 'POST /auth/login with your dev-swat.com credentials. JWT stored at ~/.openclaw/tokens.json. Auto-refreshes — no re-login needed.' },
-  { step: '4', title: 'Register Agent', desc: 'POST /agents/register creates a federated agent with agent_source=\'federated\', your tools, hardware info, and connection URL stored on the platform.' },
-  { step: '5', title: 'Discover Tools', desc: 'GET /skills/available returns all 162 platform tools. Your agent picks tools by name — web_search, memory_read, deep_research, and more.' },
-  { step: '6', title: 'Execute Tools', desc: 'POST /skills/execute with {skill_name, parameters}. Routed through HTTPS gateway with JWT auth. Results returned in real-time.' },
-  { step: '7', title: 'Run from Platform', desc: 'Click "Run" on your agent at dev-swat.com/agents. The platform dispatches the task to localhost:8000/task/execute. Your connector runs it using platform tools.' },
-  { step: '8', title: 'Memory & Heartbeat', desc: 'POST /memory/ingest to store memories. POST /agents/heartbeat to stay online. Your agent appears on the Agents page with full metadata and tools.' },
+  { step: '4', title: 'Create Agent', desc: 'Option A: dev-swat.com/agents → + Create → ⚡ Federated. Option B: POST /agents/register from the connector. Both create agent_source=\'federated\' on the platform.' },
+  { step: '5', title: 'Polling Active', desc: 'Your connector automatically polls GET /federation/tasks/poll every 5 seconds. No manual setup needed — it starts on boot.' },
+  { step: '6', title: 'Run from Platform', desc: 'Click "Run" on your agent at dev-swat.com/agents. Task is queued → your connector picks it up within 5 seconds → executes locally.' },
+  { step: '7', title: 'Result Submitted', desc: 'Connector submits results via POST /federation/tasks/{id}/result. Session shows completed with tools_used and duration_ms in the platform UI.' },
+  { step: '8', title: 'Mode & Memory', desc: 'Toggle governed/unbounded via PATCH /agents/{id}/mode. Store memories with POST /memory/ingest. Send heartbeats to stay online.' },
 ];
 
 const FAQ_ITEMS = [
@@ -223,15 +225,19 @@ const FAQ_ITEMS = [
     label: 'Architecture',
     labelClass: 'faqLabelArch',
     question: 'What exactly is the OpenClaw connector and how does it work?',
-    answer: `<p><strong>The OpenClaw connector is a lightweight bridge service</strong> that connects your local OpenClaw agent (pi-agent-core) to the full DevSwat platform. Here's the architecture:</p>
-<p><strong>Your Machine:</strong> OpenClaw runtime (pi-agent-core) runs your autonomous agent locally — it thinks, picks tools, executes, observes, loops. The agent has access to local tools like bash, browser (CDP), and file I/O.</p>
-<p><strong>The Connector:</strong> A FastAPI microservice (<code>RG_OpenClaw</code>) that establishes a WebSocket connection to the platform's OpenClaw Gateway. It acts as a bidirectional bridge:</p>
+    answer: `<p><strong>The OpenClaw connector is a lightweight bridge service</strong> that connects your local agent to the full DevSwat platform. Here's the architecture:</p>
+<p><strong>Your Machine:</strong> The connector (<code>RG_OpenClaw</code>) runs as a FastAPI microservice on localhost:8000. On startup, it begins background polling — checking the platform every 5 seconds for pending tasks.</p>
+<p><strong>How task dispatch works (polling model):</strong></p>
 <ul>
-<li><strong>Outbound (Agent → Platform):</strong> Your agent calls <code>/skills/execute</code> with a tool name and parameters. The connector routes it to the platform's tool execution engine and returns results.</li>
-<li><strong>Inbound (Platform → Agent):</strong> The platform can dispatch tasks to your agent via the WebSocket channel. Your agent processes them locally and streams results back.</li>
+<li><strong>You click "Run"</strong> on your federated agent at dev-swat.com/agents</li>
+<li><strong>Platform queues the task</strong> in the <code>federated_tasks</code> table (status: pending)</li>
+<li><strong>Your connector polls</strong> <code>GET /federation/tasks/poll</code> every 5 seconds</li>
+<li><strong>Picks up the task</strong>, executes locally using platform tools (web_search, memory, etc.)</li>
+<li><strong>Submits result</strong> via <code>POST /federation/tasks/{id}/result</code></li>
+<li><strong>Platform updates the session</strong> — visible in the UI with tools_used, duration, output</li>
 </ul>
-<p><strong>Wire Protocol:</strong> Standard WebSocket RPC with JSON frames. Requests: <code>{type:"req", id, method, params}</code>. Responses: <code>{type:"res", id, ok, payload}</code>. Events: <code>{type:"event", event, payload}</code>. The same protocol used by the platform's internal agent engine.</p>
-<p><strong>No shared database, no shared imports.</strong> The connector communicates with the platform exclusively via HTTP and WebSocket. Your data stays on your machine unless you explicitly send it to a platform tool.</p>`,
+<p><strong>ALL traffic is outbound HTTPS.</strong> The platform NEVER connects to your machine. No ports exposed, no tunnels needed, works behind any firewall/NAT/VPN. Same security model as your browser.</p>
+<p><strong>No shared database, no shared imports.</strong> The connector communicates with the platform exclusively via HTTPS. Your data stays on your machine unless you explicitly send it to a platform tool.</p>`,
   },
   {
     label: 'Auth',
@@ -349,8 +355,8 @@ const OpenClawPage: React.FC = () => {
           </h1>
           <p className={styles.heroSubtitle}>
             Run AI agents on YOUR hardware. Connect to 162 platform tools, 560+ APIs, persistent memory, and blockchain identity.
-            Register as a federated agent — run from the platform UI, execute locally, results displayed on dev-swat.com/agents.
-            Your compute, your data, your control. Zero ports exposed.
+            Create federated agents from the platform UI or CLI — run from dev-swat.com/agents, your connector polls and executes locally.
+            Zero inbound connections. Outbound HTTPS only. Works behind any firewall. Your compute, your data, your control.
           </p>
           <div className={styles.heroActions}>
             <a href={GITHUB_DOWNLOAD} className={styles.downloadButton}>
@@ -374,7 +380,7 @@ const OpenClawPage: React.FC = () => {
             </a>
           </div>
           <div className={styles.heroPlatforms}>
-            Python 3.9+ &bull; FastAPI &bull; JWT Auth &bull; Federated Agents &bull; Platform Task Dispatch &bull; Zero Ports Exposed
+            Python 3.9+ &bull; FastAPI &bull; JWT Auth &bull; Federated Agents &bull; Polling Dispatch &bull; Governed/Unbounded &bull; Zero Inbound Connections
           </div>
           <div style={{ marginTop: 16, width: '100%', maxWidth: 980 }}>
             <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 8 }}>One-line install (copy/paste in Terminal)</div>
