@@ -410,7 +410,7 @@
 }
 
 .statusBar.paused {
-  background: linear-gradient(90deg, #FAA525, #fbbf24);
+  background: linear-gradient(90deg, #FAA525, #FFD800);
 }
 
 .statusBar.failed {
@@ -616,7 +616,7 @@
   background: rgba(250, 84, 124, 0.15);
   border-radius: 3px;
   font-size: 8px;
-  color: #a855f7;
+  color: #FA547C;
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
@@ -1084,8 +1084,8 @@
 }
 
 .thinkingMessage {
-  background: rgba(99, 102, 241, 0.12);
-  border-color: rgba(1, 166, 188, 0.32);
+  background: rgba(1, 166, 188, 0.12);
+  border-color: rgba(1, 166, 188, 0.25);
 }
 
 .thinkingRow {
@@ -1105,7 +1105,7 @@
 
 .thinkingText {
   font-size: 11px;
-  color: #c7d2fe;
+  color: #01A6BC;
   letter-spacing: 0.2px;
 }
 
@@ -1177,7 +1177,7 @@
 .messageBtn:hover {
   background: rgba(250, 84, 124, 0.2) !important;
   border-color: rgba(250, 84, 124, 0.4) !important;
-  color: #a855f7 !important;
+  color: #FA547C !important;
 }
 
 .detailBtn:hover {
@@ -1197,7 +1197,7 @@
   background: rgba(250, 84, 124, 0.12);
   border-radius: 4px;
   font-size: 9px;
-  color: #a855f7;
+  color: #FA547C;
 }
 
 /* Empty State */
@@ -1371,7 +1371,7 @@
 
 [data-theme='light'] .viewTab.active {
   background: #eff6ff;
-  border-color: #93c5fd;
+  border-color: rgba(1, 166, 188, 0.4);
   color: #2563eb;
 }
 
@@ -1384,7 +1384,7 @@
 
 [data-theme='light'] .agentCard:hover {
   background: #ffffff;
-  border-color: #93c5fd;
+  border-color: rgba(1, 166, 188, 0.4);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -1739,8 +1739,8 @@
 
 /* --- Thinking --- */
 [data-theme='light'] .thinkingMessage {
-  background: #eef2ff;
-  border-color: #c7d2fe;
+  background: rgba(1, 166, 188, 0.06);
+  border-color: rgba(1, 166, 188, 0.3);
 }
 
 [data-theme='light'] .thinkingText {
@@ -2096,7 +2096,7 @@
 
 [data-theme='light'] .trustTierBtn.active {
   border-color: #01A6BC;
-  background: #eef2ff;
+  background: rgba(1, 166, 188, 0.06);
   color: #01A6BC;
 }
 
@@ -2112,7 +2112,7 @@
 
 [data-theme='light'] .permBtn.active {
   border-color: rgba(1,166,188,0.5);
-  background: #eef2ff;
+  background: rgba(1, 166, 188, 0.06);
   color: #01A6BC;
 }
 
