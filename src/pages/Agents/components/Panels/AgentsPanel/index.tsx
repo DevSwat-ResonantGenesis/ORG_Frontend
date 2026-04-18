@@ -717,18 +717,20 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   <p>Loading agents…</p>
                 </div>
               )}
-              {filteredAgents.map((agent: Agent) => (
+              {filteredAgents.map((agent: Agent) => {
+                const isOpenClaw = agent.agent_source === 'openclaw' || agent.agent_source === 'federated';
+                return (
                 <div 
                   key={agent.id} 
-                  className={`${styles.agentCard} ${selectedAgent?.id === agent.id ? styles.selected : ''}`}
+                  className={`${styles.agentCard} ${selectedAgent?.id === agent.id ? styles.selected : ''} ${isOpenClaw ? styles.openclawCard : ''}`}
                   onClick={() => selectAgent(agent.id)}
                 >
                   {/* Status indicator bar */}
-                  <div className={`${styles.statusBar} ${styles[agent.status]}`} />
+                  <div className={`${styles.statusBar} ${styles[agent.status]}`} style={isOpenClaw ? { background: 'linear-gradient(90deg, #FAA525, #d97706)' } : undefined} />
                   
                   {/* Card header with icon and name */}
                   <div className={styles.cardHeader}>
-                    <div className={styles.agentIcon}>
+                    <div className={styles.agentIcon} style={isOpenClaw ? { background: 'rgba(250, 165, 37, 0.2)', color: '#FAA525' } : undefined}>
                       <Icons.Agents />
                     </div>
                     <div className={styles.agentInfo}>
@@ -750,7 +752,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                               boxShadow: agent.openclaw_config?.connection_status === 'online'
                                 ? '0 0 4px #22c55e' : 'none',
                             }} />
-                            OpenClaw
+                            🖥 Local Machine
                           </span>
                         )}
                       </div>
@@ -928,7 +930,8 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                     )}
                   </div>
                 </div>
-              ))}
+              );
+              })}
               {!isLoadingAgents && filteredAgents.length === 0 && (
                 <div className={styles.emptyState}>
                   <Icons.Agents />

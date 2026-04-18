@@ -394,6 +394,25 @@
   box-shadow: 0 0 0 1px rgba(1, 166, 188, 0.2);
 }
 
+/* OpenClaw local-machine agent — fully orange themed card */
+.agentCard.openclawCard {
+  background: rgba(250, 165, 37, 0.08);
+  border: 1.5px solid rgba(250, 165, 37, 0.35);
+  box-shadow: 0 0 12px rgba(250, 165, 37, 0.08), inset 0 0 20px rgba(250, 165, 37, 0.03);
+}
+
+.agentCard.openclawCard:hover {
+  background: rgba(250, 165, 37, 0.14);
+  border-color: rgba(250, 165, 37, 0.55);
+  box-shadow: 0 4px 16px rgba(250, 165, 37, 0.18), 0 0 20px rgba(250, 165, 37, 0.1);
+}
+
+.agentCard.openclawCard.selected {
+  background: rgba(250, 165, 37, 0.16);
+  border-color: rgba(250, 165, 37, 0.7);
+  box-shadow: 0 0 0 1px rgba(250, 165, 37, 0.3), 0 0 20px rgba(250, 165, 37, 0.12);
+}
+
 /* Status bar at top of card */
 .statusBar {
   height: 3px;
