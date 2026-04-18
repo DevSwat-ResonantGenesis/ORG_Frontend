@@ -2188,14 +2188,63 @@ const ResonantChatPage: React.FC = () => {
         try {
           // Find the agent ID from the hash — try listing agents
           let agentId = selectedAgentHash;
+          let matchedAgent: any = null;
           try {
             const agentsList = await agentEngine.listAgents();
-            const matched = agentsList.find((a: any) => (a.agent_public_hash === selectedAgentHash || a.id === selectedAgentHash));
-            if (matched) agentId = matched.id;
+            matchedAgent = agentsList.find((a: any) => (a.agent_public_hash === selectedAgentHash || a.id === selectedAgentHash));
+            if (matchedAgent) agentId = matchedAgent.id;
           } catch { /* use hash as-is */ }
 
+          // Pre-flight: warn user immediately if federated agent appears offline
+          if (matchedAgent && (matchedAgent.agent_source === 'federated' || matchedAgent.agent_source === 'openclaw')) {
+            const ocConfig = matchedAgent.openclaw_config || {};
+            const lastHb = ocConfig.last_heartbeat;
+            let isOnline = false;
+            if (lastHb) {
+              try {
+                const hbTime = new Date(lastHb).getTime();
+                isOnline = (Date.now() - hbTime) < 2 * 60 * 1000; // 2 min threshold
+              } catch { /* treat as offline */ }
+            }
+            if (!isOnline) {
+              const offlineMsg = [
+                `**Your local-machine agent "${matchedAgent.name}" is not connected.**\n`,
+                'The OpenClaw connector on your computer must be running to execute this agent.\n',
+                '**How to fix:**',
+                '1. Open the **OpenClaw extension** on your local machine',
+                '2. Make sure the extension is **logged in** with the same account',
+                '3. Check that the agent is registered and showing **"Connected"**',
+                '4. If the issue persists, **restart the OpenClaw extension**\n',
+                `Last seen: ${lastHb ? new Date(lastHb).toLocaleString() : 'Never connected'}`,
+              ].join('\n');
+              setMessages(prev => prev.map(m => m.id === fedMsgId ? { ...m, content: offlineMsg, aiProvider: 'System' } : m));
+              setIsLoading(false);
+              return;
+            }
+          }
+
           // Start session (queues task for federated agents, runs for cloud agents)
-          const session = await agentEngine.startSession(agentId, queryWithContext);
+          let session: any;
+          try {
+            session = await agentEngine.startSession(agentId, queryWithContext);
+          } catch (startErr: any) {
+            // Handle 503 agent_offline from backend
+            const errData = startErr?.response?.data;
+            if (errData?.error === 'agent_offline') {
+              const instructions = (errData.instructions || []).join('\n');
+              const offlineMsg = [
+                `**${errData.detail}**\n`,
+                '**How to fix:**',
+                instructions,
+                '',
+                `Last seen: ${errData.last_heartbeat ? new Date(errData.last_heartbeat).toLocaleString() : 'Never connected'}`,
+              ].join('\n');
+              setMessages(prev => prev.map(m => m.id === fedMsgId ? { ...m, content: offlineMsg, aiProvider: 'System' } : m));
+              setIsLoading(false);
+              return;
+            }
+            throw startErr; // re-throw other errors
+          }
 
           // Poll for completion
           const maxWait = 90_000;
@@ -2225,13 +2274,20 @@ const ResonantChatPage: React.FC = () => {
           } else if (finalSession.status === 'failed') {
             outputText = finalSession.error_message || 'Task failed.';
           } else {
-            outputText = `Task is still ${finalSession.status}. Check your OpenClaw connector.`;
+            outputText = [
+              `**Task is still ${finalSession.status}** — your OpenClaw connector may not be picking up tasks.\n`,
+              '**Troubleshooting:**',
+              '1. Check that the **OpenClaw extension** is running on your local machine',
+              '2. Make sure it is **logged in** with the same account',
+              '3. Verify the agent shows **"Connected"** in the extension',
+              '4. Try restarting the OpenClaw extension',
+            ].join('\n');
           }
 
-          setMessages(prev => prev.map(m => m.id === fedMsgId ? { ...m, content: outputText, aiProvider: 'Federated Agent' } : m));
+          setMessages(prev => prev.map(m => m.id === fedMsgId ? { ...m, content: outputText, aiProvider: matchedAgent?.agent_source === 'federated' ? 'Local Agent' : 'Federated Agent' } : m));
 
           // Save to resonant chat pipeline for persistence
-          if (isLoggedIn && outputText && !outputText.startsWith('Task failed')) {
+          if (isLoggedIn && outputText && !outputText.startsWith('Task failed') && !outputText.startsWith('**Task is still')) {
             saveAgenticToResonant(currentInput, outputText, currentConversationId || undefined, {})
               .then(result => { if (result.chat_id && !currentConversationId) setCurrentConversationId(result.chat_id); })
               .catch(() => {});
