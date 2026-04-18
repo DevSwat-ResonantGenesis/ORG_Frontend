@@ -7,7 +7,7 @@ import fastapiClient from '@/api/fastapiClient';
 import { logger } from '@/utils/logger';
 // Local LLM tunnel removed — service killed
 const localLLMTunnel = { isConnected: false, connect: (_ep: string) => {}, disconnect: () => {} };
-import { fetchUserApiKeys, addUserApiKey, deleteUserApiKey, validateApiKey, API_KEY_PROVIDERS } from '@/api/userApiKeys';
+import { fetchUserApiKeys, addUserApiKey, deleteUserApiKey, validateApiKey, setPrimaryApiKey, API_KEY_PROVIDERS, type UserApiKey } from '@/api/userApiKeys';
 
 interface Integration {
   id: string;
@@ -101,6 +101,7 @@ const ConnectProfilesPage: React.FC = () => {
   const [msg, setMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [discordInviteUrl, setDiscordInviteUrl] = useState<string | null>(null);
   const [providersOpen, setProvidersOpen] = useState(true);
+  const [providerKeys, setProviderKeys] = useState<Record<string, UserApiKey[]>>({});
   const [providerModal, setProviderModal] = useState<typeof API_KEY_PROVIDERS[number] | null>(null);
   const [providerKeyInput, setProviderKeyInput] = useState('');
   const [providerKeyName, setProviderKeyName] = useState('');
@@ -131,12 +132,16 @@ const ConnectProfilesPage: React.FC = () => {
     const keys = await fetchUserApiKeys();
     const map: Record<string, string> = {};
     const ids: Record<string, string> = {};
+    const grouped: Record<string, UserApiKey[]> = {};
     keys.forEach(k => {
       map[k.provider] = 'connected';
       ids[k.provider] = k.id;
+      if (!grouped[k.provider]) grouped[k.provider] = [];
+      grouped[k.provider].push(k);
     });
     setConnections(map);
     setKeyIds(ids);
+    setProviderKeys(grouped);
     // For GitHub: also get the username from the status endpoint
     getGitHubStatus().then(s => {
       if (s.connected && s.username) setConnections(p => ({ ...p, github: s.username! }));
@@ -337,8 +342,10 @@ const ConnectProfilesPage: React.FC = () => {
             {API_KEY_PROVIDERS.filter(p => p.id !== 'github').map(prov => {
               const ps = PROVIDER_STYLES[prov.id] || { emoji: '🔑', color: '#71717a' };
               const isConn = !!connections[prov.id];
+              const keys = providerKeys[prov.id] || [];
+              const keyCount = keys.length;
               return (
-                <div key={prov.id} className={`${styles.card} ${isConn ? styles.connected : ''}`} onClick={() => { if (!isConn) { setProviderModal(prov); setProviderKeyInput(''); setProviderKeyName(''); setProviderValidation(null); setMsg(null); } }}>
+                <div key={prov.id} className={`${styles.card} ${isConn ? styles.connected : ''}`} onClick={() => { setProviderModal(prov); setProviderKeyInput(''); setProviderKeyName(''); setProviderValidation(null); setMsg(null); }}>
                   {isConn && <div className={styles.connectedGlow} />}
                   <div className={styles.cardTop}>
                     <div className={styles.logo} style={{ background: `${ps.color}22`, color: ps.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -350,18 +357,28 @@ const ConnectProfilesPage: React.FC = () => {
                     </div>
                     <span className={`${styles.statusBadge} ${isConn ? styles.connected : styles.available}`}>
                       <span className={`${styles.dot} ${isConn ? styles.green : styles.purple}`} />
-                      {isConn ? 'Connected' : 'Available'}
+                      {isConn ? `${keyCount} key${keyCount > 1 ? 's' : ''}` : 'Available'}
                     </span>
                   </div>
+                  {keyCount > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '0 12px', marginBottom: 6 }}>
+                      {keys.map(k => (
+                        <div key={k.id} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#aaa' }}>
+                          <span style={{ fontFamily: 'monospace' }}>{k.keyPrefix}</span>
+                          <span style={{ color: '#666' }}>{k.name}</span>
+                          {k.isPrimary && <span style={{ background: '#FAA52533', color: '#FAA525', fontSize: 9, padding: '1px 5px', borderRadius: 4, fontWeight: 600 }}>PRIMARY</span>}
+                          {!k.isPrimary && keyCount > 1 && (
+                            <button style={{ background: 'none', border: '1px solid #333', color: '#888', fontSize: 9, padding: '1px 5px', borderRadius: 4, cursor: 'pointer' }} onClick={async e => { e.stopPropagation(); await setPrimaryApiKey(k.id); loadConnections(); }}>Set Primary</button>
+                          )}
+                          <button style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: 11, cursor: 'pointer', marginLeft: 'auto' }} onClick={async e => { e.stopPropagation(); await deleteUserApiKey(k.id); loadConnections(); }}>✕</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   <div className={styles.cardFooter}>
-                    {isConn ? (
-                      <>
-                        <span className={styles.connectedInfo}>••••••••</span>
-                        <button className={`${styles.connectBtn} ${styles.danger}`} onClick={e => { e.stopPropagation(); disconnect(prov.id); }}>Disconnect</button>
-                      </>
-                    ) : (
-                      <button className={`${styles.connectBtn} ${styles.primary}`} onClick={e => { e.stopPropagation(); setProviderModal(prov); setProviderKeyInput(''); setProviderKeyName(''); setProviderValidation(null); setMsg(null); }}>Connect</button>
-                    )}
+                    <button className={`${styles.connectBtn} ${styles.primary}`} onClick={e => { e.stopPropagation(); setProviderModal(prov); setProviderKeyInput(''); setProviderKeyName(''); setProviderValidation(null); setMsg(null); }}>
+                      {isConn ? '+ Add Key' : 'Connect'}
+                    </button>
                   </div>
                 </div>
               );

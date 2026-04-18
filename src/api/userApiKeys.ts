@@ -8,6 +8,7 @@ export interface UserApiKey {
   name?: string;
   keyPrefix: string;
   isValid: boolean;
+  isPrimary: boolean;
   lastUsed: string | null;
   createdAt: string;
   usageTokens: number;
@@ -42,6 +43,7 @@ const mapUserApiKey = (k: any): UserApiKey => ({
   name: k.name,
   keyPrefix: k.key_prefix || k.keyPrefix || '***',
   isValid: k.is_valid ?? k.isValid ?? false,
+  isPrimary: k.is_primary ?? k.isPrimary ?? false,
   lastUsed: k.last_used || k.lastUsed || null,
   createdAt: k.created_at || k.createdAt || '',
   usageTokens: k.usage_tokens || k.usageTokens || 0,
@@ -86,6 +88,18 @@ export const deleteUserApiKey = async (keyId: string): Promise<DeleteUserApiKeyR
     return {
       success: false,
       error: err?.response?.data?.detail || err?.message || 'Failed to delete API key',
+    };
+  }
+};
+
+export const setPrimaryApiKey = async (keyId: string): Promise<{ success: boolean; error?: string }> => {
+  try {
+    await fastapiClient.put(`/user/api-keys/${keyId}/set-primary`);
+    return { success: true };
+  } catch (err: any) {
+    return {
+      success: false,
+      error: err?.response?.data?.detail || err?.message || 'Failed to set primary key',
     };
   }
 };

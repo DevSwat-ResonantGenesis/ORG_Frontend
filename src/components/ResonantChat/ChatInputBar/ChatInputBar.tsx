@@ -350,10 +350,10 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   }, []);
 
   const providerOptions = useMemo(() => {
-    // Always include all providers from API
+    // Only show providers returned by the API — no hardcoded fallbacks
     const providers = providerData.length > 0 
       ? providerData.map(p => p.id)
-      : ["groq", "openai", "gemini", "anthropic", "local", "codellama"];
+      : [];
     
     const result = ["auto", ...providers];
     // Remove duplicates while preserving order
@@ -1428,6 +1428,15 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                               {provider === 'groq' && <GroqIcon />}
                               {provider === 'local' && <LocalIcon />}
                               {provider === 'codellama' && <CodeIcon />}
+                              {provider === 'openrouter' && <span style={{fontSize:'14px'}}>🔀</span>}
+                              {provider === 'mistral' && <span style={{fontSize:'14px'}}>🌊</span>}
+                              {provider === 'deepseek' && <span style={{fontSize:'14px'}}>🔍</span>}
+                              {provider === 'together' && <span style={{fontSize:'14px'}}>🤝</span>}
+                              {provider === 'perplexity' && <span style={{fontSize:'14px'}}>🎯</span>}
+                              {provider === 'fireworks' && <span style={{fontSize:'14px'}}>🎆</span>}
+                              {provider === 'cohere' && <span style={{fontSize:'14px'}}>🔮</span>}
+                              {provider === 'grok' && <span style={{fontSize:'14px'}}>⚡</span>}
+                              {provider === 'huggingface' && <span style={{fontSize:'14px'}}>🤗</span>}
                             </span>
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
                               <span className={styles.providerName}>
