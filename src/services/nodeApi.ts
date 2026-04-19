@@ -1,5 +1,5 @@
 /**
- * ResonantGenesis Node API Client
+ * DevSwat Node API Client
  * Connects frontend to the decentralized node network.
  * Supports node discovery, agent publishing, cross-node execution.
  */

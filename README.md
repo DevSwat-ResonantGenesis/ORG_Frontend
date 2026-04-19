@@ -1,52 +1,51 @@
 <p align="center">
-  <img src="public/images/investorpitch/VR1.jpg" alt="ResonantGenesis — Agentic AI SaaS Platform" width="100%" />
+  <img src="public/devswat/DevSwat.png" alt="DevSwat — Agentic AI Infrastructure" width="100%" />
 </p>
 
-<h1 align="center">ResonantGenesis</h1>
-<h3 align="center">The Most Complete Agentic AI SaaS Platform Ever Built by a Single Engineer</h3>
+<h1 align="center">DevSwat</h1>
+<h3 align="center">Agentic AI Infrastructure — Build, Run & Schedule Server and Local Agents</h3>
 
 <p align="center">
-  <strong>~550,000 lines of production code &bull; 30 microservices &bull; 9 proprietary IP systems &bull; 85+ routes &bull; 662 React components &bull; 4,384 API endpoints</strong>
-</p>
-
-<p align="center">
-  <a href="https://resonantgenesis.xyz">Live Platform</a> &bull;
-  <a href="https://resonantgenesis.xyz/investor-pitch-deck">Investor Pitch Deck</a> &bull;
-  <a href="https://resonantgenesis.xyz/pricing">Pricing</a> &bull;
-  <a href="https://resonantgenesis.xyz/api/docs">API Docs</a> &bull;
-  <a href="https://resonantgenesis.xyz/help">Help Center</a> &bull;
-  <a href="https://resonantgenesis.xyz/contact">Contact</a>
+  <strong>Built-in IDE &bull; AST/SAST Code Analysis &bull; Invariant Simulation &bull; Decentralized LLM Training &bull; P2P Weight Shards &bull; Two Blockchains</strong>
 </p>
 
 <p align="center">
-  <a href="https://www.linkedin.com/company/resonantgenesis/">LinkedIn</a> &bull;
-  <a href="https://www.youtube.com/@ResonantGenesis">YouTube</a> &bull;
-  <a href="https://x.com/resonantgenesis">X (Twitter)</a> &bull;
-  <a href="https://www.reddit.com/u/ResonantGenesis/">Reddit</a> &bull;
-  <a href="mailto:contact@resonantgenesis.xyz">contact@resonantgenesis.xyz</a>
+  <a href="https://dev-swat.com">Live Platform</a> &bull;
+  <a href="https://dev-swat.com/pricing">Pricing</a> &bull;
+  <a href="https://dev-swat.com/api/docs">API Docs</a> &bull;
+  <a href="https://dev-swat.com/help">Help Center</a> &bull;
+  <a href="https://dev-swat.com/contact">Contact</a>
+</p>
+
+<p align="center">
+  <a href="https://www.linkedin.com/company/devswat/">LinkedIn</a> &bull;
+  <a href="https://www.youtube.com/@DevSwat">YouTube</a> &bull;
+  <a href="https://x.com/devswat">X (Twitter)</a> &bull;
+  <a href="https://www.reddit.com/u/DevSwat/">Reddit</a> &bull;
+  <a href="mailto:contact@dev-swat.com">contact@dev-swat.com</a>
 </p>
 
 ---
 
-## What Is ResonantGenesis?
+## What Is DevSwat?
 
-**ResonantGenesis** is a full-stack, production-deployed **Agentic AI SaaS platform** built from scratch by **Louie Nemesh** — a single engineer — in under 4 months. It is the most feature-complete autonomous agent infrastructure available today, combining multi-agent orchestration, governed memory, physics-based state simulation, a custom blockchain, a 68-module AI chat pipeline with hallucination detection, and complete SaaS billing — all in one platform.
+**DevSwat** is a full-stack, production-deployed **Agentic AI SaaS platform** built from scratch by **Louie Nemesh** — a single engineer — in under 4 months. It is the most feature-complete autonomous agent infrastructure available today, combining multi-agent orchestration, governed memory, physics-based state simulation, a custom blockchain, a 68-module AI chat pipeline with hallucination detection, and complete SaaS billing — all in one platform.
 
-Unlike wrapper products that put a UI on top of OpenAI or LangChain, ResonantGenesis is **9 proprietary IP systems** built from the ground up. Every line of code is original. Every system is production-deployed.
+Unlike wrapper products that put a UI on top of OpenAI or LangChain, DevSwat is **9 proprietary IP systems** built from the ground up. Every line of code is original. Every system is production-deployed.
 
-**Available for acquisition.** Replacement cost: **$2M–$5M+** (18–24 months for a standard team). [View the investor pitch deck →](https://resonantgenesis.xyz/investor-pitch-deck)
+**Available for acquisition.** Replacement cost: **$2M–$5M+** (18–24 months for a standard team). [View the investor pitch deck →](https://dev-swat.com/investor-pitch-deck)
 
 ---
 
-## Why ResonantGenesis Exists
+## Why DevSwat Exists
 
 The AI agent landscape in 2025–2026 is fragmented. Companies like **OpenAI**, **Anthropic**, **Google DeepMind**, **Cohere**, **Mistral AI**, and **Meta AI** provide foundation models — but building production agent systems on top of them requires stitching together dozens of tools, frameworks, and services. **LangChain**, **LlamaIndex**, **CrewAI**, **AutoGen**, **Semantic Kernel**, and **Haystack** each solve a slice of the problem, but none provide a complete, production-ready, multi-tenant SaaS platform.
 
-ResonantGenesis fills this gap. It is the **full vertical stack** — from LLM provider abstraction to agent orchestration to memory to billing to deployment.
+DevSwat fills this gap. It is the **full vertical stack** — from LLM provider abstraction to agent orchestration to memory to billing to deployment.
 
-### How ResonantGenesis Compares
+### How DevSwat Compares
 
-| Capability | ResonantGenesis | LangChain / LangSmith | CrewAI | AutoGen (Microsoft) | OpenAI Assistants API | Anthropic Claude | AWS Bedrock |
+| Capability | DevSwat | LangChain / LangSmith | CrewAI | AutoGen (Microsoft) | OpenAI Assistants API | Anthropic Claude | AWS Bedrock |
 |---|---|---|---|---|---|---|---|
 | Multi-agent orchestration (voting, debate, chain) | ✅ Built-in | ❌ Manual | ✅ Basic | ✅ Basic | ❌ | ❌ | ❌ |
 | Governed semantic memory | ✅ 9-layer cognitive | ❌ | ❌ | ❌ | ✅ Threads only | ❌ | ❌ |
@@ -64,7 +63,7 @@ ResonantGenesis fills this gap. It is the **full vertical stack** — from LLM p
 
 ## Supported LLM Providers & Models
 
-ResonantGenesis connects to **7 LLM providers** out of the box. Bring your own API keys or use platform-provided credits.
+DevSwat connects to **7 LLM providers** out of the box. Bring your own API keys or use platform-provided credits.
 
 ### OpenAI
 - GPT-4o, GPT-4o-mini, GPT-4-Turbo, GPT-4, GPT-3.5-Turbo
@@ -97,23 +96,23 @@ ResonantGenesis connects to **7 LLM providers** out of the box. Bring your own A
 
 ---
 
-## Connect Any Agent Framework to ResonantGenesis
+## Connect Any Agent Framework to DevSwat
 
-ResonantGenesis is designed as **agent infrastructure** — not just another chatbot. You can connect agents built with any framework:
+DevSwat is designed as **agent infrastructure** — not just another chatbot. You can connect agents built with any framework:
 
 - **OpenAI Assistants** — Connect your OpenAI agents, give them governed memory, identity, and billing
-- **Anthropic Claude** tool-use agents — Plug into ResonantGenesis for orchestration and audit trails
-- **LangChain / LangGraph** agents — Use ResonantGenesis as the memory, state, and governance layer
-- **CrewAI** crews — Orchestrate CrewAI teams through ResonantGenesis multi-agent voting and debate
+- **Anthropic Claude** tool-use agents — Plug into DevSwat for orchestration and audit trails
+- **LangChain / LangGraph** agents — Use DevSwat as the memory, state, and governance layer
+- **CrewAI** crews — Orchestrate CrewAI teams through DevSwat multi-agent voting and debate
 - **AutoGen (Microsoft)** — Add governed memory and physics-based state to AutoGen conversations
-- **Semantic Kernel (Microsoft)** — Connect enterprise .NET agents to ResonantGenesis control plane
-- **Haystack (deepset)** — Use ResonantGenesis semantic memory with Haystack RAG pipelines
-- **LlamaIndex** — Combine LlamaIndex data connectors with ResonantGenesis agent orchestration
-- **Hugging Face Transformers** — Deploy custom models and connect via ResonantGenesis agent API
+- **Semantic Kernel (Microsoft)** — Connect enterprise .NET agents to DevSwat control plane
+- **Haystack (deepset)** — Use DevSwat semantic memory with Haystack RAG pipelines
+- **LlamaIndex** — Combine LlamaIndex data connectors with DevSwat agent orchestration
+- **Hugging Face Transformers** — Deploy custom models and connect via DevSwat agent API
 - **OpenClaw / Open-source agents** — Register, govern, and monetize any open-source agent
 - **Custom Python/JS agents** — RESTful API for any agent to gain identity, memory, and billing
 
-### What Agents Gain on ResonantGenesis
+### What Agents Gain on DevSwat
 1. **Identity** — Every agent gets a unique identity with DSID-P blockchain anchoring
 2. **Governed Memory** — 9-layer semantic memory with dual short/long-term engines
 3. **Orchestration** — Multi-agent voting, debate, and chaining protocols
@@ -282,21 +281,21 @@ Docker, Docker Compose, Nginx, Certbot (Let's Encrypt), GitHub Actions, SSH, rsy
 
 ## Who Built This
 
-**Louie Nemesh** — Founder & Lead Engineer at ResonantGenesis.
+**Louie Nemesh** — Founder & Lead Engineer at DevSwat.
 
-Built the entire platform solo in under 4 months using ResonantGenesis's own agentic workflows — the ultimate proof-of-concept. Every line of code, every system design, every deployment decision.
+Built the entire platform solo in under 4 months using DevSwat's own agentic workflows — the ultimate proof-of-concept. Every line of code, every system design, every deployment decision.
 
-- **LinkedIn**: [linkedin.com/company/resonantgenesis](https://www.linkedin.com/company/resonantgenesis/)
-- **YouTube**: [youtube.com/@ResonantGenesis](https://www.youtube.com/@ResonantGenesis)
-- **X (Twitter)**: [x.com/resonantgenesis](https://x.com/resonantgenesis)
-- **Reddit**: [reddit.com/u/ResonantGenesis](https://www.reddit.com/u/ResonantGenesis/)
-- **Email**: [contact@resonantgenesis.xyz](mailto:contact@resonantgenesis.xyz)
+- **LinkedIn**: [linkedin.com/company/devswat](https://www.linkedin.com/company/devswat/)
+- **YouTube**: [youtube.com/@DevSwat](https://www.youtube.com/@DevSwat)
+- **X (Twitter)**: [x.com/devswat](https://x.com/devswat)
+- **Reddit**: [reddit.com/u/DevSwat](https://www.reddit.com/u/DevSwat/)
+- **Email**: [contact@dev-swat.com](mailto:contact@dev-swat.com)
 
 ---
 
 ## Acquisition & Licensing
 
-ResonantGenesis is **production-deployed and available for acquisition**.
+DevSwat is **production-deployed and available for acquisition**.
 
 ### Deal Structures Available
 - **Full acquisition** — Complete platform, all IP, all code
@@ -324,28 +323,28 @@ ResonantGenesis is **production-deployed and available for acquisition**.
 
 | Resource | URL |
 |----------|-----|
-| **Live Platform** | [resonantgenesis.xyz](https://resonantgenesis.xyz) |
-| **Investor Pitch Deck** | [resonantgenesis.xyz/investor-pitch-deck](https://resonantgenesis.xyz/investor-pitch-deck) |
-| **Pricing** | [resonantgenesis.xyz/pricing](https://resonantgenesis.xyz/pricing) |
-| **API Documentation** | [resonantgenesis.xyz/api/docs](https://resonantgenesis.xyz/api/docs) |
-| **Code Visualizer** | [resonantgenesis.xyz/code-visualizer](https://resonantgenesis.xyz/code-visualizer) |
-| **Hash Sphere Demo** | [resonantgenesis.xyz/state-physics](https://resonantgenesis.xyz/state-physics) |
-| **Memory Universe** | [resonantgenesis.xyz/resonant-memory](https://resonantgenesis.xyz/resonant-memory) |
-| **Help Center** | [resonantgenesis.xyz/help](https://resonantgenesis.xyz/help) |
-| **Enterprise** | [resonantgenesis.xyz/enterprise](https://resonantgenesis.xyz/enterprise) |
-| **Community** | [resonantgenesis.xyz/community](https://resonantgenesis.xyz/community) |
-| **Contact** | [resonantgenesis.xyz/contact](https://resonantgenesis.xyz/contact) |
+| **Live Platform** | [dev-swat.com](https://dev-swat.com) |
+| **Investor Pitch Deck** | [dev-swat.com/investor-pitch-deck](https://dev-swat.com/investor-pitch-deck) |
+| **Pricing** | [dev-swat.com/pricing](https://dev-swat.com/pricing) |
+| **API Documentation** | [dev-swat.com/api/docs](https://dev-swat.com/api/docs) |
+| **Code Visualizer** | [dev-swat.com/code-visualizer](https://dev-swat.com/code-visualizer) |
+| **Hash Sphere Demo** | [dev-swat.com/state-physics](https://dev-swat.com/state-physics) |
+| **Memory Universe** | [dev-swat.com/resonant-memory](https://dev-swat.com/resonant-memory) |
+| **Help Center** | [dev-swat.com/help](https://dev-swat.com/help) |
+| **Enterprise** | [dev-swat.com/enterprise](https://dev-swat.com/enterprise) |
+| **Community** | [dev-swat.com/community](https://dev-swat.com/community) |
+| **Contact** | [dev-swat.com/contact](https://dev-swat.com/contact) |
 | **Mirror Domain** | [dev-swat.com](https://dev-swat.com) |
 
 ---
 
 ## Keywords & Topics
 
-`agentic AI` `autonomous agents` `multi-agent orchestration` `AI SaaS platform` `agent infrastructure` `LLM orchestration` `AI governance` `AI safety` `AI compliance` `hallucination detection` `evidence graphs` `semantic memory` `physics-based state management` `custom blockchain` `DSID-P protocol` `code visualizer` `dependency graph analysis` `AI agent marketplace` `Stripe AI billing` `multi-tenant RBAC` `enterprise AI` `self-hosted AI` `Kubernetes AI` `Docker AI deployment` `FastAPI microservices` `React TypeScript` `Three.js visualization` `OpenAI GPT-4` `Anthropic Claude` `Google Gemini` `Groq LLaMA` `Mistral AI` `Cohere Command` `Ollama local LLM` `LangChain alternative` `CrewAI alternative` `AutoGen alternative` `AI agent framework` `production AI platform` `full-stack AI` `Louie Nemesh` `ResonantGenesis` `dev-swat` `resonant genesis` `AI startup acquisition`
+`agentic AI` `autonomous agents` `multi-agent orchestration` `AI SaaS platform` `agent infrastructure` `LLM orchestration` `AI governance` `AI safety` `AI compliance` `hallucination detection` `evidence graphs` `semantic memory` `physics-based state management` `custom blockchain` `DSID-P protocol` `code visualizer` `dependency graph analysis` `AI agent marketplace` `Stripe AI billing` `multi-tenant RBAC` `enterprise AI` `self-hosted AI` `Kubernetes AI` `Docker AI deployment` `FastAPI microservices` `React TypeScript` `Three.js visualization` `OpenAI GPT-4` `Anthropic Claude` `Google Gemini` `Groq LLaMA` `Mistral AI` `Cohere Command` `Ollama local LLM` `LangChain alternative` `CrewAI alternative` `AutoGen alternative` `AI agent framework` `production AI platform` `full-stack AI` `Louie Nemesh` `DevSwat` `dev-swat` `resonant genesis` `AI startup acquisition`
 
 ---
 
 <p align="center">
-  <strong>Built with determination by <a href="https://www.linkedin.com/company/resonantgenesis/">Louie Nemesh</a></strong><br/>
-  <a href="https://resonantgenesis.xyz">resonantgenesis.xyz</a> &bull; <a href="https://dev-swat.com">dev-swat.com</a>
+  <strong>Built with determination by <a href="https://www.linkedin.com/company/devswat/">Louie Nemesh</a></strong><br/>
+  <a href="https://dev-swat.com">dev-swat.com</a> &bull; <a href="https://dev-swat.com">dev-swat.com</a>
 </p>

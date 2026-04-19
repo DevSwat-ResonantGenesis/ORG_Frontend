@@ -111,7 +111,7 @@ export const SIGNUP_STEPS_LEGACY: SignUpStep[] = [
 ];
 
 /**
- * ResonantGenesis Pricing Tiers - Source of Truth
+ * DevSwat Pricing Tiers - Source of Truth
  * All plans include: Hash Sphere, Resonant Chat, Agent Console, IDE & Compute, Workflows, RARA Governance, Blockchain Audit, Code Visualizer, Marketplace
  * Usage is metered via Resonant Credits (1 credit ≈ $0.001)
  */

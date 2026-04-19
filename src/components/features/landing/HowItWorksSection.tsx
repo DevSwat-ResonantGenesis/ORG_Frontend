@@ -13,7 +13,7 @@ const steps: HowItWorksStep[] = [
   {
     number: 1,
     title: 'Your AI produces an output',
-    description: 'LLMs, agents, classifiers, or automation systems send predictions to ResonantGenesis via API, batch upload, or UI.',
+    description: 'LLMs, agents, classifiers, or automation systems send predictions to DevSwat via API, batch upload, or UI.',
     details: [],
     icon: ''
   },

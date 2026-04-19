@@ -99,7 +99,7 @@ const StatePhysicsAPI: React.FC = () => {
       method: 'POST',
       path: '/api/generate',
       description: 'Create a new universe with specified number of nodes',
-      example: `curl -X POST "https://api.resonantgenesis.com/state-physics/generate" \\
+      example: `curl -X POST "https://api.dev-swat.com/state-physics/generate" \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{"num_nodes": 100, "num_edges": 200}'`
@@ -108,14 +108,14 @@ const StatePhysicsAPI: React.FC = () => {
       method: 'GET',
       path: '/api/state',
       description: 'Get current state of the universe',
-      example: `curl "https://api.resonantgenesis.com/state-physics/state" \\
+      example: `curl "https://api.dev-swat.com/state-physics/state" \\
   -H "Authorization: Bearer YOUR_API_KEY"`
     },
     {
       method: 'POST',
       path: '/api/simulate',
       description: 'Run simulation steps on the universe',
-      example: `curl -X POST "https://api.resonantgenesis.com/state-physics/simulate" \\
+      example: `curl -X POST "https://api.dev-swat.com/state-physics/simulate" \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{"steps": 100}'`
@@ -124,14 +124,14 @@ const StatePhysicsAPI: React.FC = () => {
       method: 'GET',
       path: '/api/invariants',
       description: 'Check all conservation laws and get violations',
-      example: `curl "https://api.resonantgenesis.com/state-physics/invariants" \\
+      example: `curl "https://api.dev-swat.com/state-physics/invariants" \\
   -H "Authorization: Bearer YOUR_API_KEY"`
     },
     {
       method: 'POST',
       path: '/api/agents/spawn',
       description: 'Spawn autonomous agents in the universe',
-      example: `curl -X POST "https://api.resonantgenesis.com/state-physics/agents/spawn" \\
+      example: `curl -X POST "https://api.dev-swat.com/state-physics/agents/spawn" \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{"count": 5, "type": "explorer"}'`
@@ -164,7 +164,7 @@ const StatePhysicsAPI: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a0a1a] via-[#1a1a2e] to-[#0a0a1a]">
       <Helmet>
-        <title>Invariants SIM - Pricing & Documentation | ResonantGenesis – Autonomous Agent Infrastructure</title>
+        <title>Invariants SIM - Pricing & Documentation | DevSwat – Autonomous Agent Infrastructure</title>
         <meta name="description" content="Economic constraint modeling for autonomous agents. Use Invariants SIM to simulate and enforce invariant-based constraints across state transitions for safer, more reliable autonomous action." />
       </Helmet>
 
@@ -287,7 +287,7 @@ const StatePhysicsAPI: React.FC = () => {
                 <button
                   onClick={() => {
                     if (plan.id === 'enterprise') {
-                      window.open('mailto:enterprise@resonantgenesis.com', '_blank');
+                      window.open('mailto:enterprise@dev-swat.com', '_blank');
                     } else {
                       navigate('/api-keys?service=state-physics&plan=' + plan.id);
                     }

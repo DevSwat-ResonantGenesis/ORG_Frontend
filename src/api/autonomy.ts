@@ -2,7 +2,7 @@
  * FULL AUTONOMY API
  * =================
  * 
- * Frontend API client for Resonant Genesis Full Autonomy System.
+ * Frontend API client for DevSwat Full Autonomy System.
  * Connects to the autonomous agent backend endpoints.
  */
 
@@ -181,7 +181,7 @@ export const getAutonomyStats = async (): Promise<AutonomyStats> => {
 
 /**
  * Quick start: Start full autonomy with one agent.
- * Easiest way to start Resonant Genesis in full autonomous mode.
+ * Easiest way to start DevSwat in full autonomous mode.
  */
 export const quickStartAutonomy = async (
   agentName: string = 'ResonantAgent',

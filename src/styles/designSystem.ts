@@ -1,5 +1,5 @@
 /**
- * ResonantGenesis Design System
+ * DevSwat Design System
  * Unified design tokens for consistent UI across the platform
  */
 

@@ -80,14 +80,14 @@ const APIDocsPage: React.FC = () => {
   ];
 
   const codeExamples = {
-    'hash-sphere': `curl -X POST "https://api.resonantgenesis.com/hash-sphere/memory/write" \\
+    'hash-sphere': `curl -X POST "https://api.dev-swat.com/hash-sphere/memory/write" \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
     "content": "User prefers dark mode and concise responses",
     "metadata": {"source": "preferences", "priority": "high"}
   }'`,
-    'state-physics': `curl -X POST "https://api.resonantgenesis.com/state-physics/simulate" \\
+    'state-physics': `curl -X POST "https://api.dev-swat.com/state-physics/simulate" \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -106,7 +106,7 @@ const APIDocsPage: React.FC = () => {
             <Code size={16} />
             <span>Developer APIs</span>
           </div>
-          <h1>ResonantGenesis API Platform</h1>
+          <h1>DevSwat API Platform</h1>
           <p className={styles.heroSubtitle}>
             Build with physics-governed AI infrastructure. Memory that remembers, 
             state that evolves, invariants that protect.
@@ -239,7 +239,7 @@ const APIDocsPage: React.FC = () => {
 
         {/* Why Choose Us */}
         <section className={styles.whySection}>
-          <h2>Why ResonantGenesis APIs?</h2>
+          <h2>Why DevSwat APIs?</h2>
           <div className={styles.whyGrid}>
             <div className={styles.whyCard}>
               <Shield size={24} />

@@ -174,7 +174,7 @@ export default function Web3WalletConnect({ onWalletLinked, compact }: Props) {
     setLinking(true); setMsg(null);
     try {
       const ts = Date.now();
-      const m = "Link wallet " + address + " to ResonantGenesis. Timestamp: " + ts;
+      const m = "Link wallet " + address + " to DevSwat. Timestamp: " + ts;
       const sig = await window.ethereum.request({ method: "personal_sign", params: [m, address] });
       await fastapiClient.post("/crypto/funding-sources", {
         source_type: "crypto_wallet", crypto_address: address,
@@ -236,7 +236,7 @@ export default function Web3WalletConnect({ onWalletLinked, compact }: Props) {
           <div style={S.infoCard}><div style={S.label}>Network</div><div style={{ ...S.value, fontFamily: "inherit" }}>{chain ? <span style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e" }} />{chain.name}</span> : <span style={{ color: "#f59e0b" }}>Unknown ({chainId})</span>}</div></div>
         </div>
         {!linked && <button type="button" onClick={doLink} disabled={linking} style={{ ...S.linkBtn, opacity: linking ? 0.6 : 1 }}>{linking ? "Signing & Linking..." : "Link Wallet to Account"}</button>}
-        {linked && <div style={alertStyle("success")}><strong>Wallet linked!</strong> This address is now associated with your ResonantGenesis account.</div>}
+        {linked && <div style={alertStyle("success")}><strong>Wallet linked!</strong> This address is now associated with your DevSwat account.</div>}
       </>)}
     </div>
   );

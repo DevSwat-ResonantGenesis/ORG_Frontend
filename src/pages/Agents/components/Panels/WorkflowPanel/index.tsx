@@ -961,7 +961,7 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
           to: '{{input.recipient_email}}',
           subject: 'AI & IT Events Report - {{steps.format_report.output.date}}',
           body: '{{steps.format_report.output}}',
-          from_name: 'ResonantGenesis Workflows',
+          from_name: 'DevSwat Workflows',
           provider: 'platform_smtp',
           attach_output: 'pdf',
         }},

@@ -12,7 +12,7 @@ export const SDKAPISection: React.FC = () => {
     {
       name: 'Python SDK',
       icon: '🐍',
-      description: 'Comprehensive Python library for integrating ResonantGenesis into your ML pipelines.',
+      description: 'Comprehensive Python library for integrating DevSwat into your ML pipelines.',
       features: [
         'Simple API for evidence graph generation',
         'Policy validation and compliance checking',
@@ -20,9 +20,9 @@ export const SDKAPISection: React.FC = () => {
         'Full type hints and documentation',
         'Async/await support'
       ],
-      codeExample: `from resonantgraph import ResonantGenesis
+      codeExample: `from devswat import DevSwatClient
 
-client = ResonantGenesis(api_key="your-key")
+client = DevSwatClient(api_key="your-key")
 result = client.validate(
     model_output="Your LLM output",
     policy_pack="compliance-v1"
@@ -41,9 +41,9 @@ print(result.compliance_score)`,
         'Built-in error handling',
         'React hooks included'
       ],
-      codeExample: `import { ResonantGenesis } from '@resonantgraph/sdk';
+      codeExample: `import { DevSwatClient } from '@devswat/sdk';
 
-const client = new ResonantGenesis({
+const client = new DevSwatClient({
   apiKey: 'your-key'
 });
 
@@ -84,7 +84,7 @@ console.log(result.complianceScore);`,
           <div className="sdk-api-header">
             <h2 className="section-title-large">SDK & API</h2>
             <p className="section-subtitle">
-              Integrate ResonantGenesis into your stack with our comprehensive SDKs and REST API.
+              Integrate DevSwat into your stack with our comprehensive SDKs and REST API.
             </p>
           </div>
 

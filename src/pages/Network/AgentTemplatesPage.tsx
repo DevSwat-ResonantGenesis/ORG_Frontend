@@ -46,7 +46,7 @@ const TEMPLATES: AgentTemplate[] = [
     downloads: 1250,
     rating: 4.8,
     manifest: {
-      "$schema": "https://resonantgenesis.io/schemas/agent-manifest-v1.json",
+      "$schema": "https://dev-swat.com/schemas/agent-manifest-v1.json",
       "version": "1.0.0",
       "agent": {
         "name": "My Agent",
@@ -113,7 +113,7 @@ def handle(input_data: dict, context) -> dict:
     downloads: 890,
     rating: 4.6,
     manifest: {
-      "$schema": "https://resonantgenesis.io/schemas/agent-manifest-v1.json",
+      "$schema": "https://dev-swat.com/schemas/agent-manifest-v1.json",
       "version": "1.0.0",
       "agent": {
         "name": "Data Processor",
@@ -193,7 +193,7 @@ def process_data(data: Any, operation: str) -> Any:
     downloads: 720,
     rating: 4.5,
     manifest: {
-      "$schema": "https://resonantgenesis.io/schemas/agent-manifest-v1.json",
+      "$schema": "https://dev-swat.com/schemas/agent-manifest-v1.json",
       "version": "1.0.0",
       "agent": {
         "name": "API Connector",
@@ -274,7 +274,7 @@ def make_api_call(
     downloads: 1100,
     rating: 4.7,
     manifest: {
-      "$schema": "https://resonantgenesis.io/schemas/agent-manifest-v1.json",
+      "$schema": "https://dev-swat.com/schemas/agent-manifest-v1.json",
       "version": "1.0.0",
       "agent": {
         "name": "Text Analyzer",
@@ -362,7 +362,7 @@ def analyze_text(text: str) -> Dict:
     downloads: 450,
     rating: 4.9,
     manifest: {
-      "$schema": "https://resonantgenesis.io/schemas/agent-manifest-v1.json",
+      "$schema": "https://dev-swat.com/schemas/agent-manifest-v1.json",
       "version": "1.0.0",
       "agent": {
         "name": "Secure Validator",
@@ -479,7 +479,7 @@ def create_audit_entry(input_data: dict, context) -> dict:
     downloads: 680,
     rating: 4.8,
     manifest: {
-      "$schema": "https://resonantgenesis.io/schemas/agent-manifest-v1.json",
+      "$schema": "https://dev-swat.com/schemas/agent-manifest-v1.json",
       "version": "1.0.0",
       "agent": {
         "name": "AI Assistant",
@@ -584,7 +584,7 @@ def generate_response(message: str, history: List[Dict]) -> str:
     downloads: 1450,
     rating: 4.9,
     manifest: {
-      "$schema": "https://resonantgenesis.io/schemas/agent-manifest-v1.json",
+      "$schema": "https://dev-swat.com/schemas/agent-manifest-v1.json",
       "version": "1.0.0",
       "agent": {
         "name": "Research Assistant",
@@ -678,7 +678,7 @@ def synthesize_findings(findings: Dict[str, Any]) -> str:
     downloads: 2100,
     rating: 4.8,
     manifest: {
-      "$schema": "https://resonantgenesis.io/schemas/agent-manifest-v1.json",
+      "$schema": "https://dev-swat.com/schemas/agent-manifest-v1.json",
       "version": "1.0.0",
       "agent": {
         "name": "Code Helper",
@@ -837,7 +837,7 @@ def explain_code(code: str, language: str) -> Dict[str, Any]:
     downloads: 980,
     rating: 4.7,
     manifest: {
-      "$schema": "https://resonantgenesis.io/schemas/agent-manifest-v1.json",
+      "$schema": "https://dev-swat.com/schemas/agent-manifest-v1.json",
       "version": "1.0.0",
       "agent": {
         "name": "Data Analyst",

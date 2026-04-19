@@ -16,7 +16,7 @@ export const UseCasesSection = () => {
                     <p className={styles.sectionBadge}>What You Can Do</p>
                     <h2 className={titleStyles.sectionTitle}>Platform Capabilities</h2>
                     <p className={styles.sectionDescription}>
-                        Real capabilities available today in the ResonantGenesis platform.
+                        Real capabilities available today in the DevSwat platform.
                     </p>
                 </div>
                 

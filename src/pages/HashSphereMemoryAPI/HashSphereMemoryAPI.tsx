@@ -123,7 +123,7 @@ const HashSphereMemoryAPI: React.FC = () => {
       method: 'POST',
       path: '/api/memory/write',
       description: 'Write a memory entry with semantic embedding',
-      example: `curl -X POST "https://api.resonantgenesis.com/hash-sphere/memory/write" \\
+      example: `curl -X POST "https://api.dev-swat.com/hash-sphere/memory/write" \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{"content": "User prefers dark mode", "metadata": {"source": "settings"}}'`
@@ -132,14 +132,14 @@ const HashSphereMemoryAPI: React.FC = () => {
       method: 'GET',
       path: '/api/memory/query',
       description: 'Query memories by semantic similarity',
-      example: `curl "https://api.resonantgenesis.com/hash-sphere/memory/query?q=user+preferences&limit=10" \\
+      example: `curl "https://api.dev-swat.com/hash-sphere/memory/query?q=user+preferences&limit=10" \\
   -H "Authorization: Bearer YOUR_API_KEY"`
     },
     {
       method: 'POST',
       path: '/api/memory/evolve',
       description: 'Evolve memory state with invariant checks',
-      example: `curl -X POST "https://api.resonantgenesis.com/hash-sphere/memory/evolve" \\
+      example: `curl -X POST "https://api.dev-swat.com/hash-sphere/memory/evolve" \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{"steps": 1, "validate_invariants": true}'`
@@ -148,14 +148,14 @@ const HashSphereMemoryAPI: React.FC = () => {
       method: 'GET',
       path: '/api/invariants/check',
       description: 'Check all invariants on current memory state',
-      example: `curl "https://api.resonantgenesis.com/hash-sphere/invariants/check" \\
+      example: `curl "https://api.dev-swat.com/hash-sphere/invariants/check" \\
   -H "Authorization: Bearer YOUR_API_KEY"`
     },
     {
       method: 'GET',
       path: '/api/memory/replay',
       description: 'Replay memory state from a specific timestamp',
-      example: `curl "https://api.resonantgenesis.com/hash-sphere/memory/replay?from=2024-01-01T00:00:00Z" \\
+      example: `curl "https://api.dev-swat.com/hash-sphere/memory/replay?from=2024-01-01T00:00:00Z" \\
   -H "Authorization: Bearer YOUR_API_KEY"`
     }
   ];
@@ -163,7 +163,7 @@ const HashSphereMemoryAPI: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black text-white">
       <Helmet>
-        <title>Synthetic Neural Memory - API | ResonantGenesis – Autonomous Agent Infrastructure</title>
+        <title>Synthetic Neural Memory - API | DevSwat – Autonomous Agent Infrastructure</title>
         <meta name="description" content="A Physics-Informed, 9-Layer Cognitive Infrastructure for Autonomous Agents. Build synthetic neural memory with long-term persistence, structured retrieval, and governance-ready storage." />
       </Helmet>
 
@@ -328,7 +328,7 @@ const HashSphereMemoryAPI: React.FC = () => {
                 <button
                   onClick={() => {
                     if (plan.id === 'enterprise') {
-                      window.open('mailto:enterprise@resonantgenesis.com', '_blank');
+                      window.open('mailto:enterprise@dev-swat.com', '_blank');
                     } else {
                       navigate('/api-keys?service=hash-sphere-memory&plan=' + plan.id);
                     }

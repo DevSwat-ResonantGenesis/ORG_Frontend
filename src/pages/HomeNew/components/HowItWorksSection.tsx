@@ -103,7 +103,7 @@ export const HowItWorksSection: React.FC = () => {
                     <p className={styles.sectionBadge}>How the System Operates</p>
                     <h2 className={titleStyles.sectionTitle}>From Request to Governed Execution</h2>
                     <p className={styles.sectionDescription}>
-                        Resonant Genesis is not a chat interface and not a traditional blockchain.
+                        DevSwat is not a chat interface and not a traditional blockchain.
                         It is a governed execution system for AI agents.
                     </p>
                 </div>

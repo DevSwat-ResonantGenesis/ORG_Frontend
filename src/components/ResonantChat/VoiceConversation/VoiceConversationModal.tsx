@@ -418,7 +418,7 @@ const VoiceConversationModal: React.FC<VoiceConversationModalProps> = ({ onClose
           color: isLight ? '#64748b' : '#64748b',
           margin: '0.4rem 0 0 0', fontSize: '0.85rem',
         }}>
-          Real-time voice · Powered by Resonant Genesis
+          Real-time voice · Powered by DevSwat
         </p>
       </div>
 

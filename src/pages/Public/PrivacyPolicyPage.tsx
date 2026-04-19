@@ -109,7 +109,7 @@ const PrivacyPolicyPage: React.FC = () => {
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>1. Introduction</h2>
           <p style={styles.text}>
-            ResonantGenesis ("we," "our," or "us") operates the dev-swat.com and resonantgenesis.xyz platforms.
+            DevSwat ("we," "our," or "us") operates the dev-swat.com and dev-swat.com platforms.
             This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you
             use our platform, including our AI agent creation tools, code analysis services, and integrated
             third-party connections.

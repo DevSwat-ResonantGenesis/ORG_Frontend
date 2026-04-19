@@ -243,7 +243,7 @@ const MLTraining: React.FC = () => {
     <div className={styles.container}>
       <header className={styles.header}>
         <h1 className={styles.title}>🔒 ML Training Console</h1>
-        <p className={styles.subtitle}>Owner-Only Access • ResonantGenesis V8 Training System</p>
+        <p className={styles.subtitle}>Owner-Only Access • DevSwat V8 Training System</p>
       </header>
 
       {actionMessage && (

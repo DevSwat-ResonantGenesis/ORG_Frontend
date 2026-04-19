@@ -124,7 +124,7 @@ export const AccessRestriction: React.FC<AccessRestrictionProps> = ({
         }}>
           {isGuest ? (
             <>
-              <strong>{feature}</strong> requires a ResonantGenesis account.
+              <strong>{feature}</strong> requires a DevSwat account.
               Sign in or create a free account to continue.
             </>
           ) : (

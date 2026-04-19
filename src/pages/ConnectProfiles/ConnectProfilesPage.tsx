@@ -45,7 +45,7 @@ const INTEGRATIONS: Integration[] = [
   { id: 'google-drive', name: 'Google Drive', description: 'Save generated projects and docs directly to Google Drive.', emoji: '📁', icon: '/images/connect-icons/google-drive.png', logoColor: '#34A853', category: 'Productivity', authType: 'oauth', status: 'available' },
   { id: 'notion', name: 'Notion', description: 'Auto-create project docs and changelogs in Notion.', emoji: '📝', icon: '/images/connect-icons/notion.png', logoColor: '#ffffff', category: 'Productivity', authType: 'pat', status: 'available', keyLabel: 'Integration Token', keyPlaceholder: 'secret_...', helpUrl: 'https://www.notion.so/my-integrations', helpText: 'Create an internal integration' },
   { id: 'slack', name: 'Slack', description: 'Get build and deployment notifications in Slack channels.', emoji: '💬', icon: '/images/connect-icons/slack.png', logoColor: '#4A154B', category: 'Productivity', authType: 'pat', status: 'available', keyLabel: 'Bot OAuth Token', keyPlaceholder: 'xoxb-...', helpUrl: 'https://api.slack.com/apps', helpText: 'Create a Slack app and get Bot User OAuth Token' },
-  { id: 'discord', name: 'Discord', description: 'Connect a ResonantGenesis AI agent to your Discord server.', emoji: '🎮', icon: '/images/connect-icons/discord.png', logoColor: '#5865F2', category: 'Productivity', authType: 'oauth', status: 'available' },
+  { id: 'discord', name: 'Discord', description: 'Connect a DevSwat AI agent to your Discord server.', emoji: '🎮', icon: '/images/connect-icons/discord.png', logoColor: '#5865F2', category: 'Productivity', authType: 'oauth', status: 'available' },
   { id: 'figma', name: 'Figma', description: 'Import Figma designs to auto-generate UI code and components.', emoji: '🎨', icon: '/images/connect-icons/figma.png', logoColor: '#1ABCFE', category: 'Design', authType: 'pat', status: 'available', keyLabel: 'Personal Access Token', keyPlaceholder: 'figd_...', helpUrl: 'https://www.figma.com/settings', helpText: 'Generate from Figma account settings' },
   { id: 'supabase', name: 'Supabase', description: 'Auto-provision databases, auth and storage for generated backends.', emoji: '⚡', icon: '/images/connect-icons/supabase.png', logoColor: '#3ECF8E', category: 'Databases', authType: 'pat', status: 'available', keyLabel: 'Access Token', keyPlaceholder: 'sbp_...', helpUrl: 'https://supabase.com/dashboard/account/tokens', helpText: 'Generate from Supabase account settings' },
   { id: 'mongodb', name: 'MongoDB Atlas', description: 'Auto-create Atlas databases for generated projects.', emoji: '🍃', icon: '/images/connect-icons/mongodb.png', logoColor: '#13AA52', category: 'Databases', authType: 'apikey', status: 'available', keyLabel: 'API Key', keyPlaceholder: 'xxxxxxxx-xxxx-...', helpUrl: 'https://cloud.mongodb.com/v2#/org/settings/apiKeys', helpText: 'Create from Atlas organization settings' },
@@ -457,7 +457,7 @@ const ConnectProfilesPage: React.FC = () => {
                 <>
                   <div style={{ padding: 'var(--space-3)', background: 'rgba(88,101,242,0.08)', borderRadius: '8px', marginBottom: 'var(--space-3)', fontSize: '13px', lineHeight: '1.6' }}>
                     <strong>How it works:</strong><br/>
-                    1. Click below to add the ResonantGenesis bot to your server<br/>
+                    1. Click below to add the DevSwat bot to your server<br/>
                     2. In your Discord server, run <code style={{ background: 'rgba(255,255,255,0.1)', padding: '1px 4px', borderRadius: '3px' }}>/connect &lt;agent_id&gt;</code><br/>
                     3. Mention the bot to chat with your agent!
                   </div>
@@ -767,7 +767,7 @@ setInterval(async () => {
               {modal.id === 'local-llm' && (
                 <>
                   <div style={{ padding: 10, background: 'rgba(34,211,238,0.08)', borderRadius: 8, fontSize: 12, lineHeight: 1.6, marginBottom: 8 }}>
-                    <strong>How it works:</strong> Your browser opens a secure tunnel to ResonantGenesis. When Resonant Chat needs your local model, the request flows: <em>Server → Tunnel → Your Browser → localhost Ollama → back</em>. No SSH tunnels needed. Keep this tab open while using local models.
+                    <strong>How it works:</strong> Your browser opens a secure tunnel to DevSwat. When Resonant Chat needs your local model, the request flows: <em>Server → Tunnel → Your Browser → localhost Ollama → back</em>. No SSH tunnels needed. Keep this tab open while using local models.
                   </div>
                   <div className={styles.formGroup}>
                     <label className={styles.formLabel}>🔑 {modal.keyLabel || 'Local Endpoint URL'}</label>

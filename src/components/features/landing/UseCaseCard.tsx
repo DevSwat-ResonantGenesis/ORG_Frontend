@@ -133,7 +133,7 @@ export const UseCaseCard: React.FC<UseCaseCardProps> = ({
       </div>
 
       <div className="use-case-section">
-        <div className="section-label">What ResonantGenesis Detects</div>
+        <div className="section-label">What DevSwat Detects</div>
         <div className="detected-issues detected-issues-2col">
           {detectedIssues.map((issue, idx) => (
             <div key={idx} className="issue-item">

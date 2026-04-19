@@ -1,4 +1,4 @@
-// Chart theme using ResonantGenesis design system colors
+// Chart theme using DevSwat design system colors
 // Blue accent (#3B82F6) - OpenAI Hybrid
 
 const chartTheme = {

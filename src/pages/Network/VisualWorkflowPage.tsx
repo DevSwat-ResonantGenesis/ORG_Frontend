@@ -126,7 +126,7 @@ const CONFIG_FIELDS: Record<WorkflowStepType, ConfigField[]> = {
     { key: 'to', label: 'To (email address)', type: 'text' },
     { key: 'subject', label: 'Subject', type: 'text' },
     { key: 'body', label: 'Email Body (HTML or text)', type: 'textarea' },
-    { key: 'from_name', label: 'From Name', type: 'text', defaultValue: 'ResonantGenesis Workflows' },
+    { key: 'from_name', label: 'From Name', type: 'text', defaultValue: 'DevSwat Workflows' },
     { key: 'provider', label: 'Email Provider', type: 'select', options: ['platform_smtp', 'sendgrid', 'ses', 'custom_smtp'], defaultValue: 'platform_smtp' },
     { key: 'attach_output', label: 'Attach Previous Output As', type: 'select', options: ['none', 'pdf', 'json', 'csv'], defaultValue: 'none' },
   ],

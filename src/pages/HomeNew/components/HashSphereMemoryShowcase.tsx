@@ -73,7 +73,7 @@ export const HashSphereMemoryShowcase = () => {
                                 <span className={styles.hashSphereComparisonNote}>Session-only context</span>
                             </div>
                             <div className={`${styles.hashSphereComparisonItem} ${styles.hashSphereComparisonItemHighlight}`}>
-                                <span className={styles.hashSphereComparisonName}>ResonantGenesis</span>
+                                <span className={styles.hashSphereComparisonName}>DevSwat</span>
                                 <span className={styles.hashSphereComparisonValue}>Hash Sphere Memory</span>
                                 <span className={styles.hashSphereComparisonNote}>AES-256-GCM encrypted</span>
                             </div>

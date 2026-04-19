@@ -44,7 +44,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
 
 const faqs: FAQ[] = [
   {
-    question: 'How do I get started with ResonantGenesis?',
+    question: 'How do I get started with DevSwat?',
     answer: 'Create an account, complete onboarding, and start with AGI Neural Hub. Add API keys if you want to use your own providers, and configure your agent stack (memory, invariants, and analysis) as needed.'
   },
   {
@@ -64,12 +64,12 @@ const faqs: FAQ[] = [
     answer: 'Start with AGI Neural Hub for autonomous action, add Synthetic Neural Memory for persistence, use Invariants SIM for constraint modeling, and use SAST & Dependency Graph Analysis for full-stack observability and remediation.'
   },
   {
-    question: 'Is my data secure on ResonantGenesis?',
+    question: 'Is my data secure on DevSwat?',
     answer: 'Yes. We use secure session handling, tenant isolation, and encryption for sensitive workflows. Use least-privilege roles, rotate API keys, and follow best practices for production deployments.'
   },
   {
     question: 'How do I contact support?',
-    answer: 'Use the Contact Support button in the sidebar, or email support@resonantgenesis.xyz. Enterprise customers have access to dedicated support channels.'
+    answer: 'Use the Contact Support button in the sidebar, or email support@dev-swat.com. Enterprise customers have access to dedicated support channels.'
   }
 ];
 
@@ -86,7 +86,7 @@ const articles: Article[] = [
   // Getting Started
   {
     id: '1',
-    title: 'What Is ResonantGenesis?',
+    title: 'What Is DevSwat?',
     description: 'Autonomous agent infrastructure for action, memory, invariants simulation, and full-stack observability.',
     category: 'Getting Started',
     path: '/help/getting-started/what-is-resonantgraph',
@@ -235,7 +235,7 @@ const articles: Article[] = [
   {
     id: '23',
     title: 'API Reference',
-    description: 'Developer reference for integrating with ResonantGenesis services and routes.',
+    description: 'Developer reference for integrating with DevSwat services and routes.',
     category: 'Developers',
     path: '/help/developers/api-reference',
     tags: ['api', 'reference', 'documentation']
@@ -508,7 +508,7 @@ const HelpCenterPage: React.FC = () => {
           <div className={styles.heroIntro}>
             <h1 className={styles.heroTitle}>Help Center</h1>
             <p className={styles.heroSubtitle}>
-              Tutorials and documentation for ResonantGenesis — aligned to the current stack.
+              Tutorials and documentation for DevSwat — aligned to the current stack.
             </p>
           </div>
 
@@ -680,7 +680,7 @@ const HelpCenterPage: React.FC = () => {
               <h2 className={styles.sectionTitle}>Quick Links</h2>
               <div className={styles.showcaseList}>
                 <div className={styles.showcaseItem}>
-                  <button className={styles.showcaseHeader} onClick={() => window.open('https://github.com/louienemesh/ResonantGenesis', '_blank')}>
+                  <button className={styles.showcaseHeader} onClick={() => window.open('https://github.com/louienemesh/DevSwat', '_blank')}>
                     <div className={styles.showcaseHeaderText}>
                       <span className={styles.showcaseTitle}>GitHub Repository</span>
                       <span className={styles.showcaseSubtitle}>Explore our open-source codebase and join the community.</span>
@@ -729,27 +729,27 @@ const HelpCenterPage: React.FC = () => {
             {/* Social Links */}
             <section className={styles.faqSection} style={{ textAlign: 'center', paddingBottom: '2rem' }}>
               <h2>Connect With Us</h2>
-              <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem', fontSize: '0.9rem' }}>Follow ResonantGenesis for updates, tutorials, and community discussions.</p>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem', fontSize: '0.9rem' }}>Follow DevSwat for updates, tutorials, and community discussions.</p>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
-                <a href="https://www.linkedin.com/company/resonantgenesis/" target="_blank" rel="noopener noreferrer" className={styles.articleCard} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', textDecoration: 'none', minWidth: 'auto', width: 'auto' }}>
+                <a href="https://www.linkedin.com/company/devswat/" target="_blank" rel="noopener noreferrer" className={styles.articleCard} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', textDecoration: 'none', minWidth: 'auto', width: 'auto' }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                   <span>LinkedIn</span>
                 </a>
-                <a href="https://www.youtube.com/@ResonantGenesis" target="_blank" rel="noopener noreferrer" className={styles.articleCard} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', textDecoration: 'none', minWidth: 'auto', width: 'auto' }}>
+                <a href="https://www.youtube.com/@DevSwat" target="_blank" rel="noopener noreferrer" className={styles.articleCard} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', textDecoration: 'none', minWidth: 'auto', width: 'auto' }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                   <span>YouTube</span>
                 </a>
-                <a href="https://x.com/resonantgenesis" target="_blank" rel="noopener noreferrer" className={styles.articleCard} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', textDecoration: 'none', minWidth: 'auto', width: 'auto' }}>
+                <a href="https://x.com/devswat" target="_blank" rel="noopener noreferrer" className={styles.articleCard} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', textDecoration: 'none', minWidth: 'auto', width: 'auto' }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                   <span>X (Twitter)</span>
                 </a>
-                <a href="https://www.reddit.com/u/ResonantGenesis/" target="_blank" rel="noopener noreferrer" className={styles.articleCard} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', textDecoration: 'none', minWidth: 'auto', width: 'auto' }}>
+                <a href="https://www.reddit.com/u/DevSwat/" target="_blank" rel="noopener noreferrer" className={styles.articleCard} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', textDecoration: 'none', minWidth: 'auto', width: 'auto' }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
                   <span>Reddit</span>
                 </a>
-                <a href="mailto:contact@resonantgenesis.xyz" className={styles.articleCard} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', textDecoration: 'none', minWidth: 'auto', width: 'auto' }}>
+                <a href="mailto:contact@dev-swat.com" className={styles.articleCard} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', textDecoration: 'none', minWidth: 'auto', width: 'auto' }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                  <span>contact@resonantgenesis.xyz</span>
+                  <span>contact@dev-swat.com</span>
                 </a>
               </div>
             </section>

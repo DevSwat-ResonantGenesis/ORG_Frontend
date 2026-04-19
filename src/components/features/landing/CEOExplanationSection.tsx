@@ -13,7 +13,7 @@ const steps: ExplanationStep[] = [
   {
     number: 1,
     title: 'Your AI systems send outputs automatically',
-    description: 'LLMs, agents, classifiers, or automation systems send their outputs to ResonantGenesis via API, batch upload, or UI. This is automatic — no one copies or pastes anything manually.',
+    description: 'LLMs, agents, classifiers, or automation systems send their outputs to DevSwat via API, batch upload, or UI. This is automatic — no one copies or pastes anything manually.',
     icon: ''
   },
   {

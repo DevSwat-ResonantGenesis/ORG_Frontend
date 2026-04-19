@@ -47,7 +47,7 @@ const DEMO_AGENTS: Agent[] = [
     manifest_hash: 'PRIVATE_KEY_PLACEHOLDER_2',
     name: 'Hello World Agent',
     version: '1.0.0',
-    description: 'A simple reference agent that demonstrates the ResonantGenesis agent manifest format and basic agent structure.',
+    description: 'A simple reference agent that demonstrates the DevSwat agent manifest format and basic agent structure.',
     category: 'utility',
     trust_tier: 1,
     status: 'Active',
@@ -171,7 +171,7 @@ export default function AgentBrowserPage() {
       <div className={styles.hero}>
         <h1 className={styles.heroTitle}>Agent Browser</h1>
         <p className={styles.heroSub}>
-          Discover and execute agents on the ResonantGenesis decentralized network
+          Discover and execute agents on the DevSwat decentralized network
         </p>
       </div>
 

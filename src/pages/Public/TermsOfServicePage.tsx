@@ -109,8 +109,8 @@ const TermsOfServicePage: React.FC = () => {
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>1. Acceptance of Terms</h2>
           <p style={styles.text}>
-            By accessing or using the ResonantGenesis platform ("Service"), operated at dev-swat.com and
-            resonantgenesis.xyz, you agree to be bound by these Terms of Service ("Terms"). If you do not
+            By accessing or using the DevSwat platform ("Service"), operated at dev-swat.com and
+            dev-swat.com, you agree to be bound by these Terms of Service ("Terms"). If you do not
             agree to these Terms, do not use the Service.
           </p>
         </div>
@@ -118,7 +118,7 @@ const TermsOfServicePage: React.FC = () => {
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>2. Description of Service</h2>
           <p style={styles.text}>
-            ResonantGenesis provides an AI-powered platform that includes:
+            DevSwat provides an AI-powered platform that includes:
           </p>
           <ul style={styles.list}>
             <li>AI agent creation, management, and execution tools.</li>
@@ -163,7 +163,7 @@ const TermsOfServicePage: React.FC = () => {
             Gmail, and GitHub. By connecting these services:
           </p>
           <ul style={styles.list}>
-            <li>You authorize ResonantGenesis to access these services on your behalf within the permissions you grant.</li>
+            <li>You authorize DevSwat to access these services on your behalf within the permissions you grant.</li>
             <li>You remain subject to the third-party service's own terms and policies.</li>
             <li>We are not responsible for the availability, accuracy, or content of third-party services.</li>
             <li>You may disconnect any third-party service at any time.</li>
@@ -202,7 +202,7 @@ const TermsOfServicePage: React.FC = () => {
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>9. Limitation of Liability</h2>
           <p style={styles.text}>
-            To the maximum extent permitted by law, ResonantGenesis shall not be liable for any indirect,
+            To the maximum extent permitted by law, DevSwat shall not be liable for any indirect,
             incidental, special, consequential, or punitive damages, including but not limited to loss of
             profits, data, or business opportunities, arising from your use of the Service.
           </p>

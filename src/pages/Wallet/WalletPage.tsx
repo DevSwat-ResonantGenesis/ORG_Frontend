@@ -405,7 +405,7 @@ export default function WalletPage() {
         <div className={s.noWallet}>
           <div style={{ fontSize: 56 }}>💰</div>
           <h2>RGT Wallet</h2>
-          <p>Create your Resonant Genesis Token wallet to deposit, withdraw, transfer tokens, and participate in the decentralized training economy.</p>
+          <p>Create your DevSwat Token wallet to deposit, withdraw, transfer tokens, and participate in the decentralized training economy.</p>
           <Web3WalletConnect onWalletLinked={() => loadData()} compact />
           <button className={`${s.btn} ${s.btnPrimary}`} style={{ padding: '10px 28px', fontSize: 14, marginTop: 12 }}
             onClick={createWallet} disabled={creating}>
@@ -585,7 +585,7 @@ export default function WalletPage() {
 
         {/* RIGHT: Recent Transactions */}
         <div className={s.panel}>
-          <h3 className={s.panelTitle}>⛓️ ResonantGenesis Blockchain Identity</h3>
+          <h3 className={s.panelTitle}>⛓️ DevSwat Blockchain Identity</h3>
           {cryptoHash ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <div>
@@ -603,7 +603,7 @@ export default function WalletPage() {
                 <code style={{ fontSize: 11, color: '#6b7280', wordBreak: 'break-all', fontFamily: 'monospace' }}>{userHash.slice(0, 16)}...{userHash.slice(-8)}</code>
               </div>
               <div style={{ fontSize: 11, color: '#4ade80', background: 'rgba(74,222,128,.08)', border: '1px solid rgba(74,222,128,.15)', borderRadius: 6, padding: '6px 10px', display: 'inline-flex', alignItems: 'center', gap: 6, width: 'fit-content' }}>
-                <span>●</span> Anchored on ResonantGenesis Blockchain
+                <span>●</span> Anchored on DevSwat Blockchain
               </div>
             </div>
           ) : (

@@ -30,20 +30,20 @@ export const articleContent: Record<string, string> = {
   'rgt-wallet': `
 # RGT Wallet & Web3 Integration
 
-The Wallet page (\`/wallet\`) is your central hub for managing **Resonant Genesis Tokens (RGT)** and connecting external Web3 wallets to the platform.
+The Wallet page (\`/wallet\`) is your central hub for managing **DevSwat Tokens (RGT)** and connecting external Web3 wallets to the platform.
 
 ---
 
 ## What Are RGT Tokens?
 
-**RGT (Resonant Genesis Tokens)** are the platform's internal utility tokens. They are used to:
+**RGT (DevSwat Tokens)** are the platform's internal utility tokens. They are used to:
 
 - **Pay for AI agent executions** — each agent run, workflow step, and LLM call costs RGT credits
 - **Purchase items on the Agent Marketplace** — buy pre-built agents, workflows, and integrations
 - **Tip and reward** other users for sharing helpful agents or community content
 - **Access premium features** — advanced analytics, priority queues, higher rate limits
 
-> **Important:** RGT tokens are **platform credits**, not a publicly traded cryptocurrency. They exist only within the ResonantGenesis ecosystem and have no value outside the platform. They are NOT an investment vehicle or security.
+> **Important:** RGT tokens are **platform credits**, not a publicly traded cryptocurrency. They exist only within the DevSwat ecosystem and have no value outside the platform. They are NOT an investment vehicle or security.
 
 ### Token Stats
 - **Circulating Supply** — total RGT currently held across all user wallets
@@ -86,7 +86,7 @@ Clicking **"Connect Wallet"** opens your browser wallet (MetaMask, Brave Wallet,
 ### Linking Your Wallet to Your Account
 Clicking **"Link Wallet to Account"** goes one step further. It asks you to **sign a message** with your private key (you will see a signature popup in your wallet). This proves you own the wallet address.
 
-The signed message is sent to our server and permanently associates your blockchain address with your ResonantGenesis account. Once linked:
+The signed message is sent to our server and permanently associates your blockchain address with your DevSwat account. Once linked:
 
 - Your wallet address appears on your profile
 - You can use it for deposits and withdrawals
@@ -139,16 +139,16 @@ A: No. RGT is an internal platform credit system. Tokens cannot be traded on exc
 A: No. RGT tokens can be purchased with regular payment methods (credit card via Stripe). Connecting a Web3 wallet is optional.
 
 **Q: What does the signature request mean?**
-A: When linking, you sign a message like "Link wallet 0x... to ResonantGenesis. Timestamp: ..." This proves you own the wallet. It does NOT authorize any token transfer.
+A: When linking, you sign a message like "Link wallet 0x... to DevSwat. Timestamp: ..." This proves you own the wallet. It does NOT authorize any token transfer.
 
 **Q: What wallets are supported?**
 A: Any EVM-compatible wallet that injects \`window.ethereum\` — MetaMask, Brave Wallet, Coinbase Wallet, Rainbow, Trust Wallet, and others.
 `,
 
   'what-is-resonantgraph': `
-# What Is ResonantGenesis?
+# What Is DevSwat?
 
-ResonantGenesis is an enterprise-grade governance platform designed to monitor, trace, evaluate, and control every AI prediction in a multi-tenant environment.
+DevSwat is an enterprise-grade governance platform designed to monitor, trace, evaluate, and control every AI prediction in a multi-tenant environment.
 
 ## Key Features
 
@@ -179,7 +179,7 @@ Built for enterprise requirements including:
 
 ## Multi-Tenant Architecture
 
-ResonantGenesis supports multiple organizations with complete data isolation. Each organization has:
+DevSwat supports multiple organizations with complete data isolation. Each organization has:
 - Isolated data storage
 - Role-based access control (RBAC)
 - Independent billing
@@ -187,7 +187,7 @@ ResonantGenesis supports multiple organizations with complete data isolation. Ea
 
 ## Getting Started
 
-To get started with ResonantGenesis:
+To get started with DevSwat:
 1. Create an account
 2. Set up your organization
 3. Configure your first policy
@@ -198,7 +198,7 @@ For more details, see our [Account Creation Guide](/help/getting-started/account
   'agi-neural-hub': `
 # AGI Neural Hub
 
-AGI Neural Hub is the action layer of ResonantGenesis: a workspace for general-purpose autonomous action, operator workflows, and tool-enabled execution.
+AGI Neural Hub is the action layer of DevSwat: a workspace for general-purpose autonomous action, operator workflows, and tool-enabled execution.
 
 ## Where to find it
 
@@ -242,7 +242,7 @@ If a provider requires your own key, add it in:
   'synthetic-neural-memory': `
 # Synthetic Neural Memory
 
-Synthetic Neural Memory is the memory layer of ResonantGenesis.
+Synthetic Neural Memory is the memory layer of DevSwat.
 
 It’s designed as a **physics-informed, 9-layer cognitive infrastructure** for autonomous agents: persistence, structured retrieval, and governance-ready storage.
 
@@ -274,7 +274,7 @@ It’s designed as a **physics-informed, 9-layer cognitive infrastructure** for 
   'invariants-sim': `
 # Invariants SIM
 
-Invariants SIM is the constraint layer of ResonantGenesis.
+Invariants SIM is the constraint layer of DevSwat.
 
 It focuses on **economic constraint modeling** and invariant enforcement across state transitions so autonomous systems behave safely and predictably.
 
@@ -336,7 +336,7 @@ If the UI shows **Saved Analyses**, you can:
 
 ## Overview
 
-The **Hash Sphere Memory System** is ResonantGenesis's revolutionary 9-layer architecture for semantic memory storage, retrieval, and visualization. Unlike traditional vector databases, Hash Sphere Memory combines cryptographic hashing, 3D spatial coordinates, physics-based resonance scoring, and multi-method retrieval.
+The **Hash Sphere Memory System** is DevSwat's revolutionary 9-layer architecture for semantic memory storage, retrieval, and visualization. Unlike traditional vector databases, Hash Sphere Memory combines cryptographic hashing, 3D spatial coordinates, physics-based resonance scoring, and multi-method retrieval.
 
 ## 🏗️ 9-Layer Architecture
 
@@ -514,12 +514,12 @@ POST /api/v1/memory/hash-sphere/extract
 }
 \`\`\`
 
-For complete documentation, see our [GitHub repository](https://github.com/louienemesh/ResonantGenesis/blob/main/docs/HASH_SPHERE_MEMORY.md).
+For complete documentation, see our [GitHub repository](https://github.com/louienemesh/DevSwat/blob/main/docs/HASH_SPHERE_MEMORY.md).
   `,
   'account-creation': `
 # Account Creation
 
-Learn how to create your ResonantGenesis account and set up your organization.
+Learn how to create your DevSwat account and set up your organization.
 
 ## Creating Your Account
 
@@ -564,11 +564,11 @@ For programmatic access:
   'creating-agents': `
 # Creating AI Agents
 
-Learn how to create, configure, and deploy AI agents in ResonantGenesis Agent Studio.
+Learn how to create, configure, and deploy AI agents in DevSwat Agent Studio.
 
 ## What Are Agents?
 
-Agents are autonomous AI entities that can perform tasks, make decisions, and interact with other systems. In ResonantGenesis, agents are:
+Agents are autonomous AI entities that can perform tasks, make decisions, and interact with other systems. In DevSwat, agents are:
 - **Governed**: Every action is traced and auditable
 - **Secure**: Built-in trust verification and compliance
 - **Scalable**: Deploy across your organization
@@ -631,7 +631,7 @@ Once tested, deploy your agent to production with:
   'agent-studio': `
 # Agent Studio & Factory
 
-The **Agent Studio** is the primary workspace for creating, managing, and operating AI agents in ResonantGenesis. It lives at \`/agents\` and is powered by the \`AgentOSv2\` component.
+The **Agent Studio** is the primary workspace for creating, managing, and operating AI agents in DevSwat. It lives at \`/agents\` and is powered by the \`AgentOSv2\` component.
 
 ## Page Architecture
 
@@ -826,7 +826,7 @@ They are **complementary, not redundant**.
 
 ## Platform Pages Reference
 
-Short descriptions for every major page in ResonantGenesis:
+Short descriptions for every major page in DevSwat:
 
 | Page | Route | Description |
 |------|-------|-------------|
@@ -1652,7 +1652,7 @@ POST /api/v1/wallets/{agent_id}
   'best-practices': `
 # Security Best Practices
 
-Essential security guidelines for using ResonantGenesis safely and effectively.
+Essential security guidelines for using DevSwat safely and effectively.
 
 ## Authentication & Access
 
@@ -1733,11 +1733,11 @@ Essential security guidelines for using ResonantGenesis safely and effectively.
   'connect-profiles-agent-setup': `
 # Connect Profiles & Agent Setup
 
-Complete guide to connecting external services and setting up agents on ResonantGenesis.
+Complete guide to connecting external services and setting up agents on DevSwat.
 
 ## Overview
 
-ResonantGenesis lets you connect 25+ external services (GitHub, Discord, Slack, OpenAI, Stripe, and more) and create AI agents that can use those connections. This guide covers the full workflow from connecting a service to creating and configuring an agent.
+DevSwat lets you connect 25+ external services (GitHub, Discord, Slack, OpenAI, Stripe, and more) and create AI agents that can use those connections. This guide covers the full workflow from connecting a service to creating and configuring an agent.
 
 ## Step 1: Connect Your Profiles
 
@@ -1775,13 +1775,13 @@ Discord is one of the most common integrations. Here's how to set it up:
 1. Open your Discord server
 2. Go to **Server Settings** → **Integrations** → **Webhooks**
 3. Click **New Webhook**
-4. Give it a name (e.g., "ResonantGenesis Alerts")
+4. Give it a name (e.g., "DevSwat Alerts")
 5. Select the channel where you want notifications
 6. Click **Copy Webhook URL**
 
 The URL looks like: \`https://discord.com/api/webhooks/123456789/abcdef...\`
 
-### Connect Discord on ResonantGenesis
+### Connect Discord on DevSwat
 
 1. Go to **/connect-profiles**
 2. Find **Discord** in the Productivity category
@@ -1865,7 +1865,7 @@ Once you've connected services at **/connect-profiles**, your agents can use tho
 ### Need help?
 - Ask Resonant Chat — it has full knowledge of all platform pages and setup workflows
 - Visit **/help** for more guides
-- Contact support at contact@resonantgenesis.xyz
+- Contact support at contact@dev-swat.com
 
 ## Related Articles
 
@@ -1877,7 +1877,7 @@ Once you've connected services at **/connect-profiles**, your agents can use tho
   'blockchain-architecture': `
 # Blockchain Architecture
 
-ResonantGenesis operates a **dual-layer blockchain architecture**: an internal, private blockchain for high-throughput identity and audit operations, and an external connection to the **Base Sepolia** testnet for public proof-of-existence anchoring.
+DevSwat operates a **dual-layer blockchain architecture**: an internal, private blockchain for high-throughput identity and audit operations, and an external connection to the **Base Sepolia** testnet for public proof-of-existence anchoring.
 
 ---
 
@@ -2088,7 +2088,7 @@ Returns:
   'register-agent-on-chain': `
 # Register Your Agent On-Chain
 
-This guide walks you through registering your AI agent on the ResonantGenesis blockchain — giving it a permanent, verifiable identity.
+This guide walks you through registering your AI agent on the DevSwat blockchain — giving it a permanent, verifiable identity.
 
 ---
 
@@ -2173,7 +2173,7 @@ The platform dashboard shows chain statistics. Developers can also query the API
   'understanding-dsid': `
 # Understanding Your DSID
 
-Every entity on ResonantGenesis — agents, users, memory anchors — receives a **DSID** (Decentralized Sovereign Identity Document). This is the foundation of the platform's identity and trust system.
+Every entity on DevSwat — agents, users, memory anchors — receives a **DSID** (Decentralized Sovereign Identity Document). This is the foundation of the platform's identity and trust system.
 
 ---
 
@@ -2348,7 +2348,7 @@ Go to the **Wallet** page (/wallet). Your balance and all transactions are liste
 No. Only paid purchases generate RGT rewards for the seller.
 
 **Q: Can I withdraw RGT?**
-RGT tokens are platform credits used within ResonantGenesis. External withdrawal features are planned for a future release.
+RGT tokens are platform credits used within DevSwat. External withdrawal features are planned for a future release.
 
 **Q: Is the blockchain record public?**
 The internal blockchain is private to the platform. If external anchoring to Base Sepolia is active, a hash proof is published publicly — but personal details are never exposed.
@@ -2357,7 +2357,7 @@ The internal blockchain is private to the platform. If external anchoring to Bas
   'blockchain-explorer': `
 # Blockchain Explorer Dashboard
 
-*Your real-time window into the Resonant Genesis internal blockchain and Base Sepolia external anchoring.*
+*Your real-time window into the DevSwat internal blockchain and Base Sepolia external anchoring.*
 
 ![Blockchain Explorer Dashboard](/images/showcase/blockchain-explorer.png)
 
@@ -2365,7 +2365,7 @@ The internal blockchain is private to the platform. If external anchoring to Bas
 
 ## What Is the Blockchain Explorer?
 
-The **Blockchain Explorer** is a live monitoring dashboard available at \`/network/blockchain\`. It shows the complete state of the Resonant Genesis internal blockchain — every block mined, every transaction recorded, the miner status, and the external anchoring to the **Base Sepolia** Ethereum L2 network.
+The **Blockchain Explorer** is a live monitoring dashboard available at \`/network/blockchain\`. It shows the complete state of the DevSwat internal blockchain — every block mined, every transaction recorded, the miner status, and the external anchoring to the **Base Sepolia** Ethereum L2 network.
 
 Unlike traditional blockchain explorers that only show on-chain data, this dashboard bridges **two layers**:
 - **Internal Chain** (resonant-genesis-1) — a private, high-throughput chain running inside the platform
@@ -2454,7 +2454,7 @@ Three cards explaining the system design:
 
 ![Blockchain Explorer Dashboard](/images/showcase/blockchain-explorer.png)
 
-The Blockchain Explorer demonstrates Resonant Genesis's **enterprise-grade data integrity layer**. Unlike competitors that store AI interactions in opaque databases, every memory, agent action, and identity registration is:
+The Blockchain Explorer demonstrates DevSwat's **enterprise-grade data integrity layer**. Unlike competitors that store AI interactions in opaque databases, every memory, agent action, and identity registration is:
 
 - **Cryptographically hashed** using proprietary Hash Sphere coordinates
 - **Organized into Merkle trees** for efficient batch verification
@@ -2474,7 +2474,7 @@ This architecture enables compliance with **SOC 2**, **GDPR audit trails**, and 
 
 *Connect 40+ services to supercharge your agents, workflows, and deployments.*
 
-Resonant Genesis provides a comprehensive integrations hub that connects your AI agents and projects to the tools you already use. From AI model providers to cloud hosting, version control to payment processing — everything connects through a unified, one-click interface.
+DevSwat provides a comprehensive integrations hub that connects your AI agents and projects to the tools you already use. From AI model providers to cloud hosting, version control to payment processing — everything connects through a unified, one-click interface.
 
 ---
 
@@ -2560,7 +2560,7 @@ Resonant Chat automatically routes your messages to the connected provider based
 - **Google Drive** — Save generated projects and documentation to Drive
 - **Notion** — Auto-create project documentation in Notion workspaces
 - **Slack** — Get build and deployment notifications in Slack channels
-- **Discord** — Connect a ResonantGenesis bot to your Discord server
+- **Discord** — Connect a DevSwat bot to your Discord server
 
 ### Design (1 tool)
 - **Figma** — Import Figma designs to auto-generate frontend code from mockups
@@ -2623,7 +2623,7 @@ Resonant Chat automatically routes your messages to the connected provider based
 
 ## API Access
 
-All integrations are also available via the **Resonant Genesis API**. You can programmatically:
+All integrations are also available via the **DevSwat API**. You can programmatically:
 - Connect and disconnect integrations
 - Query integration status
 - Trigger deployments and builds
@@ -2639,9 +2639,9 @@ See the [API Reference](/help/developer/api-reference) for full documentation.
 
 ![Cloud, Version Control & AI Intelligence](/images/showcase/integration2.png)
 
-Resonant Genesis's **40+ integration ecosystem** creates a powerful network effect:
+DevSwat's **40+ integration ecosystem** creates a powerful network effect:
 
-**Model Provider Aggregation (20+ providers):** Unlike single-vendor AI platforms, Resonant Genesis connects to every major AI provider simultaneously. This gives users vendor independence, automatic failover, and the ability to use the best model for each task. No other platform offers this breadth of AI model access in a unified interface.
+**Model Provider Aggregation (20+ providers):** Unlike single-vendor AI platforms, DevSwat connects to every major AI provider simultaneously. This gives users vendor independence, automatic failover, and the ability to use the best model for each task. No other platform offers this breadth of AI model access in a unified interface.
 
 **Full-Stack DevOps Pipeline:** From code generation to deployment, monitoring, and payments — every stage of the software lifecycle is integrated. Generated projects come pre-configured with CI/CD, error tracking, database connections, and payment processing.
 
@@ -2662,7 +2662,7 @@ Resonant Genesis's **40+ integration ecosystem** creates a powerful network effe
 
 ## What Is Code Visualizer Pro?
 
-Code Visualizer Pro is a **full-stack static analysis (SAST) and architecture visualization tool** built into the Resonant Genesis platform. It renders your entire codebase as an interactive **3D graph** where:
+Code Visualizer Pro is a **full-stack static analysis (SAST) and architecture visualization tool** built into the DevSwat platform. It renders your entire codebase as an interactive **3D graph** where:
 
 - **Services** are large spheres (color-coded by type)
 - **Files** are medium spheres connected to their service
@@ -2800,7 +2800,7 @@ Switch to **Compare** mode to analyze up to **3 different versions** of your cod
 
 ### Method 4: API
 \`\`\`bash
-curl -X POST https://resonantgenesis.xyz/api/v1/scan/github \\
+curl -X POST https://dev-swat.com/api/v1/scan/github \\
   -H "Authorization: Bearer YOUR_TOKEN" \\
   -H "Content-Type: application/json" \\
   -d '{"repo_url": "https://github.com/user/repo"}'

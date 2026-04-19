@@ -1675,7 +1675,7 @@ const OwnerDashboard: React.FC = () => {
           <div className={styles.revenueBreakdown}>
             <div className={styles.revenueItem}>
               <span className={styles.revenueItemLabel}>Domain</span>
-              <span style={{ fontFamily: 'monospace', fontSize: '10px' }}>resonantgenesis.xyz</span>
+              <span style={{ fontFamily: 'monospace', fontSize: '10px' }}>dev-swat.com</span>
             </div>
             <div className={styles.revenueItem}>
               <span className={styles.revenueItemLabel}>Gateway</span>

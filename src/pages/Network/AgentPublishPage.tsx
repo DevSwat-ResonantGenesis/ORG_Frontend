@@ -169,7 +169,7 @@ export default function AgentPublishPage() {
     setResult(null);
     try {
       const fullManifest = {
-        $schema: 'https://resonantgenesis.io/schemas/agent-manifest-v1.json',
+        $schema: 'https://dev-swat.com/schemas/agent-manifest-v1.json',
         manifestVersion: '1.0.0',
         agent: { id: '', name: manifest.name, version: manifest.version, description: manifest.description, author: { name: manifest.authorName, contact: manifest.authorEmail }, license: manifest.license, tags: manifest.tags },
         code: { entrypoint: manifest.entrypoint, runtime: manifest.runtime, runtimeVersion: '>=3.11' },

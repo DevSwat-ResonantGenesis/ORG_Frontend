@@ -576,7 +576,7 @@ const NewUserDashboard: React.FC = () => {
 
           <div className={styles.sectionCard}>
             <h3 className={styles.sectionTitle}>Platform API Keys</h3>
-            <p style={{ color: 'var(--color-text-secondary)', fontSize: 13, margin: '0 0 12px' }}>Access ResonantGenesis APIs programmatically for custom integrations.</p>
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: 13, margin: '0 0 12px' }}>Access DevSwat APIs programmatically for custom integrations.</p>
             <div style={{ display: 'flex', gap: 8 }}>
               <Button size="sm" onClick={() => navigate('/connect-profiles')}><Key size={14} /> View & Create API Keys</Button>
             </div>

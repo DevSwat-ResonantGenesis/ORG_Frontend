@@ -164,7 +164,7 @@ const SystemDashboardPage = () => {
             System Architecture
           </Text>
           <Text variant="body-sm" color="secondary">
-            High-level architecture of the ResonantGenesis platform showing service interactions, data flows, and component relationships. 
+            High-level architecture of the DevSwat platform showing service interactions, data flows, and component relationships. 
             This diagram illustrates how the API, ML worker, database, and frontend work together to process predictions and maintain evidence graphs.
           </Text>
         </Card.Header>

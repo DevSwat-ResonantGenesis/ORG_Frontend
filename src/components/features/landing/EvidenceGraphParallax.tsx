@@ -26,7 +26,7 @@ const EvidenceGraphParallax = () => {
     'graph = construct_dag(input)\nscore = evaluate(graph)\nreturn score',
   ];
 
-  // Report snippets for ResonantGenesis Output
+  // Report snippets for DevSwat Output
   const reportSnippets = [
     'The Evidence Graph: Auditing LLM Decisions',
     'The Controlled Brain for AI. Enforce Policy, Eliminate Hallucination.',
@@ -347,9 +347,9 @@ const EvidenceGraphParallax = () => {
               </div>
             </div>
 
-            {/* ResonantGenesis Output - Shows when complete */}
+            {/* DevSwat Output - Shows when complete */}
             {processingState === 'complete' && (
-              <div className="resonantgenesis-output-panel">
+              <div className="devswat-output-panel">
                 <div className="panel-header">RESONANTGENESIS</div>
                 <div className="code-content">
                   {formatCode(reportText)}

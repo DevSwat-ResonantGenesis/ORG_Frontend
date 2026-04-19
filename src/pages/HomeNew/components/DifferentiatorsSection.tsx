@@ -13,7 +13,7 @@ export const DifferentiatorsSection = () => {
         <section id="differentiators" className={styles.differentiators}>
             <div className={styles.sectionContent}>
                 <div className={styles.sectionHeader}>
-                    <p className={styles.sectionBadge}>Why ResonantGenesis</p>
+                    <p className={styles.sectionBadge}>Why DevSwat</p>
                     <h2 className={titleStyles.sectionTitle}>Built Different. Built for Production.</h2>
                     <p className={styles.sectionDescription}>
                         The only AI platform where autonomy and accountability aren't tradeoffs.

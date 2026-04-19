@@ -40,7 +40,7 @@ export async function initializeServices(): Promise<void> {
 
     // Show welcome notification (optional)
     if (settings.workbench.startupEditor === 'welcomePage') {
-      notificationsService.info('Welcome to ResonantGenesis IDE', {
+      notificationsService.info('Welcome to DevSwat IDE', {
         message: 'Press Ctrl+Shift+P (Cmd+Shift+P on Mac) to open command palette',
         duration: 5000,
       });

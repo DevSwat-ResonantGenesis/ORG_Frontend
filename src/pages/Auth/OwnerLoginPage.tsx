@@ -280,7 +280,7 @@ const OwnerLoginPage: React.FC = () => {
             <CrownIcon />
           </div>
           <h1 style={styles.title}>Owner Access</h1>
-          <p style={styles.subtitle}>ResonantGenesis Platform Control Center</p>
+          <p style={styles.subtitle}>DevSwat Platform Control Center</p>
           <div style={styles.securityBadge}>
             <LockIcon /> Secure Authentication
           </div>
@@ -297,7 +297,7 @@ const OwnerLoginPage: React.FC = () => {
               </span>
               <input
                 type="email"
-                placeholder="owner@resonantgenesis.com"
+                placeholder="owner@dev-swat.com"
                 style={styles.input}
                 value={email}
                 onChange={e => setEmail(e.target.value)}
