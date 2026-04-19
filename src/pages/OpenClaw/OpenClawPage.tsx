@@ -20,34 +20,34 @@ const SETUP_STEPS = [
 ];
 
 const FEATURES = [
-  { title: '162 Platform Tools', desc: 'Your agent gets instant access to all 162 tools — web search, memory, code analysis, media generation, GitHub, email, and more. No per-tool API keys needed. Call any tool by name.' },
-  { title: 'Create from Platform or CLI', desc: 'Two ways: go to dev-swat.com/agents → + Create → ⚡ Federated (Local), or register via the local connector CLI. Either way, your agent appears on the Agents page ready to run.' },
-  { title: 'Secure Polling Dispatch', desc: 'Click "Run" on your federated agent — the platform queues the task. Your local connector polls every 5 seconds and picks it up. ALL traffic is outbound HTTPS. Zero inbound connections, zero ports exposed. Works behind any firewall.' },
-  { title: 'Governed / Unbounded Toggle', desc: 'Federated agents default to unbounded (200 steps, 500K tokens, no approval gates). Toggle to governed mode anytime for safety gates and tighter limits. Switch via API or platform UI.' },
-  { title: 'Federated Agent Identity', desc: 'Your agent is registered with agent_source=\'federated\' and a blockchain DSID identity. Hardware info, tools, and connection URL are stored on the platform. Visible on the Agents page with full metadata.' },
-  { title: 'Hash Sphere Memory', desc: 'Persistent cross-session memory. Store facts, preferences, and context into Hash Sphere. Memories persist across sessions, are searchable, and retrievable by any of your agents.' },
-  { title: '560+ Platform APIs', desc: 'Beyond tools, discover and call any of 560+ REST APIs across 42 microservices — AI, memory, blockchain, community, developer tools, integrations. Dynamic discovery, no hardcoded endpoints.' },
-  { title: 'Your Hardware, Your Data', desc: 'Your agent runs locally with your LLM (Ollama, Groq, etc.). The connector only sends tool requests you explicitly make. No telemetry, no background data collection. Disconnect any time.' },
+  { title: 'Local-First Execution', desc: 'Tools run directly on YOUR machine — web search via DuckDuckGo, page fetching via httpx + BeautifulSoup, code execution via Python subprocess. No data leaves your machine. Server only gets the final answer.' },
+  { title: 'Local Memory (SQLite)', desc: 'All agent memory stored in ~/.openclaw/data/memory.db on YOUR disk. FTS5 full-text search. Memory content is NEVER sent to the server. Persists across sessions, restarts, and updates.' },
+  { title: 'Privacy by Architecture', desc: 'Memory content, search results, fetched pages, and code output never leave your machine. The platform only receives: tool name + timing (step reports) and the final answer text. That\'s it.' },
+  { title: 'Secure Polling Dispatch', desc: 'Click "Run" on your federated agent — the platform queues the task. Your connector polls every 5 seconds and picks it up. ALL traffic is outbound HTTPS. Zero inbound connections. Works behind any firewall.' },
+  { title: 'Live Step Streaming', desc: 'Each tool call reports step metadata to the platform UI in real-time — tool name, timing, and ran_locally flag. Watch your agent work live on dev-swat.com/agents without any data exposure.' },
+  { title: 'Cloud Fallback for OAuth Tools', desc: 'Tools requiring OAuth (Google Calendar, Gmail, Slack) or GPU (image generation) automatically fall back to the platform server. Everything else runs locally on your machine.' },
+  { title: '162 Platform Tools + 560+ APIs', desc: 'Access 162 tools across 16 categories. 8 run locally (web search, fetch, memory, code exec, deep research). The rest available via platform. Plus 560+ REST APIs across 42 microservices.' },
+  { title: 'Your Hardware, Your Data', desc: 'Your agent runs on YOUR machine. Memory stays on YOUR disk. Search results stay in YOUR RAM. Server only gets the final answer. No telemetry, no data collection. Disconnect any time — nothing is lost.' },
 ];
 
 const TOOL_CATALOG = [
   { category: 'Search & Web', count: 11, tools: [
-    { name: 'web_search', desc: 'Search the web for current information, news, articles, documentation.' },
-    { name: 'fetch_url', desc: 'Fetch and read content from any URL.' },
-    { name: 'read_webpage', desc: 'Read a webpage and extract clean structured content.' },
+    { name: 'web_search', desc: '🟢 LOCAL — Search the web via DuckDuckGo on YOUR machine. No API key needed.' },
+    { name: 'fetch_url', desc: '🟢 LOCAL — Fetch and read content from any URL directly from your machine.' },
+    { name: 'read_webpage', desc: '🟢 LOCAL — Read a webpage and extract clean text with BeautifulSoup.' },
     { name: 'read_many_pages', desc: 'Read multiple web pages in parallel (max 5).' },
     { name: 'reddit_search', desc: 'Search Reddit for discussions and recommendations.' },
     { name: 'image_search', desc: 'Search for images on the web.' },
     { name: 'news_search', desc: 'Search latest news articles.' },
     { name: 'places_search', desc: 'Search for businesses on Google Maps.' },
     { name: 'youtube_search', desc: 'Search YouTube for videos.' },
-    { name: 'deep_research', desc: 'Deep multi-source research via Perplexity AI.' },
+    { name: 'deep_research', desc: '🟢 LOCAL — Deep multi-source research (search + fetch combo) on YOUR machine.' },
     { name: 'wikipedia', desc: 'Search and read Wikipedia articles.' },
   ]},
-  { category: 'Memory & Hash Sphere', count: 9, tools: [
-    { name: 'memory_read', desc: 'Search user\'s long-term memory.' },
-    { name: 'memory_write', desc: 'Save information to long-term memory.' },
-    { name: 'memory_search', desc: 'Deep keyword + semantic search through memories.' },
+  { category: 'Memory — Local SQLite', count: 9, tools: [
+    { name: 'memory_read', desc: '🟢 LOCAL — Search your local memory (SQLite FTS5 full-text search on your disk).' },
+    { name: 'memory_write', desc: '🟢 LOCAL — Save to ~/.openclaw/data/memory.db. Content NEVER sent to server.' },
+    { name: 'memory_search', desc: '🟢 LOCAL — Deep keyword search through local memories.' },
     { name: 'memory_stats', desc: 'Get memory usage stats.' },
     { name: 'hash_sphere_search', desc: 'Search Hash Sphere anchors (blockchain-verified memories).' },
     { name: 'hash_sphere_anchor', desc: 'Create a new blockchain-verified memory point.' },
@@ -163,7 +163,7 @@ const TOOL_CATALOG = [
     { name: 'delete_rabbit_comment', desc: 'Delete a Rabbit comment (owner only).' },
   ]},
   { category: 'Developer', count: 4, tools: [
-    { name: 'execute_code', desc: 'Run code in Docker sandbox (Python, JavaScript, Bash).' },
+    { name: 'execute_code', desc: '🟢 LOCAL — Run Python code on YOUR machine (subprocess, 30s timeout).' },
     { name: 'http_request', desc: 'HTTP request to internal platform APIs.' },
     { name: 'external_http_request', desc: 'HTTP request to any external URL.' },
     { name: 'dev_tool', desc: 'Bridge to ED service for file ops, git, docker, testing.' },
@@ -211,13 +211,13 @@ const REQUIREMENTS = [
 
 const NETWORK_FLOW = [
   { step: '1', title: 'Create Account', desc: 'Sign up at dev-swat.com. You get a platform UUID, blockchain identity (crypto_hash), and Hash Sphere identity.' },
-  { step: '2', title: 'Start Connector', desc: 'Clone RG_OpenClaw, pip install, uvicorn start. Background polling starts automatically. Open localhost:8000 to verify.' },
+  { step: '2', title: 'Start Connector', desc: 'Clone RG_OpenClaw, pip install, uvicorn start. Local SQLite memory DB created automatically at ~/.openclaw/data/memory.db.' },
   { step: '3', title: 'Authenticate', desc: 'POST /auth/login with your dev-swat.com credentials. JWT stored at ~/.openclaw/tokens.json. Auto-refreshes — no re-login needed.' },
   { step: '4', title: 'Create Agent', desc: 'Option A: dev-swat.com/agents → + Create → ⚡ Federated. Option B: POST /agents/register from the connector. Both create agent_source=\'federated\' on the platform.' },
-  { step: '5', title: 'Polling Active', desc: 'Your connector automatically polls GET /federation/tasks/poll every 5 seconds. No manual setup needed — it starts on boot.' },
-  { step: '6', title: 'Run from Platform', desc: 'Click "Run" on your agent at dev-swat.com/agents. Task is queued → your connector picks it up within 5 seconds → executes locally.' },
-  { step: '7', title: 'Result Submitted', desc: 'Connector submits results via POST /federation/tasks/{id}/result. Session shows completed with tools_used and duration_ms in the platform UI.' },
-  { step: '8', title: 'Mode & Memory', desc: 'Toggle governed/unbounded via PATCH /agents/{id}/mode. Store memories with POST /memory/ingest. Send heartbeats to stay online.' },
+  { step: '5', title: 'Run from Platform', desc: 'Click "Run" on your agent at dev-swat.com/agents. Task is queued → your connector picks it up within 5 seconds.' },
+  { step: '6', title: 'Local Execution', desc: 'Tools run on YOUR machine: web_search → DuckDuckGo, memory → local SQLite, fetch_url → direct HTTP, code → subprocess. No data leaves your machine.' },
+  { step: '7', title: 'Live Streaming', desc: 'Each tool call sends step metadata (tool name + timing) to the platform UI. Watch your agent work live. Memory content and search results are NOT sent.' },
+  { step: '8', title: 'Final Answer Only', desc: 'Only the final answer text is submitted to the platform. Your memory stays on YOUR disk. Search results stay in YOUR RAM. Server only displays the result.' },
 ];
 
 const FAQ_ITEMS = [
@@ -225,27 +225,37 @@ const FAQ_ITEMS = [
     label: 'Architecture',
     labelClass: 'faqLabelArch',
     question: 'What exactly is the OpenClaw connector and how does it work?',
-    answer: `<p><strong>The OpenClaw connector is a lightweight bridge service</strong> that connects your local agent to the full DevSwat platform. Here's the architecture:</p>
-<p><strong>Your Machine:</strong> The connector (<code>RG_OpenClaw</code>) runs as a FastAPI microservice on localhost:8000. On startup, it begins background polling — checking the platform every 5 seconds for pending tasks.</p>
-<p><strong>How task dispatch works (polling model):</strong></p>
+    answer: `<p><strong>OpenClaw is a local-first federated agent</strong> that runs on YOUR machine. Most tools execute locally — only the final answer is sent to the platform.</p>
+<p><strong>Local execution:</strong> When your agent calls <code>web_search</code>, it searches DuckDuckGo directly from your machine. When it calls <code>memory_write</code>, it saves to <code>~/.openclaw/data/memory.db</code> (local SQLite). When it calls <code>fetch_url</code>, your machine fetches the page. Code execution runs as a local Python subprocess.</p>
+<p><strong>What the server receives:</strong></p>
 <ul>
-<li><strong>You click "Run"</strong> on your federated agent at dev-swat.com/agents</li>
-<li><strong>Platform queues the task</strong> in the <code>federated_tasks</code> table (status: pending)</li>
-<li><strong>Your connector polls</strong> <code>GET /federation/tasks/poll</code> every 5 seconds</li>
-<li><strong>Picks up the task</strong>, executes locally using platform tools (web_search, memory, etc.)</li>
-<li><strong>Submits result</strong> via <code>POST /federation/tasks/{id}/result</code></li>
-<li><strong>Platform updates the session</strong> — visible in the UI with tools_used, duration, output</li>
+<li><strong>Step reports:</strong> Tool name + timing + ran_locally flag (for live UI updates)</li>
+<li><strong>Final answer:</strong> The text response only</li>
 </ul>
-<p><strong>ALL traffic is outbound HTTPS.</strong> The platform NEVER connects to your machine. No ports exposed, no tunnels needed, works behind any firewall/NAT/VPN. Same security model as your browser.</p>
-<p><strong>No shared database, no shared imports.</strong> The connector communicates with the platform exclusively via HTTPS. Your data stays on your machine unless you explicitly send it to a platform tool.</p>`,
+<p><strong>What the server does NOT receive:</strong></p>
+<ul>
+<li><strong>Memory content</strong> — stays in local SQLite, step report says "[stored locally]"</li>
+<li><strong>Search results</strong> — stay in RAM on your machine</li>
+<li><strong>Fetched page content</strong> — stays in RAM on your machine</li>
+<li><strong>Code execution output</strong> — stays in RAM on your machine</li>
+</ul>
+<p><strong>Cloud fallback:</strong> Tools requiring OAuth (Google Calendar, Gmail, Slack) or GPU (image generation) fall back to the platform server automatically. Everything else runs locally.</p>
+<p><strong>ALL traffic is outbound HTTPS.</strong> The platform NEVER connects to your machine. No ports exposed, no tunnels needed, works behind any firewall/NAT/VPN.</p>`,
   },
   {
     label: 'Auth',
     labelClass: 'faqLabelAuth',
-    question: 'How does authentication work? Is my data safe?',
-    answer: `<p><strong>Same auth flow as the DevSwat IDE and Mining App.</strong> Here's exactly what happens:</p>
-<p><strong>Login:</strong> You provide your dev-swat.com credentials (email + password). The connector sends them to the platform auth service over HTTPS and receives a JWT token. The token is stored locally on your machine — never sent to any third party.</p>
-<p><strong>All API calls include this JWT.</strong> Every request from your connector to the platform (tool execution, memory access, heartbeat) includes the JWT in the Authorization header. The platform verifies it on every request. Tokens expire and auto-refresh.</p>
+    question: 'How does authentication work? Where is my data stored?',
+    answer: `<p><strong>Same auth flow as the DevSwat IDE and Mining App.</strong> JWT stored locally at <code>~/.openclaw/tokens.json</code>. Auto-refreshes.</p>
+<p><strong>Where your data lives:</strong></p>
+<ul>
+<li><strong>Memory:</strong> <code>~/.openclaw/data/memory.db</code> (SQLite on YOUR disk) — never uploaded to server</li>
+<li><strong>Search results:</strong> In RAM during the task — never persisted on server</li>
+<li><strong>Fetched pages:</strong> In RAM during the task — never persisted on server</li>
+<li><strong>Code output:</strong> In RAM during the task — never persisted on server</li>
+<li><strong>Final answer:</strong> Sent to platform for display in the Agents UI</li>
+<li><strong>Step metadata:</strong> Tool name + timing sent for live UI streaming (no data content)</li>
+</ul>
 <p><strong>Identity layers:</strong> On registration, you get 4 identity anchors:</p>
 <ul>
 <li><strong>UUID</strong> — platform identity</li>
@@ -253,27 +263,31 @@ const FAQ_ITEMS = [
 <li><strong>user_hash</strong> — Hash Sphere semantic identity</li>
 <li><strong>universe_id</strong> — Deterministic Anchor Universe ID</li>
 </ul>
-<p><strong>Your OpenClaw agent gets a DSID:</strong> When registered, your agent receives a Decentralized Semantic Identity — a unique identity hash that's anchored on the DevSwat Blockchain. This creates an immutable provenance trail for your agent's actions.</p>
-<p><strong>Data sovereignty:</strong> Your agent runs on YOUR hardware. Tool execution happens on the platform, but the connector only sends what you explicitly request (tool name + parameters). No telemetry, no background data collection, no model training on your data. The connector source is fully open — audit it yourself.</p>
-<p><strong>Security hardening:</strong> All platform services run with HSTS, CORS lockdown (locked to dev-swat.com in production), fail-closed auth (no JWT = 503), and <code>X-Internal-Service-Key</code> for service-to-service calls. The same security infrastructure protecting $RGT wallets protects your agent's API calls.</p>`,
+<p><strong>Security:</strong> HSTS, CORS lockdown, fail-closed auth (no JWT = 503), all outbound HTTPS. The connector source is fully open — audit every HTTP call yourself.</p>`,
   },
   {
     label: 'Platform',
     labelClass: 'faqLabelPlatform',
-    question: 'What tools and APIs can my OpenClaw agent actually use?',
-    answer: `<p><strong>162 tools across 16 categories</strong> — all available to your agent on day one:</p>
+    question: 'What runs locally vs on the server?',
+    answer: `<p><strong>8 tools run locally on YOUR machine. The rest available via platform server.</strong></p>
+<p><strong>🟢 LOCAL tools (your machine):</strong></p>
 <ul>
-<li><strong>Search:</strong> web_search, reddit_search, news_search, academic_search, youtube_search</li>
-<li><strong>Memory:</strong> memory.read, memory.write, memory.search — persistent Hash Sphere memory</li>
-<li><strong>Developer:</strong> code_visualizer (14 AST analysis tools), github_*, git_*, file operations</li>
-<li><strong>Media:</strong> generate_image, text_to_speech, image_analysis</li>
-<li><strong>Community:</strong> create_rabbit_post, community interactions</li>
-<li><strong>Integrations:</strong> gmail, google_calendar, google_drive, slack, discord</li>
-<li><strong>Agents:</strong> spawn sub-agents, agent-to-agent communication</li>
-<li><strong>Platform API:</strong> discover_services, discover_api, platform_api — call any of 560+ REST endpoints across 42 microservices</li>
+<li><strong>web_search</strong> — DuckDuckGo, no API key needed</li>
+<li><strong>fetch_url / read_webpage</strong> — httpx + BeautifulSoup, your machine fetches directly</li>
+<li><strong>deep_research</strong> — search + fetch combo, all local</li>
+<li><strong>memory_write</strong> — saves to ~/.openclaw/data/memory.db (local SQLite)</li>
+<li><strong>memory_read</strong> — FTS5 full-text search on local SQLite</li>
+<li><strong>execute_code</strong> — Python subprocess on your machine (30s timeout)</li>
 </ul>
-<p><strong>Dynamic discovery:</strong> Your agent doesn't need a hardcoded list. Call <code>discover_services</code> to browse services by category. Call <code>discover_api</code> to fetch OpenAPI specs and list endpoints for any service. Call <code>platform_api</code> to invoke any endpoint directly.</p>
-<p><strong>No per-tool API keys:</strong> Platform tools are authenticated via your JWT. External integrations (Gmail, Slack) use OAuth flows managed by the platform — your agent triggers the flow, you approve in browser, done.</p>`,
+<p><strong>🔵 Server tools (cloud fallback):</strong></p>
+<ul>
+<li><strong>Google Calendar, Gmail, Drive</strong> — needs OAuth credentials</li>
+<li><strong>Slack</strong> — needs OAuth credentials</li>
+<li><strong>Image/audio/video generation</strong> — needs GPU</li>
+<li><strong>Code Visualizer, GitHub, Git</strong> — platform services</li>
+<li><strong>All 140+ other tools</strong> — available via platform</li>
+</ul>
+<p><strong>The connector automatically decides:</strong> If a tool is in the local set, it runs on your machine. If not, it falls back to the platform server. You don't need to configure anything — it just works.</p>`,
   },
   {
     label: 'Trust',
@@ -354,8 +368,8 @@ const OpenClawPage: React.FC = () => {
             Open<span className={styles.heroAccent}>Claw</span>+
           </h1>
           <p className={styles.heroSubtitle}>
-            Run AI agents on YOUR hardware. Connect to 162 platform tools, 560+ APIs, persistent memory, and blockchain identity.
-            Create federated agents from the platform UI or CLI — run from dev-swat.com/agents, your connector polls and executes locally.
+            Run AI agents on YOUR hardware. Tools execute LOCALLY — web search, page fetching, code execution, and memory all happen on YOUR machine.
+            Only the final answer is sent to the platform. Memory is stored in local SQLite on your disk, never uploaded to the server.
             Zero inbound connections. Outbound HTTPS only. Works behind any firewall. Your compute, your data, your control.
           </p>
           <div className={styles.heroActions}>
@@ -380,7 +394,7 @@ const OpenClawPage: React.FC = () => {
             </a>
           </div>
           <div className={styles.heroPlatforms}>
-            Python 3.9+ &bull; FastAPI &bull; JWT Auth &bull; Federated Agents &bull; Polling Dispatch &bull; Governed/Unbounded &bull; Zero Inbound Connections
+            Python 3.9+ &bull; Local-First &bull; SQLite Memory &bull; DuckDuckGo Search &bull; BeautifulSoup &bull; JWT Auth &bull; Zero Inbound Connections
           </div>
           <div style={{ marginTop: 16, width: '100%', maxWidth: 980 }}>
             <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 8 }}>One-line install (copy/paste in Terminal)</div>
@@ -452,9 +466,9 @@ const OpenClawPage: React.FC = () => {
       <section className={styles.networkFlow}>
         <h2 className={styles.sectionTitle}>How It Works</h2>
         <p className={styles.sectionDesc}>
-          Two-way connection: your agent calls platform tools, and the platform dispatches tasks to your machine.
+          Local-first execution: tools run on YOUR machine, platform only dispatches tasks and displays the final answer.
           Authenticate once, register as federated, and run your agent from dev-swat.com/agents.
-          Same auth, same identity, same security as the Resonant IDE and Mining App.
+          Memory stays local. Data never leaves your machine.
         </p>
         <div className={styles.flowGrid}>
           {NETWORK_FLOW.map((item, i) => (
@@ -470,7 +484,7 @@ const OpenClawPage: React.FC = () => {
       {/* Features Grid */}
       <section className={styles.features}>
         <h2 className={styles.sectionTitle}>What Your Agent Gets</h2>
-        <p className={styles.sectionDesc}>Full platform access from your own hardware — every tool, every API, every memory system.</p>
+        <p className={styles.sectionDesc}>Local-first execution with cloud fallback — your data stays on your machine, server only gets the final answer.</p>
         <div className={styles.featureGrid}>
           {FEATURES.map((f, i) => (
             <div key={i} className={styles.featureCard}>
@@ -571,8 +585,8 @@ const OpenClawPage: React.FC = () => {
           />
           <h2 className={styles.ctaTitle}>Connect Your Agent Today</h2>
           <p className={styles.ctaDesc}>
-            Give your OpenClaw agent access to 162 tools, 560+ APIs, persistent memory, and a decentralized identity.
-            Open source. 5-minute setup. Unplug any time.
+            Run AI agents on YOUR hardware. Tools execute locally. Memory stays on YOUR disk.
+            Server only gets the final answer. Open source. 5-minute setup. Unplug any time.
           </p>
           <div className={styles.ctaActions}>
             <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className={styles.downloadButton}>
