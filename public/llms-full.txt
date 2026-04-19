@@ -187,7 +187,7 @@ The most sophisticated chat pipeline in any SaaS product.
 
 ## 8. Three-Blockchain Architecture
 
-### 8a. Internal Blockchain (RG_Blockchain)
+### 8a. Internal Blockchain (RG_DSID_Blockchain)
 - DSID-P (Digital State Identity Protocol) for content hashing and lineage
 - Block mining with configurable intervals
 - Transaction graph with full history and lineage tracking
