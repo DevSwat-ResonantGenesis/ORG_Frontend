@@ -198,7 +198,7 @@ The most sophisticated chat pipeline in any SaaS product.
 - Identity registry (Crypto Identity Layer 4)
 - DSID backfill for existing identities
 
-### 8b. External Blockchain (RG_external_blockchain)
+### 8b. Training Network Chain (RG_TrainingNet_Chain)
 Sovereign distributed blockchain — own chain, not riding on another.
 - Raft consensus: leader election, log replication, heartbeats
 - TCP P2P: gossip discovery, block/transaction propagation, training messages
@@ -217,9 +217,9 @@ Sovereign distributed blockchain — own chain, not riding on another.
 Real GPU training for frontier LLM models. Not fake mining or idle hashing.
 
 ### Architecture
-- **RG_Mining**: Training orchestration, gradient compression (Top-K sparsification, 100-1000x), FedAvg aggregation, reward distribution
+- **RG_TrainingNet_Mining**: Training orchestration, gradient compression (Top-K sparsification, 100-1000x), FedAvg aggregation, reward distribution
 - **RG_miner_app**: Standalone open-source mining client (AGPL-3.0). Real PyTorch forward/backward passes on GQA+RoPE+SwiGLU transformer.
-- **RG_lighthouse**: Bootstrap/discovery node. TCP protocol for peer registration, heartbeat, discovery, eviction.
+- **RG_TrainingNet_Lighthouse**: Bootstrap/discovery node. TCP protocol for peer registration, heartbeat, discovery, eviction.
 
 ### Pipeline-Parallel Training
 - Models split into layer groups across miners (pipeline parallelism)
