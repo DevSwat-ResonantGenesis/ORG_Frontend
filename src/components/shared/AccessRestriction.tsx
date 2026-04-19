@@ -35,7 +35,7 @@ const PLAN_NAMES: Record<PlanLevel, string> = {
 const PLAN_PRICES: Record<PlanLevel, string> = {
   guest: '$0',
   free: '$0',
-  plus: '$29/mo',
+  plus: '$499/mo',
   pro: '$99/mo',
   enterprise: 'Custom',
 };

@@ -26,7 +26,7 @@ const FEATURES = [
   { title: 'Secure Polling Dispatch', desc: 'Click "Run" on your federated agent — the platform queues the task. Your connector polls every 5 seconds and picks it up. ALL traffic is outbound HTTPS. Zero inbound connections. Works behind any firewall.' },
   { title: 'Live Step Streaming', desc: 'Each tool call reports step metadata to the platform UI in real-time — tool name, timing, and ran_locally flag. Watch your agent work live on dev-swat.com/agents without any data exposure.' },
   { title: 'Cloud Fallback for OAuth Tools', desc: 'Tools requiring OAuth (Google Calendar, Gmail, Slack) or GPU (image generation) automatically fall back to the platform server. Everything else runs locally on your machine.' },
-  { title: '162 Platform Tools + 560+ APIs', desc: 'Access 162 tools across 16 categories. 8 run locally (web search, fetch, memory, code exec, deep research). The rest available via platform. Plus 560+ REST APIs across 42 microservices.' },
+  { title: '162 Platform Tools + 560+ APIs', desc: 'Access 162 tools across 16 categories. 8 run locally (web search, fetch, memory, code exec, deep research). The rest available via platform. Plus 560+ REST APIs across the full DevSwat platform.' },
   { title: 'Your Hardware, Your Data', desc: 'Your agent runs on YOUR machine. Memory stays on YOUR disk. Search results stay in YOUR RAM. Server only gets the final answer. No telemetry, no data collection. Disconnect any time — nothing is lost.' },
 ];
 

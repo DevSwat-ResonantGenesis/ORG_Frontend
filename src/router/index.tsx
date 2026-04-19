@@ -56,6 +56,56 @@ const AgentsPage = lazy(() => import('../pages/Agents/AgentOSv2'));
 const CreateTeamPage = lazy(() => import('../pages/AgentTeams/CreateTeamPage'));
 const EditTeamPage = lazy(() => import('../pages/AgentTeams/EditTeamPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFound/NotFoundPage'));
+const AboutPage = lazy(() => import('../pages/Public/AboutPage'));
+const TechnologyPage = lazy(() => import('../pages/Public/TechnologyPage'));
+const OpenSourcePage = lazy(() => import('../pages/Public/OpenSourcePage'));
+const EnterprisePage = lazy(() => import('../pages/Public/EnterprisePage'));
+const CareersPage = lazy(() => import('../pages/Public/CareersPage'));
+const IntegrationsPage = lazy(() => import('../pages/Public/IntegrationsPage'));
+const BlogPage = lazy(() => import('../pages/Public/BlogPage'));
+const ChangelogPage = lazy(() => import('../pages/Public/ChangelogPage'));
+const SecurityPage = lazy(() => import('../pages/Public/SecurityPage'));
+const PrivacyPage = lazy(() => import('../pages/Public/PrivacyPage'));
+const TermsPage = lazy(() => import('../pages/Public/TermsPage'));
+const CommunityPage = lazy(() => import('../pages/Public/CommunityPage'));
+
+// Product Pages
+const AIAgentsProductPage = lazy(() => import('../pages/Products/AIAgentsPage'));
+const IDEProductPage = lazy(() => import('../pages/Products/IDEPage'));
+const CodeAnalysisProductPage = lazy(() => import('../pages/Products/CodeAnalysisPage'));
+const MiningProductPage = lazy(() => import('../pages/Products/MiningPage'));
+const OpenClawProductPage = lazy(() => import('../pages/Products/OpenClawProductPage'));
+const MemoryProductPage = lazy(() => import('../pages/Products/MemoryPage'));
+const BlockchainProductPage = lazy(() => import('../pages/Products/BlockchainPage'));
+const ChatProductPage = lazy(() => import('../pages/Products/ChatPage'));
+const GovernanceProductPage = lazy(() => import('../pages/Products/GovernancePage'));
+const StatePhysicsProductPage = lazy(() => import('../pages/Products/StatePhysicsPage'));
+const DSIDProductPage = lazy(() => import('../pages/Products/DSIDPage'));
+const CryptoProductPage = lazy(() => import('../pages/Products/CryptoPage'));
+const NeuralRoutingProductPage = lazy(() => import('../pages/Products/NeuralRoutingPage'));
+
+// Use Case Pages
+const DevelopersUseCasePage = lazy(() => import('../pages/UseCases/DevelopersPage'));
+const TeamsUseCasePage = lazy(() => import('../pages/UseCases/TeamsPage'));
+const SecurityUseCasePage = lazy(() => import('../pages/UseCases/SecurityUseCasePage'));
+const AutomationUseCasePage = lazy(() => import('../pages/UseCases/AutomationPage'));
+
+// Comparison Pages
+const VsCursorPage = lazy(() => import('../pages/Compare/VsCursorPage'));
+const VsWindsurfPage = lazy(() => import('../pages/Compare/VsWindsurfPage'));
+const VsChatGPTPage = lazy(() => import('../pages/Compare/VsChatGPTPage'));
+const VsReplitPage = lazy(() => import('../pages/Compare/VsReplitPage'));
+
+// Documentation Pages
+const ArchitectureDocsPage = lazy(() => import('../pages/Docs/ArchitecturePage'));
+const AgentAPIDocsPage = lazy(() => import('../pages/Docs/AgentAPIPage'));
+const BlockchainProtocolDocsPage = lazy(() => import('../pages/Docs/BlockchainProtocolPage'));
+const MiningProtocolDocsPage = lazy(() => import('../pages/Docs/MiningProtocolPage'));
+const GovernanceProtocolDocsPage = lazy(() => import('../pages/Docs/GovernanceProtocolPage'));
+const MemoryProtocolDocsPage = lazy(() => import('../pages/Docs/MemoryProtocolPage'));
+const CBORSpecDocsPage = lazy(() => import('../pages/Docs/CBORSpecPage'));
+const CrossChainDocsPage = lazy(() => import('../pages/Docs/CrossChainPage'));
+const NeuralRoutingDocsPage = lazy(() => import('../pages/Docs/NeuralRoutingDocsPage'));
 
 const ChatSkillsControlPage = lazy(() => import('../pages/Owner/ChatSkillsControlPage'));
 const AgentsControlPage = lazy(() => import('../pages/Owner/AgentsControlPage'));
@@ -487,6 +537,178 @@ const router = createBrowserRouter([
   {
     path: '/download-openclaw',
     element: withPublicShell(<OpenClawPage />)
+  },
+  {
+    path: '/about',
+    element: withPublicShell(<AboutPage />)
+  },
+  {
+    path: '/technology',
+    element: withPublicShell(<TechnologyPage />)
+  },
+  {
+    path: '/open-source',
+    element: withPublicShell(<OpenSourcePage />)
+  },
+  {
+    path: '/enterprise',
+    element: withPublicShell(<EnterprisePage />)
+  },
+  {
+    path: '/careers',
+    element: withPublicShell(<CareersPage />)
+  },
+  {
+    path: '/integrations',
+    element: withPublicShell(<IntegrationsPage />)
+  },
+  {
+    path: '/blog',
+    element: withPublicShell(<BlogPage />)
+  },
+  {
+    path: '/changelog',
+    element: withPublicShell(<ChangelogPage />)
+  },
+  {
+    path: '/security',
+    element: withPublicShell(<SecurityPage />)
+  },
+  {
+    path: '/privacy',
+    element: withPublicShell(<PrivacyPage />)
+  },
+  {
+    path: '/terms',
+    element: withPublicShell(<TermsPage />)
+  },
+  {
+    path: '/community',
+    element: withPublicShell(<CommunityPage />)
+  },
+  // Product Pages
+  {
+    path: '/products/ai-agents',
+    element: withPublicShell(<AIAgentsProductPage />)
+  },
+  {
+    path: '/products/ide',
+    element: withPublicShell(<IDEProductPage />)
+  },
+  {
+    path: '/products/code-analysis',
+    element: withPublicShell(<CodeAnalysisProductPage />)
+  },
+  {
+    path: '/products/mining',
+    element: withPublicShell(<MiningProductPage />)
+  },
+  {
+    path: '/products/openclaw',
+    element: withPublicShell(<OpenClawProductPage />)
+  },
+  {
+    path: '/products/memory',
+    element: withPublicShell(<MemoryProductPage />)
+  },
+  {
+    path: '/products/blockchain',
+    element: withPublicShell(<BlockchainProductPage />)
+  },
+  {
+    path: '/products/chat',
+    element: withPublicShell(<ChatProductPage />)
+  },
+  {
+    path: '/products/governance',
+    element: withPublicShell(<GovernanceProductPage />)
+  },
+  {
+    path: '/products/state-physics',
+    element: withPublicShell(<StatePhysicsProductPage />)
+  },
+  {
+    path: '/products/dsid',
+    element: withPublicShell(<DSIDProductPage />)
+  },
+  {
+    path: '/products/crypto',
+    element: withPublicShell(<CryptoProductPage />)
+  },
+  {
+    path: '/products/neural-routing',
+    element: withPublicShell(<NeuralRoutingProductPage />)
+  },
+  // Use Case Pages
+  {
+    path: '/use-cases/developers',
+    element: withPublicShell(<DevelopersUseCasePage />)
+  },
+  {
+    path: '/use-cases/teams',
+    element: withPublicShell(<TeamsUseCasePage />)
+  },
+  {
+    path: '/use-cases/security',
+    element: withPublicShell(<SecurityUseCasePage />)
+  },
+  {
+    path: '/use-cases/automation',
+    element: withPublicShell(<AutomationUseCasePage />)
+  },
+  // Comparison Pages
+  {
+    path: '/compare/devswat-vs-cursor',
+    element: withPublicShell(<VsCursorPage />)
+  },
+  {
+    path: '/compare/devswat-vs-windsurf',
+    element: withPublicShell(<VsWindsurfPage />)
+  },
+  {
+    path: '/compare/devswat-vs-chatgpt',
+    element: withPublicShell(<VsChatGPTPage />)
+  },
+  {
+    path: '/compare/devswat-vs-replit',
+    element: withPublicShell(<VsReplitPage />)
+  },
+  // Documentation Pages
+  {
+    path: '/docs/architecture',
+    element: withPublicShell(<ArchitectureDocsPage />)
+  },
+  {
+    path: '/docs/agent-api',
+    element: withPublicShell(<AgentAPIDocsPage />)
+  },
+  {
+    path: '/docs/blockchain-protocol',
+    element: withPublicShell(<BlockchainProtocolDocsPage />)
+  },
+  {
+    path: '/docs/mining-protocol',
+    element: withPublicShell(<MiningProtocolDocsPage />)
+  },
+  {
+    path: '/docs/governance-protocol',
+    element: withPublicShell(<GovernanceProtocolDocsPage />)
+  },
+  {
+    path: '/docs/memory-protocol',
+    element: withPublicShell(<MemoryProtocolDocsPage />)
+  },
+  {
+    path: '/docs/cbor-spec',
+    element: withPublicShell(<CBORSpecDocsPage />)
+  },
+  {
+    path: '/docs/cross-chain',
+    element: withPublicShell(<CrossChainDocsPage />)
+  },
+  {
+    path: '/docs/neural-routing',
+    element: withPublicShell(<NeuralRoutingDocsPage />)
   },
 ]);
 

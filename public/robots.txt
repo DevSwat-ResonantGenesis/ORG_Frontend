@@ -20,6 +20,8 @@ Disallow: /auth/oauth/callback
 Disallow: /verify-email
 Disallow: /reset-password
 
-# Sitemaps for both domains
-Sitemap: https://resonantgenesis.xyz/sitemap.xml
+# Sitemap
 Sitemap: https://dev-swat.com/sitemap.xml
+
+# LLMs.txt
+LLMs-Txt: https://dev-swat.com/llms.txt

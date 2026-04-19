@@ -1,0 +1,81 @@
+# DevSwat
+
+> Agentic AI infrastructure for building, running, and scheduling autonomous agents. Built-in IDE with AI intelligence, personalized chat with smart routing, AST/SAST code analysis, invariant simulation, 9-layer semantic memory, internal blockchain logging, RARA governance, and decentralized LLM training. Connect any LLM provider. Fully self-hosted.
+
+DevSwat is a full-stack agentic AI SaaS platform built from scratch. 9 proprietary IP systems, ~550K lines of code. Connect unlimited LLM providers and external platforms. Production-deployed at https://dev-swat.com.
+
+## Core Products
+
+- [Agents OS](https://dev-swat.com/agents): Build, run, and schedule autonomous AI agents on server or local hardware. Multi-agent orchestration with voting, debate, and chaining protocols.
+- [DevSwat IDE](https://dev-swat.com/download-ide): AI-powered code editor with code execution intelligence, terminal, live preview, and project management.
+- [OpenClaw](https://dev-swat.com/download-openclaw): Local-first federated agent connector. 137 tools across 15 categories. Tools run on YOUR machine, data never leaves your hardware.
+- [Code Visualizer](https://dev-swat.com/code-visualizer): AST/SAST code analysis. GitHub repo scanning, dependency graphs, function tracing, dead code detection, governance reports.
+- [Hash Sphere](https://dev-swat.com/state-physics): Physics-based state engine. N-body simulation with gravity, repulsion, entropy forces, and conservation invariants. Three.js 3D visualization.
+- [Semantic Memory](https://dev-swat.com/resonant-memory): Per-user encrypted semantic memory. 9-layer cognitive architecture. Embedding-based retrieval with resonance clustering.
+- [Decentralized Mining](https://dev-swat.com/download-miner): Train frontier LLMs on your GPU and earn $RGT tokens. Pipeline-parallel training with 1F1B microbatch scheduling. WebRTC P2P weight transfer.
+- [ResonantChat](https://dev-swat.com): Personalized AI chat intelligence with hallucination detection, evidence graphs, neural skill classification, and smart routing that reduces LLM token costs.
+- [Platform Connectors](https://dev-swat.com/integrations): Connect any LLM provider and any external platform — Google Drive, Gmail, Slack, deployments, and more. Unlimited.
+
+## Blockchains
+
+- Internal Blockchain (DSID-P): Digital State Identity Protocol for agent identity, hash lineage, audit chain, and Base Sepolia anchoring.
+- External Blockchain: Sovereign distributed chain with Raft consensus, P2P gossip, block production, and fork handling.
+- Cross-chain Bridge: Planned Base/ETH mainnet anchoring for $RGT token.
+
+## LLM Providers
+
+Connect any LLM provider — not limited to a fixed list. Built-in support for OpenAI, Anthropic, Google Gemini, Groq, Mistral AI, Cohere, Ollama (local), and more. Smart routing automatically selects the best model and reduces token costs.
+
+## Governance
+
+- [RARA Governance](https://dev-swat.com/products/governance): Invariant enforcement, capability decay, kill switch, compliance profiles (SOC2, EU AI Act).
+- [Neural Routing](https://dev-swat.com/products/neural-routing): Trained MLP classifier routes messages to 14 specialized skills in ~5ms. Active learning.
+- [DSID-P Identity](https://dev-swat.com/products/dsid): Decentralized State Identity Protocol. Hash lineage, merkle proofs, Base Sepolia anchoring.
+- [$RGT Token](https://dev-swat.com/products/crypto): Utility token earned by mining. Closed economy with halving schedule.
+
+## Use Cases
+
+- [For Developers](https://dev-swat.com/use-cases/developers): AI pair programming, agents, code analysis, unlimited LLM providers, smart routing.
+- [For Teams](https://dev-swat.com/use-cases/teams): Multi-agent teams, shared memory, RARA governance, audit trails.
+- [For Security](https://dev-swat.com/use-cases/security): SAST scanning, invariant enforcement, compliance reporting.
+- [For Automation](https://dev-swat.com/use-cases/automation): Scheduled agents, webhooks, visual workflows, integrations.
+
+## Comparisons
+
+- [vs Cursor](https://dev-swat.com/compare/devswat-vs-cursor): AI autocomplete IDE vs full agentic platform.
+- [vs Windsurf](https://dev-swat.com/compare/devswat-vs-windsurf): Both have agentic coding; DevSwat adds full agent platform, blockchain, governance, mining.
+- [vs ChatGPT](https://dev-swat.com/compare/devswat-vs-chatgpt): Chat assistant vs autonomous agent infrastructure.
+- [vs Replit](https://dev-swat.com/compare/devswat-vs-replit): Cloud IDE vs production AI infrastructure.
+
+## Documentation
+
+- [Architecture](https://dev-swat.com/docs/architecture): Full platform infrastructure, service topology, technical deep dive.
+- [Agent API](https://dev-swat.com/docs/agent-api): REST API for creating, running, scheduling agents.
+- [Blockchain Protocol](https://dev-swat.com/docs/blockchain-protocol): DSID-P, merkle trees, CBOR block format.
+- [Mining Protocol](https://dev-swat.com/docs/mining-protocol): 1F1B pipeline parallelism, gradient compression.
+- [Governance Protocol](https://dev-swat.com/docs/governance-protocol): RARA invariants, capability grammar, mutation executor.
+- [Memory Protocol](https://dev-swat.com/docs/memory-protocol): 9-layer architecture, embeddings, Hash Sphere coordinates.
+- [CBOR Spec](https://dev-swat.com/docs/cbor-spec): RFC 8949 canonical encoding for blockchain.
+- [Cross-Chain Bridge](https://dev-swat.com/docs/cross-chain): Atomic swaps, HTLC, light clients.
+- [Neural Routing Docs](https://dev-swat.com/docs/neural-routing): MLP classifier, training pipeline, active learning.
+
+## Links
+
+- [Pricing](https://dev-swat.com/pricing)
+- [Enterprise](https://dev-swat.com/enterprise)
+- [About](https://dev-swat.com/about)
+- [Technology](https://dev-swat.com/technology)
+- [Open Source](https://dev-swat.com/open-source)
+- [Integrations](https://dev-swat.com/integrations)
+- [Blog](https://dev-swat.com/blog)
+- [Changelog](https://dev-swat.com/changelog)
+- [Security](https://dev-swat.com/security)
+- [Privacy](https://dev-swat.com/privacy)
+- [Terms](https://dev-swat.com/terms)
+- [Community](https://dev-swat.com/community)
+- [Careers](https://dev-swat.com/careers)
+- [API Documentation](https://dev-swat.com/api/docs)
+- [Help Center](https://dev-swat.com/help)
+- [Contact](https://dev-swat.com/contact)
+- [GitHub](https://github.com/DevSwat-ResonantGenesis)
+- [Full LLMs.txt](https://dev-swat.com/llms-full.txt)

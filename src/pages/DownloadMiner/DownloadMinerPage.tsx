@@ -101,7 +101,7 @@ const FAQ_ITEMS = [
 <ul>
 <li><strong>7+ repos on GitHub</strong> under <a href="https://github.com/DevSwat-ResonantGenesis" target="_blank" rel="noopener noreferrer">DevSwat-ResonantGenesis</a> — miner app, mining service, blockchain, lighthouse, crypto service, memory service, frontend. All open-source under AGPL-3.0.</li>
 <li><strong>Real ML engineering:</strong> Raft consensus from scratch, 1F1B pipeline parallelism, GQA+RoPE+SwiGLU transformer architecture, Top-K gradient compression with SHA-256 verification, WebRTC P2P NAT traversal, slashing with Merkle proof verification.</li>
-<li><strong>Production infrastructure:</strong> Docker-composed microservices, Nginx TLS termination, JWT auth with fail-closed security, HSTS, CORS lockdown. This isn't a weekend hackathon project.</li>
+<li><strong>Production infrastructure:</strong> Nginx TLS termination, JWT auth with fail-closed security, HSTS, CORS lockdown. Full-stack platform deployed in production. This isn't a weekend hackathon project.</li>
 <li><strong>Live platform:</strong> <a href="https://dev-swat.com" target="_blank" rel="noopener noreferrer">dev-swat.com</a> runs the DevSwat IDE, AI agents, LLM APIs, Hash Sphere memory, and Code Visualizer — the services that $RGT pays for.</li>
 </ul>
 <p><strong>What we haven't done yet:</strong></p>

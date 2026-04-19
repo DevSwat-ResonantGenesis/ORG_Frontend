@@ -1,0 +1,355 @@
+# DevSwat — Full Platform Reference
+
+> Agentic AI infrastructure for building, running, and scheduling server and local agents. Built-in DevSwat IDE powered by AI code execution intelligence. Fully self-hosted with AST/SAST code analysis, invariant simulation, and two blockchains — internal audit logging and decentralized frontier LLM training with P2P weight shards.
+
+Website: https://dev-swat.com
+GitHub: https://github.com/DevSwat-ResonantGenesis
+Founder: Louie Nemesh
+
+---
+
+## Platform Statistics
+
+- ~550,000 lines of code (310K Python backend, 240K TypeScript/React frontend)
+- Full-stack AI agent infrastructure (production-deployed)
+- 662 React components across 85+ frontend routes
+- 4,384 API endpoints, 120+ database tables
+- 9 proprietary IP systems, unlimited LLM providers (connect any model)
+- Production-deployed on DigitalOcean with Nginx, PostgreSQL, Redis
+
+---
+
+## 1. Agents OS
+
+Build, run, and schedule autonomous AI agents on server or local hardware.
+
+### Features
+- Agent creation and execution framework with autonomous daemon and goal pursuit
+- World model and agent reasoning
+- Multi-agent orchestration: voting protocol, debate protocol, chain protocol
+- Swarm controller for team management
+- Project builder agent
+- Tool execution with sandbox boundaries
+- Delegation and cross-service escalation
+- Agent scheduling (cron, interval, webhook triggers)
+- Agent sessions with full execution traces, waterfall views, cost tracking, safety flags
+- Governed (25 steps max, approval gates) and Unbounded (200 steps, no checks) modes
+
+### Agent Architect
+Standalone orchestrator for building agents autonomously:
+- Intent classification → routing → response via SSE streaming
+- Modes: brainstorm, control, review, diagnose
+- Blueprint generation, agent creation, execution, polling, scheduling
+- LLM: Groq primary, OpenAI fallback
+
+### Agent Marketplace
+- Publish, discover, purchase, and review agents
+- Agent templates and workflow designer
+
+URL: https://dev-swat.com/agents
+API: POST /api/v1/agents, GET /api/v1/agents, POST /api/v1/agents/{id}/run
+
+---
+
+## 2. DevSwat IDE
+
+AI-powered cloud code editor with code execution intelligence.
+
+### Features
+- Full code editor with terminal and live preview
+- Code execution intelligence powered by AI
+- Project management and file system
+- IDE completions endpoint integrated with ResonantChat
+- Desktop app available for macOS, Linux, Windows
+
+URL: https://dev-swat.com/download-ide
+
+---
+
+## 3. OpenClaw — Federated Agent Connector
+
+Local-first agent runtime. Tools execute on YOUR hardware. Data never leaves your machine.
+
+### 137 Tools Across 15 Categories
+- **Search & Web (11)**: web_search (local DuckDuckGo), fetch_url, read_webpage, deep_research, reddit_search, image_search, news_search, places_search, youtube_search, wikipedia, read_many_pages
+- **Memory — LOCAL (9)**: memory_read, memory_write, memory_search (SQLite FTS5 on your machine), hash_sphere_search, hash_sphere_anchor, hash_sphere_list_anchors, hash_sphere_hash, hash_sphere_resonance, memory_stats
+- **Code Visualizer / SAST (8)**: code_visualizer_scan, functions, trace, governance, graph, pipeline, filter, by_type
+- **Agents OS (24)**: agents CRUD, sessions, metrics, scheduling, architect tools (plan, create_agent, assign_goal, create_schedule, create_webhook, set_autonomy, list_available_tools, list_providers)
+- **Media Generation (3)**: generate_image (DALL-E), generate_audio (TTS), generate_music
+- **Integrations (9)**: Gmail, Slack, Google Calendar, Google Drive, Figma, Sigma, SendGrid
+- **GitHub (9)**: repos, files, PRs, issues, commits, comments
+- **Git Operations (5)**: clone, branch, merge, push, pull
+- **State Physics (21)**: full universe management, physics config, entropy injection, autonomous agents, experiments
+- **Community / Rabbit (12)**: posts, communities, comments, voting, search
+- **Developer (4)**: execute_code (local), http_request, external_http_request, dev_tool
+- **Utilities (6)**: weather, stock_crypto, generate_chart, visualize, get_current_time, get_system_info
+- **Platform API (2)**: platform_api_search (~383 endpoints), platform_api_call
+- **Filesystem (10)**: file CRUD, grep_search, find_by_name, run_command, command_status
+- **Tool Management (6)**: create_tool, list_tools, delete_tool, update_tool, auto_build_tool, check_tool_exists
+
+### Self-Creating Tools
+Agents can create their own tools at runtime:
+1. check_tool_exists — search 137+ built-in + custom tools
+2. auto_build_tool — LLM designs tool spec from natural language description
+3. AST safety scan — validates no SSRF, no forbidden URLs, valid schema
+4. Registered in DB — immediately available platform-wide
+
+### Privacy Model
+- Local tools: web_search, fetch_url, memory, execute_code → run on YOUR machine
+- Cloud fallback only for OAuth tools (Google Calendar, Slack) and GPU tools (image generation)
+- Server receives only: tool name + timing + final answer
+- Memory stored at ~/.openclaw/data/memory.db (SQLite + FTS5)
+- ALL traffic is outbound HTTPS. Platform NEVER connects to you.
+
+URL: https://dev-swat.com/download-openclaw
+GitHub: https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw
+
+---
+
+## 4. Code Visualizer (AST/SAST)
+
+Standalone AST-based code analysis service. Parses Python, JavaScript, and TypeScript codebases into navigable graph structures.
+
+### Features
+- AST parsing: Python (ast module), JavaScript/TypeScript (regex-based analyzer)
+- Codebase graph: nodes (services, files, classes, functions, endpoints) and connections (imports, calls, inheritance)
+- GitHub scanning: clone and analyze repos via OAuth (single or multi-repo comparison)
+- Archive upload: .zip/.tar.gz codebases
+- Governance engine: reachability contracts, dead code classification, drift detection
+- Multi-project comparison: diff, heat maps, instability metrics, evolution timeline
+- Graph Janitor Agent: autonomous graph cleanup proposals
+- Saved analyses with per-user PostgreSQL persistence
+- Credit-based billing per scan
+
+URL: https://dev-swat.com/code-visualizer
+API: POST /api/v1/scan/github, POST /api/v1/scan/github/multi, POST /api/v1/scan/upload, POST /api/analysis/{id}/governance
+
+---
+
+## 5. Hash Sphere — Physics-Based State Engine
+
+Completely novel approach to state management using physics simulation.
+
+### Features
+- N-body particle system with gravity, repulsion, electromagnetic, and resonance forces
+- State represented as nodes in 3D space with spin, energy, and conservation invariants
+- Core invariants: mass conservation, energy conservation, identity uniqueness, causality, trust bounds
+- Identity layer (DSID), State/Memory layer, Economic/Temporal layer
+- Real-time Three.js visualization with interactive exploration
+- Force-directed graph layouts for dependency analysis
+- Entropy injection and perturbation events
+- Autonomous agent spawning and experimentation
+
+URL: https://dev-swat.com/state-physics
+API: https://dev-swat.com/state-physics-api
+
+---
+
+## 6. Semantic Memory Universe
+
+Per-user encrypted memory space with cognitive architecture.
+
+### Features
+- 9-layer memory system: sensory buffer → working memory → episodic → semantic → procedural → meta-cognitive → emotional → social → creative
+- Embedding generation and vector search (sentence-transformers)
+- RAG (Retrieval-Augmented Generation) for context injection
+- Memory clustering (Alpha-Zeta layers) with resonance clustering
+- Hash Sphere coordinate system with ResonanceHasher PCA
+- Dual short-term and long-term memory engines
+- AES-encrypted per-user storage
+- DSID (Digital Soul Identity) creation
+- 3D visualization of memory universe
+- FTS5 full-text search
+- Memory ingestion from all platform services
+
+URL: https://dev-swat.com/resonant-memory
+API: https://dev-swat.com/hash-sphere-memory-api
+
+---
+
+## 7. ResonantChat — 68-Module AI Pipeline
+
+The most sophisticated chat pipeline in any SaaS product.
+
+### Features
+- 68 processing modules
+- Hallucination detection: system prompt grounding, LLM-as-judge, knowledge base cross-referencing
+- Evidence graph construction: links every claim to source material with citation chains
+- Neural Skill Classifier: trained MLP on all-MiniLM-L6-v2 embeddings (384-dim → 256 → 128 → 14 classes), ~5ms inference, active learning
+- 9 modular AI skills: web search, code analysis, memory, agent orchestration, social posting, HTTP API
+- Multi-provider fallback across unlimited LLM providers with smart routing
+- SSE streaming with quality metrics overlay
+- Debate engine, error correction, multi-provider chunking
+- IDE completions endpoint
+- Provider status monitoring
+
+---
+
+## 8. Three-Blockchain Architecture
+
+### 8a. Internal Blockchain (RG_Blockchain)
+- DSID-P (Digital State Identity Protocol) for content hashing and lineage
+- Block mining with configurable intervals
+- Transaction graph with full history and lineage tracking
+- Audit chain for immutable audit trail of all platform operations
+- External anchoring to Base Sepolia (periodic merkle root)
+- Distributed consensus protocol
+- Smart contract execution
+- Identity registry (Crypto Identity Layer 4)
+- DSID backfill for existing identities
+
+### 8b. External Blockchain (RG_external_blockchain)
+Sovereign distributed blockchain — own chain, not riding on another.
+- Raft consensus: leader election, log replication, heartbeats
+- TCP P2P: gossip discovery, block/transaction propagation, training messages
+- Full blockchain: block production, merkle trees, fork handling, state machine
+- Transaction types: transfer, set (state update), agent_action, training_gradient
+- Environment: NODE_ID, CONSENSUS_PEERS, P2P_PORT, BLOCK_TIME (10s default), MAX_TX_PER_BLOCK (100)
+
+### 8c. Cross-chain Bridge (Planned)
+- $RGT currently on sovereign chain (chain ID: resonant-genesis-external-1)
+- Base/ETH mainnet bridge planned as network matures
+
+---
+
+## 9. Decentralized Mining Network
+
+Real GPU training for frontier LLM models. Not fake mining or idle hashing.
+
+### Architecture
+- **RG_Mining**: Training orchestration, gradient compression (Top-K sparsification, 100-1000x), FedAvg aggregation, reward distribution
+- **RG_miner_app**: Standalone open-source mining client (AGPL-3.0). Real PyTorch forward/backward passes on GQA+RoPE+SwiGLU transformer.
+- **RG_lighthouse**: Bootstrap/discovery node. TCP protocol for peer registration, heartbeat, discovery, eviction.
+
+### Pipeline-Parallel Training
+- Models split into layer groups across miners (pipeline parallelism)
+- 1F1B microbatch scheduling (same as DeepSpeed/Meta)
+- With 32 microbatches and 4 stages: 91% pipeline efficiency
+- Models supported: 1B to 405B parameters
+
+### P2P Weight Transfer
+- WebRTC signaling for NAT traversal — no manual port forwarding
+- Direct miner-to-miner DataChannels for weight shard transfer
+- Liquid redistribution when miners disconnect
+
+### $RGT Token Economics
+- Closed utility economy: earn by mining, spend on platform services (IDE, LLM APIs, agents)
+- Not intended for exchange trading — value from real platform usage
+- Halving schedule: 100 → 50 → 25 → 12.5 $RGT per year
+- Miner tiers: Genesis Validator (1.5x), Core Contributor (1.25x), Standard Miner (1.0x)
+
+### Proof-of-Training (5-Layer Security)
+1. Internal Key Auth — only mining service can call credit endpoint
+2. Gradient Hash Required — must actually process a gradient
+3. HMAC-SHA256 Signature — mining service signs, crypto service verifies
+4. Replay Protection — each gradient_hash credited exactly once (UNIQUE constraint)
+5. Reward Cap — max 500 $RGT per credit call
+
+### On-Chain Recording
+Every gradient submission recorded as training_gradient transaction on the sovereign blockchain with Raft consensus and Merkle-tree validation.
+
+URL: https://dev-swat.com/download-miner
+GitHub: https://github.com/DevSwat-ResonantGenesis/RG_miner_app
+
+---
+
+## 10. RARA — Governance Layer
+
+Resident Autonomous Runtime Agent. Internal platform governance (admin-only).
+
+### Features
+- Invariant Engine: graph constraint enforcement via AST Analysis (structural, semantic, temporal)
+- Kill Switch: emergency freeze/stop/reset
+- Mutation Executor: atomic mutations with rollback
+- Governance Engine: decision explainability and audit trail, blast radius calculation
+- Capability Engine: agent capability enforcement with trust decay (capabilities can only decay, never expand autonomously)
+- Compliance: EU AI Act, SOC2, policy enforcement (minimal/standard/strict profiles)
+- DISD Protocol: decentralized secure identity messaging
+- Cryptographic receipts: tamper-proof mutation receipts
+- Quorum Authority: multi-agent consensus
+- Epoch Authority: time-based governance
+- Snapshot Engine: system state snapshots and restore
+- Physics Governance Bridge: deterministic bridge from physics state to governance actions
+
+---
+
+## 11. SaaS Billing Engine
+
+### Pricing Tiers
+- **Free**: Get started, basic features
+- **Developer**: $15/month — extended usage
+- **Plus**: $499/month — full access, rollover credits, priority support
+- **Enterprise**: Custom pricing — teams and organizations, self-hosted, SLA
+- **Owner**: Platform administration
+
+### Revenue Streams
+1. Subscriptions (Stripe)
+2. Agent credits
+3. Marketplace fees
+4. API usage
+5. Enterprise licensing
+
+### Features
+- Stripe integration with subscriptions, one-time payments, usage billing
+- Credit balance management with per-action deduction
+- 4 role levels: free, developer, plus, enterprise
+
+---
+
+## 12. LLM Providers
+
+7 providers built-in with automatic failover:
+
+- **OpenAI**: GPT-4o, GPT-4o-mini, GPT-4-Turbo, o1-preview, o1-mini, embeddings
+- **Anthropic**: Claude 3.5 Sonnet/Haiku, Claude 3 Opus/Sonnet/Haiku
+- **Google Gemini**: Gemini 2.0 Flash, 1.5 Pro, 1.5 Flash
+- **Groq**: LLaMA 3.3 70B, 3.1 70B/8B, Mixtral 8x7B, Gemma 2 9B
+- **Mistral AI**: Mistral Large/Medium/Small, Codestral
+- **Cohere**: Command R+/R, Embed English/Multilingual v3.0
+- **Ollama**: Any local GGUF model (LLaMA 3, Mistral 7B, CodeLlama, Phi-3, Gemma)
+
+---
+
+## 13. Additional Services
+
+- **Auth**: JWT, Google/GitHub OAuth, MFA/TOTP, role management (free/pro/enterprise/owner)
+- **Gateway**: Reverse proxy to 30+ services, JWT middleware, rate limiting, SSE/WebSocket support
+- **Notifications**: Multi-channel (in-app, email, push, SMS)
+- **Workflow Engine**: Visual workflow builder, execution engine, event sourcing
+- **Storage**: S3-compatible file storage with presigned URLs
+- **Sandbox Runner**: Docker-isolated code execution, multi-language sandboxes
+- **Crypto Service**: $RGT wallet management, token operations, Proof-of-Training verification
+- **Cognitive Service**: Anomaly detection, clustering, workflow triggering
+- **ML Service**: Model registry, training jobs, inference endpoints
+- **Rabbit**: Social platform with communities, posts, comments, voting
+
+---
+
+## Infrastructure
+
+- **Docker Compose**: 33 containers on unified bridge network
+- **Nginx**: Reverse proxy with SSL termination, static file serving
+- **PostgreSQL**: Primary database with multi-service schema isolation
+- **Redis**: Caching, session storage, rate limiting
+- **DigitalOcean**: Single droplet deployment (scales to Kubernetes)
+
+## Tech Stack
+
+- **Backend**: Python, FastAPI, SQLAlchemy, Alembic, Pydantic, Celery, asyncio, httpx, WebSockets
+- **Frontend**: React 18, TypeScript, Vite, Zustand, Three.js, D3.js, Monaco Editor, CSS Modules
+- **AI/ML**: OpenAI SDK, Anthropic SDK, Groq SDK, Mistral AI, Cohere, sentence-transformers, PyTorch
+- **DevOps**: Docker, Nginx, Certbot, GitHub Actions, DigitalOcean
+
+## Links
+
+- Website: https://dev-swat.com
+- Pricing: https://dev-swat.com/pricing
+- API Docs: https://dev-swat.com/api/docs
+- Help Center: https://dev-swat.com/help
+- Contact: https://dev-swat.com/contact
+- GitHub: https://github.com/DevSwat-ResonantGenesis
+- LinkedIn: https://www.linkedin.com/company/devswat/
+- YouTube: https://www.youtube.com/@DevSwat
+- X (Twitter): https://x.com/devswat
+- Reddit: https://www.reddit.com/u/DevSwat/
+- Email: contact@dev-swat.com

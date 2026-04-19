@@ -17,10 +17,10 @@ const HomeNew = () => {
       {/* SEO meta tags */}
       <Helmet>
         <title>DevSwat — Agentic AI Infrastructure</title>
-        <meta name="description" content="DevSwat is agentic AI infrastructure for building, running, and scheduling server and local agents. Built-in DevSwat IDE powered by AI code execution intelligence. Fully self-hosted with AST/SAST code analysis, invariant simulation, and two blockchains — internal audit logging and decentralized frontier LLM training with P2P weight shards." />
+        <meta name="description" content="DevSwat — Build, run, and schedule autonomous AI agents. AI-powered IDE with DevSwat intelligence, personalized chat with smart routing, AST/SAST code analysis, 9-layer semantic memory, internal blockchain logging, RARA governance, and decentralized LLM training. Connect any LLM provider. Unlimited platform integrations. Fully self-hosted." />
         <link rel="canonical" href="https://dev-swat.com/" />
         <meta property="og:title" content="DevSwat — Agentic AI Infrastructure" />
-        <meta property="og:description" content="Build, run, and schedule autonomous AI agents on server or local hardware. Built-in IDE with AI code intelligence. AST/SAST analysis, invariant simulation, decentralized LLM training with P2P weight shards. Fully self-hosted. Your agents, your data, your infrastructure." />
+        <meta property="og:description" content="Build, run, and schedule autonomous AI agents. AI-powered IDE, personalized chat with smart routing, AST/SAST code analysis, blockchain logging, RARA governance, and decentralized LLM training. Connect any LLM provider. Your agents, your data, your infrastructure." />
         <meta property="og:url" content="https://dev-swat.com/" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
@@ -28,7 +28,7 @@ const HomeNew = () => {
         <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="DevSwat — Agentic AI Infrastructure" />
-        <meta name="twitter:description" content="Build, run, and schedule autonomous AI agents. Built-in IDE, AST/SAST, invariant simulation, decentralized LLM training. Fully self-hosted." />
+        <meta name="twitter:description" content="Build, run, and schedule autonomous AI agents. AI IDE, personalized chat, smart routing, AST/SAST, blockchain, governance, and decentralized LLM training. Fully self-hosted." />
         <meta name="twitter:image" content="https://dev-swat.com/devswat/DevSwat.png" />
         <script type="application/ld+json">
           {`
