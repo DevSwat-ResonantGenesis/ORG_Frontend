@@ -693,8 +693,12 @@ const ResonantChatPage: React.FC = () => {
               // Mark this conversation as loaded to prevent unnecessary reloads
               setLoadedConversationId(currentConversationId);
 
-              // Update agent hash from chat if available
-              if (agentHash && !selectedAgentHash) {
+              // NOTE: Do NOT auto-adopt agentHash from conversation history.
+              // Internal agent types (reasoning, architecture, etc.) are backend
+              // classifications, not user selections. Auto-adopting them causes
+              // the agent to "stick" forever. Only platform agent hashes (long UUIDs)
+              // from user-created agents should be restored.
+              if (agentHash && !selectedAgentHash && agentHash.length > 30) {
                 setSelectedAgentHash(agentHash);
               }
             } else {
@@ -3374,8 +3378,8 @@ const ResonantChatPage: React.FC = () => {
             })),
           }));
           
-          // Update agent hash if available
-          if (agentHash && !selectedAgentHash) {
+          // Only restore platform agent hashes (long UUIDs), not internal types
+          if (agentHash && !selectedAgentHash && agentHash.length > 30) {
             setSelectedAgentHash(agentHash);
           }
         } catch (error: unknown) {
