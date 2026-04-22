@@ -108,7 +108,7 @@ const AgentOSv2: React.FC = () => {
           persisted: true,
           name: a.name,
           type: ((a as any).agent_source === 'openclaw' || (a as any).agent_source === 'federated') ? 'openclaw' : ((a as any).type || 'executor'),
-          status: (a.is_active ? 'active' : 'idle') as 'idle' | 'active' | 'paused' | 'archived',
+          status: ((a as any).running_sessions > 0 ? 'active' : 'idle') as 'idle' | 'active' | 'paused' | 'archived',
           mode: ((a as any).mode === 'unbounded' ? 'unbounded' : 'governed') as 'governed' | 'unbounded',
           version: String(a.version) + '.0.0',
           capabilities: Array.isArray((a as any).tools) ? ((a as any).tools as string[]) : [],

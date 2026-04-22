@@ -17,6 +17,8 @@ export interface AgentDefinition {
   safety_config?: Record<string, unknown>;
   is_active: boolean;
   version: number;
+  running_sessions?: number;
+  active_schedules?: number;
 }
 
 export interface AgentSession {
