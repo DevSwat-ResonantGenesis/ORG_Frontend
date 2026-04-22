@@ -223,6 +223,21 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               {location.pathname === '/network' && <span className={styles.usmActiveIndicator} />}
             </button>
 
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/network/marketplace' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/network/marketplace'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M2 3H14L13 7H3L2 3Z" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M3 7V13C3 13.5 3.5 14 4 14H12C12.5 14 13 13.5 13 13V7" />
+                  <path d="M6 10H10" strokeLinecap="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>Marketplace</span>
+              {location.pathname === '/network/marketplace' && <span className={styles.usmActiveIndicator} />}
+            </button>
+
             {/* GitHub */}
             <a
               className={styles.usmDownloadItem}

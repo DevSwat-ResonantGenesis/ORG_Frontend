@@ -360,6 +360,16 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
+            {/* Marketplace */}
+            <div className={styles.navItem}>
+              <button
+                className={styles.navButton}
+                onClick={() => { navigate('/network/marketplace'); setActiveDropdown(null); }}
+              >
+                Marketplace
+              </button>
+            </div>
+
             {/* Pricing Link */}
             <button 
               className={styles.navButton}
