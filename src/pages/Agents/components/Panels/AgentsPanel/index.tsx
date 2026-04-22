@@ -937,13 +937,20 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         
                         {/* Marketplace publish button */}
                         <button 
-                          className={`${styles.actionBtn} ${styles.shopBtn} ${marketplacePublished[agent.id] ? styles.published : ''} ${marketplacePublishing[agent.id] ? styles.shopBtnPublishing : ''}`}
+                          className={styles.actionBtn}
                           disabled={bulkMode || marketplacePublishing[agent.id]}
                           onClick={(e) => { e.stopPropagation(); handleMarketplacePublish(agent); }}
                           title={marketplacePublished[agent.id] ? 'Published to Marketplace' : 'Publish to Marketplace'}
+                          style={{
+                            position: 'relative',
+                            ...(marketplacePublished[agent.id] ? { color: '#FAA525', background: 'rgba(250,165,37,0.15)', borderColor: 'rgba(250,165,37,0.4)' } : {}),
+                            ...(marketplacePublishing[agent.id] ? { animation: 'pulse 1s ease-in-out infinite' } : {}),
+                          }}
+                          onMouseEnter={(e) => { if (!marketplacePublished[agent.id]) { e.currentTarget.style.color = '#FAA525'; e.currentTarget.style.background = 'rgba(250,165,37,0.2)'; e.currentTarget.style.borderColor = 'rgba(250,165,37,0.5)'; } }}
+                          onMouseLeave={(e) => { if (!marketplacePublished[agent.id]) { e.currentTarget.style.color = ''; e.currentTarget.style.background = ''; e.currentTarget.style.borderColor = ''; } }}
                         >
                           <Icons.Shop />
-                          {marketplacePublished[agent.id] && <span className={styles.publishedDot} />}
+                          {marketplacePublished[agent.id] && <span style={{ position: 'absolute', top: 2, right: 2, width: 5, height: 5, borderRadius: '50%', background: '#FAA525' }} />}
                         </button>
 
                         {/* Publish to DSID Network button */}
