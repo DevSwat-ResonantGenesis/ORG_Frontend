@@ -85,6 +85,10 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const [isPublishing, setIsPublishing] = useState(false);
   const [publishResult, setPublishResult] = useState<{ success: boolean; manifestHash?: string; codeChecksum?: string; error?: string } | null>(null);
 
+  // Marketplace publish state
+  const [marketplacePublishing, setMarketplacePublishing] = useState<Record<string, boolean>>({});
+  const [marketplacePublished, setMarketplacePublished] = useState<Record<string, boolean>>({});
+
   const [messageInput, setMessageInput] = useState('');
   const [agentMessages, setAgentMessages] = useState<Record<string, AgentMessage[]>>({});
   const [isSendingMessage, setIsSendingMessage] = useState(false);
@@ -572,6 +576,30 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     setPublishManifest(prev => ({ ...prev, [key]: value }));
   }, []);
 
+  // Marketplace publish handler — calls Agent Engine /{agent_id}/publish
+  const handleMarketplacePublish = useCallback(async (agent: Agent) => {
+    if (marketplacePublishing[agent.id]) return;
+    setMarketplacePublishing(prev => ({ ...prev, [agent.id]: true }));
+    try {
+      await fastapiClient.post(`/agent-engine/agents/${agent.id}/publish`, {
+        publish_internal_marketplace: true,
+        publish_decentralized: false,
+        category: agent.type || 'utility',
+        tags: agent.tools || [],
+        price_type: 'free',
+        price_amount: 0,
+        include_system_prompt: false,
+      });
+      setMarketplacePublished(prev => ({ ...prev, [agent.id]: true }));
+      toast.success(`${agent.name} published to Marketplace`);
+    } catch (err: any) {
+      const detail = err?.response?.data?.detail || err?.message || 'Publish failed';
+      toast.error(`Marketplace publish failed: ${detail}`);
+    } finally {
+      setMarketplacePublishing(prev => ({ ...prev, [agent.id]: false }));
+    }
+  }, [marketplacePublishing, toast]);
+
   return (
     <div className={`${styles.panel} ${className || ''}`}>
       <div className={styles.panelHeader}>
@@ -907,7 +935,18 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                           <Icons.Copy />
                         </button>
                         
-                        {/* Publish button */}
+                        {/* Marketplace publish button */}
+                        <button 
+                          className={`${styles.actionBtn} ${styles.shopBtn} ${marketplacePublished[agent.id] ? styles.published : ''} ${marketplacePublishing[agent.id] ? styles.shopBtnPublishing : ''}`}
+                          disabled={bulkMode || marketplacePublishing[agent.id]}
+                          onClick={(e) => { e.stopPropagation(); handleMarketplacePublish(agent); }}
+                          title={marketplacePublished[agent.id] ? 'Published to Marketplace' : 'Publish to Marketplace'}
+                        >
+                          <Icons.Shop />
+                          {marketplacePublished[agent.id] && <span className={styles.publishedDot} />}
+                        </button>
+
+                        {/* Publish to DSID Network button */}
                         <button 
                           className={`${styles.actionBtn} ${styles.detailBtn}`}
                           disabled={bulkMode}
