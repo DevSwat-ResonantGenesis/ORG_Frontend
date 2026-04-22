@@ -1,36 +1,36 @@
 /**
- * Agent Marketplace Page (DSID Network)
- * Browse DSID-verified agents with categories, search, sort, and execution
- * Redesigned: dashboardicons.com/community grid + haveibeenpwned detail card
+ * Agent Marketplace Page — Compact branded redesign
+ * Split-view: card grid left, detail panel right
+ * Brand: #FAA525 #01A6BC #FA547C #71C23E #FFFFFF #FFD800 #121214
  */
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Search, Play, Shield, Clock, Hash,
+  Search, Play, Shield, Clock,
   CheckCircle, XCircle, Loader2, ExternalLink,
-  ArrowLeft, Copy, Zap, Code, Wrench, Database,
-  Settings, Bot, BarChart3,
+  X, Copy, Zap, Code, Wrench, Database,
+  Settings, Bot, BarChart3, Download, Star,
 } from 'lucide-react';
 import { isAuthenticated } from '../../utils/auth-cookies';
 import {
   getNodeStatus, searchAgents, executeAgent,
   type Agent, type NodeStatus, type ExecuteResponse
 } from '../../services/nodeApi';
-import styles from './NetworkGrid.module.css';
+import styles from './Marketplace.module.css';
 
 const CATEGORIES = [
-  { id: 'all', label: 'All Agents', icon: 'bot' },
-  { id: 'utility', label: 'Utility', icon: 'wrench' },
-  { id: 'analysis', label: 'Analysis', icon: 'chart' },
-  { id: 'productivity', label: 'Productivity', icon: 'zap' },
-  { id: 'developer-tools', label: 'Dev Tools', icon: 'code' },
-  { id: 'automation', label: 'Automation', icon: 'cog' },
-  { id: 'data', label: 'Data', icon: 'database' },
-  { id: 'security', label: 'Security', icon: 'shield' },
+  { id: 'all', label: 'All' },
+  { id: 'utility', label: 'Utility' },
+  { id: 'analysis', label: 'Analysis' },
+  { id: 'productivity', label: 'Productivity' },
+  { id: 'developer-tools', label: 'Dev Tools' },
+  { id: 'automation', label: 'Automation' },
+  { id: 'data', label: 'Data' },
+  { id: 'security', label: 'Security' },
 ];
 
-function getCategoryIcon(cat: string, size = 36) {
+function getCategoryIcon(cat: string, size = 18) {
   switch (cat) {
     case 'utility': return <Wrench size={size} />;
     case 'analysis': return <BarChart3 size={size} />;
@@ -41,6 +41,12 @@ function getCategoryIcon(cat: string, size = 36) {
     case 'security': return <Shield size={size} />;
     default: return <Bot size={size} />;
   }
+}
+
+function renderStars(rating: number) {
+  return Array.from({ length: 5 }, (_, i) => (
+    <span key={i} className={i < Math.round(rating) ? styles.starFilled : styles.star}>&#9733;</span>
+  ));
 }
 
 type SortOption = 'newest' | 'popular' | 'rating' | 'name';
@@ -54,7 +60,6 @@ export default function AgentMarketplacePage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState<SortOption>('newest');
 
-  // Detail modal
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [executing, setExecuting] = useState(false);
   const [executionInput, setExecutionInput] = useState('{"message": "hello"}');
@@ -140,7 +145,6 @@ export default function AgentMarketplacePage() {
     setExecutionInput('{"message": "hello"}');
   }
 
-  // Sort
   const sortedAgents = [...agents].sort((a, b) => {
     switch (sortBy) {
       case 'newest': return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
@@ -151,7 +155,6 @@ export default function AgentMarketplacePage() {
     }
   });
 
-  // Filter by search
   const filtered = sortedAgents.filter(agent => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
@@ -165,207 +168,223 @@ export default function AgentMarketplacePage() {
 
   return (
     <div className={styles.page}>
-      {/* Hero */}
-      <div className={styles.hero}>
-        <h1 className={styles.heroTitle}>DSID Network Marketplace</h1>
-        <p className={styles.heroSub}>
-          DSID-verified (Trust Level T3) agents only &mdash; Decentralized &amp; cryptographically verified
-        </p>
-      </div>
-
-      {/* Status bar */}
-      <div className={styles.statusBar}>
-        <div className={styles.statusItem}>
-          <span className={`${styles.statusDot} ${status?.running ? styles.statusDotOnline : styles.statusDotOffline}`} />
-          RARA Node: {status?.running ? 'Online' : 'Offline'}
-        </div>
-        <span className={styles.statusSep}>|</span>
-        <div className={styles.statusItem}>
-          {agents.length} verified agents
+      {/* Row 1: Title + description + status */}
+      <div className={styles.topBar}>
+        <h1 className={styles.topTitle}>Agent Marketplace</h1>
+        <span className={styles.topDesc}>DSID-verified &middot; Decentralized &amp; cryptographically signed agents</span>
+        <div className={styles.topRight}>
+          <div className={styles.statusChip}>
+            <span className={status?.running ? styles.dotOnline : styles.dotOffline} />
+            RARA {status?.running ? 'Online' : 'Offline'}
+          </div>
+          <span className={styles.countChip}>{filtered.length} agents</span>
         </div>
       </div>
 
-      {/* Search */}
-      <div className={styles.searchWrap}>
-        <div className={styles.searchIcon}>
-          <Search size={18} />
+      {/* Row 2: Search + pills + sort */}
+      <div className={styles.controlBar}>
+        <div className={styles.searchWrap}>
+          <div className={styles.searchIcon}><Search size={14} /></div>
+          <input
+            className={styles.searchInput}
+            type="text"
+            placeholder="Search agents..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
         </div>
-        <input
-          className={styles.searchInput}
-          type="text"
-          placeholder="Search agents..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-        />
-      </div>
-
-      {/* Category pills */}
-      <div className={styles.pills}>
-        {CATEGORIES.map(c => (
-          <button
-            key={c.id}
-            className={`${styles.pill} ${selectedCategory === c.id ? styles.pillActive : ''}`}
-            onClick={() => setSelectedCategory(c.id)}
-          >
-            {c.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Sort bar */}
-      <div className={styles.sortBar}>
-        <span className={styles.sortLabel}>{filtered.length} result{filtered.length !== 1 ? 's' : ''}</span>
+        <div className={styles.divider} />
+        <div className={styles.pills}>
+          {CATEGORIES.map(c => (
+            <button
+              key={c.id}
+              className={`${styles.pill} ${selectedCategory === c.id ? styles.pillActive : ''}`}
+              onClick={() => setSelectedCategory(c.id)}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
         <div className={styles.sortBtns}>
           {(['newest', 'popular', 'rating', 'name'] as SortOption[]).map(s => (
-            <button key={s} className={`${styles.sortBtn} ${sortBy === s ? styles.sortBtnActive : ''}`} onClick={() => setSortBy(s)}>
+            <button
+              key={s}
+              className={`${styles.sortBtn} ${sortBy === s ? styles.sortBtnActive : ''}`}
+              onClick={() => setSortBy(s)}
+            >
               {s === 'name' ? 'A-Z' : s.charAt(0).toUpperCase() + s.slice(1)}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Grid */}
-      {loading ? (
-        <div className={styles.loading}><div className={styles.spinner} />Loading agents...</div>
-      ) : filtered.length === 0 ? (
-        <div className={styles.emptyState}>
-          <Bot size={40} style={{ marginBottom: 12, opacity: 0.4 }} />
-          <p>{searchQuery ? `No results for "${searchQuery}"` : 'No agents found. Try a different category.'}</p>
-        </div>
-      ) : (
-        <div className={styles.iconGrid}>
-          {filtered.map(agent => (
-            <div key={agent.manifest_hash} className={styles.iconCard} onClick={() => setSelectedAgent(agent)}>
-              <span className={`${styles.cardBadge} ${agent.status === 'Active' ? styles.badgeActive : styles.badgeTrust}`}>
-                {agent.status === 'Active' ? 'Active' : agent.status}
-              </span>
-              <div className={styles.cardIcon}>
-                {getCategoryIcon(agent.category)}
-              </div>
-              <div className={styles.cardName}>{agent.name}</div>
-              <div className={styles.cardMeta}>v{agent.version} &middot; T{agent.trust_tier}</div>
+      {/* Content: Grid + optional Detail split */}
+      <div className={styles.content}>
+        <div className={styles.gridPane}>
+          {loading ? (
+            <div className={styles.loading}><div className={styles.spinner} />Loading...</div>
+          ) : filtered.length === 0 ? (
+            <div className={styles.emptyState}>
+              <Bot size={32} style={{ marginBottom: 8, opacity: 0.3 }} />
+              <p>{searchQuery ? `No results for "${searchQuery}"` : 'No agents found. Try a different category.'}</p>
             </div>
-          ))}
-        </div>
-      )}
-
-      {/* Footer */}
-      <div className={styles.footer}>
-        <a href="https://sepolia.basescan.org/address/0x10E3079926f6C5790228d0e5f164E506AE96F3Ea" target="_blank" rel="noopener noreferrer">
-          BaseScan <ExternalLink size={10} />
-        </a>
-      </div>
-
-      {/* Detail modal (haveibeenpwned style) */}
-      {selectedAgent && (
-        <div className={styles.overlay} onClick={closeDetail}>
-          <div className={styles.detailPanel} onClick={e => e.stopPropagation()}>
-            <button className={styles.detailBack} onClick={closeDetail}>
-              <ArrowLeft size={14} /> Back to marketplace
-            </button>
-
-            <div className={styles.detailHeader}>
-              <div className={styles.detailIcon}>
-                {getCategoryIcon(selectedAgent.category)}
-              </div>
-              <div>
-                <h2 className={styles.detailTitle}>{selectedAgent.name}</h2>
-                <div className={styles.detailMeta}>
-                  v{selectedAgent.version} &middot; {selectedAgent.category} &middot; Trust Tier {selectedAgent.trust_tier}
-                </div>
-              </div>
-            </div>
-
-            {/* Stat chips */}
-            <div className={styles.statChips}>
-              <div className={styles.statChip}>
-                <Clock size={14} />
-                <span className={styles.statChipValue}>{selectedAgent.execution_count || 0}</span> executions
-              </div>
-              <div className={styles.statChip}>
-                <Shield size={14} />
-                Trust <span className={styles.statChipValue}>T{selectedAgent.trust_tier}</span>
-              </div>
-              <div className={styles.statChip}>
-                {selectedAgent.status === 'Active' ? <CheckCircle size={14} color="#22c55e" /> : <XCircle size={14} color="#ef4444" />}
-                <span className={styles.statChipValue}>{selectedAgent.status}</span>
-              </div>
-              {selectedAgent.rating != null && (
-                <div className={styles.statChip}>
-                  &#9733; <span className={styles.statChipValue}>{selectedAgent.rating.toFixed(1)}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Description */}
-            <div className={styles.detailSection}>
-              <h3 className={styles.detailSectionTitle}>About this agent</h3>
-              <p className={styles.detailDesc}>{selectedAgent.description}</p>
-            </div>
-
-            {/* Manifest hash */}
-            <div className={styles.detailSection}>
-              <h3 className={styles.detailSectionTitle}>Manifest Hash</h3>
-              <div className={styles.hashBlock}>
-                <code>{selectedAgent.manifest_hash.slice(0, 24)}...{selectedAgent.manifest_hash.slice(-8)}</code>
-                <button className={styles.copyBtn} onClick={() => copyHash(selectedAgent.manifest_hash)}>
-                  {copied ? <CheckCircle size={14} color="#22c55e" /> : <Copy size={14} />}
-                </button>
-              </div>
-            </div>
-
-            {/* Capabilities / Tags */}
-            {selectedAgent.capabilities && selectedAgent.capabilities.length > 0 && (
-              <div className={styles.detailSection}>
-                <h3 className={styles.detailSectionTitle}>Capabilities</h3>
-                <div className={styles.tagList}>
-                  {selectedAgent.capabilities.map((cap, i) => <span key={i} className={styles.tag}>{cap}</span>)}
-                </div>
-              </div>
-            )}
-
-            {selectedAgent.tags && selectedAgent.tags.length > 0 && (
-              <div className={styles.detailSection}>
-                <h3 className={styles.detailSectionTitle}>Tags</h3>
-                <div className={styles.tagList}>
-                  {selectedAgent.tags.map((tag, i) => <span key={i} className={styles.tag}>{tag}</span>)}
-                </div>
-              </div>
-            )}
-
-            {/* Execute */}
-            <div className={styles.executeSection}>
-              <h3 className={styles.detailSectionTitle} style={{ borderBottom: 'none', paddingBottom: 0 }}>Execute Agent</h3>
-              <textarea
-                className={styles.executeTextarea}
-                value={executionInput}
-                onChange={e => setExecutionInput(e.target.value)}
-              />
-              <button className={styles.btnPrimary} onClick={handleExecute} disabled={executing}>
-                {executing ? (
-                  <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Executing...</>
-                ) : (
-                  <><Play size={16} /> Execute Agent</>
-                )}
-              </button>
-
-              {executionResult && (
-                <div className={styles.resultBox}>
-                  <div style={{ fontWeight: 600, marginBottom: 6, color: executionResult.success ? '#22c55e' : '#ef4444' }}>
-                    {executionResult.success ? 'Success' : 'Failed'}
-                    <span style={{ color: '#64748b', fontWeight: 'normal', marginLeft: 8 }}>
-                      ({executionResult.duration_ms}ms)
-                    </span>
+          ) : (
+            <div className={styles.cardGrid}>
+              {filtered.map(agent => (
+                <div
+                  key={agent.manifest_hash}
+                  className={`${styles.card} ${selectedAgent?.manifest_hash === agent.manifest_hash ? styles.cardSelected : ''}`}
+                  onClick={() => setSelectedAgent(agent)}
+                >
+                  <div className={styles.cardIconWrap}>
+                    {getCategoryIcon(agent.category)}
                   </div>
-                  <pre style={{ margin: 0, whiteSpace: 'pre-wrap', fontSize: 12, color: '#94a3b8', maxHeight: 200, overflow: 'auto' }}>
-                    {JSON.stringify(executionResult.output || executionResult.error, null, 2)}
-                  </pre>
+                  <div className={styles.cardBody}>
+                    <div className={styles.cardName}>{agent.name}</div>
+                    <div className={styles.cardTagline}>
+                      {agent.description?.slice(0, 60) || `v${agent.version} \u00B7 ${agent.category}`}
+                      {agent.description && agent.description.length > 60 ? '...' : ''}
+                    </div>
+                  </div>
+                  <div className={styles.cardRight}>
+                    <span className={`${styles.cardBadge} ${agent.price_per_execution ? styles.badgePaid : styles.badgeFree}`}>
+                      {agent.price_per_execution ? `$${agent.price_per_execution}` : 'Free'}
+                    </span>
+                    <div className={styles.cardStats}>
+                      {agent.rating != null && agent.rating > 0 && (
+                        <><Star size={10} className={styles.starIcon} /> {agent.rating.toFixed(1)}</>
+                      )}
+                      <><Download size={10} /> {agent.execution_count || 0}</>
+                    </div>
+                  </div>
                 </div>
-              )}
+              ))}
             </div>
+          )}
+
+          {/* Footer */}
+          <div className={styles.footer}>
+            <a href="https://sepolia.basescan.org/address/0x10E3079926f6C5790228d0e5f164E506AE96F3Ea" target="_blank" rel="noopener noreferrer">
+              BaseScan <ExternalLink size={10} />
+            </a>
           </div>
         </div>
-      )}
+
+        {/* Detail split panel */}
+        {selectedAgent && (
+          <div className={styles.detailPane}>
+            <div className={styles.detailInner}>
+              <button className={styles.detailClose} onClick={closeDetail}>
+                <X size={12} /> Close
+              </button>
+
+              <div className={styles.detailHero}>
+                <div className={styles.detailIconWrap}>
+                  {getCategoryIcon(selectedAgent.category, 26)}
+                </div>
+                <div>
+                  <h2 className={styles.detailTitle}>{selectedAgent.name}</h2>
+                  <div className={styles.detailMeta}>
+                    v{selectedAgent.version} &middot; {selectedAgent.category} &middot; T{selectedAgent.trust_tier}
+                  </div>
+                </div>
+              </div>
+
+              {/* Stars */}
+              <div className={styles.starsRow}>
+                {renderStars(selectedAgent.rating || 0)}
+                <span className={styles.ratingText}>
+                  {selectedAgent.rating ? selectedAgent.rating.toFixed(1) : 'No ratings'}
+                </span>
+              </div>
+
+              {/* Metrics */}
+              <div className={styles.metricsRow}>
+                <div className={styles.metric}>
+                  <Clock size={12} />
+                  <span className={styles.metricVal}>{selectedAgent.execution_count || 0}</span> runs
+                </div>
+                <div className={styles.metric}>
+                  <Shield size={12} />
+                  Trust <span className={styles.metricVal}>T{selectedAgent.trust_tier}</span>
+                </div>
+                <div className={styles.metric}>
+                  {selectedAgent.status === 'Active' ? <CheckCircle size={12} color="#71C23E" /> : <XCircle size={12} color="#FA547C" />}
+                  <span className={styles.metricVal}>{selectedAgent.status}</span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className={styles.section}>
+                <h3 className={styles.sectionTitle}>About</h3>
+                <p className={styles.descText}>{selectedAgent.description}</p>
+              </div>
+
+              {/* Manifest hash */}
+              <div className={styles.section}>
+                <h3 className={styles.sectionTitle}>Manifest Hash</h3>
+                <div className={styles.hashBlock}>
+                  <code>{selectedAgent.manifest_hash.slice(0, 20)}...{selectedAgent.manifest_hash.slice(-8)}</code>
+                  <button className={styles.copyBtn} onClick={() => copyHash(selectedAgent.manifest_hash)}>
+                    {copied ? <CheckCircle size={12} color="#71C23E" /> : <Copy size={12} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Capabilities */}
+              {selectedAgent.capabilities && selectedAgent.capabilities.length > 0 && (
+                <div className={styles.section}>
+                  <h3 className={styles.sectionTitle}>Capabilities</h3>
+                  <div className={styles.tagList}>
+                    {selectedAgent.capabilities.map((cap, i) => <span key={i} className={styles.tag}>{cap}</span>)}
+                  </div>
+                </div>
+              )}
+
+              {/* Tags */}
+              {selectedAgent.tags && selectedAgent.tags.length > 0 && (
+                <div className={styles.section}>
+                  <h3 className={styles.sectionTitle}>Tags</h3>
+                  <div className={styles.tagList}>
+                    {selectedAgent.tags.map((tag, i) => <span key={i} className={styles.tag}>{tag}</span>)}
+                  </div>
+                </div>
+              )}
+
+              {/* Execute */}
+              <div className={styles.executeSection}>
+                <h3 className={styles.sectionTitle}>Execute Agent</h3>
+                <textarea
+                  className={styles.executeTextarea}
+                  value={executionInput}
+                  onChange={e => setExecutionInput(e.target.value)}
+                />
+                <button className={styles.btnPrimary} onClick={handleExecute} disabled={executing}>
+                  {executing ? (
+                    <><Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> Running...</>
+                  ) : (
+                    <><Play size={14} /> Execute</>
+                  )}
+                </button>
+
+                {executionResult && (
+                  <div className={`${styles.resultBox} ${executionResult.success ? styles.resultSuccess : styles.resultError}`}>
+                    <div style={{ fontWeight: 700, marginBottom: 4 }}>
+                      {executionResult.success ? 'Success' : 'Failed'}
+                      <span style={{ fontWeight: 400, opacity: 0.5, marginLeft: 6 }}>
+                        {executionResult.duration_ms}ms
+                      </span>
+                    </div>
+                    <pre style={{ margin: 0, whiteSpace: 'pre-wrap', fontSize: 11 }}>
+                      {JSON.stringify(executionResult.output || executionResult.error, null, 2)}
+                    </pre>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

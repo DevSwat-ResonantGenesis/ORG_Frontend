@@ -45,6 +45,10 @@ export interface Agent {
   execution_count: number;
   price_per_execution?: number;
   rental_available?: boolean;
+  created_at?: string;
+  rating?: number;
+  tags?: string[];
+  capabilities?: string[];
 }
 
 export interface PublishAgentRequest {
