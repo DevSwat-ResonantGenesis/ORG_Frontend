@@ -266,6 +266,26 @@ export const stopAgentSession = async (session_id: string): Promise<{ status: st
 };
 
 /**
+ * Emergency stop — cancel ALL running sessions, disable schedules & triggers
+ * POST /api/v1/agents/{agent_id}/emergency-stop
+ */
+export const emergencyStopAgent = async (agent_id: string): Promise<{
+  status: string;
+  cancelled_sessions: number;
+  disabled_schedules: number;
+  disabled_triggers: number;
+  cancelled_federated_tasks: number;
+}> => {
+  try {
+    const response = await fastapiClient.post(`/api/v1/agents/${agent_id}/emergency-stop`);
+    return response.data;
+  } catch (error) {
+    logger.apiError(`/api/v1/agents/${agent_id}/emergency-stop`, error);
+    throw error;
+  }
+};
+
+/**
  * Delete an agent
  * DELETE /api/v1/agents/{agent_id}
  */
