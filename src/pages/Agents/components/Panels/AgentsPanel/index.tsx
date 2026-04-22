@@ -963,24 +963,26 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                           <Icons.Upload />
                         </button>
                         
-                        {/* Emergency Stop */}
-                        <button 
-                          className={`${styles.actionBtn} ${styles.deleteBtn}`}
-                          disabled={bulkMode}
-                          onClick={async (e) => {
-                            e.stopPropagation();
-                            if (!confirm(`Emergency stop "${agent.name}"? This will cancel ALL running sessions and disable all schedules.`)) return;
-                            try {
-                              const { emergencyStopAgent } = await import('../../../../../api/agents');
-                              const result = await emergencyStopAgent(agent.id);
-                              toast.success(`Stopped: ${result.cancelled_sessions} sessions cancelled, ${result.disabled_schedules} schedules disabled`);
-                            } catch (err: any) { toast.error(err?.response?.data?.detail || 'Emergency stop failed'); }
-                          }}
-                          title="Emergency Stop — cancel all sessions & schedules"
-                          style={{ color: '#ef4444' }}
-                        >
-                          <Icons.Stop />
-                        </button>
+                        {/* Emergency Stop — only visible when agent is active/running */}
+                        {agent.status === 'active' && (
+                          <button 
+                            className={`${styles.actionBtn} ${styles.deleteBtn}`}
+                            disabled={bulkMode}
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              if (!confirm(`Emergency stop "${agent.name}"? This will cancel ALL running sessions and disable all schedules.`)) return;
+                              try {
+                                const { emergencyStopAgent } = await import('../../../../../api/agents');
+                                const result = await emergencyStopAgent(agent.id);
+                                toast.success(`Stopped: ${result.cancelled_sessions} sessions cancelled, ${result.disabled_schedules} schedules disabled`);
+                              } catch (err: any) { toast.error(err?.response?.data?.detail || 'Emergency stop failed'); }
+                            }}
+                            title="Emergency Stop — cancel all sessions & schedules"
+                            style={{ color: '#ef4444' }}
+                          >
+                            <Icons.Stop />
+                          </button>
+                        )}
 
                         {/* Archive button */}
                         <button 
