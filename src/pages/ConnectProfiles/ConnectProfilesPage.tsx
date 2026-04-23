@@ -83,6 +83,7 @@ const PROVIDER_STYLES: Record<string, { emoji: string; icon?: string; color: str
   copilot: { emoji: '🤖', icon: '/images/connect-icons/copilot.jpeg', color: '#2B88D8' },
   glm: { emoji: '🧠', icon: '/images/connect-icons/glm.png', color: '#4285F4' },
   chatgpt: { emoji: '💬', icon: '/images/connect-icons/chatgpt.png', color: '#10A37F' },
+  bedrock: { emoji: '☁️', color: '#FF9900' },
 };
 
 const CATEGORIES = ['Version Control', 'AI & Intelligence', 'Cloud & Hosting', 'Productivity', 'Design', 'Databases', 'Payments', 'Communication', 'Automation', 'Monitoring'];

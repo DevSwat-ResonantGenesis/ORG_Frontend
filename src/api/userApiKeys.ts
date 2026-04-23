@@ -231,4 +231,5 @@ export const API_KEY_PROVIDERS = [
   { id: 'copilot', name: 'Microsoft Copilot', placeholder: '...', helpUrl: 'https://copilot.microsoft.com', models: ['gpt-4o', 'gpt-4-turbo'] },
   { id: 'glm', name: 'GLM (Zhipu AI)', placeholder: '...', helpUrl: 'https://open.bigmodel.cn/usercenter/apikeys', models: ['glm-4', 'glm-4v', 'glm-3-turbo'] },
   { id: 'chatgpt', name: 'ChatGPT (Direct)', placeholder: 'sk-...', helpUrl: 'https://platform.openai.com/api-keys', models: ['chatgpt-4o-latest', 'gpt-4o-mini'] },
+  { id: 'bedrock', name: 'AWS Bedrock', placeholder: 'ABSKQm...', helpUrl: 'https://console.aws.amazon.com/bedrock/home#/api-keys', models: ['claude-3.5-sonnet', 'claude-3-haiku', 'llama-3.1-70b', 'nova-pro', 'nova-lite'] },
 ];
