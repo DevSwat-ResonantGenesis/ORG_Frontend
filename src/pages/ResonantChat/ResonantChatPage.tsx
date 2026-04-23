@@ -1,5 +1,5 @@
 import { createMemory, deleteConversation, deleteMemory, listConversations, listMemories, updateConversation, updateMemory, uploadFile, type MemoryResponse } from '@/api/rag';
-import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, getProviderStats, getUserAnalytics, archiveConversation, deleteResonantConversation, deleteResonantMessage, extractMemories, categorizeConversations, saveAgenticToResonant, type UserAnalytics, type ConversationGroup } from '@/api/resonantChat';
+import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, streamResonantMessage, getProviderStats, getUserAnalytics, archiveConversation, deleteResonantConversation, deleteResonantMessage, extractMemories, categorizeConversations, saveAgenticToResonant, type UserAnalytics, type ConversationGroup } from '@/api/resonantChat';
 import { triggerChatSync } from '@/context/ChatContext';
 import { fetchAvailableProviders } from '@/api/userApiKeys';
 import { executeSkill } from '@/api/skills';
@@ -2496,30 +2496,114 @@ const ResonantChatPage: React.FC = () => {
         }
       }
 
-      // === RESONANT CHAT FULL PIPELINE (agent routing, skills, autonomous daemon, web search, image gen) ===
-      // Use sendResonantMessage for all users (Hash Sphere-powered messaging)
-      // Extract immediate context from last few messages to help AI focus on current task
-      const recentMessages = messages.slice(-5);
-      const immediateContext = (() => {
-        // Look for task indicators in recent messages
-        const taskKeywords = {
-          booking: ['book', 'flight', 'ticket', 'hotel', 'reservation', 'travel'],
-          coding: ['code', 'function', 'bug', 'error', 'implement', 'create file'],
-          analysis: ['analyze', 'report', 'data', 'chart', 'graph'],
-          planning: ['plan', 'schedule', 'organize', 'list'],
-        };
-        
-        for (const msg of recentMessages) {
-          const content = msg.content.toLowerCase();
-          for (const [task, keywords] of Object.entries(taskKeywords)) {
-            if (keywords.some(kw => content.includes(kw))) {
-              return `CURRENT_TASK: ${task.toUpperCase()}. Focus on completing this task. The user's last message "${currentInput}" is a direct continuation of this task.`;
-            }
-          }
-        }
-        return undefined;
-      })();
+      // === RESONANT CHAT FULL PIPELINE (SSE streaming + fallback) ===
+      const streamMsgId = crypto.randomUUID();
+      let streamingSucceeded = false;
 
+      // Add placeholder assistant message for live streaming
+      setMessages(prev => [...prev, {
+        id: streamMsgId,
+        role: 'assistant' as const,
+        content: '',
+        timestamp: new Date(),
+        aiProvider: 'AI',
+      }]);
+
+      try {
+        let sseChatId = chatIdToUse || '';
+        let lastContent = '';
+
+        await streamResonantMessage(
+          {
+            message: queryWithContext,
+            chatId: chatIdToUse,
+            preferred_provider: selectedProvider !== 'auto' ? selectedProvider : undefined,
+            agent_hash: (!selectedTeamId) ? selectedAgentHash || undefined : undefined,
+            teamId: selectedTeamId || undefined,
+            images: imageAttachments.length > 0 ? imageAttachments : undefined,
+          },
+          (evt) => {
+            if (evt.event === 'start') {
+              if (evt.chat_id) sseChatId = evt.chat_id;
+              if (evt.tool === 'agent_architect') {
+                // Open agents panel for architect operations
+                setAgentsPanelUrl('/agents?embed=1');
+                setSplitAutoOpenRequest({ requestId: Date.now(), tab: 'agents' });
+                if (!splitViewEnabled) { setSplitViewEnabled(true); setSplitViewPane('split'); }
+              }
+            } else if (evt.event === 'chunk' && evt.content) {
+              lastContent = evt.content;
+              setMessages(prev => prev.map(m =>
+                m.id === streamMsgId ? { ...m, content: evt.content! } : m
+              ));
+            } else if (evt.event === 'step') {
+              // Pipeline step — show as mini status under the message
+              const stepMsg = evt.message || evt.step || '';
+              if (stepMsg) {
+                setMessages(prev => prev.map(m =>
+                  m.id === streamMsgId ? { ...m, aiProvider: `🔄 ${stepMsg}` } : m
+                ));
+              }
+            } else if (evt.event === 'options' && evt.options) {
+              const optData = evt.options;
+              if (optData?._type === 'present_options' && optData?.options) {
+                setPresentedOptions({
+                  title: optData.title || 'Options',
+                  options: optData.options,
+                  allow_custom: optData.allow_custom,
+                });
+              }
+            } else if (evt.event === 'done') {
+              const finalContent = evt.content || lastContent;
+              setMessages(prev => prev.map(m =>
+                m.id === streamMsgId ? {
+                  ...m,
+                  id: evt.message_id || streamMsgId,
+                  content: finalContent,
+                  hash: evt.hash,
+                  resonanceScore: evt.resonance_score,
+                  aiProvider: evt.provider || 'AI',
+                } : m
+              ));
+              if (evt.present_options) {
+                const optData = evt.present_options;
+                if (optData?._type === 'present_options' && optData?.options) {
+                  setPresentedOptions({
+                    title: optData.title || 'Options',
+                    options: optData.options,
+                    allow_custom: optData.allow_custom,
+                  });
+                }
+              }
+              if (evt.chat_id && !currentConversationId) {
+                setCurrentConversationId(evt.chat_id);
+              }
+            } else if (evt.event === 'error') {
+              setMessages(prev => prev.map(m =>
+                m.id === streamMsgId ? { ...m, content: `Error: ${evt.error}`, aiProvider: 'Error' } : m
+              ));
+            }
+          },
+          controller.signal,
+        );
+
+        streamingSucceeded = true;
+        if (sseChatId && !currentConversationId) {
+          setCurrentConversationId(sseChatId);
+        }
+        setIsLoading(false);
+        setAbortControllerRef(null);
+        setAttachedFiles([]);
+        setUploadedFileIds(new Map());
+        return;
+      } catch (streamErr: any) {
+        if (controller.signal.aborted || streamErr?.name === 'AbortError') throw streamErr;
+        console.warn('[ResonantChat] SSE streaming failed, falling back to sendResonantMessage:', streamErr);
+        // Remove placeholder message for fallback
+        setMessages(prev => prev.filter(m => m.id !== streamMsgId));
+      }
+
+      // === FALLBACK: RESONANT CHAT NON-STREAMING ===
       const resonantResponse = await sendResonantMessage({
         message: queryWithContext,
         chatId: chatIdToUse,
@@ -2531,17 +2615,12 @@ const ResonantChatPage: React.FC = () => {
             timestamp: typeof m.timestamp === 'string' ? m.timestamp : (m.timestamp instanceof Date ? m.timestamp.toISOString() : new Date().toISOString()),
             aiProvider: m.aiProvider,
           })),
-          userPreferences: {
-            conversationSummary: messages.length > 15 ? `This conversation has ${messages.length} messages. Earlier context: ${messages.slice(0, -15).map(m => m.role === 'user' ? `User asked: "${m.content.substring(0, 100)}..."` : '').filter(Boolean).join('; ')}` : undefined,
-            immediateContext: immediateContext,
-          },
         },
-        // Code features (NEW)
         attached_files: attachedFilePaths.length > 0 ? attachedFilePaths : undefined,
-        images: imageAttachments.length > 0 ? imageAttachments : undefined, // Pass images for vision models
+        images: imageAttachments.length > 0 ? imageAttachments : undefined,
         code_selection: codeSelection || undefined,
         preferred_provider: selectedProvider !== 'auto' ? selectedProvider : undefined,
-        use_rag: useHashSphere ? false : true, // If Hash Sphere is enabled, RAG is optional
+        use_rag: useHashSphere ? false : true,
         agent_hash: (!selectedTeamId) ? selectedAgentHash || undefined : undefined,
         teamId: selectedTeamId || undefined,
         enabled_skill_ids: enabledSkillIds,
@@ -2553,68 +2632,28 @@ const ResonantChatPage: React.FC = () => {
           if (toolResult.success && toolResult.result?.action === 'navigate' && toolResult.result?.url) {
             const url = toolResult.result.url;
             const isInternal = typeof url === 'string' && url.startsWith('/') && !url.startsWith('//');
-            logger.info('[ResonantChatPage] Navigation tool executed:', url);
-            if (isInternal) {
-              navigate(url);
-            } else {
-              window.open(url, '_blank', 'noopener,noreferrer');
-            }
+            if (isInternal) { navigate(url); } else { window.open(url, '_blank', 'noopener,noreferrer'); }
           }
-          // Code Visualizer skill: auto-open split view with visualizer tab
-          // Opens on both success AND failure so the user sees the CV panel
           if (toolResult.tool_name?.includes('code_visualizer')) {
             const analysisId = toolResult.result?.analysis_id || null;
-            if (analysisId) {
-              logger.info('[ResonantChatPage] Code Visualizer analysis received:', analysisId);
-              setVisualizerAnalysisId(analysisId);
-            }
-            setSplitAutoOpenRequest({
-              requestId: Date.now(),
-              tab: 'visualizer',
-            });
-            if (!splitViewEnabled) {
-              setSplitViewEnabled(true);
-              setSplitViewPane('split');
-            }
+            if (analysisId) setVisualizerAnalysisId(analysisId);
+            setSplitAutoOpenRequest({ requestId: Date.now(), tab: 'visualizer' });
+            if (!splitViewEnabled) { setSplitViewEnabled(true); setSplitViewPane('split'); }
           }
           if (toolResult.tool_name?.includes('agents_os') || toolResult.tool_name?.includes('agent_architect')) {
-            const panelUrl = toolResult.result?.panel_url || '/agents?embed=1';
-            logger.info('[ResonantChatPage] Agents OS tool result received:', panelUrl);
-            setAgentsPanelUrl(panelUrl);
-            setSplitAutoOpenRequest({
-              requestId: Date.now(),
-              tab: 'agents',
-            });
-            if (!splitViewEnabled) {
-              setSplitViewEnabled(true);
-              setSplitViewPane('split');
-            }
+            setAgentsPanelUrl(toolResult.result?.panel_url || '/agents?embed=1');
+            setSplitAutoOpenRequest({ requestId: Date.now(), tab: 'agents' });
+            if (!splitViewEnabled) { setSplitViewEnabled(true); setSplitViewPane('split'); }
           }
           if (toolResult.success && toolResult.tool_name?.includes('state_physics')) {
-            const panelUrl = toolResult.result?.panel_url || '/state-physics?embed=1';
-            logger.info('[ResonantChatPage] State Physics tool result received:', panelUrl);
-            setStatePhysicsPanelUrl(panelUrl);
-            setSplitAutoOpenRequest({
-              requestId: Date.now(),
-              tab: 'state_physics',
-            });
-            if (!splitViewEnabled) {
-              setSplitViewEnabled(true);
-              setSplitViewPane('split');
-            }
+            setStatePhysicsPanelUrl(toolResult.result?.panel_url || '/state-physics?embed=1');
+            setSplitAutoOpenRequest({ requestId: Date.now(), tab: 'state_physics' });
+            if (!splitViewEnabled) { setSplitViewEnabled(true); setSplitViewPane('split'); }
           }
           if (toolResult.success && (toolResult.tool_name?.includes('memory_library') || toolResult.result?.action === 'open_memory_panel')) {
-            const panelUrl = toolResult.result?.panel_url || '/resonant-memory?embed=1';
-            logger.info('[ResonantChatPage] Memory Library tool result received:', panelUrl);
-            setMemoryPanelUrl(panelUrl);
-            setSplitAutoOpenRequest({
-              requestId: Date.now(),
-              tab: 'memory',
-            });
-            if (!splitViewEnabled) {
-              setSplitViewEnabled(true);
-              setSplitViewPane('split');
-            }
+            setMemoryPanelUrl(toolResult.result?.panel_url || '/resonant-memory?embed=1');
+            setSplitAutoOpenRequest({ requestId: Date.now(), tab: 'memory' });
+            if (!splitViewEnabled) { setSplitViewEnabled(true); setSplitViewPane('split'); }
           }
         }
       }
@@ -2635,34 +2674,25 @@ const ResonantChatPage: React.FC = () => {
 
       // Save chatId from response if provided (backend creates chat if not provided)
       if (resonantResponse.chatId && !currentConversationId) {
-        console.log('💬 Saving new chatId:', resonantResponse.chatId);
         setCurrentConversationId(resonantResponse.chatId);
-        // NOTE: No localStorage - conversations are loaded only from backend
       }
 
-      // Check if response is an error
-      // Handle both message object and direct content
       let responseContent: string = '';
       if (typeof resonantResponse?.message === 'string') {
         responseContent = resonantResponse.message;
       } else if (resonantResponse?.message?.content) {
         responseContent = resonantResponse.message.content;
       } else if (typeof resonantResponse?.message === 'object' && resonantResponse.message) {
-        // Fallback: try to extract content from message object
         responseContent = (resonantResponse.message as any).content || '';
       }
 
-      // Log if response is empty or malformed
       if (!responseContent) {
-        logger.error('Empty response from backend', { resonantResponse });
         showError('Received empty response from server. Please try again.');
         setIsLoading(false);
         return;
       }
 
       const isError = responseContent.startsWith('Error calling') || responseContent.startsWith('Error:');
-
-      // Extract metrics from response - handle both direct properties and nested message object
       const messageObj = typeof resonantResponse.message === 'object' ? resonantResponse.message : null;
       const resonanceScore = isError ? undefined : (resonantResponse.resonanceScore ?? messageObj?.resonanceScore);
       const hash = isError ? undefined : (resonantResponse.hash ?? messageObj?.hash);
@@ -2672,8 +2702,6 @@ const ResonantChatPage: React.FC = () => {
       const xyz = isError ? undefined : (messageObj?.xyz as [number, number, number] | undefined);
       const modules = isError ? undefined : (messageObj?.modules as ModuleOutputs | undefined);
 
-      // Create assistant message (will be updated via WebSocket if streaming)
-      // Use backend message ID if available, otherwise generate local UUID
       const assistantMessageId = messageObj?.id || crypto.randomUUID();
       const assistantMessage: Message = {
         id: assistantMessageId,
@@ -2686,7 +2714,7 @@ const ResonantChatPage: React.FC = () => {
         anchors: anchors,
         resonanceScore: resonanceScore,
         xyz: xyz,
-        modules: modules, // Hash Sphere module outputs
+        modules: modules,
         metrics: isError ? undefined : {
           resonantEnergy: resonanceScore,
           evidence: resonanceScore,
@@ -2696,21 +2724,18 @@ const ResonantChatPage: React.FC = () => {
         toolResults: resonantResponse.toolResults,
       };
 
-      // Show warning if error occurred
       if (isError) {
         warning(`Provider ${resonantResponse.aiProvider} failed. Please try another provider or check your API keys.`);
       }
 
-      // If WebSocket is connected, subscribe to streaming updates for this message
       if (wsClient?.isConnected() && currentConversationId) {
         setStreamingMessageId(assistantMessageId);
         setStreamingContent('');
         wsClient.subscribe(assistantMessageId);
       }
 
-      // Update memory anchors if new ones were created (reload to get full data)
       if (resonantResponse.anchors && resonantResponse.anchors.length > 0) {
-        loadMemoryAnchors(); // Reload to get full anchor data with xyz
+        loadMemoryAnchors();
       }
 
       setMessages(prev => {
