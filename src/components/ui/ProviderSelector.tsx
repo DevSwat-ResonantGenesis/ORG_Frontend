@@ -10,7 +10,7 @@ import {
 import { fetchLiveProviders, formatLatency } from '@/api/providers';
 import styles from './ProviderSelector.module.css';
 
-export type Provider = 'auto' | 'openai' | 'anthropic' | 'gemini' | 'mistral' | 'groq' | 'local' | 'codellama';
+export type Provider = 'auto' | 'openai' | 'anthropic' | 'gemini' | 'mistral' | 'groq' | 'local' | 'codellama' | (string & {});
 
 export type ProviderHealth = 'healthy' | 'degraded' | 'down';
 
@@ -46,6 +46,10 @@ export interface ProviderSelectorProps {
   availableProviders?: Provider[];
 }
 
+const ProviderImg: React.FC<{ src: string }> = ({ src }) => (
+  <img src={src} alt="" style={{ width: 18, height: 18, borderRadius: 4, objectFit: 'contain' }} />
+);
+
 const getProviderIcon = (providerId: string): React.ReactNode => {
   const iconMap: Record<string, React.ReactNode> = {
     'auto': <AutoIcon className={styles.providerIcon} />,
@@ -56,11 +60,27 @@ const getProviderIcon = (providerId: string): React.ReactNode => {
     'gemini': <GeminiIcon className={styles.providerIcon} />,
     'google': <GeminiIcon className={styles.providerIcon} />,
     'mistral': <MistralIcon className={styles.providerIcon} />,
-    'groq': <MistralIcon className={styles.providerIcon} />,
+    'groq': <ProviderImg src="/images/connect-icons/groq.png" />,
+    'deepseek': <ProviderImg src="/images/connect-icons/deepseek.jpeg" />,
+    'together': <ProviderImg src="/images/connect-icons/together.jpeg" />,
+    'perplexity': <ProviderImg src="/images/connect-icons/perplexity.png" />,
+    'fireworks': <ProviderImg src="/images/connect-icons/fireworks.png" />,
+    'cohere': <ProviderImg src="/images/connect-icons/cohere.webp" />,
+    'grok': <ProviderImg src="/images/connect-icons/grok.webp" />,
+    'huggingface': <ProviderImg src="/images/connect-icons/huggingface.png" />,
+    'openrouter': <ProviderImg src="/images/connect-icons/openrouter.png" />,
+    'bedrock': <span style={{ fontSize: '16px' }}>☁️</span>,
+    'replicate': <ProviderImg src="/images/connect-icons/replicate.webp" />,
+    'stability': <ProviderImg src="/images/connect-icons/stability.jpg" />,
+    'elevenlabs': <ProviderImg src="/images/connect-icons/elevenlabs.jpeg" />,
+    'kimi': <ProviderImg src="/images/connect-icons/kimi.png" />,
+    'meta': <ProviderImg src="/images/connect-icons/metaai.jpeg" />,
+    'copilot': <ProviderImg src="/images/connect-icons/copilot.jpeg" />,
+    'glm': <ProviderImg src="/images/connect-icons/glm.png" />,
     'local': <span style={{ fontSize: '16px' }}>🖥️</span>,
     'codellama': <span style={{ fontSize: '16px' }}>💻</span>,
   };
-  return iconMap[providerId.toLowerCase()] || <AutoIcon className={styles.providerIcon} />;
+  return iconMap[providerId.toLowerCase()] || <span style={{ fontSize: '16px' }}>🤖</span>;
 };
 
 export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
