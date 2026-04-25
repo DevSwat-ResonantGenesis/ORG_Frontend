@@ -138,7 +138,7 @@ export const goToDashboard = (
   navigate: NavigateFunction,
   closeMenu?: () => void
 ) => {
-  navigate('/resonant-chat');
+  navigate('/');
   if (closeMenu) closeMenu();
 };
 

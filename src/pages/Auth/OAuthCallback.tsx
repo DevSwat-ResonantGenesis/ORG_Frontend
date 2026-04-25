@@ -171,20 +171,20 @@ const OAuthCallbackPage: React.FC = () => {
         try {
           sessionStorage.setItem(
             'rg-post-login-target',
-            JSON.stringify({ path: '/resonant-chat', ts: Date.now(), remaining: 5 })
+            JSON.stringify({ path: '/', ts: Date.now(), remaining: 5 })
           );
-          document.cookie = `rg_post_login_target=${encodeURIComponent('/resonant-chat')}; Max-Age=60; Path=/`;
+          document.cookie = `rg_post_login_target=${encodeURIComponent('/')}; Max-Age=60; Path=/`;
         } catch {
         }
 
-        goToDashboard(navigate);
+        navigate('/');
       } catch (error: any) {
         logger.error('OAuth callback error', error, { component: 'OAuthCallback' });
 
         try {
           const user = await getCurrentUser();
           if (user) {
-            goToDashboard(navigate);
+            navigate('/');
             return;
           }
         } catch {
