@@ -187,15 +187,15 @@ const router = createBrowserRouter([
     path: '/public/signup',
     element: <Navigate to="/signup" replace />
   },
-  // CANONICAL: /account redirects to dashboard
+  // CANONICAL: /account redirects to resonant-chat
   {
     path: '/account',
-    element: <Navigate to="/dashboard" replace />
+    element: <Navigate to="/resonant-chat" replace />
   },
-  // CANONICAL: /usage redirects to dashboard (metrics consolidated)
+  // CANONICAL: /usage redirects to resonant-chat (metrics consolidated)
   {
     path: '/usage',
-    element: <Navigate to="/dashboard" replace />
+    element: <Navigate to="/resonant-chat" replace />
   },
   // /dashboard - User Dashboard (default for all users)
   {
@@ -254,10 +254,10 @@ const router = createBrowserRouter([
     path: '/organization',
     element: withShell(<RoleRoute category="organization"><OrganizationPage /></RoleRoute>)
   },
-  // Billing redirects to dashboard billing tab
+  // Billing redirects to resonant-chat (billing moved to chat)
   {
     path: '/billing',
-    element: <Navigate to="/dashboard?tab=billing" replace />
+    element: <Navigate to="/resonant-chat" replace />
   },
   {
     path: '/admin/system',
@@ -267,10 +267,10 @@ const router = createBrowserRouter([
     path: '/admin/feature-flags',
     element: withShell(<RoleRoute category="admin"><FeatureFlagsPage /></RoleRoute>)
   },
-  // Profile now consolidated into dashboard
+  // Profile now consolidated into resonant-chat
   {
     path: '/profile',
-    element: <Navigate to="/dashboard?tab=profile" replace />
+    element: <Navigate to="/resonant-chat" replace />
   },
   {
     path: '/help',
@@ -485,20 +485,20 @@ const router = createBrowserRouter([
     path: '/state-physics-api',
     element: withPublicShell(<StatePhysicsAPI />)
   },
-  // Connect Your Profiles - now consolidated into dashboard integrations tab
+  // Connect Your Profiles - now consolidated into resonant-chat
   {
     path: '/connect-profiles',
-    element: <Navigate to="/dashboard?tab=integrations" replace />
+    element: <Navigate to="/resonant-chat" replace />
   },
-  // API Keys Management - Redirect to dashboard api-keys tab
+  // API Keys Management - Redirect to resonant-chat
   {
     path: '/api-keys',
-    element: <Navigate to="/dashboard?tab=api-keys" replace />
+    element: <Navigate to="/resonant-chat" replace />
   },
-  // Settings API Keys - Redirect to dashboard api-keys tab
+  // Settings API Keys - Redirect to resonant-chat
   {
     path: '/settings/api-keys',
-    element: <Navigate to="/dashboard?tab=api-keys" replace />
+    element: <Navigate to="/resonant-chat" replace />
   },
     // Hash Sphere Memory API - Public pricing and documentation page
   {
