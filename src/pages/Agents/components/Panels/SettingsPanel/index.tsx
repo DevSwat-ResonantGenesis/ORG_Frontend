@@ -18,7 +18,7 @@ interface SettingsPanelProps {
 
 const PROVIDER_OPTIONS = [
   { value: 'openai', label: 'OpenAI' },
-  { value: 'anthropic', label: 'Anthropic' },
+  { value: 'anthropic', label: 'Anthropic (Claude)' },
   { value: 'google', label: 'Google' },
   { value: 'mistral', label: 'Mistral' },
   { value: 'groq', label: 'Groq' },
@@ -28,7 +28,7 @@ const PROVIDER_OPTIONS = [
 
 const MODEL_OPTIONS: Record<string, string[]> = {
   openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo-preview', 'gpt-4', 'gpt-3.5-turbo', 'o1-preview', 'o1-mini'],
-  anthropic: ['claude-3-5-sonnet-20241022', 'claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307'],
+  anthropic: ['claude-opus-4-6-20250514', 'claude-3-5-sonnet-20241022', 'claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307'],
   google: ['gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro'],
   mistral: ['mistral-large-latest', 'mistral-medium-latest', 'mistral-small-latest'],
   groq: ['llama-3.1-70b-versatile', 'llama-3.1-8b-instant', 'mixtral-8x7b-32768'],

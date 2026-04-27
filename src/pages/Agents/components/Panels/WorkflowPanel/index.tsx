@@ -427,7 +427,7 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
     if (!node) return null;
     const cfg = (node.config || {}) as Record<string, any>;
 
-    const defaultModels = ['groq/llama-3.3-70b-versatile', 'groq/llama-3.1-8b-instant', 'groq/mixtral-8x7b-32768', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'anthropic/claude-3.5-sonnet', 'google/gemini-pro'];
+    const defaultModels = ['groq/llama-3.3-70b-versatile', 'groq/llama-3.1-8b-instant', 'groq/mixtral-8x7b-32768', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'anthropic/claude-opus-4-6-20250514', 'anthropic/claude-3.5-sonnet', 'google/gemini-pro'];
     const modelOptions = liveModels.length > 0 ? liveModels : defaultModels;
 
     return (

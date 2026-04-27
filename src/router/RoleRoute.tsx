@@ -16,7 +16,7 @@ const RoleRoute = ({ allowed, category, children }: RoleRouteProps) => {
   // New category-based check
   if (category) {
     if (!canAccess(userRole, category)) {
-      return <Navigate to="/dashboard" replace />;
+      return <Navigate to="/" replace />;
     }
     return <>{children}</>;
   }
@@ -25,7 +25,7 @@ const RoleRoute = ({ allowed, category, children }: RoleRouteProps) => {
   if (allowed) {
     const normalizedUserRole = userRole ? normalizeRole(userRole) : null;
     if (!normalizedUserRole || !allowed.some(r => normalizeRole(r as Role) === normalizedUserRole)) {
-      return <Navigate to="/dashboard" replace />;
+      return <Navigate to="/" replace />;
     }
   }
   

@@ -93,7 +93,7 @@ const CONFIG_FIELDS: Record<WorkflowStepType, ConfigField[]> = {
   ],
   llm_completion: [
     { key: 'provider', label: 'Provider', type: 'select', options: ['groq', 'openai', 'anthropic', 'google'], defaultValue: 'groq' },
-    { key: 'model', label: 'Model', type: 'select', options: ['groq/llama-3.3-70b-versatile', 'groq/llama-3.1-8b-instant', 'groq/mixtral-8x7b-32768', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'anthropic/claude-3.5-sonnet', 'google/gemini-pro'], defaultValue: 'groq/llama-3.3-70b-versatile' },
+    { key: 'model', label: 'Model', type: 'select', options: ['groq/llama-3.3-70b-versatile', 'groq/llama-3.1-8b-instant', 'groq/mixtral-8x7b-32768', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'anthropic/claude-opus-4-6-20250514', 'anthropic/claude-3.5-sonnet', 'google/gemini-pro'], defaultValue: 'groq/llama-3.3-70b-versatile' },
     { key: 'prompt', label: 'System Prompt', type: 'textarea', defaultValue: 'You are an expert assistant.' },
     { key: 'user_message', label: 'User Message (use {{steps.X.output}} for dynamic input)', type: 'textarea' },
     { key: 'max_tokens', label: 'Max Tokens', type: 'number', defaultValue: 2048 },
