@@ -138,7 +138,7 @@ export const goToDashboard = (
   navigate: NavigateFunction,
   closeMenu?: () => void
 ) => {
-  navigate('/');
+  navigate('/dashboard');
   if (closeMenu) closeMenu();
 };
 

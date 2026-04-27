@@ -216,7 +216,7 @@ export const sendResonantMessage = async (
       });
       // Redirect to login if not authenticated (skip on home/guest mode)
       if (typeof window !== 'undefined' && window.location.pathname !== '/') {
-        window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+        window.location.href = '/login?expired=true';
       }
       throw new Error('Session expired. Please log in again to continue chatting.');
     }

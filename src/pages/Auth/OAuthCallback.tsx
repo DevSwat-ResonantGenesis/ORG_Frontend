@@ -4,7 +4,6 @@ import { handleOAuthCallback, handleSAMLCallback, completeGoogleServiceConnectio
 import { getCurrentUser } from '@/api/auth';
 import { saveSessionData } from '@/utils/auth-cookies';
 import { logger } from '@/utils/logger';
-import { goToDashboard } from '@/utils/navigation';
 import { Button } from '@/components/ui/Button';
 import pageStyles from '../../components/ui/Page.module.css';
 import containerStyles from '../../components/ui/Container.module.css';

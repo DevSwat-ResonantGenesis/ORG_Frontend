@@ -197,10 +197,10 @@ const router = createBrowserRouter([
     path: '/usage',
     element: <Navigate to="/resonant-chat" replace />
   },
-  // /dashboard - redirect to chat (/ is the main app for logged-in users)
+  // /dashboard - User Dashboard (default for all users)
   {
     path: '/dashboard',
-    element: <Navigate to="/" replace />
+    element: withShell(<UserDashboard />)
   },
   // /plus-dashboard - Plus plan users (more credits, advanced features)
   {

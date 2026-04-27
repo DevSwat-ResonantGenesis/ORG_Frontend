@@ -14,7 +14,6 @@ import {
 import { saveSessionData, clearSessionData, type UserRole } from '../../utils/auth-cookies';
 import { clearSession } from '../../utils/auth';
 import fastapiClient from '../../api/fastapiClient';
-import { goToDashboard } from '../../utils/navigation';
 import { useThemeStore } from '../../store/themeStore';
 import { initiateSSO } from '../../api/sso';
 
@@ -197,8 +196,12 @@ export default function LoginPageNew() {
   const [searchParams] = useSearchParams();
   const { theme } = useThemeStore();
   
-  // Desktop IDE login flow: ?redirect=/auth/desktop-callback?port=PORT
-  const postLoginRedirect = useMemo(() => searchParams.get('redirect'), [searchParams]);
+  // Desktop IDE login flow ONLY: ?redirect=/auth/desktop-callback?port=PORT
+  const postLoginRedirect = useMemo(() => {
+    const r = searchParams.get('redirect');
+    // Only honor redirect for desktop IDE callback — all other logins go to chat
+    return r && r.startsWith('/auth/desktop-callback') ? r : null;
+  }, [searchParams]);
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -231,7 +234,7 @@ export default function LoginPageNew() {
         timeout: 15000,
       });
       
-      saveSessionData(email.trim(), data.role, data.org_id, data.user?.id, data.is_superuser || data.role === 'platform_owner');
+      saveSessionData(email.trim(), data.role, data.org_id, data.user?.id, data.user?.is_superuser || data.role === 'platform_owner');
       
       // Desktop IDE login: redirect back to /auth/desktop-callback?port=PORT
       if (postLoginRedirect) {

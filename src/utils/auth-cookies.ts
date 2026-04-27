@@ -8,7 +8,7 @@
  * - No sensitive data in localStorage (XSS protection)
  */
 
-export type UserRole = 'user' | 'org_admin' | 'platform_dev' | 'finance' | 'compliance' | 'ml_engineer' | 'viewer' | 'admin' | 'security' | 'analyst';
+export type UserRole = 'user' | 'org_admin' | 'platform_dev' | 'platform_owner' | 'finance' | 'compliance' | 'ml_engineer' | 'viewer' | 'admin' | 'security' | 'analyst';
 
 /**
  * Session data stored in secure cookie (not HttpOnly so JS can read user info)
