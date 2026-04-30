@@ -69,6 +69,7 @@ const PROVIDER_STYLES: Record<string, { emoji: string; icon?: string; color: str
   cohere: { emoji: '🔮', icon: '/images/connect-icons/cohere.webp', color: '#39594D' },
   together: { emoji: '🤝', icon: '/images/connect-icons/together.jpeg', color: '#6366F1' },
   deepseek: { emoji: '🔍', icon: '/images/connect-icons/deepseek.jpeg', color: '#4D6BFE' },
+  tokenrouter: { emoji: '🔗', color: '#01A6BC' },
   openrouter: { emoji: '🔀', icon: '/images/connect-icons/openrouter.png', color: '#6366F1' },
   perplexity: { emoji: '🎯', icon: '/images/connect-icons/perplexity.png', color: '#20808D' },
   fireworks: { emoji: '🎆', icon: '/images/connect-icons/fireworks.png', color: '#FF6600' },

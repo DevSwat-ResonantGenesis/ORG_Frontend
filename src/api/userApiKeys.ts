@@ -218,6 +218,7 @@ export const API_KEY_PROVIDERS = [
   { id: 'cohere', name: 'Cohere', placeholder: '...', helpUrl: 'https://dashboard.cohere.com/api-keys', models: ['command-r-plus', 'command-r', 'command'] },
   { id: 'together', name: 'Together AI', placeholder: '...', helpUrl: 'https://api.together.xyz/settings/api-keys', models: ['llama-3.1-405b', 'mixtral-8x22b', 'qwen-2-72b'] },
   { id: 'deepseek', name: 'DeepSeek', placeholder: 'sk-...', helpUrl: 'https://platform.deepseek.com/api_keys', models: ['deepseek-chat', 'deepseek-coder'] },
+  { id: 'tokenrouter', name: 'TokenRouter (All Models)', placeholder: 'sk-...', helpUrl: 'https://www.tokenrouter.com', models: ['anthropic/claude-opus-4.7', 'openai/gpt-5.5', 'google/gemini-3.1-pro-preview', 'z-ai/glm-5.1', 'qwen/qwen3.6-plus'] },
   { id: 'openrouter', name: 'OpenRouter (100+ models)', placeholder: 'sk-or-...', helpUrl: 'https://openrouter.ai/keys', models: ['auto', 'openai/gpt-4o', 'anthropic/claude-3-opus'] },
   { id: 'perplexity', name: 'Perplexity AI', placeholder: 'pplx-...', helpUrl: 'https://www.perplexity.ai/settings/api', models: ['llama-3.1-sonar-large', 'llama-3.1-sonar-small'] },
   { id: 'fireworks', name: 'Fireworks AI (Fast)', placeholder: '...', helpUrl: 'https://fireworks.ai/api-keys', models: ['llama-v3p1-405b', 'llama-v3p1-70b'] },

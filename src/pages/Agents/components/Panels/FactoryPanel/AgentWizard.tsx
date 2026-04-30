@@ -610,6 +610,7 @@ const AgentWizardComponent: React.FC<AgentWizardProps> = ({ className, onComplet
                       disabled={!p.available}
                     >
                       <span className={styles.providerRowIcon}>
+                        {p.id === 'tokenrouter' && '🔗'}
                         {p.id === 'groq' && '⚡'}
                         {p.id === 'openai' && '🤖'}
                         {p.id === 'anthropic' && '🧠'}
