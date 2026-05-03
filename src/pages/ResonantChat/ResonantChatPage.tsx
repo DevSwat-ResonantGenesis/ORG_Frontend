@@ -2508,10 +2508,12 @@ const ResonantChatPage: React.FC = () => {
         timestamp: new Date(),
         aiProvider: 'AI',
       }]);
+      setPipelineSteps([]);
 
       try {
         let sseChatId = chatIdToUse || '';
         let lastContent = '';
+        let isTokenStreaming = false;
 
         await streamResonantMessage(
           {
@@ -2525,6 +2527,7 @@ const ResonantChatPage: React.FC = () => {
           (evt) => {
             if (evt.event === 'start') {
               if (evt.chat_id) sseChatId = evt.chat_id;
+              if (evt.streaming) isTokenStreaming = true;
               if (evt.tool === 'agent_architect') {
                 // Open agents panel for architect operations
                 setAgentsPanelUrl('/agents?embed=1');
@@ -2532,17 +2535,37 @@ const ResonantChatPage: React.FC = () => {
                 if (!splitViewEnabled) { setSplitViewEnabled(true); setSplitViewPane('split'); }
               }
             } else if (evt.event === 'chunk' && evt.content) {
-              lastContent = evt.content;
+              if (isTokenStreaming) {
+                // Token-by-token streaming — append each delta
+                lastContent += evt.content;
+              } else {
+                // Architect/batch mode — each chunk is full text (replace)
+                lastContent = evt.content;
+              }
+              const snapshotContent = lastContent;
               setMessages(prev => prev.map(m =>
-                m.id === streamMsgId ? { ...m, content: evt.content! } : m
+                m.id === streamMsgId ? { ...m, content: snapshotContent } : m
               ));
             } else if (evt.event === 'step') {
-              // Pipeline step — show as mini status under the message
-              const stepMsg = evt.message || evt.step || '';
+              // Pipeline step — show in pipeline steps UI
+              const stepLabels: Record<string, string> = {
+                tool_detection: `Tool detected: ${evt.name || evt.tool || 'unknown'}`,
+                tool_result: evt.success ? `${evt.tool || 'Tool'} executed` : `${evt.tool || 'Tool'} failed`,
+                web_search: `Searching: ${evt.query || 'web'}`,
+                image_generated: `Generated ${evt.count || 1} image(s)`,
+                hashing: 'Hashing input',
+                memory_search: evt.message || 'Searching memory',
+                memory_found: evt.message || 'Memory retrieved',
+                context: evt.message || 'Building context',
+                routing: evt.message || 'Routing to provider',
+                generating_done: 'Generation complete',
+                post_processing: evt.message || 'Post-processing',
+                memory_ingest: evt.message || 'Storing to memory',
+              };
+              const stepKey = evt.step || '';
+              const stepMsg = stepLabels[stepKey] || evt.message || stepKey;
               if (stepMsg) {
-                setMessages(prev => prev.map(m =>
-                  m.id === streamMsgId ? { ...m, aiProvider: `🔄 ${stepMsg}` } : m
-                ));
+                setPipelineSteps(prev => [...prev, { step: stepKey, message: stepMsg, timestamp: Date.now() }]);
               }
             } else if (evt.event === 'options' && evt.options) {
               const optData = evt.options;
@@ -2591,6 +2614,7 @@ const ResonantChatPage: React.FC = () => {
         if (sseChatId && !currentConversationId) {
           setCurrentConversationId(sseChatId);
         }
+        setPipelineSteps([]);
         setIsLoading(false);
         setAbortControllerRef(null);
         setAttachedFiles([]);
@@ -2599,6 +2623,7 @@ const ResonantChatPage: React.FC = () => {
       } catch (streamErr: any) {
         if (controller.signal.aborted || streamErr?.name === 'AbortError') throw streamErr;
         console.warn('[ResonantChat] SSE streaming failed, falling back to sendResonantMessage:', streamErr);
+        setPipelineSteps([]);
         // Remove placeholder message for fallback
         setMessages(prev => prev.filter(m => m.id !== streamMsgId));
       }
@@ -4835,6 +4860,10 @@ const ResonantChatPage: React.FC = () => {
                           {pipelineSteps.slice(-6).map((ps, i) => {
                             const base: React.CSSProperties = { padding: '5px 10px', borderRadius: '6px', fontSize: '12px', fontFamily: "'SF Mono','Fira Code','Consolas', monospace" };
                             const iconSvgs: Record<string, React.ReactNode> = {
+                              tool_detection: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#01A6BC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>,
+                              tool_result: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71C23E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+                              web_search: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FAA525" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+                              image_generated: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFD800" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>,
                               hashing: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#01A6BC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>,
                               memory_search: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FA547C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
                               memory_found: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71C23E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>,
@@ -4846,6 +4875,10 @@ const ResonantChatPage: React.FC = () => {
                             };
                             const defaultIcon = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FAA525" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09c-.658.003-1.25.396-1.51 1z"/></svg>;
                             const colors: Record<string, { bg: string; fg: string }> = {
+                              tool_detection: { bg: 'rgba(1,166,188,0.12)', fg: '#01A6BC' },
+                              tool_result: { bg: 'rgba(113,194,62,0.12)', fg: '#71C23E' },
+                              web_search: { bg: 'rgba(250,165,37,0.12)', fg: '#FAA525' },
+                              image_generated: { bg: 'rgba(255,216,0,0.12)', fg: '#FFD800' },
                               hashing: { bg: 'rgba(1,166,188,0.12)', fg: '#01A6BC' },
                               memory_search: { bg: 'rgba(250,84,124,0.12)', fg: '#FA547C' },
                               memory_found: { bg: 'rgba(113,194,62,0.12)', fg: '#71C23E' },

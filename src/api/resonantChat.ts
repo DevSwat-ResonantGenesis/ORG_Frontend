@@ -412,12 +412,17 @@ export interface SSEStreamEvent {
   error?: string;
   // step (pipeline processing steps)
   step?: string;
+  name?: string;
+  success?: boolean;
+  query?: string;
   message?: string;
   count?: number;
   history_count?: number;
   length?: number;
   // options (interactive buttons from architect)
   options?: any;
+  // streaming flag (true = token deltas, false/absent = full-text replace)
+  streaming?: boolean;
 }
 
 /**
