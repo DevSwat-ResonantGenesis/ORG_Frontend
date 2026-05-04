@@ -1,9 +1,11 @@
-import React, { memo, useState, useEffect, useCallback } from 'react';
+import React, { memo, useState, useEffect, useCallback, useMemo } from 'react';
 import { useUIStore, useSessionStore, useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import fastapiClient from '../../../../../api/fastapiClient';
 import { ModeSwitcher, type AutonomyMode } from '../../../../../components/AutonomyMode';
 import * as autonomyApi from '../../../../../api/autonomy';
+import { getAgentProvidersCatalog } from '../../../../../api/agents';
+import type { AgentProvidersCatalogResponse } from '../../../../../api/agents';
 import styles from './SettingsPanel.module.css';
 
 // ============== SETTINGS PANEL ==============
@@ -16,7 +18,8 @@ interface SettingsPanelProps {
   className?: string;
 }
 
-const PROVIDER_OPTIONS = [
+// Fallback provider/model lists — used only when dynamic catalog fetch fails
+const FALLBACK_PROVIDER_OPTIONS = [
   { value: 'openai', label: 'OpenAI' },
   { value: 'anthropic', label: 'Anthropic (Claude)' },
   { value: 'google', label: 'Google' },
@@ -24,16 +27,18 @@ const PROVIDER_OPTIONS = [
   { value: 'groq', label: 'Groq' },
   { value: 'together', label: 'Together AI' },
   { value: 'openrouter', label: 'OpenRouter' },
+  { value: 'tokenrouter', label: 'TokenRouter' },
 ];
 
-const MODEL_OPTIONS: Record<string, string[]> = {
-  openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo-preview', 'gpt-4', 'gpt-3.5-turbo', 'o1-preview', 'o1-mini'],
-  anthropic: ['claude-opus-4-6-20250514', 'claude-3-5-sonnet-20241022', 'claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307'],
-  google: ['gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-pro'],
+const FALLBACK_MODEL_OPTIONS: Record<string, string[]> = {
+  openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'o1-preview', 'o1-mini'],
+  anthropic: ['claude-opus-4-6-20250514', 'claude-3-5-sonnet-20241022', 'claude-3-opus-20240229', 'claude-3-haiku-20240307'],
+  google: ['gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-2.0-flash-exp'],
   mistral: ['mistral-large-latest', 'mistral-medium-latest', 'mistral-small-latest'],
-  groq: ['llama-3.1-70b-versatile', 'llama-3.1-8b-instant', 'mixtral-8x7b-32768'],
+  groq: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'mixtral-8x7b-32768'],
   together: ['meta-llama/Llama-3.1-70B-Instruct', 'meta-llama/Llama-3.1-8B-Instruct'],
   openrouter: ['openai/gpt-4o', 'anthropic/claude-3.5-sonnet', 'google/gemini-pro-1.5'],
+  tokenrouter: ['anthropic/claude-opus-4-6-20250514', 'openai/gpt-4o', 'google/gemini-1.5-pro'],
 };
 
 const TOOL_CATALOG = [
@@ -67,6 +72,42 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
   const [editTemperature, setEditTemperature] = useState(0.7);
   const [editMaxTokens, setEditMaxTokens] = useState(4096);
   const [editTools, setEditTools] = useState<string[]>([]);
+
+  // Dynamic providers from backend catalog
+  const [providersCatalog, setProvidersCatalog] = useState<AgentProvidersCatalogResponse | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const catalog = await getAgentProvidersCatalog();
+        if (!cancelled) setProvidersCatalog(catalog);
+      } catch (err) {
+        console.error('Failed to fetch provider catalog:', err);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  // Build dynamic provider options from catalog, fallback to hardcoded
+  const providerOptions = useMemo(() => {
+    if (!providersCatalog?.providers?.length) return FALLBACK_PROVIDER_OPTIONS;
+    return providersCatalog.providers.map(p => ({
+      value: p.provider_key || p.id,
+      label: p.name || p.id,
+      available: p.available,
+    }));
+  }, [providersCatalog]);
+
+  const modelOptions = useMemo<Record<string, string[]>>(() => {
+    if (!providersCatalog?.providers?.length) return FALLBACK_MODEL_OPTIONS;
+    const map: Record<string, string[]> = {};
+    for (const p of providersCatalog.providers) {
+      const key = p.provider_key || p.id;
+      map[key] = p.models?.length ? p.models : (FALLBACK_MODEL_OPTIONS[key] || [p.model || '']);
+    }
+    return map;
+  }, [providersCatalog]);
 
   // Load agent config when selected agent changes
   useEffect(() => {
@@ -123,6 +164,7 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
         name: editName,
         description: editDescription,
         system_prompt: editSystemPrompt,
+        provider: editProvider,
         model: editModel,
         temperature: editTemperature,
         max_tokens: editMaxTokens,
@@ -259,10 +301,10 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
                   </div>
                   <select
                     value={editProvider}
-                    onChange={e => { setEditProvider(e.target.value); const models = MODEL_OPTIONS[e.target.value]; if (models && models.length > 0) setEditModel(models[0]); }}
+                    onChange={e => { setEditProvider(e.target.value); const models = modelOptions[e.target.value]; if (models && models.length > 0) setEditModel(models[0]); }}
                   >
-                    {PROVIDER_OPTIONS.map(p => (
-                      <option key={p.value} value={p.value}>{p.label}</option>
+                    {providerOptions.map(p => (
+                      <option key={p.value} value={p.value}>{p.label}{('available' in p && !p.available) ? ' (unavailable)' : ''}</option>
                     ))}
                   </select>
                 </div>
@@ -276,9 +318,12 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
                     value={editModel}
                     onChange={e => setEditModel(e.target.value)}
                   >
-                    {(MODEL_OPTIONS[editProvider] || []).map(m => (
+                    {(modelOptions[editProvider] || []).map(m => (
                       <option key={m} value={m}>{m}</option>
                     ))}
+                    {editModel && !(modelOptions[editProvider] || []).includes(editModel) && (
+                      <option key={editModel} value={editModel}>{editModel} (current)</option>
+                    )}
                   </select>
                 </div>
 
