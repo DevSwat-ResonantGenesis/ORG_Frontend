@@ -12,10 +12,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { clearSession } from '@/utils/auth';
 import { isAuthenticated, getSessionData } from '@/utils/auth-cookies';
 import { logout as apiLogout } from '@/api/auth';
-// ThemeToggle removed — dark mode only
-import { Button } from '@/components/ui';
 import { useResonantChatMenu } from '@/context/ResonantChatMenuContext';
-import { useThemeStore } from '@/store/themeStore';
 import styles from './Header.module.css';
 import { 
   goToHome, 
@@ -76,7 +73,6 @@ export const Header: React.FC<HeaderProps> = ({
   // Use auth-cookies for reliable authentication check
   const sessionData = getSessionData();
   const isLoggedIn = isAuthenticated() && !!sessionData;
-  const { theme } = useThemeStore();
   
   // Check if we're on Resonant Chat page
   const isResonantChatPage = location.pathname === '/' || location.pathname === '/resonant-chat' || location.pathname.startsWith('/resonant-chat');
@@ -326,10 +322,6 @@ export const Header: React.FC<HeaderProps> = ({
                       <span className={styles.navDropdownItemTitle}>Hash Sphere Memory</span>
                       <span className={styles.navDropdownItemDesc}>9-layer semantic memory — stores, links &amp; recalls knowledge across agents via dimensional resonance retrieval</span>
                     </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/state-physics'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>State Physics SIM</span>
-                      <span className={styles.navDropdownItemDesc}>Constraint-based simulation — models token flows, governance rules &amp; system invariants before deploying live</span>
-                    </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/code-visualizer'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>Code Visualizer</span>
                       <span className={styles.navDropdownItemDesc}>Full-stack SAST — scans your codebase, maps dependency graphs, detects vulnerabilities &amp; visualizes architecture</span>
@@ -347,16 +339,6 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={() => { navigate('/agents'); setActiveDropdown(null); }}
               >
                 Agents
-              </button>
-            </div>
-
-            {/* Network - Live monitoring */}
-            <div className={styles.navItem}>
-              <button
-                className={styles.navButton}
-                onClick={() => { navigate('/network'); setActiveDropdown(null); }}
-              >
-                Network
               </button>
             </div>
 
@@ -382,47 +364,6 @@ export const Header: React.FC<HeaderProps> = ({
               <span className={styles.dlLabel}>Shop</span>
             </button>
 
-            {/* Download Miner — PNG icon */}
-            <button 
-              className={styles.navDownloadIcon}
-              onClick={() => navigate('/download-miner')}
-              title="Download Miner"
-            >
-              <img
-                className={styles.dlIconImg}
-                src={theme === 'dark' ? '/images/Header_icons/mining-light.png' : '/images/Header_icons/mining-dark.png'}
-                alt="Miner"
-              />
-              <span className={styles.dlLabel}>Miner</span>
-            </button>
-
-            {/* Download IDE — PNG icon */}
-            <button 
-              className={styles.navDownloadIcon}
-              onClick={() => navigate('/download-ide')}
-              title="Download IDE"
-            >
-              <img
-                className={styles.dlIconImg}
-                src={theme === 'dark' ? '/images/Header_icons/ide-light.png' : '/images/Header_icons/ide-dark.png'}
-                alt="IDE"
-              />
-              <span className={styles.dlLabel}>IDE</span>
-            </button>
-
-            {/* OpenClaw Extension — PNG icon */}
-            <button 
-              className={styles.navDownloadIcon}
-              onClick={() => navigate('/download-openclaw')}
-              title="OpenClaw Extension"
-            >
-              <img
-                className={styles.dlIconImg}
-                src="/images/Header_icons/openclaw.png"
-                alt="OpenClaw"
-              />
-              <span className={styles.dlLabel}>Connect</span>
-            </button>
 
           </nav>
 
@@ -447,16 +388,13 @@ export const Header: React.FC<HeaderProps> = ({
               {isLoggedIn && (
                 <button
                   type="button"
-                  className={styles.chatWidgetButton}
+                  className={styles.navButton}
                   onClick={() => navigate('/dashboard?tab=integrations')}
-                  title="Integrations"
-                  aria-label="Integrations"
+                  title="Apps"
+                  aria-label="Apps"
+                  style={{ fontSize: 13, padding: '4px 10px' }}
                 >
-                  <img
-                    src={theme === 'dark' ? '/images/Header_icons/api-light.png' : '/images/Header_icons/api-dark.png'}
-                    alt="Integrations"
-                    style={{ width: '48px', height: '48px', objectFit: 'contain' }}
-                  />
+                  Apps
                 </button>
               )}
 

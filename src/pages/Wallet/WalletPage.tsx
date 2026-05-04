@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Web3WalletConnect from "../../components/wallet/Web3WalletConnect";
 import fastapiClient from '../../api/fastapiClient';
 import s from './WalletPage.module.css';
@@ -98,6 +99,7 @@ const txIcon = (type: string) => {
 };
 
 export default function WalletPage() {
+  const navigate = useNavigate();
   const [wallet, setWallet] = useState<Wallet | null>(null);
   const [balance, setBalance] = useState<Balance | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -444,6 +446,27 @@ export default function WalletPage() {
           <button className={`${s.btn} ${s.btnGhost}`} onClick={() => setShowTransfer(true)}>↔ Transfer</button>
           <button className={s.btnIcon} onClick={loadData}>🔄</button>
         </div>
+      </div>
+
+      {/* ── Quick Nav: Network + Miner ── */}
+      <div className={s.quickNav}>
+        <button className={s.quickNavBtn} onClick={() => navigate('/network')}>
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <circle cx="8" cy="3" r="2" />
+            <circle cx="3" cy="13" r="2" />
+            <circle cx="13" cy="13" r="2" />
+            <path d="M8 5V8M8 8L3.5 11M8 8L12.5 11" strokeLinecap="round" />
+          </svg>
+          Network
+        </button>
+        <button className={s.quickNavBtn} onClick={() => navigate('/download-miner')}>
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M8 2V10M8 10L5 7M8 10L11 7" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M3 12H13" strokeLinecap="round" />
+            <path d="M2 14H14" strokeLinecap="round" />
+          </svg>
+          Download Miner
+        </button>
       </div>
 
       {/* ── Toast ── */}

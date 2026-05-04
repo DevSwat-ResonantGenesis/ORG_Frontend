@@ -12,10 +12,8 @@ import { useResonantChatMenu } from '@/context/ResonantChatMenuContext';
 import {
   goToPricing,
   goToHome,
-  goToContact,
   goToLogin,
 } from '@/utils/navigation';
-import { useThemeStore } from '@/store/themeStore';
 import styles from './UnifiedSidebarMenu.module.css';
 
 interface UnifiedSidebarMenuProps {
@@ -30,7 +28,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { theme } = useThemeStore();
   const isLoggedIn = isAuthenticated();
   const sessionData = getSessionData();
   
@@ -178,22 +175,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             </button>
 
             <button
-              className={`${styles.usmItem} ${location.pathname === '/state-physics' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/state-physics'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="8" r="6" />
-                  <circle cx="8" cy="8" r="3" />
-                  <circle cx="8" cy="8" r="1" fill="currentColor" />
-                  <path d="M8 2V4M8 12V14M2 8H4M12 8H14" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Invariants SIM</span>
-              {location.pathname === '/state-physics' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
               className={`${styles.usmItem} ${location.pathname === '/code-visualizer' ? styles.usmActive : ''}`}
               onClick={() => { navigate('/code-visualizer'); onClose(); }}
             >
@@ -205,22 +186,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               </span>
               <span className={styles.usmLabel}>SAST & Dependency Graph Analysis</span>
               {location.pathname === '/code-visualizer' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/network' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/network'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="3" r="2" />
-                  <circle cx="3" cy="13" r="2" />
-                  <circle cx="13" cy="13" r="2" />
-                  <path d="M8 5V8M8 8L3.5 11M8 8L12.5 11" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Network Monitor</span>
-              {location.pathname === '/network' && <span className={styles.usmActiveIndicator} />}
             </button>
 
             <button
@@ -255,64 +220,11 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               <span className={styles.usmLabel}>GitHub</span>
             </a>
 
-            {/* Download items with PNG icons */}
             <button
-              className={styles.usmDownloadItem}
-              onClick={() => { navigate('/download-miner'); onClose(); }}
-            >
-              <span className={styles.usmDlIcon}>
-                <img
-                  src={theme === 'dark' ? '/images/Header_icons/mining-light.png' : '/images/Header_icons/mining-dark.png'}
-                  alt="Miner"
-                  style={{ width: 36, height: 36, objectFit: 'contain' }}
-                />
-              </span>
-              <span className={styles.usmLabel}>Miner</span>
-              {location.pathname === '/download-miner' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={styles.usmDownloadItem}
-              onClick={() => { navigate('/download-ide'); onClose(); }}
-            >
-              <span className={styles.usmDlIcon}>
-                <img
-                  src={theme === 'dark' ? '/images/Header_icons/ide-light.png' : '/images/Header_icons/ide-dark.png'}
-                  alt="IDE"
-                  style={{ width: 36, height: 36, objectFit: 'contain' }}
-                />
-              </span>
-              <span className={styles.usmLabel}>IDE</span>
-              {location.pathname === '/download-ide' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={styles.usmDownloadItem}
-              onClick={() => { navigate('/download-openclaw'); onClose(); }}
-            >
-              <span className={styles.usmDlIcon}>
-                <img
-                  src="/images/Header_icons/openclaw.png"
-                  alt="Connect"
-                  style={{ width: 36, height: 36, objectFit: 'contain' }}
-                />
-              </span>
-              <span className={styles.usmLabel}>Connect</span>
-              {location.pathname === '/download-openclaw' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={styles.usmDownloadItem}
+              className={`${styles.usmItem} ${location.pathname === '/dashboard' && location.search.includes('tab=integrations') ? styles.usmActive : ''}`}
               onClick={() => { navigate('/dashboard?tab=integrations'); onClose(); }}
             >
-              <span className={styles.usmDlIcon}>
-                <img
-                  src={theme === 'dark' ? '/images/Header_icons/api-light.png' : '/images/Header_icons/api-dark.png'}
-                  alt="Integrations"
-                  style={{ width: 36, height: 36, objectFit: 'contain' }}
-                />
-              </span>
-              <span className={styles.usmLabel}>Integrations</span>
+              <span className={styles.usmLabel}>Apps</span>
               {location.pathname === '/dashboard' && location.search.includes('tab=integrations') && <span className={styles.usmActiveIndicator} />}
             </button>
 
