@@ -342,6 +342,14 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
+            {/* IDE Coding */}
+            <button
+              className={styles.navButton}
+              onClick={() => navigate('/download-ide')}
+            >
+              IDE Coding
+            </button>
+
             {/* Pricing Link */}
             <button 
               className={styles.navButton}
@@ -349,8 +357,6 @@ export const Header: React.FC<HeaderProps> = ({
             >
               Pricing
             </button>
-
-
 
             {/* Marketplace — Shop icon */}
             <button 

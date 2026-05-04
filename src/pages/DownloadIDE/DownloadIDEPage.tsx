@@ -4,18 +4,17 @@ import styles from './DownloadIDEPage.module.css';
 
 const GITHUB_REPO = 'https://github.com/DevSwat-ResonantGenesis/RG_IDE';
 const GITHUB_DOWNLOAD = 'https://github.com/DevSwat-ResonantGenesis/RG_IDE/archive/refs/heads/main.zip';
-const ONE_LINE_INSTALL = `bash -lc 'set -e; export NVM_DIR="$HOME/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] || curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash; . "$NVM_DIR/nvm.sh"; [ -d RG_IDE ] || git clone https://github.com/DevSwat-ResonantGenesis/RG_IDE.git; cd RG_IDE; nvm install; nvm use; npm install; cd extensions/resonant-ai && npm install && npx tsc -p tsconfig.json && cd ../..; npm run compile; ./scripts/code.sh'`;
+const ONE_LINE_INSTALL = `bash <(curl -fsSL https://raw.githubusercontent.com/DevSwat-ResonantGenesis/RG_IDE/main/scripts/install.sh)`;
 
 const SETUP_STEPS = [
   { cmd: 'curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash', note: 'Install nvm (skip if already installed)' },
   { cmd: 'export NVM_DIR="$HOME/.nvm" && source "$NVM_DIR/nvm.sh"', note: 'Load nvm into this shell' },
+  { cmd: 'git clone https://github.com/DevSwat-ResonantGenesis/RG_IDE.git && cd RG_IDE', note: 'Clone the repo (or: cd RG_IDE && git pull)' },
   { cmd: 'nvm install && nvm use', note: 'Use required Node version from .nvmrc (v22.x)' },
-  { cmd: 'git clone https://github.com/DevSwat-ResonantGenesis/RG_IDE.git', note: 'Clone the repo' },
-  { cmd: 'cd RG_IDE', note: 'Enter directory' },
   { cmd: 'npm install', note: 'Install dependencies (2-5 min)' },
   { cmd: 'cd extensions/resonant-ai && npm install && npx tsc -p tsconfig.json && cd ../..', note: 'Build the AI extension' },
   { cmd: 'npm run compile', note: 'Compile the IDE (~2 min)' },
-  { cmd: './scripts/code.sh', note: 'Launch DevSwat IDE' },
+  { cmd: './scripts/code.sh', note: 'Launch DevSwat IDE (creates DevSwat IDE.app on first run)' },
 ];
 
 const FEATURES = [
