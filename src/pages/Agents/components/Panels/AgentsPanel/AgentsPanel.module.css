@@ -7,6 +7,8 @@
   background: rgba(255, 255, 255, 0.02);
   border-radius: 0;
   overflow: hidden;
+  container-type: inline-size;
+  container-name: agentspanel;
 }
 
 /* Split layout: agents left, sessions right */
@@ -2188,6 +2190,106 @@
 /* Mobile tab bar — hidden on desktop */
 .mobileTabs {
   display: none;
+}
+
+/* ===== COMPACT LAYOUT — narrow container (split view, sidebar, embed) ===== */
+@container agentspanel (max-width: 500px) {
+  .panelHeader {
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 6px 8px;
+  }
+
+  .searchBar {
+    order: 10;
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .agentsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+  }
+
+  .agentCard {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    min-height: auto;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .agentCard:hover {
+    transform: none;
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .agentCard.selected {
+    background: rgba(1, 166, 188, 0.1);
+    border-color: transparent;
+    border-bottom-color: rgba(1, 166, 188, 0.2);
+    box-shadow: none;
+  }
+
+  .agentCard.openclawCard {
+    background: rgba(250, 165, 37, 0.05);
+    border: none;
+    border-bottom: 1px solid rgba(250, 165, 37, 0.2);
+    box-shadow: none;
+  }
+
+  .statusBar {
+    display: none;
+  }
+
+  .cardHeader {
+    flex: 1;
+    padding: 0;
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .agentInfo h3 {
+    font-size: 12px;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .typeBadge {
+    font-size: 8px !important;
+    padding: 1px 4px !important;
+  }
+
+  .cardStats {
+    padding: 0;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .stat {
+    font-size: 9px;
+  }
+
+  .cardActions {
+    display: none;
+  }
+
+  .cardTopActions {
+    display: none;
+  }
+
+  .cardTimestamp {
+    font-size: 9px;
+  }
 }
 
 /* Responsive */

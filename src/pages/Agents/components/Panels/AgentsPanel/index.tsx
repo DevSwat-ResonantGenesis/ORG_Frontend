@@ -825,7 +825,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   </div>
 
                   {/* Created timestamp */}
-                  <div style={{ padding: '2px 8px 0', fontSize: 9, color: 'rgba(255,255,255,0.35)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <div className={styles.cardTimestamp} style={{ padding: '2px 8px 0', fontSize: 9, color: 'rgba(255,255,255,0.35)', display: 'flex', alignItems: 'center', gap: 4 }}>
                     <Icons.Clock />
                     <span>Created {agent.createdAt ? new Date(agent.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}</span>
                   </div>
