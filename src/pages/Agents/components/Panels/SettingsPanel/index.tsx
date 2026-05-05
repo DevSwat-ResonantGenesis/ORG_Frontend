@@ -20,25 +20,40 @@ interface SettingsPanelProps {
 
 // Fallback provider/model lists — used only when dynamic catalog fetch fails
 const FALLBACK_PROVIDER_OPTIONS = [
+  { value: 'tokenrouter', label: 'TokenRouter (72 Models)' },
   { value: 'openai', label: 'OpenAI' },
   { value: 'anthropic', label: 'Anthropic (Claude)' },
   { value: 'google', label: 'Google' },
+  { value: 'deepseek', label: 'DeepSeek' },
   { value: 'mistral', label: 'Mistral' },
   { value: 'groq', label: 'Groq' },
   { value: 'together', label: 'Together AI' },
   { value: 'openrouter', label: 'OpenRouter' },
-  { value: 'tokenrouter', label: 'TokenRouter' },
 ];
 
 const FALLBACK_MODEL_OPTIONS: Record<string, string[]> = {
+  tokenrouter: [
+    'anthropic/claude-opus-4.7', 'anthropic/claude-opus-4.6', 'anthropic/claude-sonnet-4.6',
+    'anthropic/claude-sonnet-4', 'anthropic/claude-haiku-4.5',
+    'openai/gpt-5.5', 'openai/gpt-5.4', 'openai/gpt-5.2', 'openai/gpt-5-mini',
+    'x-ai/grok-4.3', 'x-ai/grok-4.1-fast',
+    'google/gemini-3.1-pro-preview', 'google/gemini-3-flash-preview',
+    'deepseek/deepseek-v4-pro', 'deepseek/deepseek-v4-flash',
+    'z-ai/glm-5.1', 'z-ai/glm-5', 'qwen/qwen3.6-plus', 'qwen/qwen3.5-flash',
+    'openai/gpt-5.3-codex', 'openai/gpt-5.1-codex-max',
+    'openai/gpt-5-image', 'openai/gpt-5-image-mini',
+    'kling-v3', 'MiniMax-Hailuo-2.3',
+    'openai/gpt-audio', 'openai/gpt-audio-mini',
+    'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free',
+  ],
   openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'o1-preview', 'o1-mini'],
-  anthropic: ['claude-opus-4-6-20250514', 'claude-3-5-sonnet-20241022', 'claude-3-opus-20240229', 'claude-3-haiku-20240307'],
-  google: ['gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-2.0-flash-exp'],
+  anthropic: ['claude-sonnet-4-20250514', 'claude-3-5-sonnet-20241022', 'claude-3-opus-20240229', 'claude-3-haiku-20240307'],
+  google: ['gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash'],
+  deepseek: ['deepseek-chat', 'deepseek-coder', 'deepseek-reasoner'],
   mistral: ['mistral-large-latest', 'mistral-medium-latest', 'mistral-small-latest'],
   groq: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'mixtral-8x7b-32768'],
   together: ['meta-llama/Llama-3.1-70B-Instruct', 'meta-llama/Llama-3.1-8B-Instruct'],
   openrouter: ['openai/gpt-4o', 'anthropic/claude-3.5-sonnet', 'google/gemini-pro-1.5'],
-  tokenrouter: ['anthropic/claude-opus-4-6-20250514', 'openai/gpt-4o', 'google/gemini-1.5-pro'],
 };
 
 const TOOL_CATALOG = [
@@ -67,8 +82,8 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
   const [editName, setEditName] = useState('');
   const [editDescription, setEditDescription] = useState('');
   const [editSystemPrompt, setEditSystemPrompt] = useState('');
-  const [editProvider, setEditProvider] = useState('openai');
-  const [editModel, setEditModel] = useState('gpt-4o');
+  const [editProvider, setEditProvider] = useState('tokenrouter');
+  const [editModel, setEditModel] = useState('google/gemini-3-flash-preview');
   const [editTemperature, setEditTemperature] = useState(0.7);
   const [editMaxTokens, setEditMaxTokens] = useState(4096);
   const [editTools, setEditTools] = useState<string[]>([]);
@@ -115,8 +130,8 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
       setEditName(selectedAgent.name || '');
       setEditDescription(selectedAgent.description || '');
       setEditSystemPrompt(selectedAgent.config?.systemPrompt || '');
-      setEditProvider(selectedAgent.config?.provider || selectedAgent.provider || 'openai');
-      setEditModel(selectedAgent.config?.model || selectedAgent.model || 'gpt-4o');
+      setEditProvider(selectedAgent.config?.provider || selectedAgent.provider || 'tokenrouter');
+      setEditModel(selectedAgent.config?.model || selectedAgent.model || 'google/gemini-3-flash-preview');
       setEditTemperature(selectedAgent.config?.temperature ?? 0.7);
       setEditMaxTokens(selectedAgent.config?.maxTokens ?? 4096);
       setEditTools(selectedAgent.capabilities || selectedAgent.tools || []);
