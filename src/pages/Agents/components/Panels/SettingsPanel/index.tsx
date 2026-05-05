@@ -56,7 +56,8 @@ const FALLBACK_MODEL_OPTIONS: Record<string, string[]> = {
   openrouter: ['openai/gpt-4o', 'anthropic/claude-3.5-sonnet', 'google/gemini-pro-1.5'],
 };
 
-const TOOL_CATALOG = [
+// Fallback tools — used only when dynamic fetch fails
+const FALLBACK_TOOL_CATALOG = [
   'web_search', 'code_execution', 'file_access', 'vision', 'image_generation',
   'memory_read', 'memory_write', 'api_call', 'email_send', 'slack_send',
   'discord_send', 'github_access', 'database_query', 'browser_automation',
@@ -90,6 +91,8 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
 
   // Dynamic providers from backend catalog
   const [providersCatalog, setProvidersCatalog] = useState<AgentProvidersCatalogResponse | null>(null);
+  // Dynamic tools from backend registry
+  const [availableTools, setAvailableTools] = useState<Array<{id: string; name: string; description: string; category: string}>>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -99,6 +102,14 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
         if (!cancelled) setProvidersCatalog(catalog);
       } catch (err) {
         console.error('Failed to fetch provider catalog:', err);
+      }
+      try {
+        const toolsResp = await fastapiClient.get('/agents/available-tools');
+        if (!cancelled && toolsResp.data) {
+          setAvailableTools(toolsResp.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch available tools:', err);
       }
     })();
     return () => { cancelled = true; };
@@ -384,7 +395,7 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
                 <h3>Tools & Capabilities</h3>
                 <p className={styles.sectionDesc}>Enable or disable tools that this agent can use.</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
-                  {TOOL_CATALOG.map(tool => {
+                  {(availableTools.length ? availableTools.map(t => t.id) : FALLBACK_TOOL_CATALOG).map(tool => {
                     const active = editTools.includes(tool);
                     return (
                       <button
