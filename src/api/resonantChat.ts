@@ -402,6 +402,7 @@ export interface SSEStreamEvent {
   resonance_score?: number;
   xyz?: [number, number, number];
   provider?: string;
+  agent_type?: string;  // Agent type (reasoning, summary, math, etc.)
   // done
   message_id?: string;
   total_length?: number;

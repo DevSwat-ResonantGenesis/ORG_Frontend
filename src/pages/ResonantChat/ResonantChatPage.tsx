@@ -135,7 +135,7 @@ const getChatIdFromResponse = (response: any): string | null =>
  */
 const formatProviderName = (provider: string | undefined): string => {
   if (!provider) return 'AI';
-  
+
   const providerMap: Record<string, string> = {
     'chatgpt': 'GPT-4',
     'openai': 'GPT-4',
@@ -2566,6 +2566,12 @@ const ResonantChatPage: React.FC = () => {
               const stepMsg = stepLabels[stepKey] || evt.message || stepKey;
               if (stepMsg) {
                 setPipelineSteps(prev => [...prev, { step: stepKey, message: stepMsg, timestamp: Date.now() }]);
+              }
+              // Capture agent_type from agent_spawn step
+              if (stepKey === 'agent_spawn' && evt.agent_type) {
+                setMessages(prev => prev.map(m =>
+                  m.id === streamMsgId ? { ...m, aiProvider: evt.agent_type } : m
+                ));
               }
             } else if (evt.event === 'options' && evt.options) {
               const optData = evt.options;
