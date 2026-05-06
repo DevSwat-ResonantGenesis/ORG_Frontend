@@ -363,7 +363,7 @@ const DownloadIDEPage: React.FC = () => {
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
-              Download for macOS (266 MB)
+              Download Source Code
             </a>
             <a
               href={GITHUB_REPO}
@@ -378,7 +378,7 @@ const DownloadIDEPage: React.FC = () => {
             </a>
           </div>
           <div className={styles.heroPlatforms}>
-            macOS (Apple Silicon) &bull; Node.js 22 required &bull; Windows &amp; Linux coming soon
+            Build from source &bull; Node.js 22 required &bull; macOS, Windows, Linux supported
           </div>
           <div style={{ marginTop: 16, width: '100%', maxWidth: 980 }}>
             <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 8 }}>One-line install (copy/paste in Terminal)</div>
