@@ -234,12 +234,10 @@ export interface Agent {
   createdAt: Date;
   updatedAt: Date;
   ownerId: string;
-  config: AgentConfig;
-  provider?: string;
-  model?: string;
-  tools?: string[];
-  // OpenClaw federation
-  agent_source?: AgentSource;
+  config?: AgentConfig;
+  safetyConfig?: SafetyConfig;
+  avatar_url?: string;
+  agent_source?: 'cloud' | 'openclaw' | 'federated';
   openclaw_config?: OpenClawConfig;
 }
 

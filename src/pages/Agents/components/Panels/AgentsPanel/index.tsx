@@ -759,10 +759,17 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   {/* Card header with icon and name */}
                   <div className={styles.cardHeader}>
                     <div className={styles.agentIcon} style={isOpenClaw ? { background: 'rgba(250, 165, 37, 0.2)', color: '#FAA525' } : undefined}>
-                      <Icons.Agents />
+                      {agent.avatar_url ? (
+                        <img src={agent.avatar_url} alt={agent.name} />
+                      ) : (
+                        <Icons.Agents />
+                      )}
                     </div>
                     <div className={styles.agentInfo}>
                       <h3>{agent.name}</h3>
+                      <div className={styles.agentSubtitle}>
+                        {agent.description || 'No description'}
+                      </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                         <span className={styles.typeBadge}>{agent.type}</span>
                         {(agent.agent_source === 'openclaw' || agent.agent_source === 'federated') && (
@@ -866,7 +873,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                     ) : (
                       <>
                         {/* Run/Play button — opens sessions panel for this agent */}
-                        <button 
+                        <button
                           className={`${styles.actionBtn} ${styles.runBtn}`}
                           disabled={bulkMode}
                           onClick={(e) => { e.stopPropagation(); selectAgent(agent.id); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); }}
@@ -874,30 +881,40 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         >
                           <Icons.Play />
                         </button>
-                        
-                        {/* Message button — opens inline chat pane */}
-                        <button 
-                          className={`${styles.actionBtn} ${styles.messageBtn}`}
+
+                        {/* Dropdown button for mobile - shows more options */}
+                        <button
+                          className={`${styles.actionBtn} ${styles.dropdownBtn}`}
+                          disabled={bulkMode}
+                          onClick={(e) => { e.stopPropagation(); }}
+                          title="More Options"
+                        >
+                          <Icons.ChevronDown />
+                        </button>
+
+                        {/* Message button — opens inline chat pane (desktop only) */}
+                        <button
+                          className={`${styles.actionBtn} ${styles.messageBtn} ${styles.desktopOnly}`}
                           disabled={bulkMode}
                           onClick={(e) => { e.stopPropagation(); setChatAgentId(agent.id); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); setMessageInput(''); setError(null); }}
                           title="Message Agent"
                         >
                           <Icons.MessageSquare />
                         </button>
-                        
-                        {/* Detail button — opens inline detail pane */}
-                        <button 
-                          className={`${styles.actionBtn} ${styles.detailBtn}`}
+
+                        {/* Detail button — opens inline detail pane (desktop only) */}
+                        <button
+                          className={`${styles.actionBtn} ${styles.detailBtn} ${styles.desktopOnly}`}
                           disabled={bulkMode}
                           onClick={(e) => { e.stopPropagation(); setDetailAgentId(agent.id); setChatAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); }}
                           title="View Details"
                         >
                           <Icons.Info />
                         </button>
-                        
-                        {/* Execution button */}
-                        <button 
-                          className={`${styles.actionBtn} ${styles.detailBtn}`}
+
+                        {/* Execution button (desktop only) */}
+                        <button
+                          className={`${styles.actionBtn} ${styles.detailBtn} ${styles.desktopOnly}`}
                           disabled={bulkMode}
                           onClick={(e) => { e.stopPropagation(); setInlinePanel({ type: 'execution', agentId: agent.id }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
                           title="Execution Monitor"
@@ -905,9 +922,9 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                           <Icons.Execution />
                         </button>
 
-                        {/* Utility button */}
-                        <button 
-                          className={`${styles.actionBtn} ${styles.detailBtn}`}
+                        {/* Utility button (desktop only) */}
+                        <button
+                          className={`${styles.actionBtn} ${styles.detailBtn} ${styles.desktopOnly}`}
                           disabled={bulkMode}
                           onClick={(e) => { e.stopPropagation(); setInlinePanel({ type: 'monitor', agentId: agent.id }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
                           title="Monitor"
@@ -915,9 +932,9 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                           <Icons.TrendingUp />
                         </button>
 
-                        {/* Memory button */}
-                        <button 
-                          className={`${styles.actionBtn} ${styles.detailBtn}`}
+                        {/* Memory button (desktop only) */}
+                        <button
+                          className={`${styles.actionBtn} ${styles.detailBtn} ${styles.desktopOnly}`}
                           disabled={bulkMode}
                           onClick={(e) => { e.stopPropagation(); setInlinePanel({ type: 'memory', agentId: agent.id }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
                           title="Agent Memory"

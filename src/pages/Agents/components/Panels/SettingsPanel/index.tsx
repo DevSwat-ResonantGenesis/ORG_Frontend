@@ -226,6 +226,52 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
     setEditTools(prev => prev.includes(tool) ? prev.filter(t => t !== tool) : [...prev, tool]);
   }, []);
 
+  const handleAvatarUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!selectedAgent || !e.target.files || !e.target.files[0]) return;
+
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      setSaving(true);
+      const response = await fastapiClient.post(`/agents/${selectedAgent.id}/avatar`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      
+      // Update agent in store with new avatar URL
+      updateAgentInStore(selectedAgent.id, { avatar_url: response.data.avatar_url });
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    } catch (err) {
+      console.error('Failed to upload avatar:', err);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    } finally {
+      setSaving(false);
+    }
+  }, [selectedAgent, updateAgentInStore]);
+
+  const handleDeleteAvatar = useCallback(async () => {
+    if (!selectedAgent) return;
+
+    try {
+      setSaving(true);
+      await fastapiClient.delete(`/agents/${selectedAgent.id}/avatar`);
+      
+      // Update agent in store to remove avatar URL
+      updateAgentInStore(selectedAgent.id, { avatar_url: undefined });
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    } catch (err) {
+      console.error('Failed to delete avatar:', err);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    } finally {
+      setSaving(false);
+    }
+  }, [selectedAgent, updateAgentInStore]);
+
   const tabs: { id: SettingsTab; label: string; icon: React.ReactNode }[] = [
     { id: 'config', label: 'Agent Config', icon: <Icons.Settings /> },
     { id: 'tools', label: 'Tools', icon: <Icons.Plug /> },
@@ -304,6 +350,80 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
                     onChange={e => setEditDescription(e.target.value)}
                     placeholder="Brief description of the agent"
                   />
+                </div>
+
+                <div className={styles.settingItem} style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+                  <div className={styles.settingInfo}>
+                    <label>Agent Avatar</label>
+                    <span>Upload a custom avatar image (SVG, JPG, PNG)</span>
+                  </div>
+                  <div style={{ marginTop: 8 }}>
+                    {selectedAgent.avatar_url ? (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <img
+                          src={selectedAgent.avatar_url}
+                          alt={selectedAgent.name}
+                          style={{ width: 64, height: 64, borderRadius: 12, objectFit: 'cover', border: '2px solid rgba(255,255,255,0.1)' }}
+                        />
+                        <button
+                          type="button"
+                          onClick={handleDeleteAvatar}
+                          disabled={saving}
+                          style={{
+                            padding: '8px 16px',
+                            background: 'rgba(239, 68, 68, 0.2)',
+                            border: '1px solid rgba(239, 68, 68, 0.3)',
+                            borderRadius: 8,
+                            color: '#ef4444',
+                            fontSize: 12,
+                            fontWeight: 500,
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                          }}
+                          onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.3)'}
+                          onMouseOut={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'}
+                        >
+                          Delete Avatar
+                        </button>
+                      </div>
+                    ) : (
+                      <div>
+                        <input
+                          type="file"
+                          id="avatar-upload"
+                          accept=".svg,.jpg,.jpeg,.png"
+                          onChange={handleAvatarUpload}
+                          disabled={saving}
+                          style={{ display: 'none' }}
+                        />
+                        <label
+                          htmlFor="avatar-upload"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 8,
+                            padding: '10px 16px',
+                            background: 'rgba(1, 166, 188, 0.2)',
+                            border: '1px solid rgba(1, 166, 188, 0.3)',
+                            borderRadius: 8,
+                            color: '#01A6BC',
+                            fontSize: 13,
+                            fontWeight: 500,
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                          }}
+                          onMouseOver={(e) => e.currentTarget.style.background = 'rgba(1, 166, 188, 0.3)'}
+                          onMouseOut={(e) => e.currentTarget.style.background = 'rgba(1, 166, 188, 0.2)'}
+                        >
+                          <Icons.Upload />
+                          Upload Avatar
+                        </label>
+                        <span style={{ marginLeft: 12, fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>
+                          SVG, JPG, PNG (max 5MB)
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className={styles.settingItem} style={{ flexDirection: 'column', alignItems: 'stretch' }}>
