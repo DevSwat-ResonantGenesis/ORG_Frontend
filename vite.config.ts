@@ -25,6 +25,7 @@ export default defineConfig({
     outDir: 'dist',
     target: 'es2019',
     sourcemap: false,
+    cssCodeSplit: false,
     rollupOptions: {
       output: {
         manualChunks: {
