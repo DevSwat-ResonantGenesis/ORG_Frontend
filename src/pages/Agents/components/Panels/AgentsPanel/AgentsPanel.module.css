@@ -370,6 +370,12 @@
   padding: 12px;
 }
 
+@media (max-width: 768px) {
+  .agentsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+  }
+}
+
 .agentCard {
   position: relative;
   display: flex;

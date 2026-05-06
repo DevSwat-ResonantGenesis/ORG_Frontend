@@ -57,6 +57,12 @@
   gap: var(--space-3);
 }
 
+@media (max-width: 768px) {
+  .agentGrid {
+    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+  }
+}
+
 .agentCard {
   background: var(--bg-secondary, #f9fafb);
   border: 1px solid var(--border-color, #e5e7eb);
