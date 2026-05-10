@@ -105,7 +105,7 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
       }
       try {
         const toolsResp = await fastapiClient.get('/agents/available-tools');
-        if (!cancelled && toolsResp.data) {
+        if (!cancelled && Array.isArray(toolsResp.data)) {
           setAvailableTools(toolsResp.data);
         }
       } catch (err) {
@@ -145,7 +145,7 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
       setEditModel(selectedAgent.config?.model || selectedAgent.model || 'google/gemini-3-flash-preview');
       setEditTemperature(selectedAgent.config?.temperature ?? 0.7);
       setEditMaxTokens(selectedAgent.config?.maxTokens ?? 4096);
-      setEditTools(selectedAgent.capabilities || selectedAgent.tools || []);
+      setEditTools(selectedAgent.capabilities || (selectedAgent as any).tools || []);
       setSaveStatus('idle');
     }
   }, [selectedAgent?.id]);

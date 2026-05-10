@@ -2551,6 +2551,7 @@ const ResonantChatPage: React.FC = () => {
               const stepLabels: Record<string, string> = {
                 tool_detection: `Tool detected: ${evt.name || evt.tool || 'unknown'}`,
                 tool_result: evt.success ? `${evt.tool || 'Tool'} executed` : `${evt.tool || 'Tool'} failed`,
+                tool_call: evt.message || `Calling: ${evt.tool || evt.name || 'tool'}`,
                 web_search: `Searching: ${evt.query || 'web'}`,
                 image_generated: `Generated ${evt.count || 1} image(s)`,
                 hashing: 'Hashing input',
@@ -2561,6 +2562,21 @@ const ResonantChatPage: React.FC = () => {
                 generating_done: 'Generation complete',
                 post_processing: evt.message || 'Post-processing',
                 memory_ingest: evt.message || 'Storing to memory',
+                agent_spawn: `Agent: ${evt.agent_type || 'spawning'}`,
+                thinking: evt.message || 'Reasoning...',
+                phase: evt.message || evt.phase || 'Processing...',
+                build_progress: evt.message || 'Building agent...',
+                build_step: evt.message || 'Build step...',
+                build_complete: evt.message || 'Build complete',
+                test_step: evt.message || 'Running tests...',
+                test_result: evt.message || 'Test result',
+                verify_step: evt.message || 'Verifying...',
+                verify_complete: evt.message || 'Verification complete',
+                prompt_step: evt.message || 'Generating prompt...',
+                prompt_ready: evt.message || 'Prompt ready',
+                research_complete: evt.message || 'Research complete',
+                plan_ready: evt.message || 'Plan ready',
+                offers_ready: evt.message || 'Options ready',
               };
               const stepKey = evt.step || '';
               const stepMsg = stepLabels[stepKey] || evt.message || stepKey;

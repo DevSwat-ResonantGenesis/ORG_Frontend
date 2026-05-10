@@ -1271,7 +1271,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                 <div className={styles.detailCapabilities}>
                   <h4>Capabilities</h4>
                   <div className={styles.capsList}>
-                    {detailAgent.capabilities.map((cap: string) => (
+                    {(detailAgent.capabilities || []).map((cap: string) => (
                       <span key={cap} className={styles.capBadge}>{cap}</span>
                     ))}
                   </div>
