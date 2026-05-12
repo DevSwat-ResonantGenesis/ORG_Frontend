@@ -286,6 +286,23 @@ export const emergencyStopAgent = async (agent_id: string): Promise<{
 };
 
 /**
+ * Update agent configuration (partial update)
+ * PATCH /api/v1/agents/{agent_id}
+ */
+export const updateAgent = async (
+  agent_id: string,
+  data: Partial<Pick<CreateAgentRequest, 'name' | 'description' | 'system_prompt' | 'provider' | 'model' | 'temperature' | 'max_tokens' | 'tool_mode' | 'tools' | 'mode' | 'safety_config' | 'allowed_actions' | 'blocked_actions'>> & { is_active?: boolean; max_loops?: number; autonomous?: boolean; trigger_config?: Record<string, any>; tool_config?: Record<string, any> }
+): Promise<{ id: string; name: string; version: number; updated_fields: string[] }> => {
+  try {
+    const response = await fastapiClient.patch(`/api/v1/agents/${agent_id}`, data);
+    return response.data;
+  } catch (error) {
+    logger.apiError(`/api/v1/agents/${agent_id}`, error);
+    throw error;
+  }
+};
+
+/**
  * Delete an agent
  * DELETE /api/v1/agents/{agent_id}
  */

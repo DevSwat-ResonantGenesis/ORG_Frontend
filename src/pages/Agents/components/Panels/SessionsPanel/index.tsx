@@ -201,9 +201,21 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
   const handleApproveStep = async (stepId: string, approved: boolean) => {
     if (!selectedSession?.id) return;
     try {
-      await agentEngine.approveStep(selectedSession.id, stepId, approved);
-      // Refresh steps
+      // If no stepId, fetch fresh steps to find the pending one
+      let resolvedStepId = stepId;
+      if (!resolvedStepId) {
+        const freshSteps = await agentEngine.getSessionSteps(selectedSession.id);
+        const pending = freshSteps.find((s: any) => s.approval_status === 'pending');
+        if (pending) resolvedStepId = pending.id;
+      }
+      if (!resolvedStepId) {
+        setError('No pending step found to approve');
+        return;
+      }
+      await agentEngine.approveStep(selectedSession.id, resolvedStepId, approved);
+      // Refresh steps + sessions
       loadSessionSteps(selectedSession.id);
+      if (selectedAgent?.id) loadSessions(selectedAgent.id);
     } catch (err: any) {
       setError(err.message || 'Failed to approve step');
     }
@@ -333,9 +345,8 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
                         style={{ background: '#22c55e', color: '#fff', border: 'none', borderRadius: 4, padding: '2px 8px', fontSize: 10, fontWeight: 700, cursor: 'pointer' }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          const pendingStep = sessionSteps.find(s => s.approval_status === 'pending');
-                          if (pendingStep) handleApproveStep(pendingStep.id, true);
-                          else agentEngine.approveStep(session.id, '', true).then(() => loadSessions(selectedAgent?.id || ''));
+                          setSelectedSession(session as any);
+                          handleApproveStep('', true);
                         }}
                       >
                         Approve
@@ -344,9 +355,8 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
                         style={{ background: '#ef4444', color: '#fff', border: 'none', borderRadius: 4, padding: '2px 8px', fontSize: 10, fontWeight: 700, cursor: 'pointer' }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          const pendingStep = sessionSteps.find(s => s.approval_status === 'pending');
-                          if (pendingStep) handleApproveStep(pendingStep.id, false);
-                          else agentEngine.approveStep(session.id, '', false).then(() => loadSessions(selectedAgent?.id || ''));
+                          setSelectedSession(session as any);
+                          handleApproveStep('', false);
                         }}
                       >
                         Reject
