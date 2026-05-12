@@ -120,11 +120,11 @@ const AgentOSv2: React.FC = () => {
           utilityScore: 0.5,
           ownerId: '',
           config: {
-            provider: (a as any).provider || 'openai',
-            model: a.model || 'gpt-4-turbo-preview',
-            systemPrompt: '',
-            temperature: 0.7,
-            maxTokens: 4096,
+            provider: (a as any).provider || 'tokenrouter',
+            model: a.model || 'google/gemini-3-flash-preview',
+            systemPrompt: (a as any).system_prompt || '',
+            temperature: (a as any).temperature ?? 0.7,
+            maxTokens: (a as any).max_tokens ?? 4096,
             tools: [],
             memoryConfig: {
               shortTermLimit: 10,

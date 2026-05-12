@@ -24,6 +24,7 @@ interface MemoryPanelProps {
 
 const MemoryPanelComponent: React.FC<MemoryPanelProps> = ({ className }) => {
   const agents = useAgentStore(state => state.agents);
+  const storeSelectedAgentId = useAgentStore(state => state.selectedAgentId);
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'short_term' | 'long_term' | 'vector'>('short_term');
   const [searchQuery, setSearchQuery] = useState('');
@@ -32,6 +33,13 @@ const MemoryPanelComponent: React.FC<MemoryPanelProps> = ({ className }) => {
   const [stats, setStats] = useState<memoryApi.MemoryStats | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Auto-select the agent from the store when it changes
+  useEffect(() => {
+    if (storeSelectedAgentId && storeSelectedAgentId !== selectedAgentId) {
+      setSelectedAgentId(storeSelectedAgentId);
+    }
+  }, [storeSelectedAgentId]);
 
   const selectedAgent = agents.find(a => a.id === selectedAgentId) || agents[0];
 

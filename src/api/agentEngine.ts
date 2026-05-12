@@ -10,15 +10,24 @@ export interface AgentDefinition {
   name: string;
   description?: string;
   system_prompt?: string;
+  provider?: string;
   model: string;
   temperature?: number;
   max_tokens?: number;
+  tool_mode?: string;
   tools?: string[];
+  mode?: string;
   safety_config?: Record<string, unknown>;
   is_active: boolean;
   version: number;
+  manifest_hash?: string;
+  agent_public_hash?: string;
+  dsid?: string;
+  agent_source?: string;
   running_sessions?: number;
   active_schedules?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface AgentSession {
