@@ -2607,6 +2607,22 @@ const ResonantChatPage: React.FC = () => {
                   m.id === streamMsgId ? { ...m, aiProvider: evt.agent_type } : m
                 ));
               }
+              // Capture generated images from image_generated step
+              if (stepKey === 'image_generated' && (evt as any).images && Array.isArray((evt as any).images)) {
+                const sseImages = (evt as any).images as Array<{url?: string; base64_data?: string; revised_prompt?: string; model?: string; size?: string}>;
+                const genImages: GeneratedImage[] = sseImages.map(img => ({
+                  url: img.url,
+                  base64_data: img.base64_data,
+                  revised_prompt: img.revised_prompt,
+                  model: img.model || 'unknown',
+                  size: img.size || '1024x1024',
+                }));
+                if (genImages.length > 0) {
+                  setMessages(prev => prev.map(m =>
+                    m.id === streamMsgId ? { ...m, generatedImages: [...(m.generatedImages || []), ...genImages] } : m
+                  ));
+                }
+              }
             } else if (evt.event === 'options' && evt.options) {
               const optData = evt.options;
               if (optData?._type === 'present_options' && optData?.options) {
@@ -2618,16 +2634,37 @@ const ResonantChatPage: React.FC = () => {
               }
             } else if (evt.event === 'done') {
               const finalContent = evt.content || lastContent;
-              setMessages(prev => prev.map(m =>
-                m.id === streamMsgId ? {
+              // Parse markdown images from content as fallback for generatedImages
+              const mdImageRegex = /!\[([^\]]*)\]\(((?:https?:\/\/[^\s)]+|data:image\/[^)]+))\)/g;
+              let mdMatch;
+              const parsedImages: GeneratedImage[] = [];
+              while ((mdMatch = mdImageRegex.exec(finalContent)) !== null) {
+                const [, alt, url] = mdMatch;
+                if (url.startsWith('data:image/')) {
+                  const b64Part = url.includes(',') ? url.split(',')[1] : '';
+                  parsedImages.push({ base64_data: b64Part, revised_prompt: alt || undefined, model: 'image_gen', size: '1024x1024' });
+                } else {
+                  parsedImages.push({ url, revised_prompt: alt || undefined, model: 'image_gen', size: '1024x1024' });
+                }
+              }
+              // Clean markdown image syntax from displayed text
+              const cleanContent = parsedImages.length > 0
+                ? finalContent.replace(mdImageRegex, '').replace(/^\s*Here is your generated image:\s*/i, '').trim() || 'Here is your generated image:'
+                : finalContent;
+              setMessages(prev => prev.map(m => {
+                if (m.id !== streamMsgId) return m;
+                const existingImages = m.generatedImages || [];
+                const mergedImages = existingImages.length > 0 ? existingImages : parsedImages;
+                return {
                   ...m,
                   id: evt.message_id || streamMsgId,
-                  content: finalContent,
+                  content: cleanContent,
                   hash: evt.hash,
                   resonanceScore: evt.resonance_score,
                   aiProvider: evt.provider || 'AI',
-                } : m
-              ));
+                  generatedImages: mergedImages.length > 0 ? mergedImages : m.generatedImages,
+                };
+              }));
               if (evt.present_options) {
                 const optData = evt.present_options;
                 if (optData?._type === 'present_options' && optData?.options) {
