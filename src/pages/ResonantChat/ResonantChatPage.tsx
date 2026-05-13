@@ -2139,14 +2139,30 @@ const ResonantChatPage: React.FC = () => {
                 });
                 return `\n\n[Image: ${file.name}]`;
               }
+              // Handle PDF files - extract text content
+              if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+                try {
+                  const { extractPdfText } = await import('../../utils/pdfExtract');
+                  const pdfText = await extractPdfText(file);
+                  if (pdfText.trim()) {
+                    return `\n\n[PDF: ${file.name}]\n${pdfText}`;
+                  } else {
+                    // PDF has no extractable text (scanned/image PDF) — send as image for vision
+                    return `\n\n[PDF: ${file.name} — This PDF appears to be scanned/image-based with no extractable text. The content could not be read.]`;
+                  }
+                } catch (pdfErr) {
+                  logger.error('PDF extraction failed', pdfErr);
+                  return `\n\n[PDF: ${file.name} — Failed to extract text content]`;
+                }
+              }
               // Handle text files
               if (file.type.startsWith('text/') ||
-                file.name.match(/\.(txt|md|json|js|ts|py|java|cpp|c|cs)$/i)) {
+                file.name.match(/\.(txt|md|json|js|ts|py|java|cpp|c|cs|xml|yaml|yml|toml|ini|cfg|csv|html|css|scss|sql|sh|bash|rb|go|rs|swift|kt|scala|r|m|h|hpp)$/i)) {
                 const content = await readTextFile(file);
                 return `\n\n[File: ${file.name}]\n${content}`;
               } else {
                 const fileId = uploadedFileIds.get(file);
-                return `\n\n[File: ${file.name}${fileId ? ` (ID: ${fileId})` : ''}]`;
+                return `\n\n[File: ${file.name}${fileId ? ` (ID: ${fileId})` : ''} — Binary file, content not readable as text]`;
               }
             } catch (error: unknown) {
               logger.error('Failed to read file content', error);
@@ -4381,9 +4397,20 @@ const ResonantChatPage: React.FC = () => {
                     >
                       {/** Visual typing effect only changes render pacing, not backend generation speed. */}
                       {(() => {
+                        // Extract attachment tags from user messages and render as visual chips
+                        const attachmentRegex = /\[(Attachment|Image|PDF|File):\s*([^\]]+)\]/g;
+                        const attachments: Array<{ type: string; name: string }> = [];
+                        let cleanContent = message.content;
+                        if (message.role === 'user') {
+                          let m;
+                          while ((m = attachmentRegex.exec(message.content)) !== null) {
+                            attachments.push({ type: m[1], name: m[2].split(' — ')[0].split(' (')[0].trim() });
+                          }
+                          cleanContent = message.content.replace(attachmentRegex, '').trim();
+                        }
                         const renderedMessageContent = message.role === 'assistant'
                           ? enhanceToMarkdown(message.content)
-                          : message.content;
+                          : cleanContent;
 
                         return (
                           <>
@@ -4492,6 +4519,28 @@ const ResonantChatPage: React.FC = () => {
                         )}
                       </div>
                       <div className={`${styles.messageContent}${message.id === typingMessageId ? ` ${styles.typingReveal}` : ''}`}>
+                        {/* Attachment chips for user messages */}
+                        {message.role === 'user' && attachments.length > 0 && (
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+                            {attachments.map((att, idx) => {
+                              const isImage = att.type === 'Image';
+                              const isPdf = att.type === 'PDF';
+                              const icon = isImage ? '🖼️' : isPdf ? '📄' : '📎';
+                              const bg = isImage ? 'rgba(59,130,246,0.12)' : isPdf ? 'rgba(239,68,68,0.12)' : 'rgba(107,114,128,0.12)';
+                              const color = isImage ? '#60a5fa' : isPdf ? '#f87171' : '#9ca3af';
+                              return (
+                                <span key={idx} style={{
+                                  display: 'inline-flex', alignItems: 'center', gap: 4,
+                                  padding: '3px 10px', borderRadius: 6,
+                                  background: bg, color, fontSize: 12, fontWeight: 500,
+                                  border: `1px solid ${color}33`,
+                                }}>
+                                  {icon} {att.name}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        )}
                         {/* Enhanced message rendering with markdown */}
                         <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
