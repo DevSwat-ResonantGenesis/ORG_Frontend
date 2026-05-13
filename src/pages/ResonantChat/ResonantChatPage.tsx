@@ -1,5 +1,5 @@
 import { createMemory, deleteConversation, deleteMemory, listConversations, listMemories, updateConversation, updateMemory, uploadFile, type MemoryResponse } from '@/api/rag';
-import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, streamResonantMessage, getProviderStats, getUserAnalytics, archiveConversation, deleteResonantConversation, deleteResonantMessage, extractMemories, categorizeConversations, saveAgenticToResonant, type UserAnalytics, type ConversationGroup } from '@/api/resonantChat';
+import { createChat, getChatHistory, getMemoryAnchors, getResonanceClusters, sendResonantMessage, streamResonantMessage, getProviderStats, getUserAnalytics, archiveConversation, deleteResonantConversation, deleteResonantMessage, extractMemories, categorizeConversations, saveAgenticToResonant, pollArchitectSession, reconnectArchitectStream, type UserAnalytics, type ConversationGroup } from '@/api/resonantChat';
 import { triggerChatSync } from '@/context/ChatContext';
 import { fetchAvailableProviders } from '@/api/userApiKeys';
 import { executeSkill } from '@/api/skills';
@@ -707,6 +707,80 @@ const ResonantChatPage: React.FC = () => {
               setLoadedConversationId(currentConversationId);
             }
           }
+          // Check for active architect session after loading history
+          try {
+            const archSess = await pollArchitectSession(currentConversationId);
+            if (archSess.active) {
+              logger.info('[ResonantChatPage] Active architect session found:', archSess.status);
+              if (archSess.status === 'running') {
+                // Still running — reconnect SSE and show live updates
+                const resumeMsgId = `arch-resume-${Date.now()}`;
+                setMessages(prev => [...prev, {
+                  id: resumeMsgId,
+                  role: 'assistant' as const,
+                  content: archSess.accumulated_text || 'Architect is working...',
+                  timestamp: new Date(),
+                  aiProvider: 'tool_agent_architect',
+                }]);
+                setIsStreaming(true);
+                setPipelineSteps([{ step: 'reconnect', message: 'Reconnected to architect session', timestamp: Date.now() }]);
+                // Open agents panel
+                setAgentsPanelUrl('/agents?embed=1');
+                setSplitAutoOpenRequest({ requestId: Date.now(), tab: 'agents' });
+                if (!splitViewEnabled) { setSplitViewEnabled(true); setSplitViewPane('split'); }
+
+                reconnectArchitectStream(currentConversationId, (evt) => {
+                  if (evt.event === 'chunk' && evt.content) {
+                    setMessages(prev => prev.map(m =>
+                      m.id === resumeMsgId ? { ...m, content: evt.content || '' } : m
+                    ));
+                  } else if (evt.event === 'step') {
+                    const stepKey = evt.step || '';
+                    const stepMsg = evt.message || stepKey;
+                    if (stepMsg) {
+                      setPipelineSteps(prev => [...prev, { step: stepKey, message: stepMsg, timestamp: Date.now() }]);
+                    }
+                  } else if (evt.event === 'done') {
+                    setMessages(prev => prev.map(m =>
+                      m.id === resumeMsgId ? {
+                        ...m,
+                        id: evt.message_id || resumeMsgId,
+                        content: evt.content || m.content,
+                        aiProvider: evt.provider || 'tool_agent_architect',
+                      } : m
+                    ));
+                    setIsStreaming(false);
+                  } else if (evt.event === 'options' && evt.options) {
+                    const optData = evt.options;
+                    if (optData?._type === 'present_options' && optData?.options) {
+                      setPresentedOptions({
+                        title: optData.title || 'Options',
+                        options: optData.options,
+                        allow_custom: optData.allow_custom,
+                      });
+                    }
+                  }
+                }).catch(() => setIsStreaming(false));
+              } else if (archSess.status === 'completed' && archSess.accumulated_text) {
+                // Completed while we were away — check if already in loaded messages
+                const hasArchMsg = loadedMessages.some(m =>
+                  m.aiProvider === 'tool_agent_architect' && m.content === archSess.accumulated_text
+                );
+                if (!hasArchMsg) {
+                  setMessages(prev => [...prev, {
+                    id: archSess.message_id || `arch-done-${Date.now()}`,
+                    role: 'assistant' as const,
+                    content: archSess.accumulated_text || '',
+                    timestamp: new Date(),
+                    aiProvider: 'tool_agent_architect',
+                  }]);
+                }
+              }
+            }
+          } catch (archErr) {
+            logger.warn('[ResonantChatPage] Architect session poll failed', archErr);
+          }
+
         } catch (error: any) {
           logger.error('[ResonantChatPage] Failed to load chat history', error);
           // If chat not found (404), clear the conversation ID

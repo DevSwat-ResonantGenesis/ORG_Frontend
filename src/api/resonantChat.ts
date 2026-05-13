@@ -1075,3 +1075,71 @@ export const categorizeConversations = async (): Promise<{ groups: ConversationG
     return { groups: [], total: 0 };
   }
 };
+
+/**
+ * Poll for an active/completed architect session on a chat.
+ * Used to resume after page refresh.
+ */
+export const pollArchitectSession = async (chatId: string, sinceEvent = 0): Promise<{
+  active: boolean;
+  status?: string;
+  accumulated_text?: string;
+  options?: any;
+  event_count?: number;
+  message_id?: string;
+}> => {
+  try {
+    const apiUrl = (await import('../utils/apiUrl')).getApiUrl();
+    const resp = await fetch(`${apiUrl}/resonant-chat/architect-session/${chatId}?since_event=${sinceEvent}`, {
+      credentials: 'include',
+    });
+    if (!resp.ok) return { active: false };
+    return resp.json();
+  } catch {
+    return { active: false };
+  }
+};
+
+/**
+ * Reconnect to an active architect session via SSE.
+ * Replays missed events, then streams new ones.
+ */
+export const reconnectArchitectStream = async (
+  chatId: string,
+  onEvent: (event: SSEStreamEvent) => void,
+  sinceEvent = 0,
+  signal?: AbortSignal,
+): Promise<void> => {
+  const apiUrl = (await import('../utils/apiUrl')).getApiUrl();
+  const response = await fetch(
+    `${apiUrl}/resonant-chat/architect-session/${chatId}/stream?since_event=${sinceEvent}`,
+    { credentials: 'include', signal },
+  );
+  if (!response.ok) return;
+
+  const reader = response.body?.getReader();
+  if (!reader) return;
+
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n\n');
+      buffer = lines.pop() || '';
+      for (const block of lines) {
+        const dataLine = block.split('\n').find(l => l.startsWith('data: '));
+        if (!dataLine) continue;
+        try {
+          const parsed: SSEStreamEvent = JSON.parse(dataLine.slice(6));
+          onEvent(parsed);
+        } catch { /* skip */ }
+      }
+    }
+  } finally {
+    reader.releaseLock();
+  }
+};
