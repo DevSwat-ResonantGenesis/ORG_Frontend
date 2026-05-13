@@ -1,12 +1,14 @@
 import React, { memo, useState, useCallback, useEffect } from 'react';
 import { useAgentStore } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
-import * as memoryApi from '../../../../../api/memory';
+import * as agentEngine from '../../../../../api/agentEngine';
+import type { AgentSession, AgentStep } from '../../../../../api/agentEngine';
 import styles from './MemoryPanel.module.css';
 
 // ============== MEMORY PANEL ==============
 // Contract: reads [agent, execution], writes [agent]
 // Forbidden: [economy]
+// Data source: Agent Engine sessions & steps (real execution data)
 
 interface MemoryEntry {
   id: string;
@@ -14,8 +16,9 @@ interface MemoryEntry {
   content: string;
   timestamp: Date;
   agentId: string;
-  relevance?: number;
   tokens?: number;
+  status?: string;
+  goal?: string;
 }
 
 interface MemoryPanelProps {
@@ -28,9 +31,8 @@ const MemoryPanelComponent: React.FC<MemoryPanelProps> = ({ className }) => {
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'short_term' | 'long_term' | 'vector'>('short_term');
   const [searchQuery, setSearchQuery] = useState('');
-  const [memories, setMemories] = useState<memoryApi.MemoryRecord[]>([]);
-  const [anchors, setAnchors] = useState<memoryApi.MemoryAnchor[]>([]);
-  const [stats, setStats] = useState<memoryApi.MemoryStats | null>(null);
+  const [sessions, setSessions] = useState<AgentSession[]>([]);
+  const [expandedSteps, setExpandedSteps] = useState<Record<string, AgentStep[]>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,128 +43,91 @@ const MemoryPanelComponent: React.FC<MemoryPanelProps> = ({ className }) => {
     }
   }, [storeSelectedAgentId]);
 
-  const selectedAgent = agents.find(a => a.id === selectedAgentId) || agents[0];
-
-  // Fetch memories from backend
-  const fetchMemories = useCallback(async () => {
+  // Fetch sessions from Agent Engine
+  const fetchSessions = useCallback(async () => {
     if (!selectedAgentId) return;
     
     setIsLoading(true);
     setError(null);
     try {
-      if (searchQuery) {
-        // Search memories
-        const results = await memoryApi.retrieveMemories({
-          user_id: selectedAgentId,
-          query: searchQuery,
-          limit: 50,
-        });
-        setMemories(results);
-      } else {
-        // Get all memories (could filter by source based on tab)
-        const results = await memoryApi.retrieveMemories({
-          user_id: selectedAgentId,
-          query: '',
-          limit: 100,
-          use_vector_search: false,
-        });
-        setMemories(results);
-      }
+      const allSessions = await agentEngine.listSessions(selectedAgentId);
+      setSessions(allSessions);
     } catch (err: any) {
-      console.error('Failed to fetch memories:', err);
-      setError(err.message || 'Failed to load memories');
+      console.error('Failed to fetch agent sessions:', err);
+      setError(err.message || 'Failed to load agent memory');
     } finally {
       setIsLoading(false);
-    }
-  }, [selectedAgentId, searchQuery]);
-
-  // Fetch anchors
-  const fetchAnchors = useCallback(async () => {
-    if (!selectedAgentId) return;
-    try {
-      const anchorList = await memoryApi.listAnchors(selectedAgentId, 50);
-      setAnchors(anchorList);
-    } catch (err: any) {
-      console.error('Failed to fetch anchors:', err);
-    }
-  }, [selectedAgentId]);
-
-  // Fetch stats
-  const fetchStats = useCallback(async () => {
-    if (!selectedAgentId) return;
-    try {
-      const memoryStats = await memoryApi.getMemoryStats(selectedAgentId);
-      setStats(memoryStats);
-    } catch (err: any) {
-      console.error('Failed to fetch stats:', err);
     }
   }, [selectedAgentId]);
 
   useEffect(() => {
-    fetchMemories();
-    fetchAnchors();
-    fetchStats();
-  }, [fetchMemories, fetchAnchors, fetchStats]);
+    fetchSessions();
+    setExpandedSteps({});
+  }, [fetchSessions]);
 
-  // Convert memories to display format
-  const memoryEntries: MemoryEntry[] = memories.map(mem => ({
-    id: mem.id,
-    type: activeTab,
-    content: mem.content,
-    timestamp: mem.created_at ? new Date(mem.created_at) : new Date(),
-    agentId: mem.user_id || selectedAgentId || '',
-    relevance: mem.similarity,
-  }));
-
-  const filteredEntries = memoryEntries.filter(entry => {
-    if (entry.type !== activeTab) return false;
-    if (searchQuery) {
-      return entry.content.toLowerCase().includes(searchQuery.toLowerCase());
+  // Load steps for a session
+  const loadSteps = useCallback(async (sessionId: string) => {
+    if (expandedSteps[sessionId]) {
+      // Toggle off
+      setExpandedSteps(prev => { const n = { ...prev }; delete n[sessionId]; return n; });
+      return;
     }
-    return true;
-  });
-
-  const memoryStats = {
-    shortTerm: { count: memories.length, tokens: 0 },
-    longTerm: { count: stats?.total_memories || 0, size: memoryApi.formatStorageSize(stats?.storage_size_mb || 0) },
-    vector: { count: stats?.total_embeddings || 0, chunks: anchors.length },
-  };
-
-  const handleDeleteMemory = async (memoryId: string) => {
-    if (!confirm('Are you sure you want to delete this memory?')) return;
     try {
-      await memoryApi.deleteMemory(memoryId);
-      await fetchMemories();
+      const steps = await agentEngine.getSessionSteps(sessionId);
+      setExpandedSteps(prev => ({ ...prev, [sessionId]: steps }));
     } catch (err: any) {
-      setError(err.message || 'Failed to delete memory');
+      console.error('Failed to load steps:', err);
     }
-  };
+  }, [expandedSteps]);
 
-  // Clear short-term memories
-  const handleClearShortTerm = async () => {
-    if (!selectedAgentId || !confirm('Clear all short-term memories for this agent?')) return;
-    setIsLoading(true);
-    try {
-      // Delete all current short-term memories
-      for (const mem of memories) {
-        try { await memoryApi.deleteMemory(mem.id); } catch {}
-      }
-      await fetchMemories();
-    } catch (err: any) {
-      setError(err.message || 'Failed to clear memories');
-    } finally {
-      setIsLoading(false);
+  // Compute stats from real session data
+  const runningSessions = sessions.filter(s => s.status === 'running' || s.status === 'initializing');
+  const completedSessions = sessions.filter(s => s.status === 'completed');
+  const allSessions = sessions;
+  const totalTokens = sessions.reduce((sum, s) => sum + (s.total_tokens_used || 0), 0);
+  const totalOutputs = completedSessions.filter(s => s.final_output).length;
+
+  // Build memory entries from sessions based on active tab
+  const memoryEntries: MemoryEntry[] = (() => {
+    let src: AgentSession[] = [];
+    if (activeTab === 'short_term') {
+      // Short-term = running + recent sessions (last 5)
+      src = [...runningSessions, ...sessions.filter(s => s.status !== 'running' && s.status !== 'initializing').slice(0, 5)];
+    } else if (activeTab === 'long_term') {
+      // Long-term = completed sessions with outputs
+      src = completedSessions.filter(s => s.final_output);
+    } else {
+      // Vector = all sessions (full history)
+      src = allSessions;
     }
-  };
+    return src.map(s => ({
+      id: s.id,
+      type: activeTab,
+      content: activeTab === 'long_term' 
+        ? (s.final_output || s.current_goal || 'No output') 
+        : (s.current_goal || 'No goal'),
+      timestamp: s.created_at ? new Date(s.created_at) : new Date(),
+      agentId: s.agent_id,
+      tokens: s.total_tokens_used || 0,
+      status: s.status,
+      goal: s.current_goal,
+    }));
+  })();
 
-  // Export all memories as JSON
+  const filteredEntries = searchQuery
+    ? memoryEntries.filter(e => e.content.toLowerCase().includes(searchQuery.toLowerCase()))
+    : memoryEntries;
+
+  // Export all session data as JSON
   const handleExportAll = () => {
     const exportData = {
       agent_id: selectedAgentId,
       exported_at: new Date().toISOString(),
-      memories: memories.map(m => ({ id: m.id, content: m.content, created_at: m.created_at })),
-      anchors: anchors.map(a => ({ id: a.id, content: a.context, anchor_type: a.anchor_text })),
-      stats,
+      sessions: sessions.map(s => ({
+        id: s.id, status: s.status, goal: s.current_goal,
+        tokens: s.total_tokens_used, output: s.final_output,
+        created_at: s.created_at, completed_at: s.completed_at,
+      })),
     };
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -173,24 +138,13 @@ const MemoryPanelComponent: React.FC<MemoryPanelProps> = ({ className }) => {
     URL.revokeObjectURL(url);
   };
 
-  // Sync vector store
-  const handleSyncVectorStore = async () => {
-    if (!selectedAgentId) return;
-    setIsLoading(true);
-    try {
-      // Re-fetch with vector search enabled to trigger re-indexing
-      await memoryApi.retrieveMemories({
-        user_id: selectedAgentId,
-        query: '',
-        limit: 100,
-        use_vector_search: true,
-      });
-      await fetchStats();
-      await fetchAnchors();
-    } catch (err: any) {
-      setError(err.message || 'Failed to sync vector store');
-    } finally {
-      setIsLoading(false);
+  const statusColor = (status?: string) => {
+    switch (status) {
+      case 'completed': return '#22c55e';
+      case 'running': case 'initializing': return '#3b82f6';
+      case 'failed': return '#ef4444';
+      case 'cancelled': return '#f59e0b';
+      default: return '#6b7280';
     }
   };
 
@@ -233,18 +187,18 @@ const MemoryPanelComponent: React.FC<MemoryPanelProps> = ({ className }) => {
         <div className={styles.statsGrid}>
           <div className={styles.statCard}>
             <h4>Short-Term Memory</h4>
-            <div className={styles.statValue}>{memoryStats.shortTerm.count}</div>
-            <div className={styles.statMeta}>{memoryStats.shortTerm.tokens} tokens</div>
+            <div className={styles.statValue}>{runningSessions.length + Math.min(sessions.length, 5)}</div>
+            <div className={styles.statMeta}>{totalTokens.toLocaleString()} tokens</div>
           </div>
           <div className={styles.statCard}>
             <h4>Long-Term Memory</h4>
-            <div className={styles.statValue}>{memoryStats.longTerm.count}</div>
-            <div className={styles.statMeta}>{memoryStats.longTerm.size}</div>
+            <div className={styles.statValue}>{totalOutputs}</div>
+            <div className={styles.statMeta}>{completedSessions.length} completed</div>
           </div>
           <div className={styles.statCard}>
             <h4>Vector Store</h4>
-            <div className={styles.statValue}>{memoryStats.vector.count}</div>
-            <div className={styles.statMeta}>{memoryStats.vector.chunks} chunks</div>
+            <div className={styles.statValue}>{allSessions.length}</div>
+            <div className={styles.statMeta}>{allSessions.length} sessions</div>
           </div>
         </div>
 
@@ -277,49 +231,61 @@ const MemoryPanelComponent: React.FC<MemoryPanelProps> = ({ className }) => {
           {filteredEntries.map(entry => (
             <div key={entry.id} className={styles.memoryCard}>
               <div className={styles.memoryHeader}>
-                <span className={styles.memoryType}>{entry.type.replace('_', ' ')}</span>
+                <span className={styles.memoryType} style={{ color: statusColor(entry.status) }}>
+                  {entry.status || 'unknown'}
+                </span>
                 <span className={styles.memoryTime}>
                   {entry.timestamp.toLocaleString()}
                 </span>
               </div>
-              <div className={styles.memoryContent}>{entry.content}</div>
+              {entry.goal && activeTab === 'long_term' && (
+                <div style={{ fontSize: 11, opacity: 0.6, marginBottom: 4 }}>Goal: {entry.goal.slice(0, 120)}{entry.goal.length > 120 ? '...' : ''}</div>
+              )}
+              <div className={styles.memoryContent}>
+                {entry.content.slice(0, activeTab === 'long_term' ? 500 : 200)}
+                {entry.content.length > (activeTab === 'long_term' ? 500 : 200) ? '...' : ''}
+              </div>
               <div className={styles.memoryMeta}>
-                {entry.tokens && <span><Icons.Zap /> {entry.tokens} tokens</span>}
-                {entry.relevance && (
-                  <span className={styles.relevance}>
-                    Relevance: {(entry.relevance * 100).toFixed(0)}%
-                  </span>
-                )}
+                {entry.tokens ? <span><Icons.Zap /> {entry.tokens.toLocaleString()} tokens</span> : null}
               </div>
               <div className={styles.memoryActions}>
-                <button className={styles.viewBtn}><Icons.Eye /> View</button>
-                <button 
-                  className={styles.deleteBtn}
-                  onClick={() => handleDeleteMemory(entry.id)}
-                >
-                  <Icons.Trash /> Delete
+                <button className={styles.viewBtn} onClick={() => loadSteps(entry.id)}>
+                  <Icons.Eye /> {expandedSteps[entry.id] ? 'Hide Steps' : 'View Steps'}
                 </button>
               </div>
+              {expandedSteps[entry.id] && (
+                <div style={{ marginTop: 8, paddingLeft: 12, borderLeft: '2px solid rgba(1,166,188,0.3)' }}>
+                  {expandedSteps[entry.id].length === 0 && (
+                    <div style={{ fontSize: 12, opacity: 0.5 }}>No steps recorded</div>
+                  )}
+                  {expandedSteps[entry.id].map((step, idx) => (
+                    <div key={step.id || idx} style={{ fontSize: 12, marginBottom: 6, padding: '4px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                      <span style={{ color: statusColor(step.status), fontWeight: 600 }}>{step.step_type}</span>
+                      {step.tool_name && <span style={{ opacity: 0.7 }}> → {step.tool_name}</span>}
+                      {step.output_data?.output && (
+                        <div style={{ opacity: 0.6, marginTop: 2 }}>{String(step.output_data.output).slice(0, 150)}...</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
-          {filteredEntries.length === 0 && (
+          {filteredEntries.length === 0 && !isLoading && (
             <div className={styles.emptyState}>
               <Icons.Memory />
-              <p>No memories found</p>
+              <p>{selectedAgentId ? 'No sessions found — run your agent to build memory' : 'Select an agent to view memory'}</p>
             </div>
           )}
         </div>
 
         {/* Actions */}
         <div className={styles.actionsBar}>
-          <button className={styles.clearBtn} onClick={handleClearShortTerm} disabled={!selectedAgentId || isLoading}>
-            <Icons.Trash /> Clear Short-Term
+          <button className={styles.syncBtn} onClick={fetchSessions} disabled={!selectedAgentId || isLoading}>
+            <Icons.Refresh /> Refresh
           </button>
-          <button className={styles.exportBtn} onClick={handleExportAll} disabled={!selectedAgentId || memories.length === 0}>
+          <button className={styles.exportBtn} onClick={handleExportAll} disabled={!selectedAgentId || sessions.length === 0}>
             <Icons.Download /> Export All
-          </button>
-          <button className={styles.syncBtn} onClick={handleSyncVectorStore} disabled={!selectedAgentId || isLoading}>
-            <Icons.Refresh /> Sync Vector Store
           </button>
         </div>
       </div>

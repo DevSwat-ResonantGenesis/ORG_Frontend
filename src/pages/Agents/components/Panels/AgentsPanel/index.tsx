@@ -581,11 +581,11 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     if (marketplacePublishing[agent.id]) return;
     setMarketplacePublishing(prev => ({ ...prev, [agent.id]: true }));
     try {
-      await fastapiClient.post(`/agents/${agent.id}/publish`, {
+      await fastapiClient.post(`/api/v1/agents/${agent.id}/publish`, {
         publish_internal_marketplace: true,
         publish_decentralized: false,
         category: agent.type || 'utility',
-        tags: agent.tools || [],
+        tags: agent.capabilities || [],
         price_type: 'free',
         price_amount: 0,
         include_system_prompt: false,
