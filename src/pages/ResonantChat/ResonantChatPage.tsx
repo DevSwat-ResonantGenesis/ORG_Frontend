@@ -2536,6 +2536,7 @@ const ResonantChatPage: React.FC = () => {
             message: queryWithContext,
             chatId: chatIdToUse,
             preferred_provider: selectedProvider !== 'auto' ? selectedProvider : undefined,
+            preferred_model: selectedModel || undefined,
             agent_hash: (!selectedTeamId) ? selectedAgentHash || undefined : undefined,
             teamId: selectedTeamId || undefined,
             images: imageAttachments.length > 0 ? imageAttachments : undefined,
@@ -2683,6 +2684,7 @@ const ResonantChatPage: React.FC = () => {
         images: imageAttachments.length > 0 ? imageAttachments : undefined,
         code_selection: codeSelection || undefined,
         preferred_provider: selectedProvider !== 'auto' ? selectedProvider : undefined,
+        preferred_model: selectedModel || undefined,
         use_rag: useHashSphere ? false : true,
         agent_hash: (!selectedTeamId) ? selectedAgentHash || undefined : undefined,
         teamId: selectedTeamId || undefined,
@@ -5170,6 +5172,7 @@ const ResonantChatPage: React.FC = () => {
           }
           selectedProvider={selectedProvider}
           onProviderChange={handleProviderChange}
+          onModelChange={setSelectedModel}
           availableProviders={availableProviders}
           providerStats={providerStats}
           agentMode={agentMode}

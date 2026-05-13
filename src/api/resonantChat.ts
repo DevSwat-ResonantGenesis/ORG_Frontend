@@ -61,6 +61,7 @@ export interface ResonantChatRequest {
     code?: string;
   };
   preferred_provider?: string; // 'openai', 'chatgpt', 'gemini', 'groq', 'auto'
+  preferred_model?: string; // specific model e.g. 'openai/gpt-5-image', 'anthropic/claude-opus-4'
   use_rag?: boolean; // Use RAG system for memory retrieval
   agent_hash?: string; // Agent hash for shared memory (if using agent)
   teamId?: string; // Team ID for team-based chat
@@ -445,6 +446,7 @@ export const streamResonantMessage = async (
     message: request.message,
     chat_id: request.chatId || undefined,
     preferred_provider: request.preferred_provider || undefined,
+    preferred_model: request.preferred_model || undefined,
     agent_hash: request.agent_hash || undefined,
     teamId: request.teamId || undefined,
     images: request.images || undefined,

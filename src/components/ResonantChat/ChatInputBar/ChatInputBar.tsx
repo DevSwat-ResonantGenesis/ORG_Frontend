@@ -95,6 +95,7 @@ interface ChatInputBarProps {
   // Provider
   selectedProvider?: string;
   onProviderChange?: (provider: string) => void;
+  onModelChange?: (model: string) => void;
   availableProviders?: string[];
 
   // UI Variants
@@ -186,6 +187,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   sidebarOpen = false,
   selectedProvider = 'auto',
   onProviderChange = () => {},
+  onModelChange,
   availableProviders,
   hideProviderSelector = false,
   voiceInInput = false,
@@ -1508,7 +1510,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                                     e.preventDefault();
                                     e.stopPropagation();
                                     onProviderChange(normalizeProvider(provider));
-                                    if ((window as any).__onModelChange) (window as any).__onModelChange(m);
+                                    if (onModelChange) onModelChange(m);
+                                    else if ((window as any).__onModelChange) (window as any).__onModelChange(m);
                                     setShowProviderDropdown(false);
                                     setProviderSearch('');
                                     setExpandedModels(null);
