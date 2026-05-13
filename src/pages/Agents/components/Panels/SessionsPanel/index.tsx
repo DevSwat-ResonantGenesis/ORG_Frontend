@@ -483,7 +483,11 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
 
                       {step.step_type === 'respond' && step.output_data?.response && (
                         <div className={styles.stepReasoning} style={{ marginTop: '8px', borderLeft: '3px solid var(--color-success)', paddingLeft: '12px' }}>
-                          <strong>Response:</strong> {String(step.output_data.response)}
+                          <strong>Response:</strong>{' '}
+                          {typeof step.output_data.response === 'object'
+                            ? <ReactMarkdown remarkPlugins={[remarkGfm]}>{JSON.stringify(step.output_data.response, null, 2)}</ReactMarkdown>
+                            : <ReactMarkdown remarkPlugins={[remarkGfm]}>{String(step.output_data.response)}</ReactMarkdown>
+                          }
                         </div>
                       )}
 
