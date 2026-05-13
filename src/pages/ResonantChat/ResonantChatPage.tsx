@@ -2359,6 +2359,7 @@ const ResonantChatPage: React.FC = () => {
               conversation_history: history,
               enabled_tools: enabledSkillIds.length > 0 ? enabledSkillIds : undefined,
               preferred_provider: selectedProvider !== 'auto' ? selectedProvider : undefined,
+              preferred_model: selectedModel || undefined,
               max_loops: 50,
             }),
             signal: controller.signal,
