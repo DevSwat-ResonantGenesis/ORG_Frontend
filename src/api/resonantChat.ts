@@ -447,6 +447,7 @@ export const streamResonantMessage = async (
     preferred_provider: request.preferred_provider || undefined,
     agent_hash: request.agent_hash || undefined,
     teamId: request.teamId || undefined,
+    images: request.images || undefined,
   };
 
   const response = await fetch(`${apiUrl}/resonant-chat/message/stream`, {
