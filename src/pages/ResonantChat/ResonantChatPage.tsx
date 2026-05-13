@@ -722,7 +722,7 @@ const ResonantChatPage: React.FC = () => {
                   timestamp: new Date(),
                   aiProvider: 'tool_agent_architect',
                 }]);
-                setIsStreaming(true);
+                setIsLoading(true);
                 setPipelineSteps([{ step: 'reconnect', message: 'Reconnected to architect session', timestamp: Date.now() }]);
                 // Open agents panel
                 setAgentsPanelUrl('/agents?embed=1');
@@ -749,7 +749,7 @@ const ResonantChatPage: React.FC = () => {
                         aiProvider: evt.provider || 'tool_agent_architect',
                       } : m
                     ));
-                    setIsStreaming(false);
+                    setIsLoading(false);
                   } else if (evt.event === 'options' && evt.options) {
                     const optData = evt.options;
                     if (optData?._type === 'present_options' && optData?.options) {
@@ -760,10 +760,11 @@ const ResonantChatPage: React.FC = () => {
                       });
                     }
                   }
-                }).catch(() => setIsStreaming(false));
+                }).catch(() => setIsLoading(false));
               } else if (archSess.status === 'completed' && archSess.accumulated_text) {
                 // Completed while we were away — check if already in loaded messages
-                const hasArchMsg = loadedMessages.some(m =>
+                const currentMsgs = messages;
+                const hasArchMsg = currentMsgs.some(m =>
                   m.aiProvider === 'tool_agent_architect' && m.content === archSess.accumulated_text
                 );
                 if (!hasArchMsg) {
@@ -4763,55 +4764,122 @@ const ResonantChatPage: React.FC = () => {
                       {message.role === 'assistant' && message.generatedImages && message.generatedImages.length > 0 && (
                         <div style={{
                           display: 'flex',
-                          flexWrap: 'wrap',
-                          gap: '12px',
+                          flexDirection: 'column',
+                          gap: '16px',
                           marginTop: '12px',
-                          padding: '12px',
-                          background: 'rgba(14, 165, 233, 0.1)',
-                          borderRadius: '12px',
-                          border: '1px solid rgba(14, 165, 233, 0.2)',
                         }}>
-                          <div style={{ width: '100%', fontSize: '12px', color: '#38bdf8', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                              <circle cx="8.5" cy="8.5" r="1.5" />
-                              <polyline points="21 15 16 10 5 21" />
-                            </svg>
-                            Generated Images ({message.generatedImages.length})
-                          </div>
-                          {message.generatedImages.map((img, idx) => (
-                            <div key={idx} style={{ position: 'relative' }}>
+                          {message.generatedImages.map((img, idx) => {
+                            const imgSrc = img.url || (img.base64_data ? `data:image/png;base64,${img.base64_data}` : '');
+                            return (
+                            <div key={idx} style={{ position: 'relative', display: 'inline-block' }}>
                               <img
-                                src={img.url || `data:image/png;base64,${img.base64_data}`}
+                                src={imgSrc}
                                 alt={img.revised_prompt || 'Generated image'}
                                 style={{
-                                  maxWidth: '300px',
-                                  maxHeight: '300px',
-                                  borderRadius: '8px',
+                                  maxWidth: '100%',
+                                  width: '512px',
+                                  borderRadius: '12px',
                                   cursor: 'pointer',
-                                  transition: 'transform 0.2s',
+                                  transition: 'transform 0.2s, box-shadow 0.2s',
+                                  boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
                                 }}
-                                onClick={() => window.open(img.url || `data:image/png;base64,${img.base64_data}`, '_blank')}
-                                onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.02)'; }}
-                                onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
+                                onClick={() => {
+                                  // Open fullscreen lightbox overlay
+                                  const overlay = document.createElement('div');
+                                  overlay.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:20px;';
+                                  const fullImg = document.createElement('img');
+                                  fullImg.src = imgSrc;
+                                  fullImg.alt = img.revised_prompt || 'Generated image';
+                                  fullImg.style.cssText = 'max-width:95vw;max-height:90vh;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,0.5);object-fit:contain;';
+                                  // Close button
+                                  const closeBtn = document.createElement('button');
+                                  closeBtn.innerHTML = '&times;';
+                                  closeBtn.style.cssText = 'position:absolute;top:16px;right:24px;background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:32px;width:48px;height:48px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:background 0.2s;';
+                                  closeBtn.onmouseenter = () => { closeBtn.style.background = 'rgba(255,255,255,0.3)'; };
+                                  closeBtn.onmouseleave = () => { closeBtn.style.background = 'rgba(255,255,255,0.15)'; };
+                                  // Download button
+                                  const dlBtn = document.createElement('button');
+                                  dlBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+                                  dlBtn.style.cssText = 'position:absolute;top:16px;right:84px;background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:16px;width:48px;height:48px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:background 0.2s;';
+                                  dlBtn.onmouseenter = () => { dlBtn.style.background = 'rgba(255,255,255,0.3)'; };
+                                  dlBtn.onmouseleave = () => { dlBtn.style.background = 'rgba(255,255,255,0.15)'; };
+                                  dlBtn.onclick = (e) => {
+                                    e.stopPropagation();
+                                    const a = document.createElement('a');
+                                    a.href = imgSrc;
+                                    a.download = `generated-image-${Date.now()}.png`;
+                                    a.click();
+                                  };
+                                  overlay.appendChild(fullImg);
+                                  overlay.appendChild(closeBtn);
+                                  overlay.appendChild(dlBtn);
+                                  overlay.onclick = () => overlay.remove();
+                                  closeBtn.onclick = (e) => { e.stopPropagation(); overlay.remove(); };
+                                  document.body.appendChild(overlay);
+                                }}
+                                onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.01)'; e.currentTarget.style.boxShadow = '0 8px 30px rgba(0,0,0,0.4)'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)'; }}
                               />
+                              {/* Inline action buttons */}
+                              <div style={{
+                                position: 'absolute', bottom: img.revised_prompt ? '32px' : '12px', right: '12px',
+                                display: 'flex', gap: '6px',
+                              }}>
+                                <button
+                                  title="View fullscreen"
+                                  style={{
+                                    background: 'rgba(0,0,0,0.6)', border: 'none', color: '#fff',
+                                    width: '32px', height: '32px', borderRadius: '8px', cursor: 'pointer',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    backdropFilter: 'blur(8px)', transition: 'background 0.2s',
+                                  }}
+                                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0,0,0,0.8)'; }}
+                                  onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(0,0,0,0.6)'; }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    // Trigger the same lightbox as img click
+                                    (e.currentTarget.parentElement?.parentElement?.querySelector('img') as HTMLElement)?.click();
+                                  }}
+                                >
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                                </button>
+                                <button
+                                  title="Download image"
+                                  style={{
+                                    background: 'rgba(0,0,0,0.6)', border: 'none', color: '#fff',
+                                    width: '32px', height: '32px', borderRadius: '8px', cursor: 'pointer',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    backdropFilter: 'blur(8px)', transition: 'background 0.2s',
+                                  }}
+                                  onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0,0,0,0.8)'; }}
+                                  onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(0,0,0,0.6)'; }}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    const a = document.createElement('a');
+                                    a.href = imgSrc;
+                                    a.download = `generated-image-${Date.now()}.png`;
+                                    a.click();
+                                  }}
+                                >
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                </button>
+                              </div>
                               {img.revised_prompt && (
                                 <div style={{
-                                  fontSize: '10px',
+                                  fontSize: '11px',
                                   color: tc.muted,
-                                  marginTop: '4px',
-                                  maxWidth: '300px',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  whiteSpace: 'nowrap',
+                                  marginTop: '6px',
+                                  maxWidth: '512px',
+                                  lineHeight: '1.4',
                                 }}
                                 title={img.revised_prompt}
                                 >
-                                  {img.revised_prompt}
+                                  {img.revised_prompt.length > 120 ? img.revised_prompt.slice(0, 120) + '...' : img.revised_prompt}
                                 </div>
                               )}
                             </div>
-                          ))}
+                          );
+                          })}
                         </div>
                       )}
 {/* Hash Sphere Module Outputs */}
