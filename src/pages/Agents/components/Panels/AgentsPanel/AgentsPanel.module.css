@@ -577,6 +577,13 @@
     color: #fff;
   }
 
+  .actionBtn.dropdownBtnActive {
+    background: rgba(1, 166, 188, 0.2);
+    border-color: rgba(1, 166, 188, 0.4);
+    color: #01A6BC;
+    transform: rotate(180deg);
+  }
+
   /* Stats row with glassmorphic badges */
   .cardStats {
     display: flex;
