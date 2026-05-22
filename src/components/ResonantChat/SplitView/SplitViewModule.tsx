@@ -389,64 +389,6 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
           </div>
         ) : (
           <div className={styles.codePanel} style={{ width: '100%' }}>
-            {/* Header with close button only - tabs moved to main header */}
-            {!hideSplitHeader && <div className={styles.codePanelHeader}>
-              <div className={styles.headerActions}>
-                {state.activeTab === 'preview' && (
-                  <button
-                    className={styles.runButton}
-                    onClick={handleStartPreview}
-                    title="Start preview"
-                  >
-                    <RocketIcon /> Start Preview
-                  </button>
-                )}
-                {state.activeTab === 'visualizer' && (
-                  <button
-                    className={styles.runButton}
-                    onClick={() => window.open(visualizerAnalysisId ? `/code-visualizer?analysis_id=${visualizerAnalysisId}` : '/code-visualizer', '_blank')}
-                    title="Open in full screen"
-                  >
-                    <RocketIcon />
-                  </button>
-                )}
-                {state.activeTab === 'state_physics' && (
-                  <button
-                    className={styles.runButton}
-                    onClick={() => window.open(statePhysicsPanelUrl, '_blank')}
-                    title="Open State Physics in full screen"
-                  >
-                    <RocketIcon />
-                  </button>
-                )}
-                {state.activeTab === 'agents' && (
-                  <button
-                    className={styles.runButton}
-                    onClick={() => window.open(agentsPanelUrl, '_blank')}
-                    title="Open Agents OS in full screen"
-                  >
-                    <RocketIcon />
-                  </button>
-                )}
-                {state.activeTab === 'memory' && (
-                  <button
-                    className={styles.runButton}
-                    onClick={() => window.open(memoryPanelUrl, '_blank')}
-                    title="Open Memory Library in full screen"
-                  >
-                    <RocketIcon />
-                  </button>
-                )}
-                <button
-                  className={styles.codePanelClose}
-                  onClick={onClose}
-                  title="Close split view"
-                >
-                  <CloseIcon />
-                </button>
-              </div>
-
-            </div>}
             {/* Tab Content */}
             <div className={styles.codePanelContent}>
               {/* Code Tab */}
@@ -641,64 +583,6 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
 
       {/* Code Panel */}
       <div className={styles.codePanel} style={{ width: `${100 - width}%` }}>
-        {/* Header with close button only - tabs moved to main header */}
-        {!hideSplitHeader && <div className={styles.codePanelHeader}>
-          <div className={styles.headerActions}>
-            {state.activeTab === 'preview' && (
-              <button
-                className={styles.runButton}
-                onClick={handleStartPreview}
-                title="Start preview"
-              >
-                <RocketIcon /> Start Preview
-              </button>
-            )}
-            {state.activeTab === 'visualizer' && (
-              <button
-                className={styles.runButton}
-                onClick={() => window.open(visualizerAnalysisId ? `/code-visualizer?analysis_id=${visualizerAnalysisId}` : '/code-visualizer', '_blank')}
-                title="Open in full screen"
-              >
-                <RocketIcon />
-              </button>
-            )}
-            {state.activeTab === 'state_physics' && (
-              <button
-                className={styles.runButton}
-                onClick={() => window.open(statePhysicsPanelUrl, '_blank')}
-                title="Open State Physics in full screen"
-              >
-                <RocketIcon />
-              </button>
-            )}
-            {state.activeTab === 'agents' && (
-              <button
-                className={styles.runButton}
-                onClick={() => window.open(agentsPanelUrl, '_blank')}
-                title="Open Agents OS in full screen"
-              >
-                <RocketIcon />
-              </button>
-            )}
-            {state.activeTab === 'memory' && (
-              <button
-                className={styles.runButton}
-                onClick={() => window.open(memoryPanelUrl, '_blank')}
-                title="Open Memory Library in full screen"
-              >
-                <RocketIcon />
-              </button>
-            )}
-            <button
-              className={styles.codePanelClose}
-              onClick={onClose}
-              title="Close split view"
-            >
-              <CloseIcon />
-            </button>
-          </div>
-
-        </div>}
         {/* Tab Content */}
         <div className={styles.codePanelContent}>
           {/* Code Tab */}

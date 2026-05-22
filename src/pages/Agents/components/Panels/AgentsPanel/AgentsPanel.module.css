@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: rgba(255, 255, 255, 0.02);
+  background: transparent;
   border-radius: 0;
   overflow: hidden;
   container-type: inline-size;
@@ -98,6 +98,64 @@
   display: none;
 }
 
+/* Desktop expand button — visible on desktop, hidden on mobile */
+.desktopExpandBtn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.desktopExpandBtn:hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.desktopExpandChevron {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  font-size: 12px;
+}
+
+.desktopExpandOpen {
+  transform: rotate(180deg);
+}
+
+@media (min-width: 769px) {
+  .mobileToggleBtn {
+    display: none;
+  }
+  
+  .desktopExpandBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobileToggleBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  
+  .desktopExpandBtn {
+    display: none;
+  }
+}
+
 .desktopAgentIcon {
   display: inline-flex;
 }
@@ -114,7 +172,7 @@
   transform: rotate(0deg);
 }
 
-/* Collapsible toolbar — always visible on desktop */
+/* Collapsible toolbar — collapsed by default on desktop, expands on hover */
 .collapsibleToolbar {
   display: flex;
   flex-wrap: wrap;
@@ -122,6 +180,38 @@
   gap: 6px;
   padding: 6px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+}
+
+.collapsibleToolbarOpen {
+  max-height: 200px;
+  opacity: 1;
+}
+
+.collapsibleToolbarDesktopOpen {
+  max-height: 200px;
+  opacity: 1;
+}
+
+@media (min-width: 769px) {
+  .collapsibleToolbar {
+    /* Hidden by default on desktop */
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+    border-bottom: none;
+  }
+  
+  .collapsibleToolbarDesktopOpen {
+    /* Expanded when toggled */
+    max-height: 200px;
+    opacity: 1;
+    padding: 6px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
 }
 
 .viewTabs {

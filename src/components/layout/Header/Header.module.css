@@ -606,6 +606,17 @@
   z-index: 1;
 }
 
+.splitViewQuickAccessDivider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 0 4px;
+}
+
+[data-theme='light'] .splitViewQuickAccessDivider {
+  background: rgba(0, 0, 0, 0.15);
+}
+
 .actionsRow {
   display: flex;
   align-items: center;

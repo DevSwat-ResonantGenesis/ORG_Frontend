@@ -100,6 +100,34 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
   // Mobile toolbar collapse toggle
   const [mobileToolbarOpen, setMobileToolbarOpen] = useState(true);
+  
+  // Desktop toolbar collapse - controlled by header, hidden by default
+  const [desktopToolbarOpen, setDesktopToolbarOpen] = useState(false);
+
+  // Listen for toolbar toggle from header
+  useEffect(() => {
+    // Custom event handler (for non-iframe case)
+    const customEventHandler = (e: Event) => {
+      const detail = (e as CustomEvent<{ open: boolean }>).detail;
+      if (detail?.open !== undefined) {
+        setDesktopToolbarOpen(detail.open);
+      }
+    };
+    window.addEventListener('agentos:agents:toggleToolbar', customEventHandler as EventListener);
+
+    // PostMessage handler (for iframe case)
+    const messageHandler = (e: MessageEvent) => {
+      if (e.data?.type === 'agentos:agents:toggleToolbar' && e.data?.open !== undefined) {
+        setDesktopToolbarOpen(e.data.open);
+      }
+    };
+    window.addEventListener('message', messageHandler);
+
+    return () => {
+      window.removeEventListener('agentos:agents:toggleToolbar', customEventHandler as EventListener);
+      window.removeEventListener('message', messageHandler);
+    };
+  }, []);
 
   const pinnedSet = useMemo(() => new Set(pinnedAgentIds || []), [pinnedAgentIds]);
 
@@ -616,7 +644,12 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           <span className={styles.desktopAgentIcon}><Icons.Agents /></span>
           {' '}Agent Management
         </h2>
-        
+      </div>
+
+      {/* Collapsible toolbar area — toggled on mobile via Agent icon, on desktop via header button */}
+      <div 
+        className={`${styles.collapsibleToolbar} ${mobileToolbarOpen ? styles.collapsibleToolbarOpen : ''} ${desktopToolbarOpen ? styles.collapsibleToolbarDesktopOpen : ''}`}
+      >
         {/* Panel navigation icons — replaces sidebar */}
         <div className={styles.navIcons}>
           {([
@@ -639,10 +672,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
             </button>
           ))}
         </div>
-      </div>
 
-      {/* Collapsible toolbar area — toggled on mobile via Agent icon */}
-      <div className={`${styles.collapsibleToolbar} ${mobileToolbarOpen ? styles.collapsibleToolbarOpen : ''}`}>
         <div className={styles.headerMeta}>
           <span className={styles.countPill}>{filteredAgents.length}</span>
           <button className={styles.toolbarBtn} type="button" onClick={() => { setShowFactory(true); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setInlinePanel(null); }} title="Create agent">

@@ -18,6 +18,24 @@
 .agentOS.embedded {
   top: 0;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.agentOS.embedded .mainWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.agentOS.embedded .mainContent {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.agentOS.embedded .metricsFooter {
+  flex-shrink: 0;
 }
 
 .mainWrapper {

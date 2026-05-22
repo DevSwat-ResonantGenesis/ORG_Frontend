@@ -124,6 +124,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [splitViewEnabled, setSplitViewEnabled] = useState(false);
   const [splitViewPane, setSplitViewPane] = useState<SplitViewPane>('chat');
   const [splitViewActiveTab, setSplitViewActiveTab] = useState<string>('agents');
+  const [agentsToolbarOpen, setAgentsToolbarOpen] = useState(false);
 
   useEffect(() => {
     if (!isLandingPage) {
@@ -514,6 +515,55 @@ export const Header: React.FC<HeaderProps> = ({
                   aria-label="Code Analyzer"
                 >
                   <VisualizerIcon />
+                </button>
+                {/* Settings icon for agents toolbar - only visible when agents tab is active */}
+                {splitViewActiveTab === 'agents' && (
+                  <>
+                    <div className={styles.splitViewQuickAccessDivider} />
+                    <button
+                      className={`${styles.splitViewQuickAccessButton} ${agentsToolbarOpen ? styles.splitViewQuickAccessButtonActive : ''}`}
+                      onClick={() => {
+                        const newState = !agentsToolbarOpen;
+                        setAgentsToolbarOpen(newState);
+                        // Use postMessage for iframe communication
+                        const agentsIframe = document.querySelector('iframe[src*="embed=1"]') as HTMLIFrameElement;
+                        if (agentsIframe?.contentWindow) {
+                          agentsIframe.contentWindow.postMessage({ type: 'agentos:agents:toggleToolbar', open: newState }, '*');
+                        }
+                        // Also dispatch custom event for non-iframe case
+                        window.dispatchEvent(new CustomEvent('agentos:agents:toggleToolbar', { detail: { open: newState } }));
+                      }}
+                      title={agentsToolbarOpen ? 'Hide toolbar' : 'Show toolbar'}
+                      aria-label={agentsToolbarOpen ? 'Hide toolbar' : 'Show toolbar'}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                      </svg>
+                    </button>
+                  </>
+                )}
+                <div className={styles.splitViewQuickAccessDivider} />
+                <button
+                  className={styles.splitViewQuickAccessButton}
+                  onClick={() => window.open('/agents?embed=1', '_blank')}
+                  title="Open Agents OS in full screen"
+                  aria-label="Open Agents OS in full screen"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                  </svg>
+                </button>
+                <button
+                  className={styles.splitViewQuickAccessButton}
+                  onClick={handleSplitViewToggleClick}
+                  title="Close split view"
+                  aria-label="Close split view"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
                 </button>
               </div>
             )}
