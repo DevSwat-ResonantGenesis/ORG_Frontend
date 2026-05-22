@@ -45,6 +45,48 @@ const SplitViewToggleIcon: React.FC<{ enabled: boolean }> = ({ enabled }) => (
   </span>
 );
 
+const AgentsIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="11" width="18" height="10" rx="2" />
+    <circle cx="12" cy="5" r="2" />
+    <path d="M12 7v4" />
+    <line x1="8" y1="16" x2="8" y2="16" />
+    <line x1="16" y1="16" x2="16" y2="16" />
+  </svg>
+);
+
+const PreviewIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+);
+
+const MemoryIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.54" />
+    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.54" />
+  </svg>
+);
+
+const StatePhysicsIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="8" />
+    <circle cx="12" cy="12" r="2" />
+    <path d="M12 4v2" />
+    <path d="M20 12h-2" />
+    <path d="M12 20v-2" />
+    <path d="M4 12h2" />
+  </svg>
+);
+
+const VisualizerIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+  </svg>
+);
+
 interface HeaderProps {
   showLogout?: boolean;
   showChatWidgetButton?: boolean;
@@ -81,6 +123,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   const [splitViewEnabled, setSplitViewEnabled] = useState(false);
   const [splitViewPane, setSplitViewPane] = useState<SplitViewPane>('chat');
+  const [splitViewActiveTab, setSplitViewActiveTab] = useState<string>('agents');
 
   useEffect(() => {
     if (!isLandingPage) {
@@ -159,10 +202,11 @@ export const Header: React.FC<HeaderProps> = ({
 
   useEffect(() => {
     const handler = (e: Event) => {
-      const detail = (e as CustomEvent<{ enabled: boolean; pane?: SplitViewPane }>).detail;
+      const detail = (e as CustomEvent<{ enabled: boolean; pane?: SplitViewPane; activeTab?: string }>).detail;
       if (!detail) return;
       setSplitViewEnabled(!!detail.enabled);
       if (detail.pane) setSplitViewPane(detail.pane);
+      if (detail.activeTab) setSplitViewActiveTab(detail.activeTab);
     };
     window.addEventListener('rg:split-view-state', handler as EventListener);
     return () => window.removeEventListener('rg:split-view-state', handler as EventListener);
@@ -170,6 +214,11 @@ export const Header: React.FC<HeaderProps> = ({
 
   const dispatchSplitViewCommand = (detail: SplitViewCommandDetail) => {
     window.dispatchEvent(new CustomEvent('rg:split-view-command', { detail }));
+  };
+
+  const handleSplitViewTabClick = (tab: string) => {
+    window.dispatchEvent(new CustomEvent('rg:split-view-tab-change', { detail: { tab } }));
+    setSplitViewActiveTab(tab);
   };
 
   const handleSplitViewToggleClick = () => {
@@ -422,6 +471,52 @@ export const Header: React.FC<HeaderProps> = ({
               </a>
             )}
 
+
+            {/* Split View Quick Access Icons - only visible when split view is active */}
+            {isResonantChatPage && isLoggedIn && splitViewEnabled && (
+              <div className={styles.splitViewQuickAccess}>
+                <button
+                  className={`${styles.splitViewQuickAccessButton} ${splitViewActiveTab === 'agents' ? styles.splitViewQuickAccessButtonActive : ''}`}
+                  onClick={() => handleSplitViewTabClick('agents')}
+                  title="Agents OS"
+                  aria-label="Agents OS"
+                >
+                  <AgentsIcon />
+                </button>
+                <button
+                  className={`${styles.splitViewQuickAccessButton} ${splitViewActiveTab === 'preview' ? styles.splitViewQuickAccessButtonActive : ''}`}
+                  onClick={() => handleSplitViewTabClick('preview')}
+                  title="Preview Code"
+                  aria-label="Preview Code"
+                >
+                  <PreviewIcon />
+                </button>
+                <button
+                  className={`${styles.splitViewQuickAccessButton} ${splitViewActiveTab === 'memory' ? styles.splitViewQuickAccessButtonActive : ''}`}
+                  onClick={() => handleSplitViewTabClick('memory')}
+                  title="Memory Library"
+                  aria-label="Memory Library"
+                >
+                  <MemoryIcon />
+                </button>
+                <button
+                  className={`${styles.splitViewQuickAccessButton} ${splitViewActiveTab === 'state_physics' ? styles.splitViewQuickAccessButtonActive : ''}`}
+                  onClick={() => handleSplitViewTabClick('state_physics')}
+                  title="Invariants SIM"
+                  aria-label="Invariants SIM"
+                >
+                  <StatePhysicsIcon />
+                </button>
+                <button
+                  className={`${styles.splitViewQuickAccessButton} ${splitViewActiveTab === 'visualizer' ? styles.splitViewQuickAccessButtonActive : ''}`}
+                  onClick={() => handleSplitViewTabClick('visualizer')}
+                  title="Code Analyzer"
+                  aria-label="Code Analyzer"
+                >
+                  <VisualizerIcon />
+                </button>
+              </div>
+            )}
 
             {isResonantChatPage && isLoggedIn && (
               <button

@@ -525,6 +525,87 @@
   pointer-events: none;
 }
 
+/* Split View Quick Access Icons */
+.splitViewQuickAccess {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  margin-right: 12px;
+}
+
+[data-theme='light'] .splitViewQuickAccess {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.splitViewQuickAccessButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: rgba(255, 255, 255, 0.6);
+  position: relative;
+}
+
+[data-theme='light'] .splitViewQuickAccessButton {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.splitViewQuickAccessButton::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: currentColor;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.2s ease;
+}
+
+.splitViewQuickAccessButton:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme='light'] .splitViewQuickAccessButton:hover {
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.splitViewQuickAccessButton:hover::before {
+  opacity: 0.08;
+  transform: scale(1);
+}
+
+.splitViewQuickAccessButtonActive {
+  color: #01A6BC;
+}
+
+[data-theme='light'] .splitViewQuickAccessButtonActive {
+  color: #01A6BC;
+}
+
+.splitViewQuickAccessButtonActive::before {
+  opacity: 0.12;
+  transform: scale(1);
+}
+
+.splitViewQuickAccessButton svg {
+  width: 16px;
+  height: 16px;
+  position: relative;
+  z-index: 1;
+}
+
 .actionsRow {
   display: flex;
   align-items: center;

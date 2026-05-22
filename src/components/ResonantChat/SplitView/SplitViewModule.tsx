@@ -212,6 +212,25 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
     }
   }, [visualizerAnalysisId, actions]);
 
+  // Emit active tab state to header
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('rg:split-view-state', {
+      detail: { enabled: true, activeTab: state.activeTab }
+    }));
+  }, [state.activeTab]);
+
+  // Listen for tab changes from header
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ tab: string }>).detail;
+      if (detail?.tab) {
+        actions.setActiveTab(detail.tab as TabType);
+      }
+    };
+    window.addEventListener('rg:split-view-tab-change', handler as EventListener);
+    return () => window.removeEventListener('rg:split-view-tab-change', handler as EventListener);
+  }, [actions]);
+
   // Auto-select first file when project files change
   useEffect(() => {
     if (projectFiles.length > 0 && !state.selectedFile) {
@@ -370,50 +389,8 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
           </div>
         ) : (
           <div className={styles.codePanel} style={{ width: '100%' }}>
-            {/* Header with Tabs */}
+            {/* Header with close button only - tabs moved to main header */}
             {!hideSplitHeader && <div className={styles.codePanelHeader}>
-              <div className={styles.tabs}>
-                <button
-                  className={`${styles.tab} ${state.activeTab === 'agents' ? styles.activeTab : ''} ${styles.agentsTab}`}
-                  onClick={() => actions.setActiveTab('agents')}
-                  title="Agents OS"
-                  aria-label="Agents OS"
-                >
-                  <span className={styles.tabIcon}><AgentsIcon /></span>
-                </button>
-                <button
-                  className={`${styles.tab} ${state.activeTab === 'preview' ? styles.activeTab : ''}`}
-                  onClick={() => actions.setActiveTab('preview')}
-                  title="Preview Code"
-                  aria-label="Preview Code"
-                >
-                  <span className={styles.tabIcon}><PreviewIcon /></span>
-                </button>
-                <button
-                  className={`${styles.tab} ${state.activeTab === 'memory' ? styles.activeTab : ''} ${styles.memoryTab}`}
-                  onClick={() => actions.setActiveTab('memory')}
-                  title="Memory Library"
-                  aria-label="Memory Library"
-                >
-                  <span className={styles.tabIcon}><MemoryIcon /></span>
-                </button>
-                <button
-                  className={`${styles.tab} ${state.activeTab === 'state_physics' ? styles.activeTab : ''} ${styles.statePhysicsTab}`}
-                  onClick={() => actions.setActiveTab('state_physics')}
-                  title="Invariants SIM"
-                  aria-label="Invariants SIM"
-                >
-                  <span className={styles.tabIcon}><StatePhysicsIcon /></span>
-                </button>
-                <button
-                  className={`${styles.tab} ${state.activeTab === 'visualizer' ? styles.activeTab : ''} ${styles.visualizerTab}`}
-                  onClick={() => actions.setActiveTab('visualizer')}
-                  title="Code Analyzer"
-                  aria-label="Code Analyzer"
-                >
-                  <span className={styles.tabIcon}><VisualizerIcon /></span>
-                </button>
-              </div>
               <div className={styles.headerActions}>
                 {state.activeTab === 'preview' && (
                   <button
@@ -664,50 +641,8 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
 
       {/* Code Panel */}
       <div className={styles.codePanel} style={{ width: `${100 - width}%` }}>
-        {/* Header with Tabs */}
+        {/* Header with close button only - tabs moved to main header */}
         {!hideSplitHeader && <div className={styles.codePanelHeader}>
-          <div className={styles.tabs}>
-            <button
-              className={`${styles.tab} ${state.activeTab === 'agents' ? styles.activeTab : ''} ${styles.agentsTab}`}
-              onClick={() => actions.setActiveTab('agents')}
-              title="Agents OS"
-              aria-label="Agents OS"
-            >
-              <span className={styles.tabIcon}><AgentsIcon /></span>
-            </button>
-            <button
-              className={`${styles.tab} ${state.activeTab === 'preview' ? styles.activeTab : ''}`}
-              onClick={() => actions.setActiveTab('preview')}
-              title="Preview Code"
-              aria-label="Preview Code"
-            >
-              <span className={styles.tabIcon}><PreviewIcon /></span>
-            </button>
-            <button
-              className={`${styles.tab} ${state.activeTab === 'memory' ? styles.activeTab : ''} ${styles.memoryTab}`}
-              onClick={() => actions.setActiveTab('memory')}
-              title="Memory Library"
-              aria-label="Memory Library"
-            >
-              <span className={styles.tabIcon}><MemoryIcon /></span>
-            </button>
-            <button
-              className={`${styles.tab} ${state.activeTab === 'state_physics' ? styles.activeTab : ''} ${styles.statePhysicsTab}`}
-              onClick={() => actions.setActiveTab('state_physics')}
-              title="Invariants SIM"
-              aria-label="Invariants SIM"
-            >
-              <span className={styles.tabIcon}><StatePhysicsIcon /></span>
-            </button>
-            <button
-              className={`${styles.tab} ${state.activeTab === 'visualizer' ? styles.activeTab : ''} ${styles.visualizerTab}`}
-              onClick={() => actions.setActiveTab('visualizer')}
-              title="Code Analyzer"
-              aria-label="Code Analyzer"
-            >
-              <span className={styles.tabIcon}><VisualizerIcon /></span>
-            </button>
-          </div>
           <div className={styles.headerActions}>
             {state.activeTab === 'preview' && (
               <button
