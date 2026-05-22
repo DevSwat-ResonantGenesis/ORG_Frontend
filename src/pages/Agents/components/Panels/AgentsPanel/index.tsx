@@ -8,6 +8,7 @@ import { publishAgent as publishAgentAPI } from '../../../../../services/nodeApi
 import type { PublishAgentRequest } from '../../../../../services/nodeApi';
 import fastapiClient from '../../../../../api/fastapiClient';
 import { executeAgentTask } from '../../../../../api/executions';
+import ParallaxAvatar from './ParallaxAvatar';
 import * as agentEngine from '../../../../../api/agentEngine';
 import { useToastContext } from '../../../../../context/ToastContext';
 import { SessionsPanel } from '../SessionsPanel';
@@ -790,11 +791,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   {/* Card header with icon and name */}
                   <div className={styles.cardHeader}>
                     <div className={styles.agentIcon} style={isOpenClaw ? { background: 'rgba(250, 165, 37, 0.2)', color: '#FAA525' } : undefined}>
-                      {agent.avatar_url ? (
-                        <img src={agent.avatar_url} alt={agent.name} />
-                      ) : (
-                        <Icons.Agents />
-                      )}
+                      <ParallaxAvatar agent={agent} isOpenClaw={isOpenClaw} />
                     </div>
                     <div className={styles.agentInfo}>
                       <h3>{agent.name}</h3>
