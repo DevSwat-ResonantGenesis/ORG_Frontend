@@ -8,7 +8,6 @@ import { publishAgent as publishAgentAPI } from '../../../../../services/nodeApi
 import type { PublishAgentRequest } from '../../../../../services/nodeApi';
 import fastapiClient from '../../../../../api/fastapiClient';
 import { executeAgentTask } from '../../../../../api/executions';
-import ParallaxAvatar from './ParallaxAvatar';
 import * as agentEngine from '../../../../../api/agentEngine';
 import { useToastContext } from '../../../../../context/ToastContext';
 import { SessionsPanel } from '../SessionsPanel';
@@ -20,7 +19,7 @@ const WorkflowPanel = lazy(() => import('../WorkflowPanel'));
 const MonitorPanel = lazy(() => import('../MonitorPanel'));
 const SettingsPanel = lazy(() => import('../SettingsPanel'));
 const ScheduleCalendarPanel = lazy(() => import('../ScheduleCalendarPanel'));
-import styles from './AgentsPanel.module.css';
+import styles from './AgentsPanelNew.module.css';
 
 // ============== AGENTS PANEL ==============
 // Contract: reads [agent, execution], writes [agent]
@@ -791,7 +790,11 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   {/* Card header with icon and name */}
                   <div className={styles.cardHeader}>
                     <div className={styles.agentIcon} style={isOpenClaw ? { background: 'rgba(250, 165, 37, 0.2)', color: '#FAA525' } : undefined}>
-                      <ParallaxAvatar agent={agent} isOpenClaw={isOpenClaw} />
+                      {agent.avatar_url ? (
+                        <img src={agent.avatar_url} alt={agent.name} />
+                      ) : (
+                        <Icons.Agents />
+                      )}
                     </div>
                     <div className={styles.agentInfo}>
                       <h3>{agent.name}</h3>
