@@ -121,6 +121,9 @@ export const Header: React.FC<HeaderProps> = ({
 
   const isLandingPage = location.pathname === '/';
 
+  // Check if we're on Agents page
+  const isAgentsPage = location.pathname === '/agents' || location.pathname.startsWith('/agents');
+
   const [splitViewEnabled, setSplitViewEnabled] = useState(false);
   const [splitViewPane, setSplitViewPane] = useState<SplitViewPane>('chat');
   const [splitViewActiveTab, setSplitViewActiveTab] = useState<string>('agents');
@@ -516,8 +519,8 @@ export const Header: React.FC<HeaderProps> = ({
                 >
                   <VisualizerIcon />
                 </button>
-                {/* Settings icon for agents toolbar - only visible when agents tab is active */}
-                {splitViewActiveTab === 'agents' && (
+                {/* Settings icon for agents toolbar - visible on agents page or when agents tab is active in split view */}
+                {(splitViewActiveTab === 'agents' || isAgentsPage) && (
                   <>
                     <div className={styles.splitViewQuickAccessDivider} />
                     <button
