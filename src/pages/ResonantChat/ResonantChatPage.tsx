@@ -1279,7 +1279,7 @@ const ResonantChatPage: React.FC = () => {
 
       // 1. Always load built-in Resonant Chat agents
       try {
-        const builtInRes = await fetch('/resonant-chat/agents/list');
+        const builtInRes = await fetch('/resonant-chat/agents/list', { credentials: 'include' });
         const builtInData = await builtInRes.json();
         if (builtInData.agents && Array.isArray(builtInData.agents)) {
           builtInData.agents.forEach((a: any) => {
@@ -1293,7 +1293,7 @@ const ResonantChatPage: React.FC = () => {
       // 2. Load user's custom agents from Agent Engine
       {
         try {
-          const userRes = await fetch('/api/v1/agents?limit=50');
+          const userRes = await fetch('/api/v1/agents?limit=50', { credentials: 'include' });
           const userData = await userRes.json();
           const userAgentsList = userData?.agents || userData?.items || userData?.data || (Array.isArray(userData) ? userData : []);
           if (Array.isArray(userAgentsList) && userAgentsList.length > 0) {
@@ -2413,6 +2413,7 @@ const ResonantChatPage: React.FC = () => {
         }]);
         setAgenticSteps([]);
         setPresentedOptions(null);
+        let backendAccepted = false;
 
         try {
           const apiUrl = (await import('@/utils/apiUrl')).getApiUrl();
@@ -2423,24 +2424,25 @@ const ResonantChatPage: React.FC = () => {
           const systemContext = `[System context: ${now.toISOString()} | ${Intl.DateTimeFormat().resolvedOptions().timeZone} | ${now.toLocaleDateString('en-US', { weekday: 'long' })}]`;
           const enrichedMessage = `${systemContext}\n\n${queryWithContext}`;
 
-          const streamEndpoint = `${apiUrl}/api/v1/agentic-chat/stream`;
+          const streamEndpoint = `${apiUrl}/api/resonant-chat/message/stream`;
           const response = await fetch(streamEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify({
               message: enrichedMessage,
-              conversation_id: agenticConvId || undefined,
-              conversation_history: history,
-              enabled_tools: enabledSkillIds.length > 0 ? enabledSkillIds : undefined,
+              chat_id: agenticConvId || undefined,
+              enabled_tool_ids: enabledSkillIds.length > 0 ? enabledSkillIds : undefined,
               preferred_provider: selectedProvider !== 'auto' ? selectedProvider : undefined,
               preferred_model: selectedModel || undefined,
-              max_loops: 50,
             }),
             signal: controller.signal,
           });
 
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          // Backend has accepted the request — mark so we don't re-send on error
+          backendAccepted = true;
 
           const reader = response.body?.getReader();
           if (!reader) throw new Error('No response body');
@@ -2459,17 +2461,20 @@ const ResonantChatPage: React.FC = () => {
             for (const line of lines) {
               if (line.startsWith('event: ')) {
                 eventType = line.slice(7).trim();
-              } else if (line.startsWith('data: ') && eventType) {
+              } else if (line.startsWith('data: ')) {
                 try {
                   const data = JSON.parse(line.slice(6));
-                  const step = { type: eventType, data, timestamp: Date.now() };
+                  const resolvedType = eventType || data.event || '';
+                  if (!resolvedType) continue;
+                  eventType = '';
+                  const step = { type: resolvedType, data, timestamp: Date.now() };
                   steps.push(step);
                   setAgenticSteps([...steps]);
 
-                  if (eventType === 'status' && data.conversation_id && !agenticConvId) {
-                    agenticConvId = data.conversation_id;
+                  if ((resolvedType === 'status' || resolvedType === 'start') && (data.conversation_id || data.chat_id) && !agenticConvId) {
+                    agenticConvId = data.conversation_id || data.chat_id;
                   }
-                  if (eventType === 'tool_result' && data.tool === 'present_options') {
+                  if (resolvedType === 'tool_result' && data.tool === 'present_options') {
                     try {
                       const resultData = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
                       if (resultData?._type === 'present_options' && resultData?.options) {
@@ -2477,28 +2482,28 @@ const ResonantChatPage: React.FC = () => {
                       }
                     } catch { /* not present_options */ }
                   }
-                  if (eventType === 'chunk') {
+                  if (resolvedType === 'chunk') {
                     // Token-by-token streaming — accumulate chunks in real-time
                     agenticContent += data.content || '';
                     setMessages(prev => prev.map(m =>
                       m.id === agenticMsgId ? { ...m, content: agenticContent } : m
                     ));
                   }
-                  if (eventType === 'response') {
+                  if (resolvedType === 'response') {
                     // Final response (backward compat + non-streamed responses)
                     agenticContent = data.content || agenticContent;
                     setMessages(prev => prev.map(m =>
                       m.id === agenticMsgId ? { ...m, content: agenticContent } : m
                     ));
                   }
-                  if (eventType === 'credit_warning') {
+                  if (resolvedType === 'credit_warning') {
                     if (data.type === 'zero') {
                       showError(`Credits exhausted! ${data.message || 'Please upgrade your plan or purchase credits.'} Click to upgrade.`, 15000, () => navigate('/pricing'));
                     } else if (data.type === 'low') {
                       warning(`${data.message || `Low credit balance: ${data.balance} credits remaining.`}`, 10000);
                     }
                   }
-                  if (eventType === 'done') {
+                  if (resolvedType === 'done') {
                     doneStats = { loops: data.loops, tokens: data.tokens, elapsed: data.elapsed_seconds };
                     if (data.credits_balance !== null && data.credits_balance !== undefined) {
                       if (data.credits_balance <= 0) {
@@ -2542,28 +2547,11 @@ const ResonantChatPage: React.FC = () => {
           setAgenticSteps([]);
           triggerChatSync();
 
-          // Cross-save agentic messages into resonant chat pipeline
-          // (hashing, DSID, memory ingestion, PMI) so they persist on reload
-          if (isLoggedIn && agenticContent && !agenticContent.startsWith('Error:')) {
-            const agenticToolCalls = steps
-              .filter(s => s.type === 'tool_call')
-              .map(s => ({ tool: s.data.tool || 'unknown', args: s.data.args }));
-            saveAgenticToResonant(
-              currentInput,
-              agenticContent,
-              currentConversationId || undefined,
-              {
-                toolResults,
-                toolCalls: agenticToolCalls,
-                tokensUsed: doneStats?.tokens || 0,
-                loops: doneStats?.loops || 0,
-              },
-            ).then(result => {
-              if (result.chat_id && !currentConversationId) {
-                setCurrentConversationId(result.chat_id);
-              }
-              console.log(`[Agentic→Resonant] Saved to resonant pipeline: chat_id=${result.chat_id}`);
-            }).catch(() => {});
+          // The /message/stream backend already persists user + assistant messages,
+          // DSID, memory ingestion, and PMI events — no need to double-save.
+          // Just capture the chat_id from the stream for frontend state.
+          if (agenticConvId && !currentConversationId) {
+            setCurrentConversationId(agenticConvId);
           }
 
           if (soundNotifications) {
@@ -2582,7 +2570,20 @@ const ResonantChatPage: React.FC = () => {
           return; // Agentic streaming succeeded — exit handleSend
         } catch (agenticError: any) {
           if (controller.signal.aborted || agenticError?.name === 'AbortError') throw agenticError;
-          console.warn('[ResonantChat] Agentic streaming failed, falling back:', agenticError);
+          console.warn('[ResonantChat] Agentic streaming failed:', agenticError);
+          // If backend already accepted the request, do NOT fall through
+          // (that would send the same message again, creating duplicates).
+          // Show partial content or an error instead.
+          if (backendAccepted) {
+            setMessages(prev => prev.map(m =>
+              m.id === agenticMsgId
+                ? { ...m, content: agenticContent || 'Connection interrupted. Your message was processed — please check chat history.' }
+                : m
+            ));
+            setAgenticSteps([]);
+            if (agenticConvId && !currentConversationId) setCurrentConversationId(agenticConvId);
+            return;
+          }
           setMessages(prev => prev.filter(m => m.id !== agenticMsgId));
           setAgenticSteps([]);
         }

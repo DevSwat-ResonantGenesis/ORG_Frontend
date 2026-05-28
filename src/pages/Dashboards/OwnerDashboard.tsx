@@ -287,6 +287,11 @@ const OwnerDashboard: React.FC = () => {
       const statsRes = await fetch(`${API_BASE}/owner/auth/dashboard/stats`, {
         headers: { 'Authorization': `Bearer ${authToken}` }
       });
+      if (statsRes.status === 401 || statsRes.status === 403) {
+        localStorage.removeItem('owner_token');
+        navigate('/owner-login');
+        return;
+      }
       if (statsRes.ok) {
         const statsData = await statsRes.json();
         setStats({

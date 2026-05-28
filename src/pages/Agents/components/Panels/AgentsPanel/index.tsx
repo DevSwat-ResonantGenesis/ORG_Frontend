@@ -19,7 +19,7 @@ const WorkflowPanel = lazy(() => import('../WorkflowPanel'));
 const MonitorPanel = lazy(() => import('../MonitorPanel'));
 const SettingsPanel = lazy(() => import('../SettingsPanel'));
 const ScheduleCalendarPanel = lazy(() => import('../ScheduleCalendarPanel'));
-import styles from './AgentsPanelNew.module.css';
+import styles from './AgentsPanel.module.css';
 
 // ============== AGENTS PANEL ==============
 // Contract: reads [agent, execution], writes [agent]
