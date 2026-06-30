@@ -272,24 +272,23 @@ const OwnerDashboard: React.FC = () => {
   const fetchDashboardData = async () => {
     const sessionData = getSessionData();
     const ownerToken = localStorage.getItem('owner_token');
-    const sessionToken = localStorage.getItem('access_token');
-    const authToken = ownerToken || sessionToken;
     const sessionRole = sessionData?.role ? String(sessionData.role) : '';
     const isSuperuser = Boolean(sessionData?.is_superuser) || sessionRole === 'platform_owner';
     
     // Allow access if superuser OR has owner_token
-    if (!authToken && !isSuperuser) {
+    if (!isSuperuser && !ownerToken) {
       navigate('/dashboard');
       return;
     }
 
     try {
-      const statsRes = await fetch(`${API_BASE}/owner/auth/dashboard/stats`, {
-        headers: { 'Authorization': `Bearer ${authToken}` }
-      });
+      const fetchOpts: RequestInit = { credentials: 'include' };
+      if (ownerToken) {
+        fetchOpts.headers = { 'Authorization': `Bearer ${ownerToken}` };
+      }
+      const statsRes = await fetch(`${API_BASE}/owner/auth/dashboard/stats`, fetchOpts);
       if (statsRes.status === 401 || statsRes.status === 403) {
         localStorage.removeItem('owner_token');
-        navigate('/owner-login');
         return;
       }
       if (statsRes.ok) {
@@ -345,7 +344,8 @@ const OwnerDashboard: React.FC = () => {
         console.warn('System users endpoint not available, trying auth endpoint:', e);
         // Fallback to auth endpoint
         const usersRes = await fetch(`${API_BASE}/owner/auth/dashboard/users`, {
-          headers: { 'Authorization': `Bearer ${authToken}` }
+          credentials: 'include',
+          ...(ownerToken ? { headers: { 'Authorization': `Bearer ${ownerToken}` } } : {}),
         });
         if (usersRes.ok) {
           const usersData = await usersRes.json();
@@ -374,7 +374,8 @@ const OwnerDashboard: React.FC = () => {
 
       // Fetch settings
       const settingsRes = await fetch(`${API_BASE}/owner/auth/settings`, {
-        headers: { 'Authorization': `Bearer ${authToken}` }
+        credentials: 'include',
+        ...(ownerToken ? { headers: { 'Authorization': `Bearer ${ownerToken}` } } : {}),
       });
       if (settingsRes.ok) {
         const settingsData = await settingsRes.json();
@@ -393,7 +394,7 @@ const OwnerDashboard: React.FC = () => {
       // Fetch billing metrics from billing service
       try {
         const billingRes = await fetch(`${API_BASE}/api/v1/billing/metrics`, {
-          headers: { 'Authorization': `Bearer ${authToken}` }
+          credentials: 'include',
         });
         if (billingRes.ok) {
           const billingData = await billingRes.json();
@@ -413,7 +414,7 @@ const OwnerDashboard: React.FC = () => {
       // Fetch auth metrics
       try {
         const authMetricsRes = await fetch(`${API_BASE}/api/v1/auth/metrics`, {
-          headers: { 'Authorization': `Bearer ${authToken}` }
+          credentials: 'include',
         });
         if (authMetricsRes.ok) {
           const authData = await authMetricsRes.json();
