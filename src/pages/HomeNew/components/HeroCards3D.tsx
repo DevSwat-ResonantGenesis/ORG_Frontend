@@ -38,12 +38,12 @@ interface Card3D {
 const CARDS: Card3D[] = [
     /*           label          desc            color       textColor       route                        px     w    h     chaosX  delay */
     { label: 'Code',       desc: 'AI dev',      color: '#121214', textColor: '#ffffff', route: '/products/ide',           px: -0.2, w: 3.8, h: 2.2, chaosX: -1.8, delay: 0.0 },
-    { label: 'Governance', desc: 'Compliance',  color: '#FFD800', textColor: '#121214', route: '/products/governance',    px: 3.0,  w: 2.5, h: 5.5, chaosX: 2.0,  delay: 0.09, vertical: true },
-    { label: "LLM's",      desc: '',            color: '#FAA525', textColor: '#121214', route: '/products/mining',        px: -2.0, w: 2.0, h: 2.0, chaosX: -1.2, delay: 0.18 },
-    { label: 'Agents',     desc: 'Workflows',   color: '#01A6BC', textColor: '#ffffff', route: '/products/ai-agents',     px: 0.5,  w: 2.6, h: 2.1, chaosX: 1.4,  delay: 0.04 },
-    { label: 'Tools',      desc: '',            color: '#FA547C', textColor: '#ffffff', route: '/products/neural-routing',px: 2.1,  w: 2.4, h: 2.6, chaosX: -1.0, delay: 0.14 },
-    { label: "API's",      desc: '',            color: '#FFFFFF', textColor: '#121214', route: '/api/docs',              px: 2.9,  w: 1.5, h: 1.8, chaosX: 1.6,  delay: 0.23 },
-    { label: 'Memory',     desc: 'Knowledge',   color: '#71C23E', textColor: '#121214', route: '/products/memory',       px: -1.0, w: 3.2, h: 2.0, chaosX: -0.8, delay: 0.12 },
+    { label: 'Governance', desc: 'Compliance',  color: '#FFD800', textColor: '#121214', route: '/products/governance',    px: 3.0,  w: 2.5, h: 5.5, chaosX: 2.0,  delay: 0.65, vertical: true },
+    { label: "LLM's",      desc: '',            color: '#FAA525', textColor: '#121214', route: '/products/mining',        px: -2.0, w: 2.0, h: 2.0, chaosX: -1.2, delay: 0.5 },
+    { label: 'Agents',     desc: 'Workflows',   color: '#01A6BC', textColor: '#ffffff', route: '/products/ai-agents',     px: 0.5,  w: 2.6, h: 2.1, chaosX: 1.4,  delay: 0.12 },
+    { label: 'Tools',      desc: '',            color: '#FA547C', textColor: '#ffffff', route: '/products/neural-routing',px: 2.1,  w: 2.4, h: 2.6, chaosX: -1.0, delay: 0.25 },
+    { label: "API's",      desc: '',            color: '#FFFFFF', textColor: '#121214', route: '/api/docs',              px: 2.9,  w: 1.5, h: 1.8, chaosX: 1.6,  delay: 0.85 },
+    { label: 'Memory',     desc: 'Knowledge',   color: '#71C23E', textColor: '#121214', route: '/products/memory',       px: -1.0, w: 3.2, h: 2.0, chaosX: -0.8, delay: 0.38 },
 ];
 
 const MOBILE_SCALE = 0.42;
@@ -154,11 +154,16 @@ const dragPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
 /* ── A single falling, draggable, navigable 3D block ── */
 function FallingCard({ card, isMobile, spawnY }: { card: Card3D; isMobile: boolean; spawnY: number }) {
     const navigate = useNavigate();
+    /* Cards releasing later also spawn higher up, proportional to their delay — this gives
+       real spatial clearance from frame one instead of a timing gap that only becomes a
+       physical gap after it compounds, which is what let overlapping neighbors clip into
+       each other while both were still airborne. */
+    const mySpawnY = spawnY + card.delay * 6;
     const [ref, api] = useBox<THREE.Group>(() => ({
         mass: 0,
         type: 'Dynamic',
         args: [card.w, card.h, DEPTH],
-        position: [card.px + card.chaosX * 0.4, spawnY, 0],
+        position: [card.px + card.chaosX * 0.4, mySpawnY, 0],
         rotation: [0, 0, (Math.random() - 0.5) * 0.5],
         angularFactor: [0, 0, 1],
         linearFactor: [1, 1, 0],
@@ -168,7 +173,7 @@ function FallingCard({ card, isMobile, spawnY }: { card: Card3D; isMobile: boole
         allowSleep: true,
     }));
 
-    const posRef = useRef<[number, number, number]>([card.px, spawnY, 0]);
+    const posRef = useRef<[number, number, number]>([card.px, mySpawnY, 0]);
     const velRef = useRef<[number, number, number]>([0, 0, 0]);
     const angVelRef = useRef<[number, number, number]>([0, 0, 0]);
     const rotRef = useRef<[number, number, number]>([0, 0, 0]);
