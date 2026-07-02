@@ -539,7 +539,7 @@ export const SIMULATION_UNIT_DEFINITION = {
 
 // ============================================================
 // HASH SPHERE MEMORY API PRICING
-// Invariant-governed long-term memory for AI systems
+// Resonant Memory API — physics-informed hash-sphere memory, pay-per-call
 // ============================================================
 
 export interface HashSphereMemoryAPIPlan {
