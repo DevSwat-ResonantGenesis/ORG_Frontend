@@ -38,12 +38,12 @@ interface Card3D {
 const CARDS: Card3D[] = [
     /*           label          desc            color       textColor       route                        px     w    h     chaosX  delay */
     { label: 'Code',       desc: 'AI dev',      color: '#121214', textColor: '#ffffff', route: '/products/ide',           px: -0.2, w: 3.8, h: 2.2, chaosX: -1.8, delay: 0.0 },
-    { label: 'Governance', desc: 'Compliance',  color: '#FFD800', textColor: '#121214', route: '/products/governance',    px: 3.0,  w: 2.5, h: 5.5, chaosX: 2.0,  delay: 0.42, vertical: true },
-    { label: "LLM's",      desc: '',            color: '#FAA525', textColor: '#121214', route: '/products/mining',        px: -2.0, w: 2.0, h: 2.0, chaosX: -1.2, delay: 0.84 },
-    { label: 'Agents',     desc: 'Workflows',   color: '#01A6BC', textColor: '#ffffff', route: '/products/ai-agents',     px: 0.5,  w: 2.6, h: 2.1, chaosX: 1.4,  delay: 0.18 },
-    { label: 'Tools',      desc: '',            color: '#FA547C', textColor: '#ffffff', route: '/products/neural-routing',px: 2.1,  w: 2.4, h: 2.6, chaosX: -1.0, delay: 0.66 },
-    { label: "API's",      desc: '',            color: '#FFFFFF', textColor: '#121214', route: '/api/docs',              px: 2.9,  w: 1.5, h: 1.8, chaosX: 1.6,  delay: 1.08 },
-    { label: 'Memory',     desc: 'Knowledge',   color: '#71C23E', textColor: '#121214', route: '/products/memory',       px: -1.0, w: 3.2, h: 2.0, chaosX: -0.8, delay: 0.54 },
+    { label: 'Governance', desc: 'Compliance',  color: '#FFD800', textColor: '#121214', route: '/products/governance',    px: 3.0,  w: 2.5, h: 5.5, chaosX: 2.0,  delay: 0.09, vertical: true },
+    { label: "LLM's",      desc: '',            color: '#FAA525', textColor: '#121214', route: '/products/mining',        px: -2.0, w: 2.0, h: 2.0, chaosX: -1.2, delay: 0.18 },
+    { label: 'Agents',     desc: 'Workflows',   color: '#01A6BC', textColor: '#ffffff', route: '/products/ai-agents',     px: 0.5,  w: 2.6, h: 2.1, chaosX: 1.4,  delay: 0.04 },
+    { label: 'Tools',      desc: '',            color: '#FA547C', textColor: '#ffffff', route: '/products/neural-routing',px: 2.1,  w: 2.4, h: 2.6, chaosX: -1.0, delay: 0.14 },
+    { label: "API's",      desc: '',            color: '#FFFFFF', textColor: '#121214', route: '/api/docs',              px: 2.9,  w: 1.5, h: 1.8, chaosX: 1.6,  delay: 0.23 },
+    { label: 'Memory',     desc: 'Knowledge',   color: '#71C23E', textColor: '#121214', route: '/products/memory',       px: -1.0, w: 3.2, h: 2.0, chaosX: -0.8, delay: 0.12 },
 ];
 
 const MOBILE_SCALE = 0.42;
@@ -124,6 +124,26 @@ function Wall({ x, facing }: { x: number; facing: 1 | -1 }) {
     return <mesh ref={ref} visible={false}><planeGeometry args={[60, 60]} /></mesh>;
 }
 
+/* Walls sized from the ACTUAL rendered canvas aspect ratio (via useThree), not a guessed
+   per-device constant — this is what keeps blocks inside the visible screen on any width,
+   including narrow phones, instead of overflowing past the edges. */
+function Bounds({ camBaseX, camBaseZ, floorY, fov }: { camBaseX: number; camBaseZ: number; floorY: number; fov: number }) {
+    const { size } = useThree();
+    const vFOV = (fov * Math.PI) / 180;
+    const visibleHeight = 2 * Math.tan(vFOV / 2) * camBaseZ;
+    const visibleWidth = visibleHeight * (size.width / size.height);
+    const margin = 0.3;
+    const halfWidth = Math.max(1, visibleWidth / 2 - margin);
+
+    return (
+        <>
+            <Floor y={floorY} />
+            <Wall x={camBaseX - halfWidth} facing={1} />
+            <Wall x={camBaseX + halfWidth} facing={-1} />
+        </>
+    );
+}
+
 /* Shared hover state so neighboring cards could react (kept minimal: just cosmetic lift) */
 const LONG_PRESS_MS = 550;
 const DOUBLE_TAP_MS = 350;
@@ -167,7 +187,7 @@ function FallingCard({ card, isMobile, spawnY }: { card: Card3D; isMobile: boole
             api.mass.set(1);
             released.current = true;
             releasedAt.current = performance.now();
-        }, card.delay * 1000 + 250);
+        }, card.delay * 1000 + 30);
         return () => window.clearTimeout(t);
     }, [api, card.delay]);
 
@@ -400,7 +420,6 @@ export function HeroCards3DScene() {
     const camBaseZ = isMobile ? 7 : 10;
     const floorY = isMobile ? -2.7 : -3.5;
     const spawnY = isMobile ? 5.5 : 7;
-    const wallX: [number, number] = isMobile ? [-2.6, 2.6] : [-4.8, 6.8];
 
     return (
         <Canvas
@@ -426,9 +445,7 @@ export function HeroCards3DScene() {
             <CameraRig baseX={camBaseX} baseY={camBaseY} baseZ={camBaseZ} />
 
             <Physics gravity={[0, isMobile ? -9 : -11, 0]} allowSleep iterations={14}>
-                <Floor y={floorY} />
-                <Wall x={wallX[0]} facing={1} />
-                <Wall x={wallX[1]} facing={-1} />
+                <Bounds camBaseX={camBaseX} camBaseZ={camBaseZ} floorY={floorY} fov={50} />
                 {cards.map((card, i) => (
                     <FallingCard key={card.label + i} card={card} isMobile={isMobile} spawnY={spawnY} />
                 ))}
