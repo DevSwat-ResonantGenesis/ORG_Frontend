@@ -163,7 +163,7 @@ Per-user encrypted memory space with cognitive architecture.
 - Memory ingestion from all platform services
 
 URL: https://dev-swat.com/resonant-memory
-API: https://dev-swat.com/hash-sphere-memory-api
+API: https://dev-swat.com/products/memory
 
 ---
 

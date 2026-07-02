@@ -125,7 +125,7 @@ export const HashSphereMemorySection: React.FC = () => {
                 <li>Batch simulation</li>
               </ul>
               <button 
-                onClick={() => navigate('/hash-sphere-memory-api')}
+                onClick={() => navigate('/products/memory')}
                 className="w-full py-2 rounded-lg bg-white/10 text-white text-sm hover:bg-white/20 transition-colors"
               >
                 Get Started
@@ -143,7 +143,7 @@ export const HashSphereMemorySection: React.FC = () => {
                 <li>30-day replay</li>
               </ul>
               <button 
-                onClick={() => navigate('/hash-sphere-memory-api?plan=builder')}
+                onClick={() => navigate('/products/memory')}
                 className="w-full py-2 rounded-lg bg-emerald-500 text-black text-sm font-semibold hover:bg-emerald-400 transition-colors"
               >
                 Subscribe
@@ -160,7 +160,7 @@ export const HashSphereMemorySection: React.FC = () => {
                 <li>Full audit trail</li>
               </ul>
               <button 
-                onClick={() => navigate('/hash-sphere-memory-api?plan=scale')}
+                onClick={() => navigate('/products/memory')}
                 className="w-full py-2 rounded-lg bg-amber-500/20 text-amber-300 text-sm hover:bg-amber-500/30 transition-colors"
               >
                 Subscribe

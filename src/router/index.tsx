@@ -102,7 +102,6 @@ const AgentAPIDocsPage = lazy(() => import('../pages/Docs/AgentAPIPage'));
 const BlockchainProtocolDocsPage = lazy(() => import('../pages/Docs/BlockchainProtocolPage'));
 const MiningProtocolDocsPage = lazy(() => import('../pages/Docs/MiningProtocolPage'));
 const GovernanceProtocolDocsPage = lazy(() => import('../pages/Docs/GovernanceProtocolPage'));
-const MemoryProtocolDocsPage = lazy(() => import('../pages/Docs/MemoryProtocolPage'));
 const CBORSpecDocsPage = lazy(() => import('../pages/Docs/CBORSpecPage'));
 const CrossChainDocsPage = lazy(() => import('../pages/Docs/CrossChainPage'));
 const NeuralRoutingDocsPage = lazy(() => import('../pages/Docs/NeuralRoutingDocsPage'));
@@ -129,7 +128,6 @@ const HashSpherePage = lazy(() => import('../pages/HashSphere/HashSpherePage'));
 const ResonantMemoryPage = lazy(() => import('../pages/ResonantMemory/ResonantMemoryPage'));
 const CodeVisualizerPage = lazy(() => import('../pages/CodeVisualizer/CodeVisualizerPage'));
 const StatePhysicsAPI = lazy(() => import('../pages/StatePhysicsAPI/StatePhysicsAPI'));
-const HashSphereMemoryAPI = lazy(() => import('../pages/HashSphereMemoryAPI/HashSphereMemoryAPI'));
 const ConnectProfilesPage = lazy(() => import('../pages/ConnectProfiles/ConnectProfilesPage'));
 
 const withShell = (node: React.ReactNode) => (
@@ -500,10 +498,10 @@ const router = createBrowserRouter([
     path: '/settings/api-keys',
     element: <Navigate to="/resonant-chat" replace />
   },
-    // Hash Sphere Memory API - Public pricing and documentation page
+    // Consolidated: the single memory page lives at /products/memory
   {
     path: '/hash-sphere-memory-api',
-    element: withPublicShell(<HashSphereMemoryAPI />)
+    element: <Navigate to="/products/memory" replace />
   },
   // Developer Tools
   {
@@ -696,7 +694,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/docs/memory-protocol',
-    element: withPublicShell(<MemoryProtocolDocsPage />)
+    element: <Navigate to="/products/memory" replace />
   },
   {
     path: '/docs/cbor-spec',

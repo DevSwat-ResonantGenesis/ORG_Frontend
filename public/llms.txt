@@ -11,7 +11,7 @@ DevSwat is a full-stack agentic AI SaaS platform built from scratch. 9 proprieta
 - [OpenClaw](https://dev-swat.com/download-openclaw): Local-first federated agent connector. 137 tools across 15 categories. Tools run on YOUR machine, data never leaves your hardware.
 - [Code Visualizer](https://dev-swat.com/code-visualizer): AST/SAST code analysis. GitHub repo scanning, dependency graphs, function tracing, dead code detection, governance reports.
 - [Hash Sphere](https://dev-swat.com/state-physics): Physics-based state engine. N-body simulation with gravity, repulsion, entropy forces, and conservation invariants. Three.js 3D visualization.
-- [Semantic Memory](https://dev-swat.com/resonant-memory): Per-user encrypted semantic memory. 9-layer cognitive architecture. Embedding-based retrieval with resonance clustering.
+- [Resonant Memory](https://dev-swat.com/products/memory): physics-informed AI memory API, pay-per-call. 9-layer cognitive architecture. Embedding-based retrieval with resonance clustering.
 - [Decentralized Mining](https://dev-swat.com/download-miner): Train frontier LLMs on your GPU and earn $RGT tokens. Pipeline-parallel training with 1F1B microbatch scheduling. WebRTC P2P weight transfer.
 - [ResonantChat](https://dev-swat.com): Personalized AI chat intelligence with hallucination detection, evidence graphs, neural skill classification, and smart routing that reduces LLM token costs.
 - [Platform Connectors](https://dev-swat.com/integrations): Connect any LLM provider and any external platform — Google Drive, Gmail, Slack, deployments, and more. Unlimited.
@@ -54,7 +54,7 @@ Connect any LLM provider — not limited to a fixed list. Built-in support for O
 - [Blockchain Protocol](https://dev-swat.com/docs/blockchain-protocol): DSID-P, merkle trees, CBOR block format.
 - [Mining Protocol](https://dev-swat.com/docs/mining-protocol): 1F1B pipeline parallelism, gradient compression.
 - [Governance Protocol](https://dev-swat.com/docs/governance-protocol): RARA invariants, capability grammar, mutation executor.
-- [Memory Protocol](https://dev-swat.com/docs/memory-protocol): 9-layer architecture, embeddings, Hash Sphere coordinates.
+- [Resonant Memory](https://dev-swat.com/products/memory): physics-informed 12-D hash-sphere memory API — gravity retrieval, associative mesh, multi-hop fact graph, temporal reasoning, immutable on-chain, isolated per user/agent/org.
 - [CBOR Spec](https://dev-swat.com/docs/cbor-spec): RFC 8949 canonical encoding for blockchain.
 - [Cross-Chain Bridge](https://dev-swat.com/docs/cross-chain): Atomic swaps, HTLC, light clients.
 - [Neural Routing Docs](https://dev-swat.com/docs/neural-routing): MLP classifier, training pipeline, active learning.

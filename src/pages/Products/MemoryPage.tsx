@@ -2,8 +2,8 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import {
-  Brain, Lock, Layers, Search, ArrowRight, Cpu,
-  Database, Eye, Zap, Box
+  Brain, Lock, Search, ArrowRight, Cpu,
+  Database, Eye, Zap, Box, GitBranch, Clock, ShieldCheck, Code
 } from 'lucide-react';
 
 const s: Record<string, React.CSSProperties> = {
@@ -22,18 +22,27 @@ const s: Record<string, React.CSSProperties> = {
   divider: { height: 1, background: 'rgba(255,255,255,0.06)', margin: '0 auto', maxWidth: 960 },
   cta: { textAlign: 'center', padding: '3rem 2rem 5rem' },
   btn: { display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 28px', background: '#6366f1', color: '#fff', borderRadius: 8, border: 'none', fontSize: '1rem', fontWeight: 600, cursor: 'pointer' },
+  btnGhost: { display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 28px', background: 'transparent', color: '#a5b4fc', borderRadius: 8, border: '1px solid rgba(99,102,241,0.4)', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', marginLeft: 12 },
+  pill: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 100, fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)', margin: 4 },
+  code: { background: '#0d0d16', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 10, padding: '1.25rem', fontSize: '0.85rem', color: '#c7d2fe', fontFamily: 'ui-monospace, Menlo, monospace', overflowX: 'auto', lineHeight: 1.7, whiteSpace: 'pre' },
+  priceRow: { display: 'flex', justifyContent: 'space-between', padding: '0.7rem 0', borderBottom: '1px solid rgba(255,255,255,0.06)', fontSize: '0.95rem' },
 };
 
-const layers = [
-  { n: '1', name: 'Sensory Buffer', d: 'Raw input processing and immediate perceptual data.' },
-  { n: '2', name: 'Working Memory', d: 'Short-term active context for current task.' },
-  { n: '3', name: 'Episodic Memory', d: 'Specific experiences and events with temporal context.' },
-  { n: '4', name: 'Semantic Memory', d: 'General knowledge, facts, and conceptual understanding.' },
-  { n: '5', name: 'Procedural Memory', d: 'How-to knowledge, skills, and learned procedures.' },
-  { n: '6', name: 'Meta-Cognitive', d: 'Self-awareness about own knowledge and reasoning.' },
-  { n: '7', name: 'Emotional', d: 'Sentiment and affective context markers.' },
-  { n: '8', name: 'Social', d: 'Understanding of relationships and social dynamics.' },
-  { n: '9', name: 'Creative', d: 'Novel combinations and generative synthesis.' },
+// The real retrieval pipeline (what actually runs, in order)
+const pipeline = [
+  { icon: Box, name: '12-D Hash Sphere', d: 'Each memory is a point in a learned 12-dimensional semantic manifold. Retrieval ranks by gravity — proximity in meaning-space, not a lossy 3-D shadow.' },
+  { icon: Zap, name: 'Emergent Anchors', d: 'Gravity wells form and drift as memories arrive. Dense regions of related memories pull new ones in — the field self-organizes like mass curving space.' },
+  { icon: GitBranch, name: 'Associative Mesh', d: 'Memories that are recalled together wire together. A query surfaces linked memories that pure vector search would never find — biological associative recall.' },
+  { icon: Search, name: 'Cross-Encoder Rerank', d: 'A cross-encoder jointly scores every (query, memory) pair for razor-sharp relevance — the precision layer the frontier labs use.' },
+  { icon: Database, name: 'Fact Graph', d: 'Atomic facts are extracted, entity-resolved, and traversed multi-hop: “what grade is my daughter in” chains user → child → Lily → grade → kindergarten.' },
+  { icon: Clock, name: 'Temporal Reasoning', d: 'Every memory carries its real event time. “When did X happen” and date-range queries are answered from the timeline, not guessed.' },
+];
+
+const moat = [
+  { icon: ShieldCheck, name: 'Immutable & on-chain', d: 'Every memory is anchored to the DSID blockchain (hashes only; content stays encrypted). Tamper-evident, append-only — never silently deleted.' },
+  { icon: Lock, name: 'Sovereign & isolated', d: 'AES-encrypted, isolated per user / agent / org. A query only ever sees the caller’s own memory blocks.' },
+  { icon: Cpu, name: 'Zero-LLM recall', d: 'A confidence gate answers directly from memory when it’s sure — no LLM call, no latency, no cost — and only calls a model on low confidence.' },
+  { icon: Brain, name: 'Physics, not statistics', d: 'Gravity, drift, and anchors make the memory get smarter as you use it — a living field, not a static index.' },
 ];
 
 const MemoryPage: React.FC = () => {
@@ -41,41 +50,50 @@ const MemoryPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Semantic Memory — 9-Layer Encrypted AI Memory Engine | DevSwat</title>
-        <meta name="description" content="Per-user encrypted semantic memory with 9-layer cognitive architecture. Embedding-based retrieval, resonance clustering, RAG, Hash Sphere coordinates, AES encryption, 3D visualization." />
+        <title>Resonant Memory — Physics-Informed, Immutable AI Memory API | DevSwat</title>
+        <meta name="description" content="The world's first physics-informed, immutable, sovereign AI memory. 12-D hash-sphere retrieval with gravity ranking, emergent anchors, associative mesh, cross-encoder reranking, multi-hop fact graph and temporal reasoning. On-chain, encrypted, isolated per user/agent/org. Available as an API + SDK." />
         <link rel="canonical" href="https://dev-swat.com/products/memory" />
-        <meta property="og:title" content="Semantic Memory — 9-Layer AI Memory Engine" />
-        <meta property="og:description" content="9-layer cognitive architecture. Encrypted per-user memory with embedding retrieval and 3D visualization." />
+        <meta property="og:title" content="Resonant Memory — Physics-Informed AI Memory API" />
+        <meta property="og:description" content="12-D hash-sphere retrieval, immutable on-chain, isolated per user/agent/org. API + SDK, pay-per-call credits." />
         <meta property="og:url" content="https://dev-swat.com/products/memory" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org", "@type": "SoftwareApplication",
-          "name": "DevSwat Semantic Memory", "applicationCategory": "DeveloperApplication",
-          "description": "9-layer encrypted semantic memory engine with embedding retrieval and 3D visualization.",
+          "name": "Resonant Memory", "applicationCategory": "DeveloperApplication",
+          "description": "Physics-informed, immutable, sovereign AI memory API with 12-D hash-sphere retrieval, multi-hop fact graph, and temporal reasoning.",
+          "offers": { "@type": "Offer", "priceCurrency": "USD", "price": "5" },
           "url": "https://dev-swat.com/products/memory"
         })}</script>
       </Helmet>
 
       <section style={s.hero}>
-        <div style={s.badge}><Brain size={14} /> Semantic Memory</div>
-        <h1 style={s.h1}>AI That Remembers.<br />Encrypted. Per-User.</h1>
+        <div style={s.badge}><Brain size={14} /> Resonant Memory</div>
+        <h1 style={s.h1}>AI memory that thinks<br />in meaning — and never forgets.</h1>
         <p style={s.lead}>
-          9-layer cognitive architecture inspired by human memory systems. Embedding-based retrieval,
-          resonance clustering, RAG context injection, AES encryption. Every user gets their own
-          isolated memory universe with 3D visualization.
+          The world's first <strong>physics-informed, immutable, sovereign</strong> AI memory.
+          Retrieval runs on a 12-dimensional hash-sphere manifold with gravity ranking, emergent
+          anchors, an associative mesh, cross-encoder reranking, a multi-hop fact graph, and real
+          temporal reasoning — every memory encrypted, anchored on-chain, and isolated to you.
         </p>
+        <div>
+          <button style={s.btn} onClick={() => navigate('/pricing')}>Get an API key <ArrowRight size={16} /></button>
+          <button style={s.btnGhost} onClick={() => navigate('/resonant-memory')}>See it in 3D <Eye size={16} /></button>
+        </div>
       </section>
 
       <div style={s.divider} />
 
       <section style={{ ...s.section, paddingTop: '3rem' }}>
-        <h2 style={s.h2}>9-Layer Cognitive Architecture</h2>
-        <div style={{ ...s.grid, gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
-          {layers.map(l => (
-            <div key={l.name} style={s.card}>
-              <div style={s.cardTitle}><span style={{ color: '#818cf8', fontSize: '0.85rem' }}>Layer {l.n}</span> {l.name}</div>
-              <div style={s.cardText}>{l.d}</div>
+        <h2 style={s.h2}>How retrieval actually works</h2>
+        <p style={s.p}>Most "memory" is a vector database. Resonant Memory is a brain: candidates are
+          recalled by cosine + BM25 (the floor), then <strong>ranked and reasoned over</strong> by a
+          six-stage physics pipeline.</p>
+        <div style={s.grid}>
+          {pipeline.map(f => (
+            <div key={f.name} style={s.card}>
+              <div style={s.cardTitle}><f.icon size={16} color="#818cf8" /> {f.name}</div>
+              <div style={s.cardText}>{f.d}</div>
             </div>
           ))}
         </div>
@@ -84,38 +102,69 @@ const MemoryPage: React.FC = () => {
       <div style={s.divider} />
 
       <section style={{ ...s.section, paddingTop: '3rem' }}>
-        <h2 style={s.h2}>Core Features</h2>
+        <h2 style={s.h2}>What no one else has</h2>
         <div style={s.grid}>
-          <div style={s.card}>
-            <div style={s.cardTitle}><Search size={16} color="#818cf8" /> Embedding Retrieval</div>
-            <div style={s.cardText}>sentence-transformers (all-MiniLM-L6-v2) generates 384-dim embeddings. Vector similarity search finds relevant memories in milliseconds.</div>
-          </div>
-          <div style={s.card}>
-            <div style={s.cardTitle}><Layers size={16} color="#818cf8" /> RAG Pipeline</div>
-            <div style={s.cardText}>Retrieval-Augmented Generation injects relevant memories into LLM context. Every response grounded in your actual data.</div>
-          </div>
-          <div style={s.card}>
-            <div style={s.cardTitle}><Lock size={16} color="#818cf8" /> AES Encryption</div>
-            <div style={s.cardText}>Per-user encryption keys. Memory data encrypted at rest and in transit. Your memories are yours alone.</div>
-          </div>
-          <div style={s.card}>
-            <div style={s.cardTitle}><Cpu size={16} color="#818cf8" /> Resonance Clustering</div>
-            <div style={s.cardText}>ResonanceHasher PCA maps memories to Hash Sphere coordinates. Related memories cluster together in 3D space.</div>
-          </div>
-          <div style={s.card}>
-            <div style={s.cardTitle}><Eye size={16} color="#818cf8" /> 3D Visualization</div>
-            <div style={s.cardText}>Interactive Three.js memory universe. Explore your memories as a 3D particle cloud. Zoom, rotate, click to inspect.</div>
-          </div>
-          <div style={s.card}>
-            <div style={s.cardTitle}><Database size={16} color="#818cf8" /> Dual Memory Engines</div>
-            <div style={s.cardText}>Short-term (session context) and long-term (persistent) memory. Both accessible via the same API and UI.</div>
-          </div>
+          {moat.map(f => (
+            <div key={f.name} style={s.card}>
+              <div style={s.cardTitle}><f.icon size={16} color="#818cf8" /> {f.name}</div>
+              <div style={s.cardText}>{f.d}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div style={s.divider} />
+
+      <section style={{ ...s.section, paddingTop: '3rem' }}>
+        <h2 style={s.h2}><Lock size={20} color="#818cf8" style={{ verticalAlign: 'middle', marginRight: 8 }} />Isolation — the blockchain-block model</h2>
+        <p style={s.p}>Memories are cryptographically partitioned into per-relationship "blocks," exactly
+          like a chain of custody. A query can only ever read the caller's own blocks.</p>
+        <div>
+          <span style={s.pill}>user_id → the user's private block</span>
+          <span style={s.pill}>agent_hash → the agent's global block</span>
+          <span style={s.pill}>user_id + agent_hash → the user+agent shared block</span>
+          <span style={s.pill}>org_id → tenant isolation</span>
+        </div>
+      </section>
+
+      <div style={s.divider} />
+
+      <section style={{ ...s.section, paddingTop: '3rem' }}>
+        <h2 style={s.h2}><Code size={20} color="#818cf8" style={{ verticalAlign: 'middle', marginRight: 8 }} />Drop it into your project</h2>
+        <p style={s.p}>Bring memory to any app with the SDK or a REST call. Isolation, on-chain
+          anchoring, fact extraction, and the associative mesh all happen automatically.</p>
+        <div style={s.code}>{`pip install resonant-memory
+
+from resonant_memory import ResonantMemory
+mem = ResonantMemory(api_key="rg_live_...", user_id="user-123")
+
+mem.ingest("Marcus leads the payments team", event_timestamp="2026-05-08")
+
+r = mem.recall_full("what does the user do")
+print(r["memories"][0]["content"])   # → Marcus leads the payments team
+print(r["confidence"], r["answer_from_memory"], r["evidence_hash"])`}</div>
+      </section>
+
+      <div style={s.divider} />
+
+      <section style={{ ...s.section, paddingTop: '3rem' }}>
+        <h2 style={s.h2}>Simple, pay-per-call pricing</h2>
+        <p style={s.p}>No subscriptions to use the API — buy credits (from $5) and each call deducts its
+          cost. Top up anytime; when credits run out, calls pause until you refill.</p>
+        <div style={{ ...s.card, maxWidth: 520 }}>
+          <div style={s.priceRow}><span>Store a memory &nbsp;<code style={{color:'#818cf8'}}>ingest()</code></span><strong>120 credits</strong></div>
+          <div style={s.priceRow}><span>Recall &nbsp;<code style={{color:'#818cf8'}}>recall()</code></span><strong>60 credits</strong></div>
+          <div style={s.priceRow}><span>Read facts &nbsp;<code style={{color:'#818cf8'}}>facts()</code></span><strong>20 credits</strong></div>
+          <div style={{ ...s.priceRow, borderBottom: 'none' }}><span>Credits</span><strong>from $5</strong></div>
         </div>
       </section>
 
       <section style={s.cta}>
-        <button style={s.btn} onClick={() => navigate('/resonant-memory')}>
-          Explore Memory <ArrowRight size={16} />
+        <button style={s.btn} onClick={() => navigate('/pricing')}>
+          Get your API key <ArrowRight size={16} />
+        </button>
+        <button style={s.btnGhost} onClick={() => navigate('/resonant-memory')}>
+          Explore in 3D <Eye size={16} />
         </button>
       </section>
     </div>
