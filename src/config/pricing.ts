@@ -568,11 +568,11 @@ export const HASH_SPHERE_MEMORY_API_PLANS: HashSphereMemoryAPIPlan[] = [
     overageRate: 0,       // No overage on starter
     features: [
       '100,000 Memory Units/month',
-      '1536-dim embeddings',
+      '12-D hash-sphere retrieval (gravity ranking)',
+      'Cross-encoder reranking + fact extraction',
       'Encrypted storage (AES-256-GCM)',
-      'Batch simulation',
-      'Standard invariants',
-      'No real-time enforcement',
+      'On-chain immutable anchoring',
+      'Isolated per user / agent / org',
       'Shared infrastructure',
     ],
     limits: {
@@ -591,9 +591,9 @@ export const HASH_SPHERE_MEMORY_API_PLANS: HashSphereMemoryAPIPlan[] = [
     overageRate: 0.05,     // $0.05 per 1k MU overage
     features: [
       '2,000,000 Memory Units/month',
-      'Real-time invariant checks',
-      'Memory clustering & entropy metrics',
-      'Memory replay (last 30 days)',
+      'Multi-hop knowledge graph + temporal reasoning',
+      'Associative mesh (self-organizing recall)',
+      'Confidence gate (zero-LLM recall)',
       'API keys per project',
       '$0.05 per 1k MU overage',
     ],
@@ -613,10 +613,10 @@ export const HASH_SPHERE_MEMORY_API_PLANS: HashSphereMemoryAPIPlan[] = [
     overageRate: 0.03,      // $0.03 per 1k MU overage
     features: [
       '10,000,000 Memory Units/month',
-      'Hard real-time enforcement',
-      'Custom invariant definitions',
-      'Full replay & audit trail',
+      'Full evidence ledger + on-chain provenance',
+      'Cryptographic recall audit trail',
       'Priority execution',
+      'Dedicated recall tuning',
     ],
     limits: {
       realtimeEnforcement: true,
@@ -634,10 +634,10 @@ export const HASH_SPHERE_MEMORY_API_PLANS: HashSphereMemoryAPIPlan[] = [
     overageRate: 0,   // Negotiated
     features: [
       'Unlimited Memory Units (contract-bounded)',
-      'Dedicated invariant engine',
+      'Dedicated memory brain',
       'On-prem / VPC / air-gapped options',
       'SLA + incident guarantees',
-      'Custom physics models',
+      'Sovereign on-chain memory blocks',
       'Compliance & audit exports',
     ],
     limits: {

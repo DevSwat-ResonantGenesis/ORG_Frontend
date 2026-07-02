@@ -618,13 +618,20 @@ const PricingPage: React.FC = () => {
                 <Brain size={32} />
               </div>
               <div className={styles.apiProductInfo}>
-                <h3 className={styles.apiProductName}>Hash Sphere Memory API</h3>
+                <h3 className={styles.apiProductName}>Resonant Memory API</h3>
                 <p className={styles.apiProductDescription}>
-                  Invariant-governed long-term memory for AI systems. Persistent, encrypted, high-dimensional memory with conservation laws.
+                  Physics-informed, immutable AI memory. 12-D hash-sphere retrieval (gravity ranking,
+                  associative mesh, cross-encoder rerank, multi-hop fact graph, temporal reasoning),
+                  encrypted and anchored on-chain, isolated per user/agent/org.
+                </p>
+                <p className={styles.apiProductDescription} style={{ marginTop: 8, fontSize: '0.85rem', opacity: 0.85 }}>
+                  <strong>Pay-per-call</strong> with credits — store a memory <strong>120</strong>,
+                  recall <strong>60</strong>, read facts <strong>20</strong> credits. Buy credits below
+                  (from $5) and top up anytime, or subscribe for included monthly volume.
                 </p>
               </div>
             </div>
-            
+
             <div className={styles.apiPlansGrid}>
               {HASH_SPHERE_MEMORY_API_PLANS.map((plan) => {
                 const isEnterprise = plan.id === 'enterprise';
