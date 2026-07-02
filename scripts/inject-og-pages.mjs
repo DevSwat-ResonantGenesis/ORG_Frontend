@@ -58,8 +58,8 @@ const OG_PAGES = [
   },
   {
     route: '/resonant-memory',
-    title: 'Semantic Memory – DevSwat',
-    description: 'Per-user encrypted semantic memory with embedding-based retrieval, resonance clustering, dual short/long-term engines, and FTS5 full-text search. 3D visualization.',
+    title: 'Resonant Memory — 3D Hash-Sphere Visualizer | DevSwat',
+    description: 'Explore your AI memory as a living 12-D hash-sphere in 3D — gravity wells, emergent anchors, and the associative mesh, rendered in real time. Part of Resonant Memory.',
     image: 'https://dev-swat.com/devswat/DevSwat.png',
     url: 'https://dev-swat.com/resonant-memory',
   },
@@ -111,13 +111,6 @@ const OG_PAGES = [
     description: 'API documentation for the Hash Sphere invariant simulation engine. N-body physics, force-directed graphs, entropy injection, and conservation constraints.',
     image: 'https://dev-swat.com/devswat/DevSwat.png',
     url: 'https://dev-swat.com/state-physics-api',
-  },
-  {
-    route: '/hash-sphere-memory-api',
-    title: 'Memory API – DevSwat',
-    description: 'API documentation for the Semantic Memory engine. Embedding-based retrieval, memory clustering, dual memory engines, and encrypted per-user storage.',
-    image: 'https://dev-swat.com/devswat/DevSwat.png',
-    url: 'https://dev-swat.com/hash-sphere-memory-api',
   },
   {
     route: '/about',
@@ -221,8 +214,8 @@ const OG_PAGES = [
   },
   {
     route: '/products/memory',
-    title: 'Semantic Memory — 9-Layer Encrypted AI Memory Engine | DevSwat',
-    description: '9-layer cognitive architecture. Per-user AES encryption. Embedding retrieval, RAG, Hash Sphere coordinates, 3D visualization.',
+    title: 'Resonant Memory — Physics-Informed, Immutable AI Memory API | DevSwat',
+    description: "The world's first physics-informed, immutable, sovereign AI memory. 12-D hash-sphere retrieval with gravity ranking, emergent anchors, associative mesh, cross-encoder reranking, multi-hop fact graph and temporal reasoning. On-chain, encrypted, isolated per user/agent/org. API + SDK, pay-per-call.",
     image: 'https://dev-swat.com/devswat/DevSwat.png',
     url: 'https://dev-swat.com/products/memory',
   },
@@ -367,13 +360,6 @@ const OG_PAGES = [
     description: 'Invariant classes, capability grammar, trust scoring, mutation executor.',
     image: 'https://dev-swat.com/devswat/DevSwat.png',
     url: 'https://dev-swat.com/docs/governance-protocol',
-  },
-  {
-    route: '/docs/memory-protocol',
-    title: 'Memory Protocol — 9-Layer Architecture, Embeddings, Hash Sphere | DevSwat Docs',
-    description: '9-layer architecture, embedding pipeline, Hash Sphere coordinates, AES encryption.',
-    image: 'https://dev-swat.com/devswat/DevSwat.png',
-    url: 'https://dev-swat.com/docs/memory-protocol',
   },
   {
     route: '/docs/cbor-spec',
