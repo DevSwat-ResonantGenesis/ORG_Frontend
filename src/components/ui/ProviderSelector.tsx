@@ -113,7 +113,7 @@ export const ProviderSelector: React.FC<ProviderSelectorProps> = ({
             isAvailable: true,
             recommended: true,
           },
-          ...data.providers.map((p) => ({
+          ...data.providers.filter((p) => p.available).map((p) => ({
             value: p.id as Provider,
             label: p.name,
             icon: getProviderIcon(p.id),
