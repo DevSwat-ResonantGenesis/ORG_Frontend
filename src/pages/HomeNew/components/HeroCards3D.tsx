@@ -68,10 +68,15 @@ if (typeof window !== 'undefined') {
     }, { passive: true });
 
     const handleOrientation = (e: DeviceOrientationEvent) => {
-        const gamma = e.gamma ?? 0;
-        const beta = e.beta ?? 0;
-        input.x = Math.max(-1, Math.min(1, gamma / 30));
-        input.y = Math.max(-1, Math.min(1, (beta - 45) / 30));
+        /* Browsers/devices with no real gyroscope commonly fire ONE deviceorientation event
+           with gamma/beta both null, just to signal "no sensor". Treating that as gamma=0,
+           beta=0 (as a naive `?? 0` fallback would) reads as a real, specific tilt angle —
+           which, combined with the beta-45 neutral offset below, was quietly zeroing out
+           gravity's vertical component on any desktop/no-sensor browser. Bail out instead:
+           no real reading means don't touch input at all, leave it at its neutral default. */
+        if (e.gamma === null || e.beta === null) return;
+        input.x = Math.max(-1, Math.min(1, e.gamma / 30));
+        input.y = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
     };
     if ('DeviceOrientationEvent' in window) {
         const doe = DeviceOrientationEvent as any;
@@ -119,29 +124,135 @@ function Wall({ x, facing }: { x: number; facing: 1 | -1 }) {
         rotation: [0, facing > 0 ? Math.PI / 2 : -Math.PI / 2, 0],
         position: [x, 0, 0],
         type: 'Static',
-        material: { friction: 0.3, restitution: 0.25 },
+        material: { friction: 0.4, restitution: 0.06 },
     }));
     return <mesh ref={ref} visible={false}><planeGeometry args={[60, 60]} /></mesh>;
 }
 
-/* Walls sized from the ACTUAL rendered canvas aspect ratio (via useThree), not a guessed
-   per-device constant — this is what keeps blocks inside the visible screen on any width,
-   including narrow phones, instead of overflowing past the edges. */
-function Bounds({ camBaseX, camBaseZ, floorY, fov }: { camBaseX: number; camBaseZ: number; floorY: number; fov: number }) {
+/* Walls + card spawn X are BOTH derived from the ACTUAL rendered canvas aspect ratio (via
+   useThree), not a guessed per-device constant. Deriving them from the same source and
+   clamping each card's spawn position to fit inside — accounting for its own width — is
+   what prevents a card from ever spawning overlapping a wall: that overlap is what was
+   causing the violent "bounce to the other side" on narrow/tall phone aspect ratios, since
+   the solver forcefully ejects a body that starts deeply interpenetrating a static body. */
+/* Clamping each card to the walls independently isn't enough — several cards' desired
+   positions land close enough to each other that, once wall-clamped (especially in a narrow
+   mobile corridor), their footprints deeply overlap EACH OTHER. Two bodies that start deeply
+   interpenetrating get violently separated the instant one goes dynamic (that's what was
+   launching cards clear off the top of the screen). This does a real 1D layout pass: clamp
+   to the walls first, then sort left-to-right and push any still-overlapping neighbor along
+   just enough to clear it — guaranteeing zero overlap between any two cards at spawn. */
+function layoutSpawnX(cards: Card3D[], wallMin: number, wallMax: number, camBaseX: number): number[] {
+    const inset = 0.14;
+    const gap = 0.08;
+    const availableMin = wallMin + inset;
+    const availableMax = wallMax - inset;
+    const availableWidth = Math.max(0.5, availableMax - availableMin);
+
+    const items = cards.map((card, i) => ({ i, halfW: card.w / 2, raw: card.px + card.chaosX * 0.4, x: 0 }));
+    const order = [...items].sort((a, b) => a.raw - b.raw);
+    const totalWidth = order.reduce((sum, o) => sum + o.halfW * 2, 0) + gap * (order.length - 1);
+
+    if (totalWidth <= availableWidth) {
+        /* Everything fits: lay cards out left-to-right with real gaps between them,
+           centered in the available corridor — this is the normal desktop-like case. */
+        let cursor = availableMin + (availableWidth - totalWidth) / 2;
+        for (const o of order) {
+            cursor += o.halfW;
+            o.x = cursor;
+            cursor += o.halfW + gap;
+        }
+    } else {
+        /* Not enough room for every card side by side (the common case on a narrow phone
+           with this many cards) — spread their centers evenly across the full corridor
+           instead. Adjacent cards may overlap a little, but every card is guaranteed to
+           stay within the walls, and any residual overlap is only ever between immediate
+           neighbors — a small, bounded overlap the solver settles gently, not the
+           unbounded, multi-body pileup that was launching cards to absurd heights. */
+        const step = availableWidth / order.length;
+        order.forEach((o, k) => { o.x = availableMin + step * (k + 0.5); });
+    }
+
+    const result = new Array(cards.length);
+    items.forEach((o) => { result[o.i] = o.x; });
+    return result;
+}
+
+function Scene({ cards, camBaseX, camBaseZ, floorY, spawnY, isMobile, fov, gravity }: {
+    cards: Card3D[]; camBaseX: number; camBaseZ: number; floorY: number; spawnY: number; isMobile: boolean; fov: number;
+    gravity: [number, number, number];
+}) {
     const { size } = useThree();
     const vFOV = (fov * Math.PI) / 180;
     const visibleHeight = 2 * Math.tan(vFOV / 2) * camBaseZ;
     const visibleWidth = visibleHeight * (size.width / size.height);
     const margin = 0.3;
     const halfWidth = Math.max(1, visibleWidth / 2 - margin);
+    const wallMin = camBaseX - halfWidth;
+    const wallMax = camBaseX + halfWidth;
+    const spawnXs = layoutSpawnX(cards, wallMin, wallMax, camBaseX);
 
     return (
         <>
             <Floor y={floorY} />
-            <Wall x={camBaseX - halfWidth} facing={1} />
-            <Wall x={camBaseX + halfWidth} facing={-1} />
+            <Wall x={wallMin} facing={1} />
+            <Wall x={wallMax} facing={-1} />
+            {cards.map((card, i) => (
+                <FallingCard key={card.label + i} card={card} isMobile={isMobile} spawnX={spawnXs[i]} spawnY={spawnY} gravity={gravity} />
+            ))}
         </>
     );
+}
+
+/* An invisible static box matching the headline/CTA text block's actual screen position —
+   so falling blocks physically collide with it and can't slide behind/through it, treating
+   it as a real obstacle the same way the floor and side walls are. Measured from the DOM
+   (via the `data-hero-textblock` marker in HeroSection.tsx) and converted into world
+   coordinates using the same screen<->world mapping the walls use, then created once as a
+   static physics body — matching how the rest of the scene's static geometry behaves. */
+function TitleCollider({ camBaseX, camBaseY, camBaseZ, fov }: { camBaseX: number; camBaseY: number; camBaseZ: number; fov: number }) {
+    const { size } = useThree();
+    const [box, setBox] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+
+    useEffect(() => {
+        const measure = () => {
+            const el = document.querySelector('[data-hero-textblock]');
+            if (!el) return;
+            const r = el.getBoundingClientRect();
+            if (r.width < 4 || r.height < 4) return;
+            const vFOV = (fov * Math.PI) / 180;
+            const visibleHeight = 2 * Math.tan(vFOV / 2) * camBaseZ;
+            const visibleWidth = visibleHeight * (size.width / size.height);
+            const pad = 0.18;
+            const worldLeft = camBaseX - visibleWidth / 2 + (r.left / size.width) * visibleWidth - pad;
+            const worldRight = camBaseX - visibleWidth / 2 + (r.right / size.width) * visibleWidth + pad;
+            const worldTop = camBaseY + visibleHeight / 2 - (r.top / size.height) * visibleHeight + pad;
+            const worldBottom = camBaseY + visibleHeight / 2 - (r.bottom / size.height) * visibleHeight - pad;
+            const w = Math.max(0.3, worldRight - worldLeft);
+            const h = Math.max(0.3, worldTop - worldBottom);
+            /* Safety net: never let this become big enough to block the whole fall zone —
+               if the measured element covers most of the screen (unexpected layout state),
+               skip creating an obstacle rather than risk trapping every block above it. */
+            if (w > visibleWidth * 0.75 || h > visibleHeight * 0.6) return;
+            setBox({ x: (worldLeft + worldRight) / 2, y: (worldTop + worldBottom) / 2, w, h });
+        };
+        const t = window.setTimeout(measure, 350);
+        window.addEventListener('resize', measure, { passive: true });
+        return () => { window.clearTimeout(t); window.removeEventListener('resize', measure); };
+    }, [size, camBaseX, camBaseY, camBaseZ, fov]);
+
+    if (!box) return null;
+    return <TitleBox {...box} />;
+}
+
+function TitleBox({ x, y, w, h }: { x: number; y: number; w: number; h: number }) {
+    const [ref] = useBox<THREE.Mesh>(() => ({
+        type: 'Static',
+        position: [x, y, 0],
+        args: [w, h, DEPTH * 2],
+        material: { friction: 0.4, restitution: 0.08 },
+    }));
+    return <mesh ref={ref} visible={false} />;
 }
 
 /* Shared hover state so neighboring cards could react (kept minimal: just cosmetic lift) */
@@ -152,18 +263,28 @@ const DRAG_THRESHOLD = 6;
 const dragPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
 
 /* ── A single falling, draggable, navigable 3D block ── */
-function FallingCard({ card, isMobile, spawnY }: { card: Card3D; isMobile: boolean; spawnY: number }) {
+function FallingCard({ card, isMobile, spawnX, spawnY, gravity }: {
+    card: Card3D; isMobile: boolean; spawnX: number; spawnY: number; gravity: [number, number, number];
+}) {
     const navigate = useNavigate();
     /* Cards releasing later also spawn higher up, proportional to their delay — this gives
        real spatial clearance from frame one instead of a timing gap that only becomes a
-       physical gap after it compounds, which is what let overlapping neighbors clip into
-       each other while both were still airborne. */
+       physical gap after it compounds. This matters MORE on the narrow mobile corridor, not
+       less — with less room to spread out in X, cards are more likely to share a footprint,
+       so they need clear Y separation at spawn to avoid two bodies going dynamic while still
+       overlapping (which is what was launching cards to absurd heights). Spawning higher up
+       just costs a bit more fall time, not final pile height. */
     const mySpawnY = spawnY + card.delay * 6;
+    /* Kick strength: the tap-poke should scale down on mobile (a full-strength poke reads as
+       way too violent in the smaller world), but the release kick that spreads blocks out
+       sideways should NOT be scaled down — on mobile it's exactly what stops them dropping
+       almost straight down into a single-file tower instead of settling into a spread pile. */
+    const kickScale = isMobile ? MOBILE_SCALE : 1;
     const [ref, api] = useBox<THREE.Group>(() => ({
         mass: 0,
         type: 'Dynamic',
         args: [card.w, card.h, DEPTH],
-        position: [card.px + card.chaosX * 0.4, mySpawnY, 0],
+        position: [spawnX, mySpawnY, 0],
         rotation: [0, 0, (Math.random() - 0.5) * 0.5],
         angularFactor: [0, 0, 1],
         linearFactor: [1, 1, 0],
@@ -173,7 +294,16 @@ function FallingCard({ card, isMobile, spawnY }: { card: Card3D; isMobile: boole
         allowSleep: true,
     }));
 
-    const posRef = useRef<[number, number, number]>([card.px, mySpawnY, 0]);
+    /* A body that's fallen asleep (at rest, no longer actively simulated — a perf
+       optimization) doesn't automatically wake up just because the world's gravity vector
+       changed direction. Without this, tilting the phone after the pile has already
+       settled would silently do nothing until something else (a drag, a poke) happened to
+       wake a card up first. */
+    useEffect(() => {
+        if (released.current) api.wakeUp();
+    }, [gravity[0], gravity[1]]);
+
+    const posRef = useRef<[number, number, number]>([spawnX, mySpawnY, 0]);
     const velRef = useRef<[number, number, number]>([0, 0, 0]);
     const angVelRef = useRef<[number, number, number]>([0, 0, 0]);
     const rotRef = useRef<[number, number, number]>([0, 0, 0]);
@@ -187,7 +317,7 @@ function FallingCard({ card, isMobile, spawnY }: { card: Card3D; isMobile: boole
     const releasedAt = useRef(0);
     useEffect(() => {
         const t = window.setTimeout(() => {
-            api.velocity.set((Math.random() - 0.5) * 0.5, -0.3, 0);
+            api.velocity.set((Math.random() - 0.5) * (isMobile ? 1.1 : 0.5), -0.3, 0);
             api.angularVelocity.set(0, 0, (Math.random() - 0.5) * 2.5);
             api.mass.set(1);
             released.current = true;
@@ -294,7 +424,7 @@ function FallingCard({ card, isMobile, spawnY }: { card: Card3D; isMobile: boole
                    Delayed past the double-tap window so a following second tap can cancel it —
                    otherwise the poke could nudge the block out from under a real double-click. */
                 g.pokeTimer = window.setTimeout(() => {
-                    api.applyImpulse([(Math.random() - 0.5) * 1.4, 2, 0], posRef.current);
+                    api.applyImpulse([(Math.random() - 0.5) * 1.4 * kickScale, 2 * kickScale, 0], posRef.current);
                 }, DOUBLE_TAP_MS + 30);
             }
         }
@@ -309,6 +439,18 @@ function FallingCard({ card, isMobile, spawnY }: { card: Card3D; isMobile: boole
         ref.current.scale.z += (target - ref.current.scale.z) * 0.15;
 
         if (!released.current || gesture.current.dragging) return;
+
+        /* Safety net: a body that spawns still slightly overlapping a neighbor or wall gets
+           a one-frame correction impulse from the solver — normally tiny, but deep enough
+           interpenetration (more likely in a tight mobile corridor) can resolve into a
+           launch to an absurd position. Capping speed every frame costs nothing visually
+           for the normal case and makes that failure mode structurally impossible. */
+        const speed = Math.hypot(velRef.current[0], velRef.current[1]);
+        const maxSpeed = isMobile ? 10 : 15;
+        if (speed > maxSpeed) {
+            const s = maxSpeed / speed;
+            api.velocity.set(velRef.current[0] * s, velRef.current[1] * s, 0);
+        }
 
         /* Blocks fall and tumble freely at first; once they've had time to land,
            a gentle continuous righting spring biases them back toward upright so
@@ -415,6 +557,40 @@ function FallingCard({ card, isMobile, spawnY }: { card: Card3D; isMobile: boole
     );
 }
 
+/* Real gravity direction follows phone tilt — not just camera parallax. Tilting the phone
+   left/right/up/down redirects gravity that way so the whole pile slides/falls toward the
+   tilt, like a marble-maze. Magnitude stays constant (only direction changes) so it always
+   reads as "gravity", just repointed. Throttled to ~10Hz — tilt itself doesn't change fast
+   enough to need 60fps, and this avoids re-rendering the whole Physics tree every frame. */
+function useTiltGravity(magnitude: number): [number, number, number] {
+    const [gravity, setGravity] = useState<[number, number, number]>([0, -magnitude, 0]);
+    useEffect(() => {
+        let raf = 0;
+        let last = 0;
+        /* Gravity direction as a bounded ROTATION of "straight down", not raw additive
+           components — this guarantees it can never fully cancel or invert regardless of
+           tilt input edge cases (an earlier additive version could hit exactly zero
+           vertical gravity at a legitimate clamped tilt value). Capped well short of 90°
+           so gravity always stays meaningfully downward even at max combined tilt. */
+        const maxTiltRad = (55 * Math.PI) / 180;
+        const tick = (t: number) => {
+            if (t - last > 100) {
+                last = t;
+                const tiltX = Math.max(-1, Math.min(1, input.x));
+                const tiltY = Math.max(-1, Math.min(1, input.y));
+                const angle = Math.max(-1, Math.min(1, tiltX + tiltY * 0.5)) * maxTiltRad;
+                const dx = Math.sin(angle) * magnitude;
+                const dy = -Math.cos(angle) * magnitude;
+                setGravity((prev) => (Math.abs(prev[0] - dx) > 0.04 || Math.abs(prev[1] - dy) > 0.04) ? [dx, dy, 0] : prev);
+            }
+            raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+        return () => cancelAnimationFrame(raf);
+    }, [magnitude]);
+    return gravity;
+}
+
 /* ── Main 3D Canvas ── */
 export function HeroCards3DScene() {
     const isMobile = useIsMobile();
@@ -422,9 +598,10 @@ export function HeroCards3DScene() {
 
     const camBaseX = isMobile ? 0.4 : 1.2;
     const camBaseY = isMobile ? -0.3 : 0;
-    const camBaseZ = isMobile ? 7 : 10;
-    const floorY = isMobile ? -2.7 : -3.5;
-    const spawnY = isMobile ? 5.5 : 7;
+    const camBaseZ = isMobile ? 9 : 10;
+    const floorY = isMobile ? -3.4 : -3.5;
+    const spawnY = isMobile ? 6.5 : 7;
+    const gravity = useTiltGravity(isMobile ? 9 : 11);
 
     return (
         <Canvas
@@ -449,11 +626,12 @@ export function HeroCards3DScene() {
 
             <CameraRig baseX={camBaseX} baseY={camBaseY} baseZ={camBaseZ} />
 
-            <Physics gravity={[0, isMobile ? -9 : -11, 0]} allowSleep iterations={14}>
-                <Bounds camBaseX={camBaseX} camBaseZ={camBaseZ} floorY={floorY} fov={50} />
-                {cards.map((card, i) => (
-                    <FallingCard key={card.label + i} card={card} isMobile={isMobile} spawnY={spawnY} />
-                ))}
+            <Physics gravity={gravity} allowSleep iterations={14}>
+                <Scene cards={cards} camBaseX={camBaseX} camBaseZ={camBaseZ} floorY={floorY} spawnY={spawnY} isMobile={isMobile} fov={50} gravity={gravity} />
+                {/* Desktop only — on mobile the headline becomes a full-width stacked banner
+                    (not a left-side panel), so treating it as an obstacle would block the
+                    entire fall zone with nowhere left to drop through. */}
+                {!isMobile && <TitleCollider camBaseX={camBaseX} camBaseY={camBaseY} camBaseZ={camBaseZ} fov={50} />}
             </Physics>
 
             <ContactShadows position={[0, floorY + 0.02, 0]} opacity={0.45} scale={20} blur={2.4} far={5} frames={1} />
