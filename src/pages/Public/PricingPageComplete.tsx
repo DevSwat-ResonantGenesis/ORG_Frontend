@@ -369,7 +369,7 @@ const PricingPage: React.FC = () => {
           ? `state_physics_${planId}`  // "state_physics_dev", "state_physics_startup"
           : apiType === 'code_visualizer'
           ? `code_visualizer_${planId}`  // "code_visualizer_dev", "code_visualizer_startup"
-          : `hash_sphere_memory_${planId === 'starter' ? 'dev' : planId === 'builder' ? 'startup' : planId}`,  // Map pricing page IDs to backend IDs
+          : `hash_sphere_memory_${planId}`,  // starter|builder|scale|enterprise → pricing.yaml plan ids
           billing_cycle: 'monthly',  // API subscriptions are monthly
           success_url: `${window.location.origin}/api-keys?success=true&api=${apiType}`,
           cancel_url: `${window.location.origin}/pricing?canceled=true`,
