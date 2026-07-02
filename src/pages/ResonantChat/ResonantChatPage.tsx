@@ -376,7 +376,8 @@ const ResonantChatPage: React.FC = () => {
     return true;
   });
   const [agenticSteps, setAgenticSteps] = useState<Array<{ type: string; data: any; timestamp: number }>>([]);
-  const [presentedOptions, setPresentedOptions] = useState<{ title: string; options: Array<{ label: string; value: string; description: string; icon?: string }>; allow_custom?: boolean } | null>(null);
+  const [presentedOptions, setPresentedOptions] = useState<{ title: string; options: Array<{ label: string; value: string; description: string; icon?: string }>; allow_custom?: boolean; kind?: 'buttons' | 'tabs' | 'checkbox' } | null>(null);
+  const [optionSelection, setOptionSelection] = useState<Set<string>>(new Set());
   const [pipelineSteps, setPipelineSteps] = useState<Array<{ step: string; message: string; timestamp: number }>>([]);
   const [temperature, setTemperature] = useState(0.7);
   const [maxTokens, setMaxTokens] = useState(2000);
@@ -757,6 +758,7 @@ const ResonantChatPage: React.FC = () => {
                         title: optData.title || 'Options',
                         options: optData.options,
                         allow_custom: optData.allow_custom,
+                        kind: optData.kind,
                       });
                     }
                   }
@@ -2403,6 +2405,22 @@ const ResonantChatPage: React.FC = () => {
         let doneStats: { loops: number; tokens: number; elapsed: number } | null = null;
         let agenticConvId = currentConversationId || '';
 
+        // Smooth typewriter reveal: content lands in bursty SSE chunks, but we
+        // reveal it at a steady pace so it never falls far behind the actual stream.
+        let revealedLen = 0;
+        let revealRafId: number | null = null;
+        const revealStep = () => {
+          const target = agenticContent;
+          if (revealedLen < target.length) {
+            const backlog = target.length - revealedLen;
+            revealedLen = Math.min(target.length, revealedLen + Math.max(1, Math.ceil(backlog / 6)));
+            setMessages(prev => prev.map(m =>
+              m.id === agenticMsgId ? { ...m, content: target.slice(0, revealedLen) } : m
+            ));
+          }
+          revealRafId = revealedLen < agenticContent.length ? requestAnimationFrame(revealStep) : null;
+        };
+
         // Add streaming placeholder
         setMessages(prev => [...prev, {
           id: agenticMsgId,
@@ -2413,6 +2431,7 @@ const ResonantChatPage: React.FC = () => {
         }]);
         setAgenticSteps([]);
         setPresentedOptions(null);
+        setOptionSelection(new Set());
         let backendAccepted = false;
 
         try {
@@ -2478,16 +2497,14 @@ const ResonantChatPage: React.FC = () => {
                     try {
                       const resultData = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
                       if (resultData?._type === 'present_options' && resultData?.options) {
-                        setPresentedOptions({ title: resultData.title, options: resultData.options, allow_custom: resultData.allow_custom });
+                        setPresentedOptions({ title: resultData.title, options: resultData.options, allow_custom: resultData.allow_custom, kind: resultData.kind });
                       }
                     } catch { /* not present_options */ }
                   }
                   if (resolvedType === 'chunk') {
-                    // Token-by-token streaming — accumulate chunks in real-time
+                    // Token-by-token streaming — accumulate chunks, reveal smoothly via rAF
                     agenticContent += data.content || '';
-                    setMessages(prev => prev.map(m =>
-                      m.id === agenticMsgId ? { ...m, content: agenticContent } : m
-                    ));
+                    if (revealRafId === null) revealRafId = requestAnimationFrame(revealStep);
                   }
                   if (resolvedType === 'response') {
                     // Final response (backward compat + non-streamed responses)
@@ -2518,6 +2535,9 @@ const ResonantChatPage: React.FC = () => {
               }
             }
           }
+
+          // Stream ended — snap straight to the final text instead of trailing the reveal.
+          if (revealRafId !== null) { cancelAnimationFrame(revealRafId); revealRafId = null; }
 
           // Finalize message with tool results
           const toolResults = steps
@@ -2706,6 +2726,7 @@ const ResonantChatPage: React.FC = () => {
                   title: optData.title || 'Options',
                   options: optData.options,
                   allow_custom: optData.allow_custom,
+                  kind: optData.kind,
                 });
               }
             } else if (evt.event === 'done') {
@@ -2748,6 +2769,7 @@ const ResonantChatPage: React.FC = () => {
                     title: optData.title || 'Options',
                     options: optData.options,
                     allow_custom: optData.allow_custom,
+                    kind: optData.kind,
                   });
                 }
               }
@@ -2847,6 +2869,7 @@ const ResonantChatPage: React.FC = () => {
             title: presentOptionsResult.result.title || 'Options',
             options: presentOptionsResult.result.options,
             allow_custom: presentOptionsResult.result.allow_custom,
+            kind: presentOptionsResult.result.kind,
           });
         }
       }
@@ -5086,18 +5109,18 @@ const ResonantChatPage: React.FC = () => {
                             .filter(s => ['thinking', 'tool_call', 'tool_result', 'error'].includes(s.type))
                             .slice(-6)
                             .map((step, i) => {
-                              const base: React.CSSProperties = { padding: '2px 0', fontSize: '12px', fontFamily: "'SF Mono','Fira Code','Consolas', monospace" };
+                              const base: React.CSSProperties = { padding: '2px 0', fontSize: '12px', fontFamily: "'SF Mono','Fira Code','Consolas', monospace", opacity: 0, animation: 'rgTermLineIn 0.25s ease-out forwards' };
                               switch (step.type) {
                                 case 'thinking':
-                                  return <div key={i} style={{ ...base, color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Thinking... <span style={{ opacity: 0.5 }}>(loop {step.data.loop})</span></div>;
+                                  return <div key={i} style={{ ...base, color: '#FFD800', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> thinking… <span style={{ opacity: 0.55 }}>(loop {step.data.loop})</span></div>;
                                 case 'tool_call':
-                                  return <div key={i} style={{ ...base, color: '#93c5fd', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg> <strong>{step.data.tool}</strong>({JSON.stringify(step.data.args || {}).slice(0, 120)})</div>;
+                                  return <div key={i} style={{ ...base, color: '#01A6BC', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg> <span style={{ fontWeight: 600 }}>{step.data.tool}</span>({JSON.stringify(step.data.args || {}).slice(0, 120)})</div>;
                                 case 'tool_result': {
                                   const result = (step.data.result || '').toString().slice(0, 200);
-                                  return <div key={i} style={{ ...base, color: '#6ee7b7', wordBreak: 'break-all', display: 'flex', alignItems: 'flex-start', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0, marginTop: '1px' }}><path d="M20 6L9 17l-5-5"/></svg> <span><strong>{step.data.tool}</strong>: <span style={{ opacity: 0.7 }}>{result}{result.length >= 200 ? '…' : ''}</span></span></div>;
+                                  return <div key={i} style={{ ...base, color: '#71C23E', wordBreak: 'break-all', display: 'flex', alignItems: 'flex-start', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0, marginTop: '1px' }}><path d="M20 6L9 17l-5-5"/></svg> <span><span style={{ fontWeight: 600 }}>{step.data.tool}</span>: <span style={{ opacity: 0.75 }}>{result}{result.length >= 200 ? '…' : ''}</span></span></div>;
                                 }
                                 case 'error':
-                                  return <div key={i} style={{ ...base, color: '#fca5a5', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> {step.data.error}</div>;
+                                  return <div key={i} style={{ ...base, color: '#FAA525', display: 'flex', alignItems: 'center', gap: '6px' }}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> {step.data.error}</div>;
                                 default:
                                   return null;
                               }
@@ -5164,54 +5187,82 @@ const ResonantChatPage: React.FC = () => {
                       )}
                     </div>
                   )}
-                  {/* Interactive Options Cards (from present_options tool) */}
-                  {presentedOptions && !isLoading && (
-                    <div style={{ padding: '12px 16px', maxWidth: '85%' }}>
-                      <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '10px', color: 'var(--text-primary, #e2e8f0)' }}>
-                        {presentedOptions.title}
-                      </div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                        {presentedOptions.options.map((opt, i) => (
-                          <button
-                            key={i}
-                            onClick={() => {
-                              setPresentedOptions(null);
-                              if (opt.url) {
-                                if (opt.url.startsWith('http')) {
-                                  window.open(opt.url, '_blank', 'noopener');
-                                } else {
-                                  navigate(opt.url);
-                                }
-                              } else {
-                                handleSend(opt.value);
-                              }
-                            }}
-                            style={{
-                              display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px',
-                              padding: '12px 16px', borderRadius: '12px', border: '1px solid rgba(99, 102, 241, 0.3)',
-                              background: 'rgba(99, 102, 241, 0.08)', cursor: 'pointer', textAlign: 'left',
-                              minWidth: '140px', maxWidth: '260px', flex: '1 1 auto',
-                              transition: 'all 0.2s ease', color: 'var(--text-primary, #e2e8f0)',
-                            }}
-                            onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(99, 102, 241, 0.18)'; e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.6)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(99, 102, 241, 0.08)'; e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                          >
-                            <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                              {opt.icon ? `${opt.icon} ` : ''}{opt.label}
-                            </span>
-                            {opt.description && (
-                              <span style={{ fontSize: '11px', opacity: 0.65, lineHeight: 1.3 }}>{opt.description}</span>
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                      {presentedOptions.allow_custom !== false && (
-                        <div style={{ fontSize: '11px', opacity: 0.4, marginTop: '8px' }}>
-                          Or type your own response below
+                  {/* Interactive options — architect-driven buttons / tabs / checkbox, clean terminal style */}
+                  {presentedOptions && !isLoading && (() => {
+                    const kind = presentedOptions.kind || 'buttons';
+                    const palette = ['#FFD800', '#01A6BC', '#71C23E', '#FAA525'];
+                    const mono = "'SF Mono','Fira Code','Consolas', monospace";
+                    const isChosen = (opt: { value: string }) => optionSelection.has(opt.value);
+                    const toggle = (opt: { value: string }) => {
+                      setOptionSelection(prev => {
+                        const next = new Set(kind === 'checkbox' ? prev : []);
+                        if (prev.has(opt.value) && kind !== 'checkbox') { return next; }
+                        if (next.has(opt.value)) next.delete(opt.value); else next.add(opt.value);
+                        return next;
+                      });
+                    };
+                    const commit = (opt: { value: string; url?: string }) => {
+                      setPresentedOptions(null);
+                      setOptionSelection(new Set());
+                      if (opt.url) {
+                        if (opt.url.startsWith('http')) window.open(opt.url, '_blank', 'noopener');
+                        else navigate(opt.url);
+                      } else {
+                        handleSend(opt.value);
+                      }
+                    };
+                    const confirmSelection = () => {
+                      const chosen = presentedOptions.options.filter(o => optionSelection.has(o.value));
+                      if (chosen.length === 0) return;
+                      setPresentedOptions(null);
+                      setOptionSelection(new Set());
+                      handleSend(chosen.map(o => o.value).join('; '));
+                    };
+                    return (
+                      <div style={{ padding: '10px 16px', maxWidth: '85%', fontFamily: mono, animation: 'rgTermLineIn 0.2s ease-out' }}>
+                        <div style={{ fontSize: '13px', fontWeight: 600, marginBottom: '8px', color: 'var(--text-primary, #e2e8f0)', opacity: 0.85 }}>
+                          <span style={{ opacity: 0.5 }}>{'>'}</span> {presentedOptions.title}
                         </div>
-                      )}
-                    </div>
-                  )}
+                        <div style={{ display: 'flex', flexDirection: kind === 'buttons' ? 'row' : 'column', flexWrap: 'wrap', gap: kind === 'buttons' ? '4px 18px' : '2px' }}>
+                          {presentedOptions.options.map((opt, i) => {
+                            const color = palette[i % palette.length];
+                            const chosen = isChosen(opt);
+                            const marker = kind === 'checkbox' ? (chosen ? '[x]' : '[ ]') : kind === 'tabs' ? (chosen ? '●' : '○') : `${i + 1}.`;
+                            return (
+                              <button
+                                key={i}
+                                className={styles.rgOptionRow}
+                                onClick={() => (kind === 'buttons' ? commit(opt) : toggle(opt))}
+                                style={{ color, opacity: kind !== 'buttons' && chosen ? 1 : 0.85 }}
+                              >
+                                <span className={styles.rgOptionLabel} style={{ fontWeight: 600, fontSize: '13px' }}>
+                                  {marker} {opt.icon ? `${opt.icon} ` : ''}{opt.label}
+                                </span>
+                                {opt.description && (
+                                  <span style={{ fontSize: '11px', opacity: 0.6, marginLeft: '6px' }}>— {opt.description}</span>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {kind !== 'buttons' && (
+                          <button
+                            className={styles.rgOptionRow}
+                            onClick={confirmSelection}
+                            disabled={optionSelection.size === 0}
+                            style={{ color: '#71C23E', marginTop: '8px', fontWeight: 600, fontSize: '12px', opacity: optionSelection.size === 0 ? 0.35 : 1, cursor: optionSelection.size === 0 ? 'default' : 'pointer' }}
+                          >
+                            Continue →
+                          </button>
+                        )}
+                        {kind === 'buttons' && presentedOptions.allow_custom !== false && (
+                          <div style={{ fontSize: '11px', opacity: 0.4, marginTop: '8px' }}>
+                            Or type your own response below
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                   <div className={styles.messagesBottomSpacer} />
                   <div ref={messagesEndRef} className={styles.messagesEndAnchor} />
                 </div>
