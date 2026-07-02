@@ -263,6 +263,32 @@ interface Message {
   toolResults?: Array<{ tool_name: string; success: boolean; result?: Record<string, any>; error?: string }>; // Agentic skill execution results
 }
 
+// Google's own OAuth service ids support a real one-click popup; everything else
+// (github, slack, and 20+ oauth_integrations.py skills) is a paste-your-key flow —
+// route those to the existing Connect Profiles page instead of faking an OAuth screen.
+const GOOGLE_SERVICE_BY_PROVIDER: Record<string, string> = {
+  gmail_send: 'gmail', gmail_read: 'gmail',
+  google_calendar: 'google-calendar',
+  google_drive: 'google-drive', google_sheets: 'google-drive', google_docs: 'google-drive', create_presentation: 'google-drive',
+};
+async function connectProvider(provider: string) {
+  const googleService = GOOGLE_SERVICE_BY_PROVIDER[provider];
+  if (googleService) {
+    try {
+      const { initiateGoogleServiceConnection } = await import('@/api/sso');
+      const result = await initiateGoogleServiceConnection(googleService);
+      window.open(result.authorization_url, '_blank', 'noopener');
+      return;
+    } catch {
+      // fall through to settings deep-link below
+    }
+  }
+  const settingsId = provider.startsWith('github') || provider.startsWith('git_')
+    ? 'github'
+    : provider.startsWith('slack') ? 'slack' : provider.replace(/_/g, '-');
+  window.open(`/connect-profiles?connect=${settingsId}`, '_blank', 'noopener');
+}
+
 const ResonantChatPage: React.FC = () => {
   useEffect(() => {
     document.body.classList.add('resonant-chat-page');
@@ -4783,6 +4809,21 @@ const ResonantChatPage: React.FC = () => {
                             ))}
                           </div>
                         </details>
+                      )}
+                      {/* Connect-app prompts — shown for any skill that failed because it isn't connected yet */}
+                      {message.role === 'assistant' && message.toolResults?.some(tr => tr.result?.connect) && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', padding: '4px 0', fontFamily: "'SF Mono','Fira Code','Consolas', monospace" }}>
+                          {message.toolResults.filter(tr => tr.result?.connect).map((tr, i) => (
+                            <button
+                              key={i}
+                              className={styles.rgOptionRow}
+                              onClick={() => connectProvider(tr.result!.connect.provider)}
+                              style={{ color: '#01A6BC', fontWeight: 600, fontSize: '12px' }}
+                            >
+                              <span className={styles.rgOptionLabel}>⚡ {tr.result!.connect.label} →</span>
+                            </button>
+                          ))}
+                        </div>
                       )}
                       {/* Generated Images Display */}
                       {message.role === 'assistant' && message.generatedImages && message.generatedImages.length > 0 && (
