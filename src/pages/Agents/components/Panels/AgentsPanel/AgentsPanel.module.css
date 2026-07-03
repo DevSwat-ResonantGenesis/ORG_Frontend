@@ -455,28 +455,30 @@
 /* Agent Grid */
 .agentsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   align-items: start;
-  gap: 16px;
+  gap: 10px;
   padding: 16px;
 }
 
+/* Collapsed by default: a small, quiet chip just big enough to recognize the
+   agent (status + name). Everything else lives in .cardDetails and only
+   appears on hover (desktop) or tap-to-expand (touch/.expanded). */
 .agentCard {
   position: relative;
   display: flex;
   flex-direction: column;
   background: var(--surface-elevated);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
-  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.agentCard:hover {
+.agentCard:hover,
+.agentCard.expanded {
   border-color: var(--border);
   box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
 }
 
 .agentCard.selected {
@@ -496,10 +498,12 @@
   left: 0;
   bottom: 0;
   width: 3px;
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
   background: linear-gradient(180deg, #FAA525, #d97706);
 }
 
-.agentCard.openclawCard:hover {
+.agentCard.openclawCard:hover,
+.agentCard.openclawCard.expanded {
   border-color: rgba(250, 165, 37, 0.6);
   box-shadow: var(--shadow-md);
 }
@@ -509,29 +513,104 @@
   box-shadow: 0 0 0 2px rgba(250, 165, 37, 0.35);
 }
 
-/* Card header */
-.cardHeader {
+/* Collapsed row — the only thing shown until expanded */
+.cardCollapsedRow {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 14px 14px 0;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 10px 10px 12px;
+  min-height: 20px;
+}
+
+.statusDotMini {
+  width: 7px;
+  height: 7px;
+  min-width: 7px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+}
+
+.statusDotMini.active {
+  background: #22c55e;
+  box-shadow: 0 0 5px rgba(34, 197, 94, 0.6);
+}
+
+.statusDotMini.paused {
+  background: #FAA525;
+}
+
+.statusDotMini.failed,
+.statusDotMini.terminated {
+  background: #ef4444;
+}
+
+/* A global typography-enforcement rule (typography-enforcement.css) forces
+   `white-space: normal !important` on every h1-h6/span/div/etc. outside
+   .ide-container. Beat it with a higher-specificity + !important rule of
+   our own, or the name wraps to multiple lines and blows out the collapsed
+   row's height. */
+.agentCard .cardCollapsedRow .cardName {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-primary);
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.expandChevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.expandChevron svg {
+  width: 12px;
+  height: 12px;
+}
+
+.agentCard:hover .expandChevron,
+.agentCard.expanded .expandChevron {
+  transform: rotate(180deg);
+  color: var(--text-secondary);
 }
 
 .cardTopActions {
-  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 4px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
 }
 
+.cardTopActions:has(.pinActive),
+.agentCard:hover .cardTopActions,
+.agentCard.expanded .cardTopActions {
+  opacity: 1;
+}
+
+/* A global rule (responsive-2025.css) enforces a 44px min touch target on
+   every <button>. Reasonable for primary controls, but these are dense
+   secondary buttons inside an already-large tappable row — opt out
+   explicitly rather than let it force the whole toolbar to 44px-per-icon. */
 .pinBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-subtle);
+  border: none;
   background: transparent;
   color: var(--text-tertiary);
   cursor: pointer;
@@ -543,8 +622,6 @@
 }
 
 .pinActive {
-  border-color: rgba(250, 204, 21, 0.35);
-  background: rgba(250, 204, 21, 0.12);
   color: rgba(250, 204, 21, 0.95);
 }
 
@@ -554,50 +631,35 @@
   pointer-events: none;
 }
 
-.agentIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  min-width: 28px;
-  background: rgba(1, 166, 188, 0.12);
-  border-radius: var(--radius-md);
-  color: #01A6BC;
-}
-
-.agentIcon svg {
-  width: 15px;
-  height: 15px;
-}
-
-.agentInfo {
-  flex: 1;
-  min-width: 0;
+/* Expanded detail panel — collapsed to nothing by default. Hover previews it
+   on devices with a real pointer; a tap toggles `.expanded` (via React state)
+   so it also works on touch, where :hover doesn't fire reliably. */
+.cardDetails {
+  max-height: 0;
+  opacity: 0;
   overflow: hidden;
+  padding: 0 12px;
+  transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
 }
 
-.agentInfo h3 {
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.3;
-  font-weight: 600;
-  color: var(--text-primary);
-  white-space: normal;
-  display: -webkit-box;
-  line-clamp: 2;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
+@media (hover: hover) and (pointer: fine) {
+  .agentCard:hover .cardDetails {
+    max-height: 600px;
+    opacity: 1;
+    padding: 0 12px 12px;
+  }
 }
 
-/* Description — clamped to a fixed 2-line box so every card in a grid row
-   is the same height regardless of description length (previously unstyled,
-   which let CSS Grid's row-stretch leave large dead-space gaps in shorter cards) */
+.agentCard.expanded .cardDetails {
+  max-height: 600px;
+  opacity: 1;
+  padding: 0 12px 12px;
+}
+
+/* Description — clamped to 2 lines so an unusually long one doesn't blow out
+   the expanded panel's height */
 .agentSubtitle {
-  margin: 4px 0 0;
+  margin: 2px 0 0;
   font-size: 11px;
   line-height: 1.4;
   color: var(--text-tertiary);
@@ -605,7 +667,6 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: calc(1.4em * 2);
 }
 
 .badgeRow {
@@ -613,7 +674,7 @@
   align-items: center;
   gap: 5px;
   flex-wrap: wrap;
-  margin-top: 6px;
+  margin-top: 2px;
 }
 
 /* Status shown as text, not just a color bar — readable at a glance,
@@ -710,7 +771,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 14px 0;
+  padding: 6px 0 0;
 }
 
 .stat {
@@ -758,7 +819,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 6px 14px 0;
+  padding: 6px 0 0;
   font-size: 9px;
   color: var(--text-tertiary);
 }
@@ -774,24 +835,28 @@
 .cardActions {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 14px 14px;
-  margin-top: auto;
+  gap: 5px;
+  padding: 10px 0 2px;
 }
 
+/* Icon-only everywhere — cards are intentionally narrow now, so a labeled
+   button row for Run/Chat/Details/More would overflow. Tooltips (title=)
+   carry the label instead. */
+/* A global rule (responsive-2025.css) enforces a 44px min touch target on
+   every <button> — opt out explicitly, same reasoning as .pinBtn above. */
 .actionBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  height: 30px;
-  padding: 0 10px;
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   color: var(--text-secondary);
-  font-size: 11px;
-  font-weight: 600;
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   flex-shrink: 0;
@@ -809,16 +874,13 @@
 }
 
 .actionBtn svg {
-  width: 13px;
-  height: 13px;
+  width: 12px !important;
+  height: 12px !important;
+  max-width: none !important;
+  flex-shrink: 0;
 }
 
-.actionBtnIcon {
-  width: 30px;
-  padding: 0;
-}
-
-.actionBtnIcon .actionLabel {
+.actionLabel {
   display: none;
 }
 
@@ -1565,12 +1627,7 @@
 }
 
 /* --- Card Header --- */
-[data-theme='light'] .agentIcon {
-  background: transparent;
-  color: #01A6BC;
-}
-
-[data-theme='light'] .agentInfo h3 {
+[data-theme='light'] .cardName {
   color: #111827;
 }
 
@@ -2347,125 +2404,40 @@
     min-width: 0;
   }
 
+  /* The base design is already a collapsed chip everywhere, so at list
+     density it just needs to stack into rows instead of a multi-column
+     grid — the collapsed/expand-on-hover-or-tap behavior itself doesn't
+     change per breakpoint. */
   .agentsGrid {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 10px;
+    gap: 0;
+    padding: 6px 8px;
   }
 
   .agentCard {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    background: var(--surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    box-shadow: none;
-    min-height: auto;
-    padding: 10px 12px;
-    gap: 4px;
+    border: none;
+    border-bottom: 1px solid var(--border-subtle);
+    border-radius: 0;
   }
 
-  .agentCard:hover {
-    border-color: var(--border);
+  .agentCard:hover,
+  .agentCard.expanded {
     box-shadow: none;
-    transform: none;
+    background: var(--surface-hover);
   }
 
   .agentCard.selected {
-    border-color: rgba(1, 166, 188, 0.4);
     box-shadow: none;
+    background: rgba(1, 166, 188, 0.08);
   }
 
   .agentCard.openclawCard {
-    border-color: rgba(250, 165, 37, 0.3);
     box-shadow: none;
   }
 
-  .cardHeader {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    flex: 0 0 auto;
-    padding: 0;
-    min-width: 0;
-    gap: 8px;
-  }
-
-  .agentIcon {
-    width: 30px;
-    height: 30px;
-    min-width: 30px;
-    border-radius: 8px;
-  }
-
-  .agentIcon svg {
-    width: 15px;
-    height: 15px;
-  }
-
-  .agentInfo {
-    min-width: 0;
-  }
-
-  .agentInfo h3 {
-    font-size: 13px;
-    line-height: 1.3;
-    line-clamp: 1;
-    -webkit-line-clamp: 1;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    margin: 0;
-  }
-
-  /* Description reads as clutter at list density — name + badges is enough to scan */
-  .agentSubtitle {
-    display: none;
-  }
-
-  .badgeRow {
-    margin-top: 3px;
-  }
-
-  .typeBadge {
-    font-size: 8px !important;
-    padding: 1px 5px !important;
-  }
-
-  .cardStats {
-    display: flex;
-    flex: 0 0 auto;
-    padding: 0;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .stat {
-    font-size: 10px;
-  }
-
-  /* Actions stay reachable at list density — just icon-only and compact,
-     never hidden (hiding them here used to make Message/Details/etc.
-     completely unreachable on mobile) */
-  .cardActions {
-    padding: 6px 0 0;
-    margin-top: 0;
-  }
-
-  .actionLabel {
-    display: none;
-  }
-
-  .actionBtn {
-    width: 28px;
-    height: 28px;
-    padding: 0;
-  }
-
-  /* Created date is low-value at list density — drop it to stay compact */
-  .cardTimestamp {
-    display: none;
+  .agentCard.openclawCard::before {
+    border-radius: 0;
   }
 }
 
@@ -2665,7 +2637,9 @@
     overflow-y: auto;
   }
 
-  /* ===== AGENT LIST: COMPACT FLAT LIST ===== */
+  /* ===== AGENT LIST: COMPACT FLAT LIST =====
+     Same reasoning as the narrow-container block above — the collapsed chip
+     is already compact, this just stacks rows edge-to-edge full width. */
   .agentsGrid {
     display: flex;
     flex-direction: column;
@@ -2674,128 +2648,31 @@
   }
 
   .agentCard {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
     background: transparent;
     border: none;
     border-radius: 0;
     border-bottom: 1px solid var(--border-subtle);
     box-shadow: none;
-    min-height: auto;
-    padding: 10px 12px;
-    gap: 4px;
   }
 
-  .agentCard:hover {
-    transform: none;
+  .agentCard:hover,
+  .agentCard.expanded {
     box-shadow: none;
     background: var(--surface-hover);
   }
 
   .agentCard.selected {
     background: rgba(1, 166, 188, 0.08);
-    border-color: transparent;
-    border-bottom-color: rgba(1, 166, 188, 0.2);
     box-shadow: none;
   }
 
   .agentCard.openclawCard {
     background: rgba(250, 165, 37, 0.05);
-    border-color: transparent;
-    border-bottom-color: rgba(250, 165, 37, 0.2);
     box-shadow: none;
   }
 
   .agentCard.openclawCard::before {
     display: none;
-  }
-
-  /* Card header inline */
-  .cardHeader {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    flex: 0 0 auto;
-    padding: 0;
-    min-width: 0;
-    gap: 8px;
-  }
-
-  .agentIcon {
-    width: 30px;
-    height: 30px;
-    min-width: 30px;
-    border-radius: 8px;
-  }
-
-  .agentIcon svg {
-    width: 15px;
-    height: 15px;
-  }
-
-  .agentInfo {
-    min-width: 0;
-  }
-
-  .agentInfo h3 {
-    font-size: 13px;
-    line-height: 1.3;
-    line-clamp: 1;
-    -webkit-line-clamp: 1;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    margin: 0;
-  }
-
-  /* Description reads as clutter at list density — name + badges is enough to scan */
-  .agentSubtitle {
-    display: none;
-  }
-
-  .badgeRow {
-    margin-top: 3px;
-  }
-
-  .typeBadge {
-    font-size: 8px !important;
-    padding: 1px 5px !important;
-  }
-
-  /* Stats compact */
-  .cardStats {
-    display: flex;
-    flex: 0 0 auto;
-    padding: 0;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .stat {
-    font-size: 10px;
-  }
-
-  /* Created date is low-value at list density — drop it to stay compact */
-  .cardTimestamp {
-    display: none;
-  }
-
-  /* Actions stay reachable on mobile — icon-only and compact, but never
-     hidden (previously display:none made Message/Details/Clone/Publish/etc.
-     completely unreachable from a phone) */
-  .cardActions {
-    padding: 6px 0 0;
-    margin-top: 0;
-  }
-
-  .actionLabel {
-    display: none;
-  }
-
-  .actionBtn {
-    width: 28px;
-    height: 28px;
-    padding: 0;
   }
 
   /* ===== OTHER MOBILE FIXES ===== */

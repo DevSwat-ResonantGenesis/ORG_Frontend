@@ -68,6 +68,18 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const [bulkMode, setBulkMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
+  // Cards render collapsed by default (name + status only); expanding reveals
+  // description/stats/actions. Desktop also previews expansion on hover via
+  // CSS alone — this state is what makes a tap/click "stick" it open on touch.
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const toggleExpanded = useCallback((id: string) => {
+    setExpandedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }, []);
+
   // Chat pane state (inline, replaces sessions pane)
   const [chatAgentId, setChatAgentId] = useState<string | null>(null);
   const chatAgent = chatAgentId ? agents.find((a: Agent) => a.id === chatAgentId) || null : null;
@@ -787,48 +799,18 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
               )}
               {filteredAgents.map((agent: Agent) => {
                 const isOpenClaw = agent.agent_source === 'openclaw' || agent.agent_source === 'federated';
+                const isExpanded = expandedIds.has(agent.id);
                 return (
-                <div 
-                  key={agent.id} 
-                  className={`${styles.agentCard} ${selectedAgent?.id === agent.id ? styles.selected : ''} ${isOpenClaw ? styles.openclawCard : ''}`}
-                  onClick={() => selectAgent(agent.id)}
+                <div
+                  key={agent.id}
+                  className={`${styles.agentCard} ${selectedAgent?.id === agent.id ? styles.selected : ''} ${isOpenClaw ? styles.openclawCard : ''} ${isExpanded ? styles.expanded : ''}`}
+                  onClick={() => toggleExpanded(agent.id)}
                 >
-                  {/* Card header with icon and name */}
-                  <div className={styles.cardHeader}>
-                    <div className={styles.agentIcon} style={isOpenClaw ? { background: 'rgba(250, 165, 37, 0.2)', color: '#FAA525' } : undefined}>
-                      {agent.avatar_url ? (
-                        <img src={agent.avatar_url} alt={agent.name} />
-                      ) : (
-                        <Icons.Agents />
-                      )}
-                    </div>
-                    <div className={styles.agentInfo}>
-                      <h3>{agent.name}</h3>
-                      <div className={styles.agentSubtitle}>
-                        {agent.description || 'No description'}
-                      </div>
-                      <div className={styles.badgeRow}>
-                        <span className={`${styles.statusPill} ${styles[agent.status] || ''}`}>{STATUS_LABELS[agent.status] || agent.status}</span>
-                        <span className={styles.typeBadge}>{agent.type}</span>
-                      </div>
-                      {(agent.agent_source === 'openclaw' || agent.agent_source === 'federated') && (
-                        <div className={styles.badgeRow}>
-                          <span className={styles.localMachineBadge}>
-                            <span
-                              className={styles.localMachineDot}
-                              style={{
-                                background: agent.openclaw_config?.connection_status === 'online' ? '#22c55e'
-                                  : agent.openclaw_config?.connection_status === 'degraded' ? '#f59e0b'
-                                  : '#ef4444',
-                                boxShadow: agent.openclaw_config?.connection_status === 'online'
-                                  ? '0 0 4px #22c55e' : 'none',
-                              }}
-                            />
-                            Local Machine
-                          </span>
-                        </div>
-                      )}
-                    </div>
+                  {/* Collapsed row — the only thing shown until the user hovers or
+                      taps to dive deeper. Just enough to recognize the agent. */}
+                  <div className={styles.cardCollapsedRow}>
+                    <span className={`${styles.statusDotMini} ${styles[agent.status] || ''}`} title={STATUS_LABELS[agent.status] || agent.status} />
+                    <h3 className={styles.cardName}>{agent.name}</h3>
 
                     <div className={styles.cardTopActions}>
                       {bulkMode && (
@@ -851,59 +833,92 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         {pinnedSet.has(agent.id) ? <Icons.StarFilled /> : <Icons.Star />}
                       </button>
                     </div>
+
+                    <span className={styles.expandChevron}>
+                      <Icons.ChevronDown />
+                    </span>
                   </div>
 
-                  {/* Stats row */}
-                  <div className={styles.cardStats}>
-                    <div className={styles.stat}>
-                      <Icons.Zap />
-                      <span>{agent.executions}</span>
+                  {/* Everything below is hidden until hover (desktop) or tap-to-expand
+                      (touch) — description, badges, stats, and actions are secondary
+                      detail, not what you need to just recognize the agent. */}
+                  <div className={styles.cardDetails}>
+                    <div className={styles.badgeRow}>
+                      <span className={`${styles.statusPill} ${styles[agent.status] || ''}`}>{STATUS_LABELS[agent.status] || agent.status}</span>
+                      <span className={styles.typeBadge}>{agent.type}</span>
                     </div>
-                    <div className={styles.stat}>
-                      <Icons.DollarSign />
-                      <span>${agent.costToday.toFixed(2)}</span>
-                    </div>
-                    <div className={`${styles.modeBadge} ${agent.mode === 'unbounded' ? styles.unbounded : ''}`}>
-                      {agent.mode === 'governed' ? <Icons.Lock /> : <Icons.Unlock />}
-                      <span>{agent.mode === 'governed' ? 'Governed' : 'Unbounded'}</span>
-                    </div>
-                  </div>
+                    {agent.description && (
+                      <div className={styles.agentSubtitle}>{agent.description}</div>
+                    )}
+                    {(agent.agent_source === 'openclaw' || agent.agent_source === 'federated') && (
+                      <div className={styles.badgeRow}>
+                        <span className={styles.localMachineBadge}>
+                          <span
+                            className={styles.localMachineDot}
+                            style={{
+                              background: agent.openclaw_config?.connection_status === 'online' ? '#22c55e'
+                                : agent.openclaw_config?.connection_status === 'degraded' ? '#f59e0b'
+                                : '#ef4444',
+                              boxShadow: agent.openclaw_config?.connection_status === 'online'
+                                ? '0 0 4px #22c55e' : 'none',
+                            }}
+                          />
+                          Local Machine
+                        </span>
+                      </div>
+                    )}
 
-                  {/* Created timestamp — visibility is driven purely by the CSS module class */}
-                  <div className={styles.cardTimestamp}>
-                    <Icons.Clock />
-                    <span>Created {agent.createdAt ? new Date(agent.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}</span>
-                  </div>
-
-                  {/* OpenClaw hardware info row */}
-                  {agent.agent_source === 'openclaw' && agent.openclaw_config && (
-                    <div style={{
-                      display: 'flex', flexWrap: 'wrap', gap: 4, padding: '4px 8px',
-                      fontSize: 9, color: 'rgba(255,255,255,0.5)', borderTop: '1px solid rgba(255,255,255,0.06)',
-                    }}>
-                      {agent.openclaw_config.hardware?.gpu && (
-                        <span style={{ background: 'rgba(139,92,246,0.15)', padding: '1px 5px', borderRadius: 3, color: '#a78bfa' }}>
-                          GPU: {agent.openclaw_config.hardware.gpu}
-                        </span>
-                      )}
-                      {agent.openclaw_config.hardware?.cpu && (
-                        <span style={{ background: 'rgba(59,130,246,0.15)', padding: '1px 5px', borderRadius: 3, color: '#93c5fd' }}>
-                          {agent.openclaw_config.hardware.cpu}
-                        </span>
-                      )}
-                      {agent.openclaw_config.memory_mode && (
-                        <span style={{ background: 'rgba(34,197,94,0.15)', padding: '1px 5px', borderRadius: 3, color: '#86efac' }}>
-                          Memory: {agent.openclaw_config.memory_mode}
-                        </span>
-                      )}
-                      {agent.openclaw_config.models_available && agent.openclaw_config.models_available.length > 0 && (
-                        <span style={{ background: 'rgba(251,191,36,0.15)', padding: '1px 5px', borderRadius: 3, color: '#fcd34d' }}>
-                          {agent.openclaw_config.models_available[0]}
-                        </span>
-                      )}
+                    {/* Stats row */}
+                    <div className={styles.cardStats}>
+                      <div className={styles.stat}>
+                        <Icons.Zap />
+                        <span>{agent.executions}</span>
+                      </div>
+                      <div className={styles.stat}>
+                        <Icons.DollarSign />
+                        <span>${agent.costToday.toFixed(2)}</span>
+                      </div>
+                      <div className={`${styles.modeBadge} ${agent.mode === 'unbounded' ? styles.unbounded : ''}`}>
+                        {agent.mode === 'governed' ? <Icons.Lock /> : <Icons.Unlock />}
+                        <span>{agent.mode === 'governed' ? 'Governed' : 'Unbounded'}</span>
+                      </div>
                     </div>
-                  )}
-                  
+
+                    {/* Created timestamp — hidden on mobile/compact via the CSS module class */}
+                    <div className={styles.cardTimestamp}>
+                      <Icons.Clock />
+                      <span>Created {agent.createdAt ? new Date(agent.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}</span>
+                    </div>
+
+                    {/* OpenClaw hardware info row */}
+                    {agent.agent_source === 'openclaw' && agent.openclaw_config && (
+                      <div style={{
+                        display: 'flex', flexWrap: 'wrap', gap: 4, padding: '4px 0 0',
+                        fontSize: 9, color: 'rgba(255,255,255,0.5)',
+                      }}>
+                        {agent.openclaw_config.hardware?.gpu && (
+                          <span style={{ background: 'rgba(139,92,246,0.15)', padding: '1px 5px', borderRadius: 3, color: '#a78bfa' }}>
+                            GPU: {agent.openclaw_config.hardware.gpu}
+                          </span>
+                        )}
+                        {agent.openclaw_config.hardware?.cpu && (
+                          <span style={{ background: 'rgba(59,130,246,0.15)', padding: '1px 5px', borderRadius: 3, color: '#93c5fd' }}>
+                            {agent.openclaw_config.hardware.cpu}
+                          </span>
+                        )}
+                        {agent.openclaw_config.memory_mode && (
+                          <span style={{ background: 'rgba(34,197,94,0.15)', padding: '1px 5px', borderRadius: 3, color: '#86efac' }}>
+                            Memory: {agent.openclaw_config.memory_mode}
+                          </span>
+                        )}
+                        {agent.openclaw_config.models_available && agent.openclaw_config.models_available.length > 0 && (
+                          <span style={{ background: 'rgba(251,191,36,0.15)', padding: '1px 5px', borderRadius: 3, color: '#fcd34d' }}>
+                            {agent.openclaw_config.models_available[0]}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
                   {/* Action buttons — Run/Chat/Details always visible (mobile included);
                       everything else lives in the "More" menu so it's reachable everywhere,
                       not just on desktop-with-expanded-card like before. */}
@@ -946,7 +961,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                           <DropdownMenu
                             position="bottom-right"
                             trigger={
-                              <span className={`${styles.actionBtn} ${styles.actionBtnIcon}`} title="More actions">
+                              <span className={styles.actionBtn} title="More actions">
                                 <Icons.ChevronDown />
                               </span>
                             }
@@ -975,6 +990,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         </div>
                       </>
                     )}
+                  </div>
                   </div>
                 </div>
               );
