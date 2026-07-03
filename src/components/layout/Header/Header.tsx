@@ -117,9 +117,13 @@ export const Header: React.FC<HeaderProps> = ({
   const isLoggedIn = isAuthenticated() && !!sessionData;
   
   // Check if we're on Resonant Chat page
-  const isResonantChatPage = location.pathname === '/' || location.pathname === '/resonant-chat' || location.pathname.startsWith('/resonant-chat');
+  const isResonantChatPage = location.pathname === '/' || location.pathname === '/resonant-chat' || location.pathname.startsWith('/resonant-chat') || location.pathname.startsWith('/chat');
 
   const isLandingPage = location.pathname === '/';
+
+  // The Resonant Chat interface itself is only actually rendered at "/" for
+  // logged-in users (HomeGate shows the marketing page to guests) or at "/chat".
+  const isChatInterfaceActive = (location.pathname === '/' && isLoggedIn) || location.pathname.startsWith('/chat');
 
   // Check if we're on Agents page
   const isAgentsPage = location.pathname === '/agents' || location.pathname.startsWith('/agents');
@@ -358,7 +362,7 @@ export const Header: React.FC<HeaderProps> = ({
               alt="DevSwat"
               className={`${styles.logoIcon} ${isMobileViewport ? styles.logoIconHiddenMobile : ''}`}
             />
-            {!(isLandingPage && landingChatActive) && 'DevSwat'}
+            {!isChatInterfaceActive && 'DevSwat'}
           </div>
 
           {/* Main Navigation - Desktop */}

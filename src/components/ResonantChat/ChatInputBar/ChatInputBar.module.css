@@ -113,36 +113,38 @@
   display: none;
 }
 
-/* Toolbar toggle arrow - sits above the input bar, reveals the floating tools row */
+/* Toolbar toggle tag - a standalone round icon button floating clearly
+   ABOVE (not touching) the input bar; clicking it reveals the tools row. */
 .toolbarToggle {
   position: absolute;
-  top: -14px;
+  bottom: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%);
-  width: 32px;
-  height: 14px;
+  width: 30px;
+  height: 30px;
   padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-bottom: none;
-  border-radius: 8px 8px 0 0;
-  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+  background: #1a1a1a;
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 10003;
-  opacity: 0.6;
-  transition: opacity 0.15s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  opacity: 0.85;
+  transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 .toolbarToggle:hover {
   opacity: 1;
+  transform: translateX(-50%) translateY(-2px);
 }
 
 .toolbarToggle svg {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   transform: rotate(180deg);
   transition: transform 0.15s ease;
 }
@@ -152,15 +154,17 @@
 }
 
 [data-theme='light'] .toolbarToggle {
-  background: rgba(0, 0, 0, 0.05);
+  background: #ffffff;
   border-color: rgba(0, 0, 0, 0.12);
   color: #111;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* Floating Tools Row - appears above the input bar instead of inline */
+/* Floating Tools Row - a separate panel that floats above the input bar
+   (stacked above the toggle tag), instead of living inline inside it. */
 .toolsRowFloating {
   position: absolute;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 10px + 30px + 8px);
   left: 0;
   right: 0;
   background: #1a1a1a;
