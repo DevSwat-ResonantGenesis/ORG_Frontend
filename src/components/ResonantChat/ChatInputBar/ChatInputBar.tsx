@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useEffect, useState, useCallback } from 'react';
+import React, { useMemo, useRef, useEffect, useLayoutEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import {
   ArchiveIcon,
@@ -479,6 +479,68 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
       window.removeEventListener('scroll', update, true);
     };
   }, [agentMode, computeAgentPanelStyle]);
+
+  // Toggle tag + tools row live OUTSIDE the input bar's DOM (portaled to
+  // document.body), positioned purely from the input bar's own rect —
+  // they are not nested inside .inputWrapper at all.
+  const TOGGLE_TAG_SIZE = 30;
+  const TOGGLE_TAG_GAP = 0; // tag sits flush against the input bar's top edge
+  const TOOLS_ROW_GAP = 1; // tools row sits 1px above the tag
+
+  const computeToggleTagStyle = useCallback((): React.CSSProperties | null => {
+    if (typeof window === 'undefined') return null;
+    const wrapper = inputWrapperRef.current;
+    if (!wrapper) return null;
+    const rect = wrapper.getBoundingClientRect();
+    return {
+      position: 'fixed',
+      left: rect.left + rect.width / 2,
+      bottom: window.innerHeight - rect.top + TOGGLE_TAG_GAP,
+      transform: 'translateX(-50%)',
+      zIndex: 10003,
+    };
+  }, []);
+
+  const computeToolsRowStyle = useCallback((): React.CSSProperties | null => {
+    if (typeof window === 'undefined') return null;
+    const wrapper = inputWrapperRef.current;
+    if (!wrapper) return null;
+    const rect = wrapper.getBoundingClientRect();
+    return {
+      position: 'fixed',
+      left: rect.left,
+      width: rect.width,
+      bottom: window.innerHeight - rect.top + TOGGLE_TAG_GAP + TOGGLE_TAG_SIZE + TOOLS_ROW_GAP,
+      zIndex: 10002,
+    };
+  }, []);
+
+  const [toggleTagStyle, setToggleTagStyle] = useState<React.CSSProperties | null>(null);
+  const [toolsRowFloatingStyle, setToolsRowFloatingStyle] = useState<React.CSSProperties | null>(null);
+
+  useLayoutEffect(() => {
+    if (embedded) return;
+    const update = () => setToggleTagStyle(computeToggleTagStyle());
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('scroll', update, true);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('scroll', update, true);
+    };
+  }, [embedded, computeToggleTagStyle, sidebarOpen, splitViewEnabled, splitViewWidth]);
+
+  useLayoutEffect(() => {
+    if (embedded || !toolbarOpen) return;
+    const update = () => setToolsRowFloatingStyle(computeToolsRowStyle());
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('scroll', update, true);
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('scroll', update, true);
+    };
+  }, [embedded, toolbarOpen, computeToolsRowStyle]);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -1263,11 +1325,12 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           </div>
         )}
 
-        {/* Toolbar toggle - reveals the tools row floating above the input bar */}
-        {!embedded && (
+        {/* Toolbar toggle - lives outside the input bar (portaled), standing on its own above it */}
+        {!embedded && typeof document !== 'undefined' && createPortal(
           <button
             type="button"
             className={`${styles.toolbarToggle} ${toolbarOpen ? styles.open : ''}`}
+            style={toggleTagStyle || undefined}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -1277,7 +1340,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             aria-expanded={toolbarOpen}
           >
             <ChevronDownIcon />
-          </button>
+          </button>,
+          document.body
         )}
 
         {/* Input Area: Textarea + Send */}
@@ -1325,10 +1389,12 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           </button>
         </div>
 
-        {/* Tools Row - floats above the input bar, revealed by the arrow toggle */}
-        {((embedded && showEmbeddedTools) || (!embedded && toolbarOpen)) && (
+        {/* Tools Row - stands on its own outside the input bar (portaled), revealed by the arrow toggle */}
+        {((embedded && showEmbeddedTools) || (!embedded && toolbarOpen)) && (() => {
+        const toolsRowNode = (
         <div
           className={`${styles.toolsRow} ${embedded ? styles.embeddedToolsRow : styles.toolsRowFloating}`}
+          style={!embedded ? (toolsRowFloatingStyle || undefined) : undefined}
           onMouseEnter={() => {
             if (embedded) setShowEmbeddedTools(true);
           }}
@@ -1724,7 +1790,9 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             )}
           </div>
         </div>
-        )}
+        );
+        return embedded || typeof document === 'undefined' ? toolsRowNode : createPortal(toolsRowNode, document.body);
+        })()}
       </div>
     </div>
   );

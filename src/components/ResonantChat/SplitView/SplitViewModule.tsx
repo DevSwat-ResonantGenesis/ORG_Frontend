@@ -212,12 +212,14 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
     }
   }, [visualizerAnalysisId, actions]);
 
-  // Emit active tab state to header
+  // Emit active tab + open/closed state to header (this component stays
+  // mounted even while closed, so `enabled` must reflect the real prop —
+  // hardcoding true here made the header think split view was always open)
   useEffect(() => {
     window.dispatchEvent(new CustomEvent('rg:split-view-state', {
-      detail: { enabled: true, activeTab: state.activeTab }
+      detail: { enabled, activeTab: state.activeTab }
     }));
-  }, [state.activeTab]);
+  }, [enabled, state.activeTab]);
 
   // Listen for tab changes from header
   useEffect(() => {
