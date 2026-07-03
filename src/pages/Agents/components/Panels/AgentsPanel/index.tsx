@@ -10,6 +10,7 @@ import fastapiClient from '../../../../../api/fastapiClient';
 import { executeAgentTask } from '../../../../../api/executions';
 import * as agentEngine from '../../../../../api/agentEngine';
 import { useToastContext } from '../../../../../context/ToastContext';
+import { DropdownMenu } from '../../../../../components/shared';
 import { SessionsPanel } from '../SessionsPanel';
 import { FactoryPanel } from '../FactoryPanel';
 const ExecutionPanel = lazy(() => import('../ExecutionPanel'));
@@ -37,6 +38,15 @@ interface AgentMessage {
   timestamp: Date;
 }
 
+const STATUS_LABELS: Record<string, string> = {
+  active: 'Active',
+  idle: 'Idle',
+  paused: 'Paused',
+  failed: 'Failed',
+  terminated: 'Terminated',
+  archived: 'Archived',
+};
+
 const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const agents = useAgentStore(selectAgents);
   const selectedAgent = useAgentStore(selectSelectedAgent);
@@ -57,8 +67,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
   const [bulkMode, setBulkMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
-  
+
   // Chat pane state (inline, replaces sessions pane)
   const [chatAgentId, setChatAgentId] = useState<string | null>(null);
   const chatAgent = chatAgentId ? agents.find((a: Agent) => a.id === chatAgentId) || null : null;
@@ -784,9 +793,6 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   className={`${styles.agentCard} ${selectedAgent?.id === agent.id ? styles.selected : ''} ${isOpenClaw ? styles.openclawCard : ''}`}
                   onClick={() => selectAgent(agent.id)}
                 >
-                  {/* Status indicator bar */}
-                  <div className={`${styles.statusBar} ${styles[agent.status]}`} style={isOpenClaw ? { background: 'linear-gradient(90deg, #FAA525, #d97706)' } : undefined} />
-                  
                   {/* Card header with icon and name */}
                   <div className={styles.cardHeader}>
                     <div className={styles.agentIcon} style={isOpenClaw ? { background: 'rgba(250, 165, 37, 0.2)', color: '#FAA525' } : undefined}>
@@ -801,27 +807,27 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                       <div className={styles.agentSubtitle}>
                         {agent.description || 'No description'}
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <div className={styles.badgeRow}>
+                        <span className={`${styles.statusPill} ${styles[agent.status] || ''}`}>{STATUS_LABELS[agent.status] || agent.status}</span>
                         <span className={styles.typeBadge}>{agent.type}</span>
-                        {(agent.agent_source === 'openclaw' || agent.agent_source === 'federated') && (
-                          <span style={{
-                            display: 'inline-flex', alignItems: 'center', gap: 3,
-                            padding: '1px 6px', borderRadius: 4, fontSize: 9, fontWeight: 700,
-                            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                            color: '#121214', letterSpacing: '0.5px', textTransform: 'uppercase',
-                          }}>
-                            <span style={{
-                              width: 6, height: 6, borderRadius: '50%',
-                              background: agent.openclaw_config?.connection_status === 'online' ? '#22c55e'
-                                : agent.openclaw_config?.connection_status === 'degraded' ? '#f59e0b'
-                                : '#ef4444',
-                              boxShadow: agent.openclaw_config?.connection_status === 'online'
-                                ? '0 0 4px #22c55e' : 'none',
-                            }} />
-                            🖥 Local Machine
-                          </span>
-                        )}
                       </div>
+                      {(agent.agent_source === 'openclaw' || agent.agent_source === 'federated') && (
+                        <div className={styles.badgeRow}>
+                          <span className={styles.localMachineBadge}>
+                            <span
+                              className={styles.localMachineDot}
+                              style={{
+                                background: agent.openclaw_config?.connection_status === 'online' ? '#22c55e'
+                                  : agent.openclaw_config?.connection_status === 'degraded' ? '#f59e0b'
+                                  : '#ef4444',
+                                boxShadow: agent.openclaw_config?.connection_status === 'online'
+                                  ? '0 0 4px #22c55e' : 'none',
+                              }}
+                            />
+                            Local Machine
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     <div className={styles.cardTopActions}>
@@ -846,7 +852,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                       </button>
                     </div>
                   </div>
-                  
+
                   {/* Stats row */}
                   <div className={styles.cardStats}>
                     <div className={styles.stat}>
@@ -859,11 +865,12 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                     </div>
                     <div className={`${styles.modeBadge} ${agent.mode === 'unbounded' ? styles.unbounded : ''}`}>
                       {agent.mode === 'governed' ? <Icons.Lock /> : <Icons.Unlock />}
+                      <span>{agent.mode === 'governed' ? 'Governed' : 'Unbounded'}</span>
                     </div>
                   </div>
 
-                  {/* Created timestamp */}
-                  <div className={styles.cardTimestamp} style={{ padding: '2px 8px 0', fontSize: 9, color: 'rgba(255,255,255,0.35)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                  {/* Created timestamp — visibility is driven purely by the CSS module class */}
+                  <div className={styles.cardTimestamp}>
                     <Icons.Clock />
                     <span>Created {agent.createdAt ? new Date(agent.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}</span>
                   </div>
@@ -897,13 +904,14 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                     </div>
                   )}
                   
-                  {/* Action buttons - Run, Message, Detail, Delete */}
+                  {/* Action buttons — Run/Chat/Details always visible (mobile included);
+                      everything else lives in the "More" menu so it's reachable everywhere,
+                      not just on desktop-with-expanded-card like before. */}
                   <div className={styles.cardActions}>
                     {loadingAgentId === agent.id ? (
                       <span className={styles.loadingIndicator}>...</span>
                     ) : (
                       <>
-                        {/* Run/Play button — opens sessions panel for this agent */}
                         <button
                           className={`${styles.actionBtn} ${styles.runBtn}`}
                           disabled={bulkMode}
@@ -911,154 +919,60 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                           title="Run Agent"
                         >
                           <Icons.Play />
+                          <span className={styles.actionLabel}>Run</span>
                         </button>
 
-                        {/* Dropdown button - shows more options */}
                         <button
-                          className={`${styles.actionBtn} ${styles.dropdownBtn} ${expandedCardId === agent.id ? styles.dropdownBtnActive : ''}`}
+                          className={`${styles.actionBtn} ${styles.messageBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); setExpandedCardId(expandedCardId === agent.id ? null : agent.id); }}
-                          title="More Options"
+                          onClick={(e) => { e.stopPropagation(); setChatAgentId(agent.id); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); setMessageInput(''); setError(null); }}
+                          title="Message Agent"
                         >
-                          <Icons.ChevronDown />
+                          <Icons.MessageSquare />
+                          <span className={styles.actionLabel}>Chat</span>
                         </button>
 
-                        {/* Message button — opens inline chat pane (desktop only) */}
-                        {expandedCardId === agent.id && (
-                          <button
-                            className={`${styles.actionBtn} ${styles.messageBtn} ${styles.desktopOnly}`}
-                            disabled={bulkMode}
-                            onClick={(e) => { e.stopPropagation(); setChatAgentId(agent.id); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); setMessageInput(''); setError(null); }}
-                            title="Message Agent"
-                          >
-                            <Icons.MessageSquare />
-                          </button>
-                        )}
-
-                        {/* Detail button — opens inline detail pane (desktop only) */}
-                        {expandedCardId === agent.id && (
-                          <button
-                            className={`${styles.actionBtn} ${styles.detailBtn} ${styles.desktopOnly}`}
-                            disabled={bulkMode}
-                            onClick={(e) => { e.stopPropagation(); setDetailAgentId(agent.id); setChatAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); }}
-                            title="View Details"
-                          >
-                            <Icons.Info />
-                          </button>
-                        )}
-
-                        {/* Execution button (desktop only) */}
-                        {expandedCardId === agent.id && (
-                          <button
-                            className={`${styles.actionBtn} ${styles.detailBtn} ${styles.desktopOnly}`}
+                        <button
+                          className={`${styles.actionBtn} ${styles.detailBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); setInlinePanel({ type: 'execution', agentId: agent.id }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
-                          title="Execution Monitor"
+                          onClick={(e) => { e.stopPropagation(); setDetailAgentId(agent.id); setChatAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); }}
+                          title="View Details"
                         >
-                          <Icons.Execution />
+                          <Icons.Info />
+                          <span className={styles.actionLabel}>Details</span>
                         </button>
-                        )}
 
-                        {/* Utility button (desktop only) */}
-                        {expandedCardId === agent.id && (
-                          <button
-                            className={`${styles.actionBtn} ${styles.detailBtn} ${styles.desktopOnly}`}
-                            disabled={bulkMode}
-                            onClick={(e) => { e.stopPropagation(); setInlinePanel({ type: 'monitor', agentId: agent.id }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
-                            title="Monitor"
-                          >
-                            <Icons.TrendingUp />
-                          </button>
-                        )}
-
-                        {/* Memory button (desktop only) */}
-                        {expandedCardId === agent.id && (
-                          <button
-                            className={`${styles.actionBtn} ${styles.detailBtn} ${styles.desktopOnly}`}
-                            disabled={bulkMode}
-                            onClick={(e) => { e.stopPropagation(); setInlinePanel({ type: 'memory', agentId: agent.id }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
-                            title="Agent Memory"
-                          >
-                            <Icons.Memory />
-                          </button>
-                        )}
-
-                        {/* Clone button */}
-                        {expandedCardId === agent.id && (
-                          <button
-                            className={`${styles.actionBtn} ${styles.detailBtn}`}
-                            disabled={bulkMode}
-                            onClick={(e) => { e.stopPropagation(); handleCloneAgent(agent); }}
-                            title="Clone Agent"
-                          >
-                            <Icons.Copy />
-                          </button>
-                        )}
-
-                        {/* Marketplace publish button */}
-                        {expandedCardId === agent.id && (
-                          <button
-                            className={styles.actionBtn}
-                            disabled={bulkMode || marketplacePublishing[agent.id]}
-                            onClick={(e) => { e.stopPropagation(); handleMarketplacePublish(agent); }}
-                            title={marketplacePublished[agent.id] ? 'Published to Marketplace' : 'Publish to Marketplace'}
-                            style={{
-                              position: 'relative',
-                              ...(marketplacePublished[agent.id] ? { color: '#FAA525', background: 'rgba(250,165,37,0.15)', borderColor: 'rgba(250,165,37,0.4)' } : {}),
-                              ...(marketplacePublishing[agent.id] ? { animation: 'pulse 1s ease-in-out infinite' } : {}),
-                            }}
-                            onMouseEnter={(e) => { if (!marketplacePublished[agent.id]) { e.currentTarget.style.color = '#FAA525'; e.currentTarget.style.background = 'rgba(250,165,37,0.2)'; e.currentTarget.style.borderColor = 'rgba(250,165,37,0.5)'; } }}
-                            onMouseLeave={(e) => { if (!marketplacePublished[agent.id]) { e.currentTarget.style.color = ''; e.currentTarget.style.background = ''; e.currentTarget.style.borderColor = ''; } }}
-                          >
-                            <Icons.Shop />
-                            {marketplacePublished[agent.id] && <span style={{ position: 'absolute', top: 2, right: 2, width: 5, height: 5, borderRadius: '50%', background: '#FAA525' }} />}
-                          </button>
-                        )}
-
-                        {/* Publish to DSID Network button */}
-                        {expandedCardId === agent.id && (
-                          <button
-                            className={`${styles.actionBtn} ${styles.detailBtn}`}
-                            disabled={bulkMode}
-                            onClick={(e) => { e.stopPropagation(); setPublishAgentId(agent.id); setChatAgentId(null); setDetailAgentId(null); setShowFactory(false); setInlinePanel(null); setPublishManifest(prev => ({ ...prev, name: agent.name, description: '', category: agent.type || 'utility', tags: [] })); setPublishResult(null); }}
-                            title="Publish to DSID Network"
-                          >
-                            <Icons.Upload />
-                          </button>
-                        )}
-
-                        {/* Emergency Stop — only visible when agent is active/running */}
-                        {expandedCardId === agent.id && agent.status === 'active' && (
-                          <button
-                            className={`${styles.actionBtn} ${styles.deleteBtn}`}
-                            disabled={bulkMode}
-                            onClick={async (e) => {
-                              e.stopPropagation();
-                              if (!confirm(`Emergency stop "${agent.name}"? This will cancel ALL running sessions and disable all schedules.`)) return;
-                              try {
-                                const { emergencyStopAgent } = await import('../../../../../api/agents');
-                                const result = await emergencyStopAgent(agent.id);
-                                toast.success(`Stopped: ${result.cancelled_sessions} sessions cancelled, ${result.disabled_schedules} schedules disabled`);
-                              } catch (err: any) { toast.error(err?.response?.data?.detail || 'Emergency stop failed'); }
-                            }}
-                            title="Emergency Stop — cancel all sessions & schedules"
-                            style={{ color: '#ef4444' }}
-                          >
-                            <Icons.Stop />
-                          </button>
-                        )}
-
-                        {/* Archive button */}
-                        {expandedCardId === agent.id && (
-                          <button
-                            className={`${styles.actionBtn} ${styles.deleteBtn}`}
-                            disabled={bulkMode}
-                            onClick={(e) => { e.stopPropagation(); handleAgentAction('delete', agent.id); }}
-                            title="Archive"
-                          >
-                            <Icons.Trash />
-                          </button>
-                        )}
+                        <div className={styles.moreBtn} onClick={(e) => e.stopPropagation()}>
+                          <DropdownMenu
+                            position="bottom-right"
+                            trigger={
+                              <span className={`${styles.actionBtn} ${styles.actionBtnIcon}`} title="More actions">
+                                <Icons.ChevronDown />
+                              </span>
+                            }
+                            items={[
+                              { id: 'execution', label: 'Execution Monitor', icon: <Icons.Execution />, disabled: bulkMode, onClick: () => { setInlinePanel({ type: 'execution', agentId: agent.id }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); } },
+                              { id: 'monitor', label: 'Monitor', icon: <Icons.TrendingUp />, disabled: bulkMode, onClick: () => { setInlinePanel({ type: 'monitor', agentId: agent.id }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); } },
+                              { id: 'memory', label: 'Agent Memory', icon: <Icons.Memory />, disabled: bulkMode, onClick: () => { setInlinePanel({ type: 'memory', agentId: agent.id }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); } },
+                              { id: 'clone', label: 'Clone Agent', icon: <Icons.Copy />, disabled: bulkMode, onClick: () => handleCloneAgent(agent) },
+                              { id: 'marketplace', label: marketplacePublished[agent.id] ? 'Published to Marketplace' : 'Publish to Marketplace', icon: <Icons.Shop />, disabled: bulkMode || marketplacePublishing[agent.id], onClick: () => handleMarketplacePublish(agent) },
+                              { id: 'dsid', label: 'Publish to DSID Network', icon: <Icons.Upload />, disabled: bulkMode, onClick: () => { setPublishAgentId(agent.id); setChatAgentId(null); setDetailAgentId(null); setShowFactory(false); setInlinePanel(null); setPublishManifest(prev => ({ ...prev, name: agent.name, description: '', category: agent.type || 'utility', tags: [] })); setPublishResult(null); } },
+                              { id: 'divider-1', label: '', divider: true },
+                              ...(agent.status === 'active' ? [{
+                                id: 'stop', label: 'Emergency Stop', icon: <Icons.Stop />, danger: true, disabled: bulkMode,
+                                onClick: async () => {
+                                  if (!confirm(`Emergency stop "${agent.name}"? This will cancel ALL running sessions and disable all schedules.`)) return;
+                                  try {
+                                    const { emergencyStopAgent } = await import('../../../../../api/agents');
+                                    const result = await emergencyStopAgent(agent.id);
+                                    toast.success(`Stopped: ${result.cancelled_sessions} sessions cancelled, ${result.disabled_schedules} schedules disabled`);
+                                  } catch (err: any) { toast.error(err?.response?.data?.detail || 'Emergency stop failed'); }
+                                },
+                              }] : []),
+                              { id: 'archive', label: 'Archive', icon: <Icons.Trash />, danger: true, disabled: bulkMode, onClick: () => handleAgentAction('delete', agent.id) },
+                            ]}
+                          />
+                        </div>
                       </>
                     )}
                   </div>
