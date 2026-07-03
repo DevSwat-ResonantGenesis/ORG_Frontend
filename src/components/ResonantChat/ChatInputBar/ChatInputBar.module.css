@@ -120,13 +120,14 @@
    ChatInputBar.tsx. */
 .toolbarToggle {
   position: fixed;
-  bottom: 90px;
+  top: 0;
   left: 0;
+  transform: translateY(-100%);
   width: 32px;
   /* Matches the tools row's total height (8px padding + 32px toolButton +
-     8px padding) so both are bottom-anchored to the same line AND the
-     arrow icon lands at the same vertical level as the toolbar's icons,
-     instead of sinking to the bottom of that shared band. */
+     8px padding) so both anchor to the same line AND the arrow icon lands
+     at the same vertical level as the toolbar's icons, instead of sinking
+     to the bottom of that shared band. */
   height: 48px;
   padding: 0;
   border: none;
@@ -140,12 +141,11 @@
   z-index: 10003;
   box-shadow: none;
   opacity: 0.9;
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition: opacity 0.15s ease;
 }
 
 .toolbarToggle:hover {
   opacity: 1;
-  transform: translateY(-2px);
 }
 
 .toolbarToggle svg {
@@ -165,9 +165,10 @@
    ChatInputBar.tsx. */
 .toolsRowFloating {
   position: fixed;
-  bottom: 121px;
+  top: 0;
   left: 0;
   right: 0;
+  transform: translateY(-100%);
   background: transparent;
   border: none;
   padding: 8px;

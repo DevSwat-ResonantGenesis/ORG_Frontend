@@ -503,10 +503,16 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     const rect = wrapper.getBoundingClientRect();
     return {
       position: 'fixed',
-      // Zero padding — pinned exactly to the input bar's top-left corner,
-      // identically on both desktop and mobile.
+      // Anchored via top + translateY(-100%) instead of
+      // `bottom: innerHeight - rect.top` — that math depends on
+      // window.innerHeight, which drifts on mobile as the browser chrome
+      // shows/hides, silently producing a stale offset that can land the
+      // tag well inside the input bar instead of above it. top+transform
+      // reads the bar's own edge directly and shifts up by the tag's own
+      // rendered height, with no viewport-height arithmetic involved.
       left: rect.left,
-      bottom: window.innerHeight - rect.top,
+      top: rect.top,
+      transform: 'translateY(-100%)',
       zIndex: 10003,
     };
   }, []);
@@ -520,9 +526,11 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
       position: 'fixed',
       left: rect.left,
       width: rect.width,
-      // Flush against the input bar (zero gap) — decoupled from the tag's
-      // own offset, since the tag floats independently above/beside it.
-      bottom: window.innerHeight - rect.top + TOOLS_ROW_GAP,
+      // Flush against the input bar (zero gap) — same top+transform
+      // anchoring as the tag, decoupled from its offset since the tag
+      // floats independently above/beside it.
+      top: rect.top - TOOLS_ROW_GAP,
+      transform: 'translateY(-100%)',
       zIndex: 10002,
     };
   }, []);
