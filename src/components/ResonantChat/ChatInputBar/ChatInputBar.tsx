@@ -538,9 +538,20 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     update();
     window.addEventListener('resize', update);
     window.addEventListener('scroll', update, true);
+    // The input bar's own height changes (attachments, multi-line text,
+    // mention/provider popups) don't fire a window resize/scroll event, so
+    // without observing it directly the tag drifts out of sync and appears
+    // to "shift" whenever the bar grows or shrinks.
+    const wrapper = inputWrapperRef.current;
+    let observer: ResizeObserver | undefined;
+    if (wrapper && typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(update);
+      observer.observe(wrapper);
+    }
     return () => {
       window.removeEventListener('resize', update);
       window.removeEventListener('scroll', update, true);
+      observer?.disconnect();
     };
   }, [embedded, computeToggleTagStyle, sidebarOpen, splitViewEnabled, splitViewWidth]);
 
@@ -550,9 +561,16 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     update();
     window.addEventListener('resize', update);
     window.addEventListener('scroll', update, true);
+    const wrapper = inputWrapperRef.current;
+    let observer: ResizeObserver | undefined;
+    if (wrapper && typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(update);
+      observer.observe(wrapper);
+    }
     return () => {
       window.removeEventListener('resize', update);
       window.removeEventListener('scroll', update, true);
+      observer?.disconnect();
     };
   }, [embedded, toolbarOpen, computeToolsRowStyle]);
 
