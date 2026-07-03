@@ -113,27 +113,28 @@
   display: none;
 }
 
-/* Toolbar toggle tag - a standalone round icon button that lives OUTSIDE
-   the input bar's DOM (portaled to document.body) and is positioned purely
-   from the input bar's own rect; position/left/bottom below are fallbacks
-   only, overridden by the inline style computed in ChatInputBar.tsx. */
+/* Toolbar toggle tag - a bare arrow icon (no button/box styling) that
+   lives OUTSIDE the input bar's DOM (portaled to document.body) and is
+   positioned purely from the input bar's own rect; position/left/bottom
+   below are fallbacks only, overridden by the inline style computed in
+   ChatInputBar.tsx. */
 .toolbarToggle {
   position: fixed;
   bottom: 90px;
   left: 0;
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   padding: 0;
-  border: 1px solid rgba(113, 194, 62, 0.5);
-  border-radius: 50%;
-  background: #71C23E;
-  color: #fff;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #71C23E;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 10003;
-  box-shadow: 0 4px 16px rgba(113, 194, 62, 0.35);
+  box-shadow: none;
   opacity: 0.9;
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
@@ -144,21 +145,14 @@
 }
 
 .toolbarToggle svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   transform: rotate(180deg);
   transition: transform 0.15s ease;
 }
 
 .toolbarToggle.open svg {
   transform: rotate(0deg);
-}
-
-[data-theme='light'] .toolbarToggle {
-  background: #71C23E;
-  border-color: rgba(113, 194, 62, 0.5);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(113, 194, 62, 0.25);
 }
 
 /* Floating Tools Row - stands on its own OUTSIDE the input bar's DOM
