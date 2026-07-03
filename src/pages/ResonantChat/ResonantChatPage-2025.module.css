@@ -789,7 +789,7 @@
 }
 
 .markdownHeading {
-  margin: 20px 0 8px 0;
+  margin: 12px 0 6px 0;
   font-weight: 700;
   color: inherit;
   letter-spacing: -0.01em;
@@ -801,16 +801,16 @@
 
 /* H1 */
 .messageContent h1 {
-  font-size: 1.3em;
+  font-size: 1.05em;
   color: inherit;
-  padding-bottom: 6px;
+  padding-bottom: 4px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 /* H2 */
 .messageContent h2 {
-  font-size: 1.15em;
+  font-size: 1em;
   color: inherit;
   padding-left: 0;
   border-left: none;
@@ -818,7 +818,7 @@
 
 /* H3 */
 .messageContent h3 {
-  font-size: 1.05em;
+  font-size: 0.95em;
   color: inherit;
 }
 
