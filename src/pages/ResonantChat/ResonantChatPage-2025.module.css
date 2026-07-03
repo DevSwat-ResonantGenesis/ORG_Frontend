@@ -6,8 +6,8 @@
 :global(html.resonant-chat-page),
 :global(body.resonant-chat-page),
 :global(body.resonant-chat-page #root) {
-  background: #0a0a0c;
-  background-color: #0a0a0c;
+  background: #111111;
+  background-color: #111111;
 }
 :global(html.resonant-chat-page[data-theme='light']),
 :global([data-theme='light'] body.resonant-chat-page),
@@ -21,8 +21,8 @@
   :global(html.resonant-chat-page),
   :global(body.resonant-chat-page),
   :global(body.resonant-chat-page #root) {
-    background: #0a0a0c !important;
-    background-color: #0a0a0c !important;
+    background: #111111 !important;
+    background-color: #111111 !important;
   }
   :global(html.resonant-chat-page[data-theme='light']),
   :global([data-theme='light'] body.resonant-chat-page),
@@ -176,7 +176,7 @@
 
 /* Dark theme */
 [data-theme='dark'] .chatPage {
-  background: #0a0a0c;
+  background: #111111;
   color: #f8fafc;
 }
 
@@ -416,7 +416,7 @@
   line-height: 1.8;
   letter-spacing: 0.01em;
   word-spacing: 0.02em;
-  color: rgba(248, 250, 252, 0.88);
+  color: #E0E0E0;
 }
 
 /* Assistant (output) messages: remove all hover/selected/transition effects */
@@ -548,7 +548,7 @@
   line-height: 1.75;
   letter-spacing: 0.01em;
   word-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.88);
+  color: #F0F0F0;
 }
 
 [data-theme='light'] .messageContent {

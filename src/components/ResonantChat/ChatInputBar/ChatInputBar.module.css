@@ -235,7 +235,7 @@
 }
 
 :global([data-theme='dark'] body.resonant-chat-page) .textarea::placeholder {
-  color: rgba(248, 250, 252, 0.55) !important;
+  color: #808080 !important;
   opacity: 1;
 }
 
