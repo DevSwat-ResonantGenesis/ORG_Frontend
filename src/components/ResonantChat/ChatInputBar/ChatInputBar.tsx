@@ -496,7 +496,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   // they are not nested inside .inputWrapper at all.
   const TOGGLE_TAG_SIZE = 30;
   const TOGGLE_TAG_GAP = 4; // half the tools row's 8px padding
-  const TOOLS_ROW_GAP = 2; // tools row sits closer to the tag/input bar
+  const TOOLS_ROW_GAP = 0; // tools row sits flush against the input bar
 
   const computeToggleTagStyle = useCallback((): React.CSSProperties | null => {
     if (typeof window === 'undefined') return null;
@@ -522,7 +522,9 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
       position: 'fixed',
       left: rect.left,
       width: rect.width,
-      bottom: window.innerHeight - rect.top + TOGGLE_TAG_GAP + TOGGLE_TAG_SIZE + TOOLS_ROW_GAP,
+      // Flush against the input bar (zero gap) — decoupled from the tag's
+      // own offset, since the tag floats independently above/beside it.
+      bottom: window.innerHeight - rect.top + TOOLS_ROW_GAP,
       zIndex: 10002,
     };
   }, []);
