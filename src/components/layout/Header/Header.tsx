@@ -413,13 +413,36 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </div>
 
-            {/* IDE Coding */}
-            <button
-              className={styles.navButton}
-              onClick={() => navigate('/download-ide')}
-            >
-              IDE Coding
-            </button>
+            {/* Downloads Dropdown */}
+            <div className={styles.navItem}>
+              <button
+                className={`${styles.navButton} ${activeDropdown === 'downloads' ? styles.navButtonActive : ''}`}
+                onClick={() => setActiveDropdown(activeDropdown === 'downloads' ? null : 'downloads')}
+              >
+                Downloads
+                <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              {activeDropdown === 'downloads' && (
+                <div className={styles.navDropdown}>
+                  <div className={styles.navDropdownGridOneRow}>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/download-ide'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>DevSwat IDE</span>
+                      <span className={styles.navDropdownItemDesc}>VS Code fork with a built-in AI extension — 71 local tools, agentic chat loop &amp; AST code analysis</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/download-miner'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>DevSwat Miner</span>
+                      <span className={styles.navDropdownItemDesc}>Train AI models on your GPU and earn $RGT tokens in the decentralized training network</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/download-openclaw'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>OpenClaw+</span>
+                      <span className={styles.navDropdownItemDesc}>Run AI agents locally on your hardware — tools execute on your machine, memory never leaves your disk</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Pricing Link */}
             <button 

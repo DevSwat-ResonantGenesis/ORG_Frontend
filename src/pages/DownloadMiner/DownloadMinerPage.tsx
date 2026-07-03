@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useThemeStore } from '@/store/themeStore';
-import styles from './DownloadMinerPage.module.css';
+import styles from '../DownloadShared/DownloadPage.module.css';
 
 const GITHUB_REPO = 'https://github.com/DevSwat-ResonantGenesis/RG_miner_app';
 const GITHUB_DOWNLOAD = 'https://github.com/DevSwat-ResonantGenesis/RG_miner_app/archive/refs/heads/main.zip';
@@ -14,6 +13,44 @@ const SETUP_STEPS = [
   { cmd: 'pip install --upgrade pip', note: 'Upgrade pip (recommended)' },
   { cmd: 'pip install -r requirements.txt', note: 'Install dependencies' },
   { cmd: 'python server.py', note: 'Start the miner (open localhost:3000)' },
+];
+
+const QUICK_START = [
+  { title: 'Clone & Install', desc: 'Clone the repo, create a virtual environment, and install dependencies from requirements.txt.' },
+  { title: 'Login', desc: 'Authenticate with your free dev-swat.com account — the same credentials used across the platform.' },
+  { title: 'Start Mining', desc: 'Run python server.py, open the dashboard at localhost:3000, and start earning $RGT.' },
+];
+
+const FEATURE_ICONS = [
+  <>
+    <rect key="a1" x="4" y="4" width="16" height="16" rx="2" />
+    <rect key="a2" x="9" y="9" width="6" height="6" />
+    <path key="a3" d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2" />
+  </>,
+  <>
+    <polygon key="b1" points="12 2 2 7 12 12 22 7 12 2" />
+    <polyline key="b2" points="2 17 12 22 22 17" />
+    <polyline key="b3" points="2 12 12 17 22 12" />
+  </>,
+  <>
+    <circle key="c1" cx="18" cy="5" r="3" />
+    <circle key="c2" cx="6" cy="12" r="3" />
+    <circle key="c3" cx="18" cy="19" r="3" />
+    <line key="c4" x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+    <line key="c5" x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+  </>,
+  <>
+    <circle key="d1" cx="12" cy="12" r="9" />
+    <path key="d2" d="M12 7v10M9.5 9.5c0-1.5 1-2 2.5-2s2.5.7 2.5 2c0 2.5-5 1.5-5 4 0 1.3 1 2 2.5 2s2.5-.5 2.5-2" />
+  </>,
+  <>
+    <rect key="e1" x="3" y="3" width="18" height="18" rx="2" />
+    <path key="e2" d="M7 15l3-4 3 2 4-6" />
+  </>,
+  <>
+    <path key="f1" d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+    <path key="f2" d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+  </>,
 ];
 
 const FEATURES = [
@@ -137,8 +174,19 @@ const FAQ_ITEMS = [
   },
 ];
 
+const CheckIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
+const GitHubGlyph = ({ size = 20 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+);
+
 const DownloadMinerPage: React.FC = () => {
-  const { theme } = useThemeStore();
   const [copied, setCopied] = useState(false);
   const [copiedOneLiner, setCopiedOneLiner] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -158,15 +206,13 @@ const DownloadMinerPage: React.FC = () => {
   };
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} data-product="miner">
       {/* Hero */}
       <section className={styles.hero}>
         <div className={styles.heroGlow} />
         <div className={styles.heroContent}>
           <div className={styles.heroBadge}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style={{ opacity: 0.8 }}>
-              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
-            </svg>
+            <GitHubGlyph size={16} />
             Open Source on GitHub
           </div>
           <h1 className={styles.heroTitle}>
@@ -178,84 +224,89 @@ const DownloadMinerPage: React.FC = () => {
             Your machine becomes a node in a global pipeline-parallel training swarm.
           </p>
           <div className={styles.heroActions}>
-            <a href={GITHUB_DOWNLOAD} className={styles.downloadButton}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <a href={GITHUB_DOWNLOAD} className={styles.btnPrimary}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
               Download from GitHub
             </a>
-            <a
-              href={GITHUB_REPO}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.downloadButtonOutline}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
-              </svg>
+            <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className={styles.btnSecondary}>
+              <GitHubGlyph size={18} />
               View on GitHub
             </a>
           </div>
-          <div className={styles.heroPlatforms}>
-            Python 3.9+ &bull; PyTorch 2.1+ &bull; CUDA / MPS / CPU &bull; AGPL-3.0 License
+          <div className={styles.heroFacts}>
+            {['Python 3.9+', 'PyTorch 2.1+', 'CUDA / MPS / CPU', 'AGPL-3.0 License'].map((f) => (
+              <span key={f} className={styles.heroFactChip}><span className={styles.heroFactDot} />{f}</span>
+            ))}
           </div>
-          <div style={{ marginTop: 16, width: '100%', maxWidth: 980 }}>
-            <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 8 }}>One-line install (copy/paste in Terminal)</div>
-            <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 10, padding: '10px 12px', overflowX: 'auto', textAlign: 'left' }}>
-              <code style={{ color: '#e6edf3', fontSize: 12, fontFamily: "'JetBrains Mono', 'Fira Code', monospace", whiteSpace: 'pre' }}>{ONE_LINE_INSTALL}</code>
+          <div className={styles.installCard}>
+            <div className={styles.installCardHead}>
+              <span className={styles.installCardLabel}>One-line install</span>
+              <button type="button" onClick={handleCopyOneLiner} className={`${styles.copyChip} ${copiedOneLiner ? styles.copyChipActive : ''}`}>
+                {copiedOneLiner ? 'Copied!' : 'Copy'}
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={handleCopyOneLiner}
-              style={{ marginTop: 8, background: 'none', border: '1px solid #30363d', borderRadius: 6, color: copiedOneLiner ? '#3fb950' : '#8b949e', fontSize: 12, padding: '6px 10px', cursor: 'pointer' }}
-            >
-              {copiedOneLiner ? 'One-line copied!' : 'Copy one-line command'}
-            </button>
+            <div className={styles.installCardBody}>
+              <code>{ONE_LINE_INSTALL}</code>
+            </div>
           </div>
+        </div>
+      </section>
+
+      {/* Quick Start — 3 step overview */}
+      <section className={styles.quickStart}>
+        <div className={styles.quickStartGrid}>
+          {QUICK_START.map((s, i) => (
+            <div key={i} className={styles.quickStartCard}>
+              <div className={styles.quickStartNum}>{i + 1}</div>
+              <div>
+                <h3 className={styles.quickStartTitle}>{s.title}</h3>
+                <p className={styles.quickStartDesc}>{s.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Quick Setup — Two Column */}
       <section className={styles.setupSection}>
         <div className={styles.setupGrid}>
-          {/* Left: Prerequisites */}
           <div>
-            <div style={{ background: 'var(--bg-secondary, #111827)', border: '1px solid var(--border-color, #1f2937)', borderRadius: 12, padding: '20px 24px' }}>
-              <h3 style={{ color: 'var(--text-primary, #e5e7eb)', fontSize: 13, fontWeight: 600, margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.06em', opacity: 0.6 }}>System Requirements</h3>
-              <div style={{ display: 'grid', gap: 8 }}>
+            <div className={styles.reqCard}>
+              <h3 className={styles.reqCardTitle}>System Requirements</h3>
+              <div className={styles.reqList}>
                 {REQUIREMENTS.map((r, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 8, fontSize: 13, color: 'var(--text-secondary, #94a3b8)' }}>
-                    <span style={{ color: 'var(--accent-color, #818cf8)', fontWeight: 600 }}>{r.label}</span>
-                    {r.detail && <span style={{ opacity: 0.7 }}>{r.detail}</span>}
+                  <div key={i} className={styles.reqItem}>
+                    <span className={styles.reqCheck}><CheckIcon /></span>
+                    <span><span className={styles.reqLabel}>{r.label}</span>{r.detail && <> — {r.detail}</>}</span>
                   </div>
                 ))}
               </div>
             </div>
-            {/* Tip */}
-            <div style={{ marginTop: 16, padding: '14px 18px', background: 'var(--bg-secondary, #111827)', border: '1px solid var(--border-color, #1f2937)', borderRadius: 10, fontSize: 13, color: 'var(--text-secondary, #94a3b8)', lineHeight: 1.6 }}>
-              <strong style={{ color: 'var(--text-primary, #e5e7eb)' }}>Tip:</strong> For CUDA support, install PyTorch with:{' '}
-              <code style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>pip install torch --index-url https://download.pytorch.org/whl/cu121</code>
+            <div className={styles.tipCallout}>
+              <strong>Tip:</strong> For CUDA support, install PyTorch with:{' '}
+              <code>pip install torch --index-url https://download.pytorch.org/whl/cu121</code>
             </div>
           </div>
 
-          {/* Right: Terminal */}
-          <div style={{ position: 'relative', background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, overflow: 'hidden' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', borderBottom: '1px solid #21262d', background: '#161b22' }}>
-              <span style={{ fontSize: 12, color: '#8b949e', fontFamily: 'monospace' }}>Terminal</span>
-              <button
-                onClick={handleCopy}
-                style={{ background: 'none', border: '1px solid #30363d', borderRadius: 6, color: copied ? '#3fb950' : '#8b949e', fontSize: 12, padding: '4px 10px', cursor: 'pointer', transition: 'all 0.2s' }}
-              >
-                {copied ? 'Copied!' : 'Copy'}
+          <div className={styles.terminal}>
+            <div className={styles.terminalHead}>
+              <div className={styles.terminalDots}>
+                <span className={styles.terminalDot} /><span className={styles.terminalDot} /><span className={styles.terminalDot} />
+              </div>
+              <span className={styles.terminalLabel}>Terminal</span>
+              <button onClick={handleCopy} className={`${styles.terminalCopyBtn} ${copied ? styles.terminalCopyActive : ''}`}>
+                {copied ? 'Copied!' : 'Copy all'}
               </button>
             </div>
-            <div style={{ padding: '16px 20px', overflowX: 'auto' }}>
+            <div className={styles.terminalBody}>
               {SETUP_STEPS.map((step, i) => (
-                <div key={i} style={{ display: 'flex', gap: 12, marginBottom: i < SETUP_STEPS.length - 1 ? 8 : 0, fontFamily: "'JetBrains Mono', 'Fira Code', monospace", fontSize: 13, lineHeight: 1.6 }}>
-                  <span style={{ color: '#3fb950', userSelect: 'none', flexShrink: 0 }}>$</span>
-                  <span style={{ color: '#e6edf3' }}>{step.cmd}</span>
+                <div key={i} className={styles.terminalLine} style={{ marginBottom: i < SETUP_STEPS.length - 1 ? 8 : 0 }}>
+                  <span className={styles.terminalPrompt}>$</span>
+                  <span className={styles.terminalCmd}>{step.cmd}</span>
                 </div>
               ))}
             </div>
@@ -265,11 +316,14 @@ const DownloadMinerPage: React.FC = () => {
 
       {/* Network Flow */}
       <section className={styles.networkFlow}>
-        <h2 className={styles.sectionTitle}>How the Network Works</h2>
-        <p className={styles.sectionDesc}>
-          Your miner connects to a 3-service mesh: Lighthouse (P2P discovery), Mining (orchestration), and External Blockchain (Raft consensus). 
-          Gradients are recorded on-chain, rewards distributed automatically.
-        </p>
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionKicker}>Under the hood</span>
+          <h2 className={styles.sectionTitle}>How the network works</h2>
+          <p className={styles.sectionDesc}>
+            Your miner connects to a 3-service mesh: Lighthouse (P2P discovery), Mining (orchestration), and External Blockchain (Raft consensus).
+            Gradients are recorded on-chain, rewards distributed automatically.
+          </p>
+        </div>
         <div className={styles.flowGrid}>
           {NETWORK_FLOW.map((item, i) => (
             <div key={i} className={styles.flowCard}>
@@ -283,11 +337,19 @@ const DownloadMinerPage: React.FC = () => {
 
       {/* Features Grid */}
       <section className={styles.features}>
-        <h2 className={styles.sectionTitle}>What's Inside</h2>
-        <p className={styles.sectionDesc}>Built for decentralized training at scale — every component optimized for P2P collaboration.</p>
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionKicker}>What's inside</span>
+          <h2 className={styles.sectionTitle}>Built for decentralized training at scale</h2>
+          <p className={styles.sectionDesc}>Every component optimized for P2P collaboration.</p>
+        </div>
         <div className={styles.featureGrid}>
           {FEATURES.map((f, i) => (
             <div key={i} className={styles.featureCard}>
+              <div className={styles.featureIcon}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  {FEATURE_ICONS[i]}
+                </svg>
+              </div>
               <h3 className={styles.featureTitle}>{f.title}</h3>
               <p className={styles.featureDesc}>{f.desc}</p>
             </div>
@@ -297,38 +359,30 @@ const DownloadMinerPage: React.FC = () => {
 
       {/* FAQ / Transparency */}
       <section className={styles.faq}>
-        <h2 className={styles.sectionTitle}>Transparency & FAQ</h2>
-        <p className={styles.sectionDesc}>
-          We know "train AI + earn crypto" raises eyebrows. Here are honest, code-backed answers to the hardest questions.
-        </p>
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionKicker}>Transparency</span>
+          <h2 className={styles.sectionTitle}>Frequently asked questions</h2>
+          <p className={styles.sectionDesc}>
+            We know "train AI + earn crypto" raises eyebrows. Here are honest, code-backed answers to the hardest questions.
+          </p>
+        </div>
         <div className={styles.faqList}>
           {FAQ_ITEMS.map((item, i) => (
             <div key={i} className={styles.faqItem}>
-              <button
-                className={styles.faqQuestion}
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
-              >
+              <button className={styles.faqQuestion} onClick={() => setOpenFaq(openFaq === i ? null : i)}>
                 <span>
                   <span className={`${styles.faqLabel} ${styles[item.labelClass]}`}>{item.label}</span>
                   {item.question}
                 </span>
                 <svg
                   className={`${styles.faqChevron} ${openFaq === i ? styles.faqChevronOpen : ''}`}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                 >
                   <polyline points="6 9 12 15 18 9" />
                 </svg>
               </button>
               {openFaq === i && (
-                <div
-                  className={styles.faqAnswer}
-                  dangerouslySetInnerHTML={{ __html: item.answer }}
-                />
+                <div className={styles.faqAnswer} dangerouslySetInnerHTML={{ __html: item.answer }} />
               )}
             </div>
           ))}
@@ -338,23 +392,17 @@ const DownloadMinerPage: React.FC = () => {
       {/* CTA */}
       <section className={styles.cta}>
         <div className={styles.ctaContent}>
-          <img
-            src="/devswat/devswat_logo.png"
-            alt="DevSwat"
-            className={styles.ctaLogo}
-          />
+          <img src="/devswat/devswat_logo.png" alt="DevSwat" className={styles.ctaLogo} />
           <h2 className={styles.ctaTitle}>Start Mining Today</h2>
           <p className={styles.ctaDesc}>
             Join the DevSwat decentralized training network. Contribute compute, earn $RGT, help train the next generation of open-source AI.
           </p>
           <div className={styles.ctaActions}>
-            <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className={styles.downloadButton}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
-              </svg>
+            <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className={styles.btnPrimary}>
+              <GitHubGlyph size={18} />
               View Source on GitHub
             </a>
-            <a href={GITHUB_DOWNLOAD} className={styles.downloadButtonOutline}>
+            <a href={GITHUB_DOWNLOAD} className={styles.btnSecondary}>
               Download ZIP (latest from GitHub)
             </a>
           </div>

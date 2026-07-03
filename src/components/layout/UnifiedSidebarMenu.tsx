@@ -198,8 +198,36 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>IDE Coding</span>
+              <span className={styles.usmLabel}>DevSwat IDE</span>
               {location.pathname === '/download-ide' && <span className={styles.usmActiveIndicator} />}
+            </button>
+
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/download-miner' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/download-miner'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <circle cx="8" cy="8" r="6" />
+                  <path d="M8 5V11M5.5 8H10.5" strokeLinecap="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>DevSwat Miner</span>
+              {location.pathname === '/download-miner' && <span className={styles.usmActiveIndicator} />}
+            </button>
+
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/download-openclaw' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/download-openclaw'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M3 3C3 3 4 8 8 8C12 8 13 3 13 3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M3 13C3 13 4 8 8 8C12 8 13 13 13 13" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>OpenClaw+</span>
+              {location.pathname === '/download-openclaw' && <span className={styles.usmActiveIndicator} />}
             </button>
 
             <button

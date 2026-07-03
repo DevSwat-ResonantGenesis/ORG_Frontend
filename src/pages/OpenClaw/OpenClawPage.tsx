@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useThemeStore } from '@/store/themeStore';
-import styles from './OpenClawPage.module.css';
+import styles from '../DownloadShared/DownloadPage.module.css';
 
 const GITHUB_REPO = 'https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw';
 const GITHUB_DOWNLOAD = 'https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw/archive/refs/heads/main.zip';
@@ -17,6 +16,46 @@ const SETUP_STEPS = [
   { cmd: 'curl http://localhost:8000/auth/status', note: 'Verify — should show authenticated: true' },
   { cmd: 'curl -X POST http://localhost:8000/agents/register -H "Content-Type: application/json" -d \'{"name":"my-agent","tools":["web_search","memory_read","memory_write"]}\'', note: 'Register a federated agent on the platform' },
   { cmd: '# Go to dev-swat.com/agents → find your agent → click Run', note: 'Run your agent from the platform UI!' },
+];
+
+const QUICK_START = [
+  { title: 'Clone & Install', desc: 'Clone the repo, create a virtualenv, and pip install the requirements.' },
+  { title: 'Start & Authenticate', desc: 'Launch the connector with uvicorn, then authenticate with your free dev-swat.com account.' },
+  { title: 'Register & Run', desc: 'Register a federated agent and run it live from dev-swat.com/agents.' },
+];
+
+const FEATURE_ICONS = [
+  <>
+    <polyline key="a1" points="4 17 10 11 4 5" />
+    <line key="a2" x1="12" y1="19" x2="20" y2="19" />
+  </>,
+  <>
+    <ellipse key="b1" cx="12" cy="5" rx="9" ry="3" />
+    <path key="b2" d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+    <path key="b3" d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+  </>,
+  <>
+    <path key="c1" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </>,
+  <>
+    <path key="d1" d="M5 12.55a11 11 0 0 1 14.08 0" />
+    <path key="d2" d="M1.42 9a16 16 0 0 1 21.16 0" />
+    <path key="d3" d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+    <line key="d4" x1="12" y1="20" x2="12.01" y2="20" />
+  </>,
+  <polyline key="e1" points="22 12 18 12 15 21 9 3 6 12 2 12" />,
+  <path key="f1" d="M17.5 19H9a7 7 0 1 1 6.71-9h.79a4.5 4.5 0 1 1 0 9z" />,
+  <>
+    <polygon key="g1" points="12 2 2 7 12 12 22 7 12 2" />
+    <polyline key="g2" points="2 17 12 22 22 17" />
+    <polyline key="g3" points="2 12 12 17 22 12" />
+  </>,
+  <>
+    <line key="h1" x1="22" y1="12" x2="2" y2="12" />
+    <path key="h2" d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
+    <line key="h3" x1="6" y1="16" x2="6.01" y2="16" />
+    <line key="h4" x1="10" y1="16" x2="10.01" y2="16" />
+  </>,
 ];
 
 const FEATURES = [
@@ -203,7 +242,7 @@ const TOOL_CATALOG = [
 ];
 
 const REQUIREMENTS = [
-  { label: 'Python 3.9+', detail: '(3.11+ recommended)' },
+  { label: 'Python 3.9+', detail: '3.11+ recommended' },
   { label: 'pip', detail: 'Package manager' },
   { label: 'Free account', detail: 'at dev-swat.com (same login as IDE & Miner)' },
   { label: 'Terminal', detail: '5 minutes to full setup' },
@@ -331,8 +370,19 @@ const FAQ_ITEMS = [
   },
 ];
 
+const CheckIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
+const GitHubGlyph = ({ size = 20 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+);
+
 const OpenClawPage: React.FC = () => {
-  const { theme } = useThemeStore();
   const [copied, setCopied] = useState(false);
   const [copiedOneLiner, setCopiedOneLiner] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -353,15 +403,13 @@ const OpenClawPage: React.FC = () => {
   };
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} data-product="openclaw">
       {/* Hero */}
       <section className={styles.hero}>
         <div className={styles.heroGlow} />
         <div className={styles.heroContent}>
           <div className={styles.heroBadge}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style={{ opacity: 0.8 }}>
-              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
-            </svg>
+            <GitHubGlyph size={16} />
             Open Source on GitHub
           </div>
           <h1 className={styles.heroTitle}>
@@ -373,88 +421,91 @@ const OpenClawPage: React.FC = () => {
             Zero inbound connections. Outbound HTTPS only. Works behind any firewall. Your compute, your data, your control.
           </p>
           <div className={styles.heroActions}>
-            <a href={GITHUB_DOWNLOAD} className={styles.downloadButton}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <a href={GITHUB_DOWNLOAD} className={styles.btnPrimary}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
               Download from GitHub
             </a>
-            <a
-              href={GITHUB_REPO}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.downloadButtonOutline}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
-              </svg>
+            <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className={styles.btnSecondary}>
+              <GitHubGlyph size={18} />
               View on GitHub
             </a>
           </div>
-          <div className={styles.heroPlatforms}>
-            Python 3.9+ &bull; Local-First &bull; SQLite Memory &bull; DuckDuckGo Search &bull; BeautifulSoup &bull; JWT Auth &bull; Zero Inbound Connections
+          <div className={styles.heroFacts}>
+            {['Python 3.9+', 'Local-First', 'SQLite Memory', 'DuckDuckGo Search', 'BeautifulSoup', 'JWT Auth', 'Zero Inbound Connections'].map((f) => (
+              <span key={f} className={styles.heroFactChip}><span className={styles.heroFactDot} />{f}</span>
+            ))}
           </div>
-          <div style={{ marginTop: 16, width: '100%', maxWidth: 980 }}>
-            <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 8 }}>One-line install (copy/paste in Terminal)</div>
-            <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 10, padding: '10px 12px', overflowX: 'auto', textAlign: 'left' }}>
-              <code style={{ color: '#e6edf3', fontSize: 12, fontFamily: "'JetBrains Mono', 'Fira Code', monospace", whiteSpace: 'pre' }}>{ONE_LINE_INSTALL}</code>
+          <div className={styles.installCard}>
+            <div className={styles.installCardHead}>
+              <span className={styles.installCardLabel}>One-line install</span>
+              <button type="button" onClick={handleCopyOneLiner} className={`${styles.copyChip} ${copiedOneLiner ? styles.copyChipActive : ''}`}>
+                {copiedOneLiner ? 'Copied!' : 'Copy'}
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={handleCopyOneLiner}
-              style={{ marginTop: 8, background: 'none', border: '1px solid #30363d', borderRadius: 6, color: copiedOneLiner ? '#3fb950' : '#8b949e', fontSize: 12, padding: '6px 10px', cursor: 'pointer' }}
-            >
-              {copiedOneLiner ? 'One-line copied!' : 'Copy one-line command'}
-            </button>
+            <div className={styles.installCardBody}>
+              <code>{ONE_LINE_INSTALL}</code>
+            </div>
           </div>
+        </div>
+      </section>
+
+      {/* Quick Start — 3 step overview */}
+      <section className={styles.quickStart}>
+        <div className={styles.quickStartGrid}>
+          {QUICK_START.map((s, i) => (
+            <div key={i} className={styles.quickStartCard}>
+              <div className={styles.quickStartNum}>{i + 1}</div>
+              <div>
+                <h3 className={styles.quickStartTitle}>{s.title}</h3>
+                <p className={styles.quickStartDesc}>{s.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Quick Setup — Two Column */}
       <section className={styles.setupSection}>
         <div className={styles.setupGrid}>
-          {/* Left: Prerequisites */}
           <div>
-            <div style={{ background: 'var(--bg-secondary, #111827)', border: '1px solid var(--border-color, #1f2937)', borderRadius: 12, padding: '20px 24px' }}>
-              <h3 style={{ color: 'var(--text-primary, #e5e7eb)', fontSize: 13, fontWeight: 600, margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.06em', opacity: 0.6 }}>Requirements</h3>
-              <div style={{ display: 'grid', gap: 8 }}>
+            <div className={styles.reqCard}>
+              <h3 className={styles.reqCardTitle}>Prerequisites</h3>
+              <div className={styles.reqList}>
                 {REQUIREMENTS.map((r, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 8, fontSize: 13, color: 'var(--text-secondary, #94a3b8)' }}>
-                    <span style={{ color: 'var(--accent-color, #818cf8)', fontWeight: 600 }}>{r.label}</span>
-                    {r.detail && <span style={{ opacity: 0.7 }}>{r.detail}</span>}
+                  <div key={i} className={styles.reqItem}>
+                    <span className={styles.reqCheck}><CheckIcon /></span>
+                    <span><span className={styles.reqLabel}>{r.label}</span>{r.detail && <> — {r.detail}</>}</span>
                   </div>
                 ))}
               </div>
             </div>
-            {/* Tip */}
-            <div style={{ marginTop: 16, padding: '14px 18px', background: 'var(--bg-secondary, #111827)', border: '1px solid var(--border-color, #1f2937)', borderRadius: 10, fontSize: 13, color: 'var(--text-secondary, #94a3b8)', lineHeight: 1.6 }}>
-              <strong style={{ color: 'var(--text-primary, #e5e7eb)' }}>Tip:</strong> Defaults work out of the box — no .env editing needed.
-              After starting the connector, run{' '}
-              <code style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>POST /auth/login</code>{' '}
-              with your{' '}
-              <a href="https://dev-swat.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-color, #818cf8)' }}>dev-swat.com</a>
-              {' '}credentials. JWT is stored securely and auto-refreshes.
+            <div className={styles.tipCallout}>
+              <strong>Tip:</strong> Defaults work out of the box — no .env editing needed.
+              After starting the connector, run <code>POST /auth/login</code> with your{' '}
+              <a href="https://dev-swat.com" target="_blank" rel="noopener noreferrer">dev-swat.com</a> credentials.
+              JWT is stored securely and auto-refreshes.
             </div>
           </div>
 
-          {/* Right: Terminal */}
-          <div style={{ position: 'relative', background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, overflow: 'hidden' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', borderBottom: '1px solid #21262d', background: '#161b22' }}>
-              <span style={{ fontSize: 12, color: '#8b949e', fontFamily: 'monospace' }}>Terminal</span>
-              <button
-                onClick={handleCopy}
-                style={{ background: 'none', border: '1px solid #30363d', borderRadius: 6, color: copied ? '#3fb950' : '#8b949e', fontSize: 12, padding: '4px 10px', cursor: 'pointer', transition: 'all 0.2s' }}
-              >
-                {copied ? 'Copied!' : 'Copy'}
+          <div className={styles.terminal}>
+            <div className={styles.terminalHead}>
+              <div className={styles.terminalDots}>
+                <span className={styles.terminalDot} /><span className={styles.terminalDot} /><span className={styles.terminalDot} />
+              </div>
+              <span className={styles.terminalLabel}>Terminal</span>
+              <button onClick={handleCopy} className={`${styles.terminalCopyBtn} ${copied ? styles.terminalCopyActive : ''}`}>
+                {copied ? 'Copied!' : 'Copy all'}
               </button>
             </div>
-            <div style={{ padding: '16px 20px', overflowX: 'auto' }}>
+            <div className={styles.terminalBody}>
               {SETUP_STEPS.map((step, i) => (
-                <div key={i} style={{ display: 'flex', gap: 12, marginBottom: i < SETUP_STEPS.length - 1 ? 8 : 0, fontFamily: "'JetBrains Mono', 'Fira Code', monospace", fontSize: 13, lineHeight: 1.6 }}>
-                  <span style={{ color: '#3fb950', userSelect: 'none', flexShrink: 0 }}>$</span>
-                  <span style={{ color: '#e6edf3' }}>{step.cmd}</span>
+                <div key={i} className={styles.terminalLine} style={{ marginBottom: i < SETUP_STEPS.length - 1 ? 8 : 0 }}>
+                  <span className={styles.terminalPrompt}>$</span>
+                  <span className={styles.terminalCmd}>{step.cmd}</span>
                 </div>
               ))}
             </div>
@@ -464,12 +515,15 @@ const OpenClawPage: React.FC = () => {
 
       {/* Network Flow */}
       <section className={styles.networkFlow}>
-        <h2 className={styles.sectionTitle}>How It Works</h2>
-        <p className={styles.sectionDesc}>
-          Local-first execution: tools run on YOUR machine, platform only dispatches tasks and displays the final answer.
-          Authenticate once, register as federated, and run your agent from dev-swat.com/agents.
-          Memory stays local. Data never leaves your machine.
-        </p>
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionKicker}>Local-first</span>
+          <h2 className={styles.sectionTitle}>How It Works</h2>
+          <p className={styles.sectionDesc}>
+            Local-first execution: tools run on YOUR machine, platform only dispatches tasks and displays the final answer.
+            Authenticate once, register as federated, and run your agent from dev-swat.com/agents.
+            Memory stays local. Data never leaves your machine.
+          </p>
+        </div>
         <div className={styles.flowGrid}>
           {NETWORK_FLOW.map((item, i) => (
             <div key={i} className={styles.flowCard}>
@@ -483,11 +537,19 @@ const OpenClawPage: React.FC = () => {
 
       {/* Features Grid */}
       <section className={styles.features}>
-        <h2 className={styles.sectionTitle}>What Your Agent Gets</h2>
-        <p className={styles.sectionDesc}>Local-first execution with cloud fallback — your data stays on your machine, server only gets the final answer.</p>
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionKicker}>What's inside</span>
+          <h2 className={styles.sectionTitle}>What Your Agent Gets</h2>
+          <p className={styles.sectionDesc}>Local-first execution with cloud fallback — your data stays on your machine, server only gets the final answer.</p>
+        </div>
         <div className={styles.featureGrid}>
           {FEATURES.map((f, i) => (
             <div key={i} className={styles.featureCard}>
+              <div className={styles.featureIcon}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  {FEATURE_ICONS[i]}
+                </svg>
+              </div>
               <h3 className={styles.featureTitle}>{f.title}</h3>
               <p className={styles.featureDesc}>{f.desc}</p>
             </div>
@@ -497,18 +559,18 @@ const OpenClawPage: React.FC = () => {
 
       {/* Tool Catalog */}
       <section className={styles.toolCatalog}>
-        <h2 className={styles.sectionTitle}>Full Tool Catalog</h2>
-        <p className={styles.sectionDesc}>
-          Every tool your OpenClaw agent can call — {TOOL_CATALOG.reduce((sum, c) => sum + c.count, 0)} tools across {TOOL_CATALOG.length} categories.
-          Click a category to see every tool with its description.
-        </p>
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionKicker}>Full catalog</span>
+          <h2 className={styles.sectionTitle}>Full Tool Catalog</h2>
+          <p className={styles.sectionDesc}>
+            Every tool your OpenClaw agent can call — {TOOL_CATALOG.reduce((sum, c) => sum + c.count, 0)} tools across {TOOL_CATALOG.length} categories.
+            Click a category to see every tool with its description.
+          </p>
+        </div>
         <div className={styles.catalogGrid}>
           {TOOL_CATALOG.map((cat, i) => (
             <div key={i} className={styles.catalogCategory}>
-              <button
-                className={styles.catalogHeader}
-                onClick={() => setOpenCat(openCat === i ? null : i)}
-              >
+              <button className={styles.catalogHeader} onClick={() => setOpenCat(openCat === i ? null : i)}>
                 <span className={styles.catalogCategoryName}>
                   {cat.category}
                   <span className={styles.catalogCount}>{cat.count}</span>
@@ -537,38 +599,30 @@ const OpenClawPage: React.FC = () => {
 
       {/* FAQ / Transparency */}
       <section className={styles.faq}>
-        <h2 className={styles.sectionTitle}>Transparency & FAQ</h2>
-        <p className={styles.sectionDesc}>
-          Connecting your agent to an external platform is a trust decision. Here are honest, code-backed answers.
-        </p>
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionKicker}>Transparency</span>
+          <h2 className={styles.sectionTitle}>Frequently asked questions</h2>
+          <p className={styles.sectionDesc}>
+            Connecting your agent to an external platform is a trust decision. Here are honest, code-backed answers.
+          </p>
+        </div>
         <div className={styles.faqList}>
           {FAQ_ITEMS.map((item, i) => (
             <div key={i} className={styles.faqItem}>
-              <button
-                className={styles.faqQuestion}
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
-              >
+              <button className={styles.faqQuestion} onClick={() => setOpenFaq(openFaq === i ? null : i)}>
                 <span>
                   <span className={`${styles.faqLabel} ${styles[item.labelClass]}`}>{item.label}</span>
                   {item.question}
                 </span>
                 <svg
                   className={`${styles.faqChevron} ${openFaq === i ? styles.faqChevronOpen : ''}`}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                 >
                   <polyline points="6 9 12 15 18 9" />
                 </svg>
               </button>
               {openFaq === i && (
-                <div
-                  className={styles.faqAnswer}
-                  dangerouslySetInnerHTML={{ __html: item.answer }}
-                />
+                <div className={styles.faqAnswer} dangerouslySetInnerHTML={{ __html: item.answer }} />
               )}
             </div>
           ))}
@@ -578,24 +632,18 @@ const OpenClawPage: React.FC = () => {
       {/* CTA */}
       <section className={styles.cta}>
         <div className={styles.ctaContent}>
-          <img
-            src="/devswat/devswat_logo.png"
-            alt="DevSwat"
-            className={styles.ctaLogo}
-          />
+          <img src="/devswat/devswat_logo.png" alt="DevSwat" className={styles.ctaLogo} />
           <h2 className={styles.ctaTitle}>Connect Your Agent Today</h2>
           <p className={styles.ctaDesc}>
             Run AI agents on YOUR hardware. Tools execute locally. Memory stays on YOUR disk.
             Server only gets the final answer. Open source. 5-minute setup. Unplug any time.
           </p>
           <div className={styles.ctaActions}>
-            <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className={styles.downloadButton}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
-              </svg>
+            <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className={styles.btnPrimary}>
+              <GitHubGlyph size={18} />
               View Source on GitHub
             </a>
-            <a href={GITHUB_DOWNLOAD} className={styles.downloadButtonOutline}>
+            <a href={GITHUB_DOWNLOAD} className={styles.btnSecondary}>
               Download ZIP (latest from GitHub)
             </a>
           </div>

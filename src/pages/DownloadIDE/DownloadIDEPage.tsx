@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useThemeStore } from '@/store/themeStore';
-import styles from './DownloadIDEPage.module.css';
+import styles from '../DownloadShared/DownloadPage.module.css';
 
 const GITHUB_REPO = 'https://github.com/DevSwat-ResonantGenesis/RG_IDE';
 const GITHUB_DOWNLOAD = 'https://github.com/DevSwat-ResonantGenesis/RG_IDE/archive/refs/heads/main.zip';
@@ -15,6 +14,38 @@ const SETUP_STEPS = [
   { cmd: 'cd extensions/resonant-ai && npm install && npx tsc -p tsconfig.json && cd ../..', note: 'Build the AI extension' },
   { cmd: 'npm run compile', note: 'Compile the IDE (~2 min)' },
   { cmd: './scripts/code.sh', note: 'Launch DevSwat IDE (creates DevSwat IDE.app on first run)' },
+];
+
+const QUICK_START = [
+  { title: 'Clone & Install', desc: 'Grab the repo, install the right Node version, and run npm install.' },
+  { title: 'Build the AI Extension', desc: 'Compile the resonant-ai extension, then compile the IDE itself.' },
+  { title: 'Launch & Sign In', desc: 'Run ./scripts/code.sh and log in with your free dev-swat.com account.' },
+];
+
+const FEATURE_ICONS = [
+  <path key="a" d="M4 17l6-6-6-6M12 19h8" />,
+  <>
+    <rect key="b1" x="3" y="4" width="18" height="14" rx="2" />
+    <path key="b2" d="M7 20h10M9 4v0M12 12h.01" />
+  </>,
+  <>
+    <path key="c1" d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+    <path key="c2" d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+  </>,
+  <>
+    <path key="d1" d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.54" />
+    <path key="d2" d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.54" />
+  </>,
+  <>
+    <circle key="e1" cx="12" cy="12" r="8" />
+    <circle key="e2" cx="12" cy="12" r="2" />
+    <path key="e3" d="M12 4v2M20 12h-2M12 20v-2M4 12h2" />
+  </>,
+  <>
+    <rect key="f1" x="3" y="11" width="18" height="10" rx="2" />
+    <circle key="f2" cx="12" cy="5" r="2" />
+    <path key="f3" d="M12 7v4" />
+  </>,
 ];
 
 const FEATURES = [
@@ -308,15 +339,26 @@ const IDE_FAQ_ITEMS = [
 ];
 
 const REQUIREMENTS = [
-  { label: 'Node.js 22.x', detail: '(22.22.0 recommended — do NOT use Node 23+ or 25+)' },
+  { label: 'Node.js 22.x', detail: '22.22.0 recommended — do NOT use Node 23+ or 25+' },
   { label: 'npm 10.x+', detail: '' },
-  { label: 'Python 3.10+', detail: '(for native modules & SAST analysis)' },
-  { label: 'Xcode CLI Tools', detail: '(macOS) or build-essential (Linux)' },
-  { label: 'Free account', detail: 'at dev-swat.com (required for AI features)' },
+  { label: 'Python 3.10+', detail: 'for native modules & SAST analysis' },
+  { label: 'Xcode CLI Tools', detail: 'macOS, or build-essential on Linux' },
+  { label: 'Free account', detail: 'at dev-swat.com — required for AI features' },
 ];
 
+const CheckIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
+const GitHubGlyph = ({ size = 20 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+);
+
 const DownloadIDEPage: React.FC = () => {
-  const { theme } = useThemeStore();
   const [copied, setCopied] = useState(false);
   const [copiedOneLiner, setCopiedOneLiner] = useState(false);
   const [openCat, setOpenCat] = useState<number | null>(null);
@@ -337,15 +379,13 @@ const DownloadIDEPage: React.FC = () => {
   };
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} data-product="ide">
       {/* Hero */}
       <section className={styles.hero}>
         <div className={styles.heroGlow} />
         <div className={styles.heroContent}>
           <div className={styles.heroBadge}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style={{ opacity: 0.8 }}>
-              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
-            </svg>
+            <GitHubGlyph size={16} />
             Open Source on GitHub
           </div>
           <h1 className={styles.heroTitle}>
@@ -354,89 +394,91 @@ const DownloadIDEPage: React.FC = () => {
           <p className={styles.heroSubtitle}>
             Fork of VS Code Open Source with a built-in AI extension — 71 local tools across 13 categories,
             agentic chat loop, AST code analysis engine, interactive terminals, and cross-session memory.
-            All tools execute locally on your machine. Server provides LLM routing and memory sync only.
+            All tools execute locally. Server provides LLM routing and memory sync only.
           </p>
           <div className={styles.heroActions}>
-            <a href={GITHUB_DOWNLOAD} className={styles.downloadButton}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <a href={GITHUB_DOWNLOAD} className={styles.btnPrimary}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />
               </svg>
               Download Source Code
             </a>
-            <a
-              href={GITHUB_REPO}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.downloadButtonOutline}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
-              </svg>
+            <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className={styles.btnSecondary}>
+              <GitHubGlyph size={18} />
               View on GitHub
             </a>
           </div>
-          <div className={styles.heroPlatforms}>
-            Build from source &bull; Node.js 22 required &bull; macOS, Windows, Linux supported
+          <div className={styles.heroFacts}>
+            {['Build from source', 'Node.js 22 required', 'macOS · Windows · Linux'].map((f) => (
+              <span key={f} className={styles.heroFactChip}><span className={styles.heroFactDot} />{f}</span>
+            ))}
           </div>
-          <div style={{ marginTop: 16, width: '100%', maxWidth: 980 }}>
-            <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 8 }}>One-line install (copy/paste in Terminal)</div>
-            <div style={{ background: '#0d1117', border: '1px solid #21262d', borderRadius: 10, padding: '10px 12px', overflowX: 'auto', textAlign: 'left' }}>
-              <code style={{ color: '#e6edf3', fontSize: 12, fontFamily: "'JetBrains Mono', 'Fira Code', monospace", whiteSpace: 'pre' }}>{ONE_LINE_INSTALL}</code>
+          <div className={styles.installCard}>
+            <div className={styles.installCardHead}>
+              <span className={styles.installCardLabel}>One-line install</span>
+              <button type="button" onClick={handleCopyOneLiner} className={`${styles.copyChip} ${copiedOneLiner ? styles.copyChipActive : ''}`}>
+                {copiedOneLiner ? 'Copied!' : 'Copy'}
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={handleCopyOneLiner}
-              style={{ marginTop: 8, background: 'none', border: '1px solid #30363d', borderRadius: 6, color: copiedOneLiner ? '#3fb950' : '#8b949e', fontSize: 12, padding: '6px 10px', cursor: 'pointer' }}
-            >
-              {copiedOneLiner ? 'One-line copied!' : 'Copy one-line command'}
-            </button>
+            <div className={styles.installCardBody}>
+              <code>{ONE_LINE_INSTALL}</code>
+            </div>
           </div>
+        </div>
+      </section>
+
+      {/* Quick Start — 3 step overview */}
+      <section className={styles.quickStart}>
+        <div className={styles.quickStartGrid}>
+          {QUICK_START.map((s, i) => (
+            <div key={i} className={styles.quickStartCard}>
+              <div className={styles.quickStartNum}>{i + 1}</div>
+              <div>
+                <h3 className={styles.quickStartTitle}>{s.title}</h3>
+                <p className={styles.quickStartDesc}>{s.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Quick Setup — Two Column */}
       <section className={styles.setupSection}>
         <div className={styles.setupGrid}>
-          {/* Left: Prerequisites */}
           <div>
-            <div style={{ background: 'var(--bg-secondary, #111827)', border: '1px solid var(--border-color, #1f2937)', borderRadius: 12, padding: '20px 24px' }}>
-              <h3 style={{ color: 'var(--text-primary, #e5e7eb)', fontSize: 13, fontWeight: 600, margin: '0 0 14px', textTransform: 'uppercase', letterSpacing: '0.06em', opacity: 0.6 }}>Prerequisites</h3>
-              <div style={{ display: 'grid', gap: 8 }}>
+            <div className={styles.reqCard}>
+              <h3 className={styles.reqCardTitle}>Prerequisites</h3>
+              <div className={styles.reqList}>
                 {REQUIREMENTS.map((r, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 8, fontSize: 13, color: 'var(--text-secondary, #94a3b8)' }}>
-                    <span style={{ color: 'var(--accent-color, #818cf8)', fontWeight: 600 }}>{r.label}</span>
-                    {r.detail && <span style={{ opacity: 0.7 }}>{r.detail}</span>}
+                  <div key={i} className={styles.reqItem}>
+                    <span className={styles.reqCheck}><CheckIcon /></span>
+                    <span><span className={styles.reqLabel}>{r.label}</span>{r.detail && <> — {r.detail}</>}</span>
                   </div>
                 ))}
               </div>
             </div>
-            {/* Tip */}
-            <div style={{ marginTop: 16, padding: '14px 18px', background: 'var(--bg-secondary, #111827)', border: '1px solid var(--border-color, #1f2937)', borderRadius: 10, fontSize: 13, color: 'var(--text-secondary, #94a3b8)', lineHeight: 1.6 }}>
-              <strong style={{ color: 'var(--text-primary, #e5e7eb)' }}>Tip:</strong> If you have Node 25+, use{' '}
-              <code style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>brew install node@22</code>{' '}
-              and prefix with{' '}
-              <code style={{ background: 'rgba(255,255,255,0.08)', padding: '2px 6px', borderRadius: 4, fontSize: 12 }}>PATH="/opt/homebrew/opt/node@22/bin:$PATH"</code>
+            <div className={styles.tipCallout}>
+              <strong>Tip:</strong> If you have Node 25+, use <code>brew install node@22</code> and prefix with <code>PATH="/opt/homebrew/opt/node@22/bin:$PATH"</code>
             </div>
           </div>
 
-          {/* Right: Terminal */}
-          <div style={{ position: 'relative', background: '#0d1117', border: '1px solid #21262d', borderRadius: 12, overflow: 'hidden' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', borderBottom: '1px solid #21262d', background: '#161b22' }}>
-              <span style={{ fontSize: 12, color: '#8b949e', fontFamily: 'monospace' }}>Terminal</span>
-              <button
-                onClick={handleCopy}
-                style={{ background: 'none', border: '1px solid #30363d', borderRadius: 6, color: copied ? '#3fb950' : '#8b949e', fontSize: 12, padding: '4px 10px', cursor: 'pointer', transition: 'all 0.2s' }}
-              >
-                {copied ? 'Copied!' : 'Copy'}
+          <div className={styles.terminal}>
+            <div className={styles.terminalHead}>
+              <div className={styles.terminalDots}>
+                <span className={styles.terminalDot} /><span className={styles.terminalDot} /><span className={styles.terminalDot} />
+              </div>
+              <span className={styles.terminalLabel}>Terminal</span>
+              <button onClick={handleCopy} className={`${styles.terminalCopyBtn} ${copied ? styles.terminalCopyActive : ''}`}>
+                {copied ? 'Copied!' : 'Copy all'}
               </button>
             </div>
-            <div style={{ padding: '16px 20px', overflowX: 'auto' }}>
+            <div className={styles.terminalBody}>
               {SETUP_STEPS.map((step, i) => (
-                <div key={i} style={{ display: 'flex', gap: 12, marginBottom: i < SETUP_STEPS.length - 1 ? 8 : 0, fontFamily: "'JetBrains Mono', 'Fira Code', monospace", fontSize: 13, lineHeight: 1.6 }}>
-                  <span style={{ color: '#3fb950', userSelect: 'none', flexShrink: 0 }}>$</span>
-                  <span style={{ color: '#e6edf3' }}>{step.cmd}</span>
+                <div key={i} className={styles.terminalLine} style={{ marginBottom: i < SETUP_STEPS.length - 1 ? 8 : 0 }}>
+                  <span className={styles.terminalPrompt}>$</span>
+                  <span className={styles.terminalCmd}>{step.cmd}</span>
                 </div>
               ))}
             </div>
@@ -446,10 +488,13 @@ const DownloadIDEPage: React.FC = () => {
 
       {/* Screenshots */}
       <section className={styles.screenshots}>
-        <h2 className={styles.sectionTitle}>See It in Action</h2>
-        <p className={styles.sectionDesc}>
-          A professional code editor with an AI assistant that reads, analyzes, and modifies your code.
-        </p>
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionKicker}>See it in action</span>
+          <h2 className={styles.sectionTitle}>A code editor with a real AI teammate</h2>
+          <p className={styles.sectionDesc}>
+            A professional code editor with an AI assistant that reads, analyzes, and modifies your code.
+          </p>
+        </div>
         <div className={styles.screenshotGrid}>
           <div className={styles.screenshotCard}>
             <div className={styles.screenshotImageWrap}>
@@ -474,11 +519,19 @@ const DownloadIDEPage: React.FC = () => {
 
       {/* Features Grid */}
       <section className={styles.features}>
-        <h2 className={styles.sectionTitle}>What's Inside</h2>
-        <p className={styles.sectionDesc}>Built-in extension with 71 tools across 13 categories — every tool runs locally on your machine.</p>
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionKicker}>What's inside</span>
+          <h2 className={styles.sectionTitle}>71 tools, 13 categories, zero telemetry</h2>
+          <p className={styles.sectionDesc}>Built-in extension — every tool runs locally on your machine.</p>
+        </div>
         <div className={styles.featureGrid}>
           {FEATURES.map((f, i) => (
             <div key={i} className={styles.featureCard}>
+              <div className={styles.featureIcon}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  {FEATURE_ICONS[i]}
+                </svg>
+              </div>
               <h3 className={styles.featureTitle}>{f.title}</h3>
               <p className={styles.featureDesc}>{f.desc}</p>
             </div>
@@ -488,18 +541,18 @@ const DownloadIDEPage: React.FC = () => {
 
       {/* Tool Catalog */}
       <section className={styles.toolCatalog}>
-        <h2 className={styles.sectionTitle}>Full Tool Catalog</h2>
-        <p className={styles.sectionDesc}>
-          Every tool the AI assistant can use — {IDE_TOOL_CATALOG.reduce((sum, c) => sum + c.count, 0)} tools across {IDE_TOOL_CATALOG.length} categories.
-          Click a category to see every tool with its description.
-        </p>
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionKicker}>Full catalog</span>
+          <h2 className={styles.sectionTitle}>Every tool the AI can call</h2>
+          <p className={styles.sectionDesc}>
+            {IDE_TOOL_CATALOG.reduce((sum, c) => sum + c.count, 0)} tools across {IDE_TOOL_CATALOG.length} categories.
+            Click a category to see every tool with its description.
+          </p>
+        </div>
         <div className={styles.catalogGrid}>
           {IDE_TOOL_CATALOG.map((cat, i) => (
             <div key={i} className={styles.catalogCategory}>
-              <button
-                className={styles.catalogHeader}
-                onClick={() => setOpenCat(openCat === i ? null : i)}
-              >
+              <button className={styles.catalogHeader} onClick={() => setOpenCat(openCat === i ? null : i)}>
                 <span className={styles.catalogCategoryName}>
                   {cat.category}
                   <span className={styles.catalogCount}>{cat.count}</span>
@@ -528,17 +581,17 @@ const DownloadIDEPage: React.FC = () => {
 
       {/* Transparency & FAQ */}
       <section className={styles.faq}>
-        <h2 className={styles.sectionTitle}>Transparency & FAQ</h2>
-        <p className={styles.sectionDesc}>
-          Running an IDE with an AI assistant is a trust decision. Here are honest, code-backed answers.
-        </p>
+        <div className={styles.sectionHead}>
+          <span className={styles.sectionKicker}>Transparency</span>
+          <h2 className={styles.sectionTitle}>Frequently asked questions</h2>
+          <p className={styles.sectionDesc}>
+            Running an IDE with an AI assistant is a trust decision. Here are honest, code-backed answers.
+          </p>
+        </div>
         <div className={styles.faqList}>
           {IDE_FAQ_ITEMS.map((item, i) => (
             <div key={i} className={styles.faqItem}>
-              <button
-                className={styles.faqQuestion}
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
-              >
+              <button className={styles.faqQuestion} onClick={() => setOpenFaq(openFaq === i ? null : i)}>
                 <span>
                   <span className={`${styles.faqLabel} ${styles[item.labelClass]}`}>{item.label}</span>
                   {item.question}
@@ -551,10 +604,7 @@ const DownloadIDEPage: React.FC = () => {
                 </svg>
               </button>
               {openFaq === i && (
-                <div
-                  className={styles.faqAnswer}
-                  dangerouslySetInnerHTML={{ __html: item.answer }}
-                />
+                <div className={styles.faqAnswer} dangerouslySetInnerHTML={{ __html: item.answer }} />
               )}
             </div>
           ))}
@@ -564,23 +614,17 @@ const DownloadIDEPage: React.FC = () => {
       {/* CTA */}
       <section className={styles.cta}>
         <div className={styles.ctaContent}>
-          <img
-            src="/devswat/devswat_logo.png"
-            alt="DevSwat"
-            className={styles.ctaLogo}
-          />
+          <img src="/devswat/devswat_logo.png" alt="DevSwat" className={styles.ctaLogo} />
           <h2 className={styles.ctaTitle}>Build with DevSwat</h2>
           <p className={styles.ctaDesc}>
             Open source. Clone it, build it, run it. Your code stays on your machine.
           </p>
           <div className={styles.ctaActions}>
-            <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className={styles.downloadButton}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
-              </svg>
+            <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className={styles.btnPrimary}>
+              <GitHubGlyph size={18} />
               View Source on GitHub
             </a>
-            <a href={GITHUB_DOWNLOAD} className={styles.downloadButtonOutline}>
+            <a href={GITHUB_DOWNLOAD} className={styles.btnSecondary}>
               Download ZIP (latest from GitHub)
             </a>
           </div>
