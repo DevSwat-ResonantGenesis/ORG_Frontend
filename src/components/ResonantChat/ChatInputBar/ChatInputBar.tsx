@@ -259,6 +259,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const [voiceInterimTranscript, setVoiceInterimTranscript] = useState('');
   const [showEmbeddedTools, setShowEmbeddedTools] = useState(false);
   const [showTools, setShowTools] = useState(false);
+  const [toolbarOpen, setToolbarOpen] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [attachmentsExpanded, setAttachmentsExpanded] = useState(false);
   const [kbUploading, setKbUploading] = useState(false);
@@ -400,6 +401,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
         setShowProviderDropdown(false);
         setProviderDropdownStyle(null);
         setShowMentionAutocomplete(false);
+        setToolbarOpen(false);
         if (showMemoryLibrary && onCloseMemoryLibrary) {
           onCloseMemoryLibrary();
         }
@@ -1261,6 +1263,23 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           </div>
         )}
 
+        {/* Toolbar toggle - reveals the tools row floating above the input bar */}
+        {!embedded && (
+          <button
+            type="button"
+            className={`${styles.toolbarToggle} ${toolbarOpen ? styles.open : ''}`}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setToolbarOpen(prev => !prev);
+            }}
+            title={toolbarOpen ? 'Hide tools' : 'Show tools'}
+            aria-expanded={toolbarOpen}
+          >
+            <ChevronDownIcon />
+          </button>
+        )}
+
         {/* Input Area: Textarea + Send */}
         <div className={styles.inputArea}>
           <div className={`${styles.voiceStack} ${embedded ? styles.embeddedVoiceStack : ''}`}>
@@ -1306,10 +1325,10 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           </button>
         </div>
 
-        {/* Tools Row */}
-        {(!embedded || showEmbeddedTools) && (
+        {/* Tools Row - floats above the input bar, revealed by the arrow toggle */}
+        {((embedded && showEmbeddedTools) || (!embedded && toolbarOpen)) && (
         <div
-          className={`${styles.toolsRow} ${embedded ? styles.embeddedToolsRow : ''}`}
+          className={`${styles.toolsRow} ${embedded ? styles.embeddedToolsRow : styles.toolsRowFloating}`}
           onMouseEnter={() => {
             if (embedded) setShowEmbeddedTools(true);
           }}

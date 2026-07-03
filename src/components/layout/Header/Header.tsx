@@ -128,6 +128,8 @@ export const Header: React.FC<HeaderProps> = ({
   const [splitViewPane, setSplitViewPane] = useState<SplitViewPane>('chat');
   const [splitViewActiveTab, setSplitViewActiveTab] = useState<string>('agents');
   const [agentsToolbarOpen, setAgentsToolbarOpen] = useState(false);
+  const [splitViewMenuOpen, setSplitViewMenuOpen] = useState(false);
+  const splitViewMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isLandingPage) {
@@ -252,6 +254,7 @@ export const Header: React.FC<HeaderProps> = ({
   useEffect(() => {
     setShowAccountMenu(false);
     setActiveDropdown(null);
+    setSplitViewMenuOpen(false);
   }, [location.pathname]);
 
   // Close account menu and nav dropdowns when clicking outside
@@ -262,6 +265,9 @@ export const Header: React.FC<HeaderProps> = ({
       }
       if (navRef.current && !navRef.current.contains(e.target as Node)) {
         setActiveDropdown(null);
+      }
+      if (splitViewMenuRef.current && !splitViewMenuRef.current.contains(e.target as Node)) {
+        setSplitViewMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -352,7 +358,7 @@ export const Header: React.FC<HeaderProps> = ({
               alt="DevSwat"
               className={`${styles.logoIcon} ${isMobileViewport ? styles.logoIconHiddenMobile : ''}`}
             />
-            DevSwat
+            {!(isLandingPage && landingChatActive) && 'DevSwat'}
           </div>
 
           {/* Main Navigation - Desktop */}
@@ -476,98 +482,111 @@ export const Header: React.FC<HeaderProps> = ({
             )}
 
 
-            {/* Split View Quick Access Icons - only visible when split view is active */}
+            {/* Split View Menu - three-dot trigger only visible when split view is active */}
             {isResonantChatPage && isLoggedIn && splitViewEnabled && (
-              <div className={styles.splitViewQuickAccess}>
+              <div ref={splitViewMenuRef} className={styles.splitViewMenuWrapper}>
                 <button
-                  className={`${styles.splitViewQuickAccessButton} ${splitViewActiveTab === 'agents' ? styles.splitViewQuickAccessButtonActive : ''}`}
-                  onClick={() => handleSplitViewTabClick('agents')}
-                  title="Agents OS"
-                  aria-label="Agents OS"
+                  className={`${styles.splitViewMenuButton} ${splitViewMenuOpen ? styles.splitViewMenuButtonActive : ''}`}
+                  onClick={() => setSplitViewMenuOpen((v) => !v)}
+                  title="Split View options"
+                  aria-label="Split View options"
+                  aria-expanded={splitViewMenuOpen}
                 >
-                  <AgentsIcon />
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="5" r="1.75" />
+                    <circle cx="12" cy="12" r="1.75" />
+                    <circle cx="12" cy="19" r="1.75" />
+                  </svg>
                 </button>
-                <button
-                  className={`${styles.splitViewQuickAccessButton} ${splitViewActiveTab === 'preview' ? styles.splitViewQuickAccessButtonActive : ''}`}
-                  onClick={() => handleSplitViewTabClick('preview')}
-                  title="Preview Code"
-                  aria-label="Preview Code"
-                >
-                  <PreviewIcon />
-                </button>
-                <button
-                  className={`${styles.splitViewQuickAccessButton} ${splitViewActiveTab === 'memory' ? styles.splitViewQuickAccessButtonActive : ''}`}
-                  onClick={() => handleSplitViewTabClick('memory')}
-                  title="Memory Library"
-                  aria-label="Memory Library"
-                >
-                  <MemoryIcon />
-                </button>
-                <button
-                  className={`${styles.splitViewQuickAccessButton} ${splitViewActiveTab === 'state_physics' ? styles.splitViewQuickAccessButtonActive : ''}`}
-                  onClick={() => handleSplitViewTabClick('state_physics')}
-                  title="Invariants SIM"
-                  aria-label="Invariants SIM"
-                >
-                  <StatePhysicsIcon />
-                </button>
-                <button
-                  className={`${styles.splitViewQuickAccessButton} ${splitViewActiveTab === 'visualizer' ? styles.splitViewQuickAccessButtonActive : ''}`}
-                  onClick={() => handleSplitViewTabClick('visualizer')}
-                  title="Code Analyzer"
-                  aria-label="Code Analyzer"
-                >
-                  <VisualizerIcon />
-                </button>
-                {/* Settings icon for agents toolbar - visible on agents page or when agents tab is active in split view */}
-                {(splitViewActiveTab === 'agents' || isAgentsPage) && (
-                  <>
-                    <div className={styles.splitViewQuickAccessDivider} />
+
+                {splitViewMenuOpen && (
+                  <div className={styles.splitViewMenuDropdown}>
                     <button
-                      className={`${styles.splitViewQuickAccessButton} ${agentsToolbarOpen ? styles.splitViewQuickAccessButtonActive : ''}`}
-                      onClick={() => {
-                        const newState = !agentsToolbarOpen;
-                        setAgentsToolbarOpen(newState);
-                        // Use postMessage for iframe communication
-                        const agentsIframe = document.querySelector('iframe[src*="embed=1"]') as HTMLIFrameElement;
-                        if (agentsIframe?.contentWindow) {
-                          agentsIframe.contentWindow.postMessage({ type: 'agentos:agents:toggleToolbar', open: newState }, '*');
-                        }
-                        // Also dispatch custom event for non-iframe case
-                        window.dispatchEvent(new CustomEvent('agentos:agents:toggleToolbar', { detail: { open: newState } }));
-                      }}
-                      title={agentsToolbarOpen ? 'Hide toolbar' : 'Show toolbar'}
-                      aria-label={agentsToolbarOpen ? 'Hide toolbar' : 'Show toolbar'}
+                      className={`${styles.splitViewMenuItem} ${splitViewActiveTab === 'agents' ? styles.splitViewMenuItemActive : ''}`}
+                      onClick={() => { handleSplitViewTabClick('agents'); setSplitViewMenuOpen(false); }}
+                    >
+                      <AgentsIcon />
+                      Agents OS
+                    </button>
+                    <button
+                      className={`${styles.splitViewMenuItem} ${splitViewActiveTab === 'preview' ? styles.splitViewMenuItemActive : ''}`}
+                      onClick={() => { handleSplitViewTabClick('preview'); setSplitViewMenuOpen(false); }}
+                    >
+                      <PreviewIcon />
+                      Preview Code
+                    </button>
+                    <button
+                      className={`${styles.splitViewMenuItem} ${splitViewActiveTab === 'memory' ? styles.splitViewMenuItemActive : ''}`}
+                      onClick={() => { handleSplitViewTabClick('memory'); setSplitViewMenuOpen(false); }}
+                    >
+                      <MemoryIcon />
+                      Memory Library
+                    </button>
+                    <button
+                      className={`${styles.splitViewMenuItem} ${splitViewActiveTab === 'state_physics' ? styles.splitViewMenuItemActive : ''}`}
+                      onClick={() => { handleSplitViewTabClick('state_physics'); setSplitViewMenuOpen(false); }}
+                    >
+                      <StatePhysicsIcon />
+                      Invariants SIM
+                    </button>
+                    <button
+                      className={`${styles.splitViewMenuItem} ${splitViewActiveTab === 'visualizer' ? styles.splitViewMenuItemActive : ''}`}
+                      onClick={() => { handleSplitViewTabClick('visualizer'); setSplitViewMenuOpen(false); }}
+                    >
+                      <VisualizerIcon />
+                      Code Analyzer
+                    </button>
+
+                    {/* Toolbar toggle - visible on agents page or when agents tab is active in split view */}
+                    {(splitViewActiveTab === 'agents' || isAgentsPage) && (
+                      <>
+                        <div className={styles.splitViewMenuDivider} />
+                        <button
+                          className={`${styles.splitViewMenuItem} ${agentsToolbarOpen ? styles.splitViewMenuItemActive : ''}`}
+                          onClick={() => {
+                            const newState = !agentsToolbarOpen;
+                            setAgentsToolbarOpen(newState);
+                            // Use postMessage for iframe communication
+                            const agentsIframe = document.querySelector('iframe[src*="embed=1"]') as HTMLIFrameElement;
+                            if (agentsIframe?.contentWindow) {
+                              agentsIframe.contentWindow.postMessage({ type: 'agentos:agents:toggleToolbar', open: newState }, '*');
+                            }
+                            // Also dispatch custom event for non-iframe case
+                            window.dispatchEvent(new CustomEvent('agentos:agents:toggleToolbar', { detail: { open: newState } }));
+                            setSplitViewMenuOpen(false);
+                          }}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="3" />
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                          </svg>
+                          {agentsToolbarOpen ? 'Hide toolbar' : 'Show toolbar'}
+                        </button>
+                      </>
+                    )}
+
+                    <div className={styles.splitViewMenuDivider} />
+                    <button
+                      className={styles.splitViewMenuItem}
+                      onClick={() => { window.open('/agents?embed=1', '_blank'); setSplitViewMenuOpen(false); }}
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="3" />
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
                       </svg>
+                      Open in full screen
                     </button>
-                  </>
+                    <button
+                      className={styles.splitViewMenuItem}
+                      onClick={() => { handleSplitViewToggleClick(); setSplitViewMenuOpen(false); }}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                      Close split view
+                    </button>
+                  </div>
                 )}
-                <div className={styles.splitViewQuickAccessDivider} />
-                <button
-                  className={styles.splitViewQuickAccessButton}
-                  onClick={() => window.open('/agents?embed=1', '_blank')}
-                  title="Open Agents OS in full screen"
-                  aria-label="Open Agents OS in full screen"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-                  </svg>
-                </button>
-                <button
-                  className={styles.splitViewQuickAccessButton}
-                  onClick={handleSplitViewToggleClick}
-                  title="Close split view"
-                  aria-label="Close split view"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
-                </button>
               </div>
             )}
 

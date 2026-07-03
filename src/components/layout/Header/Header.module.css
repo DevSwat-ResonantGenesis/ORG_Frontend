@@ -617,6 +617,116 @@
   background: rgba(0, 0, 0, 0.15);
 }
 
+/* Split View Menu - three-dot trigger + dropdown */
+.splitViewMenuWrapper {
+  position: relative;
+  margin-right: 12px;
+}
+
+.splitViewMenuButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+[data-theme='light'] .splitViewMenuButton {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.splitViewMenuButton:hover,
+.splitViewMenuButtonActive {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme='light'] .splitViewMenuButton:hover,
+[data-theme='light'] .splitViewMenuButtonActive {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.splitViewMenuDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  z-index: 10000;
+}
+
+[data-theme='light'] .splitViewMenuDropdown {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.splitViewMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+[data-theme='light'] .splitViewMenuItem {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.splitViewMenuItem svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.splitViewMenuItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='light'] .splitViewMenuItem:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.splitViewMenuItemActive {
+  color: #01A6BC;
+}
+
+.splitViewMenuDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 4px 2px;
+}
+
+[data-theme='light'] .splitViewMenuDivider {
+  background: rgba(0, 0, 0, 0.1);
+}
+
 .actionsRow {
   display: flex;
   align-items: center;
