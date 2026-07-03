@@ -157,11 +157,16 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 140px;
+  height: 180px;
+  /* Solid at the top (matches the page background exactly, so there's no
+     visible seam against the header) fading smoothly to transparent —
+     reads as the gradient emanating FROM the header, not a floating block. */
   background: linear-gradient(
     to bottom,
-    rgba(17, 17, 17, 0.85) 0%,
-    rgba(17, 17, 17, 0.5) 45%,
+    #111111 0%,
+    rgba(17, 17, 17, 0.95) 20%,
+    rgba(17, 17, 17, 0.7) 45%,
+    rgba(17, 17, 17, 0.32) 75%,
     rgba(17, 17, 17, 0) 100%
   );
   pointer-events: none;
@@ -171,8 +176,10 @@
 :global([data-theme='light'] body.resonant-chat-page) .header::before {
   background: linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 0.85) 0%,
-    rgba(255, 255, 255, 0.5) 45%,
+    #ffffff 0%,
+    rgba(255, 255, 255, 0.95) 20%,
+    rgba(255, 255, 255, 0.7) 45%,
+    rgba(255, 255, 255, 0.32) 75%,
     rgba(255, 255, 255, 0) 100%
   );
 }

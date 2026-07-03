@@ -494,8 +494,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   // Toggle tag + tools row live OUTSIDE the input bar's DOM (portaled to
   // document.body), positioned purely from the input bar's own rect —
   // they are not nested inside .inputWrapper at all.
-  const TOGGLE_TAG_SIZE = 30;
-  const TOGGLE_TAG_GAP = 4; // half the tools row's 8px padding
   const TOOLS_ROW_GAP = 0; // tools row sits flush against the input bar
 
   const computeToggleTagStyle = useCallback((): React.CSSProperties | null => {
@@ -505,10 +503,10 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     const rect = wrapper.getBoundingClientRect();
     return {
       position: 'fixed',
-      // Left side, straddling the input bar's left edge so it visibly
-      // stands beyond/outside the bar rather than sitting flush inside it.
-      left: Math.max(4, rect.left - TOGGLE_TAG_SIZE / 2),
-      bottom: window.innerHeight - rect.top + TOGGLE_TAG_GAP,
+      // Zero padding — pinned exactly to the input bar's top-left corner,
+      // identically on both desktop and mobile.
+      left: rect.left,
+      bottom: window.innerHeight - rect.top,
       zIndex: 10003,
     };
   }, []);
