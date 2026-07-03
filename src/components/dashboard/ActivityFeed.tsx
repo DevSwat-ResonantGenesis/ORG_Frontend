@@ -28,8 +28,8 @@ const ACTIVITY_ICONS = {
 
 const ACTIVITY_COLORS = {
   chat: '#3b82f6',
-  agent: '#8b5cf6',
-  memory: '#ec4899',
+  agent: '#0ea5e9',
+  memory: '#14b8a6',
   credit: '#22c55e',
   usage: '#f59e0b',
 };
@@ -76,7 +76,7 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({ items, maxItems = 10
       <div className={styles.feed}>
         {displayItems.map((item, index) => {
           const Icon = ACTIVITY_ICONS[item.type] || Zap;
-          const color = ACTIVITY_COLORS[item.type] || '#6366f1';
+          const color = ACTIVITY_COLORS[item.type] || '#0ea5e9';
           
           return (
             <div key={index} className={styles.item}>

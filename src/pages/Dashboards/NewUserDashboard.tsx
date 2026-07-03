@@ -235,60 +235,99 @@ const NewUserDashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className={styles.dashboard}>
-        <div className={styles.loadingState}>
-          <div className={styles.spinner} />
-          <p>Loading dashboard...</p>
-        </div>
+      <div className={styles.loadingState}>
+        <div className={styles.spinner} />
+        <p>Loading dashboard…</p>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className={styles.dashboard}>
-        <div className={styles.errorState}>
-          <p>Failed to load dashboard</p>
-          <Button onClick={handleRefresh}>Retry</Button>
-        </div>
+      <div className={styles.errorState}>
+        <p>Failed to load dashboard</p>
+        <Button onClick={handleRefresh}>Retry</Button>
       </div>
     );
   }
 
   const p = data.platform;
 
-  const TABS: { id: DashTab; label: string; icon: React.ReactNode }[] = [
-    { id: 'overview', label: 'Overview', icon: <BarChart3 size={15} /> },
-    { id: 'profile', label: 'Profile', icon: <User size={15} /> },
-    { id: 'settings', label: 'Settings', icon: <Settings size={15} /> },
-    { id: 'billing', label: 'Billing & Credits', icon: <CreditCard size={15} /> },
-    { id: 'api-keys', label: 'API Keys', icon: <Key size={15} /> },
-    { id: 'integrations', label: 'Integrations', icon: <Link2 size={15} /> },
+  const TABS: { id: DashTab; label: string; description: string; icon: React.ReactNode }[] = [
+    { id: 'overview', label: 'Overview', description: 'Your activity, usage, and platform stats at a glance.', icon: <BarChart3 size={17} /> },
+    { id: 'profile', label: 'Profile', description: 'Your account, usage summary, and referral program.', icon: <User size={17} /> },
+    { id: 'settings', label: 'Settings', description: 'Notifications, privacy, and account preferences.', icon: <Settings size={17} /> },
+    { id: 'billing', label: 'Billing & Credits', description: 'Plan, payment methods, and credit balance.', icon: <CreditCard size={17} /> },
+    { id: 'api-keys', label: 'API Keys', description: 'Manage provider and platform API keys.', icon: <Key size={17} /> },
+    { id: 'integrations', label: 'Integrations', description: 'Connect third-party accounts and services.', icon: <Link2 size={17} /> },
   ];
+  const activeMeta = TABS.find(t => t.id === activeTab) ?? TABS[0];
 
   return (
-    <div className={styles.dashboard}>
-      {/* ── Dashboard Tabs ── */}
-      <div className={styles.dashTabs}>
+    <div className="dashShell">
+      {/* ── Sidebar nav (desktop) ── */}
+      <aside className="dashSidebar">
+        <div className="dashSidebarHead">
+          <p className="dashSidebarTitle">Dashboard</p>
+          <p className="dashSidebarMeta">{fullName || email}</p>
+        </div>
+        <nav className="dashNavGroup">
+          {TABS.map(t => (
+            <button
+              key={t.id}
+              className={`dashNavItem ${activeTab === t.id ? 'dashNavItemActive' : ''}`}
+              onClick={() => setActiveTab(t.id)}
+            >
+              {t.icon}
+              <span>{t.label}</span>
+            </button>
+          ))}
+        </nav>
+        <div className="dashNavSpacer" />
+        <div className="dashNavFooter">
+          <button className="dashNavItem dashNavItemDanger" onClick={handleLogout}>
+            <LogOut size={17} />
+            <span>Log out</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* ── Top scroll nav (mobile / tablet) ── */}
+      <nav className="dashMobileNav">
         {TABS.map(t => (
           <button
             key={t.id}
-            className={`${styles.dashTab} ${activeTab === t.id ? styles.dashTabActive : ''}`}
+            className={`dashMobileNavItem ${activeTab === t.id ? 'dashMobileNavItemActive' : ''}`}
             onClick={() => setActiveTab(t.id)}
           >
             {t.icon}
             <span>{t.label}</span>
           </button>
         ))}
-        <div className={styles.dashTabSpacer} />
-        <button className={styles.dashTabLogout} onClick={handleLogout}>
-          <LogOut size={15} />
+        <button className="dashMobileNavItem" onClick={handleLogout}>
+          <LogOut size={16} />
           <span>Log out</span>
         </button>
-      </div>
+      </nav>
 
-      {message && <div className={styles.successMsg}>{message}</div>}
-      {error && <div className={styles.errorMsg}>{error}</div>}
+      <main className="dashMain">
+        <div className="dashPageHead">
+          <div>
+            <h1 className="dashTitle">{activeMeta.label}</h1>
+            <p className="dashSubtitle">{activeMeta.description}</p>
+          </div>
+          {activeTab === 'overview' && (
+            <div className="dashHeadActions">
+              <button className="btn btnSecondary btnSm" onClick={handleRefresh} disabled={refreshing}>
+                <RefreshCw size={14} className={refreshing ? styles.spinning : ''} />
+                Refresh
+              </button>
+            </div>
+          )}
+        </div>
+
+        {message && <div className={styles.successMsg}>{message}</div>}
+        {error && <div className={styles.errorMsg}>{error}</div>}
 
       {/* ══════════════ OVERVIEW TAB ══════════════ */}
       {activeTab === 'overview' && (
@@ -296,15 +335,12 @@ const NewUserDashboard: React.FC = () => {
           {/* Subscribe banner for free users */}
           {data.tier?.toLowerCase() === 'free' && (
             <div className={styles.subscribeBanner}>
-              <div className={styles.subscribeBannerBg} />
-              <div className={styles.subscribeBannerContent}>
-                <Zap size={18} className={styles.subscribeBannerIcon} />
-                <span className={styles.subscribeBannerText}>Please subscribe to unlock all features</span>
-                <button className={styles.subscribeBannerBtn} onClick={() => handleSubscribe('developer')}>
-                  {subscribeLoading === 'developer' ? 'Redirecting…' : 'Subscribe Now'}
-                  <ArrowRight size={14} />
-                </button>
-              </div>
+              <Zap size={18} className={styles.subscribeBannerIcon} />
+              <span className={styles.subscribeBannerText}>Subscribe to unlock all features</span>
+              <button className={styles.subscribeBannerBtn} onClick={() => handleSubscribe('developer')}>
+                {subscribeLoading === 'developer' ? 'Redirecting…' : 'Subscribe Now'}
+                <ArrowRight size={14} />
+              </button>
             </div>
           )}
           {/* Regular alerts for paid users */}
@@ -312,27 +348,27 @@ const NewUserDashboard: React.FC = () => {
             <AlertBanner alerts={data.alerts.map(a => ({ ...a, action: a.type === 'error' ? { label: 'Buy Credits', onClick: handleUpgrade } : undefined }))} />
           )}
 
-          <div className={styles.overviewGrid}>
-            <div className={styles.overviewCard} onClick={() => navigate('/agents')}>
-              <div className={styles.overviewCardHeader}><Bot size={18} color="#8b5cf6" /><span className={styles.overviewCardLabel}>My Agents</span></div>
-              <div className={styles.overviewCardValue}><span className={styles.overviewNumber}>{data.activity.agents ?? 0}</span><span className={styles.overviewUnit}>created</span></div>
-            </div>
-            <div className={styles.overviewCard} onClick={() => navigate('/resonant-memory')}>
-              <div className={styles.overviewCardHeader}><Brain size={18} color="#ec4899" /><span className={styles.overviewCardLabel}>My Memory</span></div>
-              <div className={styles.overviewCardValue}><span className={styles.overviewNumber}>{data.activity.memories ?? 0}</span><span className={styles.overviewUnit}>anchors</span></div>
-            </div>
-            <div className={styles.overviewCard} onClick={() => navigate('/agents')}>
-              <div className={styles.overviewCardHeader}><Activity size={18} color="#6366f1" /><span className={styles.overviewCardLabel}>Sessions</span></div>
-              <div className={styles.overviewCardValue}><span className={styles.overviewNumber}>{data.activity.sessions ?? 0}</span><span className={styles.overviewUnit}>total</span></div>
-            </div>
-            <div className={styles.overviewCard} onClick={() => navigate('/network/workflows')}>
-              <div className={styles.overviewCardHeader}><GitBranch size={18} color="#6366f1" /><span className={styles.overviewCardLabel}>Workflows</span></div>
-              <div className={styles.overviewCardValue}><span className={styles.overviewNumber}>{p.workflows?.count ?? 0}</span><span className={styles.overviewUnit}>saved</span></div>
-            </div>
-            <div className={styles.overviewCard} onClick={() => navigate('/marketplace')}>
-              <div className={styles.overviewCardHeader}><Store size={18} color="#f59e0b" /><span className={styles.overviewCardLabel}>Marketplace</span></div>
-              <div className={styles.overviewCardValue}><span className={styles.overviewNumber}>{p.marketplace?.totalListings ?? '—'}</span><span className={styles.overviewUnit}>listings</span></div>
-            </div>
+          <div className={`dashSection statGrid`}>
+            <button className="statTile" onClick={() => navigate('/agents')}>
+              <div className="statTileLabel"><span className={styles.statIcon}><Bot size={16} /></span>My Agents</div>
+              <div className="statTileValue">{data.activity.agents ?? 0}<span>created</span></div>
+            </button>
+            <button className="statTile" onClick={() => navigate('/resonant-memory')}>
+              <div className="statTileLabel"><span className={styles.statIcon}><Brain size={16} /></span>My Memory</div>
+              <div className="statTileValue">{data.activity.memories ?? 0}<span>anchors</span></div>
+            </button>
+            <button className="statTile" onClick={() => navigate('/agents')}>
+              <div className="statTileLabel"><span className={styles.statIcon}><Activity size={16} /></span>Sessions</div>
+              <div className="statTileValue">{data.activity.sessions ?? 0}<span>total</span></div>
+            </button>
+            <button className="statTile" onClick={() => navigate('/network/workflows')}>
+              <div className="statTileLabel"><span className={styles.statIcon}><GitBranch size={16} /></span>Workflows</div>
+              <div className="statTileValue">{p.workflows?.count ?? 0}<span>saved</span></div>
+            </button>
+            <button className="statTile" onClick={() => navigate('/marketplace')}>
+              <div className="statTileLabel"><span className={styles.statIcon}><Store size={16} /></span>Marketplace</div>
+              <div className="statTileValue">{p.marketplace?.totalListings ?? '—'}<span>listings</span></div>
+            </button>
           </div>
 
           <div className={styles.topRow}>
@@ -349,21 +385,21 @@ const NewUserDashboard: React.FC = () => {
             { label: 'Agent Sessions', value: data.activity.sessions, icon: 'sessions' },
           ]} />
 
-          <div className={styles.codeStatsCard}>
+          <div className="panel">
             <div className={styles.codeStatsHeader}>
-              <div className={styles.codeStatsTitle}><Zap size={16} color="#10b981" /><span>Resonant AI — Code Written</span></div>
+              <div className={styles.codeStatsTitle}><Zap size={16} color="var(--color-success)" /><span>Resonant AI — Code Written</span></div>
               {liveLoc && <span className={styles.codeStatsLive}><span className={styles.liveDot} />{liveLoc.total_lines_all_time.toLocaleString()} LOC platform-wide</span>}
             </div>
             {locStats && (locStats.total_lines_written > 0 || locStats.total_lines_edited > 0) ? (
               <>
                 <div className={styles.codeStatsGrid}>
                   {[
-                    { label: 'Lines Written', value: locStats.total_lines_written, color: '#10b981' },
-                    { label: 'Lines Edited', value: locStats.total_lines_edited, color: '#3b82f6' },
-                    { label: 'Net Lines', value: locStats.total_net_lines, color: '#8b5cf6' },
-                    { label: 'Files Created', value: locStats.total_files_created, color: '#ec4899' },
-                    { label: 'Files Modified', value: locStats.total_files_modified, color: '#06b6d4' },
-                    { label: 'Tool Calls', value: locStats.total_tool_calls, color: '#f59e0b' },
+                    { label: 'Lines Written', value: locStats.total_lines_written, color: 'var(--color-success)' },
+                    { label: 'Lines Edited', value: locStats.total_lines_edited, color: 'var(--color-primary-500)' },
+                    { label: 'Net Lines', value: locStats.total_net_lines, color: '#06b6d4' },
+                    { label: 'Files Created', value: locStats.total_files_created, color: '#14b8a6' },
+                    { label: 'Files Modified', value: locStats.total_files_modified, color: 'var(--color-warning)' },
+                    { label: 'Tool Calls', value: locStats.total_tool_calls, color: '#f97316' },
                   ].map(item => (
                     <div key={item.label} className={styles.codeStatItem}>
                       <div className={styles.codeStatValue} style={{ color: item.color }}>{item.value.toLocaleString()}</div>
@@ -393,19 +429,19 @@ const NewUserDashboard: React.FC = () => {
 
       {/* ══════════════ PROFILE TAB ══════════════ */}
       {activeTab === 'profile' && (
-        <div className={styles.profileSection}>
-          <div className={styles.sectionCard}>
+        <>
+          <div className="panel dashSection">
             <div className={styles.profileHeader}>
               <div className={styles.avatar}>{getInitials(fullName || email)}</div>
               <div>
-                <div className={styles.profileName}>{fullName || 'User'} <span className={styles.planBadge}>{planName}</span></div>
+                <div className={styles.profileName}>{fullName || 'User'} <span className="badge badgePrimary">{planName}</span></div>
                 <div className={styles.profileEmail}>{email}</div>
               </div>
             </div>
           </div>
 
-          <div className={styles.sectionCard}>
-            <h3 className={styles.sectionTitle}>Usage Summary</h3>
+          <div className="dashSection">
+            <div className="dashSectionHead"><h2 className="dashSectionTitle">Usage Summary</h2></div>
             <div className={styles.statsRow}>
               <div className={styles.statBox}><div className={styles.statNum}>{usageMetrics?.tokens?.used?.toLocaleString() || 0}</div><div className={styles.statLbl}>Tokens Used</div></div>
               <div className={styles.statBox}><div className={styles.statNum}>{totalMessages}</div><div className={styles.statLbl}>Messages</div></div>
@@ -416,103 +452,100 @@ const NewUserDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className={styles.sectionCard}>
-            <h3 className={styles.sectionTitle}>Referral Program</h3>
-            <p style={{ color: 'var(--color-text-secondary)', fontSize: 13, margin: '0 0 12px' }}>Invite friends — get 250 bonus credits when they subscribe.</p>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <input type="text" readOnly value={`${window.location.origin}/signup?ref=${referralCode}`} style={{ flex: 1, padding: '8px 12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: '#e2e8f0', fontSize: 13 }} />
-              <Button size="sm" onClick={handleCopyReferral}>{copiedReferral ? <><Check size={14} /> Copied</> : <><Copy size={14} /> Copy</>}</Button>
+          <div className="panel">
+            <h3 className="dashSectionTitle" style={{ marginBottom: 'var(--space-2)' }}>Referral Program</h3>
+            <p className={styles.profileEmail} style={{ marginBottom: 'var(--space-4)' }}>Invite friends — get 250 bonus credits when they subscribe.</p>
+            <div className="inputRow">
+              <input type="text" readOnly className="input" value={`${window.location.origin}/signup?ref=${referralCode}`} />
+              <button className="btn btnPrimary btnSm" onClick={handleCopyReferral}>{copiedReferral ? <><Check size={14} /> Copied</> : <><Copy size={14} /> Copy</>}</button>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* ══════════════ SETTINGS TAB ══════════════ */}
       {activeTab === 'settings' && (
-        <div className={styles.profileSection}>
-          <div className={styles.sectionCard}>
-            <h3 className={styles.sectionTitle}>Profile Information</h3>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+        <>
+          <div className="panel dashSection">
+            <h3 className="dashSectionTitle" style={{ marginBottom: 'var(--space-4)' }}>Profile Information</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', marginBottom: 'var(--space-4)' }}>
               <div className={styles.avatarSm}>{getInitials(fullName || email)}</div>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontSize: 12, color: 'var(--color-text-secondary)', marginBottom: 4, display: 'block' }}>Name</label>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <input type="text" value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Your name" style={{ flex: 1, padding: '8px 12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, color: '#e2e8f0', fontSize: 14 }} />
-                  <Button size="sm" onClick={handleSaveName} disabled={savingSettings}>Save</Button>
+              <div className="field" style={{ flex: 1 }}>
+                <label className="fieldLabel">Name</label>
+                <div className="inputRow">
+                  <input type="text" className="input" value={fullName} onChange={e => setFullName(e.target.value)} placeholder="Your name" />
+                  <button className="btn btnPrimary btnSm" onClick={handleSaveName} disabled={savingSettings}>Save</button>
                 </div>
               </div>
             </div>
-            <div style={{ fontSize: 13, color: 'var(--color-text-secondary)' }}>Email: {email}</div>
+            <div className={styles.profileEmail}>Email: {email}</div>
           </div>
 
-          <div className={styles.sectionCard}>
-            <h3 className={styles.sectionTitle}>Notifications</h3>
-            <div className={styles.settingRow}>
-              <div><div className={styles.settingLabel}>Newsletter</div><div className={styles.settingDesc}>Receive product updates and coding tips.</div></div>
-              <label className={styles.toggle}><input type="checkbox" checked={newsletterEnabled} onChange={e => setNewsletterEnabled(e.target.checked)} /><span className={styles.toggleSlider} /></label>
+          <div className="panel dashSection">
+            <div className="rowList">
+              <div className="row">
+                <div><div className="rowLabel">Newsletter</div><div className="rowDesc">Receive product updates and coding tips.</div></div>
+                <label className="toggle"><input type="checkbox" checked={newsletterEnabled} onChange={e => setNewsletterEnabled(e.target.checked)} /><span className="toggleSlider" /></label>
+              </div>
+              <div className="row">
+                <div><div className="rowLabel">Disable Telemetry</div><div className="rowDesc">Opt out of non-essential data collection.</div></div>
+                <label className="toggle"><input type="checkbox" checked={telemetryDisabled} onChange={e => setTelemetryDisabled(e.target.checked)} /><span className="toggleSlider" /></label>
+              </div>
             </div>
           </div>
 
-          <div className={styles.sectionCard}>
-            <h3 className={styles.sectionTitle}>Privacy</h3>
-            <div className={styles.settingRow}>
-              <div><div className={styles.settingLabel}>Disable Telemetry</div><div className={styles.settingDesc}>Opt out of non-essential data collection.</div></div>
-              <label className={styles.toggle}><input type="checkbox" checked={telemetryDisabled} onChange={e => setTelemetryDisabled(e.target.checked)} /><span className={styles.toggleSlider} /></label>
-            </div>
+          <div className="panel">
+            <h3 className="dashSectionTitle" style={{ color: 'var(--color-error)', marginBottom: 'var(--space-2)' }}>Danger Zone</h3>
+            <p className={styles.profileEmail} style={{ marginBottom: 'var(--space-4)' }}>Once you delete your account, there is no going back.</p>
+            <button className="btn btnDanger" onClick={handleDeleteAccount}><Trash2 size={16} /> Delete account</button>
           </div>
-
-          <div className={styles.sectionCard}>
-            <h3 className={styles.sectionTitle} style={{ color: '#ef4444' }}>Danger Zone</h3>
-            <p style={{ color: 'var(--color-text-secondary)', fontSize: 13, margin: '0 0 12px' }}>Once you delete your account, there is no going back.</p>
-            <Button variant="danger" onClick={handleDeleteAccount}><Trash2 size={16} /> Delete account</Button>
-          </div>
-        </div>
+        </>
       )}
 
       {/* ══════════════ BILLING TAB ══════════════ */}
       {activeTab === 'billing' && (
-        <div className={styles.profileSection}>
-          <div className={styles.sectionCard}>
-            <h3 className={styles.sectionTitle}>Credit Balance</h3>
+        <>
+          <div className="panel dashSection">
+            <h3 className="dashSectionTitle" style={{ marginBottom: 'var(--space-4)' }}>Credit Balance</h3>
             <div className={styles.creditBar}><div className={styles.creditFill} style={{ width: `${Math.min(((usageMetrics?.credits?.used || 0) / (usageMetrics?.credits?.limit || 1)) * 100, 100)}%` }} /></div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--color-text-secondary)', marginTop: 8 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--font-13)', color: 'var(--text-secondary)', marginTop: 'var(--space-3)' }}>
               <span>{usageMetrics?.credits?.used || 0} / {usageMetrics?.credits?.limit || 0} credits used</span>
               <span>{usageMetrics?.credits?.balance || 0} available</span>
             </div>
           </div>
 
-          <div className={styles.sectionCard}>
-            <h3 className={styles.sectionTitle}>Manage Plan</h3>
-            <p style={{ color: 'var(--color-text-secondary)', fontSize: 13, margin: '0 0 12px' }}>Current plan: <strong style={{ color: 'var(--color-text-primary)' }}>{planName}</strong></p>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              <Button size="sm" onClick={() => navigate('/pricing')}>Switch Plan</Button>
-              <Button size="sm" variant="secondary" onClick={handleUpdatePayment}>Update Payment</Button>
-              <Button size="sm" variant="danger" onClick={handleCancelPlan}>Cancel Plan</Button>
+          <div className="panel dashSection">
+            <h3 className="dashSectionTitle" style={{ marginBottom: 'var(--space-2)' }}>Manage Plan</h3>
+            <p className={styles.profileEmail} style={{ marginBottom: 'var(--space-4)' }}>Current plan: <strong style={{ color: 'var(--text-primary)' }}>{planName}</strong></p>
+            <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
+              <button className="btn btnPrimary btnSm" onClick={() => navigate('/pricing')}>Switch Plan</button>
+              <button className="btn btnSecondary btnSm" onClick={handleUpdatePayment}>Update Payment</button>
+              <button className="btn btnDanger btnSm" onClick={handleCancelPlan}>Cancel Plan</button>
             </div>
             {paymentMethods.length > 0 && (
-              <div style={{ marginTop: 12 }}>
+              <div className="rowList" style={{ marginTop: 'var(--space-4)' }}>
                 {paymentMethods.map(pm => (
-                  <div key={pm.id} style={{ display: 'flex', gap: 12, fontSize: 13, color: 'var(--color-text-secondary)', padding: '6px 0' }}>
-                    <span style={{ fontWeight: 600, textTransform: 'uppercase' }}>{pm.brand}</span>
-                    <span>•••• {pm.last4}</span>
-                    <span>Exp {pm.exp_month}/{pm.exp_year}</span>
+                  <div key={pm.id} className="row" style={{ padding: 'var(--space-2) 0' }}>
+                    <span style={{ fontWeight: 600, textTransform: 'uppercase', fontSize: 'var(--font-13)' }}>{pm.brand}</span>
+                    <span style={{ fontSize: 'var(--font-13)', color: 'var(--text-secondary)' }}>•••• {pm.last4} · Exp {pm.exp_month}/{pm.exp_year}</span>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          <div className={styles.sectionCard}>
-            <h3 className={styles.sectionTitle}>Auto Refill</h3>
-            <div className={styles.settingRow}>
-              <div><div className={styles.settingLabel}>Auto refill credits</div><div className={styles.settingDesc}>Automatically adds credits when your balance is low.</div></div>
-              <label className={styles.toggle}><input type="checkbox" checked={autoRefillEnabled} onChange={e => setAutoRefillEnabled(e.target.checked)} /><span className={styles.toggleSlider} /></label>
+          <div className="panel dashSection">
+            <div className="rowList">
+              <div className="row">
+                <div><div className="rowLabel">Auto refill credits</div><div className="rowDesc">Automatically adds credits when your balance is low.</div></div>
+                <label className="toggle"><input type="checkbox" checked={autoRefillEnabled} onChange={e => setAutoRefillEnabled(e.target.checked)} /><span className="toggleSlider" /></label>
+              </div>
             </div>
           </div>
 
-          <div className={styles.sectionCard}>
-            <h3 className={styles.sectionTitle}><Gift size={16} style={{ color: '#FFD800' }} /> Redeem Promo Code</h3>
-            <p style={{ color: 'var(--color-text-secondary)', fontSize: 13, margin: '0 0 12px' }}>Have a promo code? Enter it below to receive bonus credits — works on any plan.</p>
+          <div className="panel dashSection">
+            <h3 className="dashSectionTitle" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-2)' }}><Gift size={16} style={{ color: 'var(--color-primary-500)' }} /> Redeem Promo Code</h3>
+            <p className={styles.profileEmail} style={{ marginBottom: 'var(--space-4)' }}>Have a promo code? Enter it below to receive bonus credits — works on any plan.</p>
             <div className={styles.promoRow}>
               <input
                 type="text"
@@ -535,8 +568,8 @@ const NewUserDashboard: React.FC = () => {
           </div>
 
           {creditPacks.length > 0 && (
-            <div className={styles.sectionCard}>
-              <h3 className={styles.sectionTitle}>Purchase Credit Packs</h3>
+            <div className="dashSection">
+              <div className="dashSectionHead"><h2 className="dashSectionTitle">Purchase Credit Packs</h2></div>
               <div className={styles.packGrid}>
                 {creditPacks.map(pack => (
                   <div key={pack.id} className={`${styles.packCard} ${pack.popular ? styles.packPopular : ''}`}>
@@ -544,7 +577,7 @@ const NewUserDashboard: React.FC = () => {
                     <div className={styles.packName}>{pack.name}</div>
                     <div className={styles.packTokens}>{(pack.tokens || 0).toLocaleString()} credits</div>
                     <div className={styles.packPrice}>${pack.price}</div>
-                    <Button size="sm" variant={pack.popular ? 'primary' : 'secondary'} onClick={() => handlePurchaseCredits(pack.id)}>Buy</Button>
+                    <button className={`btn btnSm ${pack.popular ? 'btnPrimary' : 'btnSecondary'}`} onClick={() => handlePurchaseCredits(pack.id)} style={{ width: '100%' }}>Buy</button>
                   </div>
                 ))}
               </div>
@@ -552,44 +585,45 @@ const NewUserDashboard: React.FC = () => {
           )}
 
           {creditHistory.length > 0 && (
-            <div className={styles.sectionCard}>
-              <h3 className={styles.sectionTitle}>Credit History</h3>
-              {creditHistory.slice(0, 10).map((item: any) => (
-                <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.06)', fontSize: 13 }}>
-                  <span style={{ color: 'var(--color-text-secondary)' }}>{item.description}</span>
-                  <span style={{ color: item.amount > 0 ? '#10b981' : '#ef4444', fontWeight: 600 }}>{item.amount > 0 ? '+' : ''}{item.amount}</span>
-                </div>
-              ))}
+            <div className="panel">
+              <h3 className="dashSectionTitle" style={{ marginBottom: 'var(--space-2)' }}>Credit History</h3>
+              <div className="rowList">
+                {creditHistory.slice(0, 10).map((item: any) => (
+                  <div key={item.id} className="row">
+                    <span style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-13)' }}>{item.description}</span>
+                    <span style={{ color: item.amount > 0 ? 'var(--color-success)' : 'var(--color-error)', fontWeight: 600, fontSize: 'var(--font-13)' }}>{item.amount > 0 ? '+' : ''}{item.amount}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
-        </div>
+        </>
       )}
 
       {/* ══════════════ API KEYS TAB ══════════════ */}
       {activeTab === 'api-keys' && (
-        <div className={styles.profileSection}>
-          <div className={styles.sectionCard}>
-            <h3 className={styles.sectionTitle}>Model Provider API Keys</h3>
-            <p style={{ color: 'var(--color-text-secondary)', fontSize: 13, margin: '0 0 16px' }}>Manage your API keys for third-party model providers (BYOK).</p>
+        <>
+          <div className="panel dashSection">
+            <h3 className="dashSectionTitle" style={{ marginBottom: 'var(--space-2)' }}>Model Provider API Keys</h3>
+            <p className={styles.profileEmail} style={{ marginBottom: 'var(--space-4)' }}>Manage your API keys for third-party model providers (BYOK).</p>
             <ApiKeyManager showTitle={false} />
           </div>
 
-          <div className={styles.sectionCard}>
-            <h3 className={styles.sectionTitle}>Platform API Keys</h3>
-            <p style={{ color: 'var(--color-text-secondary)', fontSize: 13, margin: '0 0 12px' }}>Access DevSwat APIs programmatically for custom integrations.</p>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <Button size="sm" onClick={() => navigate('/connect-profiles')}><Key size={14} /> View & Create API Keys</Button>
-            </div>
+          <div className="panel">
+            <h3 className="dashSectionTitle" style={{ marginBottom: 'var(--space-2)' }}>Platform API Keys</h3>
+            <p className={styles.profileEmail} style={{ marginBottom: 'var(--space-4)' }}>Access DevSwat APIs programmatically for custom integrations.</p>
+            <button className="btn btnSecondary btnSm" onClick={() => navigate('/connect-profiles')}><Key size={14} /> View & Create API Keys</button>
           </div>
-        </div>
+        </>
       )}
 
       {/* ══════════════ INTEGRATIONS TAB ══════════════ */}
       {activeTab === 'integrations' && (
-        <Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: 'var(--color-text-secondary)' }}>Loading integrations...</div>}>
+        <Suspense fallback={<div className="emptyState">Loading integrations…</div>}>
           <ConnectProfilesPage />
         </Suspense>
       )}
+      </main>
     </div>
   );
 };

@@ -1,23 +1,16 @@
 .widget {
-  background: var(--surface, #0a0a0c);
+  background: var(--bg-secondary);
   border-radius: 16px;
   padding: 24px;
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
-  transition: all 0.2s ease;
-}
-
-[data-theme='light'] .widget {
-  background: #ffffff;
-  border-color: #e5e5e5;
+  transition: background 0.2s ease;
 }
 
 .widget.low {
-  border-color: var(--color-warning, #f59e0b);
+  background: rgba(245, 158, 11, 0.06);
 }
 
 .widget.critical {
-  border-color: var(--color-error, #ef4444);
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), transparent);
+  background: rgba(239, 68, 68, 0.08);
 }
 
 .header {
@@ -82,13 +75,13 @@
 
 .balanceSecondary {
   font-size: 14px;
-  color: var(--color-text-tertiary, #707080);
+  color: var(--text-tertiary);
   margin-top: 4px;
 }
 
 .progressBar {
   height: 8px;
-  background: var(--color-bg-tertiary, #2a2a4a);
+  background: var(--bg-tertiary);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 20px;
@@ -133,7 +126,7 @@
 
 .statLabel {
   font-size: 12px;
-  color: var(--color-text-tertiary, #707080);
+  color: var(--text-tertiary);
 }
 
 .alertBar {
@@ -188,7 +181,7 @@
 
 .loadingContent .hint {
   font-size: 12px;
-  color: var(--color-text-tertiary, #707080);
+  color: var(--text-tertiary);
 }
 
 .spinner {
@@ -204,7 +197,7 @@
 /* Free plan badge */
 .tierBadgeFree {
   background: rgba(255, 255, 255, 0.08) !important;
-  color: var(--color-text-tertiary, #707080) !important;
+  color: var(--text-tertiary) !important;
 }
 
 /* Free plan hero CTA */
@@ -222,7 +215,7 @@
 
 .freeSubtext {
   font-size: 13px;
-  color: var(--color-text-tertiary, #707080);
+  color: var(--text-tertiary);
   margin: 0;
   line-height: 1.4;
 }
@@ -242,34 +235,28 @@
   flex-direction: column;
   gap: 6px;
   padding: 14px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-tertiary);
   border-radius: 12px;
   text-decoration: none;
   color: inherit;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .planCard:hover {
-  background: rgba(1, 166, 188, 0.08);
-  border-color: rgba(1, 166, 188, 0.3);
-  transform: translateY(-1px);
+  background: rgba(14, 165, 233, 0.1);
 }
 
 .planCardActive {
-  border-color: rgba(1, 166, 188, 0.4);
-  background: rgba(1, 166, 188, 0.06);
+  background: rgba(14, 165, 233, 0.08);
 }
 
 .planCardRecommended {
-  border-color: rgba(250, 84, 124, 0.3);
-  background: rgba(250, 84, 124, 0.04);
+  background: rgba(250, 84, 124, 0.06);
 }
 
 .planCardRecommended:hover {
-  background: rgba(250, 84, 124, 0.1);
-  border-color: rgba(250, 84, 124, 0.5);
+  background: rgba(250, 84, 124, 0.12);
 }
 
 .planCardHeader {
@@ -323,7 +310,7 @@
 .planPrice span {
   font-size: 13px;
   font-weight: 400;
-  color: var(--color-text-tertiary, #707080);
+  color: var(--text-tertiary);
 }
 
 .planCredits {
@@ -334,7 +321,7 @@
 
 .planNote {
   font-size: 11px;
-  color: var(--color-text-tertiary, #707080);
+  color: var(--text-tertiary);
 }
 
 .planCta {
@@ -342,28 +329,14 @@
   padding: 6px 0;
   font-size: 12px;
   font-weight: 700;
-  color: #FFD800;
+  color: var(--color-primary-500);
   text-align: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--border-subtle);
   letter-spacing: 0.3px;
 }
 
 .planCardRecommended .planCta {
   color: #FA547C;
-}
-
-[data-theme='light'] .planCards {
-  border-top-color: rgba(0, 0, 0, 0.06);
-}
-
-[data-theme='light'] .planCard {
-  background: rgba(0, 0, 0, 0.02);
-  border-color: rgba(0, 0, 0, 0.08);
-}
-
-[data-theme='light'] .planCard:hover {
-  background: rgba(1, 166, 188, 0.06);
-  border-color: rgba(1, 166, 188, 0.25);
 }
 
 /* ============== RESPONSIVE - MOBILE ============== */

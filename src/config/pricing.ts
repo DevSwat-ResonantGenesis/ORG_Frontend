@@ -398,13 +398,6 @@ export const CORE_FEATURES: CoreFeature[] = [
     icon: 'users',
   },
   {
-    id: 'hash_sphere_memory',
-    name: 'Hash Sphere Memory',
-    badge: 'Semantic Memory System',
-    description: 'Revolutionary semantic memory that understands meaning. 3D memory space with resonance search and magnetic retrieval.',
-    icon: 'database',
-  },
-  {
     id: 'ide_compute',
     name: 'IDE & Compute',
     badge: 'Governed Execution',
@@ -433,25 +426,11 @@ export const CORE_FEATURES: CoreFeature[] = [
     icon: 'lock',
   },
   {
-    id: 'code_visualizer',
-    name: 'Code Visualizer',
-    badge: 'Full Codebase Graph',
-    description: 'Interactive codebase visualization with dependency graphs, governance rules, and CI integration.',
-    icon: 'network',
-  },
-  {
     id: 'marketplace',
     name: 'Marketplace',
     badge: 'Agents, Tools, Templates',
     description: 'Browse, publish, and install agents, workflows, and policies. RARA-certified with dual-layer isolation.',
     icon: 'store',
-  },
-  {
-    id: 'state_physics',
-    name: 'State Physics API',
-    badge: 'Invariant Enforcement',
-    description: 'Real-time anomaly detection and conservation law enforcement for complex state systems. Fraud detection, trust networks, distributed monitoring.',
-    icon: 'atom',
   },
 ];
 

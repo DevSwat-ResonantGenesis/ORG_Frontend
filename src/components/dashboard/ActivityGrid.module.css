@@ -9,20 +9,13 @@
   align-items: center;
   gap: 16px;
   padding: 20px;
-  background: var(--surface, #0a0a0c);
+  background: var(--bg-secondary);
   border-radius: 12px;
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
-  transition: all 0.2s;
-}
-
-[data-theme='light'] .card {
-  background: #ffffff;
-  border-color: #e5e5e5;
+  transition: background 0.2s;
 }
 
 .card:hover {
-  border-color: var(--color-primary, #6366f1);
-  transform: translateY(-2px);
+  background: var(--surface-hover);
 }
 
 .iconWrapper {
@@ -56,7 +49,7 @@
 .limit {
   font-size: 16px;
   font-weight: 400;
-  color: var(--color-text-tertiary, #707080);
+  color: var(--text-tertiary);
 }
 
 .trend {

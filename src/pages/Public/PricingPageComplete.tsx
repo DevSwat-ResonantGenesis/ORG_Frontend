@@ -7,8 +7,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { isAuthenticated, getSessionData } from '../../utils/auth-cookies';
 import {
-  Globe, Brain, Users, Database, Code, GitBranch,
-  Shield, Lock, Network, Store, Check, X, Zap, Atom
+  Globe, Brain, Users, Code, GitBranch,
+  Shield, Lock, Store, Check, Zap, Atom,
+  Building2, ChevronDown,
 } from 'lucide-react';
 import {
   CORE_FEATURES,
@@ -24,17 +25,119 @@ import type { CreditPack } from '../../config/pricingConfig';
 import styles from './PricingPage.module.css';
 
 const iconMap: Record<string, React.ReactNode> = {
-  globe: <Globe size={24} />,
-  brain: <Brain size={24} />,
-  users: <Users size={24} />,
-  database: <Database size={24} />,
-  code: <Code size={24} />,
-  git_branch: <GitBranch size={24} />,
-  shield: <Shield size={24} />,
-  lock: <Lock size={24} />,
-  network: <Network size={24} />,
-  store: <Store size={24} />,
+  globe: <Globe size={22} />,
+  brain: <Brain size={22} />,
+  users: <Users size={22} />,
+  code: <Code size={22} />,
+  git_branch: <GitBranch size={22} />,
+  shield: <Shield size={22} />,
+  lock: <Lock size={22} />,
+  store: <Store size={22} />,
 };
+
+const planIcons: Record<string, React.ReactNode> = {
+  developer: <Zap size={16} />,
+  plus: <Shield size={16} />,
+  enterprise: <Building2 size={16} />,
+};
+
+// Short, non-duplicated bullet list per plan — Developer & Plus share the same
+// feature set (only credits/rollover differ), so this is written once per tier
+// rather than repeated inside a giant per-plan limits table.
+const PLAN_HIGHLIGHTS: Record<string, string[]> = {
+  developer: [
+    'All platform features unlocked',
+    'Unlimited agents & autonomous mode',
+    '100 compute hours / month',
+    '5 GB storage, 100 RAG documents',
+    'Community + email support',
+  ],
+  plus: [
+    'Everything in Developer',
+    'Rollover up to 249.5K credits',
+    'Discounted top-ups ($8 / 10K)',
+    '100 compute hours / month',
+    'Priority email + Slack support',
+  ],
+  enterprise: [
+    'Custom credits & compute',
+    'SLA-backed governance',
+    'SOC2, HIPAA, GDPR compliance',
+    'Cloud, hybrid, or on-prem',
+    'Dedicated engineers',
+  ],
+};
+
+const PLAN_META: Record<string, { support: string; sla: string; deployment: string }> = {
+  developer: { support: 'Community + email', sla: 'Standard', deployment: 'Cloud' },
+  plus: { support: 'Priority email + Slack', sla: 'Standard', deployment: 'Cloud' },
+  enterprise: { support: 'Dedicated engineers', sla: '99.9% guarantee', deployment: 'Cloud, hybrid, or on-prem' },
+};
+
+interface CompareRow {
+  label: string;
+  value: (plan: Plan) => React.ReactNode;
+}
+
+const COMPARE_ROWS: CompareRow[] = [
+  { label: 'Credits / month', value: (p) => p.credits.display },
+  { label: 'Rollover & top-ups', value: (p) => p.credits.note },
+  {
+    label: 'Compute hours',
+    value: (p) => (p.limits.ideCompute.computeHours === -1 ? 'Unlimited' : `${p.limits.ideCompute.computeHours}/mo`),
+  },
+  {
+    label: 'Snapshots',
+    value: (p) => (p.limits.governance.snapshots === -1 ? 'Unlimited' : String(p.limits.governance.snapshots)),
+  },
+  { label: 'Support', value: (p) => PLAN_META[p.id]?.support ?? '—' },
+  { label: 'SLA', value: (p) => PLAN_META[p.id]?.sla ?? '—' },
+  { label: 'Deployment', value: (p) => PLAN_META[p.id]?.deployment ?? '—' },
+];
+
+// Credit usage reference — condensed from 6 overlapping cards (which contained
+// a direct contradiction: "Memory write" was listed at both 50 and 2 credits)
+// down to 3 groups. Memory API and Code Visualizer usage are intentionally
+// NOT repeated here — their pricing lives once, in the Add-on APIs section below.
+interface CreditGroup {
+  title: string;
+  rows: { label: string; value: string }[];
+  note?: string;
+}
+
+const CREDIT_GROUPS: CreditGroup[] = [
+  {
+    title: 'AI & Agents',
+    rows: [
+      { label: 'Average chat message', value: '~20 credits' },
+      { label: 'Agent session start', value: '100 credits' },
+      { label: 'Agent reasoning step', value: '500 credits' },
+      { label: 'Tool / web call', value: '200–300 credits' },
+      { label: 'Workflow run (5-node avg)', value: '~2,500 credits' },
+    ],
+  },
+  {
+    title: 'Compute & Storage',
+    rows: [
+      { label: 'Code execution (base)', value: '5 credits' },
+      { label: 'Terminal session (per min)', value: '50 credits' },
+      { label: 'Preview (per min)', value: '200 credits' },
+      { label: 'Storage', value: '1 credit / MB' },
+    ],
+    note: 'All plans include 100 compute hours, 5 GB storage, and 100 RAG documents/month. Memory API usage is billed separately — see Memory API below.',
+  },
+  {
+    title: 'Platform & Governance',
+    rows: [
+      { label: 'Hash Sphere identity add', value: '50 credits' },
+      { label: 'Hash Sphere transaction', value: '20 credits' },
+      { label: 'Governance check', value: '50 credits' },
+      { label: 'Audit entry / compliance report', value: '100 / 500 credits' },
+      { label: 'API GET / POST', value: '1 / 5 credits' },
+    ],
+    note: 'Code Visualizer usage is billed separately — see Code Visualizer API below.',
+  },
+];
 
 const PricingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -42,9 +145,11 @@ const PricingPage: React.FC = () => {
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [apiCheckoutLoading, setApiCheckoutLoading] = useState<string | null>(null);
   const [creditPackLoading, setCreditPackLoading] = useState<string | null>(null);
-  const [creditRateDescription, setCreditRateDescription] = useState<string>('1 credit ≈ $0.001');
   const [plans, setPlans] = useState<Plan[]>([]);
   const [creditPacks, setCreditPacks] = useState<CreditPack[]>([]);
+  const [expandedPlanId, setExpandedPlanId] = useState<string | null>(null);
+  const [showCreditDetails, setShowCreditDetails] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   // Get user's current plan to determine credit pack access
   const sessionData = getSessionData();
@@ -55,8 +160,6 @@ const PricingPage: React.FC = () => {
     const loadPricing = async () => {
       try {
         const pricing = await pricingService.getPricing(true);
-        const rateValue = pricing?.creditRate ?? 0.001;
-        setCreditRateDescription(`1 credit ≈ $${rateValue}`);
 
         const buildPlan = (planId: string, name: string): Plan => {
           const cfg = pricing?.plans?.[planId];
@@ -78,10 +181,10 @@ const PricingPage: React.FC = () => {
             },
             description:
               planId === 'developer'
-                ? 'Full platform access for solo builders. All features unlocked — same as Plus, with 15K credits to start.'
+                ? 'Full platform access for solo builders.'
                 : planId === 'plus'
-                ? 'For power users and heavy workloads. Same features as Developer — more credits with rollover.'
-                : 'For organizations running AI as critical infrastructure. SLA guarantees, dedicated support, and custom deployments.',
+                ? 'For power users and heavy workloads.'
+                : 'For organizations running AI as critical infrastructure.',
             credits: {
               included,
               display: included === -1 ? 'Custom' : `${included.toLocaleString()} / month`,
@@ -90,7 +193,7 @@ const PricingPage: React.FC = () => {
               topups: Boolean(cfg?.credits?.topups ?? false),
               topupPrice: cfg?.credits?.topupPrice,
               topupAmount: cfg?.credits?.topupAmount,
-              note: isEnterprise ? 'Tailored to your needs' : isPlus ? 'Rollover + Top-ups' : 'No rollover • Top-ups available',
+              note: isEnterprise ? 'Tailored to your needs' : isPlus ? 'Rollover up to 249.5K • Top-ups: $8/10K' : 'No rollover • Top-ups available',
             },
             recommended: planId === 'plus',
             contactSales: isEnterprise,
@@ -99,19 +202,9 @@ const PricingPage: React.FC = () => {
               style: planId === 'plus' ? 'primary' : 'secondary',
             },
             limits: {
-              agents: {
-                active: -1,
-                autonomousMode: true,
-                teams: true,
-              },
-              userTeams: {
-                enabled: false,
-              },
-              chat: {
-                conversations: -1,
-                messagesPerDay: -1,
-                evidenceGraph: true,
-              },
+              agents: { active: -1, autonomousMode: true, teams: true },
+              userTeams: { enabled: false },
+              chat: { conversations: -1, messagesPerDay: -1, evidenceGraph: true },
               hashSphereMemory: {
                 standaloneService: true,
                 universeAccess: planId === 'enterprise' ? 'Multi Universe' : '1 Universe',
@@ -144,6 +237,7 @@ const PricingPage: React.FC = () => {
           buildPlan('enterprise', 'Enterprise'),
         ];
         setPlans(nextPlans);
+        setExpandedPlanId((prev) => prev ?? nextPlans.find((p) => p.recommended)?.id ?? nextPlans[0]?.id ?? null);
       } catch {
         setPlans([]);
       }
@@ -192,7 +286,6 @@ const PricingPage: React.FC = () => {
     }
   };
 
-  // Handle credit pack purchase
   const handleCreditPackPurchase = async (pack: CreditPack) => {
     if (!isAuthenticated()) {
       navigate('/signup', { state: { creditPack: pack.id } });
@@ -200,7 +293,6 @@ const PricingPage: React.FC = () => {
     }
 
     if (!canPurchaseCredits) {
-      // Redirect to upgrade if user can't purchase credits
       navigate('/pricing?upgrade=plus');
       return;
     }
@@ -220,7 +312,7 @@ const PricingPage: React.FC = () => {
           cancel_url: `${window.location.origin}/pricing?canceled=true`,
         }),
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         if (data.checkout_url || data.url) {
@@ -246,13 +338,12 @@ const PricingPage: React.FC = () => {
       navigate('/contact?plan=enterprise');
       return;
     }
-    
-    // All paid plans (Developer $15/mo, Plus $499/mo) go through backend Stripe checkout
+
     if (!isAuthenticated()) {
       navigate('/signup', { state: { plan: plan.id, billingPeriod } });
       return;
     }
-    
+
     setCheckoutLoading(plan.id);
     try {
       await ensureAuth();
@@ -288,62 +379,6 @@ const PricingPage: React.FC = () => {
     }
   };
 
-  const getDisplayPrice = (plan: Plan): string => {
-    if (plan.price.display === 'Custom') return 'Custom';
-    return billingPeriod === 'monthly' 
-      ? plan.price.display 
-      : `$${Math.round(plan.price.yearly / 12)}`;
-  };
-
-  const planIcons: Record<string, React.ReactNode> = {
-    developer: <Zap size={14} />,
-    plus: <Shield size={14} />,
-    enterprise: <Network size={14} />,
-  };
-
-  const renderPlanCard = (plan: Plan) => {
-    const isRecommended = plan.recommended;
-    const isEnterprise = plan.contactSales;
-    
-    return (
-      <div 
-        key={plan.id}
-        className={`${styles.planCard} ${isRecommended ? styles.planCardRecommended : ''} ${isEnterprise ? styles.planCardEnterprise : ''}`}
-        onClick={() => handlePlanSelect(plan)}
-        role="button"
-        tabIndex={0}
-      >
-        <div className={styles.planCardHeader}>
-          {planIcons[plan.id]}
-          <span className={styles.planName}>{plan.name}</span>
-          {isRecommended && (
-            <span className={styles.recommendedBadge}>Recommended</span>
-          )}
-        </div>
-        <div className={styles.planPrice}>
-          {getDisplayPrice(plan)}<span>{plan.price.period}</span>
-        </div>
-        <div className={styles.planCredits}>{plan.credits.display}</div>
-        <div className={styles.planNote}>{plan.credits.note}</div>
-        {checkoutLoading === plan.id && (
-          <div className={styles.planLoading}>Redirecting...</div>
-        )}
-      </div>
-    );
-  };
-
-  const renderFeatureCard = (feature: CoreFeature) => (
-    <div key={feature.id} className={styles.featureCard}>
-      <div className={styles.featureIcon}>
-        {iconMap[feature.icon] || <Zap size={24} />}
-      </div>
-      <h4 className={styles.featureTitle}>{feature.name}</h4>
-      <span className={styles.featureBadge}>{feature.badge}</span>
-      <p className={styles.featureDescription}>{feature.description}</p>
-    </div>
-  );
-
-  // Handle API subscription checkout
   const handleApiSubscribe = async (apiType: 'state_physics' | 'hash_sphere_memory' | 'code_visualizer', planId: string, isEnterprise: boolean = false) => {
     if (isEnterprise) {
       navigate(`/contact?api=${apiType}&plan=enterprise`);
@@ -357,7 +392,7 @@ const PricingPage: React.FC = () => {
 
     const loadingKey = `${apiType}_${planId}`;
     setApiCheckoutLoading(loadingKey);
-    
+
     try {
       await ensureAuth();
       const response = await fetch('/api/billing/checkout/subscription', {
@@ -365,17 +400,17 @@ const PricingPage: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          plan_id: apiType === 'state_physics' 
-          ? `state_physics_${planId}`  // "state_physics_dev", "state_physics_startup"
+          plan_id: apiType === 'state_physics'
+          ? `state_physics_${planId}`
           : apiType === 'code_visualizer'
-          ? `code_visualizer_${planId}`  // "code_visualizer_dev", "code_visualizer_startup"
-          : `hash_sphere_memory_${planId}`,  // starter|builder|scale|enterprise → pricing.yaml plan ids
-          billing_cycle: 'monthly',  // API subscriptions are monthly
+          ? `code_visualizer_${planId}`
+          : `hash_sphere_memory_${planId}`,
+          billing_cycle: 'monthly',
           success_url: `${window.location.origin}/api-keys?success=true&api=${apiType}`,
           cancel_url: `${window.location.origin}/pricing?canceled=true`,
         }),
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         window.location.href = data.checkout_url || data.url;
@@ -391,631 +426,353 @@ const PricingPage: React.FC = () => {
     }
   };
 
+  const getDisplayPrice = (plan: Plan): string => {
+    if (plan.price.display === 'Custom') return 'Custom';
+    return billingPeriod === 'monthly'
+      ? plan.price.display
+      : `$${Math.round(plan.price.yearly / 12)}`;
+  };
+
+  const renderPlanCard = (plan: Plan) => {
+    const isRecommended = plan.recommended;
+
+    return (
+      <div
+        key={plan.id}
+        className={`${styles.planCard} ${isRecommended ? styles.planCardRecommended : ''}`}
+      >
+        {isRecommended && <span className={styles.recommendedBadge}>Recommended</span>}
+        <div className={styles.planCardHeader}>
+          {planIcons[plan.id]}
+          <span className={styles.planName}>{plan.name}</span>
+        </div>
+        <div className={styles.planPrice}>
+          {getDisplayPrice(plan)}
+          {plan.price.period && <span>{plan.price.period}</span>}
+        </div>
+        <div className={styles.planCredits}>{plan.credits.display}</div>
+        <ul className={styles.planFeatureList}>
+          {(PLAN_HIGHLIGHTS[plan.id] ?? []).map((item) => (
+            <li key={item} className={styles.planFeatureItem}>
+              <Check size={15} className={styles.checkIcon} />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+        <button
+          className={`${styles.planCta} ${isRecommended ? styles.planCtaPrimary : ''}`}
+          onClick={() => handlePlanSelect(plan)}
+          disabled={checkoutLoading === plan.id}
+        >
+          {checkoutLoading === plan.id ? 'Redirecting…' : plan.cta.text}
+        </button>
+      </div>
+    );
+  };
+
+  const renderFeatureCard = (feature: CoreFeature) => (
+    <div key={feature.id} className={styles.featureCard}>
+      <div className={styles.featureIcon}>
+        {iconMap[feature.icon] || <Zap size={22} />}
+      </div>
+      <h4 className={styles.featureTitle}>{feature.name}</h4>
+      <p className={styles.featureDescription}>{feature.description}</p>
+    </div>
+  );
+
+  const renderAddonPlans = (
+    apiType: 'state_physics' | 'hash_sphere_memory' | 'code_visualizer',
+    addonPlans: Array<{ id: string; name: string; price: number; period: string; features: string[] }>,
+    unitLabel: (plan: any) => string,
+    popularId: string,
+    enterpriseDisplayPrice: string,
+  ) => (
+    <div className={styles.addonPlansGrid}>
+      {addonPlans.map((plan) => {
+        const isEnterprise = plan.id === 'enterprise';
+        const isPopular = plan.id === popularId;
+        const loadingKey = `${apiType}_${plan.id}`;
+
+        return (
+          <div key={plan.id} className={`${styles.addonPlanCard} ${isPopular ? styles.addonPlanCardPopular : ''}`}>
+            {isPopular && <span className={styles.addonPlanBadge}>Popular</span>}
+            <h4 className={styles.addonPlanName}>{plan.name}</h4>
+            <div className={styles.addonPlanPrice}>
+              <span className={styles.addonPriceAmount}>{isEnterprise ? enterpriseDisplayPrice : `$${plan.price}`}</span>
+              <span className={styles.addonPricePeriod}>/{plan.period}</span>
+            </div>
+            <div className={styles.addonPlanUnits}>{unitLabel(plan)}</div>
+            <ul className={styles.addonPlanFeatures}>
+              {plan.features.slice(0, 4).map((feature: string, idx: number) => (
+                <li key={idx} className={styles.addonPlanFeature}>
+                  <Check size={14} className={styles.checkIcon} />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+            <button
+              className={`${styles.addonPlanCta} ${isPopular ? styles.addonPlanCtaPrimary : ''}`}
+              onClick={() => handleApiSubscribe(apiType, plan.id, isEnterprise)}
+              disabled={apiCheckoutLoading === loadingKey}
+            >
+              {apiCheckoutLoading === loadingKey ? 'Redirecting…' : isEnterprise ? 'Contact Sales' : 'Subscribe'}
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  );
+
   return (
     <div className={styles.pricingPage}>
       <div className={styles.sectionContent}>
-        {/* Header */}
+        {/* 1. Hero */}
         <div className={styles.sectionHeader}>
-          <h1 className={styles.sectionTitle}>Simple, Transparent Pricing</h1>
+          <h1 className={styles.sectionTitle}>Simple, transparent pricing</h1>
           <p className={styles.sectionDescription}>
-            All plans include full platform access. Developer and Plus share the same features — only credits and rollover differ.
-            Usage is metered via Resonant Credits.
+            Developer and Plus share every feature — only credits and rollover differ. Usage is metered via Resonant Credits, 1 credit ≈ $0.001.
           </p>
-          
         </div>
 
-        {/* Plans Grid */}
+        {/* 2. Plan cards */}
         <div className={styles.plansGrid}>
           {plans.map(renderPlanCard)}
         </div>
 
-        {/* Credit Calculator */}
-        <div className={styles.calculatorSection}>
-          <h2 className={styles.calculatorTitle}>Credit-Based Pricing</h2>
-          <p className={styles.calculatorSubtitle}>
-            Pay only for what you use. Credits cover AI model calls, compute time, storage, and agent execution.
-          </p>
-          <div className={styles.creditRate}>
-            <div className={styles.creditRateValue}>{creditRateDescription}</div>
-            <div className={styles.creditRateLabel}>
-              Real-time cost estimation before each action
+        {/* 3. Plan comparison — one table instead of a 24-box breakdown */}
+        {plans.length > 0 && (
+          <section className={styles.compareSection}>
+            <div className={styles.compareTableWrapper}>
+              <table className={styles.compareTable}>
+                <thead>
+                  <tr>
+                    <th></th>
+                    {plans.map((plan) => (
+                      <th key={plan.id} className={plan.recommended ? styles.compareColRecommended : ''}>
+                        {plan.name}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {COMPARE_ROWS.map((row) => (
+                    <tr key={row.label}>
+                      <td className={styles.compareRowLabel}>{row.label}</td>
+                      {plans.map((plan) => (
+                        <td key={plan.id} className={plan.recommended ? styles.compareColRecommended : ''}>
+                          {row.value(plan)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          </div>
-        </div>
 
-        {/* Credit Cost Breakdown */}
-        <section className={styles.creditBreakdownSection}>
+            {/* Mobile-only accordion rendering of the same data */}
+            <div className={styles.compareMobileList}>
+              {plans.map((plan) => {
+                const isOpen = expandedPlanId === plan.id;
+                return (
+                  <div key={plan.id} className={styles.compareMobileCard}>
+                    <button
+                      type="button"
+                      className={styles.compareMobileHeader}
+                      onClick={() => setExpandedPlanId(isOpen ? null : plan.id)}
+                      aria-expanded={isOpen}
+                    >
+                      <span>{plan.name}</span>
+                      <ChevronDown size={18} className={isOpen ? styles.chevronOpen : ''} />
+                    </button>
+                    {isOpen && (
+                      <div className={styles.compareMobileBody}>
+                        {COMPARE_ROWS.map((row) => (
+                          <div key={row.label} className={styles.compareMobileRow}>
+                            <span>{row.label}</span>
+                            <strong>{row.value(plan)}</strong>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* 4. Everything included — shown once, not per plan */}
+        <section className={styles.featuresSection}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>What Do Credits Cost?</h2>
-            <p className={styles.sectionDescription}>
-              Every action on the platform has a transparent credit cost. 1 credit ≈ $0.001.
-              Here's exactly what you pay for each service.
-            </p>
+            <h2 className={styles.sectionTitle}>Everything included</h2>
+            <p className={styles.sectionDescription}>Every paid plan includes full access to the core platform.</p>
           </div>
-
-          <div className={styles.creditBreakdownGrid}>
-            {/* Chat / LLM */}
-            <div className={styles.creditBreakdownCard}>
-              <h4 className={styles.creditBreakdownTitle}>💬 Chat &amp; LLM</h4>
-              <p className={styles.creditBreakdownSubtitle}>Token-based billing — pay for actual usage</p>
-              <ul className={styles.creditBreakdownList}>
-                <li><span>Average message</span><strong>~20 credits</strong></li>
-                <li><span>Input tokens</span><strong>10 / 1K tokens</strong></li>
-                <li><span>Output tokens</span><strong>30 / 1K tokens</strong></li>
-                <li><span>Min per request</span><strong>10 credits</strong></li>
-              </ul>
-              <div className={styles.creditBreakdownProviders}>
-                <strong>Provider multipliers:</strong>
-                <div className={styles.providerChips}>
-                  <span className={styles.providerChip}>OpenAI 1.0×</span>
-                  <span className={styles.providerChip}>Anthropic 1.2×</span>
-                  <span className={styles.providerChip}>Google 0.8×</span>
-                  <span className={styles.providerChip}>Groq 0.5×</span>
-                  <span className={styles.providerChip}>Local 0.1×</span>
-                </div>
-              </div>
-              <div className={styles.creditBreakdownExample}>
-                Developer plan: ~750 messages/month • Plus: ~24,950 messages/month
-              </div>
-            </div>
-
-            {/* Agents */}
-            <div className={styles.creditBreakdownCard}>
-              <h4 className={styles.creditBreakdownTitle}>🤖 Agent Execution</h4>
-              <p className={styles.creditBreakdownSubtitle}>Per-action billing for autonomous agents</p>
-              <ul className={styles.creditBreakdownList}>
-                <li><span>Session start</span><strong>100 credits</strong></li>
-                <li><span>Step (reasoning)</span><strong>500 credits</strong></li>
-                <li><span>Tool invocation</span><strong>200 credits</strong></li>
-                <li><span>Web call</span><strong>300 credits</strong></li>
-                <li><span>Memory write</span><strong>50 credits</strong></li>
-                <li><span>Goal completion</span><strong>200 credits</strong></li>
-                <li><span>Team run</span><strong>500 credits</strong></li>
-              </ul>
-              <div className={styles.creditBreakdownProviders}>
-                <strong>Agent type multipliers:</strong>
-                <div className={styles.providerChips}>
-                  <span className={styles.providerChip}>Simple 0.5×</span>
-                  <span className={styles.providerChip}>Default 1.0×</span>
-                  <span className={styles.providerChip}>Complex 1.5×</span>
-                  <span className={styles.providerChip}>Autonomous 2.0×</span>
-                </div>
-              </div>
-              <div className={styles.creditBreakdownExample}>
-                3-step simple agent: ~800 credits • 3-step autonomous: ~3,200 credits
-              </div>
-            </div>
-
-            {/* Workflows */}
-            <div className={styles.creditBreakdownCard}>
-              <h4 className={styles.creditBreakdownTitle}>⚡ Workflows</h4>
-              <p className={styles.creditBreakdownSubtitle}>Automated multi-step pipelines</p>
-              <ul className={styles.creditBreakdownList}>
-                <li><span>Workflow start</span><strong>1,000 credits</strong></li>
-                <li><span>Node execution</span><strong>300 credits</strong></li>
-                <li><span>Conditional branch</span><strong>200 credits</strong></li>
-                <li><span>Parallel execution</span><strong>400 credits</strong></li>
-                <li><span>Scheduled trigger</span><strong>10 credits</strong></li>
-                <li><span>Webhook trigger</span><strong>5 credits</strong></li>
-              </ul>
-              <div className={styles.creditBreakdownExample}>
-                Typical 5-node workflow: ~2,500 credits per run
-              </div>
-            </div>
-
-            {/* Compute / IDE */}
-            <div className={styles.creditBreakdownCard}>
-              <h4 className={styles.creditBreakdownTitle}>🖥️ Compute &amp; IDE</h4>
-              <p className={styles.creditBreakdownSubtitle}>Code execution, terminal, and preview</p>
-              <ul className={styles.creditBreakdownList}>
-                <li><span>Code execution (base)</span><strong>5 credits</strong></li>
-                <li><span>Terminal session (min)</span><strong>50 credits</strong></li>
-                <li><span>Preview (min)</span><strong>200 credits</strong></li>
-                <li><span>Compute rate</span><strong>1 credit/ms</strong></li>
-              </ul>
-              <div className={styles.creditBreakdownExample}>
-                All plans include 100 compute hours/month
-              </div>
-            </div>
-
-            {/* Memory / Storage */}
-            <div className={styles.creditBreakdownCard}>
-              <h4 className={styles.creditBreakdownTitle}>🧠 Memory &amp; Storage</h4>
-              <p className={styles.creditBreakdownSubtitle}>Hash Sphere Memory, RAG, and embeddings</p>
-              <ul className={styles.creditBreakdownList}>
-                <li><span>Embedding</span><strong>100 credits</strong></li>
-                <li><span>Retrieval</span><strong>50 credits</strong></li>
-                <li><span>Store memory</span><strong>20 credits</strong></li>
-                <li><span>Memory write</span><strong>2 credits</strong></li>
-                <li><span>Memory read</span><strong>Free</strong></li>
-                <li><span>RAG upload</span><strong>10 credits</strong></li>
-                <li><span>Storage</span><strong>1 credit/MB</strong></li>
-              </ul>
-              <div className={styles.creditBreakdownExample}>
-                All plans include 5 GB storage and 100 RAG documents
-              </div>
-            </div>
-
-            {/* Blockchain + Code Viz + API */}
-            <div className={styles.creditBreakdownCard}>
-              <h4 className={styles.creditBreakdownTitle}>🔗 Blockchain, Code Viz &amp; API</h4>
-              <p className={styles.creditBreakdownSubtitle}>Audit trail, visualization, and API access</p>
-              <ul className={styles.creditBreakdownList}>
-                <li><span>Audit entry</span><strong>100 credits</strong></li>
-                <li><span>Compliance report</span><strong>500 credits</strong></li>
-                <li><span>Codebase analysis</span><strong>200 credits</strong></li>
-                <li><span>Governance check</span><strong>50 credits</strong></li>
-                <li><span>Graph export</span><strong>20 credits</strong></li>
-                <li><span>API GET</span><strong>1 credit</strong></li>
-                <li><span>API POST/PUT</span><strong>5 credits</strong></li>
-              </ul>
-              <div className={styles.creditBreakdownExample}>
-                Hash Sphere: Identity 50 • Transaction 20 • Trust 10 • Simulation 100
-              </div>
-            </div>
+          <div className={styles.featuresGrid}>
+            {CORE_FEATURES.map(renderFeatureCard)}
           </div>
         </section>
 
-        {/* Credit Packs Section */}
+        {/* 5. Credit usage reference — collapsed by default */}
+        <section className={styles.creditRefSection}>
+          <button
+            type="button"
+            className={styles.creditRefToggle}
+            onClick={() => setShowCreditDetails((v) => !v)}
+            aria-expanded={showCreditDetails}
+          >
+            <span>{showCreditDetails ? 'Hide' : 'Show'} credit pricing details</span>
+            <ChevronDown size={18} className={showCreditDetails ? styles.chevronOpen : ''} />
+          </button>
+
+          {showCreditDetails && (
+            <div className={styles.creditRefGrid}>
+              {CREDIT_GROUPS.map((group) => (
+                <div key={group.title} className={styles.creditRefCard}>
+                  <h4 className={styles.creditRefTitle}>{group.title}</h4>
+                  <ul className={styles.creditRefList}>
+                    {group.rows.map((row) => (
+                      <li key={row.label}>
+                        <span>{row.label}</span>
+                        <strong>{row.value}</strong>
+                      </li>
+                    ))}
+                  </ul>
+                  {group.note && <p className={styles.creditRefNote}>{group.note}</p>}
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* 6. Buy credits */}
         <section className={styles.creditPacksSection}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Buy Credits</h2>
+            <h2 className={styles.sectionTitle}>Buy credits</h2>
             <p className={styles.sectionDescription}>
-              {canPurchaseCredits 
+              {canPurchaseCredits
                 ? 'Top up your account with credit packs. Larger packs offer better value.'
-                : 'Credit packs are available for all paid subscribers. Sign up for a plan to purchase credits.'
-              }
+                : 'Credit packs are available for all paid subscribers. Sign up for a plan to purchase credits.'}
             </p>
           </div>
-          
+
           <div className={styles.creditPacksGrid}>
             {creditPacks.map((pack) => (
-              <div 
+              <div
                 key={pack.id}
                 className={`${styles.creditPackCard} ${pack.recommended ? styles.creditPackRecommended : ''}`}
               >
-                {pack.recommended && (
-                  <span className={styles.recommendedBadge}>Best Value</span>
-                )}
+                {pack.recommended && <span className={styles.recommendedBadge}>Best Value</span>}
                 <h3 className={styles.creditPackName}>{pack.name}</h3>
-                <div className={styles.creditPackCredits}>
-                  {pack.credits.toLocaleString()} credits
-                </div>
+                <div className={styles.creditPackCredits}>{pack.credits.toLocaleString()} credits</div>
                 <div className={styles.creditPackPrice}>
                   <span className={styles.creditPackPriceAmount}>${pack.price}</span>
                   <span className={styles.creditPackPriceRate}>${pack.pricePerK.toFixed(2)}/1k</span>
                 </div>
-                {pack.savings && (
-                  <div className={styles.creditPackSavings}>Save {pack.savings}</div>
-                )}
+                {pack.savings && <div className={styles.creditPackSavings}>Save {pack.savings}</div>}
                 <p className={styles.creditPackDescription}>{pack.description}</p>
                 <button
-                  className={styles.creditPackButton}
+                  className={`${styles.creditPackButton} ${pack.recommended ? styles.creditPackButtonPrimary : ''}`}
                   onClick={() => handleCreditPackPurchase(pack)}
                   disabled={creditPackLoading === pack.id || !canPurchaseCredits}
                 >
-                  {creditPackLoading === pack.id ? 'Processing...' : 
-                   canPurchaseCredits ? 'Buy Now' : 'Upgrade to Plus'}
+                  {creditPackLoading === pack.id ? 'Processing…' : canPurchaseCredits ? 'Buy Now' : 'Upgrade to Plus'}
                 </button>
               </div>
             ))}
           </div>
         </section>
 
-        {/* API Subscriptions Section */}
-        <section className={styles.apiSection}>
+        {/* 7. Add-on APIs — the single, properly-tiered home for Memory, State Physics, and Code Visualizer pricing */}
+        <section className={styles.addonSection}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Standalone API Products</h2>
+            <h2 className={styles.sectionTitle}>Add-on APIs</h2>
             <p className={styles.sectionDescription}>
-              Add specialized APIs to any platform plan. Billed separately from platform credits.
+              Specialized APIs billed separately from platform credits. Add any of these to any plan.
             </p>
           </div>
 
-          {/* Hash Sphere Memory API */}
-          <div className={styles.apiProductSection}>
-            <div className={styles.apiProductHeader}>
-              <div className={styles.apiProductIcon}>
-                <Brain size={32} />
-              </div>
-              <div className={styles.apiProductInfo}>
-                <h3 className={styles.apiProductName}>Resonant Memory API</h3>
-                <p className={styles.apiProductDescription}>
-                  Physics-informed, immutable AI memory. 12-D hash-sphere retrieval (gravity ranking,
-                  associative mesh, cross-encoder rerank, multi-hop fact graph, temporal reasoning),
-                  encrypted and anchored on-chain, isolated per user/agent/org.
-                </p>
-                <p className={styles.apiProductDescription} style={{ marginTop: 8, fontSize: '0.85rem', opacity: 0.85 }}>
-                  <strong>Pay-per-call</strong> with credits — store a memory <strong>120</strong>,
-                  recall <strong>60</strong>, read facts <strong>20</strong> credits. Buy credits below
-                  (from $5) and top up anytime, or subscribe for included monthly volume.
+          <div className={styles.addonProduct}>
+            <div className={styles.addonProductHeader}>
+              <div className={styles.addonProductIcon}><Brain size={28} /></div>
+              <div>
+                <h3 className={styles.addonProductName}>Memory API</h3>
+                <p className={styles.addonProductDescription}>
+                  Physics-informed, immutable AI memory. 12-D hash-sphere retrieval, encrypted and anchored on-chain, isolated per user/agent/org.
                 </p>
               </div>
             </div>
-
-            <div className={styles.apiPlansGrid}>
-              {HASH_SPHERE_MEMORY_API_PLANS.map((plan) => {
-                const isEnterprise = plan.id === 'enterprise';
-                const loadingKey = `hash_sphere_memory_${plan.id}`;
-                
-                return (
-                  <div key={plan.id} className={`${styles.apiPlanCard} ${plan.id === 'builder' ? styles.apiPlanCardPopular : ''}`}>
-                    {plan.id === 'builder' && (
-                      <span className={styles.apiPlanBadge}>Popular</span>
-                    )}
-                    <h4 className={styles.apiPlanName}>{plan.name}</h4>
-                    <div className={styles.apiPlanPrice}>
-                      <span className={styles.apiPriceAmount}>
-                        {isEnterprise ? '$25k+' : `$${plan.price}`}
-                      </span>
-                      <span className={styles.apiPricePeriod}>/{plan.period}</span>
-                    </div>
-                    <div className={styles.apiPlanUnits}>
-                      {plan.memoryUnits === -1 ? 'Unlimited MU' : `${(plan.memoryUnits / 1000).toLocaleString()}k MU/month`}
-                    </div>
-                    <ul className={styles.apiPlanFeatures}>
-                      {plan.features.slice(0, 4).map((feature, idx) => (
-                        <li key={idx} className={styles.apiPlanFeature}>
-                          <Check size={14} className={styles.checkIcon} />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <button
-                      className={`${styles.apiPlanCta} ${plan.id === 'builder' ? styles.apiPlanCtaPrimary : ''}`}
-                      onClick={() => handleApiSubscribe('hash_sphere_memory', plan.id, isEnterprise)}
-                      disabled={apiCheckoutLoading === loadingKey}
-                    >
-                      {apiCheckoutLoading === loadingKey ? 'Redirecting...' : isEnterprise ? 'Contact Sales' : 'Subscribe'}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
+            {renderAddonPlans(
+              'hash_sphere_memory',
+              HASH_SPHERE_MEMORY_API_PLANS,
+              (plan) => (plan.memoryUnits === -1 ? 'Unlimited MU' : `${(plan.memoryUnits / 1000).toLocaleString()}k MU/month`),
+              'builder',
+              '$25k+',
+            )}
           </div>
 
-          {/* State Physics API */}
-          <div className={styles.apiProductSection}>
-            <div className={styles.apiProductHeader}>
-              <div className={styles.apiProductIcon} style={{ background: 'linear-gradient(135deg, #FAA525 0%, #e6941e 100%)' }}>
-                <Atom size={32} />
-              </div>
-              <div className={styles.apiProductInfo}>
-                <h3 className={styles.apiProductName}>State Physics API</h3>
-                <p className={styles.apiProductDescription}>
-                  Real-time anomaly detection and conservation law enforcement for complex state systems. Fraud detection, trust networks, distributed monitoring.
+          <div className={styles.addonProduct}>
+            <div className={styles.addonProductHeader}>
+              <div className={styles.addonProductIcon}><Atom size={28} /></div>
+              <div>
+                <h3 className={styles.addonProductName}>State Physics API</h3>
+                <p className={styles.addonProductDescription}>
+                  Real-time anomaly detection and conservation-law enforcement for complex state systems — fraud detection, trust networks, distributed monitoring.
                 </p>
               </div>
             </div>
-            
-            <div className={styles.apiPlansGrid}>
-              {STATE_PHYSICS_API_PLANS.map((plan) => {
-                const isEnterprise = plan.id === 'enterprise';
-                const loadingKey = `state_physics_${plan.id}`;
-                
-                return (
-                  <div key={plan.id} className={`${styles.apiPlanCard} ${plan.id === 'startup' ? styles.apiPlanCardPopular : ''}`}>
-                    {plan.id === 'startup' && (
-                      <span className={styles.apiPlanBadge}>Popular</span>
-                    )}
-                    <h4 className={styles.apiPlanName}>{plan.name}</h4>
-                    <div className={styles.apiPlanPrice}>
-                      <span className={styles.apiPriceAmount}>
-                        {isEnterprise ? '$2k+' : `$${plan.price}`}
-                      </span>
-                      <span className={styles.apiPricePeriod}>/{plan.period}</span>
-                    </div>
-                    <div className={styles.apiPlanUnits}>
-                      {plan.simulationUnits === -1 ? 'Custom SU' : `${(plan.simulationUnits / 1000).toLocaleString()}k SU/month`}
-                    </div>
-                    <ul className={styles.apiPlanFeatures}>
-                      {plan.features.slice(0, 4).map((feature, idx) => (
-                        <li key={idx} className={styles.apiPlanFeature}>
-                          <Check size={14} className={styles.checkIcon} />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <button
-                      className={`${styles.apiPlanCta} ${plan.id === 'startup' ? styles.apiPlanCtaPrimary : ''}`}
-                      onClick={() => handleApiSubscribe('state_physics', plan.id, isEnterprise)}
-                      disabled={apiCheckoutLoading === loadingKey}
-                    >
-                      {apiCheckoutLoading === loadingKey ? 'Redirecting...' : isEnterprise ? 'Contact Sales' : 'Subscribe'}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
+            {renderAddonPlans(
+              'state_physics',
+              STATE_PHYSICS_API_PLANS,
+              (plan) => (plan.simulationUnits === -1 ? 'Custom SU' : `${(plan.simulationUnits / 1000).toLocaleString()}k SU/month`),
+              'startup',
+              '$2k+',
+            )}
           </div>
 
-          {/* Code Visualizer API */}
-          <div className={styles.apiProductSection}>
-            <div className={styles.apiProductHeader}>
-              <div className={styles.apiProductIcon} style={{ background: 'linear-gradient(135deg, #71C23E 0%, #5da832 100%)' }}>
-                <Code size={32} />
-              </div>
-              <div className={styles.apiProductInfo}>
-                <h3 className={styles.apiProductName}>Code Visualizer API</h3>
-                <p className={styles.apiProductDescription}>
-                  AST analysis, dependency graph generation, and interactive code visualization. Understand complex codebases at scale with structural insights.
+          <div className={styles.addonProduct}>
+            <div className={styles.addonProductHeader}>
+              <div className={styles.addonProductIcon}><Code size={28} /></div>
+              <div>
+                <h3 className={styles.addonProductName}>Code Visualizer API</h3>
+                <p className={styles.addonProductDescription}>
+                  AST analysis, dependency graph generation, and interactive code visualization for understanding complex codebases at scale.
                 </p>
               </div>
             </div>
-            
-            <div className={styles.apiPlansGrid}>
-              {CODE_VISUALIZER_API_PLANS.map((plan) => {
-                const isEnterprise = plan.id === 'enterprise';
-                const loadingKey = `code_visualizer_${plan.id}`;
-                
-                return (
-                  <div key={plan.id} className={`${styles.apiPlanCard} ${plan.id === 'startup' ? styles.apiPlanCardPopular : ''}`}>
-                    {plan.id === 'startup' && (
-                      <span className={styles.apiPlanBadge}>Popular</span>
-                    )}
-                    <h4 className={styles.apiPlanName}>{plan.name}</h4>
-                    <div className={styles.apiPlanPrice}>
-                      <span className={styles.apiPriceAmount}>
-                        {isEnterprise ? '$2k+' : `$${plan.price}`}
-                      </span>
-                      <span className={styles.apiPricePeriod}>/{plan.period}</span>
-                    </div>
-                    <div className={styles.apiPlanUnits}>
-                      {plan.analysisUnits === -1 ? 'Custom AU' : `${(plan.analysisUnits / 1000).toLocaleString()}k AU/month`}
-                    </div>
-                    <ul className={styles.apiPlanFeatures}>
-                      {plan.features.slice(0, 4).map((feature, idx) => (
-                        <li key={idx} className={styles.apiPlanFeature}>
-                          <Check size={14} className={styles.checkIcon} />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <button
-                      className={`${styles.apiPlanCta} ${plan.id === 'startup' ? styles.apiPlanCtaPrimary : ''}`}
-                      onClick={() => handleApiSubscribe('code_visualizer', plan.id, isEnterprise)}
-                      disabled={apiCheckoutLoading === loadingKey}
-                    >
-                      {apiCheckoutLoading === loadingKey ? 'Redirecting...' : isEnterprise ? 'Contact Sales' : 'Subscribe'}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
+            {renderAddonPlans(
+              'code_visualizer',
+              CODE_VISUALIZER_API_PLANS,
+              (plan) => (plan.analysisUnits === -1 ? 'Custom AU' : `${(plan.analysisUnits / 1000).toLocaleString()}k AU/month`),
+              'startup',
+              '$2k+',
+            )}
           </div>
         </section>
 
-        {/* Limits Section */}
-        <section className={styles.limitsSection}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Detailed Plan Limits</h2>
-            <p className={styles.sectionDescription}>
-              Compare features and limits across all plans
-            </p>
-          </div>
-          
-          <div className={styles.limitsGrid}>
-            {plans.map((plan) => (
-              <div key={plan.id} className={styles.limitCard}>
-                <h3 className={styles.limitCardTitle}>{plan.name}</h3>
-                
-                <div className={styles.limitCategory}>
-                  <h4 className={styles.limitCategoryTitle}>Agent Console</h4>
-                  <ul className={styles.limitList}>
-                    <li className={styles.limitItem}>
-                      <span>Active Agents</span>
-                      <span className={`${styles.limitValue} ${plan.limits.agents.active === -1 ? styles.limitValueUnlimited : ''}`}>
-                        {plan.limits.agents.active === -1 ? 'Unlimited' : plan.limits.agents.active}
-                      </span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>Autonomous Mode</span>
-                      <span className={plan.limits.agents.autonomousMode ? styles.checkIcon : styles.crossIcon}>
-                        {plan.limits.agents.autonomousMode ? <Check size={16} /> : <X size={16} />}
-                      </span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>Agent Teams</span>
-                      <span className={styles.limitValue}>
-                        {typeof plan.limits.agents.teams === 'boolean' 
-                          ? (plan.limits.agents.teams ? 'Yes' : 'No')
-                          : plan.limits.agents.teams}
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                
-                <div className={styles.limitCategory}>
-                  <h4 className={styles.limitCategoryTitle}>AGI Neural Hub</h4>
-                  <ul className={styles.limitList}>
-                    <li className={styles.limitItem}>
-                      <span>Conversations</span>
-                      <span className={`${styles.limitValue} ${plan.limits.chat.conversations === -1 ? styles.limitValueUnlimited : ''}`}>
-                        {plan.limits.chat.conversations === -1 ? 'Unlimited' : plan.limits.chat.conversations.toLocaleString()}
-                      </span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>Messages/Day</span>
-                      <span className={`${styles.limitValue} ${plan.limits.chat.messagesPerDay === -1 ? styles.limitValueUnlimited : ''}`}>
-                        {plan.limits.chat.messagesPerDay === -1 ? 'Unlimited' : plan.limits.chat.messagesPerDay.toLocaleString()}
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-                
-                <div className={styles.limitCategory}>
-                  <h4 className={styles.limitCategoryTitle}>IDE & Compute</h4>
-                  <ul className={styles.limitList}>
-                    <li className={styles.limitItem}>
-                      <span>Compute Hours</span>
-                      <span className={`${styles.limitValue} ${plan.limits.ideCompute.computeHours === -1 ? styles.limitValueUnlimited : ''}`}>
-                        {plan.limits.ideCompute.computeHours === -1 ? 'Unlimited' : `${plan.limits.ideCompute.computeHours}/mo`}
-                      </span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>AI Assistance</span>
-                      <span className={styles.limitValue}>{plan.limits.ideCompute.aiAssistance}</span>
-                    </li>
-                  </ul>
-                </div>
-                
-                <div className={styles.limitCategory}>
-                  <h4 className={styles.limitCategoryTitle}>RARA Governance</h4>
-                  <ul className={styles.limitList}>
-                    <li className={styles.limitItem}>
-                      <span>Kill Switch</span>
-                      <span className={styles.limitValue}>{plan.limits.governance.killSwitch}</span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>Invariants</span>
-                      <span className={styles.limitValue}>
-                        {plan.limits.governance.invariants === -1 ? 'Custom' : plan.limits.governance.invariants}
-                      </span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>Snapshots</span>
-                      <span className={`${styles.limitValue} ${plan.limits.governance.snapshots === -1 ? styles.limitValueUnlimited : ''}`}>
-                        {plan.limits.governance.snapshots === -1 ? 'Unlimited' : 
-                         plan.limits.governance.snapshots === false ? <X size={16} className={styles.crossIcon} /> : 
-                         plan.limits.governance.snapshots}
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className={styles.limitCategory}>
-                  <h4 className={styles.limitCategoryTitle}>Hash Sphere</h4>
-                  <ul className={styles.limitList}>
-                    <li className={styles.limitItem}>
-                      <span>View Identity Node</span>
-                      <span className={plan.id === 'developer' || plan.id === 'plus' || plan.id === 'enterprise' ? styles.checkIcon : styles.crossIcon}>
-                        <Check size={16} />
-                      </span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>Full Identity Graph</span>
-                      <span className={styles.checkIcon}>
-                        <Check size={16} />
-                      </span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>Economic Flow Tracking</span>
-                      <span className={styles.checkIcon}>
-                        <Check size={16} />
-                      </span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>API Access</span>
-                      <span className={styles.checkIcon}>
-                        <Check size={16} />
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className={styles.limitCategory}>
-                  <h4 className={styles.limitCategoryTitle}>Code Visualizer</h4>
-                  <ul className={styles.limitList}>
-                    <li className={styles.limitItem}>
-                      <span>Codebase Graphs</span>
-                      <span className={plan.limits.codeVisualizer.codebaseGraphs ? styles.checkIcon : styles.crossIcon}>
-                        {plan.limits.codeVisualizer.codebaseGraphs ? <Check size={16} /> : <X size={16} />}
-                      </span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>Dependency Analysis</span>
-                      <span className={plan.limits.codeVisualizer.dependencyAnalysis ? styles.checkIcon : styles.crossIcon}>
-                        {plan.limits.codeVisualizer.dependencyAnalysis ? <Check size={16} /> : <X size={16} />}
-                      </span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>CI Integration</span>
-                      <span className={plan.limits.codeVisualizer.ciIntegration ? styles.checkIcon : styles.crossIcon}>
-                        {plan.limits.codeVisualizer.ciIntegration ? <Check size={16} /> : <X size={16} />}
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className={styles.limitCategory}>
-                  <h4 className={styles.limitCategoryTitle}>Hash Sphere Memory</h4>
-                  <ul className={styles.limitList}>
-                    <li className={styles.limitItem}>
-                      <span>Standalone Service</span>
-                      <span className={plan.limits.hashSphereMemory.standaloneService ? styles.checkIcon : styles.crossIcon}>
-                        {plan.limits.hashSphereMemory.standaloneService ? <Check size={16} /> : <X size={16} />}
-                      </span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>Universe Access</span>
-                      <span className={styles.limitValue}>
-                        {plan.limits.hashSphereMemory.universeAccess === false ? <X size={16} className={styles.crossIcon} /> : 
-                         plan.limits.hashSphereMemory.universeAccess}
-                      </span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>Multi-Layer</span>
-                      <span className={plan.limits.hashSphereMemory.multiLayer ? styles.checkIcon : styles.crossIcon}>
-                        {plan.limits.hashSphereMemory.multiLayer ? <Check size={16} /> : <X size={16} />}
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className={styles.limitCategory}>
-                  <h4 className={styles.limitCategoryTitle}>Blockchain Audit</h4>
-                  <ul className={styles.limitList}>
-                    <li className={styles.limitItem}>
-                      <span>Audit Trail</span>
-                      <span className={styles.limitValue}>
-                        {plan.id === 'enterprise' ? 'Immutable' : 'Full'}
-                      </span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>Compliance Reports</span>
-                      <span className={styles.checkIcon}>
-                        <Check size={16} />
-                      </span>
-                    </li>
-                    <li className={styles.limitItem}>
-                      <span>Legal-Grade Proof</span>
-                      <span className={plan.id === 'enterprise' ? styles.checkIcon : styles.crossIcon}>
-                        {plan.id === 'enterprise' ? <Check size={16} /> : <X size={16} />}
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Core Features */}
-        <section className={styles.featuresSection}>
-          <div className={styles.featuresSectionHeader}>
-            <h2 className={styles.sectionTitle}>Everything You Need</h2>
-            <p className={styles.sectionDescription}>
-              All plans include access to our core platform features
-            </p>
-          </div>
-          
-          <div className={styles.featuresGrid}>
-            {CORE_FEATURES.map(renderFeatureCard)}
-          </div>
-        </section>
-
-        {/* FAQ */}
+        {/* 8. FAQ — accordion, collapsed by default */}
         <section className={styles.faqSection}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Frequently Asked Questions</h2>
+            <h2 className={styles.sectionTitle}>Frequently asked questions</h2>
           </div>
-          
-          <div className={styles.faqGrid}>
-            {FAQ.map((item, idx) => (
-              <div key={idx} className={styles.faqCard}>
-                <h4 className={styles.faqQuestion}>{item.question}</h4>
-                <p className={styles.faqAnswer}>{item.answer}</p>
-              </div>
-            ))}
+
+          <div className={styles.faqList}>
+            {FAQ.map((item, idx) => {
+              const isOpen = openFaqIndex === idx;
+              return (
+                <div key={idx} className={styles.faqItem}>
+                  <button
+                    type="button"
+                    className={styles.faqQuestionButton}
+                    onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                    aria-expanded={isOpen}
+                  >
+                    <span>{item.question}</span>
+                    <ChevronDown size={18} className={isOpen ? styles.chevronOpen : ''} />
+                  </button>
+                  {isOpen && <p className={styles.faqAnswer}>{item.answer}</p>}
+                </div>
+              );
+            })}
           </div>
         </section>
       </div>

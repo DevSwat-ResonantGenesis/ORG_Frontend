@@ -28,8 +28,8 @@ const ICONS = {
 
 const COLORS = {
   messages: '#3b82f6',
-  agents: '#8b5cf6',
-  memories: '#ec4899',
+  agents: '#0ea5e9',
+  memories: '#14b8a6',
   sessions: '#22c55e',
 };
 
@@ -46,7 +46,7 @@ export const ActivityGrid: React.FC<ActivityGridProps> = ({ metrics }) => {
     <div className={styles.grid}>
       {metrics.map((metric, index) => {
         const Icon = ICONS[metric.icon] || Activity;
-        const color = COLORS[metric.icon] || '#6366f1';
+        const color = COLORS[metric.icon] || '#0ea5e9';
         const hasValue = metric.value !== null && metric.value !== undefined;
         
         return (

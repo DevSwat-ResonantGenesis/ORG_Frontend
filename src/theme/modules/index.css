@@ -39,6 +39,9 @@
 /* 11. Dashboard Layout - Shared dashboard layouts */
 @import './dashboard-layout.css';
 
+/* 11.5. Dashboard Shell 2025 - Shared sidebar/nav/stat-tile system for User & Owner dashboards */
+@import './dashboard-shell-2025.css';
+
 /* 12. Tool Pages - Shared tool page layouts */
 @import './tool-pages.css';
 

@@ -29,10 +29,10 @@ const SERVICE_ICONS: Record<string, React.ReactNode> = {
 
 const SERVICE_COLORS: Record<string, string> = {
   chat: '#3b82f6',
-  agents: '#8b5cf6',
+  agents: '#0ea5e9',
   ide: '#22c55e',
   workflows: '#f59e0b',
-  memory: '#ec4899',
+  memory: '#14b8a6',
   code_visualizer: '#06b6d4',
   other: '#6b7280',
 };
@@ -85,7 +85,7 @@ export const UsageBreakdownChart: React.FC<UsageBreakdownChartProps> = ({
             cy="100"
             r={radius}
             fill="none"
-            stroke="var(--color-bg-tertiary, #2a2a4a)"
+            stroke="var(--bg-tertiary)"
             strokeWidth={strokeWidth}
           />
           

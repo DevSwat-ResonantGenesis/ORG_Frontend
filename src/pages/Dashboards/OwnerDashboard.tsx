@@ -5,6 +5,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  LayoutDashboard, Users as UsersLucideIcon, DollarSign, Bot as BotLucideIcon, Activity as ActivityLucideIcon,
+  Server as ServerLucideIcon, Settings as SettingsLucideIcon, Orbit, Cpu as CpuLucideIcon, BarChart3, Sparkles,
+  SlidersHorizontal, LogOut, RefreshCw, Crown,
+} from 'lucide-react';
 import { getSessionData } from '../../utils/auth-cookies';
 import { fetchPlan } from '../../api/pricing';
 import styles from './OwnerDashboard.module.css';
@@ -15,13 +20,7 @@ import { getSystemMetrics, getServiceHealth, getDatabaseStats, getRaraAgents, ge
 type AdminLocStats = null;
 type LiveLocStats = null;
 
-// Icons
-const CrownIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" />
-  </svg>
-);
-
+// Icons (content icons used inline within panels/stat tiles)
 const UsersIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -97,22 +96,6 @@ const TrendingUpIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
     <polyline points="17 6 23 6 23 12" />
-  </svg>
-);
-
-const RefreshIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="23 4 23 10 17 10" />
-    <polyline points="1 20 1 14 7 14" />
-    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-  </svg>
-);
-
-const LogOutIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-    <polyline points="16 17 21 12 16 7" />
-    <line x1="21" y1="12" x2="9" y2="12" />
   </svg>
 );
 
@@ -274,7 +257,7 @@ const OwnerDashboard: React.FC = () => {
     const ownerToken = localStorage.getItem('owner_token');
     const sessionRole = sessionData?.role ? String(sessionData.role) : '';
     const isSuperuser = Boolean(sessionData?.is_superuser) || sessionRole === 'platform_owner';
-    
+
     // Allow access if superuser OR has owner_token
     if (!isSuperuser && !ownerToken) {
       navigate('/dashboard');
@@ -656,38 +639,20 @@ const OwnerDashboard: React.FC = () => {
 
   const getBadgeClass = (plan: string) => {
     const map: Record<string, string> = {
-      developer: styles.badgeDeveloper,
-      plus: styles.badgePlus,
-      enterprise: styles.badgeEnterprise,
+      developer: 'badge',
+      plus: 'badge badgePrimary',
+      enterprise: 'badge badgeWarning',
     };
-    return map[plan] || styles.badgeDeveloper;
+    return map[plan] || 'badge';
   };
 
   const getStatusClass = (status: string) => {
     const map: Record<string, string> = {
-      active: styles.statusActive,
-      inactive: styles.statusInactive,
-      warning: styles.statusWarning,
+      active: 'badge badgeSuccess',
+      inactive: 'badge',
+      warning: 'badge badgeWarning',
     };
-    return map[status] || styles.statusInactive;
-  };
-
-  const getAgentIconClass = (status: string) => {
-    const map: Record<string, string> = {
-      active: styles.agentIconActive,
-      idle: styles.agentIconIdle,
-      error: styles.agentIconError,
-    };
-    return map[status] || styles.agentIconIdle;
-  };
-
-  const getAgentStatusClass = (status: string) => {
-    const map: Record<string, string> = {
-      active: styles.agentStatusActive,
-      idle: styles.agentStatusIdle,
-      error: styles.agentStatusError,
-    };
-    return map[status] || styles.agentStatusIdle;
+    return map[status] || 'badge';
   };
 
   const formatMetric = (value: number | null | undefined) => (
@@ -700,59 +665,38 @@ const OwnerDashboard: React.FC = () => {
 
   const renderOverview = () => (
     <>
-      <div className={styles.statsGrid}>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={`${styles.statIcon} ${styles.statIconBlue}`}><UsersIcon /></div>
-            <span style={{ fontSize: '12px', color: '#64748b' }}>
-              {(realAnalytics?.total_users ?? stats.totalUsers) != null ? 'Live from backend' : 'Unavailable'}
-            </span>
-          </div>
-          <div className={styles.statValue}>{formatMetric(realAnalytics?.total_users ?? stats.totalUsers)}</div>
-          <div className={styles.statLabel}>Total Users</div>
+      <div className="statGrid dashSection">
+        <div className="statTile">
+          <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconBlue}`}><UsersIcon /></span>Total Users</div>
+          <div className="statTileValue">{formatMetric(realAnalytics?.total_users ?? stats.totalUsers)}</div>
+          <div className="statTileMeta">{(realAnalytics?.total_users ?? stats.totalUsers) != null ? 'Live from backend' : 'Unavailable'}</div>
         </div>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={`${styles.statIcon} ${styles.statIconGreen}`}><ActivityIcon /></div>
-          </div>
-          <div className={styles.statValue}>{formatMetric(realAnalytics?.active_users_24h ?? stats.activeUsers)}</div>
-          <div className={styles.statLabel}>Active Users (24h)</div>
+        <div className="statTile">
+          <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconGreen}`}><ActivityIcon /></span>Active Users (24h)</div>
+          <div className="statTileValue">{formatMetric(realAnalytics?.active_users_24h ?? stats.activeUsers)}</div>
         </div>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={`${styles.statIcon} ${styles.statIconPurple}`}><DollarIcon /></div>
-          </div>
-          <div className={styles.statValue}>{formatCurrencyMetric(realAnalytics?.revenue_30d ?? stats.totalRevenue)}</div>
-          <div className={styles.statLabel}>Revenue (30d)</div>
+        <div className="statTile">
+          <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconTeal}`}><DollarIcon /></span>Revenue (30d)</div>
+          <div className="statTileValue">{formatCurrencyMetric(realAnalytics?.revenue_30d ?? stats.totalRevenue)}</div>
         </div>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={`${styles.statIcon} ${styles.statIconOrange}`}><CpuIcon /></div>
-          </div>
-          <div className={styles.statValue}>{formatMetric(realAnalytics?.credits_consumed ?? stats.creditsConsumed)}</div>
-          <div className={styles.statLabel}>Credits Consumed</div>
+        <div className="statTile">
+          <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconOrange}`}><CpuIcon /></span>Credits Consumed</div>
+          <div className="statTileValue">{formatMetric(realAnalytics?.credits_consumed ?? stats.creditsConsumed)}</div>
         </div>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={`${styles.statIcon} ${styles.statIconCyan}`}><ServerIcon /></div>
-          </div>
-          <div className={styles.statValue}>{formatMetric(realAnalytics?.api_calls_30d ?? stats.apiCalls)}</div>
-          <div className={styles.statLabel}>API Calls (30d)</div>
+        <div className="statTile">
+          <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconCyan}`}><ServerIcon /></span>API Calls (30d)</div>
+          <div className="statTileValue">{formatMetric(realAnalytics?.api_calls_30d ?? stats.apiCalls)}</div>
         </div>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={`${styles.statIcon} ${styles.statIconRed}`}><TrendingUpIcon /></div>
-          </div>
-          <div className={styles.statValue}>{formatMetric(realAnalytics?.active_connections)}</div>
-          <div className={styles.statLabel}>Active Connections</div>
+        <div className="statTile">
+          <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconRed}`}><TrendingUpIcon /></span>Active Connections</div>
+          <div className="statTileValue">{formatMetric(realAnalytics?.active_connections)}</div>
         </div>
       </div>
 
-      <div className={styles.cardsGrid}>
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}><DollarIcon /> Revenue Overview</h3>
-          <div style={{ height: '200px', display: 'flex', alignItems: 'flex-end', gap: '8px', padding: '20px 0' }}>
-            {/* Real billing metrics visualization */}
+      <div className="panelGrid dashSection">
+        <div className="panel">
+          <h3 className={styles.panelTitle}><DollarIcon /> Revenue Overview</h3>
+          <div className={styles.revenueChart}>
             {(() => {
               const totalRev = realAnalytics?.revenue_30d ?? stats.totalRevenue;
               const creditsUsed = realAnalytics?.credits_consumed ?? stats.creditsConsumed;
@@ -769,139 +713,120 @@ const OwnerDashboard: React.FC = () => {
                 { label: 'API Calls', value: apiCalls, display: formatMetric(apiCalls) },
               ].filter((item): item is { label: string; value: number; display: string } => item.value != null);
               if (!items.length) {
-                return <div style={{ color: '#64748b', width: '100%', textAlign: 'center' }}>No live revenue metrics available</div>;
+                return <div className="emptyState">No live revenue metrics available</div>;
               }
               const maxVal = Math.max(...items.map(it => it.value), 1);
-              return items.map((item, i) => (
-                <div key={item.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ 
-                    width: '100%', 
-                    height: `${Math.max(10, (item.value / maxVal) * 100)}%`, 
-                    background: 'linear-gradient(180deg, #8b5cf6 0%, #6366f1 100%)',
-                    borderRadius: '4px 4px 0 0',
-                    minHeight: '20px',
-                    position: 'relative'
-                  }}>
-                    <span style={{ 
-                      position: 'absolute', 
-                      top: '-24px', 
-                      left: '50%', 
-                      transform: 'translateX(-50%)',
-                      fontSize: '10px',
-                      color: '#94a3b8',
-                      whiteSpace: 'nowrap'
-                    }}>{item.display}</span>
+              return items.map((item) => (
+                <div key={item.label} className={styles.revenueChartCol}>
+                  <div className={styles.revenueChartBar} style={{ height: `${Math.max(10, (item.value / maxVal) * 100)}%` }}>
+                    <span className={styles.revenueChartValue}>{item.display}</span>
                   </div>
-                  <span style={{ fontSize: '11px', color: '#64748b' }}>{item.label}</span>
+                  <span className={styles.revenueChartLabel}>{item.label}</span>
                 </div>
               ));
             })()}
           </div>
-          <div className={styles.revenueBreakdown} style={{ marginTop: '16px' }}>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#8b5cf6' }} />Total Revenue</span>
-              <span className={styles.revenueItemValue}>{formatCurrencyMetric(realAnalytics?.revenue_30d ?? stats.totalRevenue)}</span>
+          <div className={`rowList ${styles.mt4}`}>
+            <div className="row">
+              <span className={`rowLabel ${styles.dotLabel}`}><span className={`${styles.dot} ${styles.dotPrimary}`} />Total Revenue</span>
+              <span className={styles.rowValue}>{formatCurrencyMetric(realAnalytics?.revenue_30d ?? stats.totalRevenue)}</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#3b82f6' }} />Credits Purchased</span>
-              <span className={styles.revenueItemValue}>{formatMetric(realAnalytics?.total_credits_purchased)}</span>
+            <div className="row">
+              <span className={`rowLabel ${styles.dotLabel}`}><span className={`${styles.dot} ${styles.dotBlue}`} />Credits Purchased</span>
+              <span className={styles.rowValue}>{formatMetric(realAnalytics?.total_credits_purchased)}</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}><span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Credits Balance</span>
-              <span className={styles.revenueItemValue}>{formatMetric(realAnalytics?.credits_balance)}</span>
+            <div className="row">
+              <span className={`rowLabel ${styles.dotLabel}`}><span className={`${styles.dot} ${styles.dotSuccess}`} />Credits Balance</span>
+              <span className={styles.rowValue}>{formatMetric(realAnalytics?.credits_balance)}</span>
             </div>
           </div>
         </div>
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}><ActivityIcon /> Recent Activity</h3>
-          <div className={styles.activityLog}>
+        <div className="panel">
+          <h3 className={styles.panelTitle}><ActivityIcon /> Recent Activity</h3>
+          <div className="rowList">
             {realActivity && realActivity.activities.length > 0 ? (
               realActivity.activities.map((activity, idx) => (
-                <div key={idx} className={styles.activityItem}>
-                  <div className={`${styles.activityIcon} ${
-                    activity.category === 'agents' ? styles.statIconPurple :
-                    activity.category === 'v8' ? styles.statIconOrange :
-                    activity.category === 'system' ? styles.statIconGreen :
-                    styles.statIconBlue
-                  }`}>
-                    {activity.category === 'agents' ? <BotIcon /> :
-                     activity.category === 'v8' ? <CpuIcon /> :
-                     activity.category === 'system' ? <ServerIcon /> :
-                     <ActivityIcon />}
-                  </div>
-                  <div className={styles.activityContent}>
-                    <div className={styles.activityText}>{activity.message}</div>
-                    <div className={styles.activityTime}>{new Date(activity.timestamp).toLocaleString()}</div>
+                <div key={idx} className="row">
+                  <div className={styles.iconRow}>
+                    <span className={`${styles.statIcon} ${
+                      activity.category === 'agents' ? styles.statIconTeal :
+                      activity.category === 'v8' ? styles.statIconOrange :
+                      activity.category === 'system' ? styles.statIconGreen :
+                      styles.statIconBlue
+                    }`}>
+                      {activity.category === 'agents' ? <BotIcon /> :
+                       activity.category === 'v8' ? <CpuIcon /> :
+                       activity.category === 'system' ? <ServerIcon /> :
+                       <ActivityIcon />}
+                    </span>
+                    <div>
+                      <div className="rowLabel">{activity.message}</div>
+                      <div className="rowDesc">{new Date(activity.timestamp).toLocaleString()}</div>
+                    </div>
                   </div>
                 </div>
               ))
             ) : (
-              <div style={{ color: '#64748b', textAlign: 'center', padding: '20px' }}>Loading activity...</div>
+              <div className="emptyState">Loading activity...</div>
             )}
           </div>
         </div>
       </div>
 
       {/* Resonant AI — LOC Stats (Admin) */}
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}><ActivityIcon /> Resonant AI — Lines of Code</h2>
+      <div className="dashSection">
+        <div className="dashSectionHead">
+          <h2 className="dashSectionTitle"><ActivityIcon /> Resonant AI — Lines of Code</h2>
           {liveLoc && (
-            <span style={{ fontSize: 12, color: '#10b981', display: 'flex', alignItems: 'center', gap: 4 }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+            <span className={`${styles.muted} ${styles.iconRow} ${styles.valueActive}`}>
+              <span className={`${styles.dot} ${styles.dotSm} ${styles.dotSuccess}`} />
               {liveLoc.lines_today.toLocaleString()} lines today &middot; {liveLoc.active_users_today} active
             </span>
           )}
         </div>
-        <div className={styles.card}>
-          <div className={styles.statsGrid} style={{ marginBottom: 16 }}>
-            <div className={styles.statCard}>
-              <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconGreen}`}><ActivityIcon /></div></div>
-              <div className={styles.statValue}>{locAdminStats ? locAdminStats.total_lines_written.toLocaleString() : '—'}</div>
-              <div className={styles.statLabel}>Total Lines Written</div>
+        <div className="panel">
+          <div className={`statGrid ${styles.mb4}`}>
+            <div className="statTile">
+              <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconGreen}`}><ActivityIcon /></span>Lines Written</div>
+              <div className="statTileValue">{locAdminStats ? locAdminStats.total_lines_written.toLocaleString() : '—'}</div>
             </div>
-            <div className={styles.statCard}>
-              <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconBlue}`}><ActivityIcon /></div></div>
-              <div className={styles.statValue}>{locAdminStats ? locAdminStats.total_lines_edited.toLocaleString() : '—'}</div>
-              <div className={styles.statLabel}>Total Lines Edited</div>
+            <div className="statTile">
+              <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconBlue}`}><ActivityIcon /></span>Lines Edited</div>
+              <div className="statTileValue">{locAdminStats ? locAdminStats.total_lines_edited.toLocaleString() : '—'}</div>
             </div>
-            <div className={styles.statCard}>
-              <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconPurple}`}><ActivityIcon /></div></div>
-              <div className={styles.statValue}>{locAdminStats ? locAdminStats.total_net_lines.toLocaleString() : '—'}</div>
-              <div className={styles.statLabel}>Net Lines</div>
+            <div className="statTile">
+              <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconTeal}`}><ActivityIcon /></span>Net Lines</div>
+              <div className="statTileValue">{locAdminStats ? locAdminStats.total_net_lines.toLocaleString() : '—'}</div>
             </div>
-            <div className={styles.statCard}>
-              <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconOrange}`}><CpuIcon /></div></div>
-              <div className={styles.statValue}>{locAdminStats ? locAdminStats.total_tool_calls.toLocaleString() : '—'}</div>
-              <div className={styles.statLabel}>Total Tool Calls</div>
+            <div className="statTile">
+              <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconOrange}`}><CpuIcon /></span>Total Tool Calls</div>
+              <div className="statTileValue">{locAdminStats ? locAdminStats.total_tool_calls.toLocaleString() : '—'}</div>
             </div>
-            <div className={styles.statCard}>
-              <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconCyan}`}><UsersIcon /></div></div>
-              <div className={styles.statValue}>{locAdminStats ? locAdminStats.total_users : '—'}</div>
-              <div className={styles.statLabel}>IDE Users</div>
+            <div className="statTile">
+              <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconCyan}`}><UsersIcon /></span>IDE Users</div>
+              <div className="statTileValue">{locAdminStats ? locAdminStats.total_users : '—'}</div>
             </div>
-            <div className={styles.statCard}>
-              <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconRed}`}><TrendingUpIcon /></div></div>
-              <div className={styles.statValue}>{liveLoc ? liveLoc.total_lines_all_time.toLocaleString() : '—'}</div>
-              <div className={styles.statLabel}>All-Time LOC</div>
+            <div className="statTile">
+              <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconRed}`}><TrendingUpIcon /></span>All-Time LOC</div>
+              <div className="statTileValue">{liveLoc ? liveLoc.total_lines_all_time.toLocaleString() : '—'}</div>
             </div>
           </div>
           {locAdminStats && locAdminStats.users.length > 0 && (
-            <div className={styles.tableWrapper}>
-              <table className={styles.table}>
+            <div className="dashTableWrap">
+              <table className="dashTable">
                 <thead>
-                  <tr><th>User</th><th style={{textAlign:'right'}}>Written</th><th style={{textAlign:'right'}}>Edited</th><th style={{textAlign:'right'}}>Net</th><th style={{textAlign:'right'}}>Tool Calls</th><th>Languages</th><th>Last Active</th></tr>
+                  <tr><th>User</th><th className={styles.tblRight}>Written</th><th className={styles.tblRight}>Edited</th><th className={styles.tblRight}>Net</th><th className={styles.tblRight}>Tool Calls</th><th>Languages</th><th>Last Active</th></tr>
                 </thead>
                 <tbody>
                   {locAdminStats.users.slice(0, 10).map((u) => (
                     <tr key={u.user_id}>
                       <td>{u.user_email || u.user_id}</td>
-                      <td style={{textAlign:'right', fontFamily:'monospace'}}>{u.total_lines_written.toLocaleString()}</td>
-                      <td style={{textAlign:'right', fontFamily:'monospace'}}>{u.total_lines_edited.toLocaleString()}</td>
-                      <td style={{textAlign:'right', fontFamily:'monospace'}}>{u.total_net_lines.toLocaleString()}</td>
-                      <td style={{textAlign:'right', fontFamily:'monospace'}}>{u.total_tool_calls.toLocaleString()}</td>
-                      <td style={{fontSize:11, color:'#94a3b8'}}>{Object.keys(u.languages || {}).slice(0,3).join(', ') || '—'}</td>
-                      <td style={{fontSize:11, color:'#64748b'}}>{u.last_active ? new Date(u.last_active).toLocaleDateString() : '—'}</td>
+                      <td className={`${styles.mono} ${styles.textRight}`}>{u.total_lines_written.toLocaleString()}</td>
+                      <td className={`${styles.mono} ${styles.textRight}`}>{u.total_lines_edited.toLocaleString()}</td>
+                      <td className={`${styles.mono} ${styles.textRight}`}>{u.total_net_lines.toLocaleString()}</td>
+                      <td className={`${styles.mono} ${styles.textRight}`}>{u.total_tool_calls.toLocaleString()}</td>
+                      <td className={styles.muted}>{Object.keys(u.languages || {}).slice(0, 3).join(', ') || '—'}</td>
+                      <td className={styles.muted}>{u.last_active ? new Date(u.last_active).toLocaleDateString() : '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -911,13 +836,13 @@ const OwnerDashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}><UsersIcon /> Top Users</h2>
+      <div className="dashSection">
+        <div className="dashSectionHead">
+          <h2 className="dashSectionTitle"><UsersIcon /> Top Users</h2>
         </div>
-        <div className={styles.card}>
-          <div className={styles.tableWrapper}>
-            <table className={styles.table}>
+        <div className="panel">
+          <div className="dashTableWrap">
+            <table className="dashTable">
               <thead>
                 <tr><th>User</th><th>Plan</th><th>Credits</th><th>Revenue</th><th>Status</th></tr>
               </thead>
@@ -930,10 +855,10 @@ const OwnerDashboard: React.FC = () => {
                         <div><div className={styles.userName}>{user.name}</div><div className={styles.userEmail}>{user.email}</div></div>
                       </div>
                     </td>
-                    <td><span className={`${styles.badge} ${getBadgeClass(user.plan)}`}>{user.plan}</span></td>
+                    <td><span className={getBadgeClass(user.plan)}>{user.plan}</span></td>
                     <td>{user.creditsUsed != null && user.creditsTotal != null ? `${user.creditsUsed} / ${user.creditsTotal}` : '—'}</td>
                     <td>{user.revenue != null ? `$${user.revenue}/mo` : '—'}</td>
-                    <td><span className={`${styles.statusDot} ${getStatusClass(user.status)}`} />{user.status}</td>
+                    <td><span className={getStatusClass(user.status)}>{user.status}</span></td>
                   </tr>
                 ))}
               </tbody>
@@ -956,39 +881,31 @@ const OwnerDashboard: React.FC = () => {
     });
 
     return (
-    <div className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}><UsersIcon /> All Users ({users.length} total)</h2>
+    <div className="dashSection">
+      <div className="dashSectionHead">
+        <h2 className="dashSectionTitle"><UsersIcon /> All Users ({users.length} total)</h2>
       </div>
-      <div className={styles.card}>
-        <div style={{ marginBottom: '16px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+      <div className="panel">
+        <div className={styles.toolbar}>
           <input
             type="text"
+            className={`input ${styles.grow}`}
             placeholder="Search by email, name, or username..."
             value={userSearch}
             onChange={(e) => setUserSearch(e.target.value)}
-            style={{
-              flex: 1,
-              padding: '10px 14px',
-              background: '#0f172a',
-              border: '1px solid #334155',
-              borderRadius: '8px',
-              color: '#e2e8f0',
-              fontSize: '14px',
-            }}
           />
-          <span style={{ color: '#64748b', fontSize: '13px' }}>
+          <span className={styles.toolbarMeta}>
             Showing {filteredUsers.length} of {users.length} users
           </span>
         </div>
-        <div className={styles.tableWrapper} style={{ maxHeight: '600px', overflowY: 'auto' }}>
-          <table className={styles.table}>
-            <thead style={{ position: 'sticky', top: 0, background: '#1e293b', zIndex: 10 }}>
-              <tr>
+        <div className={`dashTableWrap ${styles.tableScrollLg}`}>
+          <table className="dashTable">
+            <thead>
+              <tr className={styles.stickyHead}>
                 <th>Email</th>
                 <th>Username</th>
                 <th>Status</th>
-                <th>Email</th>
+                <th>Verified</th>
                 <th>Trial</th>
                 <th>Usage</th>
                 <th>Last Login</th>
@@ -999,92 +916,55 @@ const OwnerDashboard: React.FC = () => {
             <tbody>
               {filteredUsers.map(user => (
                 <tr key={user.id}>
-                  <td style={{ fontFamily: 'monospace', fontSize: '12px' }}>{user.email}</td>
+                  <td className={`${styles.mono} ${styles.font12}`}>{user.email}</td>
                   <td>{(user as any).username || '-'}</td>
                   <td>
-                    <span className={`${styles.statusDot} ${getStatusClass(user.status)}`} />
-                    {user.status}
-                    {(user as any).unlimitedCredits && <span style={{ marginLeft: '4px', fontSize: '10px', color: '#a78bfa' }}>∞</span>}
+                    <span className={getStatusClass(user.status)}>{user.status}</span>
+                    {(user as any).unlimitedCredits && <span className={`${styles.flagUnlimited} ${styles.ml4}`}>∞</span>}
                   </td>
                   <td>
-                    <span style={{ 
-                      color: (user as any).emailVerified ? '#10b981' : '#f59e0b',
-                      fontWeight: (user as any).emailVerified ? 'bold' : 'normal',
-                      fontSize: '11px',
-                    }}>
+                    <span className={`badge ${(user as any).emailVerified ? 'badgeSuccess' : 'badgeWarning'}`}>
                       {(user as any).emailVerified ? '✓ Verified' : '⏳ Pending'}
                     </span>
                   </td>
                   <td>
                     {(user as any).trialStatus ? (
-                      <span style={{
-                        fontSize: '10px',
-                        padding: '2px 6px',
-                        borderRadius: '4px',
-                        background: (user as any).trialStatus.startsWith('active') ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                        color: (user as any).trialStatus.startsWith('active') ? '#6ee7b7' : '#fca5a5',
-                      }}>
+                      <span className={`badge ${(user as any).trialStatus.startsWith('active') ? 'badgeSuccess' : 'badgeError'}`}>
                         {(user as any).trialStatus}
                       </span>
                     ) : (
-                      <span style={{ fontSize: '10px', color: '#64748b' }}>—</span>
+                      <span className={styles.muted}>—</span>
                     )}
                   </td>
-                  <td style={{ fontSize: '11px' }}>
-                    <span style={{ color: (user as any).chatCount > 0 ? '#10b981' : '#64748b' }}>
+                  <td className={styles.font11}>
+                    <span className={(user as any).chatCount > 0 ? styles.valueActive : styles.valueMuted}>
                       {(user as any).chatCount || 0} chats
                     </span>
-                    <span style={{ color: '#475569', margin: '0 2px' }}>·</span>
-                    <span style={{ color: (user as any).messageCount > 0 ? '#3b82f6' : '#64748b' }}>
+                    <span className={styles.muted}>·</span>
+                    <span className={(user as any).messageCount > 0 ? styles.valueInfo : styles.valueMuted}>
                       {(user as any).messageCount || 0} msgs
                     </span>
                   </td>
-                  <td style={{ fontSize: '11px', color: '#94a3b8' }}>
+                  <td className={styles.muted}>
                     {(user as any).lastLoginAt || 'Never'}
                   </td>
-                  <td style={{ fontSize: '11px', color: '#94a3b8' }}>{user.signupDate}</td>
+                  <td className={styles.muted}>{user.signupDate}</td>
                   <td>
-                    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                      <button
-                        onClick={() => handleResetPassword(user.id, user.email)}
-                        style={{
-                          padding: '4px 8px',
-                          fontSize: '10px',
-                          background: '#3b82f6',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                        }}
-                      >
+                    <div className={styles.tagRow}>
+                      <button className="btn btnPrimary btnSm" onClick={() => handleResetPassword(user.id, user.email)}>
                         Reset PW
                       </button>
                       <button
-                        onClick={() => handleBlockUser(user.id, user.email, user.status === 'blocked')}
+                        className="btn btnSm"
                         style={{
-                          padding: '4px 8px',
-                          fontSize: '10px',
-                          background: user.status === 'blocked' ? '#10b981' : '#f59e0b',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
+                          background: user.status === 'blocked' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                          color: user.status === 'blocked' ? 'var(--color-success)' : 'var(--color-warning)',
                         }}
+                        onClick={() => handleBlockUser(user.id, user.email, user.status === 'blocked')}
                       >
                         {user.status === 'blocked' ? 'Unblock' : 'Block'}
                       </button>
-                      <button
-                        onClick={() => handleDeleteUser(user.id, user.email)}
-                        style={{
-                          padding: '4px 8px',
-                          fontSize: '10px',
-                          background: '#ef4444',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                        }}
-                      >
+                      <button className="btn btnDanger btnSm" onClick={() => handleDeleteUser(user.id, user.email)}>
                         Delete
                       </button>
                     </div>
@@ -1096,19 +976,19 @@ const OwnerDashboard: React.FC = () => {
         </div>
       </div>
     </div>
-  );
+    );
   };
 
   const renderRevenue = () => (
     <>
-      <div className={styles.statsGrid}>
-        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconGreen}`}><DollarIcon /></div></div><div className={styles.statValue}>{formatCurrencyMetric(realAnalytics?.revenue_30d ?? stats.totalRevenue)}</div><div className={styles.statLabel}>Total Revenue</div></div>
-        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconPurple}`}><DollarIcon /></div></div><div className={styles.statValue}>{formatCurrencyMetric(realAnalytics?.mrr ?? stats.mrr)}</div><div className={styles.statLabel}>MRR</div></div>
-        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconBlue}`}><UsersIcon /></div></div><div className={styles.statValue}>{formatMetric(realAnalytics?.paying_users ?? realAnalytics?.paid_users)}</div><div className={styles.statLabel}>Paying Customers</div></div>
+      <div className="statGrid dashSection">
+        <div className="statTile"><div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconGreen}`}><DollarIcon /></span>Total Revenue</div><div className="statTileValue">{formatCurrencyMetric(realAnalytics?.revenue_30d ?? stats.totalRevenue)}</div></div>
+        <div className="statTile"><div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconTeal}`}><DollarIcon /></span>MRR</div><div className="statTileValue">{formatCurrencyMetric(realAnalytics?.mrr ?? stats.mrr)}</div></div>
+        <div className="statTile"><div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconBlue}`}><UsersIcon /></span>Paying Customers</div><div className="statTileValue">{formatMetric(realAnalytics?.paying_users ?? realAnalytics?.paid_users)}</div></div>
       </div>
-      <div className={styles.cardsGrid}>
-        <div className={styles.card}><h3 className={styles.cardTitle}>Revenue by Plan</h3><div className={styles.chartPlaceholder}>No live revenue-by-plan dataset available</div></div>
-        <div className={styles.card}><h3 className={styles.cardTitle}>Revenue Trend</h3><div className={styles.chartPlaceholder}>No live revenue trend dataset available</div></div>
+      <div className="panelGrid">
+        <div className="panel"><h3 className={styles.panelTitle}>Revenue by Plan</h3><div className="emptyState">No live revenue-by-plan dataset available</div></div>
+        <div className="panel"><h3 className={styles.panelTitle}>Revenue Trend</h3><div className="emptyState">No live revenue trend dataset available</div></div>
       </div>
     </>
   );
@@ -1161,123 +1041,125 @@ const OwnerDashboard: React.FC = () => {
   ];
 
   const categoryColors: Record<string, string> = {
-    Core: '#8b5cf6', Development: '#3b82f6', Security: '#ef4444', Architecture: '#f59e0b',
+    Core: '#14b8a6', Development: '#3b82f6', Security: '#ef4444', Architecture: '#f59e0b',
     Performance: '#10b981', Quality: '#06b6d4', Infrastructure: '#ec4899', Utility: '#64748b',
   };
 
   const renderAgents = () => (
     <>
-      <div className={styles.statsGrid}>
-        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconBlue}`}><BotIcon /></div></div><div className={styles.statValue}>{INTERNAL_AGENTS.length}</div><div className={styles.statLabel}>Individual Agents</div></div>
-        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconGreen}`}><UsersIcon /></div></div><div className={styles.statValue}>{INTERNAL_TEAMS.length}</div><div className={styles.statLabel}>Agent Teams</div></div>
-        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconOrange}`}><CpuIcon /></div></div><div className={styles.statValue}>{RARA_TYPES.length}</div><div className={styles.statLabel}>RARA Types</div></div>
-        <div className={styles.statCard}><div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconRed}`}><ActivityIcon /></div></div><div className={styles.statValue}>{INTERNAL_AGENTS.filter(a => a.autonomous).length}</div><div className={styles.statLabel}>Autonomous</div></div>
+      <div className="statGrid dashSection">
+        <div className="statTile"><div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconBlue}`}><BotIcon /></span>Individual Agents</div><div className="statTileValue">{INTERNAL_AGENTS.length}</div></div>
+        <div className="statTile"><div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconGreen}`}><UsersIcon /></span>Agent Teams</div><div className="statTileValue">{INTERNAL_TEAMS.length}</div></div>
+        <div className="statTile"><div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconOrange}`}><CpuIcon /></span>RARA Types</div><div className="statTileValue">{RARA_TYPES.length}</div></div>
+        <div className="statTile"><div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconRed}`}><ActivityIcon /></span>Autonomous</div><div className="statTileValue">{INTERNAL_AGENTS.filter(a => a.autonomous).length}</div></div>
       </div>
 
       {/* Individual Agent Types */}
-      <div className={styles.section} style={{ marginBottom: '24px' }}>
-        <div className={styles.sectionHeader}><h2 className={styles.sectionTitle}><BotIcon /> Individual Agent Types ({INTERNAL_AGENTS.length})</h2></div>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid rgba(148,163,184,0.2)' }}>
-                <th style={{ textAlign: 'left', padding: '8px', color: '#94a3b8' }}>Agent</th>
-                <th style={{ textAlign: 'left', padding: '8px', color: '#94a3b8' }}>Category</th>
-                <th style={{ textAlign: 'left', padding: '8px', color: '#94a3b8' }}>Description</th>
-                <th style={{ textAlign: 'center', padding: '8px', color: '#94a3b8' }}>Autonomous</th>
-                <th style={{ textAlign: 'left', padding: '8px', color: '#94a3b8' }}>Top Specializations</th>
-              </tr>
-            </thead>
-            <tbody>
-              {INTERNAL_AGENTS.map(agent => (
-                <tr key={agent.id} style={{ borderBottom: '1px solid rgba(148,163,184,0.08)' }}>
-                  <td style={{ padding: '8px', color: '#e2e8f0', fontWeight: 600 }}>{agent.name}</td>
-                  <td style={{ padding: '8px' }}>
-                    <span style={{ padding: '2px 8px', borderRadius: '4px', background: `${categoryColors[agent.category] || '#64748b'}22`, color: categoryColors[agent.category] || '#94a3b8', fontSize: '10px' }}>{agent.category}</span>
-                  </td>
-                  <td style={{ padding: '8px', color: '#94a3b8', maxWidth: '300px' }}>{agent.desc}</td>
-                  <td style={{ padding: '8px', textAlign: 'center' }}>
-                    <span style={{ color: agent.autonomous ? '#10b981' : '#64748b' }}>{agent.autonomous ? '✅' : '—'}</span>
-                  </td>
-                  <td style={{ padding: '8px' }}>
-                    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-                      {Object.entries(agent.specializations).slice(0, 3).map(([k, v]) => (
-                        <span key={k} style={{ padding: '1px 6px', borderRadius: '3px', background: 'rgba(139,92,246,0.12)', color: '#a78bfa', fontSize: '9px' }}>
-                          {k.replace(/_/g, ' ')} {(v * 100).toFixed(0)}%
-                        </span>
-                      ))}
-                    </div>
-                  </td>
+      <div className="dashSection">
+        <div className="dashSectionHead"><h2 className="dashSectionTitle"><BotIcon /> Individual Agent Types ({INTERNAL_AGENTS.length})</h2></div>
+        <div className="panel">
+          <div className="dashTableWrap">
+            <table className="dashTable">
+              <thead>
+                <tr>
+                  <th>Agent</th>
+                  <th>Category</th>
+                  <th>Description</th>
+                  <th className={styles.tblCenter}>Autonomous</th>
+                  <th>Top Specializations</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {INTERNAL_AGENTS.map(agent => (
+                  <tr key={agent.id}>
+                    <td className={styles.semibold}>{agent.name}</td>
+                    <td>
+                      <span className={styles.categoryTag} style={{ background: `${categoryColors[agent.category] || '#64748b'}22`, color: categoryColors[agent.category] || 'var(--text-secondary)' }}>{agent.category}</span>
+                    </td>
+                    <td className={`${styles.muted} ${styles.descCol}`}>{agent.desc}</td>
+                    <td className={styles.tblCenter}>
+                      {agent.autonomous ? <span className="badge badgeSuccess">✅</span> : <span className={styles.muted}>—</span>}
+                    </td>
+                    <td>
+                      <div className={styles.tagRowTight}>
+                        {Object.entries(agent.specializations).slice(0, 3).map(([k, v]) => (
+                          <span key={k} className={styles.specTag}>
+                            {k.replace(/_/g, ' ')} {(v * 100).toFixed(0)}%
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       {/* Agent Teams */}
-      <div className={styles.section} style={{ marginBottom: '24px' }}>
-        <div className={styles.sectionHeader}><h2 className={styles.sectionTitle}><UsersIcon /> Multi-Agent Teams ({INTERNAL_TEAMS.length})</h2></div>
-        <div className={styles.cardsGrid}>
+      <div className="dashSection">
+        <div className="dashSectionHead"><h2 className="dashSectionTitle"><UsersIcon /> Multi-Agent Teams ({INTERNAL_TEAMS.length})</h2></div>
+        <div className="panelGrid">
           {INTERNAL_TEAMS.map(team => (
-            <div key={team.id} className={styles.card}>
-              <h3 className={styles.cardTitle} style={{ margin: '0 0 6px 0', fontSize: '14px' }}>{team.name}</h3>
-              <div style={{ color: '#94a3b8', fontSize: '12px', lineHeight: 1.5, marginBottom: '8px' }}>{team.desc}</div>
-              <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginBottom: '6px' }}>
+            <div key={team.id} className="panel">
+              <h3 className={styles.miniCardTitle}>{team.name}</h3>
+              <div className={styles.miniCardDesc}>{team.desc}</div>
+              <div className={`${styles.tagRowTight} ${styles.mb2}`}>
                 {team.agents.map((a, i) => (
                   <span key={a}>
-                    <span style={{ padding: '2px 6px', borderRadius: '4px', background: 'rgba(59,130,246,0.15)', color: '#93c5fd', fontSize: '10px' }}>{a}</span>
-                    {i < team.agents.length - 1 && <span style={{ color: '#475569', fontSize: '10px', margin: '0 2px' }}>→</span>}
+                    <span className={styles.chip}>{a}</span>
+                    {i < team.agents.length - 1 && <span className={styles.chipArrow}>→</span>}
                   </span>
                 ))}
               </div>
-              <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                <span style={{ padding: '2px 6px', borderRadius: '4px', background: team.workflow === 'parallel_merge' ? 'rgba(245,158,11,0.15)' : 'rgba(16,185,129,0.15)', color: team.workflow === 'parallel_merge' ? '#fbbf24' : '#6ee7b7', fontSize: '10px' }}>
+              <div>
+                <span className={`${styles.workflowTag} ${team.workflow === 'parallel_merge' ? styles.workflowParallel : styles.workflowSequential}`}>
                   {team.workflow === 'parallel_merge' ? '⚡ Parallel Merge' : '📋 Sequential'}
                 </span>
               </div>
-              <div style={{ marginTop: '6px', fontSize: '10px', color: '#64748b' }}>Triggers: {team.triggers}</div>
+              <div className={`${styles.muted} ${styles.mt2}`}>Triggers: {team.triggers}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* RARA Agent Types */}
-      <div className={styles.section} style={{ marginBottom: '24px' }}>
-        <div className={styles.sectionHeader}><h2 className={styles.sectionTitle}><CpuIcon /> RARA Agent Types ({RARA_TYPES.length})</h2></div>
-        <div className={styles.statsGrid}>
+      <div className="dashSection">
+        <div className="dashSectionHead"><h2 className="dashSectionTitle"><CpuIcon /> RARA Agent Types ({RARA_TYPES.length})</h2></div>
+        <div className="panelGrid">
           {RARA_TYPES.map(rt => (
-            <div key={rt.id} className={styles.statCard}>
-              <div className={styles.statValue} style={{ fontSize: '14px' }}>{rt.name}</div>
-              <div className={styles.statLabel} style={{ marginTop: '4px' }}>{rt.desc}</div>
+            <div key={rt.id} className="panel">
+              <div className={styles.miniCardTitle}>{rt.name}</div>
+              <div className={`${styles.miniCardDesc} ${styles.mb0}`}>{rt.desc}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* Autonomous Infrastructure */}
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}><h2 className={styles.sectionTitle}><SettingsIcon /> Autonomous Infrastructure</h2></div>
-        <div className={styles.cardsGrid}>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle} style={{ margin: '0 0 6px 0' }}>🧠 AutonomousAgentExecutor</h3>
-            <div style={{ color: '#94a3b8', fontSize: '12px', lineHeight: 1.5 }}>Wraps any agent type for autonomous decision-making. Tries local/cached decisions first (KB lookup), then falls back to LLM consultation. Backed by Hash Sphere memory.</div>
-            <div style={{ marginTop: '8px', fontSize: '10px', color: '#64748b' }}>File: chat_service/app/services/autonomous_agent_executor.py</div>
+      <div className="dashSection">
+        <div className="dashSectionHead"><h2 className="dashSectionTitle"><SettingsIcon /> Autonomous Infrastructure</h2></div>
+        <div className="panelGrid">
+          <div className="panel">
+            <h3 className={styles.miniCardTitle}>🧠 AutonomousAgentExecutor</h3>
+            <div className={`${styles.miniCardDesc} ${styles.mb0}`}>Wraps any agent type for autonomous decision-making. Tries local/cached decisions first (KB lookup), then falls back to LLM consultation. Backed by Hash Sphere memory.</div>
+            <div className={styles.infraFile}>File: chat_service/app/services/autonomous_agent_executor.py</div>
           </div>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle} style={{ margin: '0 0 6px 0' }}>⚙️ AutonomousDaemon</h3>
-            <div style={{ color: '#94a3b8', fontSize: '12px', lineHeight: 1.5 }}>Background daemon managing autonomous agent lifecycle, self-triggering, goal updates, and health monitoring.</div>
-            <div style={{ marginTop: '8px', fontSize: '10px', color: '#64748b' }}>File: agent_engine_service/app/routers_autonomous.py</div>
+          <div className="panel">
+            <h3 className={styles.miniCardTitle}>⚙️ AutonomousDaemon</h3>
+            <div className={`${styles.miniCardDesc} ${styles.mb0}`}>Background daemon managing autonomous agent lifecycle, self-triggering, goal updates, and health monitoring.</div>
+            <div className={styles.infraFile}>File: agent_engine_service/app/routers_autonomous.py</div>
           </div>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle} style={{ margin: '0 0 6px 0' }}>🔄 ParallelAgentRuntime</h3>
-            <div style={{ color: '#94a3b8', fontSize: '12px', lineHeight: 1.5 }}>Enables parallel agent communication, capability registration, and multi-agent coordination for team workflows.</div>
-            <div style={{ marginTop: '8px', fontSize: '10px', color: '#64748b' }}>File: agent_engine_service/app/parallel_runtime.py</div>
+          <div className="panel">
+            <h3 className={styles.miniCardTitle}>🔄 ParallelAgentRuntime</h3>
+            <div className={`${styles.miniCardDesc} ${styles.mb0}`}>Enables parallel agent communication, capability registration, and multi-agent coordination for team workflows.</div>
+            <div className={styles.infraFile}>File: agent_engine_service/app/parallel_runtime.py</div>
           </div>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle} style={{ margin: '0 0 6px 0' }}>📊 AgentCapabilityRegistry</h3>
-            <div style={{ color: '#94a3b8', fontSize: '12px', lineHeight: 1.5 }}>Tracks agent strengths, weaknesses, success rates, specialization scores, and workload for intelligent task routing.</div>
-            <div style={{ marginTop: '8px', fontSize: '10px', color: '#64748b' }}>File: chat_service/app/services/agent_capability_registry.py</div>
+          <div className="panel">
+            <h3 className={styles.miniCardTitle}>📊 AgentCapabilityRegistry</h3>
+            <div className={`${styles.miniCardDesc} ${styles.mb0}`}>Tracks agent strengths, weaknesses, success rates, specialization scores, and workload for intelligent task routing.</div>
+            <div className={styles.infraFile}>File: chat_service/app/services/agent_capability_registry.py</div>
           </div>
         </div>
       </div>
@@ -1287,104 +1169,104 @@ const OwnerDashboard: React.FC = () => {
   const renderMonitoring = () => (
     <>
       {/* Service Health Grid */}
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}><ServerIcon /> Service Health</h2>
-          <a href={ENV.grafanaUrl} target="_blank" rel="noopener noreferrer" className={styles.logoutBtn} style={{ textDecoration: 'none' }}>
+      <div className="dashSection">
+        <div className="dashSectionHead">
+          <h2 className="dashSectionTitle"><ServerIcon /> Service Health</h2>
+          <a href={ENV.grafanaUrl} target="_blank" rel="noopener noreferrer" className="btn btnGhost btnSm">
             Open Grafana Dashboard →
           </a>
         </div>
-        <div className={styles.statsGrid}>
+        <div className="statGrid">
           {serviceHealth.map(service => (
-            <div key={service.name} className={styles.statCard}>
-              <div className={styles.statHeader}>
-                <div className={`${styles.statIcon} ${service.status === 'healthy' ? styles.statIconGreen : service.status === 'degraded' ? styles.statIconOrange : styles.statIconRed}`}>
+            <div key={service.name} className="statTile">
+              <div className="statTileLabel">
+                <span className={`${styles.statIcon} ${service.status === 'healthy' ? styles.statIconGreen : service.status === 'degraded' ? styles.statIconOrange : styles.statIconRed}`}>
                   <ServerIcon />
-                </div>
-                <span className={`${styles.statusDot} ${service.status === 'healthy' ? styles.statusActive : service.status === 'degraded' ? styles.statusWarning : styles.statusInactive}`} />
+                </span>
+                {service.name}
               </div>
-              <div className={styles.statValue}>{service.name}</div>
-              <div className={styles.statLabel}>
-                {service.latency}ms · {service.uptime} uptime
+              <div className={getStatusClass(service.status === 'healthy' ? 'active' : service.status === 'degraded' ? 'warning' : 'inactive')}>
+                {service.status}
               </div>
+              <div className="statTileMeta">{service.latency}ms · {service.uptime} uptime</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* Auth & Billing Metrics */}
-      <div className={styles.cardsGrid}>
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}><UsersIcon /> Auth Service Metrics</h3>
-          <div className={styles.revenueBreakdown}>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Login Success
+      <div className="panelGrid dashSection">
+        <div className="panel">
+          <h3 className={styles.panelTitle}><UsersIcon /> Auth Service Metrics</h3>
+          <div className="rowList">
+            <div className="row">
+              <span className={`rowLabel ${styles.dotLabel}`}>
+                <span className={`${styles.dot} ${styles.dotSuccess}`} />Login Success
               </span>
-              <span className={styles.revenueItemValue}>{formatMetric(authMetrics.loginSuccess)}</span>
+              <span className={styles.rowValue}>{formatMetric(authMetrics.loginSuccess)}</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#ef4444' }} />Login Failed
+            <div className="row">
+              <span className={`rowLabel ${styles.dotLabel}`}>
+                <span className={`${styles.dot} ${styles.dotError}`} />Login Failed
               </span>
-              <span className={styles.revenueItemValue}>{formatMetric(authMetrics.loginFailed)}</span>
+              <span className={styles.rowValue}>{formatMetric(authMetrics.loginFailed)}</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#3b82f6' }} />Registrations
+            <div className="row">
+              <span className={`rowLabel ${styles.dotLabel}`}>
+                <span className={`${styles.dot} ${styles.dotBlue}`} />Registrations
               </span>
-              <span className={styles.revenueItemValue}>{formatMetric(authMetrics.registrations)}</span>
+              <span className={styles.rowValue}>{formatMetric(authMetrics.registrations)}</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#8b5cf6' }} />MFA Enabled Users
+            <div className="row">
+              <span className={`rowLabel ${styles.dotLabel}`}>
+                <span className={`${styles.dot} ${styles.dotTeal}`} />MFA Enabled Users
               </span>
-              <span className={styles.revenueItemValue}>{formatMetric(authMetrics.mfaEnabled)}</span>
+              <span className={styles.rowValue}>{formatMetric(authMetrics.mfaEnabled)}</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#06b6d4' }} />Active Sessions
+            <div className="row">
+              <span className={`rowLabel ${styles.dotLabel}`}>
+                <span className={`${styles.dot} ${styles.dotCyan}`} />Active Sessions
               </span>
-              <span className={styles.revenueItemValue}>{formatMetric(authMetrics.activeSessions)}</span>
+              <span className={styles.rowValue}>{formatMetric(authMetrics.activeSessions)}</span>
             </div>
           </div>
-          <div style={{ marginTop: '16px', fontSize: '12px', color: '#64748b' }}>
+          <div className={`${styles.muted} ${styles.mt4}`}>
             Metrics from: auth_login_total, auth_register_total, auth_mfa_*, auth_active_sessions
           </div>
         </div>
 
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}><DollarIcon /> Billing Service Metrics</h3>
-          <div className={styles.revenueBreakdown}>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#10b981' }} />Active Subscriptions
+        <div className="panel">
+          <h3 className={styles.panelTitle}><DollarIcon /> Billing Service Metrics</h3>
+          <div className="rowList">
+            <div className="row">
+              <span className={`rowLabel ${styles.dotLabel}`}>
+                <span className={`${styles.dot} ${styles.dotSuccess}`} />Active Subscriptions
               </span>
-              <span className={styles.revenueItemValue}>{formatMetric(billingMetrics.subscriptionsActive)}</span>
+              <span className={styles.rowValue}>{formatMetric(billingMetrics.subscriptionsActive)}</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#3b82f6' }} />Payments Success
+            <div className="row">
+              <span className={`rowLabel ${styles.dotLabel}`}>
+                <span className={`${styles.dot} ${styles.dotBlue}`} />Payments Success
               </span>
-              <span className={styles.revenueItemValue}>{formatMetric(billingMetrics.paymentsSuccess)}</span>
+              <span className={styles.rowValue}>{formatMetric(billingMetrics.paymentsSuccess)}</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#ef4444' }} />Payments Failed
+            <div className="row">
+              <span className={`rowLabel ${styles.dotLabel}`}>
+                <span className={`${styles.dot} ${styles.dotError}`} />Payments Failed
               </span>
-              <span className={styles.revenueItemValue}>{formatMetric(billingMetrics.paymentsFailed)}</span>
+              <span className={styles.rowValue}>{formatMetric(billingMetrics.paymentsFailed)}</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#8b5cf6' }} />Webhooks Processed
+            <div className="row">
+              <span className={`rowLabel ${styles.dotLabel}`}>
+                <span className={`${styles.dot} ${styles.dotTeal}`} />Webhooks Processed
               </span>
-              <span className={styles.revenueItemValue}>{formatMetric(billingMetrics.webhooksProcessed)}</span>
+              <span className={styles.rowValue}>{formatMetric(billingMetrics.webhooksProcessed)}</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#f59e0b' }} />Checkout Conversion
+            <div className="row">
+              <span className={`rowLabel ${styles.dotLabel}`}>
+                <span className={`${styles.dot} ${styles.dotWarning}`} />Checkout Conversion
               </span>
-              <span className={styles.revenueItemValue}>
+              <span className={styles.rowValue}>
                 {billingMetrics.checkoutStarted != null && billingMetrics.checkoutCompleted != null && billingMetrics.checkoutStarted > 0
                   ? `${((billingMetrics.checkoutCompleted / billingMetrics.checkoutStarted) * 100).toFixed(1)}%`
                   : '—'
@@ -1392,20 +1274,20 @@ const OwnerDashboard: React.FC = () => {
               </span>
             </div>
           </div>
-          <div style={{ marginTop: '16px', fontSize: '12px', color: '#64748b' }}>
+          <div className={`${styles.muted} ${styles.mt4}`}>
             Metrics from: billing_subscription_*, billing_payment_*, billing_stripe_webhook_*
           </div>
         </div>
       </div>
 
       {/* Alert Rules */}
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}><ActivityIcon /> Active Alert Rules</h2>
+      <div className="dashSection">
+        <div className="dashSectionHead">
+          <h2 className="dashSectionTitle"><ActivityIcon /> Active Alert Rules</h2>
         </div>
-        <div className={styles.card}>
-          <div className={styles.tableWrapper}>
-            <table className={styles.table}>
+        <div className="panel">
+          <div className="dashTableWrap">
+            <table className="dashTable">
               <thead>
                 <tr><th>Alert</th><th>Condition</th><th>Severity</th><th>Status</th></tr>
               </thead>
@@ -1413,32 +1295,32 @@ const OwnerDashboard: React.FC = () => {
                 <tr>
                   <td>HighLoginFailureRate</td>
                   <td>&gt;30% login failures for 5m</td>
-                  <td><span className={`${styles.badge}`} style={{ background: '#f59e0b', color: '#fff' }}>warning</span></td>
-                  <td><span className={`${styles.statusDot} ${styles.statusActive}`} />OK</td>
+                  <td><span className="badge badgeWarning">warning</span></td>
+                  <td><span className="badge badgeSuccess">OK</span></td>
                 </tr>
                 <tr>
                   <td>PaymentFailuresSpike</td>
                   <td>&gt;0.1/s payment failures for 5m</td>
-                  <td><span className={`${styles.badge}`} style={{ background: '#ef4444', color: '#fff' }}>critical</span></td>
-                  <td><span className={`${styles.statusDot} ${styles.statusActive}`} />OK</td>
+                  <td><span className="badge badgeError">critical</span></td>
+                  <td><span className="badge badgeSuccess">OK</span></td>
                 </tr>
                 <tr>
                   <td>AuthServiceHighLatency</td>
                   <td>P95 &gt; 1s for 5m</td>
-                  <td><span className={`${styles.badge}`} style={{ background: '#f59e0b', color: '#fff' }}>warning</span></td>
-                  <td><span className={`${styles.statusDot} ${styles.statusActive}`} />OK</td>
+                  <td><span className="badge badgeWarning">warning</span></td>
+                  <td><span className="badge badgeSuccess">OK</span></td>
                 </tr>
                 <tr>
                   <td>StripeWebhookFailures</td>
                   <td>Webhook processing failures</td>
-                  <td><span className={`${styles.badge}`} style={{ background: '#f59e0b', color: '#fff' }}>warning</span></td>
-                  <td><span className={`${styles.statusDot} ${styles.statusActive}`} />OK</td>
+                  <td><span className="badge badgeWarning">warning</span></td>
+                  <td><span className="badge badgeSuccess">OK</span></td>
                 </tr>
                 <tr>
                   <td>HighCheckoutAbandonment</td>
                   <td>&gt;70% abandonment for 1h</td>
-                  <td><span className={`${styles.badge}`} style={{ background: '#f59e0b', color: '#fff' }}>warning</span></td>
-                  <td><span className={`${styles.statusDot} ${styles.statusActive}`} />OK</td>
+                  <td><span className="badge badgeWarning">warning</span></td>
+                  <td><span className="badge badgeSuccess">OK</span></td>
                 </tr>
               </tbody>
             </table>
@@ -1447,134 +1329,29 @@ const OwnerDashboard: React.FC = () => {
       </div>
 
       {/* Quick Links */}
-      <div className={styles.cardsGrid}>
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}><ServerIcon /> Monitoring Tools</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
-            <a href={ENV.grafanaUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>
-              📊 Grafana Dashboard
-            </a>
-            <a href={ENV.prometheusUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>
-              📈 Prometheus Metrics
-            </a>
-            <a href={ENV.alertmanagerUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>
-              🔔 Alertmanager
-            </a>
-            <a href={`${API_BASE}/api/auth/metrics`} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>
-              🔐 Auth Metrics Endpoint
-            </a>
-            <a href={`${API_BASE}/api/billing/metrics`} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none' }}>
-              💳 Billing Metrics Endpoint
-            </a>
+      <div className="panelGrid">
+        <div className="panel">
+          <h3 className={styles.panelTitle}><ServerIcon /> Monitoring Tools</h3>
+          <div className={styles.linkList}>
+            <a href={ENV.grafanaUrl} target="_blank" rel="noopener noreferrer">📊 Grafana Dashboard</a>
+            <a href={ENV.prometheusUrl} target="_blank" rel="noopener noreferrer">📈 Prometheus Metrics</a>
+            <a href={ENV.alertmanagerUrl} target="_blank" rel="noopener noreferrer">🔔 Alertmanager</a>
+            <a href={`${API_BASE}/api/auth/metrics`} target="_blank" rel="noopener noreferrer">🔐 Auth Metrics Endpoint</a>
+            <a href={`${API_BASE}/api/billing/metrics`} target="_blank" rel="noopener noreferrer">💳 Billing Metrics Endpoint</a>
           </div>
         </div>
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}><ActivityIcon /> Recent Alerts</h3>
-          <div className={styles.activityLog}>
-            <div className={styles.activityItem}>
-              <div className={`${styles.activityIcon} ${styles.statIconGreen}`}><ActivityIcon /></div>
-              <div className={styles.activityContent}>
-                <div className={styles.activityText}>All systems operational</div>
-                <div className={styles.activityTime}>No active alerts</div>
+        <div className="panel">
+          <h3 className={styles.panelTitle}><ActivityIcon /> Recent Alerts</h3>
+          <div className="rowList">
+            <div className="row">
+              <div className={styles.iconRow}>
+                <span className={`${styles.statIcon} ${styles.statIconGreen}`}><ActivityIcon /></span>
+                <div>
+                  <div className="rowLabel">All systems operational</div>
+                  <div className="rowDesc">No active alerts</div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-
-  const renderStatePhysics = () => (
-    <>
-      <div className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>🌌 Platform State Physics - Real-Time 3D Visualization</h2>
-          <a href={`${API_BASE}/api/state-physics`} target="_blank" rel="noopener noreferrer" className={styles.logoutBtn} style={{ textDecoration: 'none' }}>
-            Open Full Screen →
-          </a>
-        </div>
-        <div className={styles.card} style={{ padding: 0, overflow: 'hidden', height: '600px' }}>
-          <iframe 
-            src={`${API_BASE}/api/state-physics`} 
-            style={{ 
-              width: '100%', 
-              height: '100%', 
-              border: 'none',
-              borderRadius: '12px'
-            }}
-            title="State Physics Visualizer"
-          />
-        </div>
-      </div>
-      
-      <div className={styles.cardsGrid}>
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}><ServerIcon /> What You're Seeing</h3>
-          <div className={styles.revenueBreakdown}>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#0088ff' }} />Blue Nodes
-              </span>
-              <span className={styles.revenueItemValue}>Users</span>
-            </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#ff8800' }} />Orange Nodes
-              </span>
-              <span className={styles.revenueItemValue}>Agents</span>
-            </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#00ff88' }} />Green Nodes
-              </span>
-              <span className={styles.revenueItemValue}>Services</span>
-            </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#00ffff' }} />Cyan Nodes
-              </span>
-              <span className={styles.revenueItemValue}>Contracts</span>
-            </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#ff0088' }} />Pink Lines
-              </span>
-              <span className={styles.revenueItemValue}>Transactions</span>
-            </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: '#8800ff' }} />Purple Lines
-              </span>
-              <span className={styles.revenueItemValue}>Trust Relationships</span>
-            </div>
-          </div>
-        </div>
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}><ActivityIcon /> Conservation Laws</h3>
-          <div className={styles.revenueBreakdown}>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Mass Conservation</span>
-              <span style={{ color: '#10b981' }}>✓ Preserved</span>
-            </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Energy Conservation</span>
-              <span style={{ color: '#10b981' }}>✓ Preserved</span>
-            </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Identity Uniqueness</span>
-              <span style={{ color: '#10b981' }}>✓ Preserved</span>
-            </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Causality</span>
-              <span style={{ color: '#10b981' }}>✓ Preserved</span>
-            </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Non-Negative Values</span>
-              <span style={{ color: '#10b981' }}>✓ Preserved</span>
-            </div>
-          </div>
-          <div style={{ marginTop: '16px', fontSize: '12px', color: '#64748b' }}>
-            Physics simulation ensures all platform invariants are maintained
           </div>
         </div>
       </div>
@@ -1583,151 +1360,119 @@ const OwnerDashboard: React.FC = () => {
 
   const renderSystemControl = () => (
     <>
-      <div className={styles.statsGrid}>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={`${styles.statIcon} ${styles.statIconGreen}`}><ServerIcon /></div>
-          </div>
-          <div className={styles.statValue}>{realServices ? `${realServices.healthy}/${realServices.total}` : '—'}</div>
-          <div className={styles.statLabel}>Services Online</div>
+      <div className="statGrid dashSection">
+        <div className="statTile">
+          <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconGreen}`}><ServerIcon /></span>Services Online</div>
+          <div className="statTileValue">{realServices ? `${realServices.healthy}/${realServices.total}` : '—'}</div>
         </div>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={`${styles.statIcon} ${styles.statIconPurple}`}><CpuIcon /></div>
-          </div>
-          <div className={styles.statValue}>{realMetrics?.cpu?.usage_percent?.toFixed(1) || '—'}%</div>
-          <div className={styles.statLabel}>CPU Usage</div>
+        <div className="statTile">
+          <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconTeal}`}><CpuIcon /></span>CPU Usage</div>
+          <div className="statTileValue">{realMetrics?.cpu?.usage_percent?.toFixed(1) || '—'}<span>%</span></div>
         </div>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={`${styles.statIcon} ${styles.statIconOrange}`}><ActivityIcon /></div>
-          </div>
-          <div className={styles.statValue}>{realMetrics?.memory?.usage_percent?.toFixed(1) || '—'}%</div>
-          <div className={styles.statLabel}>Memory ({realMetrics?.memory?.used_gb || '—'}GB / {realMetrics?.memory?.total_gb || '—'}GB)</div>
+        <div className="statTile">
+          <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconOrange}`}><ActivityIcon /></span>Memory</div>
+          <div className="statTileValue">{realMetrics?.memory?.usage_percent?.toFixed(1) || '—'}<span>%</span></div>
+          <div className="statTileMeta">{realMetrics?.memory?.used_gb || '—'}GB / {realMetrics?.memory?.total_gb || '—'}GB</div>
         </div>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <div className={`${styles.statIcon} ${styles.statIconBlue}`}><DatabaseIcon /></div>
-          </div>
-          <div className={styles.statValue}>{realMetrics?.disk?.usage_percent?.toFixed(1) || '—'}%</div>
-          <div className={styles.statLabel}>Disk ({realMetrics?.disk?.used_gb || '—'}GB / {realMetrics?.disk?.total_gb || '—'}GB)</div>
+        <div className="statTile">
+          <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconBlue}`}><DatabaseIcon /></span>Disk</div>
+          <div className="statTileValue">{realMetrics?.disk?.usage_percent?.toFixed(1) || '—'}<span>%</span></div>
+          <div className="statTileMeta">{realMetrics?.disk?.used_gb || '—'}GB / {realMetrics?.disk?.total_gb || '—'}GB</div>
         </div>
       </div>
 
-      <div className={styles.cardsGrid}>
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}><ServerIcon /> Live Service Health ({realServices ? `${realServices.healthy} healthy / ${realServices.total} total` : 'unavailable'})</h3>
-          <div className={styles.revenueBreakdown}>
+      <div className="panelGrid">
+        <div className="panel">
+          <h3 className={styles.panelTitle}><ServerIcon /> Live Service Health ({realServices ? `${realServices.healthy} healthy / ${realServices.total} total` : 'unavailable'})</h3>
+          <div className="rowList">
             {realServices?.services?.map(svc => (
-              <div key={svc.key} className={styles.revenueItem}>
-                <span className={styles.revenueItemLabel}>
-                  <span className={styles.revenueItemDot} style={{ background: svc.status === 'healthy' ? '#10b981' : svc.status === 'degraded' ? '#f59e0b' : '#ef4444' }} />
+              <div key={svc.key} className="row">
+                <span className={`rowLabel ${styles.dotLabel}`}>
+                  <span className={styles.dot} style={{ background: svc.status === 'healthy' ? 'var(--color-success)' : svc.status === 'degraded' ? 'var(--color-warning)' : 'var(--color-error)' }} />
                   {svc.name}
                 </span>
-                <span style={{ color: svc.status === 'healthy' ? '#10b981' : svc.status === 'degraded' ? '#f59e0b' : '#ef4444', fontSize: '12px' }}>
+                <span className={styles.font12} style={{ color: svc.status === 'healthy' ? 'var(--color-success)' : svc.status === 'degraded' ? 'var(--color-warning)' : 'var(--color-error)' }}>
                   {svc.status} - {svc.latency}ms
                 </span>
               </div>
-            )) || <div style={{ color: '#64748b', fontSize: '13px' }}>Loading service data...</div>}
+            )) || <div className="emptyState">Loading service data...</div>}
           </div>
         </div>
 
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}><DatabaseIcon /> Database Status</h3>
-          <div className={styles.revenueBreakdown}>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>PostgreSQL</span>
-              <span style={{ color: realDbStats?.databases?.postgresql?.status === 'configured' ? '#10b981' : '#f59e0b' }}>
+        <div className="panel">
+          <h3 className={styles.panelTitle}><DatabaseIcon /> Database Status</h3>
+          <div className="rowList">
+            <div className="row">
+              <span className="rowLabel">PostgreSQL</span>
+              <span style={{ color: realDbStats?.databases?.postgresql?.status === 'configured' ? 'var(--color-success)' : 'var(--color-warning)' }}>
                 {realDbStats?.databases?.postgresql?.status || 'checking...'}
               </span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Redis Cache</span>
-              <span style={{ color: realDbStats?.databases?.redis?.status === 'configured' || realDbStats?.databases?.redis?.status === 'connected' ? '#10b981' : '#f59e0b' }}>
+            <div className="row">
+              <span className="rowLabel">Redis Cache</span>
+              <span style={{ color: realDbStats?.databases?.redis?.status === 'configured' || realDbStats?.databases?.redis?.status === 'connected' ? 'var(--color-success)' : 'var(--color-warning)' }}>
                 {realDbStats?.databases?.redis?.status || 'checking...'}
               </span>
             </div>
           </div>
         </div>
 
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}><CpuIcon /> System Info</h3>
-          <div className={styles.revenueBreakdown}>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>CPU Cores</span>
+        <div className="panel">
+          <h3 className={styles.panelTitle}><CpuIcon /> System Info</h3>
+          <div className="rowList">
+            <div className="row">
+              <span className="rowLabel">CPU Cores</span>
               <span>{realMetrics?.cpu?.cores || '—'}</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Load Average</span>
-              <span style={{ fontFamily: 'monospace', fontSize: '11px' }}>{realMetrics?.cpu?.load_avg?.join(', ') || '—'}</span>
+            <div className="row">
+              <span className="rowLabel">Load Average</span>
+              <span className={`${styles.mono} ${styles.font11}`}>{realMetrics?.cpu?.load_avg?.join(', ') || '—'}</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Server Uptime</span>
+            <div className="row">
+              <span className="rowLabel">Server Uptime</span>
               <span>{realMetrics?.uptime_human || '—'}</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Network Sent</span>
-              <span style={{ fontFamily: 'monospace', fontSize: '11px' }}>{realMetrics?.network ? (realMetrics.network.bytes_sent / (1024*1024*1024)).toFixed(1) + ' GB' : '—'}</span>
+            <div className="row">
+              <span className="rowLabel">Network Sent</span>
+              <span className={`${styles.mono} ${styles.font11}`}>{realMetrics?.network ? (realMetrics.network.bytes_sent / (1024 * 1024 * 1024)).toFixed(1) + ' GB' : '—'}</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Network Received</span>
-              <span style={{ fontFamily: 'monospace', fontSize: '11px' }}>{realMetrics?.network ? (realMetrics.network.bytes_recv / (1024*1024*1024)).toFixed(1) + ' GB' : '—'}</span>
+            <div className="row">
+              <span className="rowLabel">Network Received</span>
+              <span className={`${styles.mono} ${styles.font11}`}>{realMetrics?.network ? (realMetrics.network.bytes_recv / (1024 * 1024 * 1024)).toFixed(1) + ' GB' : '—'}</span>
             </div>
           </div>
         </div>
 
-        <div className={styles.card}>
-          <h3 className={styles.cardTitle}><SettingsIcon /> Platform Access (Owner Only)</h3>
-          <div className={styles.revenueBreakdown}>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Domain</span>
-              <span style={{ fontFamily: 'monospace', fontSize: '10px' }}>dev-swat.com</span>
+        <div className="panel">
+          <h3 className={styles.panelTitle}><SettingsIcon /> Platform Access (Owner Only)</h3>
+          <div className="rowList">
+            <div className="row">
+              <span className="rowLabel">Domain</span>
+              <span className={`${styles.mono} ${styles.font10}`}>dev-swat.com</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Gateway</span>
-              <span style={{ fontFamily: 'monospace', fontSize: '10px' }}>:8001 → nginx → :443</span>
+            <div className="row">
+              <span className="rowLabel">Gateway</span>
+              <span className={`${styles.mono} ${styles.font10}`}>:8001 → nginx → :443</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>RARA Agents</span>
+            <div className="row">
+              <span className="rowLabel">RARA Agents</span>
               <span>{realRara?.agent_count ?? '—'} registered</span>
             </div>
-            <div className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>Kill Switch</span>
-              <span style={{ color: realRara?.kill_switch?.active ? '#ef4444' : '#10b981' }}>
+            <div className="row">
+              <span className="rowLabel">Kill Switch</span>
+              <span style={{ color: realRara?.kill_switch?.active ? 'var(--color-error)' : 'var(--color-success)' }}>
                 {realRara?.kill_switch?.active ? 'ACTIVE' : realRara?.kill_switch ? 'OFF' : '—'}
               </span>
             </div>
           </div>
-          <div style={{ marginTop: '12px', padding: '12px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '8px', fontSize: '12px', color: '#a78bfa' }}>
+          <div className={styles.noticeBox}>
             🔒 This control plane is isolated from regular users. Only platform owners can access these controls.
           </div>
-          <div style={{ marginTop: '10px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => navigate('/owner/chat-skills-control')}
-              style={{
-                padding: '8px 10px',
-                borderRadius: '8px',
-                border: '1px solid rgba(14, 165, 233, 0.4)',
-                background: 'rgba(14, 165, 233, 0.14)',
-                color: '#7dd3fc',
-                fontSize: '12px',
-                cursor: 'pointer',
-              }}
-            >
+          <div className={styles.btnRow}>
+            <button className="btn btnSecondary btnSm" onClick={() => navigate('/owner/chat-skills-control')}>
               Open Chat Skills Control
             </button>
-            <button
-              onClick={() => navigate('/owner/agents-control')}
-              style={{
-                padding: '8px 10px',
-                borderRadius: '8px',
-                border: '1px solid rgba(250, 204, 21, 0.35)',
-                background: 'rgba(250, 204, 21, 0.12)',
-                color: '#fde68a',
-                fontSize: '12px',
-                cursor: 'pointer',
-              }}
-            >
+            <button className="btn btnSecondary btnSm" onClick={() => navigate('/owner/agents-control')}>
               Open Agents Control
             </button>
           </div>
@@ -1788,163 +1533,152 @@ const OwnerDashboard: React.FC = () => {
 
   const renderChatSkills = () => {
     return (
-      <>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h2 style={{ color: '#e2e8f0', fontSize: '18px', margin: 0 }}>AGI Neural Hub Skills Management</h2>
-          <button
-            onClick={fetchChatSkills}
-            disabled={skillsLoading}
-            style={{ padding: '6px 14px', borderRadius: '8px', border: '1px solid rgba(14, 165, 233, 0.4)', background: 'rgba(14, 165, 233, 0.14)', color: '#7dd3fc', fontSize: '12px', cursor: 'pointer' }}
-          >
+      <div className="dashSection">
+        <div className="dashSectionHead">
+          <h2 className="dashSectionTitle">AGI Neural Hub Skills Management</h2>
+          <button className="btn btnSecondary btnSm" onClick={fetchChatSkills} disabled={skillsLoading}>
             {skillsLoading ? 'Loading...' : 'Refresh Skills'}
           </button>
         </div>
-        {skillsError && <div style={{ color: '#ef4444', marginBottom: '12px', fontSize: '13px' }}>{skillsError}</div>}
-        <div className={styles.cardsGrid}>
+        {skillsError && <div className={styles.inlineError}>{skillsError}</div>}
+        <div className="panelGrid">
           {skillsLoading && chatSkills.length === 0 ? (
-            <div className={styles.card} style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#94a3b8' }}>Loading skills...</div>
+            <div className={`panel emptyState ${styles.spanAll}`}>Loading skills...</div>
           ) : chatSkills.length === 0 ? (
-            <div className={styles.card} style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#94a3b8' }}>No skills found</div>
+            <div className={`panel emptyState ${styles.spanAll}`}>No skills found</div>
           ) : chatSkills.map(skill => (
-            <div key={skill.id} className={styles.card}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <h3 className={styles.cardTitle} style={{ margin: 0 }}>
-                  <span style={{ fontSize: '18px', marginRight: '6px' }}>{skill.icon}</span> {skill.name}
+            <div key={skill.id} className="panel">
+              <div className={styles.skillCardHead}>
+                <h3 className={`${styles.panelTitle} ${styles.mb0}`}>
+                  <span className={styles.skillIcon}>{skill.icon}</span>{skill.name}
                 </h3>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '12px', color: skill.enabled ? '#10b981' : '#94a3b8' }}>
-                  <input
-                    type="checkbox"
-                    checked={skill.enabled}
-                    onChange={e => handleToggleSkill(skill.id, e.target.checked)}
-                    style={{ accentColor: '#10b981', width: '16px', height: '16px' }}
-                  />
+                <label className={styles.skillToggleLabel} style={{ color: skill.enabled ? 'var(--color-success)' : 'var(--text-tertiary)' }}>
+                  <span className="toggle">
+                    <input type="checkbox" checked={skill.enabled} onChange={e => handleToggleSkill(skill.id, e.target.checked)} />
+                    <span className="toggleSlider" />
+                  </span>
                   {skill.enabled ? 'Enabled' : 'Disabled'}
                 </label>
               </div>
-              <div style={{ color: '#94a3b8', fontSize: '12px', marginTop: '8px', lineHeight: '1.5' }}>{skill.description}</div>
-              <div style={{ marginTop: '10px', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                <span style={{ padding: '2px 8px', borderRadius: '4px', background: 'rgba(139, 92, 246, 0.15)', color: '#a78bfa', fontSize: '10px' }}>{skill.category}</span>
-                <span style={{ padding: '2px 8px', borderRadius: '4px', background: 'rgba(14, 165, 233, 0.15)', color: '#7dd3fc', fontSize: '10px' }}>{skill.credit_cost} credits</span>
-                {skill.is_default && <span style={{ padding: '2px 8px', borderRadius: '4px', background: 'rgba(16, 185, 129, 0.15)', color: '#6ee7b7', fontSize: '10px' }}>Default</span>}
-                {skill.requires_api_key && <span style={{ padding: '2px 8px', borderRadius: '4px', background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24', fontSize: '10px' }}>API Key: {skill.requires_api_key}</span>}
+              <div className={styles.skillDesc}>{skill.description}</div>
+              <div className={styles.skillTags}>
+                <span className="badge">{skill.category}</span>
+                <span className="badge badgePrimary">{skill.credit_cost} credits</span>
+                {skill.is_default && <span className="badge badgeSuccess">Default</span>}
+                {skill.requires_api_key && <span className="badge badgeWarning">API Key: {skill.requires_api_key}</span>}
               </div>
               {skill.capabilities && skill.capabilities.length > 0 && (
-                <div style={{ marginTop: '8px', fontSize: '11px', color: '#64748b' }}>
+                <div className={styles.skillCaps}>
                   {skill.capabilities.join(' · ')}
                 </div>
               )}
             </div>
           ))}
         </div>
-      </>
+      </div>
     );
   };
 
   const renderUsageAnalytics = () => {
     const ua = usageAnalytics;
-    if (!ua) return <div className={styles.card} style={{ textAlign: 'center', color: '#94a3b8', padding: '40px' }}>Loading usage analytics...</div>;
+    if (!ua) return <div className="panel emptyState">Loading usage analytics...</div>;
 
     const pt = ua.platform_totals;
     return (
       <>
         {/* Platform Totals */}
-        <div className={styles.statsGrid}>
-          <div className={styles.statCard}>
-            <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconBlue}`}><ActivityIcon /></div></div>
-            <div className={styles.statValue}>{pt.total_messages.toLocaleString()}</div>
-            <div className={styles.statLabel}>Total Messages</div>
+        <div className="statGrid dashSection">
+          <div className="statTile">
+            <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconBlue}`}><ActivityIcon /></span>Total Messages</div>
+            <div className="statTileValue">{pt.total_messages.toLocaleString()}</div>
           </div>
-          <div className={styles.statCard}>
-            <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconGreen}`}><UsersIcon /></div></div>
-            <div className={styles.statValue}>{pt.total_chats.toLocaleString()}</div>
-            <div className={styles.statLabel}>Total Chats</div>
+          <div className="statTile">
+            <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconGreen}`}><UsersIcon /></span>Total Chats</div>
+            <div className="statTileValue">{pt.total_chats.toLocaleString()}</div>
           </div>
-          <div className={styles.statCard}>
-            <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconPurple}`}><DollarIcon /></div></div>
-            <div className={styles.statValue}>{pt.total_credits_used.toLocaleString()}</div>
-            <div className={styles.statLabel}>Credits Used</div>
+          <div className="statTile">
+            <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconTeal}`}><DollarIcon /></span>Credits Used</div>
+            <div className="statTileValue">{pt.total_credits_used.toLocaleString()}</div>
           </div>
-          <div className={styles.statCard}>
-            <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconOrange}`}><TrendingUpIcon /></div></div>
-            <div className={styles.statValue}>{pt.total_logins.toLocaleString()}</div>
-            <div className={styles.statLabel}>Total Logins</div>
+          <div className="statTile">
+            <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconOrange}`}><TrendingUpIcon /></span>Total Logins</div>
+            <div className="statTileValue">{pt.total_logins.toLocaleString()}</div>
           </div>
-          <div className={styles.statCard}>
-            <div className={styles.statHeader}><div className={`${styles.statIcon} ${styles.statIconCyan}`}><UsersIcon /></div></div>
-            <div className={styles.statValue}>{pt.active_users_7d}</div>
-            <div className={styles.statLabel}>Active Users (7d)</div>
+          <div className="statTile">
+            <div className="statTileLabel"><span className={`${styles.statIcon} ${styles.statIconCyan}`}><UsersIcon /></span>Active Users (7d)</div>
+            <div className="statTileValue">{pt.active_users_7d}</div>
           </div>
         </div>
 
-        <div className={styles.cardsGrid}>
+        <div className="panelGrid dashSection">
           {/* AI Provider / Model Usage */}
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}><CpuIcon /> AI Agent / Model Usage</h3>
-            <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
+          <div className="panel">
+            <h3 className={styles.panelTitle}><CpuIcon /> AI Agent / Model Usage</h3>
+            <div className={styles.scroll320}>
               {ua.ai_provider_usage.length > 0 ? ua.ai_provider_usage.map((p, i) => {
                 const maxMsgs = ua.ai_provider_usage[0]?.messages || 1;
                 return (
-                  <div key={p.provider} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 0', borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
-                    <span style={{ width: '20px', color: '#64748b', fontSize: '11px', textAlign: 'right' }}>{i + 1}</span>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '3px' }}>
-                        <span style={{ color: '#e2e8f0', fontSize: '12px', fontFamily: 'monospace' }}>{p.provider}</span>
-                        <span style={{ color: '#94a3b8', fontSize: '11px' }}>{p.messages.toLocaleString()} msgs</span>
+                  <div key={p.provider} className={styles.usageBarRow}>
+                    <span className={styles.usageBarRank}>{i + 1}</span>
+                    <div className={styles.grow}>
+                      <div className={styles.usageRowHead}>
+                        <span className={`${styles.mono} ${styles.font12}`}>{p.provider}</span>
+                        <span className={styles.muted}>{p.messages.toLocaleString()} msgs</span>
                       </div>
-                      <div style={{ height: '4px', background: '#1e293b', borderRadius: '2px', overflow: 'hidden' }}>
-                        <div style={{ width: `${(p.messages / maxMsgs) * 100}%`, height: '100%', background: 'linear-gradient(90deg, #8b5cf6, #6366f1)', borderRadius: '2px' }} />
+                      <div className={styles.usageBarTrack}>
+                        <div className={styles.usageBarFill} style={{ width: `${(p.messages / maxMsgs) * 100}%` }} />
                       </div>
                     </div>
                   </div>
                 );
-              }) : <div style={{ color: '#64748b', textAlign: 'center' }}>No AI usage data</div>}
+              }) : <div className="emptyState">No AI usage data</div>}
             </div>
           </div>
 
           {/* Service Usage (Credit Breakdown) */}
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}><ServerIcon /> Service Usage (Credits)</h3>
+          <div className="panel">
+            <h3 className={styles.panelTitle}><ServerIcon /> Service Usage (Credits)</h3>
             {ua.service_usage.length > 0 ? (
               <div>
                 {ua.service_usage.map(s => (
-                  <div key={s.service} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
-                    <span style={{ color: '#e2e8f0', fontSize: '13px' }}>
+                  <div key={s.service} className={styles.serviceUsageRow}>
+                    <span className={styles.font13}>
                       {s.service === 'chat_message' ? 'Chat Messages' :
                        s.service === 'memory_store' ? 'Memory Storage' :
                        s.service === 'code_analysis' ? 'Code Analysis' :
                        s.service === 'code_visualizer_analysis' ? 'Code Visualizer' :
                        s.service}
                     </span>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ color: '#a78bfa', fontSize: '13px', fontWeight: 600 }}>{s.credits_spent.toLocaleString()} credits</div>
-                      <div style={{ color: '#64748b', fontSize: '10px' }}>{s.transactions.toLocaleString()} transactions</div>
+                    <div className={styles.textRight}>
+                      <div className={styles.valuePrimaryStrong}>{s.credits_spent.toLocaleString()} credits</div>
+                      <div className={styles.muted}>{s.transactions.toLocaleString()} transactions</div>
                     </div>
                   </div>
                 ))}
               </div>
-            ) : <div style={{ color: '#64748b', textAlign: 'center' }}>No service usage data</div>}
+            ) : <div className="emptyState">No service usage data</div>}
           </div>
         </div>
 
-        <div className={styles.cardsGrid}>
+        <div className="panelGrid dashSection">
           {/* Top Users by Chat */}
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}><UsersIcon /> Top Users by Chat Activity</h3>
-            <div className={styles.tableWrapper} style={{ maxHeight: '350px', overflowY: 'auto' }}>
-              <table className={styles.table}>
-                <thead style={{ position: 'sticky', top: 0, background: '#1e293b', zIndex: 5 }}>
-                  <tr><th>#</th><th>User</th><th style={{ textAlign: 'right' }}>Messages</th><th style={{ textAlign: 'right' }}>Chats</th></tr>
+          <div className="panel">
+            <h3 className={styles.panelTitle}><UsersIcon /> Top Users by Chat Activity</h3>
+            <div className={`dashTableWrap ${styles.tableScrollMd}`}>
+              <table className="dashTable">
+                <thead>
+                  <tr className={styles.stickyHead}><th>#</th><th>User</th><th className={styles.tblRight}>Messages</th><th className={styles.tblRight}>Chats</th></tr>
                 </thead>
                 <tbody>
                   {ua.top_users_by_chat.map((u, i) => (
                     <tr key={u.email}>
-                      <td style={{ color: '#64748b', width: '30px' }}>{i + 1}</td>
+                      <td className={`${styles.muted} ${styles.rankCol}`}>{i + 1}</td>
                       <td>
-                        <div style={{ fontSize: '12px', color: '#e2e8f0' }}>{u.name}</div>
-                        <div style={{ fontSize: '10px', color: '#64748b', fontFamily: 'monospace' }}>{u.email}</div>
+                        <div className={styles.cellName}>{u.name}</div>
+                        <div className={`${styles.mono} ${styles.cellSub}`}>{u.email}</div>
                       </td>
-                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: '#3b82f6' }}>{u.messages.toLocaleString()}</td>
-                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: '#10b981' }}>{u.chats}</td>
+                      <td className={`${styles.mono} ${styles.textRight} ${styles.valueInfo}`}>{u.messages.toLocaleString()}</td>
+                      <td className={`${styles.mono} ${styles.textRight} ${styles.valueActive}`}>{u.chats}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -1953,23 +1687,23 @@ const OwnerDashboard: React.FC = () => {
           </div>
 
           {/* Top Users by Credit Spend */}
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}><DollarIcon /> Top Users by Credit Spend</h3>
-            <div className={styles.tableWrapper} style={{ maxHeight: '350px', overflowY: 'auto' }}>
-              <table className={styles.table}>
-                <thead style={{ position: 'sticky', top: 0, background: '#1e293b', zIndex: 5 }}>
-                  <tr><th>#</th><th>User</th><th style={{ textAlign: 'right' }}>Credits Spent</th><th style={{ textAlign: 'right' }}>Transactions</th></tr>
+          <div className="panel">
+            <h3 className={styles.panelTitle}><DollarIcon /> Top Users by Credit Spend</h3>
+            <div className={`dashTableWrap ${styles.tableScrollMd}`}>
+              <table className="dashTable">
+                <thead>
+                  <tr className={styles.stickyHead}><th>#</th><th>User</th><th className={styles.tblRight}>Credits Spent</th><th className={styles.tblRight}>Transactions</th></tr>
                 </thead>
                 <tbody>
                   {ua.top_users_by_credits.map((u, i) => (
                     <tr key={u.email}>
-                      <td style={{ color: '#64748b', width: '30px' }}>{i + 1}</td>
+                      <td className={`${styles.muted} ${styles.rankCol}`}>{i + 1}</td>
                       <td>
-                        <div style={{ fontSize: '12px', color: '#e2e8f0' }}>{u.name}</div>
-                        <div style={{ fontSize: '10px', color: '#64748b', fontFamily: 'monospace' }}>{u.email}</div>
+                        <div className={styles.cellName}>{u.name}</div>
+                        <div className={`${styles.mono} ${styles.cellSub}`}>{u.email}</div>
                       </td>
-                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: '#a78bfa' }}>{u.credits_spent.toLocaleString()}</td>
-                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: '#64748b' }}>{u.transactions}</td>
+                      <td className={`${styles.mono} ${styles.valuePrimary} ${styles.textRight}`}>{u.credits_spent.toLocaleString()}</td>
+                      <td className={`${styles.mono} ${styles.textRight} ${styles.valueMuted}`}>{u.transactions}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -1979,22 +1713,22 @@ const OwnerDashboard: React.FC = () => {
         </div>
 
         {/* Per-User Detailed Stats */}
-        <div className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}><UsersIcon /> Per-User Usage Details ({ua.per_user_stats.length} users)</h2>
+        <div className="dashSection">
+          <div className="dashSectionHead">
+            <h2 className="dashSectionTitle"><UsersIcon /> Per-User Usage Details ({ua.per_user_stats.length} users)</h2>
           </div>
-          <div className={styles.card}>
-            <div className={styles.tableWrapper} style={{ maxHeight: '500px', overflowY: 'auto' }}>
-              <table className={styles.table}>
-                <thead style={{ position: 'sticky', top: 0, background: '#1e293b', zIndex: 10 }}>
-                  <tr>
+          <div className="panel">
+            <div className={`dashTableWrap ${styles.tableScrollLg}`}>
+              <table className="dashTable">
+                <thead>
+                  <tr className={styles.stickyHead}>
                     <th>Email</th>
                     <th>Role</th>
                     <th>Plan</th>
-                    <th style={{ textAlign: 'right' }}>Chats</th>
-                    <th style={{ textAlign: 'right' }}>Messages</th>
-                    <th style={{ textAlign: 'right' }}>Credits Spent</th>
-                    <th style={{ textAlign: 'right' }}>Credits Received</th>
+                    <th className={styles.tblRight}>Chats</th>
+                    <th className={styles.tblRight}>Messages</th>
+                    <th className={styles.tblRight}>Credits Spent</th>
+                    <th className={styles.tblRight}>Credits Received</th>
                     <th>Flags</th>
                     <th>Last Login</th>
                   </tr>
@@ -2002,19 +1736,19 @@ const OwnerDashboard: React.FC = () => {
                 <tbody>
                   {ua.per_user_stats.map(u => (
                     <tr key={u.id}>
-                      <td style={{ fontFamily: 'monospace', fontSize: '11px' }}>{u.email}</td>
-                      <td><span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(139,92,246,0.15)', color: '#a78bfa' }}>{u.role}</span></td>
-                      <td><span className={`${styles.badge} ${getBadgeClass(u.plan)}`}>{u.plan}</span></td>
-                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: u.chat_count > 0 ? '#10b981' : '#475569' }}>{u.chat_count}</td>
-                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: u.message_count > 0 ? '#3b82f6' : '#475569' }}>{u.message_count}</td>
-                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: u.credits_spent > 0 ? '#f59e0b' : '#475569' }}>{u.credits_spent.toLocaleString()}</td>
-                      <td style={{ textAlign: 'right', fontFamily: 'monospace', color: u.credits_received > 0 ? '#10b981' : '#475569' }}>{u.credits_received.toLocaleString()}</td>
-                      <td style={{ fontSize: '10px' }}>
-                        {u.is_superuser && <span style={{ color: '#ef4444', marginRight: '4px' }}>SUPER</span>}
-                        {u.unlimited_credits && <span style={{ color: '#a78bfa' }}>UNLIMITED</span>}
-                        {!u.is_superuser && !u.unlimited_credits && <span style={{ color: '#475569' }}>—</span>}
+                      <td className={`${styles.mono} ${styles.font11}`}>{u.email}</td>
+                      <td><span className="badge">{u.role}</span></td>
+                      <td><span className={getBadgeClass(u.plan)}>{u.plan}</span></td>
+                      <td className={`${styles.mono} ${u.chat_count > 0 ? styles.valueActive : styles.valueMuted} ${styles.textRight}`}>{u.chat_count}</td>
+                      <td className={`${styles.mono} ${u.message_count > 0 ? styles.valueInfo : styles.valueMuted} ${styles.textRight}`}>{u.message_count}</td>
+                      <td className={`${styles.mono} ${u.credits_spent > 0 ? styles.valueWarning : styles.valueMuted} ${styles.textRight}`}>{u.credits_spent.toLocaleString()}</td>
+                      <td className={`${styles.mono} ${u.credits_received > 0 ? styles.valueActive : styles.valueMuted} ${styles.textRight}`}>{u.credits_received.toLocaleString()}</td>
+                      <td className={styles.font10}>
+                        {u.is_superuser && <span className={styles.flagSuper}>SUPER</span>}
+                        {u.unlimited_credits && <span className={styles.flagUnlimited}>UNLIMITED</span>}
+                        {!u.is_superuser && !u.unlimited_credits && <span className={styles.muted}>—</span>}
                       </td>
-                      <td style={{ fontSize: '11px', color: '#94a3b8' }}>{u.last_login ? new Date(u.last_login).toLocaleDateString() : 'Never'}</td>
+                      <td className={styles.muted}>{u.last_login ? new Date(u.last_login).toLocaleDateString() : 'Never'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -2025,32 +1759,32 @@ const OwnerDashboard: React.FC = () => {
 
         {/* Login Trends */}
         {ua.login_trends.length > 0 && (
-          <div className={styles.section}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}><TrendingUpIcon /> Login & Registration Trends (30 days)</h2>
+          <div className="dashSection">
+            <div className="dashSectionHead">
+              <h2 className="dashSectionTitle"><TrendingUpIcon /> Login & Registration Trends (30 days)</h2>
             </div>
-            <div className={styles.card}>
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+            <div className="panel">
+              <div className={styles.trendChart}>
                 {(() => {
                   const dates = [...new Set(ua.login_trends.map(t => t.date))].sort().slice(-14);
                   return dates.map(date => {
                     const logins = ua.login_trends.filter(t => t.date === date && t.event !== 'registration').reduce((s, t) => s + t.count, 0);
                     const regs = ua.login_trends.filter(t => t.date === date && t.event === 'registration').reduce((s, t) => s + t.count, 0);
                     return (
-                      <div key={date} style={{ textAlign: 'center', minWidth: '50px' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', height: '80px', justifyContent: 'flex-end' }}>
-                          {regs > 0 && <div style={{ width: '20px', height: `${Math.max(4, regs * 4)}px`, background: '#10b981', borderRadius: '2px' }} title={`${regs} registrations`} />}
-                          {logins > 0 && <div style={{ width: '20px', height: `${Math.max(4, logins * 2)}px`, background: '#3b82f6', borderRadius: '2px' }} title={`${logins} logins`} />}
+                      <div key={date} className={styles.trendCol}>
+                        <div className={styles.trendBars}>
+                          {regs > 0 && <div className={styles.trendBarReg} style={{ height: `${Math.max(4, regs * 4)}px` }} title={`${regs} registrations`} />}
+                          {logins > 0 && <div className={styles.trendBarLogin} style={{ height: `${Math.max(4, logins * 2)}px` }} title={`${logins} logins`} />}
                         </div>
-                        <div style={{ fontSize: '9px', color: '#64748b', marginTop: '4px' }}>{date.slice(5)}</div>
+                        <div className={styles.trendLabel}>{date.slice(5)}</div>
                       </div>
                     );
                   });
                 })()}
               </div>
-              <div style={{ display: 'flex', gap: '16px', marginTop: '12px', fontSize: '11px' }}>
-                <span style={{ color: '#3b82f6' }}>&#9632; Logins</span>
-                <span style={{ color: '#10b981' }}>&#9632; Registrations</span>
+              <div className={styles.trendLegend}>
+                <span className={styles.valueInfo}>&#9632; Logins</span>
+                <span className={styles.valueActive}>&#9632; Registrations</span>
               </div>
             </div>
           </div>
@@ -2060,98 +1794,189 @@ const OwnerDashboard: React.FC = () => {
   };
 
   const renderSettings = () => (
-    <div className={styles.cardsGrid}>
-      <div className={styles.card}>
-        <h3 className={styles.cardTitle}><DollarIcon /> Pricing Settings</h3>
-        <div className={styles.settingsForm}>
-          <div className={styles.formRow}>
-            <div className={styles.formGroup}><label className={styles.formLabel}>Credit Rate ($)</label><input type="number" step="0.0001" className={styles.formInput} value={settings.creditRate} onChange={e => setSettings({ ...settings, creditRate: parseFloat(e.target.value) })} /></div>
-            <div className={styles.formGroup}><label className={styles.formLabel}>Developer Credits</label><input type="number" className={styles.formInput} value={settings.developerCredits} onChange={e => setSettings({ ...settings, developerCredits: parseInt(e.target.value) })} /></div>
+    <div className="panelGrid">
+      <div className="panel">
+        <h3 className={styles.panelTitle}><DollarIcon /> Pricing Settings</h3>
+        <div className={styles.stack5}>
+          <div className={styles.formGrid}>
+            <div className="field">
+              <label className="fieldLabel">Credit Rate ($)</label>
+              <input type="number" step="0.0001" className="input" value={settings.creditRate} onChange={e => setSettings({ ...settings, creditRate: parseFloat(e.target.value) })} />
+            </div>
+            <div className="field">
+              <label className="fieldLabel">Developer Credits</label>
+              <input type="number" className="input" value={settings.developerCredits} onChange={e => setSettings({ ...settings, developerCredits: parseInt(e.target.value) })} />
+            </div>
           </div>
-          <div className={styles.formRow}>
-            <div className={styles.formGroup}><label className={styles.formLabel}>Plus Credits</label><input type="number" className={styles.formInput} value={settings.plusCredits} onChange={e => setSettings({ ...settings, plusCredits: parseInt(e.target.value) })} /></div>
-            <div className={styles.formGroup}><label className={styles.formLabel}>Plus Price ($)</label><input type="number" className={styles.formInput} value={settings.plusPrice} onChange={e => setSettings({ ...settings, plusPrice: parseInt(e.target.value) })} /></div>
+          <div className={styles.formGrid}>
+            <div className="field">
+              <label className="fieldLabel">Plus Credits</label>
+              <input type="number" className="input" value={settings.plusCredits} onChange={e => setSettings({ ...settings, plusCredits: parseInt(e.target.value) })} />
+            </div>
+            <div className="field">
+              <label className="fieldLabel">Plus Price ($)</label>
+              <input type="number" className="input" value={settings.plusPrice} onChange={e => setSettings({ ...settings, plusPrice: parseInt(e.target.value) })} />
+            </div>
           </div>
-          <button className={styles.saveBtn} onClick={handleSaveSettings}>Save Pricing</button>
+          <button className={`btn btnPrimary ${styles.selfStart}`} onClick={handleSaveSettings}>Save Pricing</button>
         </div>
       </div>
-      <div className={styles.card}>
-        <h3 className={styles.cardTitle}><SettingsIcon /> Platform Settings</h3>
-        <div className={styles.settingsForm}>
-          <div className={styles.formGroup}><label className={styles.formLabel}><input type="checkbox" checked={settings.signupsEnabled} onChange={e => setSettings({ ...settings, signupsEnabled: e.target.checked })} style={{ marginRight: '8px' }} />Enable Signups</label></div>
-          <div className={styles.formGroup}><label className={styles.formLabel}><input type="checkbox" checked={settings.maintenanceMode} onChange={e => setSettings({ ...settings, maintenanceMode: e.target.checked })} style={{ marginRight: '8px' }} />Maintenance Mode</label></div>
-          <button className={styles.saveBtn} onClick={handleSaveSettings}>Save Settings</button>
+      <div className="panel">
+        <h3 className={styles.panelTitle}><SettingsIcon /> Platform Settings</h3>
+        <div className="rowList">
+          <div className="row">
+            <div><div className="rowLabel">Enable Signups</div><div className="rowDesc">Allow new users to register on the platform.</div></div>
+            <label className="toggle">
+              <input type="checkbox" checked={settings.signupsEnabled} onChange={e => setSettings({ ...settings, signupsEnabled: e.target.checked })} />
+              <span className="toggleSlider" />
+            </label>
+          </div>
+          <div className="row">
+            <div><div className="rowLabel">Maintenance Mode</div><div className="rowDesc">Temporarily block access for non-owner users.</div></div>
+            <label className="toggle">
+              <input type="checkbox" checked={settings.maintenanceMode} onChange={e => setSettings({ ...settings, maintenanceMode: e.target.checked })} />
+              <span className="toggleSlider" />
+            </label>
+          </div>
         </div>
+        <button className={`btn btnPrimary ${styles.mt4}`} onClick={handleSaveSettings}>Save Settings</button>
       </div>
-      <div className={styles.card}>
-        <h3 className={styles.cardTitle}><ServerIcon /> System Status (Live)</h3>
-        <div className={styles.revenueBreakdown}>
+      <div className="panel">
+        <h3 className={styles.panelTitle}><ServerIcon /> System Status (Live)</h3>
+        <div className="rowList">
           {realServices?.services?.slice(0, 6).map(svc => (
-            <div key={svc.key} className={styles.revenueItem}>
-              <span className={styles.revenueItemLabel}>
-                <span className={styles.revenueItemDot} style={{ background: svc.status === 'healthy' ? '#10b981' : svc.status === 'degraded' ? '#f59e0b' : '#ef4444' }} />
+            <div key={svc.key} className="row">
+              <span className={`rowLabel ${styles.dotLabel}`}>
+                <span className={styles.dot} style={{ background: svc.status === 'healthy' ? 'var(--color-success)' : svc.status === 'degraded' ? 'var(--color-warning)' : 'var(--color-error)' }} />
                 {svc.name}
               </span>
-              <span style={{ color: svc.status === 'healthy' ? '#10b981' : svc.status === 'degraded' ? '#f59e0b' : '#ef4444' }}>{svc.status}</span>
+              <span style={{ color: svc.status === 'healthy' ? 'var(--color-success)' : svc.status === 'degraded' ? 'var(--color-warning)' : 'var(--color-error)' }}>{svc.status}</span>
             </div>
           )) || (
-            <>
-              <div className={styles.revenueItem}><span className={styles.revenueItemLabel}>Loading...</span></div>
-            </>
+            <div className="row"><span className="rowLabel">Loading...</span></div>
           )}
         </div>
       </div>
-      <div className={styles.card}>
-        <h3 className={styles.cardTitle}><DatabaseIcon /> System Resources (Live)</h3>
-        <div className={styles.revenueBreakdown}>
-          <div className={styles.revenueItem}><span className={styles.revenueItemLabel}>CPU</span><span className={styles.revenueItemValue}>{realMetrics?.cpu?.usage_percent?.toFixed(1) || '—'}%</span></div>
-          <div className={styles.revenueItem}><span className={styles.revenueItemLabel}>Memory</span><span className={styles.revenueItemValue}>{realMetrics?.memory?.usage_percent?.toFixed(1) || '—'}%</span></div>
-          <div className={styles.revenueItem}><span className={styles.revenueItemLabel}>Disk</span><span className={styles.revenueItemValue}>{realMetrics?.disk?.usage_percent?.toFixed(1) || '—'}%</span></div>
-          <div className={styles.revenueItem}><span className={styles.revenueItemLabel}>Uptime</span><span className={styles.revenueItemValue}>{realMetrics?.uptime_human || '—'}</span></div>
+      <div className="panel">
+        <h3 className={styles.panelTitle}><DatabaseIcon /> System Resources (Live)</h3>
+        <div className="rowList">
+          <div className="row"><span className="rowLabel">CPU</span><span className={styles.rowValue}>{realMetrics?.cpu?.usage_percent?.toFixed(1) || '—'}%</span></div>
+          <div className="row"><span className="rowLabel">Memory</span><span className={styles.rowValue}>{realMetrics?.memory?.usage_percent?.toFixed(1) || '—'}%</span></div>
+          <div className="row"><span className="rowLabel">Disk</span><span className={styles.rowValue}>{realMetrics?.disk?.usage_percent?.toFixed(1) || '—'}%</span></div>
+          <div className="row"><span className="rowLabel">Uptime</span><span className={styles.rowValue}>{realMetrics?.uptime_human || '—'}</span></div>
         </div>
       </div>
     </div>
   );
 
+  const TABS: { id: TabType; label: string; icon: React.ReactNode; description: string }[] = [
+    { id: 'overview', label: 'Overview', icon: <LayoutDashboard size={17} />, description: 'Platform-wide metrics, revenue, and recent activity at a glance.' },
+    { id: 'users', label: 'Users', icon: <UsersLucideIcon size={17} />, description: 'Search, inspect, and manage every account on the platform.' },
+    { id: 'revenue', label: 'Revenue', icon: <DollarSign size={17} />, description: 'Revenue, MRR, and paying customer trends.' },
+    { id: 'agents', label: 'Internal Agents', icon: <BotLucideIcon size={17} />, description: 'RARA agent types, teams, and autonomous infrastructure.' },
+    { id: 'monitoring', label: 'Monitoring', icon: <ActivityLucideIcon size={17} />, description: 'Service health, auth/billing metrics, and alert rules.' },
+    { id: 'system', label: 'System Control', icon: <ServerLucideIcon size={17} />, description: 'Live CPU, memory, disk, and database status.' },
+    { id: 'settings', label: 'Settings', icon: <SettingsLucideIcon size={17} />, description: 'Pricing, platform toggles, and live system status.' },
+    { id: 'state-physics', label: 'State Physics', icon: <Orbit size={17} />, description: 'Real-time 3D visualization of platform state.' },
+    { id: 'v8', label: 'V8 Engine', icon: <CpuLucideIcon size={17} />, description: 'ML training, models, and prediction control.' },
+    { id: 'usage', label: 'Usage Analytics', icon: <BarChart3 size={17} />, description: 'Messages, credits, and per-user usage breakdowns.' },
+    { id: 'chat-skills', label: 'Chat Skills', icon: <Sparkles size={17} />, description: 'Enable or disable AGI Neural Hub skills.' },
+    { id: 'control', label: 'Platform Control', icon: <SlidersHorizontal size={17} />, description: 'Daemon status and platform-wide kill switches.' },
+  ];
+
   if (isLoading) {
-    return (<div className={styles.ownerDashboard}><div className={styles.container}><div className={styles.loadingState}><div style={{ fontSize: '24px', marginBottom: '16px' }}>⏳</div><div>Loading owner dashboard...</div></div></div></div>);
+    return (
+      <div className={styles.loadingState}>
+        <div className={styles.spinner} />
+        <p>Loading owner dashboard…</p>
+      </div>
+    );
   }
 
   if (error) {
-    return (<div className={styles.ownerDashboard}><div className={styles.container}><div className={styles.errorState}><div style={{ fontSize: '24px', marginBottom: '16px' }}>⚠️</div><div>{error}</div><button className={styles.logoutBtn} onClick={() => navigate('/dashboard')} style={{ marginTop: '16px' }}>Return to Login</button></div></div></div>);
+    return (
+      <div className={styles.errorState}>
+        <p>{error}</p>
+        <button className="btn btnSecondary" onClick={() => navigate('/dashboard')}>Return to Login</button>
+      </div>
+    );
   }
 
+  const activeMeta = TABS.find(t => t.id === activeTab) ?? TABS[0];
+
   return (
-    <div className={styles.ownerDashboard}>
-      <div className={styles.container}>
-        <div className={styles.pageHeader}>
-          <div className={styles.headerLeft}>
-            <div className={styles.pageTitle}>
-              <CrownIcon />
-              <div><h1 className={styles.logoText}>Owner Dashboard</h1><div className={styles.logoSubtext}>Platform Analytics & Control</div></div>
+    <div className="dashShell">
+      {/* ── Sidebar nav (desktop) ── */}
+      <aside className="dashSidebar">
+        <div className="dashSidebarHead">
+          <div className={styles.brand}>
+            <div className={styles.brandIcon}><Crown size={18} /></div>
+            <div>
+              <p className="dashSidebarTitle">Owner</p>
+              <p className="dashSidebarMeta">Platform control center</p>
             </div>
           </div>
-          <div className={styles.headerRight}>
-            <div className={styles.liveIndicator}>Platform Live</div>
-            <button className={styles.logoutBtn} onClick={handleRefresh} disabled={isRefreshing}><RefreshIcon /> {isRefreshing ? 'Refreshing...' : 'Refresh'}</button>
+        </div>
+        <nav className="dashNavGroup">
+          {TABS.map(t => (
+            <button
+              key={t.id}
+              className={`dashNavItem ${activeTab === t.id ? 'dashNavItemActive' : ''}`}
+              onClick={() => setActiveTab(t.id)}
+            >
+              {t.icon}
+              <span>{t.label}</span>
+            </button>
+          ))}
+        </nav>
+        <div className="dashNavSpacer" />
+        <div className="dashNavFooter">
+          <button className="dashNavItem" onClick={() => { window.location.href = '/v8/'; }}>
+            <Orbit size={17} />
+            <span>V8 HashSphere</span>
+          </button>
+          <button className="dashNavItem dashNavItemDanger" onClick={handleLogout}>
+            <LogOut size={17} />
+            <span>Log out</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* ── Top scroll nav (mobile / tablet) ── */}
+      <nav className="dashMobileNav">
+        {TABS.map(t => (
+          <button
+            key={t.id}
+            className={`dashMobileNavItem ${activeTab === t.id ? 'dashMobileNavItemActive' : ''}`}
+            onClick={() => setActiveTab(t.id)}
+          >
+            {t.icon}
+            <span>{t.label}</span>
+          </button>
+        ))}
+        <button className="dashMobileNavItem" onClick={() => { window.location.href = '/v8/'; }}>
+          <Orbit size={16} />
+          <span>V8 HashSphere</span>
+        </button>
+        <button className="dashMobileNavItem" onClick={handleLogout}>
+          <LogOut size={16} />
+          <span>Log out</span>
+        </button>
+      </nav>
+
+      <main className="dashMain">
+        <div className="dashPageHead">
+          <div>
+            <h1 className="dashTitle">{activeMeta.label}</h1>
+            <p className="dashSubtitle">{activeMeta.description}</p>
+          </div>
+          <div className="dashHeadActions">
+            <button className="btn btnSecondary btnSm" onClick={handleRefresh} disabled={isRefreshing}>
+              <RefreshCw size={14} className={isRefreshing ? styles.spinning : ''} />
+              {isRefreshing ? 'Refreshing...' : 'Refresh'}
+            </button>
           </div>
         </div>
-
-        <nav className={styles.navTabs}>
-          <button className={`${styles.navTab} ${activeTab === 'overview' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('overview')}>Overview</button>
-          <button className={`${styles.navTab} ${activeTab === 'users' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('users')}>Users</button>
-          <button className={`${styles.navTab} ${activeTab === 'revenue' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('revenue')}>Revenue</button>
-          <button className={`${styles.navTab} ${activeTab === 'agents' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('agents')}>🤖 Internal Agents</button>
-          <button className={`${styles.navTab} ${activeTab === 'monitoring' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('monitoring')}>Monitoring</button>
-          <button className={`${styles.navTab} ${activeTab === 'system' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('system')}>🔧 System Control</button>
-          <button className={`${styles.navTab} ${activeTab === 'settings' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('settings')}>Settings</button>
-          <button className={`${styles.navTab} ${activeTab === 'state-physics' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('state-physics')}>🌌 State Physics</button>
-          <button className={`${styles.navTab} ${activeTab === 'v8' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('v8')}>⚡ V8 Engine</button>
-          <button className={`${styles.navTab} ${activeTab === 'usage' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('usage')}>📊 Usage Analytics</button>
-          <button className={`${styles.navTab} ${activeTab === 'chat-skills' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('chat-skills')}>🧠 Chat Skills</button>
-          <button className={`${styles.navTab} ${activeTab === 'control' ? styles.navTabActive : ''}`} onClick={() => setActiveTab('control')}>🎛️ Platform Control</button>
-          <button className={styles.navTab} onClick={() => window.location.href = '/v8/'}>🔮 V8 HashSphere</button>
-        </nav>
 
         {activeTab === 'overview' && renderOverview()}
         {activeTab === 'users' && renderUsers()}
@@ -2160,12 +1985,12 @@ const OwnerDashboard: React.FC = () => {
         {activeTab === 'monitoring' && renderMonitoring()}
         {activeTab === 'system' && renderSystemControl()}
         {activeTab === 'settings' && renderSettings()}
-        {activeTab === "state-physics" && <PlatformStatePhysics />}
+        {activeTab === 'state-physics' && <PlatformStatePhysics />}
         {activeTab === 'v8' && <V8ControlPanel />}
         {activeTab === 'usage' && renderUsageAnalytics()}
         {activeTab === 'chat-skills' && renderChatSkills()}
         {activeTab === 'control' && <DaemonControlPanel />}
-      </div>
+      </main>
     </div>
   );
 };
