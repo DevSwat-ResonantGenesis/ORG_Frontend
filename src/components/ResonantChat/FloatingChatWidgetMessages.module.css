@@ -177,7 +177,7 @@
 
 /* Markdown Headings */
 .markdownHeading {
-  margin: 16px 0 8px 0;
+  margin: 8px 0 4px 0;
   font-weight: 600;
   color: inherit;
   line-height: 1.4;
@@ -189,24 +189,24 @@
 
 /* Direct heading elements */
 .messageContent h1 {
-  font-size: 20px;
-  margin: 16px 0 8px 0;
+  font-size: 16px;
+  margin: 8px 0 4px 0;
   font-weight: 600;
   color: inherit;
   line-height: 1.4;
 }
 
 .messageContent h2 {
-  font-size: 18px;
-  margin: 16px 0 8px 0;
+  font-size: 15px;
+  margin: 8px 0 4px 0;
   font-weight: 600;
   color: inherit;
   line-height: 1.4;
 }
 
 .messageContent h3 {
-  font-size: 16px;
-  margin: 16px 0 8px 0;
+  font-size: 14px;
+  margin: 8px 0 4px 0;
   font-weight: 600;
   color: inherit;
   line-height: 1.4;
