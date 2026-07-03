@@ -1,0 +1,143 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal {
+  background: var(--ide-bg-primary);
+  border: 1px solid var(--ide-border);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 1400px;
+  height: 85vh;
+  max-height: 900px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--ide-border);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ide-text-primary);
+  margin: 0;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: var(--ide-text-tertiary);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background: var(--ide-surface-hover);
+  color: var(--ide-text-primary);
+}
+
+.explanation {
+  padding: 12px 20px;
+  background: var(--ide-bg-primary);
+  border-bottom: 1px solid var(--ide-border);
+  color: var(--ide-text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.diffContainer {
+  flex: 1;
+  overflow: auto;
+  border: 1px solid var(--ide-border);
+  border-radius: 4px;
+  margin: 20px;
+  background: var(--ide-bg-primary);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--ide-border);
+}
+
+.cancelButton {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  background: var(--ide-bg-tertiary);
+  color: var(--ide-text-primary);
+}
+
+.cancelButton:hover {
+  background: var(--ide-surface-hover);
+}
+
+.applyButton {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  background: var(--ide-accent-500);
+  color: var(--ide-text-primary);
+}
+
+.applyButton:hover {
+  background: var(--ide-accent-600);
+}
+
+[data-theme='light'] .modal {
+  background: var(--ide-bg-primary);
+  border-color: var(--ide-border);
+}
+
+[data-theme='light'] .header {
+  border-bottom-color: var(--ide-border);
+}
+
+[data-theme='light'] .title {
+  color: var(--ide-text-primary);
+}
+
+[data-theme='light'] .explanation {
+  background: var(--ide-bg-tertiary);
+  color: var(--ide-text-primary);
+  border-bottom-color: var(--ide-border);
+}
+
+[data-theme='light'] .diffContainer {
+  border-color: var(--ide-border);
+}
+
+[data-theme='light'] .actions {
+  border-top-color: var(--ide-border);
+}
+

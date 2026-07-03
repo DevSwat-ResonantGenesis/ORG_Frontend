@@ -1,0 +1,432 @@
+/* ============================================================
+   Resonant Chat Dropdown Menu - Glassmorphism Style (Unified)
+   Matches HomePageDropdownMenu style
+   ============================================================ */
+
+/* Backdrop overlay */
+.menuOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.menuOverlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Main menu container - Glassmorphism */
+.menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 100vh;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.95) 0%,
+    rgba(30, 41, 59, 0.92) 50%,
+    rgba(15, 23, 42, 0.95) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 10001;
+  overflow: hidden;
+  box-shadow: 
+    4px 0 24px rgba(0, 0, 0, 0.4),
+    inset 1px 0 0 rgba(255, 255, 255, 0.05);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(-100%);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.menu.open {
+  transform: translateX(0);
+}
+
+/* Light mode */
+[data-theme='light'] .menu {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(248, 250, 252, 0.92) 50%,
+    rgba(255, 255, 255, 0.95) 100%
+  );
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 
+    4px 0 24px rgba(0, 0, 0, 0.15),
+    inset 1px 0 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Animated gradient orb background */
+.menu::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at 30% 20%,
+    rgba(59, 130, 246, 0.15) 0%,
+    transparent 40%
+  ),
+  radial-gradient(
+    circle at 70% 80%,
+    rgba(139, 92, 246, 0.1) 0%,
+    transparent 40%
+  );
+  animation: menuGradientShift 15s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes menuGradientShift {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(5%, 5%) rotate(2deg); }
+  66% { transform: translate(-5%, 3%) rotate(-2deg); }
+}
+
+/* Menu content wrapper */
+.menuContent {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header with gradient accent */
+.menuHeader {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(
+    180deg,
+    rgba(59, 130, 246, 0.08) 0%,
+    transparent 100%
+  );
+  flex-shrink: 0;
+}
+
+[data-theme='light'] .menuHeader {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background: linear-gradient(
+    180deg,
+    rgba(59, 130, 246, 0.05) 0%,
+    transparent 100%
+  );
+}
+
+.menuTitle {
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.closeButton {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--ide-text-secondary, 0.7);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  transform: rotate(90deg);
+}
+
+[data-theme='light'] .closeButton {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme='light'] .closeButton:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.2);
+  color: #dc2626;
+}
+
+/* Scrollable menu list */
+.menuList {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.3) transparent;
+}
+
+.menuList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.menuList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.menuList::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.4) 0%, rgba(139, 92, 246, 0.4) 100%);
+  border-radius: 3px;
+}
+
+.menuList::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.6) 0%, rgba(139, 92, 246, 0.6) 100%);
+}
+
+/* Section grouping */
+.section {
+  margin-bottom: 20px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.sectionTitle {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(148, 163, 184, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  padding: 8px 12px 6px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sectionTitle::before {
+  content: '';
+  width: 12px;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6 0%, transparent 100%);
+  border-radius: 1px;
+}
+
+[data-theme='light'] .sectionTitle {
+  color: rgba(71, 85, 105, 0.8);
+}
+
+/* Menu items - clean flat style */
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  border: none !important;
+  background: transparent !important;
+  color: rgba(226, 232, 240, 0.85);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.menuItem::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.12) 0%,
+    rgba(139, 92, 246, 0.08) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.menuItem:hover:not(:disabled) {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06) !important;
+  transform: translateX(4px);
+}
+
+.menuItem:hover:not(:disabled)::before {
+  opacity: 1;
+}
+
+[data-theme='light'] .menuItem {
+  color: rgba(30, 41, 59, 0.85);
+  background: transparent !important;
+}
+
+[data-theme='light'] .menuItem:hover:not(:disabled) {
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Active state with gradient */
+.menuItem.active {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.15) 100%) !important;
+  color: #fff;
+}
+
+.menuItem.active::before {
+  opacity: 0;
+}
+
+[data-theme='light'] .menuItem.active {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%) !important;
+  color: #1e40af;
+}
+
+.menuItem:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Danger state */
+.menuItem.danger {
+  color: #f87171;
+}
+
+.menuItem.danger:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.12) !important;
+  color: #fca5a5;
+}
+
+.menuItem.danger:hover:not(:disabled)::before {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.08) 100%);
+}
+
+/* Icon container - clean style */
+.menuItemIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  transition: all 0.25s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.menuItem:hover:not(:disabled) .menuItemIcon {
+  background: transparent;
+}
+
+.menuItem.active .menuItemIcon {
+  background: transparent;
+}
+
+[data-theme='light'] .menuItemIcon {
+  background: transparent;
+  border: none;
+}
+
+.menuItemIcon svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.75;
+}
+
+.menuItemLabel {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+/* Active indicator dot */
+.activeIndicator {
+  width: 6px;
+  height: 6px;
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(96, 165, 250, 0.6);
+  animation: activePulse 2s ease-in-out infinite;
+}
+
+@keyframes activePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+/* Divider with gradient */
+.divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(59, 130, 246, 0.2) 20%,
+    rgba(139, 92, 246, 0.2) 80%,
+    transparent 100%
+  );
+  margin: 12px 8px;
+}
+
+[data-theme='light'] .divider {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(59, 130, 246, 0.15) 20%,
+    rgba(139, 92, 246, 0.15) 80%,
+    transparent 100%
+  );
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+  .menu {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .menuItem {
+    padding: 14px 16px;
+  }
+  
+  .menuItemIcon {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Prevent body scroll when menu is open */
+body.resonantChatMenuOpen {
+  overflow: hidden;
+}

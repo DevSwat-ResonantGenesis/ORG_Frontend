@@ -87,6 +87,14 @@ const VisualizerIcon = () => (
   </svg>
 );
 
+const TerminalIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <path d="M6 9l4 3-4 3" />
+    <path d="M12 15h6" />
+  </svg>
+);
+
 interface HeaderProps {
   showLogout?: boolean;
   showChatWidgetButton?: boolean;
@@ -539,6 +547,13 @@ export const Header: React.FC<HeaderProps> = ({
                     >
                       <VisualizerIcon />
                       Code Analyzer
+                    </button>
+                    <button
+                      className={`${styles.splitViewMenuItem} ${splitViewActiveTab === 'terminal' ? styles.splitViewMenuItemActive : ''}`}
+                      onClick={() => { handleSplitViewTabClick('terminal'); setSplitViewMenuOpen(false); }}
+                    >
+                      <TerminalIcon />
+                      Terminal
                     </button>
 
                     {/* Toolbar toggle - visible on agents page or when agents tab is active in split view */}

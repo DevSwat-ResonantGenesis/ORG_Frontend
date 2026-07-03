@@ -1,0 +1,658 @@
+/* IDE Settings Panel - Harmonized Design */
+.settingsPanel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  /* Critical for flex scrolling */
+  max-height: 100%;
+  /* Ensure it doesn't exceed parent */
+  background: var(--ide-bg-primary);
+  color: var(--ide-text-primary);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Header - Uses Design System */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--ide-space-4) var(--ide-space-5);
+  border-bottom: 1px solid var(--ide-border);
+  background: var(--ide-bg-secondary);
+  flex-shrink: 0;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerIcon {
+  color: var(--ide-accent-500);
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--ide-font-lg);
+  font-weight: var(--ide-font-semibold);
+  color: var(--ide-text-primary);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: var(--ide-text-secondary);
+  cursor: pointer;
+  padding: var(--ide-space-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ide-radius-sm);
+  transition: all var(--ide-transition-base);
+  width: 28px;
+  height: 28px;
+}
+
+.closeButton:hover {
+  background: var(--ide-surface-hover);
+  color: var(--ide-text-primary);
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--ide-border);
+  background: var(--ide-bg-secondary);
+  flex-shrink: 0;
+}
+
+.tab {
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ide-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.tab:hover {
+  color: var(--ide-text-primary);
+  background: var(--ide-surface-hover);
+}
+
+.tab.activeTab {
+  color: var(--ide-accent-500);
+  border-bottom-color: var(--ide-accent-500);
+}
+
+.tab svg {
+  flex-shrink: 0;
+}
+
+
+/* Content - Uses Design System */
+.content {
+  flex: 1 1 0%;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: var(--ide-space-5);
+  min-height: 0;
+  height: 0;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  position: relative;
+  will-change: scroll-position;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.6) transparent;
+}
+
+.content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background-color: rgba(59, 130, 246, 0.6);
+  border-radius: 4px;
+  min-height: 40px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(59, 130, 246, 0.8);
+}
+
+/* Scrollbars use design system - defined in ide-design-system.css */
+
+/* Section - Uses Design System */
+.section {
+  margin-bottom: var(--ide-space-8);
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--ide-border);
+}
+
+.sectionIcon {
+  color: var(--ide-accent-500);
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ide-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.settingGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Setting Item */
+.setting {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settingLabelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ide-text-primary);
+}
+
+.settingValue {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ide-text-secondary);
+  background: var(--ide-bg-tertiary);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Theme Toggle */
+.themeToggle {
+  display: flex;
+  gap: 8px;
+  background: var(--ide-bg-secondary);
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid var(--ide-border);
+}
+
+.themeButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: var(--ide-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.themeButton:hover {
+  color: var(--ide-text-primary);
+  background: var(--ide-surface-hover);
+}
+
+.themeButton.active {
+  background: var(--ide-accent-500);
+  color: white;
+}
+
+.themeButton svg {
+  flex-shrink: 0;
+}
+
+/* Slider */
+.sliderContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--ide-bg-secondary);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--ide-accent-500);
+  cursor: pointer;
+  border: 2px solid var(--ide-bg-primary);
+  transition: all 0.2s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  background: var(--ide-accent-600);
+  transform: scale(1.1);
+}
+
+.slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--ide-accent-500);
+  cursor: pointer;
+  border: 2px solid var(--ide-bg-primary);
+  transition: all 0.2s ease;
+}
+
+.slider::-moz-range-thumb:hover {
+  background: var(--ide-accent-600);
+  transform: scale(1.1);
+}
+
+.sliderLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--ide-text-tertiary);
+}
+
+/* Select */
+.select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--ide-bg-secondary);
+  border: 1px solid var(--ide-border);
+  border-radius: 6px;
+  color: var(--ide-text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%23E8E8E8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px;
+}
+
+.select:hover {
+  border-color: var(--ide-accent-500);
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--ide-accent-500);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* Toggle Switch */
+.toggleSetting {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: var(--ide-bg-secondary);
+  border: 1px solid var(--ide-border);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.toggleSetting:hover {
+  border-color: var(--ide-accent-500);
+  background: var(--ide-surface-hover);
+}
+
+.toggleLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.toggleTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ide-text-primary);
+}
+
+.toggleDescription {
+  font-size: 11px;
+  color: var(--ide-text-secondary);
+}
+
+.toggleSwitch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggleInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--ide-bg-tertiary);
+  border: 1px solid var(--ide-border);
+  transition: all 0.3s ease;
+  border-radius: 24px;
+}
+
+.toggleSlider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--ide-text-secondary);
+  transition: all 0.3s ease;
+  border-radius: 50%;
+}
+
+.toggleInput:checked+.toggleSlider {
+  background-color: var(--ide-accent-500);
+  border-color: var(--ide-accent-500);
+}
+
+.toggleInput:checked+.toggleSlider:before {
+  transform: translateX(20px);
+  background-color: white;
+}
+
+.toggleInput:focus+.toggleSlider {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--ide-border);
+  background: var(--ide-bg-secondary);
+  flex-shrink: 0;
+}
+
+.resetButton,
+.saveButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid var(--ide-border);
+}
+
+.resetButton {
+  background: var(--ide-bg-tertiary);
+  color: var(--ide-text-primary);
+}
+
+.resetButton:hover {
+  background: var(--ide-surface-hover);
+  border-color: var(--ide-accent-500);
+  color: var(--ide-accent-500);
+}
+
+.saveButton {
+  background: var(--ide-accent-500);
+  color: white;
+  border-color: var(--ide-accent-500);
+}
+
+.saveButton:hover:not(:disabled) {
+  background: var(--ide-accent-600);
+  border-color: var(--ide-accent-600);
+}
+
+.saveButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.resetButton svg,
+.saveButton svg {
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   LIGHT MODE SUPPORT
+   ============================================================ */
+
+/* Light Theme Overrides */
+[data-theme='light'] .settingsPanel {
+  background: #FFFFFF;
+  color: #262321;
+}
+
+[data-theme='light'] .header {
+  background: #FAFAFA;
+  border-color: #E5E7EB;
+}
+
+[data-theme='light'] .title {
+  color: #262321;
+}
+
+[data-theme='light'] .closeButton {
+  color: #525252;
+}
+
+[data-theme='light'] .closeButton:hover {
+  background: #F3F4F6;
+  color: #262321;
+}
+
+[data-theme='light'] .tabs {
+  background: #FAFAFA;
+  border-color: #E5E7EB;
+}
+
+[data-theme='light'] .tab {
+  color: #525252;
+}
+
+[data-theme='light'] .tab:hover {
+  background: #F3F4F6;
+  color: #262321;
+}
+
+[data-theme='light'] .tab.activeTab {
+  color: #3B82F6;
+  border-bottom-color: #3B82F6;
+}
+
+
+[data-theme='light'] .content {
+  background: #FFFFFF;
+}
+
+[data-theme='light'] .sectionTitle {
+  color: #262321;
+  border-color: #E5E7EB;
+}
+
+[data-theme='light'] .sectionIcon {
+  color: #3B82F6;
+}
+
+[data-theme='light'] .label {
+  color: #262321;
+}
+
+[data-theme='light'] .settingValue {
+  background: #F3F4F6;
+  color: #525252;
+}
+
+[data-theme='light'] .themeToggle {
+  background: #F9FAFB;
+  border-color: #E5E7EB;
+}
+
+[data-theme='light'] .themeButton {
+  color: #525252;
+}
+
+[data-theme='light'] .themeButton:hover {
+  background: #F3F4F6;
+  color: #262321;
+}
+
+[data-theme='light'] .themeButton.active {
+  background: #3B82F6;
+  color: white;
+}
+
+[data-theme='light'] .slider {
+  background: #E5E7EB;
+}
+
+[data-theme='light'] .slider::-webkit-slider-thumb {
+  background: #3B82F6;
+  border-color: #FFFFFF;
+}
+
+[data-theme='light'] .slider::-moz-range-thumb {
+  background: #3B82F6;
+  border-color: #FFFFFF;
+}
+
+[data-theme='light'] .sliderLabels {
+  color: #737373;
+}
+
+[data-theme='light'] .select {
+  background: #F9FAFB;
+  border-color: #E5E7EB;
+  color: #262321;
+}
+
+[data-theme='light'] .select:hover {
+  border-color: #3B82F6;
+}
+
+[data-theme='light'] .select:focus {
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+[data-theme='light'] .toggleSetting {
+  background: #FAFAFA;
+  border-color: #E5E7EB;
+}
+
+[data-theme='light'] .toggleSetting:hover {
+  background: #F3F4F6;
+  border-color: #3B82F6;
+}
+
+[data-theme='light'] .toggleTitle {
+  color: #262321;
+}
+
+[data-theme='light'] .toggleDescription {
+  color: #525252;
+}
+
+[data-theme='light'] .toggleSlider {
+  background: #E5E7EB;
+  border-color: #D1D5DB;
+}
+
+[data-theme='light'] .toggleInput:checked+.toggleSlider {
+  background-color: #3B82F6;
+  border-color: #3B82F6;
+}
+
+[data-theme='light'] .footer {
+  background: #FAFAFA;
+  border-color: #E5E7EB;
+}
+
+[data-theme='light'] .resetButton {
+  background: #F9FAFB;
+  color: #262321;
+  border-color: #E5E7EB;
+}
+
+[data-theme='light'] .resetButton:hover {
+  background: #F3F4F6;
+  border-color: #3B82F6;
+  color: #3B82F6;
+}
+
+[data-theme='light'] .saveButton {
+  background: #3B82F6;
+  color: white;
+  border-color: #3B82F6;
+}
+
+[data-theme='light'] .saveButton:hover:not(:disabled) {
+  background: #2563EB;
+  border-color: #2563EB;
+}

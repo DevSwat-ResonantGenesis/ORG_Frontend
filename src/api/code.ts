@@ -10,7 +10,11 @@ const codeExecutionClient = axios.create({
   withCredentials: true,
 });
 
-// Direct client for IDE Service (bypasses Gateway auth for Git operations)
+// Direct client for IDE Service — remote git operations only (clone/remote/push/pull/fetch/diff).
+// NOTE: ide_platform_service was retired and this URL is not currently deployed, so these
+// remote-git calls will fail until that backend exists again. Local git ops (status/init/
+// stage/commit/branch/log) were moved to fastapiClient -> gateway /git/* (see below), which
+// is real and live.
 const ideServiceClient = axios.create({
   baseURL: 'http://localhost:8080',
   headers: { 'Content-Type': 'application/json' },
@@ -791,13 +795,13 @@ export interface GitCommit {
 
 /**
  * Initialize git repository
- * POST /git/init - Direct to IDE Service
+ * POST /git/init - Gateway (real git, backed by a materialized Hash Sphere working copy)
  */
 export const initGitRepo = async (
   projectId: string
 ): Promise<{ success: boolean; message: string; error?: string }> => {
   try {
-    const response = await ideServiceClient.post('/git/init', {
+    const response = await fastapiClient.post('/git/init', {
       project_id: projectId
     });
     return response.data;
@@ -809,13 +813,13 @@ export const initGitRepo = async (
 
 /**
  * Get git status
- * POST /git/status - Direct to IDE Service
+ * POST /git/status - Gateway (real git status)
  */
 export const getGitStatus = async (
   projectId: string
 ): Promise<GitStatus> => {
   try {
-    const response = await ideServiceClient.post('/git/status', {
+    const response = await fastapiClient.post('/git/status', {
       project_id: projectId
     });
     const data = response.data;
@@ -834,16 +838,16 @@ export const getGitStatus = async (
 
 /**
  * Stage files
- * POST /git/stage - Direct to IDE Service
+ * POST /git/stage - Gateway (real git add)
  */
 export const stageFiles = async (
   projectId: string,
   files?: string[]
 ): Promise<{ success: boolean; message: string; error?: string }> => {
   try {
-    const response = await ideServiceClient.post('/git/stage', {
+    const response = await fastapiClient.post('/git/stage', {
       project_id: projectId,
-      file_paths: files
+      files
     });
     return response.data;
   } catch (error: any) {
@@ -854,7 +858,7 @@ export const stageFiles = async (
 
 /**
  * Commit changes
- * POST /git/commit - Direct to IDE Service
+ * POST /git/commit - Gateway (real git commit)
  */
 export const commitChanges = async (
   projectId: string,
@@ -863,7 +867,7 @@ export const commitChanges = async (
 ): Promise<GitCommitResponse> => {
   try {
     const commitMessage = message || (autoGenerate ? 'Auto-generated commit' : 'Commit');
-    const response = await ideServiceClient.post('/git/commit', {
+    const response = await fastapiClient.post('/git/commit', {
       project_id: projectId,
       message: commitMessage
     });
@@ -876,7 +880,7 @@ export const commitChanges = async (
 
 /**
  * Create or switch branch
- * POST /git/branch - Direct to IDE Service
+ * POST /git/branch - Gateway (real git checkout -b / checkout)
  */
 export const manageBranch = async (
   projectId: string,
@@ -884,7 +888,7 @@ export const manageBranch = async (
   create: boolean = true
 ): Promise<GitBranchResponse> => {
   try {
-    const response = await ideServiceClient.post('/git/branch', {
+    const response = await fastapiClient.post('/git/branch', {
       project_id: projectId,
       branch_name: branchName,
       action: create ? 'create' : 'checkout'
@@ -898,14 +902,15 @@ export const manageBranch = async (
 
 /**
  * List branches
- * POST /git/branch - Direct to IDE Service
+ * POST /git/branch - Gateway (real git branch --list)
  */
 export const listBranches = async (
   projectId: string
 ): Promise<{ branches: string[] }> => {
   try {
-    const response = await ideServiceClient.post('/git/branch', {
+    const response = await fastapiClient.post('/git/branch', {
       project_id: projectId,
+      branch_name: '',
       action: 'list'
     });
     return { branches: response.data.branches || [] };
@@ -917,14 +922,16 @@ export const listBranches = async (
 
 /**
  * Get commit log
- * GET /git/log - Direct to IDE Service
+ * GET /git/log - Gateway (real git log)
  */
 export const getCommitLog = async (
   projectId: string,
   limit: number = 10
 ): Promise<{ commits: GitCommit[] }> => {
   try {
-    const response = await ideServiceClient.get(`/git/log/${projectId}?limit=${limit}`);
+    const response = await fastapiClient.get(`/git/log`, {
+      params: { project_id: projectId, limit }
+    });
     return { commits: response.data.commits || [] };
   } catch (error) {
     logger.error('Get commit log error', error);

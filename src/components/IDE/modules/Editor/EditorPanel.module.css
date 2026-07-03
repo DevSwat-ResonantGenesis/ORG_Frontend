@@ -1,0 +1,76 @@
+.editorPanel {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--vscode-editor-background, #262321);
+    color: var(--vscode-editor-foreground, #d4d4d4);
+    overflow: hidden;
+}
+
+.loadingOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--vscode-progressBar-background, #0e70c0);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Empty State */
+.emptyState {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    text-align: center;
+    background: var(--vscode-editor-background, #262321);
+}
+
+.emptyStateIcon {
+    margin-bottom: 24px;
+    opacity: 0.3;
+    color: var(--vscode-foreground, #cccccc);
+}
+
+.emptyStateIcon svg {
+    width: 64px;
+    height: 64px;
+}
+
+.emptyStateMessage {
+    font-size: 16px;
+    color: var(--vscode-foreground, #cccccc);
+    margin: 0 0 12px 0;
+    opacity: 0.7;
+}
+
+.emptyStateHint {
+    font-size: 13px;
+    color: var(--vscode-descriptionForeground, #999999);
+    margin: 0;
+    opacity: 0.6;
+}

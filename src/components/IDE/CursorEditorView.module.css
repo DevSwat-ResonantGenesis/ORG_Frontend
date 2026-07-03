@@ -1,0 +1,113 @@
+/* Editor View - Uses IDE Design System */
+.editorView {
+  /* All variables come from ide-design-system.css */
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background: var(--ide-bg-primary);
+  overflow: hidden;
+  z-index: var(--ide-z-base);
+  display: flex;
+  flex-direction: column;
+}
+
+.emptyEditor {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ide-bg-primary); /* Match Resonant Chat */
+  color: var(--ide-text-secondary);
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* ============================================================
+   LIGHT MODE SUPPORT
+   ============================================================ */
+
+[data-theme='light'] .editorView {
+  --ide-bg-primary: #FFFFFF;
+  --ide-bg-secondary: #FAFAFA;
+  --ide-text-primary: #262321;
+  --ide-text-secondary: #525252;
+  background: #FFFFFF;
+}
+
+[data-theme='light'] .emptyEditor {
+  background: #FFFFFF;
+  color: #525252;
+}
+
+.emptyContent {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+}
+
+.emptyIcon {
+  color: var(--ide-text-tertiary); /* Match Resonant Chat */
+  width: 64px;
+  height: 64px;
+}
+
+.emptyContent h3 {
+  margin: 0;
+  font-size: var(--ide-font-xl);
+  font-weight: var(--ide-font-medium);
+  color: var(--ide-text-primary);
+}
+
+.emptyContent p {
+  margin: 0;
+  font-size: var(--ide-font-md);
+  color: var(--ide-text-secondary);
+}
+
+.fallback {
+  padding: 40px;
+  text-align: center;
+  color: var(--ide-text-primary); /* Match Resonant Chat */
+}
+
+.fallback h3 {
+  margin: 0 0 var(--ide-space-4) 0;
+  font-size: var(--ide-font-xl);
+}
+
+.fallback code {
+  background: var(--ide-surface);
+  padding: var(--ide-space-1) var(--ide-space-2);
+  border-radius: var(--ide-radius-md);
+  font-size: var(--ide-font-md);
+  color: var(--ide-warning);
+}
+
+[data-theme='light'] .editorView,
+[data-theme='light'] .emptyEditor {
+  background: var(--ide-bg-primary);
+}
+
+[data-theme='light'] .emptyContent {
+  color: var(--ide-text-tertiary);
+}
+
+[data-theme='light'] .emptyIcon {
+  color: var(--ide-text-tertiary);
+}
+
+[data-theme='light'] .fallback {
+  color: var(--ide-text-secondary);
+}
+
+[data-theme='light'] .fallback code {
+  background: var(--ide-bg-tertiary);
+  color: var(--ide-warning);
+}
+

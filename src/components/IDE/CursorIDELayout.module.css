@@ -1,0 +1,1949 @@
+/* Main IDE Layout - Unified Dark Grey Color (#262321) */
+
+/* ============================================================
+   UNIFIED COLOR PALETTE - Resonant Chat Dark Grey (#262321)
+   ============================================================ */
+.ideContainer {
+  /* UNIFIED DARK GREY - Matches Resonant Chat Background */
+  --ide-black: #262321;
+  --ide-white: #ffffff;
+  
+  /* ALL backgrounds use the SAME Resonant Chat background color */
+  --ide-bg-primary: #262321;
+  --ide-bg-secondary: #262321;
+  --ide-bg-tertiary: #262321;
+  --ide-surface: #262321;
+  --ide-surface-elevated: #262321;
+  --ide-surface-hover: rgba(255, 255, 255, 0.05);
+  --ide-surface-active: rgba(255, 255, 255, 0.08);
+  
+  /* NO BORDERS - Use shadows instead */
+  --ide-border: transparent;
+  --ide-border-hover: transparent;
+  --ide-border-focus: transparent;
+  --ide-border-subtle: transparent;
+  
+  /* Text - White variations */
+  --ide-text-primary: rgba(255, 255, 255, 0.95);
+  --ide-text-secondary: rgba(255, 255, 255, 0.6);
+  --ide-text-tertiary: rgba(255, 255, 255, 0.4);
+  --ide-text-muted: rgba(255, 255, 255, 0.25);
+  
+  /* BLUE ACCENT - Animated highlights */
+  --ide-accent: #3b82f6;
+  --ide-accent-light: #60a5fa;
+  --ide-accent-dark: #2563eb;
+  --ide-accent-glow: rgba(59, 130, 246, 0.4);
+  --ide-accent-subtle: rgba(59, 130, 246, 0.15);
+  
+  /* Keep accent naming for compatibility */
+  --ide-accent-400: var(--ide-accent-light);
+  --ide-accent-500: var(--ide-accent);
+  --ide-accent-600: var(--ide-accent-dark);
+  
+  /* Semantic - Using accent blue */
+  --ide-success: #22c55e;
+  --ide-success-bg: rgba(34, 197, 94, 0.1);
+  --ide-warning: #eab308;
+  --ide-warning-bg: rgba(234, 179, 8, 0.1);
+  --ide-error: #ef4444;
+  --ide-error-bg: rgba(239, 68, 68, 0.1);
+  --ide-info: var(--ide-accent);
+  --ide-info-bg: var(--ide-accent-subtle);
+  
+  /* Spacing - Compact */
+  --ide-space-1: 2px;
+  --ide-space-2: 4px;
+  --ide-space-3: 8px;
+  --ide-space-4: 12px;
+  --ide-space-5: 16px;
+  --ide-space-6: 20px;
+  
+  /* Border Radius */
+  --ide-radius-sm: 4px;
+  --ide-radius-md: 6px;
+  --ide-radius-lg: 8px;
+  --ide-radius-xl: 12px;
+  
+  /* Enhanced Shadows - Main separation method */
+  --ide-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --ide-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --ide-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --ide-shadow-glow: 0 0 20px var(--ide-accent-glow);
+  --ide-shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  
+  /* Transitions */
+  --ide-transition-fast: 0.1s ease;
+  --ide-transition-base: 0.15s ease;
+  --ide-transition-slow: 0.25s ease;
+  
+  /* Layout */
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ide-bg-primary);
+  color: var(--ide-text-primary);
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  z-index: 1000;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Light theme - Complete override */
+.ideContainer[data-theme='light'] {
+  /* Backgrounds - Light */
+  --ide-bg-primary: #ffffff;
+  --ide-bg-secondary: #fafafa;
+  --ide-bg-tertiary: #f4f4f5;
+  --ide-surface: #ffffff;
+  --ide-surface-elevated: #ffffff;
+  --ide-surface-hover: rgba(0, 0, 0, 0.04);
+  --ide-surface-active: rgba(0, 0, 0, 0.08);
+  
+  /* Borders - Visible in light mode */
+  --ide-border: #e4e4e7;
+  --ide-border-hover: #d4d4d8;
+  --ide-border-focus: rgba(59, 130, 246, 0.4);
+  --ide-border-subtle: #f4f4f5;
+  
+  /* Text - Dark on light */
+  --ide-text-primary: #18181b;
+  --ide-text-secondary: #52525b;
+  --ide-text-tertiary: #71717a;
+  --ide-text-muted: #a1a1aa;
+  
+  /* Accent - Keep blue but adjust for light */
+  --ide-accent: #2563eb;
+  --ide-accent-light: #3b82f6;
+  --ide-accent-dark: #1d4ed8;
+  --ide-accent-glow: rgba(37, 99, 235, 0.2);
+  --ide-accent-subtle: rgba(37, 99, 235, 0.1);
+  --ide-accent-400: #3b82f6;
+  --ide-accent-500: #2563eb;
+  --ide-accent-600: #1d4ed8;
+  
+  /* Semantic colors */
+  --ide-success: #16a34a;
+  --ide-success-bg: rgba(22, 163, 74, 0.1);
+  --ide-warning: #ca8a04;
+  --ide-warning-bg: rgba(202, 138, 4, 0.1);
+  --ide-error: #dc2626;
+  --ide-error-bg: rgba(220, 38, 38, 0.1);
+  --ide-info: var(--ide-accent);
+  --ide-info-bg: var(--ide-accent-subtle);
+  
+  /* Shadows - Softer for light mode */
+  --ide-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --ide-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --ide-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --ide-shadow-glow: 0 0 20px var(--ide-accent-glow);
+  --ide-shadow-inset: inset 0 1px 0 rgba(0, 0, 0, 0.03);
+  
+  /* Apply light background */
+  background: var(--ide-bg-primary);
+  color: var(--ide-text-primary);
+}
+
+/* ============================================================
+   TOOLBAR - Compact & Clean (36px height)
+   ============================================================ */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px;
+  background: var(--ide-bg-secondary);
+  border-bottom: 1px solid var(--ide-border);
+  flex-shrink: 0;
+  height: 36px;
+  box-sizing: border-box;
+}
+
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--ide-space-2);
+}
+
+.toolbarCenter {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ide-space-2);
+}
+
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: var(--ide-space-3);
+  margin-left: auto;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--ide-space-2);
+  padding: var(--ide-space-2) var(--ide-space-3);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ide-text-primary);
+  text-decoration: none;
+  border-radius: var(--ide-radius-md);
+  transition: background var(--ide-transition-fast);
+}
+
+.logo:hover {
+  background: var(--ide-surface-hover);
+}
+
+.logoIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--ide-accent-500);
+}
+
+/* Account Button - Compact */
+.accountButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px 2px 2px;
+  background: transparent;
+  border: 1px solid var(--ide-border);
+  border-radius: 4px;
+  color: var(--ide-text-secondary);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  height: 26px;
+}
+
+.accountButton:hover {
+  background: var(--ide-surface-hover);
+  border-color: var(--ide-border-hover);
+}
+
+.accountAvatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ide-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 9px;
+  font-weight: 600;
+  box-shadow: 0 0 8px var(--ide-accent-glow);
+}
+
+.accountName {
+  display: none;
+}
+
+.accountDropdownIcon {
+  width: 12px;
+  height: 12px;
+  opacity: 0.5;
+}
+
+/* Account Dropdown Menu - Resonant Chat Style */
+.accountMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  background: var(--ide-bg-primary, #262321);
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  padding: 8px;
+  z-index: 1000;
+  animation: menuSlideIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes menuSlideIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(-12px) scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
+}
+
+.accountMenuHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.accountMenuAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.4);
+}
+
+.accountMenuInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.accountMenuName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ide-text-secondary, 0.95);
+}
+
+.accountMenuEmail {
+  font-size: 12px;
+  color: var(--ide-text-secondary, 0.5);
+}
+
+.accountMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--ide-text-secondary, 0.7);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.accountMenuItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ide-text-secondary, 0.95);
+}
+
+.accountMenuItem:hover svg {
+  color: #3b82f6;
+}
+
+.accountMenuItem.danger {
+  color: #ef4444;
+}
+
+.accountMenuItem.danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.accountMenuItem.danger:hover svg {
+  color: #ef4444;
+}
+
+.accountMenuDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 8px 0;
+}
+
+.cursorIDE {
+  /* All variables now come from ide-design-system.css */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--ide-bg-primary);
+  color: var(--ide-text-primary);
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  box-sizing: border-box;
+  align-items: stretch;
+  font-family: var(--ide-font-sans);
+}
+
+/* Ensure StatusBar is always visible at bottom */
+.cursorIDE > :last-child:not(input) {
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+/* ============================================================
+   LIGHT MODE SUPPORT
+   Light mode is handled automatically by ide-design-system.css
+   These overrides use design system tokens for consistency
+   ============================================================ */
+
+/* Light mode uses design system tokens automatically via ide-design-system.css */
+/* No local overrides needed - design system handles everything */
+
+/* ============================================================
+   IDE CONTENT AREA
+   ============================================================ */
+.ideContent {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--ide-bg-primary);
+  position: relative;
+}
+
+/* ============================================================
+   ACTIVITY BAR - Responsive Sidebar
+   ============================================================ */
+.activityBar {
+  width: 44px;
+  min-width: 44px;
+  background: var(--ide-bg-primary, #262321);
+  border-right: none;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: 8px 0;
+  z-index: 100;
+}
+
+.activityBar.collapsed {
+  width: 0;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border-right: none;
+}
+
+.activityBarTop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.activityBarBottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: 8px;
+  border-top: none;
+  margin: 0 8px;
+}
+
+.activityBarButton {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--ide-text-secondary, 0.4);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.activityBarButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.activityBarButton:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ide-text-secondary, 0.8);
+}
+
+.activityBarButton.active {
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.activityBarButton.active::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 18px;
+  background: #3b82f6;
+  border-radius: 0 2px 2px 0;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .activityBar {
+    position: fixed;
+    left: 0;
+    top: 36px;
+    bottom: 0;
+    transform: translateX(-100%);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease;
+  }
+  
+  .activityBar.open {
+    transform: translateX(0);
+  }
+}
+
+/* Legacy sidebar styles - keep for compatibility */
+.sidebarViewButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--ide-space-2);
+  flex: 1;
+}
+
+.sidebarViewButton {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--ide-text-tertiary);
+  cursor: pointer;
+  border-radius: var(--ide-radius-sm);
+  transition: all var(--ide-transition-fast);
+  position: relative;
+  margin: 0 auto;
+}
+
+.sidebarViewButton::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 0;
+  background: var(--ide-accent-500);
+  border-radius: 0 2px 2px 0;
+  transition: height var(--ide-transition-fast);
+}
+
+.sidebarViewButton:hover {
+  background: var(--ide-surface-hover);
+  color: var(--ide-text-primary);
+}
+
+.sidebarViewButton.active {
+  color: var(--ide-accent);
+}
+
+.sidebarViewButton.active::before {
+  height: 16px;
+  background: var(--ide-accent);
+  box-shadow: 0 0 8px var(--ide-accent-glow);
+}
+
+.sidebarViewButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Sidebar Bottom Actions */
+.sidebarBottom {
+  padding: var(--ide-space-2);
+  border-top: none;
+}
+
+/* ============================================================
+   HAMBURGER MENU BUTTON
+   ============================================================ */
+.hamburgerButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  border-radius: var(--ide-radius-md);
+  color: var(--ide-text-secondary);
+  cursor: pointer;
+  transition: all var(--ide-transition-fast);
+  position: relative;
+}
+
+.hamburgerButton:hover {
+  background: var(--ide-surface-hover);
+  color: var(--ide-text-primary);
+}
+
+.hamburgerButton.active {
+  background: var(--ide-surface-active);
+  color: var(--ide-accent-500);
+}
+
+.hamburgerIcon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Hamburger Dropdown Menu */
+.hamburgerMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: var(--ide-space-4);
+  min-width: 240px;
+  background: var(--ide-bg-primary, #262321);
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  padding: 8px;
+  z-index: 1000;
+  animation: menuSlideIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hamburgerMenuSection {
+  padding: var(--ide-space-1) var(--ide-space-3);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--ide-text-muted);
+  margin-top: var(--ide-space-2);
+}
+
+.hamburgerMenuSection:first-child {
+  margin-top: 0;
+}
+
+.hamburgerMenuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--ide-space-3);
+  padding: var(--ide-space-2) var(--ide-space-3);
+  border-radius: var(--ide-radius-md);
+  color: var(--ide-text-secondary);
+  cursor: pointer;
+  transition: all var(--ide-transition-fast);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-size: 13px;
+}
+
+.hamburgerMenuItem:hover {
+  background: var(--ide-surface-hover);
+  color: var(--ide-text-primary);
+}
+
+.hamburgerMenuItem svg {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+
+.hamburgerMenuItem .shortcut {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--ide-text-muted);
+  background: var(--ide-bg-tertiary);
+  padding: 2px 6px;
+  border-radius: var(--ide-radius-sm);
+}
+
+.hamburgerMenuDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 8px 0;
+}
+
+/* ============================================================
+   MOBILE OVERLAY
+   ============================================================ */
+.mobileOverlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  backdrop-filter: blur(2px);
+}
+
+@media (max-width: 768px) {
+  .mobileOverlay.visible {
+    display: block;
+  }
+}
+
+.sidebarViewButton:hover svg {
+  transform: scale(1.1);
+}
+
+.sidebarViewButton.active svg {
+  color: var(--ide-accent-500);
+}
+
+.sidebarContainer {
+  flex-shrink: 0;
+  flex-grow: 0;
+  overflow: hidden;
+  transition: width 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+  width: 0;
+  opacity: 0;
+  visibility: hidden;
+  position: relative;
+  z-index: 100;
+}
+
+.sidebarContainer.hidden {
+  width: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.sidebarContainer.visible {
+  width: 52px;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Hover area on left edge to show sidebar */
+.ideContent::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 8px;
+  height: 100%;
+  z-index: 99;
+  background: transparent;
+  pointer-events: auto;
+}
+
+/* Hover area styling handled by sidebar visibility logic */
+
+.mainPanel {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--ide-bg-primary);
+  position: relative;
+}
+
+/* Top Toolbar - Uses Design System */
+.toolbarActions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--ide-space-2);
+  padding: var(--ide-space-2) var(--ide-space-4);
+  border-bottom: none;
+  background: var(--ide-bg-primary);
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-shadow: var(--ide-shadow-sm);
+  z-index: var(--ide-z-sticky);
+  position: relative;
+}
+
+/* Burger Menu Toggle Button - Controls Both Sidebar and Toolbar */
+.burgerMenuButton {
+  flex-shrink: 0;
+  opacity: 1;
+  visibility: visible;
+  display: flex;
+}
+
+.burgerMenuButton.active {
+  background: var(--ide-surface-hover);
+}
+
+/* Toolbar Buttons Container - Hidden by default, shown on hover or menu toggle */
+.toolbarButtonsContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  visibility: hidden;
+  width: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease, width 0.3s ease;
+  pointer-events: none;
+}
+
+.toolbarActions:hover .toolbarButtonsContainer,
+.toolbarButtonsContainer.visible {
+  opacity: 1;
+  visibility: visible;
+  width: auto;
+  overflow: visible;
+  pointer-events: auto;
+}
+
+/* Toolbar Right Side - Close button aligned with chat */
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  flex-shrink: 0;
+  margin-right: 0;
+}
+
+/* Chat Label removed - icons only */
+
+/* IDE Logo */
+.ideLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  margin-right: 8px;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.logoText {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--ide-accent-500);
+  white-space: nowrap;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+
+.logoText:hover {
+  opacity: 0.8;
+}
+
+/* Navigation Icons */
+.navIcon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--ide-text-secondary);
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.navIcon:hover {
+  background: var(--ide-surface-hover);
+  color: var(--ide-text-primary);
+}
+
+.navIcon svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+
+.navIcon:hover svg {
+  transform: scale(1.1);
+}
+
+/* Settings Container */
+.settingsContainer {
+  position: relative;
+}
+
+.settingsButton {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--ide-text-secondary);
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.settingsButton svg {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.settingsButton:hover {
+  background: var(--ide-surface-hover);
+  color: var(--ide-text-primary);
+}
+
+.settingsButton:hover svg {
+  transform: scale(1.1) rotate(90deg);
+  color: var(--ide-text-primary);
+}
+
+.settingsButton:active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.settingsMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--ide-bg-primary, #262321);
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  min-width: 180px;
+  padding: 8px;
+  z-index: 1000;
+  animation: menuSlideIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.settingsMenuItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--ide-text-primary);
+  font-size: 13px;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.settingsMenuItem:hover {
+  background: var(--ide-surface-hover);
+  color: var(--ide-text-primary);
+}
+
+.settingsMenuItem svg {
+  flex-shrink: 0;
+  color: var(--ide-text-secondary);
+}
+
+.settingsMenuItem:hover svg {
+  color: var(--ide-text-primary);
+}
+
+.settingsMenuDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  margin: 8px 0;
+}
+
+/* ============================================================
+   TOOLBAR BUTTONS - Compact & Minimal
+   ============================================================ */
+.toolbarButton {
+  padding: 4px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: var(--ide-text-tertiary);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.toolbarButton svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  fill: none;
+}
+
+.toolbarButton:hover {
+  background: var(--ide-surface-hover);
+  color: var(--ide-text-primary);
+}
+
+.toolbarButton:hover svg {
+  stroke: var(--ide-text-primary);
+}
+
+.toolbarButton:active {
+  background: transparent;
+  color: var(--ide-accent-500);
+  border: none;
+  transform: scale(0.95);
+  box-shadow: none;
+}
+
+.toolbarButton:active svg {
+  stroke: var(--ide-text-secondary);
+}
+
+/* Duplicate removed - using the one below */
+
+.toolbarButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.toolbarButton:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Active state - Blue accent with glow */
+.toolbarButton.active {
+  color: var(--ide-accent);
+}
+
+.toolbarButton.active svg {
+  stroke: var(--ide-accent);
+  filter: drop-shadow(0 0 4px var(--ide-accent-glow));
+}
+
+.toolbarButton.active:hover {
+  background: var(--ide-surface-hover);
+}
+
+.toolbarButton.active:hover svg {
+  stroke: var(--ide-accent-light);
+}
+
+/* Unsaved changes indicator */
+.toolbarButton.hasChanges {
+  position: relative;
+}
+
+.toolbarButton.hasChanges::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  background: var(--ide-warning, #f9e2af);
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+/* Chat Label - Shows when chat is open */
+.chatLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ide-text-primary);
+  white-space: nowrap;
+  padding: 0 8px;
+}
+
+/* AI Button Text */
+.aiButtonText {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: inherit;
+  position: relative;
+  z-index: 1;
+}
+
+/* Spinner animation for loading states */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* ============================================================
+   ANIMATED BLUE HIGHLIGHTS
+   ============================================================ */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 var(--ide-accent-glow); }
+  50% { box-shadow: 0 0 12px 2px var(--ide-accent-glow); }
+}
+
+@keyframes borderGlow {
+  0%, 100% { border-color: var(--ide-accent); opacity: 0.6; }
+  50% { border-color: var(--ide-accent-light); opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.glowOnHover:hover {
+  box-shadow: var(--ide-shadow-glow);
+  transition: box-shadow 0.3s ease;
+}
+
+.pulseGlow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.accentBorder {
+  border: 1px solid var(--ide-accent);
+  animation: borderGlow 2s ease-in-out infinite;
+}
+
+/* ============================================================
+   RIGHT PANEL - Enhanced Chat
+   ============================================================ */
+.rightPanel {
+  width: 340px;
+  min-width: 300px;
+  max-width: 420px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--ide-border);
+  background: var(--ide-bg-primary);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
+
+/* Chat Header */
+.chatHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--ide-border);
+  background: var(--ide-bg-secondary);
+}
+
+.chatTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ide-text-primary);
+}
+
+.chatTitleIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--ide-accent);
+}
+
+/* Chat Messages Area */
+.chatMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chatMessages::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chatMessages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chatMessages::-webkit-scrollbar-thumb {
+  background: var(--ide-border-hover);
+  border-radius: 2px;
+}
+
+/* Chat Message Bubble */
+.chatMessage {
+  max-width: 90%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.chatMessage.user {
+  align-self: flex-end;
+  background: var(--ide-accent);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.chatMessage.assistant {
+  align-self: flex-start;
+  background: var(--ide-surface-elevated);
+  color: var(--ide-text-primary);
+  border-bottom-left-radius: 4px;
+  border: 1px solid var(--ide-border);
+}
+
+/* Typing Indicator */
+.typingIndicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+}
+
+.typingDot {
+  width: 6px;
+  height: 6px;
+  background: var(--ide-accent);
+  border-radius: 50%;
+  animation: typingBounce 1.4s ease-in-out infinite;
+}
+
+.typingDot:nth-child(2) { animation-delay: 0.2s; }
+.typingDot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* Chat Input Area */
+.chatInputArea {
+  padding: 12px 16px;
+  border-top: 1px solid var(--ide-border);
+  background: var(--ide-bg-secondary);
+}
+
+.chatInputWrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  background: var(--ide-bg-primary);
+  border: 1px solid var(--ide-border);
+  border-radius: 12px;
+  padding: 8px 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chatInputWrapper:focus-within {
+  border-color: var(--ide-accent);
+  box-shadow: 0 0 0 2px var(--ide-accent-subtle);
+}
+
+.chatInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--ide-text-primary);
+  font-size: 13px;
+  line-height: 1.4;
+  resize: none;
+  min-height: 20px;
+  max-height: 120px;
+}
+
+.chatInput::placeholder {
+  color: var(--ide-text-muted);
+}
+
+.chatSendButton {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ide-accent);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.chatSendButton:hover {
+  background: var(--ide-accent-light);
+  transform: scale(1.05);
+}
+
+.chatSendButton:active {
+  transform: scale(0.95);
+}
+
+.chatSendButton:disabled {
+  background: var(--ide-surface);
+  color: var(--ide-text-muted);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.chatSendButton svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Editor Container - Main code area */
+.editorContainer {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--ide-bg-primary);
+  position: relative;
+}
+
+[data-theme='light'] .cursorIDE {
+  background: var(--bg-primary, #ffffff);
+  color: var(--ide-text-primary);
+}
+
+[data-theme='light'] .editorContainer {
+  border-top-color: var(--border, #e0e0e0);
+}
+
+/* File Explorer Container - Layout-critical styles need */
+.fileExplorerContainer {
+  /* IDE Color Variables - Map to Resonant Chat colors */
+  --ide-bg-primary: var(--bg-dark, #262321);
+  --ide-bg-secondary: var(--surface-dark, #262321);
+  --ide-bg-tertiary: rgba(255, 255, 255, 0.05);
+  --ide-surface: var(--surface-dark, #262321);
+  --ide-surface-hover: rgba(255, 255, 255, 0.08);
+  --ide-border: rgba(255, 255, 255, 0.1);
+  --ide-text-primary: #E8E8E8; /* Pearl white - softer than bright white */
+  --ide-text-secondary: rgba(232, 232, 232, 0.7);
+  --ide-text-tertiary: rgba(232, 232, 232, 0.5);
+  --ide-accent-500: var(--accent-500, #3B82F6);
+  --ide-accent-600: #2563EB;
+  --ide-success: #10B981;
+  --ide-error: #EF4444;
+  --ide-warning: #F59E0B;
+  
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-shrink: 0;
+  flex-grow: 0;
+  overflow: visible; /* Changed from hidden to allow resize handles */
+  align-items: stretch;
+  background: var(--ide-surface);
+}
+
+/* Upload Prompt - Layout-critical styles need */
+.uploadPrompt {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24px;
+  text-align: center;
+  color: var(--ide-text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: var(--ide-surface);
+  z-index: 10;
+}
+
+.uploadPrompt p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Upload Button - No needed, global CSS excluded */
+.uploadButton {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--ide-accent-500), var(--ide-accent-600));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  box-sizing: border-box;
+}
+
+.uploadButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+  z-index: 0;
+  border-radius: 8px;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.uploadButton > * {
+  position: relative;
+  z-index: 1;
+}
+
+.uploadButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--ide-accent-600), #1D4ED8);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+}
+
+.uploadButton:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+.uploadButton:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.uploadButton:disabled {
+  background: var(--text-tertiary, #666666);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Git View Container - Layout-critical styles need */
+.gitViewContainer {
+  /* IDE Color Variables - Match Resonant Chat dark grey */
+  --ide-bg-primary: #262321;
+  --ide-bg-secondary: #262321;
+  --ide-bg-tertiary: #262321;
+  --ide-surface: #262321;
+  --ide-surface-hover: rgba(255, 255, 255, 0.08);
+  --ide-border: rgba(255, 255, 255, 0.1);
+  --ide-text-primary: #E8E8E8; /* Pearl white - softer than bright white */
+  --ide-text-secondary: rgba(232, 232, 232, 0.7);
+  --ide-text-tertiary: rgba(232, 232, 232, 0.5);
+  --ide-accent-500: var(--accent-500, #3B82F6);
+  --ide-accent-600: #2563EB;
+  --ide-success: #10B981;
+  --ide-error: #EF4444;
+  --ide-warning: #F59E0B;
+  
+  height: 100%;
+  flex-shrink: 0;
+  flex-grow: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--ide-surface);
+}
+
+/* Chat Panel Container - Fixed positioning */
+.chatPanelContainer {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--ide-bg-secondary);
+  position: relative;
+}
+
+/* DSID-P Orchestration Panel Container */
+.dsidpPanelContainer {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--ide-bg-secondary);
+  position: relative;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* DSID-P Panel Wrapper */
+.dsidpPanelWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* DSID-P Panel Toggle */
+.dsidpPanelToggle {
+  display: flex;
+  gap: 2px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dsidpToggleBtn {
+  flex: 1;
+  padding: 6px 10px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: var(--ide-text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dsidpToggleBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ide-text-primary);
+}
+
+.dsidpToggleBtn.active {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #cba6f7;
+}
+
+/* DSID-P View Container (sidebar) */
+.dsidpViewContainer {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--ide-bg-secondary);
+  position: relative;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Upload Hint - No needed */
+.uploadHint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-tertiary, #999999);
+  font-style: italic;
+  text-align: center;
+}
+
+/* View Container - Layout-critical styles need */
+.viewContainer {
+  /* IDE Color Variables - Match Resonant Chat dark grey */
+  --ide-bg-primary: #262321;
+  --ide-bg-secondary: #262321;
+  --ide-bg-tertiary: #262321;
+  --ide-surface: #262321;
+  --ide-surface-hover: rgba(255, 255, 255, 0.08);
+  --ide-border: rgba(255, 255, 255, 0.1);
+  --ide-text-primary: #E8E8E8; /* Pearl white - softer than bright white */
+  --ide-text-secondary: rgba(232, 232, 232, 0.7);
+  --ide-text-tertiary: rgba(232, 232, 232, 0.5);
+  --ide-accent-500: var(--accent-500, #3B82F6);
+  --ide-accent-600: #2563EB;
+  --ide-success: #10B981;
+  --ide-error: #EF4444;
+  --ide-warning: #F59E0B;
+  
+  width: 240px;
+  height: 100%;
+  background: var(--ide-surface);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--ide-border);
+  flex-shrink: 0;
+  flex-grow: 0;
+  overflow: hidden;
+}
+
+/* View Header - Layout-critical styles need */
+.viewHeader {
+  height: 32px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--ide-border);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--ide-text-secondary);
+  background: var(--ide-bg-primary);
+  flex-shrink: 0;
+}
+
+/* View Content - Layout-critical styles need */
+.viewContent {
+  flex: 1;
+  padding: 16px;
+  color: var(--text-tertiary, #999999);
+  font-size: 13px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+[data-theme='light'] .viewContainer {
+  background: var(--bg-tertiary, #f5f5f5);
+  border-right-color: var(--border, #e5e5e5);
+}
+
+[data-theme='light'] .viewHeader {
+  background: var(--bg-primary, #ffffff);
+  border-bottom-color: var(--border, #e5e5e5);
+  color: var(--text-secondary, #525252);
+}
+
+[data-theme='light'] .viewContent {
+  color: var(--text-secondary, #525252);
+}
+
+[data-theme='light'] .uploadPrompt {
+  color: var(--ide-text-tertiary);
+}
+
+
+/* Feature Section Styles */
+.featureSection {
+  padding: 16px;
+  background: var(--ide-bg-primary, #262321);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.featureSection h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ide-text-primary);
+}
+
+.featureSection p {
+  margin: 0 0 12px 0;
+  font-size: 12px;
+  color: var(--ide-text-secondary);
+  line-height: 1.5;
+}
+
+.actionButton {
+  width: 100%;
+  padding: 8px 16px;
+  background: var(--ide-accent-500);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background: var(--ide-accent-600);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.actionButton:active {
+  transform: translateY(0);
+}
+
+/* View Container Overrides for New Panels */
+.collaborationViewContainer .viewContainer,
+.deploymentViewContainer .viewContainer,
+.runViewContainer .viewContainer,
+.testingViewContainer .viewContainer,
+.extensionsViewContainer .viewContainer {
+  width: 100%;
+}
+
+.viewHeader h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ide-text-primary);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Preview Panel Container */
+.previewPanelContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ide-bg-secondary);
+  border-left: 1px solid var(--ide-border);
+}
+
+/* ============================================================
+   COMPREHENSIVE LIGHT MODE OVERRIDES
+   Forces all child elements to use light colors
+   ============================================================ */
+.ideContainer[data-theme='light'] * {
+  --ide-bg-primary: #ffffff;
+  --ide-bg-secondary: #fafafa;
+  --ide-bg-tertiary: #f4f4f5;
+  --ide-surface: #ffffff;
+  --ide-surface-elevated: #ffffff;
+  --ide-surface-hover: rgba(0, 0, 0, 0.04);
+  --ide-surface-active: rgba(0, 0, 0, 0.08);
+  --ide-border: #e4e4e7;
+  --ide-border-hover: #d4d4d8;
+  --ide-border-subtle: #f4f4f5;
+  --ide-text-primary: #18181b;
+  --ide-text-secondary: #52525b;
+  --ide-text-tertiary: #71717a;
+  --ide-text-muted: #a1a1aa;
+}
+
+/* Force light backgrounds on all major containers */
+.ideContainer[data-theme='light'] .toolbar,
+.ideContainer[data-theme='light'] .sidebar,
+.ideContainer[data-theme='light'] .activityBar,
+.ideContainer[data-theme='light'] .sidePanel,
+.ideContainer[data-theme='light'] .chatPanel,
+.ideContainer[data-theme='light'] .terminalPanel,
+.ideContainer[data-theme='light'] .statusBar,
+.ideContainer[data-theme='light'] .tabsBar,
+.ideContainer[data-theme='light'] .fileTree,
+.ideContainer[data-theme='light'] .editorArea,
+.ideContainer[data-theme='light'] .mainContent {
+  background: #ffffff !important;
+  color: #18181b !important;
+}
+
+/* Light mode for sidebar items */
+.ideContainer[data-theme='light'] .sidebarItem,
+.ideContainer[data-theme='light'] .activityBarItem {
+  color: #52525b !important;
+}
+
+.ideContainer[data-theme='light'] .sidebarItem:hover,
+.ideContainer[data-theme='light'] .activityBarItem:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #18181b !important;
+}
+
+.ideContainer[data-theme='light'] .sidebarItem.active,
+.ideContainer[data-theme='light'] .activityBarItem.active {
+  background: rgba(59, 130, 246, 0.1) !important;
+  color: #2563eb !important;
+}
+
+/* Light mode for tabs */
+.ideContainer[data-theme='light'] .tab {
+  background: #f4f4f5 !important;
+  color: #52525b !important;
+  border-color: #e4e4e7 !important;
+}
+
+.ideContainer[data-theme='light'] .tab.active,
+.ideContainer[data-theme='light'] .tabActive {
+  background: #ffffff !important;
+  color: #18181b !important;
+}
+
+/* Light mode borders */
+.ideContainer[data-theme='light'] .toolbar,
+.ideContainer[data-theme='light'] .statusBar {
+  border-color: #e4e4e7 !important;
+}
+
+/* Light mode input fields */
+.ideContainer[data-theme='light'] input,
+.ideContainer[data-theme='light'] textarea,
+.ideContainer[data-theme='light'] select {
+  background: #ffffff !important;
+  color: #18181b !important;
+  border-color: #e4e4e7 !important;
+}
+
+.ideContainer[data-theme='light'] input::placeholder,
+.ideContainer[data-theme='light'] textarea::placeholder {
+  color: #a1a1aa !important;
+}
+
+/* Light mode buttons */
+.ideContainer[data-theme='light'] button:not(.ide-button-primary) {
+  background: #f4f4f5 !important;
+  color: #18181b !important;
+  border-color: #e4e4e7 !important;
+}
+
+.ideContainer[data-theme='light'] button:not(.ide-button-primary):hover {
+  background: #e4e4e7 !important;
+}
+
+/* Light mode file tree */
+.ideContainer[data-theme='light'] .fileItem,
+.ideContainer[data-theme='light'] .folderItem,
+.ideContainer[data-theme='light'] .treeItem {
+  color: #18181b !important;
+}
+
+.ideContainer[data-theme='light'] .fileItem:hover,
+.ideContainer[data-theme='light'] .folderItem:hover,
+.ideContainer[data-theme='light'] .treeItem:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Light mode chat messages */
+.ideContainer[data-theme='light'] .userMessage {
+  background: #f4f4f5 !important;
+  color: #18181b !important;
+}
+
+.ideContainer[data-theme='light'] .assistantMessage {
+  background: #ffffff !important;
+  color: #18181b !important;
+  border: 1px solid #e4e4e7 !important;
+}
+
+/* Light mode scrollbars */
+.ideContainer[data-theme='light'] ::-webkit-scrollbar-track {
+  background: #f4f4f5 !important;
+}
+
+.ideContainer[data-theme='light'] ::-webkit-scrollbar-thumb {
+  background: #d4d4d8 !important;
+}
+
+.ideContainer[data-theme='light'] ::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa !important;
+}
+
+/* ============================================================
+   LIGHT MODE - Using :global() for CSS Modules compatibility
+   ============================================================ */
+
+/* Activity Bar Light Mode */
+:global([data-theme='light']) .activityBar {
+  background: #ffffff;
+  box-shadow: 1px 0 3px rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='light']) .activityBarButton {
+  color: #52525b;
+}
+
+:global([data-theme='light']) .activityBarButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #18181b;
+}
+
+:global([data-theme='light']) .activityBarButton.active {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.1);
+}
+
+/* Toolbar Light Mode */
+:global([data-theme='light']) .toolbar {
+  background: #fafafa;
+  border-bottom-color: #e4e4e7;
+}
+
+:global([data-theme='light']) .toolbarButton {
+  color: #52525b;
+}
+
+:global([data-theme='light']) .toolbarButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #18181b;
+}
+
+/* Side Panel Light Mode */
+:global([data-theme='light']) .sidePanel {
+  background: #ffffff;
+  border-right-color: #e4e4e7;
+}
+
+:global([data-theme='light']) .sidePanelHeader {
+  background: #fafafa;
+  border-bottom-color: #e4e4e7;
+  color: #18181b;
+}
+
+/* Main Content Light Mode */
+:global([data-theme='light']) .mainContent {
+  background: #ffffff;
+}
+
+:global([data-theme='light']) .editorArea {
+  background: #ffffff;
+}
+
+/* IDE Container Light Mode */
+:global([data-theme='light']).ideContainer {
+  background: #ffffff;
+  color: #18181b;
+}
+
+/* Project Builder View Container */
+.builderViewContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ide-bg-primary, #262321);
+}

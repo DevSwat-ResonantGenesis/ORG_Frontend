@@ -1,0 +1,484 @@
+/* Git Panel - Layout-critical styles need */
+/* Using Resonant Chat colors: --surface-dark: #262321, --surface-border-dark: rgba(255,255,255,0.1) */
+.gitPanel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: var(--ide-surface); /* Resonant Chat surface */
+  border-left: 1px solid var(--ide-border); /* Resonant Chat border */
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+}
+
+/* Header - Layout-critical styles need */
+/* Using Resonant Chat colors */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--ide-border); /* Resonant Chat border */
+  background: var(--ide-surface); /* Resonant Chat surface */
+  flex-shrink: 0;
+  min-height: 40px;
+}
+
+.header h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ide-text-primary); /* Resonant Chat text */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Refresh Button - No needed, global CSS excluded */
+/* Using Resonant Chat colors: --text-secondary: #9CA3AF, --surface-hover-dark: #111111 */
+.refreshButton {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  color: var(--ide-text-secondary); /* Resonant Chat secondary text */
+  border: 1px solid var(--ide-border); /* Resonant Chat border */
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refreshButton svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.refreshButton:hover:not(:disabled) {
+  background: var(--ide-surface-hover); /* Resonant Chat hover */
+  border-color: var(--ide-accent-500); /* Resonant Chat accent */
+  color: var(--ide-text-primary); /* Resonant Chat text */
+}
+
+.refreshButton:hover:not(:disabled) svg {
+  transform: rotate(180deg);
+}
+
+.refreshButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-32);
+  gap: var(--space-16);
+  color: var(--ide-text-secondary);
+}
+
+.empty p {
+  margin: 0;
+  font-size: var(--font-14);
+}
+
+.initButton {
+  padding: var(--space-8) var(--space-16);
+  background: var(--ide-accent-500); /* Match Resonant Chat primary */
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-14);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.initButton:hover:not(:disabled) {
+  background: var(--ide-accent-600); /* Match Resonant Chat primary */
+}
+
+.initButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.section {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-12);
+  font-size: var(--font-14);
+  font-weight: 600;
+  color: var(--ide-text-primary);
+}
+
+.branchControls {
+  display: flex;
+  gap: var(--space-8);
+  margin-bottom: var(--space-12);
+}
+
+.branchInput {
+  flex: 1;
+  min-width: 120px;
+  padding: var(--space-6) var(--space-10);
+  background: var(--bg-primary, #262321);
+  color: var(--ide-text-primary);
+  border: 1px solid var(--border, #262321);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-13);
+  outline: none;
+}
+
+.branchInput:focus {
+  outline: none;
+  border-color: var(--ide-accent-500); /* Match Resonant Chat primary */
+}
+
+.branchButton {
+  padding: var(--space-6) var(--space-12);
+  background: var(--ide-accent-500); /* Match Resonant Chat primary */
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-13);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.branchButton:hover:not(:disabled) {
+  background: var(--ide-accent-600); /* Match Resonant Chat primary */
+}
+
+.branchButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.branchList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.branchItem {
+  padding: var(--space-6) var(--space-10);
+  background: var(--ide-bg-primary);
+  color: var(--ide-text-primary);
+  border: 1px solid var(--ide-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-13);
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.branchItem:hover:not(:disabled) {
+  background: var(--ide-bg-tertiary);
+  border-color: var(--ide-accent-500); /* Match Resonant Chat primary */
+}
+
+.branchItem.activeBranch {
+  background: var(--ide-accent-500); /* Match Resonant Chat primary */
+  color: white;
+  border-color: var(--ide-accent-500); /* Match Resonant Chat primary */
+}
+
+.branchItem:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fileList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.fileItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  min-height: 32px;
+}
+
+.fileItem:hover {
+  background: var(--ide-bg-tertiary);
+}
+
+.fileItem.staged {
+  background: rgba(52, 199, 89, 0.1);
+  border-left: 3px solid #34c759;
+}
+
+.statusBadge {
+  padding: var(--space-2) var(--space-6);
+  background: var(--ide-bg-tertiary);
+  color: var(--ide-text-secondary);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-11);
+  font-weight: 500;
+  min-width: 60px;
+  text-align: center;
+}
+
+.filePath {
+  flex: 1;
+  color: var(--ide-text-primary);
+  word-break: break-all;
+}
+
+.actionButtons {
+  display: flex;
+  gap: var(--space-8);
+}
+
+/* Stage Button - No needed, global CSS excluded */
+.stageButton {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--ide-text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.stageButton svg {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.stageButton:hover:not(:disabled) {
+  background: var(--ide-surface-hover);
+  border-color: var(--ide-accent-500);
+  color: var(--ide-accent-500);
+}
+
+.stageButton:hover:not(:disabled) svg {
+  transform: scale(1.15);
+}
+
+.stageButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Unstage Button - No needed, global CSS excluded */
+.unstageButton {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--ide-text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.unstageButton svg {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.unstageButton:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: var(--ide-error);
+  color: var(--ide-error);
+}
+
+.unstageButton:hover:not(:disabled) svg {
+  transform: scale(1.15);
+}
+
+.unstageButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stageAllButton {
+  padding: var(--space-4) var(--space-8);
+  background: var(--ide-bg-tertiary);
+  color: var(--ide-text-primary);
+  border: 1px solid var(--ide-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-12);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.stageAllButton:hover:not(:disabled) {
+  background: var(--ide-bg-primary);
+  border-color: var(--ide-accent-500); /* Match Resonant Chat primary */
+  color: var(--ide-accent-500); /* Match Resonant Chat primary */
+}
+
+.stageAllButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.commitControls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  font-size: var(--font-13);
+  color: var(--ide-text-secondary);
+  cursor: pointer;
+}
+
+.checkboxLabel input {
+  cursor: pointer;
+}
+
+.commitInput {
+  padding: var(--space-8);
+  background: var(--ide-bg-primary);
+  color: var(--ide-text-primary);
+  border: 1px solid var(--ide-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-13);
+  font-family: var(--font-mono);
+  resize: vertical;
+}
+
+.commitInput:focus {
+  outline: none;
+  border-color: var(--ide-accent-500); /* Match Resonant Chat primary */
+}
+
+.commitButton {
+  padding: var(--space-8) var(--space-16);
+  background: var(--ide-accent-500); /* Match Resonant Chat primary */
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-14);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.commitButton:hover:not(:disabled) {
+  background: var(--ide-accent-600); /* Match Resonant Chat primary */
+}
+
+.commitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.commitList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.commitItem {
+  padding: var(--space-10);
+  background: var(--ide-bg-primary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--ide-border);
+}
+
+.commitHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin-bottom: var(--space-6);
+  font-size: var(--font-12);
+}
+
+.commitHash {
+  font-family: var(--font-mono);
+  color: var(--ide-accent-500); /* Match Resonant Chat primary */
+  font-weight: 600;
+}
+
+.commitAuthor {
+  color: var(--ide-text-secondary);
+}
+
+.commitDate {
+  color: var(--ide-text-secondary);
+  margin-left: auto;
+}
+
+.commitMessage {
+  font-size: var(--font-13);
+  color: var(--ide-text-primary);
+  line-height: 1.5;
+}
+
+.emptyState {
+  padding: var(--space-32);
+  text-align: center;
+  color: var(--ide-text-secondary);
+  font-size: var(--font-14);
+}
+
+/* Scrollbars */
+.gitPanel::-webkit-scrollbar,
+.fileList::-webkit-scrollbar,
+.commitList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.gitPanel::-webkit-scrollbar-track,
+.fileList::-webkit-scrollbar-track,
+.commitList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.gitPanel::-webkit-scrollbar-thumb,
+.fileList::-webkit-scrollbar-thumb,
+.commitList::-webkit-scrollbar-thumb {
+  background: var(--bg-primary, #111111);
+  border-radius: 4px;
+}
+
+.gitPanel::-webkit-scrollbar-thumb:hover,
+.fileList::-webkit-scrollbar-thumb:hover,
+.commitList::-webkit-scrollbar-thumb:hover {
+  background: var(--bg-tertiary, #4A4A4A);
+}
+

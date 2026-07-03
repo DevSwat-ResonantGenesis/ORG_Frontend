@@ -1,0 +1,514 @@
+/* ============== ADVANCED DEBUGGER STYLES ============== */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.icon { font-size: 16px; }
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  text-transform: capitalize;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.controls {
+  display: flex;
+  gap: 4px;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.controlBtn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.controlBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--ide-text-secondary, 0.2);
+}
+
+.stopBtn {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.stopBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.pauseInfo {
+  padding: 8px 16px;
+  background: rgba(245, 158, 11, 0.1);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+  font-size: 12px;
+  color: #f59e0b;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  white-space: nowrap;
+}
+
+.tab:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
+.tab.active { color: #0ea5e9; }
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #0ea5e9;
+}
+
+.badge {
+  margin-left: 6px;
+  padding: 2px 6px;
+  background: rgba(239, 68, 68, 0.2);
+  border-radius: 10px;
+  font-size: 9px;
+  color: #ef4444;
+}
+
+.content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Console Panel */
+.consolePanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.consoleMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  font-family: 'Fira Code', 'Monaco', monospace;
+  font-size: 12px;
+}
+
+.emptyConsole {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  font-size: 12px;
+}
+
+.consoleMessage {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-bottom: 2px;
+}
+
+.consoleMessage.error { background: rgba(239, 68, 68, 0.1); }
+.consoleMessage.warn { background: rgba(245, 158, 11, 0.1); }
+.consoleMessage.info { background: rgba(14, 165, 233, 0.05); }
+
+.msgIcon { font-size: 12px; flex-shrink: 0; }
+.msgContent {
+  flex: 1;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #ccc;
+}
+
+.consoleMessage.error .msgContent { color: #ef4444; }
+.consoleMessage.warn .msgContent { color: #f59e0b; }
+
+.msgTime {
+  font-size: 10px;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.consoleInputArea {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.inputPrompt {
+  color: #0ea5e9;
+  font-family: monospace;
+}
+
+.consoleInput {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #fff;
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  outline: none;
+}
+
+.clearBtn {
+  padding: 4px 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.clearBtn:hover { opacity: 1; }
+
+/* Breakpoints Panel */
+.breakpointsPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panelHeader {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.addBtn {
+  padding: 6px 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 4px;
+  color: #ef4444;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addBtn:hover { background: rgba(239, 68, 68, 0.2); }
+
+.breakpointsList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.emptyIcon { font-size: 32px; margin-bottom: 12px; opacity: 0.5; }
+.emptyState p { margin: 0 0 4px; color: #888; font-size: 13px; }
+.emptyState small { color: #666; font-size: 11px; }
+
+.breakpointItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.breakpointItem.disabled { opacity: 0.5; }
+
+.bpCheckbox {
+  width: 14px;
+  height: 14px;
+  accent-color: #ef4444;
+}
+
+.bpInfo { flex: 1; min-width: 0; }
+.bpFile { font-size: 12px; color: #fff; }
+.bpLine { font-size: 12px; color: #0ea5e9; font-family: monospace; }
+.bpCondition {
+  display: block;
+  font-size: 10px;
+  color: #f59e0b;
+  margin-top: 2px;
+  font-family: monospace;
+}
+
+.bpActions { display: flex; gap: 4px; }
+.bpActionBtn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.bpActionBtn:hover { opacity: 1; }
+
+/* Variables Panel */
+.variablesPanel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.variableTree {
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+}
+
+.variableItem {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.variableRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.variableRow:hover { background: rgba(255, 255, 255, 0.05); }
+
+.expandIcon {
+  width: 12px;
+  font-size: 8px;
+  color: #888;
+}
+
+.varName { color: #a855f7; }
+.varType { color: #666; font-size: 10px; }
+.varValue { flex: 1; color: #22c55e; text-align: right; }
+.varScope {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.varScope.local { background: rgba(14, 165, 233, 0.2); color: #0ea5e9; }
+.varScope.closure { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+.varScope.global { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+
+/* Call Stack Panel */
+.callstackPanel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.framesList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stackFrame {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.stackFrame:hover { background: rgba(255, 255, 255, 0.05); }
+.stackFrame.current {
+  background: rgba(14, 165, 233, 0.1);
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.frameIndex {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-size: 10px;
+  color: #888;
+}
+
+.frameInfo { flex: 1; min-width: 0; }
+.frameName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #fff;
+}
+
+.asyncBadge {
+  padding: 2px 6px;
+  background: rgba(168, 85, 247, 0.2);
+  border-radius: 4px;
+  font-size: 9px;
+  color: #a855f7;
+}
+
+.frameLocation {
+  display: block;
+  font-size: 10px;
+  color: #666;
+  font-family: monospace;
+  margin-top: 2px;
+}
+
+/* Watch Panel */
+.watchPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.addWatchForm {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.watchInput {
+  flex: 1;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+}
+
+.watchInput:focus { outline: none; border-color: rgba(14, 165, 233, 0.5); }
+
+.addWatchBtn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(14, 165, 233, 0.1);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  border-radius: 6px;
+  color: #0ea5e9;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addWatchBtn:hover { background: rgba(14, 165, 233, 0.2); }
+
+.watchList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.watchItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  margin-bottom: 6px;
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+}
+
+.watchExpr { color: #a855f7; }
+.watchValue { flex: 1; color: #22c55e; text-align: right; }
+.watchValue.error { color: #ef4444; }
+
+.deleteWatchBtn {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.deleteWatchBtn:hover { color: #ef4444; }
