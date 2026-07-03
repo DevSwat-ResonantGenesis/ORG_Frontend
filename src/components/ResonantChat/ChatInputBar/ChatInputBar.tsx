@@ -245,6 +245,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   const agentButtonRef = useRef<HTMLButtonElement>(null);
   const providerButtonRef = useRef<HTMLButtonElement>(null);
   const providerDropdownRef = useRef<HTMLDivElement>(null);
+  const toolbarToggleRef = useRef<HTMLButtonElement>(null);
+  const toolsRowRef = useRef<HTMLDivElement>(null);
   const valueRef = useRef(value); // Track current value for voice input
 
   // PERF: Local input state to avoid re-rendering the entire parent (6900+ lines, 132 useState)
@@ -395,6 +397,16 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
       if (agentPanelRef.current && agentPanelRef.current.contains(e.target as Node)) {
         return;
       }
+      // Toolbar toggle + tools row are portaled to document.body (they stand
+      // outside the input bar's DOM), so they need their own exclusion here —
+      // otherwise every mousedown inside them reads as "outside the input
+      // bar" and closes the toolbar before its onClick can fire.
+      if (toolbarToggleRef.current && toolbarToggleRef.current.contains(e.target as Node)) {
+        return;
+      }
+      if (toolsRowRef.current && toolsRowRef.current.contains(e.target as Node)) {
+        return;
+      }
       if (inputWrapperRef.current && !inputWrapperRef.current.contains(e.target as Node)) {
         // Close all panels when clicking outside the input bar
         setShowProviderDropdown(false);
@@ -483,8 +495,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   // document.body), positioned purely from the input bar's own rect —
   // they are not nested inside .inputWrapper at all.
   const TOGGLE_TAG_SIZE = 30;
-  const TOGGLE_TAG_GAP = 0; // tag sits flush against the input bar's top edge
-  const TOOLS_ROW_GAP = 1; // tools row sits 1px above the tag
+  const TOGGLE_TAG_GAP = 4; // half the tools row's 8px padding
+  const TOOLS_ROW_GAP = 4; // tools row sits 4px above the tag
 
   const computeToggleTagStyle = useCallback((): React.CSSProperties | null => {
     if (typeof window === 'undefined') return null;
@@ -1327,6 +1339,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
         {/* Toolbar toggle - lives outside the input bar (portaled), standing on its own above it */}
         {!embedded && typeof document !== 'undefined' && createPortal(
           <button
+            ref={toolbarToggleRef}
             type="button"
             className={`${styles.toolbarToggle} ${toolbarOpen ? styles.open : ''}`}
             style={toggleTagStyle || undefined}
@@ -1392,6 +1405,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
         {((embedded && showEmbeddedTools) || (!embedded && toolbarOpen)) && (() => {
         const toolsRowNode = (
         <div
+          ref={!embedded ? toolsRowRef : undefined}
           className={`${styles.toolsRow} ${embedded ? styles.embeddedToolsRow : styles.toolsRowFloating}`}
           style={!embedded ? (toolsRowFloatingStyle || undefined) : undefined}
           onMouseEnter={() => {
