@@ -496,7 +496,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   // they are not nested inside .inputWrapper at all.
   const TOGGLE_TAG_SIZE = 30;
   const TOGGLE_TAG_GAP = 4; // half the tools row's 8px padding
-  const TOOLS_ROW_GAP = 4; // tools row sits 4px above the tag
+  const TOOLS_ROW_GAP = 2; // tools row sits closer to the tag/input bar
 
   const computeToggleTagStyle = useCallback((): React.CSSProperties | null => {
     if (typeof window === 'undefined') return null;
@@ -505,8 +505,9 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     const rect = wrapper.getBoundingClientRect();
     return {
       position: 'fixed',
-      // Left side (not centered) — anchored to the input bar's left edge.
-      left: Math.max(4, rect.left + 8),
+      // Left side, straddling the input bar's left edge so it visibly
+      // stands beyond/outside the bar rather than sitting flush inside it.
+      left: Math.max(4, rect.left - TOGGLE_TAG_SIZE / 2),
       bottom: window.innerHeight - rect.top + TOGGLE_TAG_GAP,
       zIndex: 10003,
     };
@@ -1420,6 +1421,21 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           </div>
 
           <div className={styles.toolsRight}>
+            {/* Text to Voice - moved before the mic/voice icon */}
+            <button
+              className={`${styles.toolButton} ${isSpeaking ? styles.active : ''}`}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleTextToVoice();
+              }}
+              title="Text to Voice"
+              type="button"
+              disabled={!ttsText?.trim()}
+            >
+              <SpeakerIcon />
+            </button>
+
             {/* Mic icon - moved before LLM provider */}
             <VoiceInput
               key={`voice-input-${speechRecognitionLanguage}`}
@@ -1678,6 +1694,16 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
               </button>
             )}
 
+            {onShowMemoryLibrary && (
+              <button
+                className={`${styles.toolButton} ${showMemoryLibrary ? styles.active : ''}`}
+                onClick={showMemoryLibrary ? onCloseMemoryLibrary : handleShowMemoryLibrary}
+                title="Memory Library"
+              >
+                <MemoryLibraryIcon />
+              </button>
+            )}
+
             {onAttachFile && (
               <button
                 className={`${styles.toolButton} ${styles.animatedIcon}`}
@@ -1735,30 +1761,6 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
                 <ArchiveIcon />
               </button>
             )}
-
-            {onShowMemoryLibrary && (
-              <button
-                className={`${styles.toolButton} ${showMemoryLibrary ? styles.active : ''}`}
-                onClick={showMemoryLibrary ? onCloseMemoryLibrary : handleShowMemoryLibrary}
-                title="Memory Library"
-              >
-                <MemoryLibraryIcon />
-              </button>
-            )}
-
-            <button
-              className={`${styles.toolButton} ${isSpeaking ? styles.active : ''}`}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleTextToVoice();
-              }}
-              title="Text to Voice"
-              type="button"
-              disabled={!ttsText?.trim()}
-            >
-              <SpeakerIcon />
-            </button>
 
             {onToggleAgentMode && (
               <button
