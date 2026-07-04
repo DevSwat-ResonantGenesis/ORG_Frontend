@@ -5,16 +5,25 @@ import { RoundedBox, Text, ContactShadows } from '@react-three/drei';
 import { Physics, useBox, usePlane } from '@react-three/cannon';
 import * as THREE from 'three';
 
-function useIsMobile(breakpoint = 768) {
-    const [mobile, setMobile] = useState(
-        typeof window !== 'undefined' ? window.innerWidth < breakpoint : false
-    );
+/* Laptop-sized viewports (roughly 768-1439px) previously fell into the same
+   bucket as wide external monitors and got full-size desktop boxes, which
+   read as oversized on a laptop screen. This adds a distinct tier for them. */
+type ViewportTier = 'mobile' | 'laptop' | 'desktop';
+function getViewportTier(): ViewportTier {
+    if (typeof window === 'undefined') return 'desktop';
+    const w = window.innerWidth;
+    if (w < 768) return 'mobile';
+    if (w < 1440) return 'laptop';
+    return 'desktop';
+}
+function useViewportTier(): ViewportTier {
+    const [tier, setTier] = useState<ViewportTier>(getViewportTier);
     useEffect(() => {
-        const check = () => setMobile(window.innerWidth < breakpoint);
+        const check = () => setTier(getViewportTier());
         window.addEventListener('resize', check, { passive: true });
         return () => window.removeEventListener('resize', check);
-    }, [breakpoint]);
-    return mobile;
+    }, []);
+    return tier;
 }
 
 /* ── Card definitions — each maps to a real product page ── */
@@ -54,6 +63,13 @@ const CARDS_MOBILE: Card3D[] = CARDS.map((c) => ({
     w: c.w * MOBILE_SCALE,
     h: c.h * MOBILE_SCALE,
     chaosX: c.chaosX * 0.35,
+}));
+
+const LAPTOP_SCALE = 0.72;
+const CARDS_LAPTOP: Card3D[] = CARDS.map((c) => ({
+    ...c,
+    w: c.w * LAPTOP_SCALE,
+    h: c.h * LAPTOP_SCALE,
 }));
 
 const DEPTH = 0.42;
@@ -178,8 +194,8 @@ function layoutSpawnX(cards: Card3D[], wallMin: number, wallMax: number, camBase
     return result;
 }
 
-function Scene({ cards, camBaseX, camBaseZ, floorY, spawnY, isMobile, fov, gravity }: {
-    cards: Card3D[]; camBaseX: number; camBaseZ: number; floorY: number; spawnY: number; isMobile: boolean; fov: number;
+function Scene({ cards, camBaseX, camBaseZ, floorY, spawnY, isMobile, sizeScale, fov, gravity }: {
+    cards: Card3D[]; camBaseX: number; camBaseZ: number; floorY: number; spawnY: number; isMobile: boolean; sizeScale: number; fov: number;
     gravity: [number, number, number];
 }) {
     const { size } = useThree();
@@ -198,7 +214,7 @@ function Scene({ cards, camBaseX, camBaseZ, floorY, spawnY, isMobile, fov, gravi
             <Wall x={wallMin} facing={1} />
             <Wall x={wallMax} facing={-1} />
             {cards.map((card, i) => (
-                <FallingCard key={card.label + i} card={card} isMobile={isMobile} spawnX={spawnXs[i]} spawnY={spawnY} gravity={gravity} />
+                <FallingCard key={card.label + i} card={card} isMobile={isMobile} sizeScale={sizeScale} spawnX={spawnXs[i]} spawnY={spawnY} gravity={gravity} />
             ))}
         </>
     );
@@ -263,8 +279,8 @@ const DRAG_THRESHOLD = 6;
 const dragPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
 
 /* ── A single falling, draggable, navigable 3D block ── */
-function FallingCard({ card, isMobile, spawnX, spawnY, gravity }: {
-    card: Card3D; isMobile: boolean; spawnX: number; spawnY: number; gravity: [number, number, number];
+function FallingCard({ card, isMobile, sizeScale, spawnX, spawnY, gravity }: {
+    card: Card3D; isMobile: boolean; sizeScale: number; spawnX: number; spawnY: number; gravity: [number, number, number];
 }) {
     const navigate = useNavigate();
     /* Cards releasing later also spawn higher up, proportional to their delay — this gives
@@ -468,7 +484,7 @@ function FallingCard({ card, isMobile, spawnX, spawnY, gravity }: {
 
     const color = useMemo(() => new THREE.Color(card.color), [card.color]);
     const txtColor = useMemo(() => new THREE.Color(card.textColor), [card.textColor]);
-    const ts = isMobile ? MOBILE_SCALE : 1;
+    const ts = sizeScale;
     const zFace = DEPTH / 2 + 0.02;
 
     return (
@@ -593,8 +609,10 @@ function useTiltGravity(magnitude: number): [number, number, number] {
 
 /* ── Main 3D Canvas ── */
 export function HeroCards3DScene() {
-    const isMobile = useIsMobile();
-    const cards = isMobile ? CARDS_MOBILE : CARDS;
+    const tier = useViewportTier();
+    const isMobile = tier === 'mobile';
+    const cards = tier === 'mobile' ? CARDS_MOBILE : tier === 'laptop' ? CARDS_LAPTOP : CARDS;
+    const sizeScale = tier === 'mobile' ? MOBILE_SCALE : tier === 'laptop' ? LAPTOP_SCALE : 1;
 
     const camBaseX = isMobile ? 0.4 : 1.2;
     const camBaseY = isMobile ? -0.3 : 0;
@@ -627,7 +645,7 @@ export function HeroCards3DScene() {
             <CameraRig baseX={camBaseX} baseY={camBaseY} baseZ={camBaseZ} />
 
             <Physics gravity={gravity} allowSleep iterations={14}>
-                <Scene cards={cards} camBaseX={camBaseX} camBaseZ={camBaseZ} floorY={floorY} spawnY={spawnY} isMobile={isMobile} fov={50} gravity={gravity} />
+                <Scene cards={cards} camBaseX={camBaseX} camBaseZ={camBaseZ} floorY={floorY} spawnY={spawnY} isMobile={isMobile} sizeScale={sizeScale} fov={50} gravity={gravity} />
                 {/* Desktop only — on mobile the headline becomes a full-width stacked banner
                     (not a left-side panel), so treating it as an obstacle would block the
                     entire fall zone with nowhere left to drop through. */}
