@@ -145,6 +145,17 @@
   padding-top: 0 !important;
 }
 
+/* Download pages (Miner/IDE/OpenClaw) use CSS Modules, so their root div's
+   class compiles to a hash (e.g. _page_101g2_8) instead of literally "page" —
+   the bypass above never matches, leaving main-content's own header-height
+   padding-top in place above the page's own background. The data-product
+   attribute isn't hashed, so target that instead. */
+.main-content:not(.landing-page-content):has([data-product]) {
+  height: auto !important;
+  overflow-y: visible !important;
+  padding-top: 0 !important;
+}
+
 
 /* Ensure main content area grows to push footer down */
 .main-content-area {
