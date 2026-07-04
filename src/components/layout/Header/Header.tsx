@@ -397,6 +397,14 @@ export const Header: React.FC<HeaderProps> = ({
                       <span className={styles.navDropdownItemTitle}>Builder</span>
                       <span className={styles.navDropdownItemDesc}>Server-side Monaco editor for quick edits &amp; scaffolding, no local install required</span>
                     </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/download-ide'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>DevSwat IDE</span>
+                      <span className={styles.navDropdownItemDesc}>VS Code fork with a built-in AI extension — 71 local tools, agentic chat loop &amp; AST code analysis</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/code-visualizer'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Code Visualizer</span>
+                      <span className={styles.navDropdownItemDesc}>Full-stack SAST — scans your codebase, maps dependency graphs, detects vulnerabilities &amp; visualizes architecture</span>
+                    </button>
                   </div>
                 </div>
               )}
@@ -423,6 +431,14 @@ export const Header: React.FC<HeaderProps> = ({
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/network/marketplace'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>Marketplace</span>
                       <span className={styles.navDropdownItemDesc}>Discover &amp; publish agents built by the community</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/download-openclaw'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>OpenClaw+</span>
+                      <span className={styles.navDropdownItemDesc}>Run AI agents locally on your hardware — tools execute on your machine, memory never leaves your disk</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/state-physics'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>State of Physics Simulation</span>
+                      <span className={styles.navDropdownItemDesc}>Live invariants simulation — visualizes conserved quantities &amp; physical constraints in real time</span>
                     </button>
                   </div>
                 </div>
@@ -451,75 +467,26 @@ export const Header: React.FC<HeaderProps> = ({
                       <span className={styles.navDropdownItemTitle}>Miner</span>
                       <span className={styles.navDropdownItemDesc}>Miner health, blocks mined &amp; Proof-of-Training status</span>
                     </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Visualisation Dropdown */}
-            <div className={styles.navItem}>
-              <button
-                className={`${styles.navButton} ${activeDropdown === 'visualisation' ? styles.navButtonActive : ''}`}
-                onClick={() => setActiveDropdown(activeDropdown === 'visualisation' ? null : 'visualisation')}
-              >
-                Visualisation
-                <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              {activeDropdown === 'visualisation' && (
-                <div className={styles.navDropdown}>
-                  <div className={styles.navDropdownGridOneRow}>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/code-visualizer'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Code Visualizer</span>
-                      <span className={styles.navDropdownItemDesc}>Full-stack SAST — scans your codebase, maps dependency graphs, detects vulnerabilities &amp; visualizes architecture</span>
-                    </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-memory'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Memory Visualizer</span>
-                      <span className={styles.navDropdownItemDesc}>9-layer semantic memory — stores, links &amp; recalls knowledge across agents via dimensional resonance retrieval</span>
-                    </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/state-physics'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>State of Physics Simulation</span>
-                      <span className={styles.navDropdownItemDesc}>Live invariants simulation — visualizes conserved quantities &amp; physical constraints in real time</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Downloads Dropdown */}
-            <div className={styles.navItem}>
-              <button
-                className={`${styles.navButton} ${activeDropdown === 'downloads' ? styles.navButtonActive : ''}`}
-                onClick={() => setActiveDropdown(activeDropdown === 'downloads' ? null : 'downloads')}
-              >
-                Downloads
-                <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              {activeDropdown === 'downloads' && (
-                <div className={styles.navDropdown}>
-                  <div className={styles.navDropdownGridOneRow}>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/download-ide'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>DevSwat IDE</span>
-                      <span className={styles.navDropdownItemDesc}>VS Code fork with a built-in AI extension — 71 local tools, agentic chat loop &amp; AST code analysis</span>
-                    </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/download-miner'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>DevSwat Miner</span>
                       <span className={styles.navDropdownItemDesc}>Train AI models on your GPU and earn $RGT tokens in the decentralized training network</span>
                     </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/download-openclaw'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>OpenClaw+</span>
-                      <span className={styles.navDropdownItemDesc}>Run AI agents locally on your hardware — tools execute on your machine, memory never leaves your disk</span>
-                    </button>
                   </div>
                 </div>
               )}
             </div>
 
+            {/* Memory Link */}
+            <button
+              className={styles.navButton}
+              onClick={() => navigate('/resonant-memory')}
+              title="Hash Sphere Memory"
+            >
+              Memory
+            </button>
+
             {/* Pricing Link */}
-            <button 
+            <button
               className={styles.navButton}
               onClick={() => goToPricing(navigate)}
             >

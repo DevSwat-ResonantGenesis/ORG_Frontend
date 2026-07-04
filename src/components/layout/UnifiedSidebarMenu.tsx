@@ -169,6 +169,34 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               <span className={styles.usmLabel}>Builder</span>
               {location.pathname === '/build' && <span className={styles.usmActiveIndicator} />}
             </button>
+
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/download-ide' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/download-ide'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="2" y="2" width="12" height="12" rx="1" />
+                  <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>DevSwat IDE</span>
+              {location.pathname === '/download-ide' && <span className={styles.usmActiveIndicator} />}
+            </button>
+
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/code-visualizer' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/code-visualizer'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="2" y="2" width="12" height="12" rx="1" />
+                  <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>Code Visualizer</span>
+              {location.pathname === '/code-visualizer' && <span className={styles.usmActiveIndicator} />}
+            </button>
           </div>
 
           <div className={styles.usmDivider} />
@@ -204,6 +232,34 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               </span>
               <span className={styles.usmLabel}>Marketplace</span>
               {location.pathname === '/network/marketplace' && <span className={styles.usmActiveIndicator} />}
+            </button>
+
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/download-openclaw' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/download-openclaw'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M3 3C3 3 4 8 8 8C12 8 13 3 13 3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M3 13C3 13 4 8 8 8C12 8 13 13 13 13" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>OpenClaw+</span>
+              {location.pathname === '/download-openclaw' && <span className={styles.usmActiveIndicator} />}
+            </button>
+
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/state-physics' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/state-physics'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <circle cx="8" cy="8" r="6" />
+                  <circle cx="8" cy="8" r="2.5" strokeDasharray="1.5 1.5" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>State of Physics Simulation</span>
+              {location.pathname === '/state-physics' && <span className={styles.usmActiveIndicator} />}
             </button>
           </div>
 
@@ -244,80 +300,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               <span className={styles.usmLabel}>Miner</span>
               {location.pathname === '/network/blockchain' && <span className={styles.usmActiveIndicator} />}
             </button>
-          </div>
-
-          <div className={styles.usmDivider} />
-
-          {/* Visualisation Section */}
-          <div className={styles.usmSection}>
-            <div className={styles.usmSectionTitle}>Visualisation</div>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/code-visualizer' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/code-visualizer'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="2" width="12" height="12" rx="1" />
-                  <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Code Visualizer</span>
-              {location.pathname === '/code-visualizer' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/resonant-memory' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/resonant-memory'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="8" r="5" strokeDasharray="2 2" />
-                  <circle cx="5" cy="5" r="1" fill="currentColor" />
-                  <circle cx="11" cy="6" r="1" fill="currentColor" />
-                  <circle cx="6" cy="11" r="1" fill="currentColor" />
-                  <circle cx="10" cy="10" r="1" fill="currentColor" />
-                  <path d="M8 8L5 5M8 8L11 6M8 8L6 11M8 8L10 10" strokeWidth="0.5" opacity="0.5" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Memory Visualizer</span>
-              {location.pathname === '/resonant-memory' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/state-physics' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/state-physics'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="8" r="6" />
-                  <circle cx="8" cy="8" r="2.5" strokeDasharray="1.5 1.5" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>State of Physics Simulation</span>
-              {location.pathname === '/state-physics' && <span className={styles.usmActiveIndicator} />}
-            </button>
-          </div>
-
-          <div className={styles.usmDivider} />
-
-          {/* Downloads Section */}
-          <div className={styles.usmSection}>
-            <div className={styles.usmSectionTitle}>Downloads</div>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/download-ide' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/download-ide'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="2" width="12" height="12" rx="1" />
-                  <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>DevSwat IDE</span>
-              {location.pathname === '/download-ide' && <span className={styles.usmActiveIndicator} />}
-            </button>
 
             <button
               className={`${styles.usmItem} ${location.pathname === '/download-miner' ? styles.usmActive : ''}`}
@@ -332,21 +314,35 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               <span className={styles.usmLabel}>DevSwat Miner</span>
               {location.pathname === '/download-miner' && <span className={styles.usmActiveIndicator} />}
             </button>
+          </div>
 
+          <div className={styles.usmDivider} />
+
+          {/* Memory Section */}
+          <div className={styles.usmSection}>
             <button
-              className={`${styles.usmItem} ${location.pathname === '/download-openclaw' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/download-openclaw'); onClose(); }}
+              className={`${styles.usmItem} ${location.pathname === '/resonant-memory' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/resonant-memory'); onClose(); }}
             >
               <span className={styles.usmIcon}>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M3 3C3 3 4 8 8 8C12 8 13 3 13 3" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M3 13C3 13 4 8 8 8C12 8 13 13 13 13" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="8" cy="8" r="5" strokeDasharray="2 2" />
+                  <circle cx="5" cy="5" r="1" fill="currentColor" />
+                  <circle cx="11" cy="6" r="1" fill="currentColor" />
+                  <circle cx="6" cy="11" r="1" fill="currentColor" />
+                  <circle cx="10" cy="10" r="1" fill="currentColor" />
+                  <path d="M8 8L5 5M8 8L11 6M8 8L6 11M8 8L10 10" strokeWidth="0.5" opacity="0.5" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>OpenClaw+</span>
-              {location.pathname === '/download-openclaw' && <span className={styles.usmActiveIndicator} />}
+              <span className={styles.usmLabel}>Memory</span>
+              {location.pathname === '/resonant-memory' && <span className={styles.usmActiveIndicator} />}
             </button>
+          </div>
 
+          <div className={styles.usmDivider} />
+
+          {/* Other Section */}
+          <div className={styles.usmSection}>
             {/* GitHub */}
             <a
               className={styles.usmDownloadItem}
