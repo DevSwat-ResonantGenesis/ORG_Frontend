@@ -297,7 +297,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <path d="M8 5V11M5.5 8H10.5" strokeLinecap="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Miner</span>
+              <span className={styles.usmLabel}>Internal Chain</span>
               {location.pathname === '/network/blockchain' && <span className={styles.usmActiveIndicator} />}
             </button>
 
@@ -311,7 +311,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <path d="M8 5V11M5.5 8H10.5" strokeLinecap="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>DevSwat Miner</span>
+              <span className={styles.usmLabel}>Miner App</span>
               {location.pathname === '/download-miner' && <span className={styles.usmActiveIndicator} />}
             </button>
           </div>

@@ -464,11 +464,11 @@ export const Header: React.FC<HeaderProps> = ({
                       <span className={styles.navDropdownItemDesc}>Frontier LLM training status across the decentralized RGT network</span>
                     </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/network/blockchain'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Miner</span>
+                      <span className={styles.navDropdownItemTitle}>Internal Chain</span>
                       <span className={styles.navDropdownItemDesc}>Miner health, blocks mined &amp; Proof-of-Training status</span>
                     </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/download-miner'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>DevSwat Miner</span>
+                      <span className={styles.navDropdownItemTitle}>Miner App</span>
                       <span className={styles.navDropdownItemDesc}>Train AI models on your GPU and earn $RGT tokens in the decentralized training network</span>
                     </button>
                   </div>
