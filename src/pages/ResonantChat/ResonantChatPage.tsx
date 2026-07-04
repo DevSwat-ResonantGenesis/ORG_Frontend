@@ -1147,13 +1147,26 @@ const ResonantChatPage: React.FC = () => {
 
   // Auto-select latest assistant message with code when split view is enabled
   const prevMessageCountRef = useRef(messages.length);
+  const lastMessageSnapshotRef = useRef<{ id: string | null; length: number }>({ id: null, length: 0 });
   useEffect(() => {
     if (!splitViewEnabled || messages.length === 0) return;
+    const lastMessage = messages[messages.length - 1];
     const messagesChanged = messages.length !== prevMessageCountRef.current;
+    // Streaming mutates the last message's content in place (array length is unchanged),
+    // so also treat a content change on the last message as "changed" to avoid staying
+    // stuck on a previous turn's code once selectedCodeMessage is already set.
+    const lastContentChanged =
+      !!lastMessage &&
+      (lastMessage.id !== lastMessageSnapshotRef.current.id ||
+        lastMessage.content.length !== lastMessageSnapshotRef.current.length);
     prevMessageCountRef.current = messages.length;
+    lastMessageSnapshotRef.current = {
+      id: lastMessage?.id ?? null,
+      length: lastMessage?.content.length ?? 0,
+    };
 
-    // On first open (no selection) or when new messages arrive, pick the latest code message
-    if (!selectedCodeMessage || messagesChanged) {
+    // On first open (no selection) or when new/updated messages arrive, pick the latest code message
+    if (!selectedCodeMessage || messagesChanged || lastContentChanged) {
       const reversed = [...messages].reverse();
       const latestWithCode = reversed.find(m => m.role === 'assistant' && m.content.match(/```[\s\S]*?```/g));
       if (latestWithCode && latestWithCode.id !== selectedCodeMessage) {
