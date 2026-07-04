@@ -152,7 +152,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>IDE</span>
+              <span className={styles.usmLabel}>IDE Cloud</span>
               {location.pathname === '/ide' && <span className={styles.usmActiveIndicator} />}
             </button>
 
@@ -180,7 +180,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>DevSwat IDE</span>
+              <span className={styles.usmLabel}>IDE App</span>
               {location.pathname === '/download-ide' && <span className={styles.usmActiveIndicator} />}
             </button>
 

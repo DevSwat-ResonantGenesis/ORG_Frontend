@@ -370,7 +370,7 @@ export const Header: React.FC<HeaderProps> = ({
               alt="DevSwat"
               className={`${styles.logoIcon} ${isMobileViewport ? styles.logoIconHiddenMobile : ''}`}
             />
-            {!isChatInterfaceActive && 'DevSwat'}
+            {isLandingPage && !isChatInterfaceActive && !landingChatActive ? 'DevSwat' : 'Chat'}
           </div>
 
           {/* Main Navigation - Desktop */}
@@ -390,7 +390,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className={styles.navDropdown}>
                   <div className={styles.navDropdownGridOneRow}>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/ide'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>IDE</span>
+                      <span className={styles.navDropdownItemTitle}>IDE Cloud</span>
                       <span className={styles.navDropdownItemDesc}>Full in-browser Monaco editor workspace with agentic chat loop &amp; AST code analysis</span>
                     </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/build'); setActiveDropdown(null); }}>
@@ -398,7 +398,7 @@ export const Header: React.FC<HeaderProps> = ({
                       <span className={styles.navDropdownItemDesc}>Server-side Monaco editor for quick edits &amp; scaffolding, no local install required</span>
                     </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/download-ide'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>DevSwat IDE</span>
+                      <span className={styles.navDropdownItemTitle}>IDE App</span>
                       <span className={styles.navDropdownItemDesc}>VS Code fork with a built-in AI extension — 71 local tools, agentic chat loop &amp; AST code analysis</span>
                     </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/code-visualizer'); setActiveDropdown(null); }}>
