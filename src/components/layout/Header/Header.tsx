@@ -375,42 +375,116 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Main Navigation - Desktop */}
           <nav ref={navRef} className={`${styles.mainNav} ${styles.hoverOnly}`}>
-            {/* Solutions Dropdown */}
+            {/* Coding Dropdown */}
             <div className={styles.navItem}>
-              <button 
-                className={`${styles.navButton} ${activeDropdown === 'solutions' ? styles.navButtonActive : ''}`}
-                onClick={() => setActiveDropdown(activeDropdown === 'solutions' ? null : 'solutions')}
+              <button
+                className={`${styles.navButton} ${activeDropdown === 'coding' ? styles.navButtonActive : ''}`}
+                onClick={() => setActiveDropdown(activeDropdown === 'coding' ? null : 'coding')}
               >
-                Services
+                Coding
                 <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              {activeDropdown === 'solutions' && (
+              {activeDropdown === 'coding' && (
                 <div className={styles.navDropdown}>
                   <div className={styles.navDropdownGridOneRow}>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-memory'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Hash Sphere Memory</span>
-                      <span className={styles.navDropdownItemDesc}>9-layer semantic memory — stores, links &amp; recalls knowledge across agents via dimensional resonance retrieval</span>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/ide'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>IDE</span>
+                      <span className={styles.navDropdownItemDesc}>Full in-browser Monaco editor workspace with agentic chat loop &amp; AST code analysis</span>
                     </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/code-visualizer'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Code Visualizer</span>
-                      <span className={styles.navDropdownItemDesc}>Full-stack SAST — scans your codebase, maps dependency graphs, detects vulnerabilities &amp; visualizes architecture</span>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/build'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Builder</span>
+                      <span className={styles.navDropdownItemDesc}>Server-side Monaco editor for quick edits &amp; scaffolding, no local install required</span>
                     </button>
                   </div>
                 </div>
               )}
             </div>
 
-
-            {/* Agents - Top level */}
+            {/* Agents Dropdown */}
             <div className={styles.navItem}>
               <button
-                className={styles.navButton}
-                onClick={() => { navigate('/agents'); setActiveDropdown(null); }}
+                className={`${styles.navButton} ${activeDropdown === 'agents' ? styles.navButtonActive : ''}`}
+                onClick={() => setActiveDropdown(activeDropdown === 'agents' ? null : 'agents')}
               >
                 Agents
+                <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </button>
+              {activeDropdown === 'agents' && (
+                <div className={styles.navDropdown}>
+                  <div className={styles.navDropdownGridOneRow}>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/agents'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Agents OS</span>
+                      <span className={styles.navDropdownItemDesc}>Build, run &amp; orchestrate autonomous agents</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/network/marketplace'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Marketplace</span>
+                      <span className={styles.navDropdownItemDesc}>Discover &amp; publish agents built by the community</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* RGT LLM Dropdown */}
+            <div className={styles.navItem}>
+              <button
+                className={`${styles.navButton} ${activeDropdown === 'rgtllm' ? styles.navButtonActive : ''}`}
+                onClick={() => setActiveDropdown(activeDropdown === 'rgtllm' ? null : 'rgtllm')}
+              >
+                RGT LLM
+                <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              {activeDropdown === 'rgtllm' && (
+                <div className={styles.navDropdown}>
+                  <div className={styles.navDropdownGridOneRow}>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/network'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>RGT Network</span>
+                      <span className={styles.navDropdownItemDesc}>Frontier LLM training status across the decentralized RGT network</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/network/blockchain'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Miner</span>
+                      <span className={styles.navDropdownItemDesc}>Miner health, blocks mined &amp; Proof-of-Training status</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Visualisation Dropdown */}
+            <div className={styles.navItem}>
+              <button
+                className={`${styles.navButton} ${activeDropdown === 'visualisation' ? styles.navButtonActive : ''}`}
+                onClick={() => setActiveDropdown(activeDropdown === 'visualisation' ? null : 'visualisation')}
+              >
+                Visualisation
+                <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              {activeDropdown === 'visualisation' && (
+                <div className={styles.navDropdown}>
+                  <div className={styles.navDropdownGridOneRow}>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/code-visualizer'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Code Visualizer</span>
+                      <span className={styles.navDropdownItemDesc}>Full-stack SAST — scans your codebase, maps dependency graphs, detects vulnerabilities &amp; visualizes architecture</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-memory'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Memory Visualizer</span>
+                      <span className={styles.navDropdownItemDesc}>9-layer semantic memory — stores, links &amp; recalls knowledge across agents via dimensional resonance retrieval</span>
+                    </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/state-physics'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>State of Physics Simulation</span>
+                      <span className={styles.navDropdownItemDesc}>Live invariants simulation — visualizes conserved quantities &amp; physical constraints in real time</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Downloads Dropdown */}
@@ -451,16 +525,6 @@ export const Header: React.FC<HeaderProps> = ({
             >
               Pricing
             </button>
-
-            {/* Marketplace */}
-            <button
-              className={styles.navButton}
-              onClick={() => navigate('/network/marketplace')}
-              title="Agent Marketplace"
-            >
-              Marketplace
-            </button>
-
 
           </nav>
 
