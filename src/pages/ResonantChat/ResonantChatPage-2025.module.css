@@ -822,24 +822,6 @@
   color: inherit;
 }
 
-/* H4 */
-.messageContent h4 {
-  font-size: 0.9em;
-  color: inherit;
-}
-
-/* H5 */
-.messageContent h5 {
-  font-size: 0.85em;
-  color: inherit;
-}
-
-/* H6 */
-.messageContent h6 {
-  font-size: 0.8em;
-  color: inherit;
-}
-
 .markdownBlockquote {
   margin: 14px 0;
   padding: 10px 16px;

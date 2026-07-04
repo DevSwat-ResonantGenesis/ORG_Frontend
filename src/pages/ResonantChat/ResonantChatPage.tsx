@@ -4750,9 +4750,6 @@ const ResonantChatPage: React.FC = () => {
                             h1: ({ children }) => <h1 className={styles.markdownHeading}>{children}</h1>,
                             h2: ({ children }) => <h2 className={styles.markdownHeading}>{children}</h2>,
                             h3: ({ children }) => <h3 className={styles.markdownHeading}>{children}</h3>,
-                            h4: ({ children }) => <h4 className={styles.markdownHeading}>{children}</h4>,
-                            h5: ({ children }) => <h5 className={styles.markdownHeading}>{children}</h5>,
-                            h6: ({ children }) => <h6 className={styles.markdownHeading}>{children}</h6>,
                             blockquote: ({ children }) => <blockquote className={styles.markdownBlockquote}>{children}</blockquote>,
                             a: ({ href, children }) => {
                               const isInternal = typeof href === 'string' && href.startsWith('/') && !href.startsWith('//');
