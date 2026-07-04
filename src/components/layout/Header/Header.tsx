@@ -129,10 +129,6 @@ export const Header: React.FC<HeaderProps> = ({
 
   const isLandingPage = location.pathname === '/';
 
-  // The Resonant Chat interface itself is only actually rendered at "/" for
-  // logged-in users (HomeGate shows the marketing page to guests) or at "/chat".
-  const isChatInterfaceActive = (location.pathname === '/' && isLoggedIn) || location.pathname.startsWith('/chat');
-
   // Check if we're on Agents page
   const isAgentsPage = location.pathname === '/agents' || location.pathname.startsWith('/agents');
 
@@ -370,7 +366,7 @@ export const Header: React.FC<HeaderProps> = ({
               alt="DevSwat"
               className={`${styles.logoIcon} ${isMobileViewport ? styles.logoIconHiddenMobile : ''}`}
             />
-            {isLandingPage && !isChatInterfaceActive && !landingChatActive ? 'DevSwat' : 'Chat'}
+            {!splitViewEnabled && 'Chat'}
           </div>
 
           {/* Main Navigation - Desktop */}
