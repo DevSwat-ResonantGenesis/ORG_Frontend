@@ -10,12 +10,12 @@
   --dl-container: 1120px;
   --dl-container-narrow: 820px;
 
-  /* Default accent = IDE (indigo). Overridden per product below. */
-  --dl-btn-a: #4338CA;
-  --dl-btn-b: #7C3AED;
-  --dl-accent: #4338CA;
-  --dl-accent-2: #7C3AED;
-  --dl-accent-rgb: 67, 56, 202;
+  /* Default accent = IDE (brand teal/blue). Overridden per product below. */
+  --dl-btn-a: #057A8C;
+  --dl-btn-b: #01A6BC;
+  --dl-accent: #057A8C;
+  --dl-accent-2: #01A6BC;
+  --dl-accent-rgb: 5, 122, 140;
 
   min-height: 100vh;
   width: 100%;
@@ -35,17 +35,17 @@
 }
 
 .page[data-product='openclaw'] {
-  --dl-btn-a: #7E22CE;
-  --dl-btn-b: #C026D3;
-  --dl-accent: #7E22CE;
-  --dl-accent-2: #C026D3;
-  --dl-accent-rgb: 126, 34, 206;
+  --dl-btn-a: #DB3B69;
+  --dl-btn-b: #FA547C;
+  --dl-accent: #DB3B69;
+  --dl-accent-2: #FA547C;
+  --dl-accent-rgb: 219, 59, 105;
 }
 
 [data-theme='dark'] .page[data-product='ide'] {
-  --dl-accent: #A5B4FC;
-  --dl-accent-2: #C4B5FD;
-  --dl-accent-rgb: 165, 180, 252;
+  --dl-accent: #22D3EE;
+  --dl-accent-2: #67E8F9;
+  --dl-accent-rgb: 34, 211, 238;
 }
 
 [data-theme='dark'] .page[data-product='miner'] {
@@ -55,9 +55,9 @@
 }
 
 [data-theme='dark'] .page[data-product='openclaw'] {
-  --dl-accent: #E0AAFA;
-  --dl-accent-2: #F0ABFC;
-  --dl-accent-rgb: 224, 170, 250;
+  --dl-accent: #FF7A9C;
+  --dl-accent-2: #FFB0C4;
+  --dl-accent-rgb: 255, 122, 156;
 }
 
 /* ============================================================
@@ -908,10 +908,10 @@
 .faqLabelToken { background: rgba(16, 185, 129, 0.14); color: #10B981; }
 .faqLabelPlatform { background: rgba(245, 158, 11, 0.16); color: #D97706; }
 .faqLabelTrust { background: rgba(236, 72, 153, 0.14); color: #EC4899; }
-.faqLabelLicense { background: rgba(139, 92, 246, 0.15); color: #8B5CF6; }
+.faqLabelLicense { background: rgba(250, 165, 37, 0.16); color: #B4790F; }
 
 [data-theme='dark'] .faqLabelPlatform { color: #FBBF24; }
-[data-theme='dark'] .faqLabelLicense { color: #C4B5FD; }
+[data-theme='dark'] .faqLabelLicense { color: #FAA525; }
 
 .faqChevron {
   width: 20px;
