@@ -223,8 +223,8 @@ h3:not([class*="_"]),
   }
 }
 
-h4,
-.h4 {
+h4:not([class*="_"]),
+.h4:not([class*="_"]) {
   font-family: var(--font-display) !important;
   font-size: var(--font-18) !important;
   font-weight: 600 !important;
