@@ -297,7 +297,7 @@ const OwnerLoginPage: React.FC = () => {
               </span>
               <input
                 type="email"
-                placeholder="owner@dev-swat.com"
+                placeholder="owner@resonant.dev-swat.com"
                 style={styles.input}
                 value={email}
                 onChange={e => setEmail(e.target.value)}

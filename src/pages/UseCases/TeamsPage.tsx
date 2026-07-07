@@ -27,12 +27,12 @@ const TeamsPage: React.FC = () => {
       <Helmet>
         <title>DevSwat for Teams — Multi-Agent Collaboration &amp; Governance</title>
         <meta name="description" content="How teams use DevSwat: multi-agent orchestration with voting and debate protocols, shared memory, RARA governance, role-based access, audit trails, and organization management." />
-        <link rel="canonical" href="https://dev-swat.com/use-cases/teams" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/use-cases/teams" />
         <meta property="og:title" content="DevSwat for Teams" />
         <meta property="og:description" content="Multi-agent orchestration, shared memory, RARA governance, role-based access, audit trails." />
-        <meta property="og:url" content="https://dev-swat.com/use-cases/teams" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/use-cases/teams" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Homepage -->
   <url>
-    <loc>https://dev-swat.com/</loc>
+    <loc>https://resonant.dev-swat.com/</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -10,43 +10,43 @@
 
   <!-- Core marketing pages -->
   <url>
-    <loc>https://dev-swat.com/pricing</loc>
+    <loc>https://resonant.dev-swat.com/pricing</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/about</loc>
+    <loc>https://resonant.dev-swat.com/about</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/technology</loc>
+    <loc>https://resonant.dev-swat.com/technology</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/enterprise</loc>
+    <loc>https://resonant.dev-swat.com/enterprise</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/open-source</loc>
+    <loc>https://resonant.dev-swat.com/open-source</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/contact</loc>
+    <loc>https://resonant.dev-swat.com/contact</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/community</loc>
+    <loc>https://resonant.dev-swat.com/community</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -54,7 +54,7 @@
 
   <!-- Investor pitch deck -->
   <url>
-    <loc>https://dev-swat.com/investor-pitch-deck</loc>
+    <loc>https://resonant.dev-swat.com/investor-pitch-deck</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -62,13 +62,13 @@
 
   <!-- Auth pages -->
   <url>
-    <loc>https://dev-swat.com/signup</loc>
+    <loc>https://resonant.dev-swat.com/signup</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/login</loc>
+    <loc>https://resonant.dev-swat.com/login</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -76,37 +76,37 @@
 
   <!-- Product pages — public tools & demos -->
   <url>
-    <loc>https://dev-swat.com/code-visualizer</loc>
+    <loc>https://resonant.dev-swat.com/code-visualizer</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/state-physics</loc>
+    <loc>https://resonant.dev-swat.com/state-physics</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/resonant-memory</loc>
+    <loc>https://resonant.dev-swat.com/resonant-memory</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/validate</loc>
+    <loc>https://resonant.dev-swat.com/validate</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/llm-scan</loc>
+    <loc>https://resonant.dev-swat.com/llm-scan</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/network</loc>
+    <loc>https://resonant.dev-swat.com/network</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -114,19 +114,19 @@
 
   <!-- Download pages -->
   <url>
-    <loc>https://dev-swat.com/download-miner</loc>
+    <loc>https://resonant.dev-swat.com/download-miner</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/download-ide</loc>
+    <loc>https://resonant.dev-swat.com/download-ide</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/download-openclaw</loc>
+    <loc>https://resonant.dev-swat.com/download-openclaw</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -134,13 +134,13 @@
 
   <!-- API & Protocol documentation -->
   <url>
-    <loc>https://dev-swat.com/api/docs</loc>
+    <loc>https://resonant.dev-swat.com/api/docs</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/state-physics-api</loc>
+    <loc>https://resonant.dev-swat.com/state-physics-api</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -148,79 +148,79 @@
 
   <!-- Help Center & Articles -->
   <url>
-    <loc>https://dev-swat.com/help</loc>
+    <loc>https://resonant.dev-swat.com/help</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/help/getting-started/what-is-resonantgraph</loc>
+    <loc>https://resonant.dev-swat.com/help/getting-started/what-is-resonantgraph</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/help/getting-started/account-creation</loc>
+    <loc>https://resonant.dev-swat.com/help/getting-started/account-creation</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/help/getting-started/roles-permissions</loc>
+    <loc>https://resonant.dev-swat.com/help/getting-started/roles-permissions</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/help/core/agi-neural-hub</loc>
+    <loc>https://resonant.dev-swat.com/help/core/agi-neural-hub</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/help/core/synthetic-neural-memory</loc>
+    <loc>https://resonant.dev-swat.com/help/core/synthetic-neural-memory</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/help/core/invariants-sim</loc>
+    <loc>https://resonant.dev-swat.com/help/core/invariants-sim</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/help/core/sast-dependency-graph-analysis</loc>
+    <loc>https://resonant.dev-swat.com/help/core/sast-dependency-graph-analysis</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/help/core/agent-studio</loc>
+    <loc>https://resonant.dev-swat.com/help/core/agent-studio</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/help/core/resonant-chat-metrics</loc>
+    <loc>https://resonant.dev-swat.com/help/core/resonant-chat-metrics</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/help/core/agent-sessions-vs-chat</loc>
+    <loc>https://resonant.dev-swat.com/help/core/agent-sessions-vs-chat</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/help/core/agent-management</loc>
+    <loc>https://resonant.dev-swat.com/help/core/agent-management</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/help/developers/agent-api-reference</loc>
+    <loc>https://resonant.dev-swat.com/help/developers/agent-api-reference</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -228,13 +228,13 @@
 
   <!-- Enterprise & Careers -->
   <url>
-    <loc>https://dev-swat.com/careers</loc>
+    <loc>https://resonant.dev-swat.com/careers</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/integrations</loc>
+    <loc>https://resonant.dev-swat.com/integrations</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -242,79 +242,79 @@
 
   <!-- Product Pages -->
   <url>
-    <loc>https://dev-swat.com/products/ai-agents</loc>
+    <loc>https://resonant.dev-swat.com/products/ai-agents</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/products/ide</loc>
+    <loc>https://resonant.dev-swat.com/products/ide</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/products/code-analysis</loc>
+    <loc>https://resonant.dev-swat.com/products/code-analysis</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/products/mining</loc>
+    <loc>https://resonant.dev-swat.com/products/mining</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/products/openclaw</loc>
+    <loc>https://resonant.dev-swat.com/products/openclaw</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/products/memory</loc>
+    <loc>https://resonant.dev-swat.com/products/memory</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/products/blockchain</loc>
+    <loc>https://resonant.dev-swat.com/products/blockchain</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/products/chat</loc>
+    <loc>https://resonant.dev-swat.com/products/chat</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/products/governance</loc>
+    <loc>https://resonant.dev-swat.com/products/governance</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/products/state-physics</loc>
+    <loc>https://resonant.dev-swat.com/products/state-physics</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/products/dsid</loc>
+    <loc>https://resonant.dev-swat.com/products/dsid</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/products/crypto</loc>
+    <loc>https://resonant.dev-swat.com/products/crypto</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/products/neural-routing</loc>
+    <loc>https://resonant.dev-swat.com/products/neural-routing</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -322,25 +322,25 @@
 
   <!-- Use Cases -->
   <url>
-    <loc>https://dev-swat.com/use-cases/developers</loc>
+    <loc>https://resonant.dev-swat.com/use-cases/developers</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/use-cases/teams</loc>
+    <loc>https://resonant.dev-swat.com/use-cases/teams</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/use-cases/security</loc>
+    <loc>https://resonant.dev-swat.com/use-cases/security</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/use-cases/automation</loc>
+    <loc>https://resonant.dev-swat.com/use-cases/automation</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -348,25 +348,25 @@
 
   <!-- Comparisons -->
   <url>
-    <loc>https://dev-swat.com/compare/devswat-vs-cursor</loc>
+    <loc>https://resonant.dev-swat.com/compare/devswat-vs-cursor</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/compare/devswat-vs-windsurf</loc>
+    <loc>https://resonant.dev-swat.com/compare/devswat-vs-windsurf</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/compare/devswat-vs-chatgpt</loc>
+    <loc>https://resonant.dev-swat.com/compare/devswat-vs-chatgpt</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/compare/devswat-vs-replit</loc>
+    <loc>https://resonant.dev-swat.com/compare/devswat-vs-replit</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -374,49 +374,49 @@
 
   <!-- Documentation -->
   <url>
-    <loc>https://dev-swat.com/docs/architecture</loc>
+    <loc>https://resonant.dev-swat.com/docs/architecture</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/docs/agent-api</loc>
+    <loc>https://resonant.dev-swat.com/docs/agent-api</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/docs/blockchain-protocol</loc>
+    <loc>https://resonant.dev-swat.com/docs/blockchain-protocol</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/docs/mining-protocol</loc>
+    <loc>https://resonant.dev-swat.com/docs/mining-protocol</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/docs/governance-protocol</loc>
+    <loc>https://resonant.dev-swat.com/docs/governance-protocol</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/docs/cbor-spec</loc>
+    <loc>https://resonant.dev-swat.com/docs/cbor-spec</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/docs/cross-chain</loc>
+    <loc>https://resonant.dev-swat.com/docs/cross-chain</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/docs/neural-routing</loc>
+    <loc>https://resonant.dev-swat.com/docs/neural-routing</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -424,31 +424,31 @@
 
   <!-- Trust & Community -->
   <url>
-    <loc>https://dev-swat.com/blog</loc>
+    <loc>https://resonant.dev-swat.com/blog</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/changelog</loc>
+    <loc>https://resonant.dev-swat.com/changelog</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/security</loc>
+    <loc>https://resonant.dev-swat.com/security</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/privacy</loc>
+    <loc>https://resonant.dev-swat.com/privacy</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/terms</loc>
+    <loc>https://resonant.dev-swat.com/terms</loc>
     <lastmod>2026-04-19</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
@@ -456,13 +456,13 @@
 
   <!-- Legal (legacy routes) -->
   <url>
-    <loc>https://dev-swat.com/privacy-policy</loc>
+    <loc>https://resonant.dev-swat.com/privacy-policy</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://dev-swat.com/terms-of-service</loc>
+    <loc>https://resonant.dev-swat.com/terms-of-service</loc>
     <lastmod>2026-04-18</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>

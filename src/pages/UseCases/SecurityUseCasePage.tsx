@@ -27,12 +27,12 @@ const SecurityUseCasePage: React.FC = () => {
       <Helmet>
         <title>DevSwat for Security — SAST Scanning, Governance &amp; Compliance</title>
         <meta name="description" content="How security teams use DevSwat: AST/SAST code scanning, RARA governance with invariant enforcement, immutable audit chains, EU AI Act and SOC2 compliance profiles, dead code detection." />
-        <link rel="canonical" href="https://dev-swat.com/use-cases/security" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/use-cases/security" />
         <meta property="og:title" content="DevSwat for Security" />
         <meta property="og:description" content="SAST scanning, RARA governance, immutable audit chains, EU AI Act and SOC2 compliance." />
-        <meta property="og:url" content="https://dev-swat.com/use-cases/security" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/use-cases/security" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

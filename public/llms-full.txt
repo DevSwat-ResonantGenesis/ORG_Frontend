@@ -2,7 +2,7 @@
 
 > Agentic AI infrastructure for building, running, and scheduling server and local agents. Built-in DevSwat IDE powered by AI code execution intelligence. Fully self-hosted with AST/SAST code analysis, invariant simulation, and two blockchains — internal audit logging and decentralized frontier LLM training with P2P weight shards.
 
-Website: https://dev-swat.com
+Website: https://resonant.dev-swat.com
 GitHub: https://github.com/DevSwat-ResonantGenesis
 Founder: Louie Nemesh
 
@@ -46,7 +46,7 @@ Standalone orchestrator for building agents autonomously:
 - Publish, discover, purchase, and review agents
 - Agent templates and workflow designer
 
-URL: https://dev-swat.com/agents
+URL: https://resonant.dev-swat.com/agents
 API: POST /api/v1/agents, GET /api/v1/agents, POST /api/v1/agents/{id}/run
 
 ---
@@ -62,7 +62,7 @@ AI-powered cloud code editor with code execution intelligence.
 - IDE completions endpoint integrated with ResonantChat
 - Desktop app available for macOS, Linux, Windows
 
-URL: https://dev-swat.com/download-ide
+URL: https://resonant.dev-swat.com/download-ide
 
 ---
 
@@ -101,7 +101,7 @@ Agents can create their own tools at runtime:
 - Memory stored at ~/.openclaw/data/memory.db (SQLite + FTS5)
 - ALL traffic is outbound HTTPS. Platform NEVER connects to you.
 
-URL: https://dev-swat.com/download-openclaw
+URL: https://resonant.dev-swat.com/download-openclaw
 GitHub: https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw
 
 ---
@@ -121,7 +121,7 @@ Standalone AST-based code analysis service. Parses Python, JavaScript, and TypeS
 - Saved analyses with per-user PostgreSQL persistence
 - Credit-based billing per scan
 
-URL: https://dev-swat.com/code-visualizer
+URL: https://resonant.dev-swat.com/code-visualizer
 API: POST /api/v1/scan/github, POST /api/v1/scan/github/multi, POST /api/v1/scan/upload, POST /api/analysis/{id}/governance
 
 ---
@@ -140,8 +140,8 @@ Completely novel approach to state management using physics simulation.
 - Entropy injection and perturbation events
 - Autonomous agent spawning and experimentation
 
-URL: https://dev-swat.com/state-physics
-API: https://dev-swat.com/state-physics-api
+URL: https://resonant.dev-swat.com/state-physics
+API: https://resonant.dev-swat.com/state-physics-api
 
 ---
 
@@ -162,8 +162,8 @@ Per-user encrypted memory space with cognitive architecture.
 - FTS5 full-text search
 - Memory ingestion from all platform services
 
-URL: https://dev-swat.com/resonant-memory
-API: https://dev-swat.com/products/memory
+URL: https://resonant.dev-swat.com/resonant-memory
+API: https://resonant.dev-swat.com/products/memory
 
 ---
 
@@ -248,7 +248,7 @@ Real GPU training for frontier LLM models. Not fake mining or idle hashing.
 ### On-Chain Recording
 Every gradient submission recorded as training_gradient transaction on the sovereign blockchain with Raft consensus and Merkle-tree validation.
 
-URL: https://dev-swat.com/download-miner
+URL: https://resonant.dev-swat.com/download-miner
 GitHub: https://github.com/DevSwat-ResonantGenesis/RG_miner_app
 
 ---
@@ -342,14 +342,14 @@ Resident Autonomous Runtime Agent. Internal platform governance (admin-only).
 
 ## Links
 
-- Website: https://dev-swat.com
-- Pricing: https://dev-swat.com/pricing
-- API Docs: https://dev-swat.com/api/docs
-- Help Center: https://dev-swat.com/help
-- Contact: https://dev-swat.com/contact
+- Website: https://resonant.dev-swat.com
+- Pricing: https://resonant.dev-swat.com/pricing
+- API Docs: https://resonant.dev-swat.com/api/docs
+- Help Center: https://resonant.dev-swat.com/help
+- Contact: https://resonant.dev-swat.com/contact
 - GitHub: https://github.com/DevSwat-ResonantGenesis
 - LinkedIn: https://www.linkedin.com/company/devswat/
 - YouTube: https://www.youtube.com/@DevSwat
 - X (Twitter): https://x.com/devswat
 - Reddit: https://www.reddit.com/u/DevSwat/
-- Email: contact@dev-swat.com
+- Email: contact@resonant.dev-swat.com

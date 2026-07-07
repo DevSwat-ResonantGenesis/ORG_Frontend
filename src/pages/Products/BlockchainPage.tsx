@@ -32,12 +32,12 @@ const BlockchainPage: React.FC = () => {
       <Helmet>
         <title>Three-Blockchain Architecture — Audit, Training &amp; Cross-Chain | DevSwat</title>
         <meta name="description" content="DevSwat runs three blockchains: internal DSID-P for audit logging and identity, sovereign external chain with Raft consensus for training gradients, and planned Base/ETH cross-chain bridge." />
-        <link rel="canonical" href="https://dev-swat.com/products/blockchain" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/products/blockchain" />
         <meta property="og:title" content="Three-Blockchain Architecture — DevSwat" />
         <meta property="og:description" content="Internal audit chain (DSID-P), sovereign external chain (Raft consensus), and cross-chain bridge." />
-        <meta property="og:url" content="https://dev-swat.com/products/blockchain" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/products/blockchain" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

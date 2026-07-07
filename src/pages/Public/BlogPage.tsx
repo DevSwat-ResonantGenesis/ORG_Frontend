@@ -66,12 +66,12 @@ const BlogPage: React.FC = () => {
       <Helmet>
         <title>Blog — Engineering, AI Research &amp; Platform Updates | DevSwat</title>
         <meta name="description" content="DevSwat engineering blog: deep dives into agentic AI infrastructure, neural routing, decentralized LLM training, blockchain protocols, governance, and platform architecture." />
-        <link rel="canonical" href="https://dev-swat.com/blog" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/blog" />
         <meta property="og:title" content="DevSwat Blog — Engineering & AI Research" />
         <meta property="og:description" content="Deep dives into agentic AI, neural routing, decentralized training, blockchain, governance." />
-        <meta property="og:url" content="https://dev-swat.com/blog" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/blog" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

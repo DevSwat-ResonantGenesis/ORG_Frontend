@@ -64,7 +64,7 @@ const releases = [
     date: 'April 11, 2026',
     version: 'v2.0.0 — Production Deploy',
     items: [
-      '21/21 services healthy on production (dev-swat.com)',
+      '21/21 services healthy on production (resonant.dev-swat.com)',
       '315 routes, 94 intelligence router endpoints',
       'Agent Engine scheduler and autonomous daemon enabled',
       '30 intelligence files restored from RG_core',
@@ -79,12 +79,12 @@ const ChangelogPage: React.FC = () => {
       <Helmet>
         <title>Changelog — Platform Updates &amp; Release History | DevSwat</title>
         <meta name="description" content="DevSwat changelog: all platform updates, new features, bug fixes, and improvements across the entire AI agent platform, IDE, blockchain, mining, and governance systems." />
-        <link rel="canonical" href="https://dev-swat.com/changelog" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/changelog" />
         <meta property="og:title" content="DevSwat Changelog" />
         <meta property="og:description" content="Platform updates, new features, and release history." />
-        <meta property="og:url" content="https://dev-swat.com/changelog" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/changelog" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

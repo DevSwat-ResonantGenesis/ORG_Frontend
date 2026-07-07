@@ -31,12 +31,12 @@ const CommunityPage: React.FC = () => {
       <Helmet>
         <title>Community — Open Source, Mining Network &amp; Developers | DevSwat</title>
         <meta name="description" content="Join the DevSwat community: open-source miner app (AGPL-3.0), GitHub repos, Rabbit social features, mining network, developer forums, and contributor opportunities." />
-        <link rel="canonical" href="https://dev-swat.com/community" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/community" />
         <meta property="og:title" content="DevSwat Community" />
         <meta property="og:description" content="Open source, mining network, developer forums, contributor opportunities." />
-        <meta property="og:url" content="https://dev-swat.com/community" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/community" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

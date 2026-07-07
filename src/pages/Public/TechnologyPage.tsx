@@ -36,12 +36,12 @@ const TechnologyPage: React.FC = () => {
       <Helmet>
         <title>Technology — DevSwat Architecture, Blockchain, Mining, AI Infrastructure</title>
         <meta name="description" content="Explore DevSwat's technology: AI agent platform, 3-blockchain architecture, pipeline-parallel LLM training, physics-based state engine, 137-tool federated agent runtime, personalized chat intelligence, smart routing, and governance." />
-        <link rel="canonical" href="https://dev-swat.com/technology" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/technology" />
         <meta property="og:title" content="Technology — DevSwat Architecture" />
         <meta property="og:description" content="AI agent platform, 3-blockchain architecture, LLM training, state physics engine, 137-tool federated agent runtime, smart routing." />
-        <meta property="og:url" content="https://dev-swat.com/technology" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/technology" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

@@ -18,12 +18,12 @@ const PrivacyPage: React.FC = () => (
     <Helmet>
       <title>Privacy Policy | DevSwat</title>
       <meta name="description" content="DevSwat privacy policy. How we collect, use, and protect your data. Per-user AES encryption, local-first tool execution, minimal data collection." />
-      <link rel="canonical" href="https://dev-swat.com/privacy" />
+      <link rel="canonical" href="https://resonant.dev-swat.com/privacy" />
       <meta property="og:title" content="Privacy Policy — DevSwat" />
       <meta property="og:description" content="How we collect, use, and protect your data." />
-      <meta property="og:url" content="https://dev-swat.com/privacy" />
+      <meta property="og:url" content="https://resonant.dev-swat.com/privacy" />
       <meta property="og:type" content="website" />
-      <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+      <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
     </Helmet>
 
     <section style={s.hero}>
@@ -78,7 +78,7 @@ const PrivacyPage: React.FC = () => (
       </p>
 
       <h2 style={s.h2}>Contact</h2>
-      <p style={s.p}>Privacy questions: <strong>privacy@dev-swat.com</strong></p>
+      <p style={s.p}>Privacy questions: <strong>privacy@resonant.dev-swat.com</strong></p>
     </section>
   </div>
 );

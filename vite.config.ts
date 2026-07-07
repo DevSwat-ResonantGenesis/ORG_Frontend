@@ -38,7 +38,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: process.env.VITE_API_URL || 'https://dev-swat.com',
+        target: process.env.VITE_API_URL || 'https://resonant.dev-swat.com',
         changeOrigin: true,
       },
     },

@@ -588,7 +588,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
     setPublishResult(null);
     try {
       const fullManifest = {
-        $schema: 'https://dev-swat.com/schemas/agent-manifest-v1.json',
+        $schema: 'https://resonant.dev-swat.com/schemas/agent-manifest-v1.json',
         manifestVersion: '1.0.0',
         agent: { id: '', name: publishManifest.name, version: publishManifest.version, description: publishManifest.description, author: { name: publishManifest.authorName, contact: publishManifest.authorEmail }, license: publishManifest.license, tags: publishManifest.tags },
         code: { entrypoint: publishManifest.entrypoint, runtime: publishManifest.runtime, runtimeVersion: '>=3.11' },

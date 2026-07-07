@@ -29,12 +29,12 @@ const NeuralRoutingDocsPage: React.FC = () => {
       <Helmet>
         <title>Neural Routing Docs — MLP Classifier Architecture &amp; Training | DevSwat Docs</title>
         <meta name="description" content="Neural skill classifier technical docs: MLP architecture (384→256→128→14), training pipeline, active learning, model persistence in PostgreSQL, skill continuity boost, seed data." />
-        <link rel="canonical" href="https://dev-swat.com/docs/neural-routing" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/docs/neural-routing" />
         <meta property="og:title" content="Neural Routing Architecture — DevSwat Docs" />
         <meta property="og:description" content="MLP classifier architecture, training pipeline, active learning, PostgreSQL persistence." />
-        <meta property="og:url" content="https://dev-swat.com/docs/neural-routing" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/docs/neural-routing" />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

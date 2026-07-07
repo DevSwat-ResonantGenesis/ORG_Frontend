@@ -101,12 +101,12 @@ const OpenSourcePage: React.FC = () => {
       <Helmet>
         <title>Open Source — DevSwat GitHub Repos, Mining Client, OpenClaw, Blockchain</title>
         <meta name="description" content="DevSwat open-source repositories on GitHub. AGPL-3.0 miner app, OpenClaw federated agent connector, sovereign blockchain with Raft consensus, Lighthouse discovery, and more. 7+ repos, all auditable." />
-        <link rel="canonical" href="https://dev-swat.com/open-source" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/open-source" />
         <meta property="og:title" content="Open Source — DevSwat GitHub Repos" />
         <meta property="og:description" content="7+ open-source repos: AGPL-3.0 miner app, OpenClaw, sovereign blockchain, Lighthouse P2P discovery. All auditable on GitHub." />
-        <meta property="og:url" content="https://dev-swat.com/open-source" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/open-source" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>
@@ -162,7 +162,7 @@ const OpenSourcePage: React.FC = () => {
             <div style={s.cardText}>
               Production infrastructure with Nginx TLS termination, JWT auth, HSTS, CORS lockdown.
               All services run behind HTTPS with fail-closed auth in production.
-              Live platform at dev-swat.com.
+              Live platform at resonant.dev-swat.com.
             </div>
           </div>
         </div>

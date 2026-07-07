@@ -32,17 +32,17 @@ const CodeAnalysisPage: React.FC = () => {
       <Helmet>
         <title>Code Visualizer — AST/SAST Analysis, Dependency Graphs | DevSwat</title>
         <meta name="description" content="AST/SAST code analysis for Python, JavaScript, TypeScript. GitHub repo scanning, dependency graphs, function tracing, dead code detection, governance reports, multi-project comparison." />
-        <link rel="canonical" href="https://dev-swat.com/products/code-analysis" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/products/code-analysis" />
         <meta property="og:title" content="Code Visualizer — AST/SAST Code Analysis" />
         <meta property="og:description" content="AST/SAST scanning with dependency graphs, dead code detection, governance reports. Python, JS, TS." />
-        <meta property="og:url" content="https://dev-swat.com/products/code-analysis" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/products/code-analysis" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org", "@type": "SoftwareApplication",
           "name": "DevSwat Code Visualizer", "applicationCategory": "DeveloperApplication",
           "description": "AST/SAST code analysis with dependency graphs, function tracing, and governance reports.",
-          "url": "https://dev-swat.com/products/code-analysis",
+          "url": "https://resonant.dev-swat.com/products/code-analysis",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
         })}</script>
       </Helmet>

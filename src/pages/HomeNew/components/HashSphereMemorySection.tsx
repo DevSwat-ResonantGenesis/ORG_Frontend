@@ -177,7 +177,7 @@ export const HashSphereMemorySection: React.FC = () => {
                 <li>On-prem / VPC</li>
               </ul>
               <button 
-                onClick={() => window.open('mailto:enterprise@dev-swat.com', '_blank')}
+                onClick={() => window.open('mailto:enterprise@resonant.dev-swat.com', '_blank')}
                 className="w-full py-2 rounded-lg bg-purple-500/20 text-purple-300 text-sm hover:bg-purple-500/30 transition-colors"
               >
                 Contact Sales

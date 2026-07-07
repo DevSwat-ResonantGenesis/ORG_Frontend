@@ -53,12 +53,12 @@ const VsReplitPage: React.FC = () => {
       <Helmet>
         <title>DevSwat vs Replit — AI Development Platform Comparison 2026</title>
         <meta name="description" content="DevSwat vs Replit comparison. Replit is a cloud IDE with AI and instant deployment. DevSwat is full agentic AI infrastructure with autonomous agents, blockchain, mining, SAST, governance." />
-        <link rel="canonical" href="https://dev-swat.com/compare/devswat-vs-replit" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/compare/devswat-vs-replit" />
         <meta property="og:title" content="DevSwat vs Replit — Full Comparison" />
         <meta property="og:description" content="Cloud IDE vs full AI infrastructure: agents, blockchain, mining, SAST, governance." />
-        <meta property="og:url" content="https://dev-swat.com/compare/devswat-vs-replit" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/compare/devswat-vs-replit" />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

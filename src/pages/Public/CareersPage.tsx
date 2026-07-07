@@ -36,18 +36,18 @@ const TechnologyPage: React.FC = () => {
       <Helmet>
         <title>Careers at DevSwat — Build the Future of Agentic AI</title>
         <meta name="description" content="Join DevSwat and help build agentic AI infrastructure. Python, FastAPI, React, TypeScript, blockchain, distributed systems, ML. Built by one engineer — now looking for exceptional talent." />
-        <link rel="canonical" href="https://dev-swat.com/careers" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/careers" />
         <meta property="og:title" content="Careers at DevSwat" />
         <meta property="og:description" content="Build agentic AI infrastructure. Python, FastAPI, React, TypeScript, blockchain, ML. Founded by one engineer — join the mission." />
-        <meta property="og:url" content="https://dev-swat.com/careers" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/careers" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebPage",
           "name": "Careers at DevSwat",
           "description": "Career opportunities at DevSwat — agentic AI infrastructure.",
-          "url": "https://dev-swat.com/careers"
+          "url": "https://resonant.dev-swat.com/careers"
         })}</script>
       </Helmet>
 

@@ -53,12 +53,12 @@ const VsCursorPage: React.FC = () => {
       <Helmet>
         <title>DevSwat vs Cursor — AI IDE Comparison 2026</title>
         <meta name="description" content="DevSwat vs Cursor comparison. DevSwat has autonomous agents, blockchain, mining, SAST, semantic memory, 137 local tools, and governance — Cursor is a VS Code fork with AI autocomplete." />
-        <link rel="canonical" href="https://dev-swat.com/compare/devswat-vs-cursor" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/compare/devswat-vs-cursor" />
         <meta property="og:title" content="DevSwat vs Cursor — Full Comparison" />
         <meta property="og:description" content="Feature comparison: agents, blockchain, mining, SAST, memory vs AI autocomplete." />
-        <meta property="og:url" content="https://dev-swat.com/compare/devswat-vs-cursor" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/compare/devswat-vs-cursor" />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

@@ -53,12 +53,12 @@ const VsWindsurfPage: React.FC = () => {
       <Helmet>
         <title>DevSwat vs Windsurf — AI IDE &amp; Platform Comparison 2026</title>
         <meta name="description" content="DevSwat vs Windsurf comparison. Windsurf has Cascade agentic mode. DevSwat has autonomous agents, blockchain, decentralized training, AST/SAST, governance, smart routing, and unlimited LLM providers." />
-        <link rel="canonical" href="https://dev-swat.com/compare/devswat-vs-windsurf" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/compare/devswat-vs-windsurf" />
         <meta property="og:title" content="DevSwat vs Windsurf — Full Comparison" />
         <meta property="og:description" content="Both have agentic coding. DevSwat adds agents, blockchain, mining, SAST, governance." />
-        <meta property="og:url" content="https://dev-swat.com/compare/devswat-vs-windsurf" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/compare/devswat-vs-windsurf" />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

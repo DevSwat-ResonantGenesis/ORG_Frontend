@@ -53,12 +53,12 @@ const VsChatGPTPage: React.FC = () => {
       <Helmet>
         <title>DevSwat vs ChatGPT — AI Platform Comparison 2026</title>
         <meta name="description" content="DevSwat vs ChatGPT comparison. ChatGPT is a conversational AI assistant. DevSwat is agentic AI infrastructure with autonomous agents, blockchain, SAST, mining, and a full IDE." />
-        <link rel="canonical" href="https://dev-swat.com/compare/devswat-vs-chatgpt" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/compare/devswat-vs-chatgpt" />
         <meta property="og:title" content="DevSwat vs ChatGPT — Full Comparison" />
         <meta property="og:description" content="Chat assistant vs full agentic infrastructure: agents, blockchain, IDE, SAST, mining." />
-        <meta property="og:url" content="https://dev-swat.com/compare/devswat-vs-chatgpt" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/compare/devswat-vs-chatgpt" />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

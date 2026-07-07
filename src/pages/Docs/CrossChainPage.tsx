@@ -29,12 +29,12 @@ const CrossChainPage: React.FC = () => {
       <Helmet>
         <title>Cross-Chain Bridge — Atomic Swaps, HTLC, Light Clients | DevSwat Docs</title>
         <meta name="description" content="DevSwat cross-chain bridge: light clients for external chain verification, relay network for block headers, HTLC atomic swaps, multi-chain asset transfer. Ethereum, Bitcoin, Polygon, Solana support." />
-        <link rel="canonical" href="https://dev-swat.com/docs/cross-chain" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/docs/cross-chain" />
         <meta property="og:title" content="Cross-Chain Bridge — DevSwat Docs" />
         <meta property="og:description" content="Light clients, relay network, HTLC atomic swaps, multi-chain bridge." />
-        <meta property="og:url" content="https://dev-swat.com/docs/cross-chain" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/docs/cross-chain" />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

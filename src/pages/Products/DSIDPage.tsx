@@ -28,12 +28,12 @@ const DSIDPage: React.FC = () => {
       <Helmet>
         <title>DSID-P — Decentralized State Identity Protocol | DevSwat</title>
         <meta name="description" content="DSID-P: Decentralized State Identity with Provenance. Custom blockchain protocol for agent identity, hash lineage tracking, merkle proofs, cryptographic receipts, and Base Sepolia anchoring." />
-        <link rel="canonical" href="https://dev-swat.com/products/dsid" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/products/dsid" />
         <meta property="og:title" content="DSID-P — Decentralized State Identity Protocol" />
         <meta property="og:description" content="Custom blockchain protocol for agent identity, hash lineage, merkle proofs, and external anchoring." />
-        <meta property="og:url" content="https://dev-swat.com/products/dsid" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/products/dsid" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

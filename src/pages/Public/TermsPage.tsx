@@ -18,12 +18,12 @@ const TermsPage: React.FC = () => (
     <Helmet>
       <title>Terms of Service | DevSwat</title>
       <meta name="description" content="DevSwat terms of service. Platform usage terms, account responsibilities, pricing, intellectual property, limitation of liability, and governing law." />
-      <link rel="canonical" href="https://dev-swat.com/terms" />
+      <link rel="canonical" href="https://resonant.dev-swat.com/terms" />
       <meta property="og:title" content="Terms of Service — DevSwat" />
       <meta property="og:description" content="Platform usage terms and conditions." />
-      <meta property="og:url" content="https://dev-swat.com/terms" />
+      <meta property="og:url" content="https://resonant.dev-swat.com/terms" />
       <meta property="og:type" content="website" />
-      <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+      <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
     </Helmet>
 
     <section style={s.hero}>
@@ -36,7 +36,7 @@ const TermsPage: React.FC = () => (
     <section style={s.section}>
       <h2 style={s.h2}>1. Acceptance</h2>
       <p style={s.p}>
-        By using DevSwat (dev-swat.com), you agree to these terms. If you don't agree, don't use the platform.
+        By using DevSwat (resonant.dev-swat.com), you agree to these terms. If you don't agree, don't use the platform.
       </p>
 
       <h2 style={s.h2}>2. Account</h2>
@@ -84,7 +84,7 @@ const TermsPage: React.FC = () => (
       </p>
 
       <h2 style={s.h2}>8. Contact</h2>
-      <p style={s.p}>Legal questions: <strong>legal@dev-swat.com</strong></p>
+      <p style={s.p}>Legal questions: <strong>legal@resonant.dev-swat.com</strong></p>
     </section>
   </div>
 );

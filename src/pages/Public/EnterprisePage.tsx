@@ -36,18 +36,18 @@ const EnterprisePage: React.FC = () => {
       <Helmet>
         <title>Enterprise — DevSwat Self-Hosted Agentic AI for Teams &amp; Organizations</title>
         <meta name="description" content="DevSwat Enterprise: self-hosted agentic AI infrastructure for teams. RARA governance, SOC2 compliance profiles, on-prem deployment, custom agents, full audit trails. Custom pricing." />
-        <link rel="canonical" href="https://dev-swat.com/enterprise" />
+        <link rel="canonical" href="https://resonant.dev-swat.com/enterprise" />
         <meta property="og:title" content="Enterprise — DevSwat Self-Hosted Agentic AI" />
         <meta property="og:description" content="Self-hosted agentic AI for teams. RARA governance, SOC2 compliance, on-prem deployment, custom agents, full audit trails." />
-        <meta property="og:url" content="https://dev-swat.com/enterprise" />
+        <meta property="og:url" content="https://resonant.dev-swat.com/enterprise" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Product",
           "name": "DevSwat Enterprise",
           "description": "Self-hosted agentic AI infrastructure for teams and organizations.",
-          "url": "https://dev-swat.com/enterprise",
+          "url": "https://resonant.dev-swat.com/enterprise",
           "brand": { "@type": "Brand", "name": "DevSwat" },
           "offers": { "@type": "Offer", "price": "499", "priceCurrency": "USD", "billingIncrement": "month" }
         })}</script>

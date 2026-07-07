@@ -80,14 +80,14 @@ const APIDocsPage: React.FC = () => {
   ];
 
   const codeExamples = {
-    'hash-sphere': `curl -X POST "https://api.dev-swat.com/hash-sphere/memory/write" \\
+    'hash-sphere': `curl -X POST "https://api.resonant.dev-swat.com/hash-sphere/memory/write" \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
     "content": "User prefers dark mode and concise responses",
     "metadata": {"source": "preferences", "priority": "high"}
   }'`,
-    'state-physics': `curl -X POST "https://api.dev-swat.com/state-physics/simulate" \\
+    'state-physics': `curl -X POST "https://api.resonant.dev-swat.com/state-physics/simulate" \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
