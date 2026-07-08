@@ -5,7 +5,7 @@
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  RefreshCw, Bot, Brain, Store, GitBranch, Activity, Zap,
+  RefreshCw, Bot, Brain, Activity, Zap,
   User, Bell, Settings, BarChart3, CreditCard, History, Key,
   Rocket, Share2, Gift, LogOut, Copy, Check, ExternalLink, Trash2, Link2, ArrowRight
 } from 'lucide-react';
@@ -360,14 +360,6 @@ const NewUserDashboard: React.FC = () => {
             <button className="statTile" onClick={() => navigate('/agents')}>
               <div className="statTileLabel"><span className={styles.statIcon}><Activity size={16} /></span>Sessions</div>
               <div className="statTileValue">{data.activity.sessions ?? 0}<span>total</span></div>
-            </button>
-            <button className="statTile" onClick={() => navigate('/network/workflows')}>
-              <div className="statTileLabel"><span className={styles.statIcon}><GitBranch size={16} /></span>Workflows</div>
-              <div className="statTileValue">{p.workflows?.count ?? 0}<span>saved</span></div>
-            </button>
-            <button className="statTile" onClick={() => navigate('/marketplace')}>
-              <div className="statTileLabel"><span className={styles.statIcon}><Store size={16} /></span>Marketplace</div>
-              <div className="statTileValue">{p.marketplace?.totalListings ?? '—'}<span>listings</span></div>
             </button>
           </div>
 

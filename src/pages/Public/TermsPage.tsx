@@ -51,7 +51,6 @@ const TermsPage: React.FC = () => (
         <li>Developer ($15/mo): Extended usage, all LLM providers</li>
         <li>Plus ($499/mo): Full access, all LLM providers, priority support, rollover credits</li>
         <li>Enterprise (custom): Unlimited usage, self-hosted option, SLA, dedicated support</li>
-        <li>$RGT tokens: Earned through mining, spent on platform services</li>
       </ul>
 
       <h2 style={s.h2}>4. Acceptable Use</h2>
@@ -61,7 +60,6 @@ const TermsPage: React.FC = () => (
         <li>Attempt to bypass governance controls or safety limits</li>
         <li>Attack the platform infrastructure or other users</li>
         <li>Resell platform access without authorization</li>
-        <li>Use mining credits or $RGT tokens for fraud</li>
       </ul>
 
       <h2 style={s.h2}>5. Intellectual Property</h2>

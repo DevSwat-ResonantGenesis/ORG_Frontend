@@ -27,11 +27,8 @@ interface QuickAction {
 const DEFAULT_ACTIONS: QuickAction[] = [
   { label: 'Start Chat', description: 'AI conversations', icon: 'chat', path: '/resonant-chat', primary: true },
   { label: 'Create Agent', description: 'Build AI agents', icon: 'agent', path: '/agents' },
-  { label: 'Workflows', description: 'Visual builder', icon: 'ide', path: '/network/workflows/visual' },
-  { label: 'Crypto Wallet', description: 'Manage tokens', icon: 'credits', path: '/wallet' },
   { label: 'Download IDE', description: 'DevSwat IDE', icon: 'monitor', path: '/download-ide' },
   { label: 'OpenClaw', description: 'Browser extension', icon: 'download', path: '/download-openclaw' },
-  { label: 'Marketplace', description: 'Browse agents', icon: 'usage', path: '/marketplace' },
   { label: 'Buy Credits', description: 'Add more credits', icon: 'credits', path: '/pricing' },
 ];
 

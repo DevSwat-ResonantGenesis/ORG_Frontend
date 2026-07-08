@@ -28,10 +28,6 @@ const FeatureFlagsPage = lazy(() => import('../pages/Admin/FeatureFlagsPage'));
 const HelpCenterPage = lazy(() => import('../pages/Help/HelpCenterPage'));
 const HelpArticlePage = lazy(() => import('../pages/Help/HelpArticlePage'));
 const ContactPage = lazy(() => import('../pages/Public/ContactPageSimple'));
-const PrivacyPolicyPage = lazy(() => import('../pages/Public/PrivacyPolicyPage'));
-const TermsOfServicePage = lazy(() => import('../pages/Public/TermsOfServicePage'));
-const ValidationToolPage = lazy(() => import('../pages/Public/ValidationToolPageFull'));
-const LLMScannerPage = lazy(() => import('../pages/Public/LLMScannerPageFull'));
 const AIAuditDashboardPage = lazy(() => import('../pages/AIAudit/AIAuditDashboardPage'));
 const AIAuditLogDetailPage = lazy(() => import('../pages/AIAudit/AIAuditLogDetailPage'));
 const ResetPasswordPage = lazy(() => import('../pages/Auth/ResetPasswordPage-2025'));
@@ -40,7 +36,6 @@ const DesktopCallbackPage = lazy(() => import('../pages/Auth/DesktopCallbackPage
 const VerifyEmailPage = lazy(() => import('../pages/Auth/VerifyEmailPage'));
 const MFASetupPage = lazy(() => import('../pages/Settings/MFASetupPage'));
 const UserManagementPage = lazy(() => import('../pages/Admin/UserManagementPage'));
-const HashSphereFullscreenPage = lazy(() => import('../pages/HashSphere/HashSphereFullscreenPage'));
 const ResonantChatPage = lazy(() => import('../pages/ResonantChat/ResonantChatPage'));
 const ResonantChatSettingsPage = lazy(() => import('../pages/Settings/ResonantChatSettings/ResonantChatSettingsPage'));
 const PricingPage = lazy(() => import('../pages/Public/PricingPageComplete'));
@@ -48,8 +43,6 @@ const APIDocsPage = lazy(() => import('../pages/API/APIDocsPage'));
 const ReviewQueuePage = lazy(() => import('../pages/AIReview/ReviewQueuePage'));
 const AgentTeamsPage = lazy(() => import('../pages/AgentTeams/AgentTeamsPage'));
 const TeamDashboard = lazy(() => import('../pages/AgentTeams/TeamDashboard'));
-const WalletPage = lazy(() => import("../pages/Wallet/WalletPage"));
-const DownloadMinerPage = lazy(() => import("../pages/DownloadMiner/DownloadMinerPage"));
 const DownloadIDEPage = lazy(() => import("../pages/DownloadIDE/DownloadIDEPage"));
 const IDEPage = lazy(() => import('../pages/IDE/IDEPage'));
 const BuildPage = lazy(() => import('../pages/Build/BuildPage'));
@@ -75,15 +68,10 @@ const CommunityPage = lazy(() => import('../pages/Public/CommunityPage'));
 const AIAgentsProductPage = lazy(() => import('../pages/Products/AIAgentsPage'));
 const IDEProductPage = lazy(() => import('../pages/Products/IDEPage'));
 const CodeAnalysisProductPage = lazy(() => import('../pages/Products/CodeAnalysisPage'));
-const MiningProductPage = lazy(() => import('../pages/Products/MiningPage'));
 const OpenClawProductPage = lazy(() => import('../pages/Products/OpenClawProductPage'));
 const MemoryProductPage = lazy(() => import('../pages/Products/MemoryPage'));
-const BlockchainProductPage = lazy(() => import('../pages/Products/BlockchainPage'));
 const ChatProductPage = lazy(() => import('../pages/Products/ChatPage'));
 const GovernanceProductPage = lazy(() => import('../pages/Products/GovernancePage'));
-const StatePhysicsProductPage = lazy(() => import('../pages/Products/StatePhysicsPage'));
-const DSIDProductPage = lazy(() => import('../pages/Products/DSIDPage'));
-const CryptoProductPage = lazy(() => import('../pages/Products/CryptoPage'));
 const NeuralRoutingProductPage = lazy(() => import('../pages/Products/NeuralRoutingPage'));
 
 // Use Case Pages
@@ -101,36 +89,15 @@ const VsReplitPage = lazy(() => import('../pages/Compare/VsReplitPage'));
 // Documentation Pages
 const ArchitectureDocsPage = lazy(() => import('../pages/Docs/ArchitecturePage'));
 const AgentAPIDocsPage = lazy(() => import('../pages/Docs/AgentAPIPage'));
-const BlockchainProtocolDocsPage = lazy(() => import('../pages/Docs/BlockchainProtocolPage'));
-const MiningProtocolDocsPage = lazy(() => import('../pages/Docs/MiningProtocolPage'));
 const GovernanceProtocolDocsPage = lazy(() => import('../pages/Docs/GovernanceProtocolPage'));
-const CBORSpecDocsPage = lazy(() => import('../pages/Docs/CBORSpecPage'));
-const CrossChainDocsPage = lazy(() => import('../pages/Docs/CrossChainPage'));
 const NeuralRoutingDocsPage = lazy(() => import('../pages/Docs/NeuralRoutingDocsPage'));
 
 const ChatSkillsControlPage = lazy(() => import('../pages/Owner/ChatSkillsControlPage'));
 const AgentsControlPage = lazy(() => import('../pages/Owner/AgentsControlPage'));
 
-
-// Decentralized Network Pages
-const AgentBrowserPage = lazy(() => import('../pages/Network/AgentBrowserPage'));
-const AgentPublishPage = lazy(() => import('../pages/Network/AgentPublishPage'));
-const AgentMarketplacePage = lazy(() => import('../pages/Network/AgentMarketplacePage'));
-const WorkflowDesignerPage = lazy(() => import('../pages/Network/WorkflowDesignerPage'));
-const VisualWorkflowPage = lazy(() => import("../pages/Network/VisualWorkflowPage"));
-const ExecutionHistoryPage = lazy(() => import('../pages/Network/ExecutionHistoryPage'));
-const AgentTemplatesPage = lazy(() => import('../pages/Network/AgentTemplatesPage'));
-const BlockchainDashboardPage = lazy(() => import("../pages/Network/BlockchainDashboardPage"));
-const NetworkDashboardPage = lazy(() => import("../pages/Network/NetworkDashboardPage"));
-const AddressPage = lazy(() => import("../pages/Network/AddressPage"));
-
-
 // Developer Tools Pages
-const HashSpherePage = lazy(() => import('../pages/HashSphere/HashSpherePage'));
 const ResonantMemoryPage = lazy(() => import('../pages/ResonantMemory/ResonantMemoryPage'));
 const CodeVisualizerPage = lazy(() => import('../pages/CodeVisualizer/CodeVisualizerPage'));
-const StatePhysicsAPI = lazy(() => import('../pages/StatePhysicsAPI/StatePhysicsAPI'));
-const ConnectProfilesPage = lazy(() => import('../pages/ConnectProfiles/ConnectProfilesPage'));
 
 const withShell = (node: React.ReactNode) => (
   <ProtectedRoute>
@@ -227,10 +194,6 @@ const router = createBrowserRouter([
     element: withShell(<AgentsControlPage />)
   },
   {
-    path: '/hash-sphere/fullscreen',
-    element: withShell(<HashSphereFullscreenPage />)
-  },
-  {
     path: '/anchors',
     element: withRole(<AnchorsPage />, ['admin', 'org_admin'])
   },
@@ -313,29 +276,31 @@ const router = createBrowserRouter([
     path: '/contact',
     element: withPublicShell(<ContactPage />)
   },
+  // Legacy duplicate legal URLs - canonical pages are /privacy and /terms
   {
     path: '/privacy-policy',
-    element: withPublicShell(<PrivacyPolicyPage />)
+    element: <Navigate to="/privacy" replace />
   },
   {
     path: '/terms-of-service',
-    element: withPublicShell(<TermsOfServicePage />)
+    element: <Navigate to="/terms" replace />
   },
+  // Retired tools - no longer offered
   {
     path: '/validate',
-    element: withPublicShell(<ValidationToolPage />)
+    element: <Navigate to="/" replace />
   },
   {
     path: '/public/validate',
-    element: withPublicShell(<ValidationToolPage />)
+    element: <Navigate to="/" replace />
   },
   {
     path: '/llm-scan',
-    element: withPublicShell(<LLMScannerPage />)
+    element: <Navigate to="/" replace />
   },
   {
     path: '/public/llm-scan',
-    element: withPublicShell(<LLMScannerPage />)
+    element: <Navigate to="/" replace />
   },
   {
     path: '/ai-audit',
@@ -378,10 +343,6 @@ const router = createBrowserRouter([
     element: withShell(<RoleRoute category="predictions"><EditTeamPage /></RoleRoute>)
   },
   {
-    path: '/wallet',
-    element: withShell(<ProtectedRoute><WalletPage /></ProtectedRoute>)
-  },
-  {
     path: '/resonant_assistant',
     element: <Navigate to="/chat" replace />
   },
@@ -413,77 +374,9 @@ const router = createBrowserRouter([
     path: '/api/docs',
     element: withPublicShell(<APIDocsPage />)
   },
-  // Decentralized Network - Protected routes (require authentication)
-  {
-    path: '/network/agents',
-    element: withShell(<AgentBrowserPage />)
-  },
-  {
-    path: "/network/node",
-    element: withShell(<AgentMarketplacePage />)
-  },
-  {
-    path: '/network/publish',
-    element: withShell(<AgentPublishPage />)
-  },
-  {
-    path: '/network/marketplace',
-    element: withShell(<AgentMarketplacePage />)
-  },
-  {
-    path: '/network/workflows',
-    element: withShell(<WorkflowDesignerPage />)
-  },
-  {
-    path: '/network/workflows/visual',
-    element: withShell(<VisualWorkflowPage />)
-  },
-  {
-    path: '/network/history',
-    element: withShell(<ExecutionHistoryPage />)
-  },
-  {
-    path: "/network",
-    element: withPublicShell(<NetworkDashboardPage />)
-  },
-  {
-    path: "/network/address/:hash",
-    element: withPublicShell(<AddressPage />)
-  },
-  {
-    path: "/network/blockchain",
-    element: withShell(<BlockchainDashboardPage />)
-  },
-  {
-    path: '/network/templates',
-    element: withShell(<AgentTemplatesPage />)
-  },
-  // Shortcut routes for network pages
-  {
-    path: '/agent-browser',
-    element: <Navigate to="/network/agents" replace />
-  },
-  
-  {
-    path: '/execution-history',
-    element: <Navigate to="/network/history" replace />
-  },
-  {
-    path: '/workflow-designer',
-    element: <Navigate to="/network/workflows" replace />
-  },
-  {
-    path: '/agent-templates',
-    element: <Navigate to="/network/templates" replace />
-  },
   {
     path: '/api',
     element: withPublicShell(<APIDocsPage />)
-  },
-  // State Physics API - Public pricing and documentation page
-  {
-    path: '/state-physics-api',
-    element: withPublicShell(<StatePhysicsAPI />)
   },
   // Connect Your Profiles - now consolidated into resonant-chat
   {
@@ -500,19 +393,10 @@ const router = createBrowserRouter([
     path: '/settings/api-keys',
     element: <Navigate to="/resonant-chat" replace />
   },
-    // Consolidated: the single memory page lives at /products/memory
+  // Consolidated: the single memory page lives at /products/memory
   {
     path: '/hash-sphere-memory-api',
     element: <Navigate to="/products/memory" replace />
-  },
-  // Developer Tools
-  {
-    path: '/state-physics',
-    element: withPublicShell(<HashSpherePage />)
-  },
-  {
-    path: '/hash-sphere',
-    element: <Navigate to="/state-physics" replace />
   },
   {
     path: '/resonant-memory',
@@ -525,10 +409,6 @@ const router = createBrowserRouter([
   {
     path: '/code-visualizer',
     element: withPublicShell(<CodeVisualizerPage />)
-  },
-  {
-    path: '/download-miner',
-    element: withPublicShell(<DownloadMinerPage />)
   },
   {
     path: '/download-ide',
@@ -608,20 +488,12 @@ const router = createBrowserRouter([
     element: withPublicShell(<CodeAnalysisProductPage />)
   },
   {
-    path: '/products/mining',
-    element: withPublicShell(<MiningProductPage />)
-  },
-  {
     path: '/products/openclaw',
     element: withPublicShell(<OpenClawProductPage />)
   },
   {
     path: '/products/memory',
     element: withPublicShell(<MemoryProductPage />)
-  },
-  {
-    path: '/products/blockchain',
-    element: withPublicShell(<BlockchainProductPage />)
   },
   {
     path: '/products/chat',
@@ -632,20 +504,113 @@ const router = createBrowserRouter([
     element: withPublicShell(<GovernanceProductPage />)
   },
   {
-    path: '/products/state-physics',
-    element: withPublicShell(<StatePhysicsProductPage />)
+    path: '/products/neural-routing',
+    element: withPublicShell(<NeuralRoutingProductPage />)
+  },
+  // Retired crypto/mining/blockchain/DePIN product lines - pivoted away from tokenomics
+  {
+    path: '/products/mining',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/products/blockchain',
+    element: <Navigate to="/" replace />
   },
   {
     path: '/products/dsid',
-    element: withPublicShell(<DSIDProductPage />)
+    element: <Navigate to="/" replace />
   },
   {
     path: '/products/crypto',
-    element: withPublicShell(<CryptoProductPage />)
+    element: <Navigate to="/" replace />
   },
   {
-    path: '/products/neural-routing',
-    element: withPublicShell(<NeuralRoutingProductPage />)
+    path: '/products/state-physics',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/state-physics',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/state-physics-api',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/hash-sphere',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/hash-sphere/fullscreen',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/download-miner',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/wallet',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/network',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/network/agents',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/network/node',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/network/publish',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/network/marketplace',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/network/workflows',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/network/workflows/visual',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/network/history',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/network/address/:hash',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/network/blockchain',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/network/templates',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/agent-browser',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/execution-history',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/workflow-designer',
+    element: <Navigate to="/" replace />
+  },
+  {
+    path: '/agent-templates',
+    element: <Navigate to="/" replace />
   },
   // Use Case Pages
   {
@@ -691,14 +656,6 @@ const router = createBrowserRouter([
     element: withPublicShell(<AgentAPIDocsPage />)
   },
   {
-    path: '/docs/blockchain-protocol',
-    element: withPublicShell(<BlockchainProtocolDocsPage />)
-  },
-  {
-    path: '/docs/mining-protocol',
-    element: withPublicShell(<MiningProtocolDocsPage />)
-  },
-  {
     path: '/docs/governance-protocol',
     element: withPublicShell(<GovernanceProtocolDocsPage />)
   },
@@ -707,16 +664,29 @@ const router = createBrowserRouter([
     element: <Navigate to="/products/memory" replace />
   },
   {
+    path: '/docs/neural-routing',
+    element: withPublicShell(<NeuralRoutingDocsPage />)
+  },
+  // Retired blockchain/mining protocol docs
+  {
+    path: '/docs/blockchain-protocol',
+    element: <Navigate to="/docs/architecture" replace />
+  },
+  {
+    path: '/docs/mining-protocol',
+    element: <Navigate to="/docs/architecture" replace />
+  },
+  {
     path: '/docs/cbor-spec',
-    element: withPublicShell(<CBORSpecDocsPage />)
+    element: <Navigate to="/docs/architecture" replace />
   },
   {
     path: '/docs/cross-chain',
-    element: withPublicShell(<CrossChainDocsPage />)
+    element: <Navigate to="/docs/architecture" replace />
   },
   {
-    path: '/docs/neural-routing',
-    element: withPublicShell(<NeuralRoutingDocsPage />)
+    path: '*',
+    element: withPublicShell(<NotFoundPage />)
   },
 ]);
 

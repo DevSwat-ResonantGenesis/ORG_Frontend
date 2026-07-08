@@ -220,21 +220,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             </button>
 
             <button
-              className={`${styles.usmItem} ${location.pathname === '/network/marketplace' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/network/marketplace'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M2 3H14L13 7H3L2 3Z" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M3 7V13C3 13.5 3.5 14 4 14H12C12.5 14 13 13.5 13 13V7" />
-                  <path d="M6 10H10" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Marketplace</span>
-              {location.pathname === '/network/marketplace' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
               className={`${styles.usmItem} ${location.pathname === '/download-openclaw' ? styles.usmActive : ''}`}
               onClick={() => { navigate('/download-openclaw'); onClose(); }}
             >
@@ -246,73 +231,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               </span>
               <span className={styles.usmLabel}>OpenClaw+</span>
               {location.pathname === '/download-openclaw' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/state-physics' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/state-physics'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="8" r="6" />
-                  <circle cx="8" cy="8" r="2.5" strokeDasharray="1.5 1.5" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>State of Physics Simulation</span>
-              {location.pathname === '/state-physics' && <span className={styles.usmActiveIndicator} />}
-            </button>
-          </div>
-
-          <div className={styles.usmDivider} />
-
-          {/* RGT LLM Section */}
-          <div className={styles.usmSection}>
-            <div className={styles.usmSectionTitle}>RGT LLM</div>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/network' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/network'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="8" r="5" strokeDasharray="2 2" />
-                  <circle cx="5" cy="5" r="1" fill="currentColor" />
-                  <circle cx="11" cy="6" r="1" fill="currentColor" />
-                  <circle cx="6" cy="11" r="1" fill="currentColor" />
-                  <circle cx="10" cy="10" r="1" fill="currentColor" />
-                  <path d="M8 8L5 5M8 8L11 6M8 8L6 11M8 8L10 10" strokeWidth="0.5" opacity="0.5" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>RGT Network</span>
-              {location.pathname === '/network' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/network/blockchain' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/network/blockchain'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="8" r="6" />
-                  <path d="M8 5V11M5.5 8H10.5" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Internal Chain</span>
-              {location.pathname === '/network/blockchain' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/download-miner' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/download-miner'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="8" cy="8" r="6" />
-                  <path d="M8 5V11M5.5 8H10.5" strokeLinecap="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Miner App</span>
-              {location.pathname === '/download-miner' && <span className={styles.usmActiveIndicator} />}
             </button>
           </div>
 
@@ -435,21 +353,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   </span>
                   <span className={styles.usmLabel}>Dashboard</span>
                   {location.pathname === '/dashboard' && <span className={styles.usmActiveIndicator} />}
-                </button>
-
-                <button
-                  className={`${styles.usmItem} ${location.pathname === '/wallet' ? styles.usmActive : ''}`}
-                  onClick={() => { navigate('/wallet'); onClose(); }}
-                >
-                  <span className={styles.usmIcon}>
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <rect x="2" y="4" width="12" height="9" rx="1.5" />
-                      <path d="M2 7H14" />
-                      <circle cx="11" cy="10" r="1" fill="currentColor" />
-                    </svg>
-                  </span>
-                  <span className={styles.usmLabel}>Wallet</span>
-                  {location.pathname === '/wallet' && <span className={styles.usmActiveIndicator} />}
                 </button>
 
                 <button

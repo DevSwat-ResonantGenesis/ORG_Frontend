@@ -273,60 +273,6 @@ const articles: Article[] = [
     tags: ['sdk', 'python', 'javascript']
   },
   {
-    id: '40',
-    title: 'RGT Wallet & Web3 Integration',
-    description: 'Understand the RGT token wallet, connecting external Web3 wallets, linking accounts, deposits, withdrawals, and the token economy.',
-    category: 'Account & Billing',
-    path: '/help/account/rgt-wallet',
-    tags: ['wallet', 'crypto', 'rgt', 'web3', 'metamask', 'tokens', 'deposit', 'withdraw'],
-    readingTime: 6
-  },
-  {
-    id: '41',
-    title: 'Blockchain Architecture',
-    description: 'Complete guide to the internal blockchain, DSID identity system, block mining, memory anchoring, Base Sepolia integration, and on-chain agent registration.',
-    category: 'Core Stack',
-    path: '/help/core-stack/blockchain-architecture',
-    tags: ['blockchain', 'dsid', 'mining', 'blocks', 'transactions', 'base', 'sepolia', 'on-chain', 'identity', 'merkle', 'anchoring'],
-    readingTime: 12
-  },
-  {
-    id: '42',
-    title: 'Register Your Agent On-Chain',
-    description: 'Step-by-step guide to registering your AI agent on the blockchain, viewing its DSID identity, checking chain status, and understanding RGT rewards.',
-    category: 'Getting Started',
-    path: '/help/getting-started/register-agent-on-chain',
-    tags: ['agent', 'blockchain', 'register', 'on-chain', 'dsid', 'identity', 'rgt', 'tutorial', 'guide'],
-    readingTime: 6
-  },
-  {
-    id: '43',
-    title: 'Understanding Your DSID',
-    description: 'What is a DSID, how it is assigned to your agents and data, how lineage works, and how to verify your blockchain identity.',
-    category: 'Core Stack',
-    path: '/help/core-stack/understanding-dsid',
-    tags: ['dsid', 'identity', 'hash', 'lineage', 'blockchain', 'verification'],
-    readingTime: 5
-  },
-  {
-    id: '44',
-    title: 'RGT Rewards & Marketplace Blockchain',
-    description: 'Learn how RGT tokens are earned through marketplace activity and how blockchain records every purchase.',
-    category: 'Blockchain',
-    path: '/help/blockchain/rgt-rewards-blockchain',
-    tags: ['rgt', 'rewards', 'marketplace', 'blockchain', 'tokens'],
-    readingTime: 5
-  },
-  {
-    id: '45',
-    title: 'Blockchain Explorer Dashboard',
-    description: 'Complete guide to the Blockchain Explorer — monitor blocks, transactions, mining, Merkle trees, and Base Sepolia anchoring in real time.',
-    category: 'Blockchain',
-    path: '/help/blockchain/blockchain-explorer',
-    tags: ['blockchain', 'explorer', 'blocks', 'transactions', 'mining', 'merkle', 'base sepolia', 'dashboard'],
-    readingTime: 8
-  },
-  {
     id: '46',
     title: 'Integrations & Connected Services',
     description: 'Full guide to 40+ integrations — AI providers, version control, cloud hosting, databases, payments, automation, design, and monitoring.',

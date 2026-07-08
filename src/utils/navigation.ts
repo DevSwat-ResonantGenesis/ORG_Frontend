@@ -65,32 +65,6 @@ export const goToHome = (
 };
 
 /**
- * Navigate to LLM Scanner page
- * @param navigate - React Router navigate function
- * @param closeMenu - Optional callback to close menu
- */
-export const goToLLMScanner = (
-  navigate: NavigateFunction,
-  closeMenu?: () => void
-) => {
-  navigate('/llm-scan');
-  if (closeMenu) closeMenu();
-};
-
-/**
- * Navigate to Validation Tool page
- * @param navigate - React Router navigate function
- * @param closeMenu - Optional callback to close menu
- */
-export const goToValidationTool = (
-  navigate: NavigateFunction,
-  closeMenu?: () => void
-) => {
-  navigate('/validate');
-  if (closeMenu) closeMenu();
-};
-
-/**
  * Navigate to Resonant Chat page
  * @param navigate - React Router navigate function
  * @param closeMenu - Optional callback to close menu
@@ -192,59 +166,6 @@ export const goToSignup = (
   closeMenu?: () => void
 ) => {
   navigate('/public/signup');
-  if (closeMenu) closeMenu();
-};
-
-/**
- * Navigate to Privacy Policy page
- * @param navigate - React Router navigate function
- * @param closeMenu - Optional callback to close menu
- */
-export const goToPrivacy = (
-  navigate: NavigateFunction,
-  closeMenu?: () => void
-) => {
-  navigate('/privacy-policy');
-  if (closeMenu) closeMenu();
-};
-
-/**
- * Navigate to Terms of Service page
- * @param navigate - React Router navigate function
- * @param closeMenu - Optional callback to close menu
- */
-export const goToTerms = (
-  navigate: NavigateFunction,
-  closeMenu?: () => void
-) => {
-  navigate('/terms-of-service');
-  if (closeMenu) closeMenu();
-};
-
-
-/**
- * Navigate to Hash Sphere Test / Prototype page
- * @param navigate - React Router navigate function
- * @param closeMenu - Optional callback to close menu
- */
-export const goToHashSphere = (
-  navigate: NavigateFunction,
-  closeMenu?: () => void
-) => {
-  navigate('/hash-sphere/fullscreen');
-  if (closeMenu) closeMenu();
-};
-
-/**
- * Navigate to Hash Sphere Fullscreen page
- * @param navigate - React Router navigate function
- * @param closeMenu - Optional callback to close menu
- */
-export const goToHashSphereFullscreen = (
-  navigate: NavigateFunction,
-  closeMenu?: () => void
-) => {
-  navigate('/hash-sphere/fullscreen');
   if (closeMenu) closeMenu();
 };
 

@@ -2,8 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import {
-  Github, ExternalLink, ArrowRight, Cpu, Database, Radio,
-  Shield, Box, Pickaxe, Terminal
+  Github, ExternalLink, ArrowRight, Terminal
 } from 'lucide-react';
 
 const s: Record<string, React.CSSProperties> = {
@@ -29,15 +28,6 @@ const s: Record<string, React.CSSProperties> = {
 
 const repos = [
   {
-    name: 'RG_miner_app',
-    title: 'Miner App',
-    icon: <Pickaxe size={18} color="#818cf8" />,
-    license: 'AGPL-3.0',
-    desc: 'Standalone mining client for decentralized LLM training. Real PyTorch training with GQA+RoPE+SwiGLU transformer. 1F1B pipeline parallelism, WebRTC P2P weight transfer, gradient compression.',
-    tags: ['PyTorch', '1F1B Pipeline', 'WebRTC P2P', 'GQA+RoPE', 'Top-K Compression'],
-    url: 'https://github.com/DevSwat-ResonantGenesis/RG_miner_app',
-  },
-  {
     name: 'RG_OpenClaw',
     title: 'OpenClaw — Federated Agent Connector',
     icon: <Terminal size={18} color="#818cf8" />,
@@ -45,51 +35,6 @@ const repos = [
     desc: 'Local-first agent runtime with 137 tools across 15 categories. Tools run on YOUR machine. Self-creating tools via LLM + AST safety scan. Memory stays local in SQLite.',
     tags: ['137 Tools', 'Local-First', 'Self-Creating Tools', 'SQLite FTS5', 'Privacy'],
     url: 'https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw',
-  },
-  {
-    name: 'RG_Mining',
-    title: 'Mining Service',
-    icon: <Cpu size={18} color="#818cf8" />,
-    license: 'Source Available',
-    desc: 'Server-side training orchestration. Gradient compression (Top-K, 100-1000x), FedAvg aggregation, miner tier rewards, halving schedule. Proof-of-Training verification.',
-    tags: ['Top-K Sparsification', 'FedAvg', 'Reward Tiers', 'Halving'],
-    url: 'https://github.com/DevSwat-ResonantGenesis/RG_Mining',
-  },
-  {
-    name: 'RG_external_blockchain',
-    title: 'External Blockchain',
-    icon: <Database size={18} color="#818cf8" />,
-    license: 'Source Available',
-    desc: 'Sovereign distributed chain with Raft consensus, P2P gossip, block production, merkle trees, fork handling, and deterministic replay. Not riding on another chain.',
-    tags: ['Raft Consensus', 'P2P Gossip', 'Block Production', 'Fork Handling'],
-    url: 'https://github.com/DevSwat-ResonantGenesis/RG_external_blockchain',
-  },
-  {
-    name: 'RG_lighthouse',
-    title: 'Lighthouse — Bootstrap Node',
-    icon: <Radio size={18} color="#818cf8" />,
-    license: 'Source Available',
-    desc: 'Bootstrap/discovery node for the decentralized network. TCP protocol for peer registration, heartbeat, and discovery. Supports miners, validators, chain nodes, and lighthouse replicas.',
-    tags: ['TCP Discovery', 'Peer Registry', 'NAT Traversal', 'Mesh Network'],
-    url: 'https://github.com/DevSwat-ResonantGenesis/RG_lighthouse',
-  },
-  {
-    name: 'RG_Blockchain',
-    title: 'Internal Blockchain',
-    icon: <Shield size={18} color="#818cf8" />,
-    license: 'Source Available',
-    desc: 'DSID-P protocol, hash lineage tracking, transaction graphs, audit chains, Base Sepolia anchoring. Distributed consensus, smart contracts, ZK proofs, identity registry.',
-    tags: ['DSID-P', 'Merkle Proofs', 'Audit Chain', 'Base Sepolia'],
-    url: 'https://github.com/DevSwat-ResonantGenesis/RG_Blockchain',
-  },
-  {
-    name: 'RG_Crypto',
-    title: 'Crypto Service',
-    icon: <Box size={18} color="#818cf8" />,
-    license: 'Source Available',
-    desc: '$RGT wallet management, token operations, 5-layer Proof-of-Training verification, HMAC-SHA256 signature validation, replay protection, mining credit ledger.',
-    tags: ['$RGT Wallet', 'HMAC-SHA256', 'Replay Protection', 'Mining Credits'],
-    url: 'https://github.com/DevSwat-ResonantGenesis/RG_Crypto',
   },
 ];
 
@@ -99,11 +44,11 @@ const OpenSourcePage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Open Source — DevSwat GitHub Repos, Mining Client, OpenClaw, Blockchain</title>
-        <meta name="description" content="DevSwat open-source repositories on GitHub. AGPL-3.0 miner app, OpenClaw federated agent connector, sovereign blockchain with Raft consensus, Lighthouse discovery, and more. 7+ repos, all auditable." />
+        <title>Open Source — DevSwat GitHub Repos, OpenClaw</title>
+        <meta name="description" content="DevSwat open-source repositories on GitHub, including OpenClaw, the local-first federated agent connector. Auditable, source-available code." />
         <link rel="canonical" href="https://dev-swat.com/open-source" />
         <meta property="og:title" content="Open Source — DevSwat GitHub Repos" />
-        <meta property="og:description" content="7+ open-source repos: AGPL-3.0 miner app, OpenClaw, sovereign blockchain, Lighthouse P2P discovery. All auditable on GitHub." />
+        <meta property="og:description" content="Open-source repos including OpenClaw, the local-first federated agent connector. All auditable on GitHub." />
         <meta property="og:url" content="https://dev-swat.com/open-source" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
@@ -113,8 +58,7 @@ const OpenSourcePage: React.FC = () => {
         <div style={s.badge}><Github size={14} /> Open Source</div>
         <h1 style={s.h1}>Verify Everything.<br />Trust Nothing Blindly.</h1>
         <p style={s.lead}>
-          Every line of training logic, model architecture, gradient compression, blockchain recording,
-          and P2P networking is auditable. Real ML engineering, not marketing slides.
+          Every line of the local-first agent runtime is auditable. Real engineering, not marketing slides.
         </p>
       </section>
 
@@ -123,8 +67,8 @@ const OpenSourcePage: React.FC = () => {
       <section style={{ ...s.section, paddingTop: '3rem' }}>
         <h2 style={s.h2}>Public Repositories</h2>
         <p style={s.p}>
-          7+ repos on GitHub under <a href="https://github.com/DevSwat-ResonantGenesis" target="_blank" rel="noopener noreferrer" style={{ color: '#818cf8', textDecoration: 'none' }}>DevSwat-ResonantGenesis</a>.
-          The miner app is fully open under AGPL-3.0. Platform services are source-available.
+          Repos on GitHub under <a href="https://github.com/DevSwat-ResonantGenesis" target="_blank" rel="noopener noreferrer" style={{ color: '#818cf8', textDecoration: 'none' }}>DevSwat-ResonantGenesis</a>.
+          Platform services are source-available.
         </p>
 
         <div style={s.grid}>
@@ -150,11 +94,10 @@ const OpenSourcePage: React.FC = () => {
         <h2 style={s.h2}>What You Can Verify Right Now</h2>
         <div style={s.grid}>
           <div style={s.card}>
-            <div style={s.cardTitle}>Real ML Engineering</div>
+            <div style={s.cardTitle}>Real Engineering</div>
             <div style={s.cardText}>
-              Raft consensus from scratch. 1F1B pipeline parallelism with 12/12 tests passing.
-              GQA+RoPE+SwiGLU transformer. Top-K gradient compression with SHA-256 verification.
-              WebRTC P2P NAT traversal. Slashing with Merkle proof verification.
+              137-tool local-first agent runtime with self-creating tools via LLM + AST safety scan.
+              SQLite FTS5 memory search. Zero inbound connections — works behind any firewall/NAT/VPN.
             </div>
           </div>
           <div style={s.card}>
@@ -169,9 +112,6 @@ const OpenSourcePage: React.FC = () => {
       </section>
 
       <section style={s.cta}>
-        <button style={s.btn} onClick={() => navigate('/download-miner')}>
-          Download Miner <ArrowRight size={16} />
-        </button>
         <a href="https://github.com/DevSwat-ResonantGenesis" target="_blank" rel="noopener noreferrer" style={s.btnOutline}>
           <Github size={16} /> View All Repos
         </a>

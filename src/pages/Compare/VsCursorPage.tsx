@@ -31,9 +31,6 @@ const features = [
   { f: 'Multi-Agent Orchestration', ds: true, c: false },
   { f: 'AST/SAST Code Analysis', ds: true, c: false },
   { f: 'Semantic Memory (Persistent)', ds: true, c: false },
-  { f: 'Blockchain Audit Trail', ds: true, c: false },
-  { f: 'Decentralized LLM Training', ds: true, c: false },
-  { f: '$RGT Token Economy', ds: true, c: false },
   { f: 'OpenClaw (137 Local Tools)', ds: true, c: false },
   { f: 'Self-Hosted Option', ds: true, c: false },
   { f: 'RARA Governance / Kill Switch', ds: true, c: false },
@@ -52,10 +49,10 @@ const VsCursorPage: React.FC = () => {
     <div style={s.page}>
       <Helmet>
         <title>DevSwat vs Cursor — AI IDE Comparison 2026</title>
-        <meta name="description" content="DevSwat vs Cursor comparison. DevSwat has autonomous agents, blockchain, mining, SAST, semantic memory, 137 local tools, and governance — Cursor is a VS Code fork with AI autocomplete." />
+        <meta name="description" content="DevSwat vs Cursor comparison. DevSwat has autonomous agents, SAST, semantic memory, 137 local tools, and governance — Cursor is a VS Code fork with AI autocomplete." />
         <link rel="canonical" href="https://dev-swat.com/compare/devswat-vs-cursor" />
         <meta property="og:title" content="DevSwat vs Cursor — Full Comparison" />
-        <meta property="og:description" content="Feature comparison: agents, blockchain, mining, SAST, memory vs AI autocomplete." />
+        <meta property="og:description" content="Feature comparison: agents, SAST, memory vs AI autocomplete." />
         <meta property="og:url" content="https://dev-swat.com/compare/devswat-vs-cursor" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
@@ -66,7 +63,7 @@ const VsCursorPage: React.FC = () => {
         <h1 style={s.h1}>DevSwat vs Cursor</h1>
         <p style={s.lead}>
           Cursor is a VS Code fork with AI autocomplete and chat. DevSwat is a full agentic AI platform
-          with autonomous agents, blockchain, decentralized training, governance, SAST, and 137 local tools.
+          with autonomous agents, governance, SAST, and 137 local tools.
           Different products for different needs.
         </p>
       </section>
@@ -105,7 +102,7 @@ const VsCursorPage: React.FC = () => {
         </p>
         <p style={s.p}>
           <strong>DevSwat</strong> is a full-stack agentic AI infrastructure. The IDE is one part of a complete platform.
-          You also get autonomous agents with scheduling, blockchain audit trails, decentralized LLM training,
+          You also get autonomous agents with scheduling,
           AST/SAST scanning, 9-layer semantic memory, RARA governance, smart routing, and a local-first tool runtime with 137 tools.
         </p>
         <p style={s.p}>

@@ -24,7 +24,7 @@ const posts = [
   {
     date: 'April 2026',
     title: 'Introducing DevSwat — Agentic AI Infrastructure',
-    desc: 'Why we built a full-stack AI agent platform with 3 blockchains, decentralized training, smart routing, and governance. The story behind 550K lines of code built in 4 months.',
+    desc: 'Why we built a full-stack AI agent platform with smart routing and governance. The story behind 550K lines of code built in 4 months.',
     tags: ['Launch', 'Architecture'],
   },
   {
@@ -32,18 +32,6 @@ const posts = [
     title: 'How Our Neural Skill Classifier Replaced LLM Prompt Detection',
     desc: 'We replaced expensive LLM-based skill detection with a trained MLP on sentence-transformer embeddings. 5ms inference, active learning, model weights in PostgreSQL.',
     tags: ['Engineering', 'ML'],
-  },
-  {
-    date: 'April 2026',
-    title: 'Building a Physics-Based State Engine from Scratch',
-    desc: 'N-body simulation for state management. How gravity, repulsion, and resonance forces create emergent structure in the Hash Sphere.',
-    tags: ['Engineering', 'Hash Sphere'],
-  },
-  {
-    date: 'April 2026',
-    title: 'Decentralized LLM Training: 1F1B Pipeline Parallelism at Scale',
-    desc: 'Real PyTorch training across distributed miners. GQA+RoPE+SwiGLU transformer, Top-K gradient compression, WebRTC P2P weight transfer.',
-    tags: ['Mining', 'ML'],
   },
   {
     date: 'April 2026',
@@ -65,10 +53,10 @@ const BlogPage: React.FC = () => {
     <div style={s.page}>
       <Helmet>
         <title>Blog — Engineering, AI Research &amp; Platform Updates | DevSwat</title>
-        <meta name="description" content="DevSwat engineering blog: deep dives into agentic AI infrastructure, neural routing, decentralized LLM training, blockchain protocols, governance, and platform architecture." />
+        <meta name="description" content="DevSwat engineering blog: deep dives into agentic AI infrastructure, neural routing, governance, and platform architecture." />
         <link rel="canonical" href="https://dev-swat.com/blog" />
         <meta property="og:title" content="DevSwat Blog — Engineering & AI Research" />
-        <meta property="og:description" content="Deep dives into agentic AI, neural routing, decentralized training, blockchain, governance." />
+        <meta property="og:description" content="Deep dives into agentic AI, neural routing, governance, and platform architecture." />
         <meta property="og:url" content="https://dev-swat.com/blog" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
@@ -78,8 +66,8 @@ const BlogPage: React.FC = () => {
         <div style={s.badge}><BookOpen size={14} /> Blog</div>
         <h1 style={s.h1}>Engineering Blog</h1>
         <p style={s.lead}>
-          Deep dives into agentic AI infrastructure, neural routing, decentralized training,
-          blockchain protocols, and platform engineering.
+          Deep dives into agentic AI infrastructure, neural routing,
+          governance, and platform engineering.
         </p>
       </section>
 

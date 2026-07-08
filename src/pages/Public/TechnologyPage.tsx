@@ -2,8 +2,8 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import {
-  Cpu, Database, Globe, Layers, Lock, Server, Shield, Zap,
-  ArrowRight, GitBranch, Box, Radio, Brain, Network
+  Cpu, Globe, Layers, Server, Shield,
+  ArrowRight, Box, Brain
 } from 'lucide-react';
 
 const s: Record<string, React.CSSProperties> = {
@@ -34,11 +34,11 @@ const TechnologyPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Technology — DevSwat Architecture, Blockchain, Mining, AI Infrastructure</title>
-        <meta name="description" content="Explore DevSwat's technology: AI agent platform, 3-blockchain architecture, pipeline-parallel LLM training, physics-based state engine, 137-tool federated agent runtime, personalized chat intelligence, smart routing, and governance." />
+        <title>Technology — DevSwat Architecture, Agent Runtime, AI Infrastructure</title>
+        <meta name="description" content="Explore DevSwat's technology: AI agent platform, RARA governance, 137-tool federated agent runtime, personalized chat intelligence, smart routing, and semantic memory." />
         <link rel="canonical" href="https://dev-swat.com/technology" />
         <meta property="og:title" content="Technology — DevSwat Architecture" />
-        <meta property="og:description" content="AI agent platform, 3-blockchain architecture, LLM training, state physics engine, 137-tool federated agent runtime, smart routing." />
+        <meta property="og:description" content="AI agent platform, governance, 137-tool federated agent runtime, smart routing, semantic memory." />
         <meta property="og:url" content="https://dev-swat.com/technology" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
@@ -48,101 +48,9 @@ const TechnologyPage: React.FC = () => {
         <div style={s.badge}><Cpu size={14} /> Technology</div>
         <h1 style={s.h1}>Engineering Deep Dive</h1>
         <p style={s.lead}>
-          Full-stack AI infrastructure. 3-blockchain architecture. Pipeline-parallel LLM training.
-          Physics-based state simulation. 137-tool federated agent runtime. Smart routing. Every system built from scratch.
+          Full-stack AI infrastructure. RARA governance layer.
+          137-tool federated agent runtime. Smart routing. Every system built from scratch.
         </p>
-      </section>
-
-      <div style={s.divider} />
-
-      {/* Three-Blockchain Architecture */}
-      <section style={{ ...s.section, paddingTop: '3rem' }}>
-        <h2 style={s.h2}>Three-Blockchain Architecture</h2>
-        <p style={s.p}>
-          DevSwat runs three distinct blockchain layers, each purpose-built for its role — not one chain forced to do everything.
-        </p>
-        <div style={s.grid3}>
-          <div style={s.card}>
-            <div style={s.cardTitle}><Database size={16} color="#818cf8" /> Internal Blockchain</div>
-            <div style={s.cardText}>
-              DSID-P (Digital State Identity Protocol) for agent identity, hash lineage tracking, transaction graphs,
-              and immutable audit chains. Periodic merkle root anchoring to Base Sepolia.
-            </div>
-            <div style={{ marginTop: 10 }}>
-              <span style={s.tag}>DSID-P</span><span style={s.tag}>Merkle Trees</span><span style={s.tag}>Audit Chain</span><span style={s.tag}>Smart Contracts</span>
-            </div>
-          </div>
-          <div style={s.card}>
-            <div style={s.cardTitle}><Network size={16} color="#818cf8" /> External Blockchain</div>
-            <div style={s.cardText}>
-              Sovereign distributed chain with Raft consensus, P2P gossip protocol, block production every 10s,
-              fork handling, and deterministic replay. Transaction types: transfers, state updates, agent actions, training gradients.
-            </div>
-            <div style={{ marginTop: 10 }}>
-              <span style={s.tag}>Raft Consensus</span><span style={s.tag}>P2P Gossip</span><span style={s.tag}>Fork Handling</span>
-            </div>
-          </div>
-          <div style={s.card}>
-            <div style={s.cardTitle}><GitBranch size={16} color="#818cf8" /> Cross-Chain Bridge</div>
-            <div style={s.cardText}>
-              $RGT lives on the sovereign chain (chain ID: resonant-genesis-external-1). Base/ETH mainnet bridge
-              planned as the network matures — utility first, not speculation.
-            </div>
-            <div style={{ marginTop: 10 }}>
-              <span style={s.tag}>Base L2</span><span style={s.tag}>$RGT Token</span><span style={s.tag}>Planned</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div style={s.divider} />
-
-      {/* Mining & Training */}
-      <section style={{ ...s.section, paddingTop: '3rem' }}>
-        <h2 style={s.h2}>Decentralized LLM Training</h2>
-        <p style={s.p}>
-          Real GPU training — not fake mining or idle hashing. PyTorch forward/backward passes on a transformer
-          with Grouped Query Attention (GQA), Rotary Position Embeddings (RoPE), and SwiGLU activations.
-          Same architecture techniques as LLaMA and Mistral.
-        </p>
-        <div style={s.grid2}>
-          <div style={s.card}>
-            <div style={s.cardTitle}><Zap size={16} color="#818cf8" /> Pipeline-Parallel Training</div>
-            <div style={s.cardText}>
-              <ul style={s.ul}>
-                <li>Models split into layer groups across miners (1B–405B parameters)</li>
-                <li>1F1B microbatch scheduling (same as Microsoft DeepSpeed)</li>
-                <li>32 microbatches × 4 stages = 91% pipeline efficiency</li>
-                <li>Top-K gradient compression: 100–1000x reduction</li>
-                <li>FedAvg (Federated Averaging) for gradient aggregation</li>
-              </ul>
-            </div>
-          </div>
-          <div style={s.card}>
-            <div style={s.cardTitle}><Radio size={16} color="#818cf8" /> P2P Network</div>
-            <div style={s.cardText}>
-              <ul style={s.ul}>
-                <li>WebRTC signaling for NAT traversal — no port forwarding</li>
-                <li>Direct miner-to-miner DataChannels for weight shards</li>
-                <li>Lighthouse bootstrap/discovery nodes (TCP protocol)</li>
-                <li>Liquid redistribution when miners disconnect</li>
-                <li>SHA-256 gradient hash verification</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div style={{ ...s.card, marginTop: '1.5rem' }}>
-          <div style={s.cardTitle}><Lock size={16} color="#818cf8" /> Proof-of-Training (5-Layer Security)</div>
-          <div style={s.cardText}>
-            <ul style={s.ul}>
-              <li><strong>Internal Key Auth</strong> — only the mining service inside Docker can call the credit endpoint</li>
-              <li><strong>Gradient Hash Required</strong> — no hash = no credit, must actually train</li>
-              <li><strong>HMAC-SHA256 Signature</strong> — mining service signs, crypto service verifies (5-min window)</li>
-              <li><strong>Replay Protection</strong> — each gradient_hash credited exactly once (UNIQUE constraint)</li>
-              <li><strong>Reward Cap</strong> — max 500 $RGT per credit call prevents single-call inflation</li>
-            </ul>
-          </div>
-        </div>
       </section>
 
       <div style={s.divider} />
@@ -212,7 +120,7 @@ const TechnologyPage: React.FC = () => {
           {[
             { t: 'Invariant Engine', d: 'Graph constraint enforcement via AST Analysis. If invariants break, mutations are rejected.' },
             { t: 'Capability Engine', d: 'Capabilities can only decay, never expand autonomously. No agent may grant itself new authority.' },
-            { t: 'Kill Switch', d: 'Emergency freeze, stop, or reset. Deterministic bridge from physics state to governance actions.' },
+            { t: 'Kill Switch', d: 'Emergency freeze, stop, or reset. Deterministic bridge from platform state to governance actions.' },
             { t: 'Atomic Mutations', d: 'Mutations with rollback. Blast radius calculation. Core state modification forbidden.' },
             { t: 'Compliance', d: 'EU AI Act, SOC2 profiles (minimal/standard/strict). Cryptographic receipts for all mutations.' },
             { t: 'Snapshot Engine', d: 'System state snapshots and restore. Quorum and epoch-based authority.' },

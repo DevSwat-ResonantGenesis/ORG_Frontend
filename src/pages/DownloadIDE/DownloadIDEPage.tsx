@@ -54,7 +54,7 @@ const FEATURES = [
   { title: '14 Code Visualizer Tools', desc: 'AST-based static analysis engine with 14 dedicated tools: scan projects, trace dependency flows, run SAST security audits, detect dead code, score governance compliance (0–100), compare multi-repo drift, verify formal invariants, and compile reversible Graph Analysis Language patches.' },
   { title: 'Hash Sphere Memory', desc: 'Persistent cross-session memory synced with dev-swat.com via save_memory, read_memory, and create_memory tools. The AI stores project context, coding preferences, and decisions — retrieves them semantically across machines.' },
   { title: 'Agentic Chat Loop', desc: 'LLM plans → calls tools → reads results → iterates. Configurable loop depth (1 to unlimited). Smart context compression summarizes large tool outputs to reduce token usage. Interactive terminals let the AI run REPLs, dev servers, and SSH sessions persistently.' },
-  { title: 'Platform API Access', desc: 'platform_api_search indexes 450+ backend endpoints across agents, billing, memory, blockchain, marketplace, Invariants SIM, and more. platform_api_call lets the AI invoke any endpoint directly — turning the IDE into a full control plane for the DevSwat platform.' },
+  { title: 'Platform API Access', desc: 'platform_api_search indexes 450+ backend endpoints across agents, billing, and memory. platform_api_call lets the AI invoke any endpoint directly — turning the IDE into a full control plane for the DevSwat platform.' },
 ];
 
 const IDE_TOOL_CATALOG = [
@@ -109,8 +109,8 @@ const IDE_TOOL_CATALOG = [
     { name: 'memory_write', desc: 'Save information to long-term memory.' },
     { name: 'memory_search', desc: 'Deep keyword + semantic search through memories.' },
     { name: 'memory_stats', desc: 'Get memory usage stats.' },
-    { name: 'hash_sphere_search', desc: 'Search Hash Sphere anchors (blockchain-verified memories).' },
-    { name: 'hash_sphere_anchor', desc: 'Create a new blockchain-verified memory point.' },
+    { name: 'hash_sphere_search', desc: 'Search Hash Sphere anchors (hash-verified memories).' },
+    { name: 'hash_sphere_anchor', desc: 'Create a new hash-verified memory point.' },
     { name: 'hash_sphere_list_anchors', desc: 'List all user\'s Hash Sphere anchors.' },
     { name: 'hash_sphere_hash', desc: 'Generate a Hash Sphere hash for content.' },
     { name: 'hash_sphere_resonance', desc: 'Check resonance between two content pieces.' },
@@ -252,7 +252,7 @@ const IDE_FAQ_ITEMS = [
     label: 'Auth',
     labelClass: 'faqLabelAuth',
     question: 'How does authentication work? Is my code safe?',
-    answer: `<p><strong>Same JWT auth flow as the Mining App and OpenClaw connector.</strong></p>
+    answer: `<p><strong>Same JWT auth flow as the OpenClaw connector.</strong></p>
 <p><strong>Login:</strong> You provide your dev-swat.com credentials in the IDE settings. The extension authenticates with the platform auth service over HTTPS and receives a JWT token. The token is stored in VS Code's secure credential storage — never in plain text.</p>
 <p><strong>What the token is used for:</strong></p>
 <ul>
@@ -267,8 +267,8 @@ const IDE_FAQ_ITEMS = [
 <li>Your git credentials</li>
 <li>Your local file system structure</li>
 </ul>
-<p><strong>Identity layers:</strong> On registration, you get 4 identity anchors: UUID (platform), crypto_hash (blockchain), user_hash (Hash Sphere), universe_id (deterministic anchor). All anchored on the DevSwat Blockchain.</p>
-<p><strong>Security hardening:</strong> HSTS, CORS lockdown to dev-swat.com, fail-closed auth (no JWT = 503), rate limiting. Same infrastructure protecting $RGT wallets.</p>`,
+<p><strong>Identity layers:</strong> On registration, you get identity anchors: UUID (platform), user_hash (Hash Sphere), universe_id (deterministic anchor).</p>
+<p><strong>Security hardening:</strong> HSTS, CORS lockdown to dev-swat.com, fail-closed auth (no JWT = 503), rate limiting.</p>`,
   },
   {
     label: 'Tools',

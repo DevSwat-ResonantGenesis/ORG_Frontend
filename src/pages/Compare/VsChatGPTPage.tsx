@@ -34,14 +34,11 @@ const features = [
   { f: 'Agent Scheduling (Cron)', ds: true, c: false },
   { f: 'Multi-Agent Orchestration', ds: true, c: false },
   { f: 'AST/SAST Code Analysis', ds: true, c: false },
-  { f: 'Blockchain Audit Trail', ds: true, c: false },
-  { f: 'Decentralized LLM Training', ds: true, c: false },
   { f: 'Local Tool Execution', ds: true, c: false },
   { f: 'Self-Hosted Option', ds: true, c: false },
   { f: 'RARA Governance', ds: true, c: false },
   { f: 'Unlimited LLM Providers', ds: true, c: false },
   { f: 'OpenClaw (137 Tools)', ds: true, c: false },
-  { f: '3D State Visualization', ds: true, c: false },
   { f: 'Custom GPTs / Agents', ds: true, c: true },
   { f: 'Free Tier', ds: true, c: true },
 ];
@@ -52,10 +49,10 @@ const VsChatGPTPage: React.FC = () => {
     <div style={s.page}>
       <Helmet>
         <title>DevSwat vs ChatGPT — AI Platform Comparison 2026</title>
-        <meta name="description" content="DevSwat vs ChatGPT comparison. ChatGPT is a conversational AI assistant. DevSwat is agentic AI infrastructure with autonomous agents, blockchain, SAST, mining, and a full IDE." />
+        <meta name="description" content="DevSwat vs ChatGPT comparison. ChatGPT is a conversational AI assistant. DevSwat is agentic AI infrastructure with autonomous agents, SAST, governance, and a full IDE." />
         <link rel="canonical" href="https://dev-swat.com/compare/devswat-vs-chatgpt" />
         <meta property="og:title" content="DevSwat vs ChatGPT — Full Comparison" />
-        <meta property="og:description" content="Chat assistant vs full agentic infrastructure: agents, blockchain, IDE, SAST, mining." />
+        <meta property="og:description" content="Chat assistant vs full agentic infrastructure: agents, IDE, SAST, governance." />
         <meta property="og:url" content="https://dev-swat.com/compare/devswat-vs-chatgpt" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
@@ -105,8 +102,8 @@ const VsChatGPTPage: React.FC = () => {
         </p>
         <p style={s.p}>
           <strong>DevSwat</strong> is infrastructure for developers and teams. Persistent autonomous agents that
-          run on schedule, a full IDE with code execution, AST/SAST scanning, blockchain audit trails,
-          decentralized GPU training, semantic memory, and governance — all deployable on your own servers.
+          run on schedule, a full IDE with code execution, AST/SAST scanning,
+          semantic memory, and governance — all deployable on your own servers.
         </p>
         <p style={s.p}>
           ChatGPT answers questions. DevSwat agents run your business processes autonomously, indefinitely,

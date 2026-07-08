@@ -69,17 +69,6 @@ const MemoryIcon = () => (
   </svg>
 );
 
-const StatePhysicsIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="8" />
-    <circle cx="12" cy="12" r="2" />
-    <path d="M12 4v2" />
-    <path d="M20 12h-2" />
-    <path d="M12 20v-2" />
-    <path d="M4 12h2" />
-  </svg>
-);
-
 const VisualizerIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
@@ -158,13 +147,6 @@ export const Header: React.FC<HeaderProps> = ({
   
   // Get Resonant Chat menu items (hook returns empty array if not in provider)
   const { menuItems: resonantChatMenuItems } = useResonantChatMenu();
-
-  // Pages that should show Log In/Sign Up buttons
-  const showAuthButtons = 
-    location.pathname === '/llm-scan' ||
-    location.pathname === '/public/llm-scan' ||
-    location.pathname === '/validate' ||
-    location.pathname === '/public/validate';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -315,9 +297,7 @@ export const Header: React.FC<HeaderProps> = ({
 
 
   // Check if we're on a backend page (authenticated pages should show menu)
-  const isBackendPage = !location.pathname.startsWith('/public') && 
-                        !location.pathname.startsWith('/validate') && 
-                        !location.pathname.startsWith('/llm-scan') &&
+  const isBackendPage = !location.pathname.startsWith('/public') &&
                         location.pathname !== '/' &&
                         location.pathname !== '/login' &&
                         location.pathname !== '/signup' &&
@@ -424,48 +404,9 @@ export const Header: React.FC<HeaderProps> = ({
                       <span className={styles.navDropdownItemTitle}>Agents OS</span>
                       <span className={styles.navDropdownItemDesc}>Build, run &amp; orchestrate autonomous agents</span>
                     </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/network/marketplace'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Marketplace</span>
-                      <span className={styles.navDropdownItemDesc}>Discover &amp; publish agents built by the community</span>
-                    </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/download-openclaw'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>OpenClaw+</span>
                       <span className={styles.navDropdownItemDesc}>Run AI agents locally on your hardware — tools execute on your machine, memory never leaves your disk</span>
-                    </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/state-physics'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>State of Physics Simulation</span>
-                      <span className={styles.navDropdownItemDesc}>Live invariants simulation — visualizes conserved quantities &amp; physical constraints in real time</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* RGT LLM Dropdown */}
-            <div className={styles.navItem}>
-              <button
-                className={`${styles.navButton} ${activeDropdown === 'rgtllm' ? styles.navButtonActive : ''}`}
-                onClick={() => setActiveDropdown(activeDropdown === 'rgtllm' ? null : 'rgtllm')}
-              >
-                RGT LLM
-                <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              {activeDropdown === 'rgtllm' && (
-                <div className={styles.navDropdown}>
-                  <div className={styles.navDropdownGridOneRow}>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/network'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>RGT Network</span>
-                      <span className={styles.navDropdownItemDesc}>Frontier LLM training status across the decentralized RGT network</span>
-                    </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/network/blockchain'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Internal Chain</span>
-                      <span className={styles.navDropdownItemDesc}>Miner health, blocks mined &amp; Proof-of-Training status</span>
-                    </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/download-miner'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Miner App</span>
-                      <span className={styles.navDropdownItemDesc}>Train AI models on your GPU and earn $RGT tokens in the decentralized training network</span>
                     </button>
                   </div>
                 </div>
@@ -566,13 +507,6 @@ export const Header: React.FC<HeaderProps> = ({
                     >
                       <MemoryIcon />
                       Memory Library
-                    </button>
-                    <button
-                      className={`${styles.splitViewMenuItem} ${splitViewActiveTab === 'state_physics' ? styles.splitViewMenuItemActive : ''}`}
-                      onClick={() => { handleSplitViewTabClick('state_physics'); setSplitViewMenuOpen(false); }}
-                    >
-                      <StatePhysicsIcon />
-                      Invariants SIM
                     </button>
                     <button
                       className={`${styles.splitViewMenuItem} ${splitViewActiveTab === 'visualizer' ? styles.splitViewMenuItemActive : ''}`}
@@ -728,18 +662,6 @@ export const Header: React.FC<HeaderProps> = ({
                       )}
                     </div>
                     
-                    <div className={styles.accountMenuDivider} />
-
-                    {/* Wallet */}
-                    <button className={styles.accountMenuItem} onClick={() => { navigate('/wallet'); setShowAccountMenu(false); }}>
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <rect x="2" y="4" width="12" height="9" rx="1.5" />
-                        <path d="M2 7H14" />
-                        <circle cx="11" cy="10" r="1" fill="currentColor" />
-                      </svg>
-                      Wallet
-                    </button>
-
                     <div className={styles.accountMenuDivider} />
                     
                     {/* Superuser/Platform Owner Tools */}

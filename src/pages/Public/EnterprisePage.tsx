@@ -82,11 +82,11 @@ const EnterprisePage: React.FC = () => {
           </div>
           <div style={s.card}>
             <div style={s.cardTitle}><FileCheck size={16} color="#818cf8" /> Compliance</div>
-            <div style={s.cardText}>EU AI Act and SOC2 compliance profiles (minimal/standard/strict). Immutable audit chain on internal blockchain. Explainability artifacts for every decision.</div>
+            <div style={s.cardText}>EU AI Act and SOC2 compliance profiles (minimal/standard/strict). Immutable, tamper-evident audit trail. Explainability artifacts for every decision.</div>
           </div>
           <div style={s.card}>
             <div style={s.cardTitle}><Lock size={16} color="#818cf8" /> Security</div>
-            <div style={s.cardText}>JWT authentication, MFA/TOTP, HSTS, CORS lockdown, AES-encrypted per-user memory, 5-layer Proof-of-Training verification for mining.</div>
+            <div style={s.cardText}>JWT authentication, MFA/TOTP, HSTS, CORS lockdown, AES-encrypted per-user memory.</div>
           </div>
           <div style={s.card}>
             <div style={s.cardTitle}><Users size={16} color="#818cf8" /> Team Management</div>
@@ -111,7 +111,6 @@ const EnterprisePage: React.FC = () => {
               'DevSwat IDE with code execution intelligence',
               'Code Visualizer AST/SAST scanning',
               'OpenClaw local-first agent connector (137 tools)',
-              'Hash Sphere physics-based state engine',
               'Semantic Memory (9-layer, AES-encrypted)',
             ].map(item => (
               <div key={item} style={s.check}>
@@ -123,7 +122,6 @@ const EnterprisePage: React.FC = () => {
           <div>
             {[
               'ResonantChat (68-module AI pipeline)',
-              'Internal blockchain with DSID-P audit chain',
               'RARA governance with kill switch',
               'Full audit trails and compliance reports',
               'Priority support',

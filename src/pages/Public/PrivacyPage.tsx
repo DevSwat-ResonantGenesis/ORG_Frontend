@@ -74,7 +74,7 @@ const PrivacyPage: React.FC = () => (
       <h2 style={s.h2}>Data Deletion</h2>
       <p style={s.p}>
         You can delete your account and all associated data at any time. This includes:
-        chat history, memories, agents, blockchain records, and wallet data. Deletion is permanent.
+        chat history, memories, and agents. Deletion is permanent.
       </p>
 
       <h2 style={s.h2}>Contact</h2>

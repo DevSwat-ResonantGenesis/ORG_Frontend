@@ -41,16 +41,6 @@ const releases = [
     ],
   },
   {
-    date: 'April 13, 2026',
-    version: 'v2.2.0 — Persistent Credit Queue',
-    items: [
-      'Mining credits now survive service restarts (PendingCredit table)',
-      'Save-before-send pattern: DB → HTTP → mark_sent',
-      'Auto-retry pending credits on startup',
-      'Network Dashboard page with real-time mining stats',
-    ],
-  },
-  {
     date: 'April 12, 2026',
     version: 'v2.1.0 — Memory Security Fix',
     items: [
@@ -78,7 +68,7 @@ const ChangelogPage: React.FC = () => {
     <div style={s.page}>
       <Helmet>
         <title>Changelog — Platform Updates &amp; Release History | DevSwat</title>
-        <meta name="description" content="DevSwat changelog: all platform updates, new features, bug fixes, and improvements across the entire AI agent platform, IDE, blockchain, mining, and governance systems." />
+        <meta name="description" content="DevSwat changelog: all platform updates, new features, bug fixes, and improvements across the entire AI agent platform, IDE, memory, and governance systems." />
         <link rel="canonical" href="https://dev-swat.com/changelog" />
         <meta property="og:title" content="DevSwat Changelog" />
         <meta property="og:description" content="Platform updates, new features, and release history." />

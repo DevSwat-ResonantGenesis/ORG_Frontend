@@ -39,7 +39,7 @@ const pipeline = [
 ];
 
 const moat = [
-  { icon: ShieldCheck, name: 'Immutable & on-chain', d: 'Every memory is anchored to the DSID blockchain (hashes only; content stays encrypted). Tamper-evident, append-only — never silently deleted.' },
+  { icon: ShieldCheck, name: 'Immutable & hash-chained', d: 'Every memory is cryptographically hashed and hash-chained (hashes only; content stays encrypted). Tamper-evident, append-only — never silently deleted.' },
   { icon: Lock, name: 'Sovereign & isolated', d: 'AES-encrypted, isolated per user / agent / org. A query only ever sees the caller’s own memory blocks.' },
   { icon: Cpu, name: 'Zero-LLM recall', d: 'A confidence gate answers directly from memory when it’s sure — no LLM call, no latency, no cost — and only calls a model on low confidence.' },
   { icon: Brain, name: 'Physics, not statistics', d: 'Gravity, drift, and anchors make the memory get smarter as you use it — a living field, not a static index.' },
@@ -51,10 +51,10 @@ const MemoryPage: React.FC = () => {
     <div style={s.page}>
       <Helmet>
         <title>Resonant Memory — Physics-Informed, Immutable AI Memory API | DevSwat</title>
-        <meta name="description" content="The world's first physics-informed, immutable, sovereign AI memory. 12-D hash-sphere retrieval with gravity ranking, emergent anchors, associative mesh, cross-encoder reranking, multi-hop fact graph and temporal reasoning. On-chain, encrypted, isolated per user/agent/org. Available as an API + SDK." />
+        <meta name="description" content="The world's first physics-informed, immutable, sovereign AI memory. 12-D hash-sphere retrieval with gravity ranking, emergent anchors, associative mesh, cross-encoder reranking, multi-hop fact graph and temporal reasoning. Cryptographically hashed, encrypted, isolated per user/agent/org. Available as an API + SDK." />
         <link rel="canonical" href="https://dev-swat.com/products/memory" />
         <meta property="og:title" content="Resonant Memory — Physics-Informed AI Memory API" />
-        <meta property="og:description" content="12-D hash-sphere retrieval, immutable on-chain, isolated per user/agent/org. API + SDK, pay-per-call credits." />
+        <meta property="og:description" content="12-D hash-sphere retrieval, immutable and tamper-evident, isolated per user/agent/org. API + SDK, pay-per-call credits." />
         <meta property="og:url" content="https://dev-swat.com/products/memory" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
@@ -74,7 +74,7 @@ const MemoryPage: React.FC = () => {
           The world's first <strong>physics-informed, immutable, sovereign</strong> AI memory.
           Retrieval runs on a 12-dimensional hash-sphere manifold with gravity ranking, emergent
           anchors, an associative mesh, cross-encoder reranking, a multi-hop fact graph, and real
-          temporal reasoning — every memory encrypted, anchored on-chain, and isolated to you.
+          temporal reasoning — every memory encrypted, cryptographically hash-chained, and isolated to you.
         </p>
         <div>
           <button style={s.btn} onClick={() => navigate('/pricing')}>Get an API key <ArrowRight size={16} /></button>
@@ -116,7 +116,7 @@ const MemoryPage: React.FC = () => {
       <div style={s.divider} />
 
       <section style={{ ...s.section, paddingTop: '3rem' }}>
-        <h2 style={s.h2}><Lock size={20} color="#818cf8" style={{ verticalAlign: 'middle', marginRight: 8 }} />Isolation — the blockchain-block model</h2>
+        <h2 style={s.h2}><Lock size={20} color="#818cf8" style={{ verticalAlign: 'middle', marginRight: 8 }} />Isolation — the block-partition model</h2>
         <p style={s.p}>Memories are cryptographically partitioned into per-relationship "blocks," exactly
           like a chain of custody. A query can only ever read the caller's own blocks.</p>
         <div>
@@ -131,8 +131,8 @@ const MemoryPage: React.FC = () => {
 
       <section style={{ ...s.section, paddingTop: '3rem' }}>
         <h2 style={s.h2}><Code size={20} color="#818cf8" style={{ verticalAlign: 'middle', marginRight: 8 }} />Drop it into your project</h2>
-        <p style={s.p}>Bring memory to any app with the SDK or a REST call. Isolation, on-chain
-          anchoring, fact extraction, and the associative mesh all happen automatically.</p>
+        <p style={s.p}>Bring memory to any app with the SDK or a REST call. Isolation, hash-chained
+          integrity, fact extraction, and the associative mesh all happen automatically.</p>
         <div style={s.code}>{`pip install resonant-memory
 
 from resonant_memory import ResonantMemory

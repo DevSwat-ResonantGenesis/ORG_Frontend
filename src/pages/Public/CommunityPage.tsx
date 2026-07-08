@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
-import { Users, Github, MessageSquare, ArrowRight, BookOpen, Globe } from 'lucide-react';
+import { Users, Github, MessageSquare, ArrowRight, BookOpen } from 'lucide-react';
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -29,11 +29,11 @@ const CommunityPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Community — Open Source, Mining Network &amp; Developers | DevSwat</title>
-        <meta name="description" content="Join the DevSwat community: open-source miner app (AGPL-3.0), GitHub repos, Rabbit social features, mining network, developer forums, and contributor opportunities." />
+        <title>Community — Open Source &amp; Developers | DevSwat</title>
+        <meta name="description" content="Join the DevSwat community: open-source GitHub repos, Rabbit social features, developer forums, and contributor opportunities." />
         <link rel="canonical" href="https://dev-swat.com/community" />
         <meta property="og:title" content="DevSwat Community" />
-        <meta property="og:description" content="Open source, mining network, developer forums, contributor opportunities." />
+        <meta property="og:description" content="Open source, developer forums, contributor opportunities." />
         <meta property="og:url" content="https://dev-swat.com/community" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
@@ -43,8 +43,8 @@ const CommunityPage: React.FC = () => {
         <div style={s.badge}><Users size={14} /> Community</div>
         <h1 style={s.h1}>Join the Network</h1>
         <p style={s.lead}>
-          Open-source miner app. Decentralized training network. Built-in social features.
-          Contribute code, train models, or build agents.
+          Open-source repos. Built-in social features.
+          Contribute code, write docs, or build agents.
         </p>
       </section>
 
@@ -54,9 +54,8 @@ const CommunityPage: React.FC = () => {
         <div style={{ ...s.grid, gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
           {[
             { n: '550K+', l: 'Lines of Code' },
-            { n: '9', l: 'IP Systems' },
+            { n: '7', l: 'IP Systems' },
             { n: '137', l: 'OpenClaw Tools' },
-            { n: 'AGPL-3.0', l: 'Miner License' },
           ].map(st => (
             <div key={st.l} style={{ ...s.card, ...s.stat }}>
               <div style={s.statNum}>{st.n}</div>
@@ -73,11 +72,7 @@ const CommunityPage: React.FC = () => {
         <div style={s.grid}>
           <div style={s.card}>
             <div style={s.cardTitle}><Github size={18} color="#818cf8" /> Open Source</div>
-            <div style={s.cardText}>Miner app is AGPL-3.0. Contribute to the training client, lighthouse nodes, or blockchain tools. GitHub: DevSwat-ResonantGenesis.</div>
-          </div>
-          <div style={s.card}>
-            <div style={s.cardTitle}><Globe size={18} color="#818cf8" /> Mining Network</div>
-            <div style={s.cardText}>Download the miner, contribute GPU compute, earn $RGT. Help train the next generation of frontier LLMs via decentralized P2P training.</div>
+            <div style={s.cardText}>Contribute to OpenClaw and other open-source repos. GitHub: DevSwat-ResonantGenesis.</div>
           </div>
           <div style={s.card}>
             <div style={s.cardTitle}><MessageSquare size={18} color="#818cf8" /> Rabbit Social</div>

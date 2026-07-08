@@ -81,11 +81,11 @@ const AIAgentsPage: React.FC = () => {
           </div>
           <div style={s.card}>
             <div style={s.cardTitle}><Zap size={16} color="#818cf8" /> Agent Architect</div>
-            <div style={s.cardText}>Describe what you want in natural language. Agent Architect builds the agent autonomously — blueprint, tools, testing, blockchain registration.</div>
+            <div style={s.cardText}>Describe what you want in natural language. Agent Architect builds the agent autonomously — blueprint, tools, and testing.</div>
           </div>
           <div style={s.card}>
             <div style={s.cardTitle}><Settings size={16} color="#818cf8" /> 30+ Tools</div>
-            <div style={s.cardText}>Workspace management, memory access, billing, integrations, blockchain status, code execution, web search, and more.</div>
+            <div style={s.cardText}>Workspace management, memory access, billing, integrations, code execution, web search, and more.</div>
           </div>
         </div>
       </section>

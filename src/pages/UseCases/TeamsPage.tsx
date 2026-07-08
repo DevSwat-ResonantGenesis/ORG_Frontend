@@ -67,7 +67,7 @@ const TeamsPage: React.FC = () => {
           </div>
           <div style={s.card}>
             <div style={s.cardTitle}><GitBranch size={16} color="#818cf8" /> Audit Trails</div>
-            <div style={s.cardText}>Every agent action recorded on internal blockchain with DSID-P provenance. Exportable audit logs for SOC2 and EU AI Act.</div>
+            <div style={s.cardText}>Every agent action recorded in a tamper-evident, hash-chained audit log. Exportable audit logs for SOC2 and EU AI Act.</div>
           </div>
           <div style={s.card}>
             <div style={s.cardTitle}><Layers size={16} color="#818cf8" /> Workflow Designer</div>

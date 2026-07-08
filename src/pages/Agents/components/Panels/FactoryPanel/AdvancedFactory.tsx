@@ -1,5 +1,4 @@
 import React, { memo, useState, useCallback, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAgentStore } from '../../../../../stores/agentStore';
 import { Icons } from '../../shared/Icons';
 import type { Agent } from '../../../../../types';
@@ -138,8 +137,7 @@ interface AdvancedFactoryProps {
 
 const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className }) => {
   const { addAgent } = useAgentStore();
-  const navigate = useNavigate();
-  
+
   const [isCreating, setIsCreating] = useState(false);
   const [isPublishingToStore, setIsPublishingToStore] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -847,25 +845,6 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
     setConfig(prev => ({ ...prev, name: '', description: '', tools: [] }));
   }, []);
 
-  const handlePublishToNetwork = useCallback(() => {
-    if (createdAgentId) {
-      navigate('/network/publish', {
-        state: {
-          fromFactory: true,
-          agentId: createdAgentId,
-          name: config.name,
-          description: config.description,
-          type: config.type,
-          tags: config.tags,
-          tools: config.tools,
-          provider: config.provider,
-          model: config.model,
-          systemPrompt: config.systemPrompt,
-        },
-      });
-    }
-  }, [createdAgentId, config, navigate]);
-
   const handlePublishToStore = useCallback(async () => {
     if (!createdAgentId) return;
     setIsPublishingToStore(true);
@@ -955,9 +934,6 @@ const AdvancedFactoryComponent: React.FC<AdvancedFactoryProps> = ({ className })
             <div className={styles.successActions}>
               <button className={styles.publishStoreBtn} onClick={handlePublishToStore} disabled={isPublishingToStore}>
                 {isPublishingToStore ? <>⏳ Publishing...</> : <><Icons.Package /> Publish to Store</>}
-              </button>
-              <button className={styles.publishNetworkBtn} onClick={handlePublishToNetwork}>
-                <Icons.Upload /> Publish to DSID
               </button>
               <button className={styles.createAnotherBtn} onClick={handleReset}>
                 <Icons.Plus /> Create Another

@@ -88,8 +88,8 @@ const TOOL_CATALOG = [
     { name: 'memory_write', desc: '🟢 LOCAL — Save to ~/.openclaw/data/memory.db. Content NEVER sent to server.' },
     { name: 'memory_search', desc: '🟢 LOCAL — Deep keyword search through local memories.' },
     { name: 'memory_stats', desc: 'Get memory usage stats.' },
-    { name: 'hash_sphere_search', desc: 'Search Hash Sphere anchors (blockchain-verified memories).' },
-    { name: 'hash_sphere_anchor', desc: 'Create a new blockchain-verified memory point.' },
+    { name: 'hash_sphere_search', desc: 'Search Hash Sphere anchors (hash-verified memories).' },
+    { name: 'hash_sphere_anchor', desc: 'Create a new hash-verified memory point.' },
     { name: 'hash_sphere_list_anchors', desc: 'List all user\'s Hash Sphere anchors.' },
     { name: 'hash_sphere_hash', desc: 'Generate a Hash Sphere hash for content.' },
     { name: 'hash_sphere_resonance', desc: 'Check resonance between two content pieces.' },
@@ -244,12 +244,12 @@ const TOOL_CATALOG = [
 const REQUIREMENTS = [
   { label: 'Python 3.9+', detail: '3.11+ recommended' },
   { label: 'pip', detail: 'Package manager' },
-  { label: 'Free account', detail: 'at dev-swat.com (same login as IDE & Miner)' },
+  { label: 'Free account', detail: 'at dev-swat.com (same login as the IDE)' },
   { label: 'Terminal', detail: '5 minutes to full setup' },
 ];
 
 const NETWORK_FLOW = [
-  { step: '1', title: 'Create Account', desc: 'Sign up at dev-swat.com. You get a platform UUID, blockchain identity (crypto_hash), and Hash Sphere identity.' },
+  { step: '1', title: 'Create Account', desc: 'Sign up at dev-swat.com. You get a platform UUID and Hash Sphere identity.' },
   { step: '2', title: 'Start Connector', desc: 'Clone RG_OpenClaw, pip install, uvicorn start. Local SQLite memory DB created automatically at ~/.openclaw/data/memory.db.' },
   { step: '3', title: 'Authenticate', desc: 'POST /auth/login with your dev-swat.com credentials. JWT stored at ~/.openclaw/tokens.json. Auto-refreshes — no re-login needed.' },
   { step: '4', title: 'Create Agent', desc: 'Option A: dev-swat.com/agents → + Create → ⚡ Federated. Option B: POST /agents/register from the connector. Both create agent_source=\'federated\' on the platform.' },
@@ -285,7 +285,7 @@ const FAQ_ITEMS = [
     label: 'Auth',
     labelClass: 'faqLabelAuth',
     question: 'How does authentication work? Where is my data stored?',
-    answer: `<p><strong>Same auth flow as the DevSwat IDE and Mining App.</strong> JWT stored locally at <code>~/.openclaw/tokens.json</code>. Auto-refreshes.</p>
+    answer: `<p><strong>Same auth flow as the DevSwat IDE.</strong> JWT stored locally at <code>~/.openclaw/tokens.json</code>. Auto-refreshes.</p>
 <p><strong>Where your data lives:</strong></p>
 <ul>
 <li><strong>Memory:</strong> <code>~/.openclaw/data/memory.db</code> (SQLite on YOUR disk) — never uploaded to server</li>
@@ -295,10 +295,9 @@ const FAQ_ITEMS = [
 <li><strong>Final answer:</strong> Sent to platform for display in the Agents UI</li>
 <li><strong>Step metadata:</strong> Tool name + timing sent for live UI streaming (no data content)</li>
 </ul>
-<p><strong>Identity layers:</strong> On registration, you get 4 identity anchors:</p>
+<p><strong>Identity layers:</strong> On registration, you get identity anchors:</p>
 <ul>
 <li><strong>UUID</strong> — platform identity</li>
-<li><strong>crypto_hash</strong> — SHA-256 blockchain identity (anchored on-chain)</li>
 <li><strong>user_hash</strong> — Hash Sphere semantic identity</li>
 <li><strong>universe_id</strong> — Deterministic Anchor Universe ID</li>
 </ul>
@@ -335,18 +334,17 @@ const FAQ_ITEMS = [
     answer: `<p><strong>We won't pretend we're established. Here's where we actually stand:</strong></p>
 <p><strong>What you can verify right now:</strong></p>
 <ul>
-<li><strong>Fully open source:</strong> The connector (<a href="https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw" target="_blank" rel="noopener noreferrer">RG_OpenClaw</a>), the agent engine, the tool registry, the mining service, the blockchain — all available on GitHub under <a href="https://github.com/DevSwat-ResonantGenesis" target="_blank" rel="noopener noreferrer">DevSwat-ResonantGenesis</a>.</li>
-<li><strong>Real infrastructure:</strong> 42 microservices in Docker Compose, Nginx TLS, JWT auth with fail-closed security, HSTS, CORS lockdown. Not a demo — a production platform at <a href="https://dev-swat.com" target="_blank" rel="noopener noreferrer">dev-swat.com</a>.</li>
-<li><strong>Same auth as everything else:</strong> The OpenClaw connector uses the exact same authentication flow as the DevSwat IDE and Mining App. One account, one JWT, consistent security across all entry points.</li>
+<li><strong>Fully open source:</strong> The connector (<a href="https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw" target="_blank" rel="noopener noreferrer">RG_OpenClaw</a>), the agent engine, and the tool registry — all available on GitHub under <a href="https://github.com/DevSwat-ResonantGenesis" target="_blank" rel="noopener noreferrer">DevSwat-ResonantGenesis</a>.</li>
+<li><strong>Real infrastructure:</strong> Dozens of microservices in Docker Compose, Nginx TLS, JWT auth with fail-closed security, HSTS, CORS lockdown. Not a demo — a production platform at <a href="https://dev-swat.com" target="_blank" rel="noopener noreferrer">dev-swat.com</a>.</li>
+<li><strong>Same auth as everything else:</strong> The OpenClaw connector uses the exact same authentication flow as the DevSwat IDE. One account, one JWT, consistent security across all entry points.</li>
 <li><strong>Your agent, your hardware:</strong> The connector is a bridge, not a cage. Your OpenClaw agent runs locally. You control what tools it calls. You can disconnect at any time. The source is open — audit every HTTP call it makes.</li>
 </ul>
 <p><strong>What we haven't done yet:</strong></p>
 <ul>
 <li>No third-party security audit (code is open for anyone to audit)</li>
 <li>No large agent network yet — we need early participants</li>
-<li>Marketplace for agent skills is built but needs community contributions</li>
 </ul>
-<p><strong>The honest pitch:</strong> If you run OpenClaw agents and want them to have access to web search, persistent memory, code analysis, 560+ platform APIs, and a decentralized identity — without building all that infrastructure yourself — this connector gives you that in 5 minutes. It's free, it's open source, and you can unplug any time.</p>`,
+<p><strong>The honest pitch:</strong> If you run OpenClaw agents and want them to have access to web search, persistent memory, code analysis, and 560+ platform APIs — without building all that infrastructure yourself — this connector gives you that in 5 minutes. It's free, it's open source, and you can unplug any time.</p>`,
   },
   {
     label: 'License',
@@ -366,7 +364,7 @@ const FAQ_ITEMS = [
 <li><strong>Configuration:</strong> <code>app/config.py</code> — every environment variable, every service URL</li>
 <li><strong>Bridge protocol:</strong> <code>openclaw_bridge.py</code> in the agent engine — the WebSocket RPC implementation</li>
 </ul>
-<p>The platform services (agent engine, memory, blockchain) that the connector calls are also open source under their respective licenses in the DevSwat-ResonantGenesis GitHub organization.</p>`,
+<p>The platform services (agent engine, memory) that the connector calls are also open source under their respective licenses in the DevSwat-ResonantGenesis GitHub organization.</p>`,
   },
 ];
 

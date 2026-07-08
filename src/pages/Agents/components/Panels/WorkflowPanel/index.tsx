@@ -1128,14 +1128,6 @@ const WorkflowPanelComponent: React.FC<WorkflowPanelProps> = ({ className }) => 
                     {selectedWorkflow.status}
                   </span>
                   <div className={styles.builderActions}>
-                    <button
-                      className={styles.primaryBtn}
-                      onClick={() => navigate('/network/workflows/visual')}
-                      style={{ background: '#6366f1', display: 'flex', alignItems: 'center', gap: 4 }}
-                      title="Open full-screen visual workflow builder with ReactFlow canvas"
-                    >
-                      <Icons.External /> Full Builder
-                    </button>
                     <button className={styles.secondaryBtn} onClick={() => handleAddNode('http_request')}>
                       <Icons.Plus /> Add Node
                     </button>

@@ -1,6 +1,6 @@
 # DevSwat — Full Platform Reference
 
-> Agentic AI infrastructure for building, running, and scheduling server and local agents. Built-in DevSwat IDE powered by AI code execution intelligence. Fully self-hosted with AST/SAST code analysis, invariant simulation, and two blockchains — internal audit logging and decentralized frontier LLM training with P2P weight shards.
+> Agentic AI infrastructure for building, running, and scheduling server and local agents. Built-in DevSwat IDE powered by AI code execution intelligence. Fully self-hosted with AST/SAST code analysis and RARA governance.
 
 Website: https://dev-swat.com
 GitHub: https://github.com/DevSwat-ResonantGenesis
@@ -12,9 +12,7 @@ Founder: Louie Nemesh
 
 - ~550,000 lines of code (310K Python backend, 240K TypeScript/React frontend)
 - Full-stack AI agent infrastructure (production-deployed)
-- 662 React components across 85+ frontend routes
-- 4,384 API endpoints, 120+ database tables
-- 9 proprietary IP systems, unlimited LLM providers (connect any model)
+- Unlimited LLM providers (connect any model)
 - Production-deployed on DigitalOcean with Nginx, PostgreSQL, Redis
 
 ---
@@ -41,10 +39,6 @@ Standalone orchestrator for building agents autonomously:
 - Modes: brainstorm, control, review, diagnose
 - Blueprint generation, agent creation, execution, polling, scheduling
 - LLM: Groq primary, OpenAI fallback
-
-### Agent Marketplace
-- Publish, discover, purchase, and review agents
-- Agent templates and workflow designer
 
 URL: https://dev-swat.com/agents
 API: POST /api/v1/agents, GET /api/v1/agents, POST /api/v1/agents/{id}/run
@@ -126,26 +120,7 @@ API: POST /api/v1/scan/github, POST /api/v1/scan/github/multi, POST /api/v1/scan
 
 ---
 
-## 5. Hash Sphere — Physics-Based State Engine
-
-Completely novel approach to state management using physics simulation.
-
-### Features
-- N-body particle system with gravity, repulsion, electromagnetic, and resonance forces
-- State represented as nodes in 3D space with spin, energy, and conservation invariants
-- Core invariants: mass conservation, energy conservation, identity uniqueness, causality, trust bounds
-- Identity layer (DSID), State/Memory layer, Economic/Temporal layer
-- Real-time Three.js visualization with interactive exploration
-- Force-directed graph layouts for dependency analysis
-- Entropy injection and perturbation events
-- Autonomous agent spawning and experimentation
-
-URL: https://dev-swat.com/state-physics
-API: https://dev-swat.com/state-physics-api
-
----
-
-## 6. Semantic Memory Universe
+## 5. Semantic Memory Universe
 
 Per-user encrypted memory space with cognitive architecture.
 
@@ -167,7 +142,7 @@ API: https://dev-swat.com/products/memory
 
 ---
 
-## 7. ResonantChat — 68-Module AI Pipeline
+## 6. ResonantChat — 68-Module AI Pipeline
 
 The most sophisticated chat pipeline in any SaaS product.
 
@@ -185,75 +160,7 @@ The most sophisticated chat pipeline in any SaaS product.
 
 ---
 
-## 8. Three-Blockchain Architecture
-
-### 8a. Internal Blockchain (RG_DSID_Blockchain)
-- DSID-P (Digital State Identity Protocol) for content hashing and lineage
-- Block mining with configurable intervals
-- Transaction graph with full history and lineage tracking
-- Audit chain for immutable audit trail of all platform operations
-- External anchoring to Base Sepolia (periodic merkle root)
-- Distributed consensus protocol
-- Smart contract execution
-- Identity registry (Crypto Identity Layer 4)
-- DSID backfill for existing identities
-
-### 8b. Training Network Chain (RG_TrainingNet_Chain)
-Sovereign distributed blockchain — own chain, not riding on another.
-- Raft consensus: leader election, log replication, heartbeats
-- TCP P2P: gossip discovery, block/transaction propagation, training messages
-- Full blockchain: block production, merkle trees, fork handling, state machine
-- Transaction types: transfer, set (state update), agent_action, training_gradient
-- Environment: NODE_ID, CONSENSUS_PEERS, P2P_PORT, BLOCK_TIME (10s default), MAX_TX_PER_BLOCK (100)
-
-### 8c. Cross-chain Bridge (Planned)
-- $RGT currently on sovereign chain (chain ID: resonant-genesis-external-1)
-- Base/ETH mainnet bridge planned as network matures
-
----
-
-## 9. Decentralized Mining Network
-
-Real GPU training for frontier LLM models. Not fake mining or idle hashing.
-
-### Architecture
-- **RG_TrainingNet_Mining**: Training orchestration, gradient compression (Top-K sparsification, 100-1000x), FedAvg aggregation, reward distribution
-- **RG_miner_app**: Standalone open-source mining client (AGPL-3.0). Real PyTorch forward/backward passes on GQA+RoPE+SwiGLU transformer.
-- **RG_TrainingNet_Lighthouse**: Bootstrap/discovery node. TCP protocol for peer registration, heartbeat, discovery, eviction.
-
-### Pipeline-Parallel Training
-- Models split into layer groups across miners (pipeline parallelism)
-- 1F1B microbatch scheduling (same as DeepSpeed/Meta)
-- With 32 microbatches and 4 stages: 91% pipeline efficiency
-- Models supported: 1B to 405B parameters
-
-### P2P Weight Transfer
-- WebRTC signaling for NAT traversal — no manual port forwarding
-- Direct miner-to-miner DataChannels for weight shard transfer
-- Liquid redistribution when miners disconnect
-
-### $RGT Token Economics
-- Closed utility economy: earn by mining, spend on platform services (IDE, LLM APIs, agents)
-- Not intended for exchange trading — value from real platform usage
-- Halving schedule: 100 → 50 → 25 → 12.5 $RGT per year
-- Miner tiers: Genesis Validator (1.5x), Core Contributor (1.25x), Standard Miner (1.0x)
-
-### Proof-of-Training (5-Layer Security)
-1. Internal Key Auth — only mining service can call credit endpoint
-2. Gradient Hash Required — must actually process a gradient
-3. HMAC-SHA256 Signature — mining service signs, crypto service verifies
-4. Replay Protection — each gradient_hash credited exactly once (UNIQUE constraint)
-5. Reward Cap — max 500 $RGT per credit call
-
-### On-Chain Recording
-Every gradient submission recorded as training_gradient transaction on the sovereign blockchain with Raft consensus and Merkle-tree validation.
-
-URL: https://dev-swat.com/download-miner
-GitHub: https://github.com/DevSwat-ResonantGenesis/RG_miner_app
-
----
-
-## 10. RARA — Governance Layer
+## 7. RARA — Governance Layer
 
 Resident Autonomous Runtime Agent. Internal platform governance (admin-only).
 
@@ -273,7 +180,7 @@ Resident Autonomous Runtime Agent. Internal platform governance (admin-only).
 
 ---
 
-## 11. SaaS Billing Engine
+## 8. SaaS Billing Engine
 
 ### Pricing Tiers
 - **Free**: Get started, basic features
@@ -285,9 +192,8 @@ Resident Autonomous Runtime Agent. Internal platform governance (admin-only).
 ### Revenue Streams
 1. Subscriptions (Stripe)
 2. Agent credits
-3. Marketplace fees
-4. API usage
-5. Enterprise licensing
+3. API usage
+4. Enterprise licensing
 
 ### Features
 - Stripe integration with subscriptions, one-time payments, usage billing
@@ -296,7 +202,7 @@ Resident Autonomous Runtime Agent. Internal platform governance (admin-only).
 
 ---
 
-## 12. LLM Providers
+## 9. LLM Providers
 
 7 providers built-in with automatic failover:
 
@@ -310,7 +216,7 @@ Resident Autonomous Runtime Agent. Internal platform governance (admin-only).
 
 ---
 
-## 13. Additional Services
+## 10. Additional Services
 
 - **Auth**: JWT, Google/GitHub OAuth, MFA/TOTP, role management (free/pro/enterprise/owner)
 - **Gateway**: Reverse proxy to 30+ services, JWT middleware, rate limiting, SSE/WebSocket support
@@ -318,7 +224,6 @@ Resident Autonomous Runtime Agent. Internal platform governance (admin-only).
 - **Workflow Engine**: Visual workflow builder, execution engine, event sourcing
 - **Storage**: S3-compatible file storage with presigned URLs
 - **Sandbox Runner**: Docker-isolated code execution, multi-language sandboxes
-- **Crypto Service**: $RGT wallet management, token operations, Proof-of-Training verification
 - **Cognitive Service**: Anomaly detection, clustering, workflow triggering
 - **ML Service**: Model registry, training jobs, inference endpoints
 - **Rabbit**: Social platform with communities, posts, comments, voting

@@ -30,16 +30,10 @@ const services = [
   { name: 'RG_Agent_Engine', port: 8003, desc: 'Agent CRUD, scheduling, autonomous daemon, multi-agent orchestration' },
   { name: 'RG_Billing', port: 8004, desc: 'Credits, Stripe, usage tracking, plan management' },
   { name: 'RG_Memory', port: 8005, desc: 'Semantic memory, embeddings, RAG, Hash Sphere coordinates' },
-  { name: 'RG_Blockchain', port: 8006, desc: 'Internal chain, DSID-P, audit chain, merkle proofs' },
-  { name: 'RG_Mining', port: 8007, desc: 'Training orchestration, gradient compression, reward distribution' },
   { name: 'RG_LLM_Service', port: 8008, desc: 'Multi-provider LLM routing, context injection, tool execution' },
   { name: 'RG_AST_analysis', port: 8009, desc: 'Code Visualizer, AST/SAST, dependency graphs' },
-  { name: 'RG_Crypto', port: 8010, desc: '$RGT wallet, token operations, mining credits' },
   { name: 'RG_OpenClaw', port: 8011, desc: '137-tool federated agent connector, ClawHub' },
-  { name: 'RG_External_Blockchain', port: 8012, desc: 'Sovereign chain, Raft consensus, P2P gossip' },
-  { name: 'RG_Lighthouse', port: 8013, desc: 'Bootstrap/discovery, peer registry, heartbeat' },
   { name: 'RG_Internal_Invariants', port: 8014, desc: 'RARA governance, kill switch, compliance' },
-  { name: 'RG_Users_Invariants', port: 8015, desc: 'Hash Sphere physics, N-body simulation' },
 ];
 
 const ArchitecturePage: React.FC = () => {
@@ -48,10 +42,10 @@ const ArchitecturePage: React.FC = () => {
     <div style={s.page}>
       <Helmet>
         <title>Architecture — Platform Infrastructure & Service Topology | DevSwat Docs</title>
-        <meta name="description" content="DevSwat platform architecture: full-stack AI agent infrastructure with blockchain logging, smart routing, governance, 9-layer memory, IDE, mining network. Technical deep dive into service topology." />
+        <meta name="description" content="DevSwat platform architecture: full-stack AI agent infrastructure with smart routing, governance, 9-layer memory, and IDE. Technical deep dive into service topology." />
         <link rel="canonical" href="https://dev-swat.com/docs/architecture" />
         <meta property="og:title" content="DevSwat Architecture — Platform Infrastructure" />
-        <meta property="og:description" content="Full-stack AI agent infrastructure. Blockchain, governance, smart routing, mining, IDE." />
+        <meta property="og:description" content="Full-stack AI agent infrastructure. Governance, smart routing, memory, IDE." />
         <meta property="og:url" content="https://dev-swat.com/docs/architecture" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

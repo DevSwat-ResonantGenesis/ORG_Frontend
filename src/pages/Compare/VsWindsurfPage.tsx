@@ -32,13 +32,9 @@ const features = [
   { f: 'Autonomous Agent Scheduling', ds: true, w: false },
   { f: 'Multi-Agent Teams (Voting/Debate)', ds: true, w: false },
   { f: 'AST/SAST Code Analysis', ds: true, w: false },
-  { f: 'Blockchain Audit Trail', ds: true, w: false },
-  { f: 'Decentralized LLM Training', ds: true, w: false },
-  { f: '$RGT Token Economy', ds: true, w: false },
   { f: 'OpenClaw (137 Local Tools)', ds: true, w: false },
   { f: 'Self-Hosted Option', ds: true, w: false },
   { f: 'RARA Governance / Kill Switch', ds: true, w: false },
-  { f: 'Physics-Based State Engine', ds: true, w: false },
   { f: 'SaaS Platform (Not Just IDE)', ds: true, w: false },
   { f: 'Unlimited LLM Providers', ds: true, w: false },
   { f: 'Terminal Integration', ds: true, w: true },
@@ -52,10 +48,10 @@ const VsWindsurfPage: React.FC = () => {
     <div style={s.page}>
       <Helmet>
         <title>DevSwat vs Windsurf — AI IDE &amp; Platform Comparison 2026</title>
-        <meta name="description" content="DevSwat vs Windsurf comparison. Windsurf has Cascade agentic mode. DevSwat has autonomous agents, blockchain, decentralized training, AST/SAST, governance, smart routing, and unlimited LLM providers." />
+        <meta name="description" content="DevSwat vs Windsurf comparison. Windsurf has Cascade agentic mode. DevSwat has autonomous agents, AST/SAST, governance, smart routing, and unlimited LLM providers." />
         <link rel="canonical" href="https://dev-swat.com/compare/devswat-vs-windsurf" />
         <meta property="og:title" content="DevSwat vs Windsurf — Full Comparison" />
-        <meta property="og:description" content="Both have agentic coding. DevSwat adds agents, blockchain, mining, SAST, governance." />
+        <meta property="og:description" content="Both have agentic coding. DevSwat adds a full agent platform, SAST, and governance." />
         <meta property="og:url" content="https://dev-swat.com/compare/devswat-vs-windsurf" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
@@ -106,8 +102,8 @@ const VsWindsurfPage: React.FC = () => {
         </p>
         <p style={s.p}>
           <strong>DevSwat</strong> has all of that in its IDE (66 tools, Cascade-quality agent loop) PLUS
-          an entire platform: autonomous agents with scheduling, multi-agent teams, blockchain audit trails,
-          decentralized LLM training, SAST scanning, semantic memory with 3D visualization, RARA governance,
+          an entire platform: autonomous agents with scheduling, multi-agent teams,
+          SAST scanning, semantic memory with 3D visualization, RARA governance,
           and OpenClaw local tool runtime.
         </p>
         <p style={s.p}>

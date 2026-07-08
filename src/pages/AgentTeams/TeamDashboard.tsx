@@ -9,7 +9,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui';
 import { useToastContext } from '@/context/ToastContext';
-import { getAgentTeam, mintTeamAsNFT, listTeamOnMarketplace, type AgentTeam } from '@/api/agentTeams';
+import { getAgentTeam, type AgentTeam } from '@/api/agentTeams';
 import styles from './TeamDashboard.module.css';
 
 // Types for Team Dashboard
@@ -170,18 +170,6 @@ const TeamDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'graph' | 'resources' | 'orchestration' | 'ledger' | 'members'>('overview');
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
   
-  // NFT & Marketplace state
-  const [showNFTModal, setShowNFTModal] = useState(false);
-  const [showMarketplaceModal, setShowMarketplaceModal] = useState(false);
-  const [nftMinting, setNftMinting] = useState(false);
-  const [marketplaceListing, setMarketplaceListing] = useState(false);
-  const [nftData, setNftData] = useState<{ token_id?: string; contract_address?: string; tx_hash?: string } | null>(null);
-  const [nftChain, setNftChain] = useState<'ethereum' | 'polygon' | 'base'>('polygon');
-  const [listingPrice, setListingPrice] = useState('');
-  const [rentPricePerDay, setRentPricePerDay] = useState('');
-  const [listingType, setListingType] = useState<'sale' | 'rent' | 'both'>('sale');
-  const [allowRentals, setAllowRentals] = useState(false);
-
   // Load team data
   const loadTeam = useCallback(async () => {
     if (!teamId) return;
@@ -329,48 +317,6 @@ const TeamDashboard: React.FC = () => {
     loadTeam();
   }, [loadTeam]);
 
-  // Handle NFT minting
-  const handleMintNFT = async () => {
-    if (!teamId) return;
-    setNftMinting(true);
-    try {
-      const result = await mintTeamAsNFT(teamId, {
-        chain: nftChain,
-        listing_price: listingPrice ? parseFloat(listingPrice) : undefined,
-        rent_price_per_day: rentPricePerDay ? parseFloat(rentPricePerDay) : undefined,
-        allow_rentals: allowRentals,
-      });
-      setNftData(result);
-      toast.success('Team minted as NFT successfully!');
-      setShowNFTModal(false);
-    } catch (err: any) {
-      toast.error(err?.response?.data?.detail || 'Failed to mint NFT');
-    } finally {
-      setNftMinting(false);
-    }
-  };
-
-  // Handle marketplace listing
-  const handleListOnMarketplace = async () => {
-    if (!teamId || !listingPrice) return;
-    setMarketplaceListing(true);
-    try {
-      const result = await listTeamOnMarketplace(teamId, {
-        price: parseFloat(listingPrice),
-        listing_type: listingType,
-        rent_price_per_day: rentPricePerDay ? parseFloat(rentPricePerDay) : undefined,
-      });
-      toast.success('Team listed on DSID Marketplace!');
-      setShowMarketplaceModal(false);
-      if (result.marketplace_url) {
-        window.open(result.marketplace_url, '_blank');
-      }
-    } catch (err: any) {
-      toast.error(err?.response?.data?.detail || 'Failed to list on marketplace');
-    } finally {
-      setMarketplaceListing(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -414,15 +360,6 @@ const TeamDashboard: React.FC = () => {
           <Button variant="secondary" size="sm" onClick={() => navigate(`/agent-teams/${team.id}/edit`)}>
             Edit Team
           </Button>
-          {!nftData ? (
-            <Button variant="primary" size="sm" onClick={() => setShowNFTModal(true)}>
-              Mint as NFT
-            </Button>
-          ) : (
-            <Button variant="primary" size="sm" onClick={() => setShowMarketplaceModal(true)}>
-              List on Marketplace
-            </Button>
-          )}
         </div>
       </header>
 
@@ -832,149 +769,6 @@ const TeamDashboard: React.FC = () => {
           </section>
         )}
       </main>
-
-      {/* NFT Minting Modal */}
-      {showNFTModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowNFTModal(false)}>
-          <div className={styles.modal} onClick={e => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h2>Mint Team as NFT</h2>
-              <button className={styles.modalClose} onClick={() => setShowNFTModal(false)}>×</button>
-            </div>
-            <div className={styles.modalContent}>
-              <p className={styles.modalDescription}>
-                Mint this team as an NFT on the blockchain. This enables ownership transfer, 
-                rental, and listing on the DSID Network Marketplace.
-              </p>
-              
-              <div className={styles.formGroup}>
-                <label>Blockchain Network</label>
-                <select 
-                  value={nftChain} 
-                  onChange={e => setNftChain(e.target.value as 'ethereum' | 'polygon' | 'base')}
-                  className={styles.select}
-                >
-                  <option value="polygon">Polygon (Low fees)</option>
-                  <option value="base">Base (Low fees)</option>
-                  <option value="ethereum">Ethereum (Higher fees)</option>
-                </select>
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>
-                  <input 
-                    type="checkbox" 
-                    checked={allowRentals} 
-                    onChange={e => setAllowRentals(e.target.checked)} 
-                  />
-                  Allow rentals
-                </label>
-              </div>
-
-              {allowRentals && (
-                <div className={styles.formGroup}>
-                  <label>Rent Price (USD/day)</label>
-                  <input 
-                    type="number" 
-                    value={rentPricePerDay} 
-                    onChange={e => setRentPricePerDay(e.target.value)}
-                    placeholder="e.g., 10"
-                    className={styles.input}
-                  />
-                </div>
-              )}
-
-              <div className={styles.trustRequirement}>
-                <span className={styles.trustIcon}>🔒</span>
-                <span>Requires Trust Level T3 (DSID Verified)</span>
-              </div>
-            </div>
-            <div className={styles.modalFooter}>
-              <Button variant="secondary" onClick={() => setShowNFTModal(false)}>Cancel</Button>
-              <Button variant="primary" onClick={handleMintNFT} disabled={nftMinting}>
-                {nftMinting ? 'Minting...' : 'Mint NFT'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Marketplace Listing Modal */}
-      {showMarketplaceModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowMarketplaceModal(false)}>
-          <div className={styles.modal} onClick={e => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h2>List on DSID Marketplace</h2>
-              <button className={styles.modalClose} onClick={() => setShowMarketplaceModal(false)}>×</button>
-            </div>
-            <div className={styles.modalContent}>
-              <p className={styles.modalDescription}>
-                List your team on the DSID Network Marketplace for sale or rental.
-              </p>
-
-              {nftData && (
-                <div className={styles.nftInfo}>
-                  <div className={styles.nftInfoItem}>
-                    <span className={styles.nftInfoLabel}>Token ID:</span>
-                    <span className={styles.nftInfoValue}>{nftData.token_id}</span>
-                  </div>
-                  <div className={styles.nftInfoItem}>
-                    <span className={styles.nftInfoLabel}>Contract:</span>
-                    <span className={styles.nftInfoValue}>{nftData.contract_address?.slice(0, 10)}...</span>
-                  </div>
-                </div>
-              )}
-
-              <div className={styles.formGroup}>
-                <label>Listing Type</label>
-                <select 
-                  value={listingType} 
-                  onChange={e => setListingType(e.target.value as 'sale' | 'rent' | 'both')}
-                  className={styles.select}
-                >
-                  <option value="sale">For Sale</option>
-                  <option value="rent">For Rent</option>
-                  <option value="both">Sale & Rent</option>
-                </select>
-              </div>
-
-              <div className={styles.formGroup}>
-                <label>Price (USD)</label>
-                <input 
-                  type="number" 
-                  value={listingPrice} 
-                  onChange={e => setListingPrice(e.target.value)}
-                  placeholder="e.g., 100"
-                  className={styles.input}
-                />
-              </div>
-
-              {(listingType === 'rent' || listingType === 'both') && (
-                <div className={styles.formGroup}>
-                  <label>Rent Price (USD/day)</label>
-                  <input 
-                    type="number" 
-                    value={rentPricePerDay} 
-                    onChange={e => setRentPricePerDay(e.target.value)}
-                    placeholder="e.g., 10"
-                    className={styles.input}
-                  />
-                </div>
-              )}
-            </div>
-            <div className={styles.modalFooter}>
-              <Button variant="secondary" onClick={() => setShowMarketplaceModal(false)}>Cancel</Button>
-              <Button 
-                variant="primary" 
-                onClick={handleListOnMarketplace} 
-                disabled={marketplaceListing || !listingPrice}
-              >
-                {marketplaceListing ? 'Listing...' : 'List on Marketplace'}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

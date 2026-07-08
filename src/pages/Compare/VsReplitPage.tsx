@@ -34,14 +34,10 @@ const features = [
   { f: 'Multi-Agent Teams', ds: true, r: false },
   { f: 'AST/SAST Code Analysis', ds: true, r: false },
   { f: 'Semantic Memory (Persistent)', ds: true, r: false },
-  { f: 'Blockchain Audit Trail', ds: true, r: false },
-  { f: 'Decentralized LLM Training', ds: true, r: false },
   { f: 'OpenClaw (137 Local Tools)', ds: true, r: false },
   { f: 'Self-Hosted Option', ds: true, r: false },
   { f: 'RARA Governance', ds: true, r: false },
   { f: 'Unlimited LLM Providers', ds: true, r: false },
-  { f: '3D State Visualization', ds: true, r: false },
-  { f: '$RGT Token Economy', ds: true, r: false },
   { f: 'Multi-Language Support', ds: true, r: true },
   { f: 'Free Tier', ds: true, r: true },
 ];
@@ -52,10 +48,10 @@ const VsReplitPage: React.FC = () => {
     <div style={s.page}>
       <Helmet>
         <title>DevSwat vs Replit — AI Development Platform Comparison 2026</title>
-        <meta name="description" content="DevSwat vs Replit comparison. Replit is a cloud IDE with AI and instant deployment. DevSwat is full agentic AI infrastructure with autonomous agents, blockchain, mining, SAST, governance." />
+        <meta name="description" content="DevSwat vs Replit comparison. Replit is a cloud IDE with AI and instant deployment. DevSwat is full agentic AI infrastructure with autonomous agents, SAST, governance." />
         <link rel="canonical" href="https://dev-swat.com/compare/devswat-vs-replit" />
         <meta property="og:title" content="DevSwat vs Replit — Full Comparison" />
-        <meta property="og:description" content="Cloud IDE vs full AI infrastructure: agents, blockchain, mining, SAST, governance." />
+        <meta property="og:description" content="Cloud IDE vs full AI infrastructure: agents, SAST, governance." />
         <meta property="og:url" content="https://dev-swat.com/compare/devswat-vs-replit" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
@@ -66,8 +62,8 @@ const VsReplitPage: React.FC = () => {
         <h1 style={s.h1}>DevSwat vs Replit</h1>
         <p style={s.lead}>
           Replit is a browser-based IDE with AI assistance and instant cloud deployment. Great for
-          prototyping and learning. DevSwat is a full agentic AI platform with autonomous agents,
-          blockchain, and decentralized training — built for production.
+          prototyping and learning. DevSwat is a full agentic AI platform with autonomous agents
+          and governance — built for production.
         </p>
       </section>
 
@@ -106,7 +102,7 @@ const VsReplitPage: React.FC = () => {
         </p>
         <p style={s.p}>
           <strong>DevSwat</strong> is for building production AI systems. Autonomous agents that run on
-          schedule, blockchain audit trails, decentralized LLM training, SAST scanning, semantic memory,
+          schedule, SAST scanning, semantic memory,
           and governance. You can self-host the entire stack on your servers.
         </p>
         <p style={s.p}>

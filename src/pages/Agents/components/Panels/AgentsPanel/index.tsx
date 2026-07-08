@@ -224,7 +224,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
   const bulkDelete = useCallback(async () => {
     if (bulkSelectedCount === 0) return;
-    if (!confirm(`Archive ${bulkSelectedCount} agent(s)? They will be hidden but preserved on the blockchain.`)) return;
+    if (!confirm(`Archive ${bulkSelectedCount} agent(s)? They will be hidden but preserved in your history.`)) return;
 
     const ids = Array.from(selectedIds);
     let archived = 0;
@@ -474,7 +474,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           pauseAgent(agentId);
           break;
         case 'delete':
-          if (confirm('Are you sure you want to archive this agent? It will be hidden but preserved on the blockchain.')) {
+          if (confirm('Are you sure you want to archive this agent? It will be hidden but preserved in your history.')) {
             await deleteAgent(agentId);
             removeAgent(agentId);
             toast.success('Agent archived');

@@ -57,7 +57,7 @@ export const AgentRestoreDialog: React.FC<AgentRestoreDialogProps> = ({
 
                 <div className={styles.content}>
                     <p className={styles.description}>
-                        Enter the Agent Hash and the Mnemonic (if required) to restore an agent from the Hash Sphere blockchain.
+                        Enter the Agent Hash and the Mnemonic (if required) to restore an agent from Hash Sphere.
                     </p>
 
                     <div className={styles.inputGroup}>

@@ -950,7 +950,7 @@ const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({ className, isOp
                       Ask Resonant about DevSwat
                     </p>
                     <p className={styles.emptySubtext}>
-                      Learn about the platform, tools, agents, mining, and more — your AI assistant knows it all
+                      Learn about the platform, tools, agents, and more — your AI assistant knows it all
                     </p>
                   </div>
                 ) : (

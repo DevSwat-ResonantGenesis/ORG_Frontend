@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import {
-  User, Code2, Layers, Shield, Cpu, Globe, ArrowRight,
+  User, Code2, Layers, Shield, Cpu, ArrowRight,
   Github, Linkedin, Youtube, Twitter
 } from 'lucide-react';
 
@@ -36,10 +36,10 @@ const AboutPage: React.FC = () => {
     <div style={s.page}>
       <Helmet>
         <title>About DevSwat — Agentic AI Infrastructure Built by One Engineer</title>
-        <meta name="description" content="DevSwat is a full-stack agentic AI SaaS platform built from scratch by Louie Nemesh. 9 proprietary IP systems, ~550K lines of code. AI agents, IDE, blockchain, mining, governance, smart routing. Production-deployed at dev-swat.com." />
+        <meta name="description" content="DevSwat is a full-stack agentic AI SaaS platform built from scratch by Louie Nemesh. 7 proprietary IP systems, ~550K lines of code. AI agents, IDE, governance, smart routing. Production-deployed at dev-swat.com." />
         <link rel="canonical" href="https://dev-swat.com/about" />
         <meta property="og:title" content="About DevSwat — Agentic AI Infrastructure" />
-        <meta property="og:description" content="Full-stack agentic AI platform built from scratch by one engineer in 4 months. 9 proprietary IP systems, ~550K lines of code." />
+        <meta property="og:description" content="Full-stack agentic AI platform built from scratch by one engineer in 4 months. 7 proprietary IP systems, ~550K lines of code." />
         <meta property="og:url" content="https://dev-swat.com/about" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
@@ -64,7 +64,7 @@ const AboutPage: React.FC = () => {
         <h1 style={s.h1}>Built From Scratch.<br />By One Engineer.</h1>
         <p style={s.lead}>
           DevSwat is a full-stack, production-deployed agentic AI SaaS platform.
-          9 proprietary IP systems, ~550,000 lines of code — built in under 4 months by Louie Nemesh.
+          7 proprietary IP systems, ~550,000 lines of code — built in under 4 months by Louie Nemesh.
           Every line of code is original. Every system is production-deployed.
         </p>
       </section>
@@ -75,8 +75,7 @@ const AboutPage: React.FC = () => {
         <div style={{ ...s.grid, marginTop: '3rem' }}>
           {[
             { n: '~550K', l: 'Lines of Code' },
-            { n: '9', l: 'Proprietary IP Systems' },
-            { n: '3', l: 'Blockchain Layers' },
+            { n: '7', l: 'Proprietary IP Systems' },
             { n: '4,384', l: 'API Endpoints' },
             { n: '662', l: 'React Components' },
             { n: '∞', l: 'LLM Providers' },
@@ -103,7 +102,7 @@ const AboutPage: React.FC = () => {
         <p style={s.p}>
           DevSwat fills this gap. It is the full vertical stack — from LLM provider abstraction to agent
           orchestration to governed semantic memory to billing to deployment. Unlike wrapper products that
-          put a UI on top of OpenAI or LangChain, DevSwat is 9 proprietary IP systems built from the ground up.
+          put a UI on top of OpenAI or LangChain, DevSwat is 7 proprietary IP systems built from the ground up.
         </p>
       </section>
 
@@ -114,9 +113,7 @@ const AboutPage: React.FC = () => {
         <div style={s.grid}>
           {[
             { icon: <Cpu size={18} color="#818cf8" />, title: 'ResonantChat', text: '68-module AI pipeline with hallucination detection, evidence graphs, and neural skill classification. ~5ms inference.' },
-            { icon: <Globe size={18} color="#818cf8" />, title: 'Hash Sphere', text: 'Physics-based state engine. N-body simulation with gravity, repulsion, entropy forces, and conservation invariants.' },
             { icon: <Layers size={18} color="#818cf8" />, title: 'Semantic Memory', text: '9-layer cognitive architecture. Per-user encrypted memory with embedding retrieval and resonance clustering.' },
-            { icon: <Shield size={18} color="#818cf8" />, title: 'DSID-P Protocol', text: 'Custom blockchain protocol. Decentralized State Identity with hash lineage, merkle proofs, and audit chains.' },
             { icon: <Shield size={18} color="#818cf8" />, title: 'RARA Governance', text: 'Invariant enforcement, capability decay, kill switch, atomic mutations with rollback, compliance (EU AI Act, SOC2).' },
             { icon: <Code2 size={18} color="#818cf8" />, title: 'Code Visualizer', text: 'AST/SAST scanning for Python, JS, TS. Dependency graphs, dead code detection, governance reports.' },
             { icon: <Layers size={18} color="#818cf8" />, title: 'Multi-Agent Orchestration', text: 'Voting protocol, debate protocol, chain protocol. Team management with configurable quorum.' },

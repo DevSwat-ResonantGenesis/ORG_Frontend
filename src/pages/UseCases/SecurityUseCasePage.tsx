@@ -40,7 +40,7 @@ const SecurityUseCasePage: React.FC = () => {
         <h1 style={s.h1}>AI-Powered Security<br />That Never Sleeps</h1>
         <p style={s.lead}>
           AST/SAST scanning catches vulnerabilities in Python, JavaScript, and TypeScript.
-          RARA governance enforces security invariants. Immutable blockchain audit trails for compliance.
+          RARA governance enforces security invariants. Immutable, tamper-evident audit trails for compliance.
         </p>
       </section>
 
@@ -62,8 +62,8 @@ const SecurityUseCasePage: React.FC = () => {
             <div style={s.cardText}>EU AI Act and SOC2 compliance profiles. Automatic explainability artifacts. Exportable audit logs with cryptographic receipts.</div>
           </div>
           <div style={s.card}>
-            <div style={s.cardTitle}><Lock size={16} color="#818cf8" /> Blockchain Audit Trail</div>
-            <div style={s.cardText}>Every agent action, state change, and governance decision recorded on internal blockchain with DSID-P provenance. Tamper-proof.</div>
+            <div style={s.cardTitle}><Lock size={16} color="#818cf8" /> Immutable Audit Trail</div>
+            <div style={s.cardText}>Every agent action, state change, and governance decision recorded in a tamper-evident, hash-chained audit log. Tamper-proof.</div>
           </div>
           <div style={s.card}>
             <div style={s.cardTitle}><AlertTriangle size={16} color="#818cf8" /> Kill Switch</div>

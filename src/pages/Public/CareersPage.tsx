@@ -35,10 +35,10 @@ const TechnologyPage: React.FC = () => {
     <div style={s.page}>
       <Helmet>
         <title>Careers at DevSwat — Build the Future of Agentic AI</title>
-        <meta name="description" content="Join DevSwat and help build agentic AI infrastructure. Python, FastAPI, React, TypeScript, blockchain, distributed systems, ML. Built by one engineer — now looking for exceptional talent." />
+        <meta name="description" content="Join DevSwat and help build agentic AI infrastructure. Python, FastAPI, React, TypeScript, distributed systems, ML. Built by one engineer — now looking for exceptional talent." />
         <link rel="canonical" href="https://dev-swat.com/careers" />
         <meta property="og:title" content="Careers at DevSwat" />
-        <meta property="og:description" content="Build agentic AI infrastructure. Python, FastAPI, React, TypeScript, blockchain, ML. Founded by one engineer — join the mission." />
+        <meta property="og:description" content="Build agentic AI infrastructure. Python, FastAPI, React, TypeScript, ML. Founded by one engineer — join the mission." />
         <meta property="og:url" content="https://dev-swat.com/careers" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
@@ -56,7 +56,7 @@ const TechnologyPage: React.FC = () => {
         <h1 style={s.h1}>Help Build the Future<br />of Agentic AI</h1>
         <p style={s.lead}>
           DevSwat was built from scratch by one engineer — ~550K lines of code,
-          9 proprietary IP systems. As we scale, we're looking for exceptional people who want
+          7 proprietary IP systems. As we scale, we're looking for exceptional people who want
           to work on genuinely novel AI infrastructure.
         </p>
       </section>
@@ -97,9 +97,8 @@ const TechnologyPage: React.FC = () => {
         <div style={s.grid}>
           {[
             { icon: <Cpu size={16} color="#818cf8" />, t: 'Agent Systems', d: 'Multi-agent orchestration, autonomous daemon, goal pursuit, Agent Architect builder, tool execution sandboxes.' },
-            { icon: <Globe size={16} color="#818cf8" />, t: 'Decentralized Training', d: 'Pipeline-parallel LLM training, P2P weight transfer, gradient compression, Raft consensus blockchain.' },
             { icon: <Code2 size={16} color="#818cf8" />, t: 'Code Intelligence', d: 'AST/SAST analysis, dependency graphs, governance engine, multi-project comparison, IDE agent loop.' },
-            { icon: <Rocket size={16} color="#818cf8" />, t: 'Novel Systems', d: 'Physics-based state engine (N-body), 9-layer semantic memory, DSID-P blockchain protocol, capability grammar.' },
+            { icon: <Rocket size={16} color="#818cf8" />, t: 'Novel Systems', d: '9-layer semantic memory, neural skill routing, RARA governance invariants, capability grammar.' },
           ].map(c => (
             <div key={c.t} style={s.card}>
               <div style={s.cardTitle}>{c.icon} {c.t}</div>

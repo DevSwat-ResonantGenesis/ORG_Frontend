@@ -29,12 +29,6 @@ export { MLDashboard } from './features/dashboard/MLDashboard';
 export { ViewerDashboard } from './features/dashboard/ViewerDashboard';
 export { AdminDashboard } from './features/dashboard/AdminDashboard';
 
-// Landing Components
-export { CEOExplanationSection } from './features/landing/CEOExplanationSection';
-export { HowItWorksSection } from './features/landing/HowItWorksSection';
-export { default as EvidenceGraphParallax } from './features/landing/EvidenceGraphParallax';
-export { SDKAPISection } from './features/landing/SDKAPISection';
-
 // Shared Components
 export { default as Modal } from './shared/Modal';
 export { Table } from './shared/Table';

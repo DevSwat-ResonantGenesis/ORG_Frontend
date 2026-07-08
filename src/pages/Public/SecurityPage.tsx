@@ -25,10 +25,10 @@ const SecurityPage: React.FC = () => {
     <div style={s.page}>
       <Helmet>
         <title>Security — Encryption, Auth, Governance &amp; Compliance | DevSwat</title>
-        <meta name="description" content="DevSwat security: JWT auth with MFA/TOTP, AES memory encryption, blockchain audit trails, RARA governance with kill switch, HSTS, CORS lockdown, fail-closed middleware, SOC2/EU AI Act compliance." />
+        <meta name="description" content="DevSwat security: JWT auth with MFA/TOTP, AES memory encryption, tamper-evident audit trails, RARA governance with kill switch, HSTS, CORS lockdown, fail-closed middleware, SOC2/EU AI Act compliance." />
         <link rel="canonical" href="https://dev-swat.com/security" />
         <meta property="og:title" content="DevSwat Security" />
-        <meta property="og:description" content="JWT/MFA auth, AES encryption, blockchain audit, RARA governance, compliance." />
+        <meta property="og:description" content="JWT/MFA auth, AES encryption, audit trails, RARA governance, compliance." />
         <meta property="og:url" content="https://dev-swat.com/security" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
@@ -38,7 +38,7 @@ const SecurityPage: React.FC = () => {
         <div style={s.badge}><Shield size={14} /> Security</div>
         <h1 style={s.h1}>Security First.<br />Always.</h1>
         <p style={s.lead}>
-          Every layer hardened. JWT with MFA, AES encryption, blockchain audit trails,
+          Every layer hardened. JWT with MFA, AES encryption, tamper-evident audit trails,
           RARA governance, and compliance profiles. Your data is yours.
         </p>
       </section>
@@ -93,8 +93,8 @@ const SecurityPage: React.FC = () => {
             <div style={s.cardText}>Global emergency stop for all agents. Freeze, stop, or reset. Deterministic bridge from governance policy to system action.</div>
           </div>
           <div style={s.card}>
-            <div style={s.cardTitle}><FileCheck size={16} color="#818cf8" /> Blockchain Audit Trail</div>
-            <div style={s.cardText}>Every agent action, state change, and governance decision recorded on internal blockchain with DSID-P provenance and merkle proofs.</div>
+            <div style={s.cardTitle}><FileCheck size={16} color="#818cf8" /> Immutable Audit Trail</div>
+            <div style={s.cardText}>Every agent action, state change, and governance decision recorded in a tamper-evident, append-only audit log with cryptographic hash chaining.</div>
           </div>
           <div style={s.card}>
             <div style={s.cardTitle}><Shield size={16} color="#818cf8" /> Compliance Profiles</div>
