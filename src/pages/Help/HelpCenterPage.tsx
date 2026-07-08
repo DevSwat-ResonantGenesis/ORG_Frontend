@@ -16,6 +16,10 @@ import { goToContact } from '../../utils/navigation';
 import { articleContent } from './HelpArticlePage';
 
 import styles from './HelpCenterPage.module.css';
+import { Helmet } from 'react-helmet-async';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/help'];
 
 const ThreeParticleSphere = lazy(() => import('@/components/features/landing/ThreeParticleSphere'));
 
@@ -439,6 +443,16 @@ const HelpCenterPage: React.FC = () => {
 
   return (
     <div className={styles.helpCenterPage}>
+      <Helmet>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <link rel="canonical" href="https://dev-swat.com/help" />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
+        <meta property="og:url" content="https://dev-swat.com/help" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+      </Helmet>
       {/* Fixed Background — 3D Particle Sphere stays behind everything */}
       <div className={`${styles.fixedBg} ${searchQuery ? styles.fixedBgSearching : ''}`} aria-hidden="true">
         <Suspense fallback={<div className={styles.parallaxPlaceholder} />}>

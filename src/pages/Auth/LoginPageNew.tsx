@@ -16,6 +16,10 @@ import { clearSession } from '../../utils/auth';
 import fastapiClient from '../../api/fastapiClient';
 import { useThemeStore } from '../../store/themeStore';
 import { initiateSSO } from '../../api/sso';
+import { Helmet } from 'react-helmet-async';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/login'];
 
 const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties> => ({
   container: {
@@ -290,6 +294,16 @@ export default function LoginPageNew() {
   
   return (
     <div style={styles.container}>
+      <Helmet>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <link rel="canonical" href="https://dev-swat.com/login" />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
+        <meta property="og:url" content="https://dev-swat.com/login" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+      </Helmet>
       <div style={styles.card}>
         <h1 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1.5rem', textAlign: 'center' as const, paddingTop: '0.5rem' }}>Welcome back</h1>
 

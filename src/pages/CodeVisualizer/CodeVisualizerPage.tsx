@@ -4,6 +4,10 @@ import { getApiUrl } from '../../utils/apiUrl';
 import { isAuthenticated } from '../../utils/auth-cookies';
 import { useThemeStore } from '../../store/themeStore';
 import styles from './CodeVisualizerPage.module.css';
+import { Helmet } from 'react-helmet-async';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/code-visualizer'];
 
 /* Force dark mode on this page — restore previous theme on unmount */
 function useForceDarkMode() {
@@ -168,6 +172,16 @@ const CodeVisualizerPage: React.FC = () => {
 
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
+      <Helmet>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <link rel="canonical" href="https://dev-swat.com/code-visualizer" />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
+        <meta property="og:url" content="https://dev-swat.com/code-visualizer" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+      </Helmet>
       {/* Main CV iframe */}
       <iframe
         ref={iframeRef}

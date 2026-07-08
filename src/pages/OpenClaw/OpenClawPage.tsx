@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import styles from '../DownloadShared/DownloadPage.module.css';
+import { Helmet } from 'react-helmet-async';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/download-openclaw'];
 
 const GITHUB_REPO = 'https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw';
 const GITHUB_DOWNLOAD = 'https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw/archive/refs/heads/main.zip';
@@ -402,6 +406,16 @@ const OpenClawPage: React.FC = () => {
 
   return (
     <div className={styles.page} data-product="openclaw">
+      <Helmet>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <link rel="canonical" href="https://dev-swat.com/download-openclaw" />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
+        <meta property="og:url" content="https://dev-swat.com/download-openclaw" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
+      </Helmet>
       {/* Hero */}
       <section className={styles.hero}>
         <div className={styles.heroGlow} />
