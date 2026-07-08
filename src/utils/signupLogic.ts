@@ -116,12 +116,12 @@ export const SIGNUP_STEPS_LEGACY: SignUpStep[] = [
  * Usage is metered via Resonant Credits (1 credit ≈ $0.001)
  */
 export const PLANS: PlanOption[] = [
-  // Developer - $15/month
+  // Developer - $29/month
   {
     id: 'developer',
     name: 'Developer',
     category: 'platform',
-    price: { monthly: 15, yearly: 150 },
+    price: { monthly: 29, yearly: 290 },
     bestFor: 'Solo builders with full platform access',
     isTrial: false,
     requiresApiKey: false,

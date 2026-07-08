@@ -8,13 +8,12 @@ import { useNavigate } from 'react-router-dom';
 import { isAuthenticated, getSessionData } from '../../utils/auth-cookies';
 import {
   Globe, Brain, Users, Code, GitBranch,
-  Shield, Lock, Store, Check, Zap, Atom,
+  Shield, Lock, Store, Check, Zap,
   Building2, ChevronDown,
 } from 'lucide-react';
 import {
   CORE_FEATURES,
   FAQ,
-  STATE_PHYSICS_API_PLANS,
   HASH_SPHERE_MEMORY_API_PLANS,
   CODE_VISUALIZER_API_PLANS,
   type Plan,
@@ -172,7 +171,7 @@ const PricingPage: React.FC = () => {
           return {
             id: planId,
             name,
-            badge: isEnterprise ? 'Custom' : isPlus ? 'Professional' : '$15/month',
+            badge: isEnterprise ? 'Custom' : isPlus ? 'Professional' : `$${monthly}/month`,
             price: {
               monthly,
               yearly,
@@ -231,10 +230,12 @@ const PricingPage: React.FC = () => {
           };
         };
 
+        // Enterprise is hidden from the public pricing page for now (still a
+        // valid plan in pricing.yaml for existing/contact-sales customers —
+        // just not shown as a selectable card here).
         const nextPlans: Plan[] = [
           buildPlan('developer', 'Developer'),
           buildPlan('plus', 'Plus'),
-          buildPlan('enterprise', 'Enterprise'),
         ];
         setPlans(nextPlans);
         setExpandedPlanId((prev) => prev ?? nextPlans.find((p) => p.recommended)?.id ?? nextPlans[0]?.id ?? null);
@@ -697,7 +698,7 @@ const PricingPage: React.FC = () => {
               <div>
                 <h3 className={styles.addonProductName}>Memory API</h3>
                 <p className={styles.addonProductDescription}>
-                  Physics-informed, immutable AI memory. 12-D hash-sphere retrieval, encrypted and anchored on-chain, isolated per user/agent/org.
+                  Physics-informed, immutable AI memory. 12-D hash-sphere retrieval, encrypted and hash-chained, isolated per user/agent/org.
                 </p>
               </div>
             </div>
@@ -707,25 +708,6 @@ const PricingPage: React.FC = () => {
               (plan) => (plan.memoryUnits === -1 ? 'Unlimited MU' : `${(plan.memoryUnits / 1000).toLocaleString()}k MU/month`),
               'builder',
               '$25k+',
-            )}
-          </div>
-
-          <div className={styles.addonProduct}>
-            <div className={styles.addonProductHeader}>
-              <div className={styles.addonProductIcon}><Atom size={28} /></div>
-              <div>
-                <h3 className={styles.addonProductName}>State Physics API</h3>
-                <p className={styles.addonProductDescription}>
-                  Real-time anomaly detection and conservation-law enforcement for complex state systems — fraud detection, trust networks, distributed monitoring.
-                </p>
-              </div>
-            </div>
-            {renderAddonPlans(
-              'state_physics',
-              STATE_PHYSICS_API_PLANS,
-              (plan) => (plan.simulationUnits === -1 ? 'Custom SU' : `${(plan.simulationUnits / 1000).toLocaleString()}k SU/month`),
-              'startup',
-              '$2k+',
             )}
           </div>
 
