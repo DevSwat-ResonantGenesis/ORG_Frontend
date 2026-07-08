@@ -75,14 +75,9 @@ const CARDS_LAPTOP: Card3D[] = CARDS.map((c) => ({
 const DEPTH = 0.42;
 const RADIUS = 0.14;
 
-/* ── Input tracker — mouse + device orientation (gyroscope), drives camera parallax ── */
+/* ── Input tracker — device orientation (gyroscope) only, drives camera parallax ── */
 const input = { x: 0, y: 0 };
 if (typeof window !== 'undefined') {
-    window.addEventListener('mousemove', (e) => {
-        input.x = (e.clientX / window.innerWidth - 0.5) * 2;
-        input.y = (e.clientY / window.innerHeight - 0.5) * 2;
-    }, { passive: true });
-
     const handleOrientation = (e: DeviceOrientationEvent) => {
         /* Browsers/devices with no real gyroscope commonly fire ONE deviceorientation event
            with gamma/beta both null, just to signal "no sensor". Treating that as gamma=0,
@@ -446,13 +441,8 @@ function FallingCard({ card, isMobile, sizeScale, spawnX, spawnY, gravity }: {
         }
     };
 
-    const [hovered, setHovered] = useState(false);
     useFrame((_, delta) => {
         if (!ref.current) return;
-        const target = hovered ? 1.045 : 1;
-        ref.current.scale.x += (target - ref.current.scale.x) * 0.15;
-        ref.current.scale.y += (target - ref.current.scale.y) * 0.15;
-        ref.current.scale.z += (target - ref.current.scale.z) * 0.15;
 
         if (!released.current || gesture.current.dragging) return;
 
@@ -493,8 +483,6 @@ function FallingCard({ card, isMobile, sizeScale, spawnX, spawnY, gravity }: {
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
-            onPointerOver={() => setHovered(true)}
-            onPointerOut={() => setHovered(false)}
             onContextMenu={(e) => e.nativeEvent.preventDefault()}
         >
             <RoundedBox args={[card.w, card.h, DEPTH]} radius={RADIUS} smoothness={4}>
@@ -512,7 +500,7 @@ function FallingCard({ card, isMobile, sizeScale, spawnX, spawnY, gravity }: {
 
             <mesh position={[0, card.h / 2 - 0.02, zFace + 0.005]}>
                 <planeGeometry args={[card.w * 0.7, 0.02]} />
-                <meshBasicMaterial color="#ffffff" transparent opacity={hovered ? 0.32 : 0.18} />
+                <meshBasicMaterial color="#ffffff" transparent opacity={0.18} />
             </mesh>
 
             {card.label && !card.vertical && (

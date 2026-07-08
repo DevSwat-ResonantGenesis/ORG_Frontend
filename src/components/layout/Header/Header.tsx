@@ -386,32 +386,13 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            {/* Agents Dropdown */}
-            <div className={styles.navItem}>
-              <button
-                className={`${styles.navButton} ${activeDropdown === 'agents' ? styles.navButtonActive : ''}`}
-                onClick={() => setActiveDropdown(activeDropdown === 'agents' ? null : 'agents')}
-              >
-                Agents
-                <svg className={styles.navChevron} width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 6L8 10L12 6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              {activeDropdown === 'agents' && (
-                <div className={styles.navDropdown}>
-                  <div className={styles.navDropdownGridOneRow}>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/agents'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>Agents OS</span>
-                      <span className={styles.navDropdownItemDesc}>Build, run &amp; orchestrate autonomous agents</span>
-                    </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/download-openclaw'); setActiveDropdown(null); }}>
-                      <span className={styles.navDropdownItemTitle}>OpenClaw+</span>
-                      <span className={styles.navDropdownItemDesc}>Run AI agents locally on your hardware — tools execute on your machine, memory never leaves your disk</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+            {/* Agent OS Link */}
+            <button
+              className={styles.navButton}
+              onClick={() => navigate('/agents')}
+            >
+              Agent OS
+            </button>
 
             {/* Memory Link */}
             <button

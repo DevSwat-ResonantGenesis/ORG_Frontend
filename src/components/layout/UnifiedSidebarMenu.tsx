@@ -201,9 +201,9 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
 
           <div className={styles.usmDivider} />
 
-          {/* Agents Section */}
+          {/* Agent OS Section */}
           <div className={styles.usmSection}>
-            <div className={styles.usmSectionTitle}>Agents</div>
+            <div className={styles.usmSectionTitle}>Agent OS</div>
 
             <button
               className={`${styles.usmItem} ${location.pathname === '/agents' ? styles.usmActive : ''}`}
@@ -215,22 +215,8 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                   <path d="M3 14C3 11 5.5 9 8 9C10.5 9 13 11 13 14" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>Agents OS</span>
+              <span className={styles.usmLabel}>Agent OS</span>
               {location.pathname === '/agents' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/download-openclaw' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/download-openclaw'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M3 3C3 3 4 8 8 8C12 8 13 3 13 3" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M3 13C3 13 4 8 8 8C12 8 13 13 13 13" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>OpenClaw+</span>
-              {location.pathname === '/download-openclaw' && <span className={styles.usmActiveIndicator} />}
             </button>
           </div>
 
