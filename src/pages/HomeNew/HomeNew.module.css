@@ -3730,6 +3730,7 @@
   margin-top: 16px;
   margin-bottom: 8px;
   font-weight: 600;
+  color: var(--text-tertiary);
 }
 
 .useCaseList {
@@ -7065,7 +7066,7 @@
 .showcaseNavStepTitle {
   font-size: 16px;
   font-weight: 600;
-  color: #64748b;
+  color: var(--text-secondary);
   display: block;
   transition: color 0.3s ease;
 }
@@ -7080,7 +7081,7 @@
 
 .showcaseNavStepDesc {
   font-size: 13px;
-  color: #64748b;
+  color: var(--text-tertiary);
   margin: 8px 0 0 0;
   line-height: 1.5;
   animation: fadeIn 0.3s ease;

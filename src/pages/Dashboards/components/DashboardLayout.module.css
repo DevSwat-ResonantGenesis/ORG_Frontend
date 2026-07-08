@@ -115,7 +115,7 @@
 
 /* Light Mode: Enhanced contrast */
 [data-theme='light'] .subtitle {
-  color: #1f2937; /* Darker for better readability in light mode */
+  color: var(--text-secondary); /* Darker for better readability in light mode */
 }
 
 [data-theme='dark'] .subtitle {
