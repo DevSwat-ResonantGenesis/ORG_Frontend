@@ -2477,9 +2477,24 @@ const ResonantChatPage: React.FC = () => {
           const apiUrl = (await import('@/utils/apiUrl')).getApiUrl();
           const history = messages.slice(-10).map(m => ({ role: m.role, content: m.content }));
 
-          // Inject system context (time, timezone) into the message
+          // Inject system context (time, timezone) into the message.
+          // Must actually convert `now` into `tz` before formatting — toISOString()
+          // always renders UTC (trailing "Z"), so pairing it with the IANA zone name
+          // produced a self-contradictory string (raw UTC instant labeled as local zone).
           const now = new Date();
-          const systemContext = `[System context: ${now.toISOString()} | ${Intl.DateTimeFormat().resolvedOptions().timeZone} | ${now.toLocaleDateString('en-US', { weekday: 'long' })}]`;
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const localTimeStr = now.toLocaleString('en-US', {
+            timeZone: tz,
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short',
+          });
+          const systemContext = `[System context: ${localTimeStr} | ${tz}]`;
           const enrichedMessage = `${systemContext}\n\n${queryWithContext}`;
 
           const streamEndpoint = `${apiUrl}/api/resonant-chat/message/stream`;
