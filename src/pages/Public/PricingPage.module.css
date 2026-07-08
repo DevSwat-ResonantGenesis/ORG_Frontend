@@ -85,12 +85,14 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
-  margin-bottom: 56px;
+  margin: 0 auto 56px;
+  /* 2 cards (Developer, Plus) since Enterprise is hidden from this page */
+  max-width: 760px;
 }
 
 @media (min-width: 768px) {
   .plansGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     align-items: stretch;
   }
 }

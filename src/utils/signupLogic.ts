@@ -116,17 +116,17 @@ export const SIGNUP_STEPS_LEGACY: SignUpStep[] = [
  * Usage is metered via Resonant Credits (1 credit ≈ $0.001)
  */
 export const PLANS: PlanOption[] = [
-  // Developer - $29/month
+  // Developer (displayed as "Plus") - $29/month
   {
     id: 'developer',
-    name: 'Developer',
+    name: 'Plus',
     category: 'platform',
     price: { monthly: 29, yearly: 290 },
     bestFor: 'Solo builders with full platform access',
     isTrial: false,
     requiresApiKey: false,
     limits: {
-      tokens: 15000,         // 15,000 credits/month (no rollover, top-ups available)
+      tokens: 29000,         // 29,000 credits/month (no rollover, top-ups available)
       agents: -1,            // Unlimited - we bill by credits only
       teams: -1,             // Unlimited - we bill by credits only
       users: 1,
@@ -140,7 +140,7 @@ export const PLANS: PlanOption[] = [
       executionTimeout: 120,
     },
     features: [
-      '15,000 credits/month',
+      '29,000 credits/month',
       'All platform features unlocked',
       'Unlimited agents (credits-only billing)',
       'Autonomous mode & agent teams',
@@ -154,10 +154,10 @@ export const PLANS: PlanOption[] = [
       'Top-ups available',
     ],
   },
-  // Plus - $499/month (RECOMMENDED)
+  // Plus (displayed as "Business") - $499/month (RECOMMENDED)
   {
     id: 'plus',
-    name: 'Plus',
+    name: 'Business',
     category: 'platform',
     price: { monthly: 499, yearly: 4990 },
     recommended: true,

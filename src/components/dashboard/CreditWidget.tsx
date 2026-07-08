@@ -95,17 +95,17 @@ export const CreditWidget: React.FC<CreditWidgetProps> = ({
           <button className={styles.planCard} onClick={() => onSubscribe?.('developer')} disabled={!!subscribeLoading}>
             <div className={styles.planCardHeader}>
               <Rocket size={14} />
-              <span className={styles.planName}>Developer</span>
+              <span className={styles.planName}>Plus</span>
             </div>
-            <div className={styles.planPrice}>$15<span>/mo</span></div>
-            <div className={styles.planCredits}>15,000 credits/mo</div>
+            <div className={styles.planPrice}>$29<span>/mo</span></div>
+            <div className={styles.planCredits}>29,000 credits/mo</div>
             <div className={styles.planNote}>All features unlocked</div>
             <div className={styles.planCta}>{subscribeLoading === 'developer' ? 'Redirecting…' : 'Subscribe Now →'}</div>
           </button>
           <button className={`${styles.planCard} ${styles.planCardRecommended}`} onClick={() => onSubscribe?.('plus')} disabled={!!subscribeLoading}>
             <div className={styles.planCardHeader}>
               <Crown size={14} />
-              <span className={styles.planName}>Plus</span>
+              <span className={styles.planName}>Business</span>
               <span className={styles.recommendedBadge}>Recommended</span>
             </div>
             <div className={styles.planPrice}>$499<span>/mo</span></div>
@@ -189,11 +189,11 @@ export const CreditWidget: React.FC<CreditWidgetProps> = ({
           >
             <div className={styles.planCardHeader}>
               <Rocket size={14} />
-              <span className={styles.planName}>Developer</span>
+              <span className={styles.planName}>Plus</span>
               {tierLower === 'developer' && <span className={styles.currentBadge}>Current</span>}
             </div>
-            <div className={styles.planPrice}>$15<span>/mo</span></div>
-            <div className={styles.planCredits}>15,000 credits/mo</div>
+            <div className={styles.planPrice}>$29<span>/mo</span></div>
+            <div className={styles.planCredits}>29,000 credits/mo</div>
             <div className={styles.planNote}>No rollover</div>
           </a>
           <a
@@ -202,7 +202,7 @@ export const CreditWidget: React.FC<CreditWidgetProps> = ({
           >
             <div className={styles.planCardHeader}>
               <Crown size={14} />
-              <span className={styles.planName}>Plus</span>
+              <span className={styles.planName}>Business</span>
               {tierLower === 'plus' ? <span className={styles.currentBadge}>Current</span> : <span className={styles.recommendedBadge}>Recommended</span>}
             </div>
             <div className={styles.planPrice}>$499<span>/mo</span></div>

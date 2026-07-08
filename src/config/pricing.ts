@@ -398,7 +398,7 @@ export const FAQ: FaqItem[] = [
   },
   {
     question: 'What support is included?',
-    answer: 'Developer ($29/mo): Community + email. Plus: Priority email + Slack. Enterprise: Dedicated engineers, architecture guidance, and SLA guarantees.',
+    answer: 'Plus ($29/mo): Community + email. Business: Priority email + Slack. Enterprise: Dedicated engineers, architecture guidance, and SLA guarantees.',
   },
 ];
 

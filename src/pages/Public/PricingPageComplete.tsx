@@ -52,7 +52,7 @@ const PLAN_HIGHLIGHTS: Record<string, string[]> = {
     'Community + email support',
   ],
   plus: [
-    'Everything in Developer',
+    'Everything in Plus',
     'Rollover up to 249.5K credits',
     'Discounted top-ups ($8 / 10K)',
     '100 compute hours / month',
@@ -197,7 +197,7 @@ const PricingPage: React.FC = () => {
             recommended: planId === 'plus',
             contactSales: isEnterprise,
             cta: {
-              text: isEnterprise ? 'Contact Sales' : planId === 'plus' ? 'Start Plus Plan' : 'Start Developer Plan',
+              text: isEnterprise ? 'Contact Sales' : planId === 'plus' ? 'Start Business Plan' : 'Start Plus Plan',
               style: planId === 'plus' ? 'primary' : 'secondary',
             },
             limits: {
@@ -234,8 +234,8 @@ const PricingPage: React.FC = () => {
         // valid plan in pricing.yaml for existing/contact-sales customers —
         // just not shown as a selectable card here).
         const nextPlans: Plan[] = [
-          buildPlan('developer', 'Developer'),
-          buildPlan('plus', 'Plus'),
+          buildPlan('developer', 'Plus'),
+          buildPlan('plus', 'Business'),
         ];
         setPlans(nextPlans);
         setExpandedPlanId((prev) => prev ?? nextPlans.find((p) => p.recommended)?.id ?? nextPlans[0]?.id ?? null);
@@ -531,7 +531,7 @@ const PricingPage: React.FC = () => {
         <div className={styles.sectionHeader}>
           <h1 className={styles.sectionTitle}>Simple, transparent pricing</h1>
           <p className={styles.sectionDescription}>
-            Developer and Plus share every feature — only credits and rollover differ. Usage is metered via Resonant Credits, 1 credit ≈ $0.001.
+            Plus and Business share every feature — only credits and rollover differ. Usage is metered via Resonant Credits, 1 credit ≈ $0.001.
           </p>
         </div>
 
