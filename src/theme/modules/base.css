@@ -171,6 +171,10 @@ h1:not([class*="_"]),
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
   margin-bottom: var(--space-6) !important;
+  /* Title tier: brightest. h2/h3 (subtitle) and h4/p (body) step down from here
+     so titles, subtitles, and body text are visually distinct instead of all
+     inheriting body's --text-primary uniformly. */
+  color: var(--text-primary) !important;
 }
 
 @media (min-width: 768px) {
@@ -192,6 +196,8 @@ h2:not([class*="_"]),
   -moz-osx-font-smoothing: grayscale !important;
   margin-top: var(--space-8) !important;
   margin-bottom: var(--space-4) !important;
+  /* Subtitle tier: dimmer than the title */
+  color: var(--text-secondary) !important;
 }
 
 @media (min-width: 768px) {
@@ -213,6 +219,8 @@ h3:not([class*="_"]),
   -moz-osx-font-smoothing: grayscale !important;
   margin-top: var(--space-6) !important;
   margin-bottom: var(--space-3) !important;
+  /* Subtitle tier: dimmer than the title */
+  color: var(--text-secondary) !important;
 }
 
 @media (min-width: 768px) {
@@ -235,6 +243,8 @@ h4,
 
 p:not([class*="_"]) {
   margin-bottom: var(--space-4) !important;
+  /* Body tier: dimmest of the three */
+  color: var(--text-tertiary) !important;
 }
 
 /* Force consistent shadows */
