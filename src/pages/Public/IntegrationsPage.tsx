@@ -2,6 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Globe, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/integrations'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -51,11 +54,11 @@ const IntegrationsPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Integrations — Unlimited LLM Providers, Platform Connectors, OAuth | DevSwat</title>
-        <meta name="description" content="DevSwat integrations: connect any LLM provider (OpenAI, Anthropic, Gemini, Groq, Mistral, Cohere, Ollama, and more). Platform connectors for Google Drive, Gmail, Slack, Calendar, Figma, Stripe, and any external service. Unlimited." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/integrations" />
-        <meta property="og:title" content="Integrations — DevSwat" />
-        <meta property="og:description" content="Unlimited LLM providers, platform connectors, OAuth, Gmail, Slack, Drive, Figma, Stripe." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/integrations" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

@@ -2,6 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Bot, ArrowRight } from 'lucide-react';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/docs/agent-api'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -38,11 +41,11 @@ const AgentAPIPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Agent API Reference — Create, Run &amp; Schedule Agents | DevSwat Docs</title>
-        <meta name="description" content="DevSwat Agent API reference. REST endpoints for creating, running, scheduling, and managing autonomous AI agents. SSE streaming, multi-agent teams, Agent Architect. Full request/response examples." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/docs/agent-api" />
-        <meta property="og:title" content="Agent API Reference — DevSwat Docs" />
-        <meta property="og:description" content="REST API for creating, running, and scheduling autonomous AI agents." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/docs/agent-api" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

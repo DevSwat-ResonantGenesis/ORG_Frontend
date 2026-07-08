@@ -2,6 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Brain, Zap, Users, BarChart3, ArrowRight, Layers, CheckCircle2 } from 'lucide-react';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/products/neural-routing'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -33,11 +36,11 @@ const NeuralRoutingPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Neural Routing — ML Skill Classifier &amp; Multi-Agent Selection | DevSwat</title>
-        <meta name="description" content="Neural skill classifier trained on sentence-transformer embeddings. 2-layer MLP routes messages to 14 specialized skills in ~5ms. Active learning, performance tracking, best-agent selection." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/products/neural-routing" />
-        <meta property="og:title" content="Neural Routing — ML Skill Classifier" />
-        <meta property="og:description" content="Trained MLP classifier routes messages to specialized skills in ~5ms. Active learning." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/products/neural-routing" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

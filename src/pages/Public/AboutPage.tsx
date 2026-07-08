@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
 import {
   User, Code2, Layers, Shield, Cpu, ArrowRight,
   Github, Linkedin, Youtube, Twitter
@@ -29,17 +30,19 @@ const s: Record<string, React.CSSProperties> = {
   divider: { height: 1, background: 'rgba(255,255,255,0.06)', margin: '0 auto', maxWidth: 900 },
 };
 
+const meta = ROUTE_META['/about'];
+
 const AboutPage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
     <div style={s.page}>
       <Helmet>
-        <title>About DevSwat — Agentic AI Infrastructure Built by One Engineer</title>
-        <meta name="description" content="DevSwat is a full-stack agentic AI SaaS platform built from scratch by Louie Nemesh. 7 proprietary IP systems, ~550K lines of code. AI agents, IDE, governance, smart routing. Production-deployed at dev-swat.com." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/about" />
-        <meta property="og:title" content="About DevSwat — Agentic AI Infrastructure" />
-        <meta property="og:description" content="Full-stack agentic AI platform built from scratch by one engineer in 4 months. 7 proprietary IP systems, ~550K lines of code." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/about" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

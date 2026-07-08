@@ -1,6 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/products/ai-agents'];
 import {
   Bot, Zap, Users, Calendar, Shield, ArrowRight, Brain,
   GitBranch, Play, Settings, Layers, CheckCircle2
@@ -30,11 +33,11 @@ const AIAgentsPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>AI Agents — Build, Run &amp; Schedule Autonomous Agents | DevSwat</title>
-        <meta name="description" content="Build, run, and schedule autonomous AI agents on server or local hardware. Multi-agent orchestration with voting, debate, and chain protocols. 30+ tools, Agent Architect, governed and unbounded modes." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/products/ai-agents" />
-        <meta property="og:title" content="AI Agents — Build, Run & Schedule Autonomous Agents" />
-        <meta property="og:description" content="Autonomous AI agents with multi-agent orchestration, 30+ tools, scheduling, and governed execution modes." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/products/ai-agents" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

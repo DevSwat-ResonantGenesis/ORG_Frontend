@@ -2,6 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { BookOpen, ArrowRight, Calendar } from 'lucide-react';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/blog'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -52,11 +55,11 @@ const BlogPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Blog — Engineering, AI Research &amp; Platform Updates | DevSwat</title>
-        <meta name="description" content="DevSwat engineering blog: deep dives into agentic AI infrastructure, neural routing, governance, and platform architecture." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/blog" />
-        <meta property="og:title" content="DevSwat Blog — Engineering & AI Research" />
-        <meta property="og:description" content="Deep dives into agentic AI, neural routing, governance, and platform architecture." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/blog" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

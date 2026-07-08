@@ -1,5 +1,8 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/terms'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -16,11 +19,11 @@ const s: Record<string, React.CSSProperties> = {
 const TermsPage: React.FC = () => (
   <div style={s.page}>
     <Helmet>
-      <title>Terms of Service | DevSwat</title>
-      <meta name="description" content="DevSwat terms of service. Platform usage terms, account responsibilities, pricing, intellectual property, limitation of liability, and governing law." />
+      <title>{meta.title}</title>
+      <meta name="description" content={meta.description} />
       <link rel="canonical" href="https://dev-swat.com/terms" />
-      <meta property="og:title" content="Terms of Service — DevSwat" />
-      <meta property="og:description" content="Platform usage terms and conditions." />
+      <meta property="og:title" content={meta.title} />
+      <meta property="og:description" content={meta.description} />
       <meta property="og:url" content="https://dev-swat.com/terms" />
       <meta property="og:type" content="website" />
       <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

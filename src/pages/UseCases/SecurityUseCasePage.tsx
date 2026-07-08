@@ -2,6 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Lock, FileCheck, Search, ArrowRight, Eye, AlertTriangle } from 'lucide-react';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/use-cases/security'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -25,11 +28,11 @@ const SecurityUseCasePage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>DevSwat for Security — SAST Scanning, Governance &amp; Compliance</title>
-        <meta name="description" content="How security teams use DevSwat: AST/SAST code scanning, RARA governance with invariant enforcement, immutable audit chains, EU AI Act and SOC2 compliance profiles, dead code detection." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/use-cases/security" />
-        <meta property="og:title" content="DevSwat for Security" />
-        <meta property="og:description" content="SAST scanning, RARA governance, immutable audit chains, EU AI Act and SOC2 compliance." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/use-cases/security" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

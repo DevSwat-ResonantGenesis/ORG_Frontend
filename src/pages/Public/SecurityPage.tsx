@@ -1,6 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Shield, Lock, FileCheck, AlertTriangle, ArrowRight } from 'lucide-react';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/security'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -24,11 +27,11 @@ const SecurityPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Security — Encryption, Auth, Governance &amp; Compliance | DevSwat</title>
-        <meta name="description" content="DevSwat security: JWT auth with MFA/TOTP, AES memory encryption, tamper-evident audit trails, RARA governance with kill switch, HSTS, CORS lockdown, fail-closed middleware, SOC2/EU AI Act compliance." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/security" />
-        <meta property="og:title" content="DevSwat Security" />
-        <meta property="og:description" content="JWT/MFA auth, AES encryption, audit trails, RARA governance, compliance." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/security" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

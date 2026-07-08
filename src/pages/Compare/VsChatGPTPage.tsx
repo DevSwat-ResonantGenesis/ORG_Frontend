@@ -2,6 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle2, XCircle, ArrowRight } from 'lucide-react';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/compare/devswat-vs-chatgpt'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -48,11 +51,11 @@ const VsChatGPTPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>DevSwat vs ChatGPT — AI Platform Comparison 2026</title>
-        <meta name="description" content="DevSwat vs ChatGPT comparison. ChatGPT is a conversational AI assistant. DevSwat is agentic AI infrastructure with autonomous agents, SAST, governance, and a full IDE." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/compare/devswat-vs-chatgpt" />
-        <meta property="og:title" content="DevSwat vs ChatGPT — Full Comparison" />
-        <meta property="og:description" content="Chat assistant vs full agentic infrastructure: agents, IDE, SAST, governance." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/compare/devswat-vs-chatgpt" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

@@ -1,6 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/careers'];
 import {
   Briefcase, Code2, Cpu, Globe, ArrowRight, Github,
   Linkedin, Youtube, Twitter, Rocket, Heart
@@ -34,11 +37,11 @@ const TechnologyPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Careers at DevSwat — Build the Future of Agentic AI</title>
-        <meta name="description" content="Join DevSwat and help build agentic AI infrastructure. Python, FastAPI, React, TypeScript, distributed systems, ML. Built by one engineer — now looking for exceptional talent." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/careers" />
-        <meta property="og:title" content="Careers at DevSwat" />
-        <meta property="og:description" content="Build agentic AI infrastructure. Python, FastAPI, React, TypeScript, ML. Founded by one engineer — join the mission." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/careers" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

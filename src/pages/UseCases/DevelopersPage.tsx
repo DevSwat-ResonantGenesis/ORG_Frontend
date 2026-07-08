@@ -2,6 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Code2, Bot, Brain, Search, Terminal, ArrowRight, Zap, Shield } from 'lucide-react';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/use-cases/developers'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -26,11 +29,11 @@ const DevelopersPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>DevSwat for Developers — AI Pair Programming, Agents &amp; Code Analysis</title>
-        <meta name="description" content="How developers use DevSwat: AI-powered IDE with DevSwat AI intelligence, autonomous code agents, AST/SAST scanning, 9-layer semantic memory, smart neural routing, and unlimited LLM providers. Build faster with AI that actually runs your code." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/use-cases/developers" />
-        <meta property="og:title" content="DevSwat for Developers" />
-        <meta property="og:description" content="AI pair programming, autonomous agents, AST/SAST scanning, 9-layer memory, unlimited LLM providers." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/use-cases/developers" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

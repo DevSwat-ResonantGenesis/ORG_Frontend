@@ -1,6 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/products/chat'];
 import {
   MessageSquare, Shield, Brain, Layers, Zap, ArrowRight,
   CheckCircle2, Globe, BarChart3
@@ -42,11 +45,11 @@ const ChatPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>ResonantChat — Personalized AI Chat Intelligence with Smart Routing | DevSwat</title>
-        <meta name="description" content="Personalized AI chat intelligence with hallucination detection, evidence graphs, neural skill classification, and smart routing that reduces LLM token costs. Connect any LLM provider — unlimited. SSE streaming." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/products/chat" />
-        <meta property="og:title" content="ResonantChat — 68-Module AI Pipeline" />
-        <meta property="og:description" content="Hallucination detection, evidence graphs, unlimited LLM providers, neural skill classification, smart routing." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/products/chat" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

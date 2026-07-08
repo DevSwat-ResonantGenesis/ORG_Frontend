@@ -1,6 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/products/code-analysis'];
 import {
   Search, GitBranch, Shield, FileWarning, ArrowRight,
   BarChart3, Eye, Layers, Github
@@ -30,11 +33,11 @@ const CodeAnalysisPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Code Visualizer — AST/SAST Analysis, Dependency Graphs | DevSwat</title>
-        <meta name="description" content="AST/SAST code analysis for Python, JavaScript, TypeScript. GitHub repo scanning, dependency graphs, function tracing, dead code detection, governance reports, multi-project comparison." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/products/code-analysis" />
-        <meta property="og:title" content="Code Visualizer — AST/SAST Code Analysis" />
-        <meta property="og:description" content="AST/SAST scanning with dependency graphs, dead code detection, governance reports. Python, JS, TS." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/products/code-analysis" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

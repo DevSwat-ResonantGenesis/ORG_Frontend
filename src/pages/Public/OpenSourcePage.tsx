@@ -1,6 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/open-source'];
 import {
   Github, ExternalLink, ArrowRight, Terminal
 } from 'lucide-react';
@@ -44,11 +47,11 @@ const OpenSourcePage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Open Source — DevSwat GitHub Repos, OpenClaw</title>
-        <meta name="description" content="DevSwat open-source repositories on GitHub, including OpenClaw, the local-first federated agent connector. Auditable, source-available code." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/open-source" />
-        <meta property="og:title" content="Open Source — DevSwat GitHub Repos" />
-        <meta property="og:description" content="Open-source repos including OpenClaw, the local-first federated agent connector. All auditable on GitHub." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/open-source" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

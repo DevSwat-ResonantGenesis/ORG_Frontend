@@ -1,6 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/products/ide'];
 import {
   Code2, Terminal, Eye, FolderOpen, Cpu, ArrowRight,
   Download, Monitor, Laptop, Smartphone
@@ -30,11 +33,11 @@ const IDEPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>DevSwat IDE — AI-Powered Code Editor with 66 Tools</title>
-        <meta name="description" content="DevSwat IDE: AI-powered code editor with code execution intelligence, 66 tools, integrated terminal, live preview, and project management. Desktop app for macOS, Linux, Windows." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/products/ide" />
-        <meta property="og:title" content="DevSwat IDE — AI-Powered Code Editor" />
-        <meta property="og:description" content="AI code editor with 66 tools, code execution intelligence, terminal, live preview. macOS, Linux, Windows." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/products/ide" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

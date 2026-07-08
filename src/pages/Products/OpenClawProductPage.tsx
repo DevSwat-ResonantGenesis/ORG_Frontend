@@ -1,6 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/products/openclaw'];
 import {
   Terminal, Shield, Wrench, Lock, ArrowRight, Download,
   Cpu, Database, Globe, Eye, Zap
@@ -51,11 +54,11 @@ const OpenClawProductPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>OpenClaw — 137-Tool Local-First AI Agent Connector | DevSwat</title>
-        <meta name="description" content="OpenClaw: local-first federated agent connector with 137 tools across 15 categories. Tools run on YOUR machine. Self-creating tools via LLM + AST safety scan. Data never leaves your hardware." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/products/openclaw" />
-        <meta property="og:title" content="OpenClaw — 137-Tool Local-First Agent Connector" />
-        <meta property="og:description" content="137 tools, 15 categories. Tools run locally. Self-creating tools. Data never leaves your machine." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/products/openclaw" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

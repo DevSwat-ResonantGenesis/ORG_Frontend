@@ -2,6 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Zap, Calendar, Webhook, Bot, ArrowRight, Layers, GitBranch } from 'lucide-react';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/use-cases/automation'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -25,11 +28,11 @@ const AutomationPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>DevSwat for Automation — Scheduled Agents, Webhooks &amp; Workflows</title>
-        <meta name="description" content="Automate business processes with DevSwat: scheduled AI agents, webhook triggers, visual workflow designer, multi-agent pipelines, Gmail/Slack/Calendar integrations, and governed execution." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/use-cases/automation" />
-        <meta property="og:title" content="DevSwat for Automation" />
-        <meta property="og:description" content="Scheduled agents, webhooks, visual workflows, Gmail/Slack integrations, governed execution." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/use-cases/automation" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

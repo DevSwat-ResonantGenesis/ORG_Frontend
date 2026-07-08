@@ -1,6 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/products/memory'];
 import {
   Brain, Lock, Search, ArrowRight, Cpu,
   Database, Eye, Zap, Box, GitBranch, Clock, ShieldCheck, Code
@@ -50,11 +53,11 @@ const MemoryPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Resonant Memory — Physics-Informed, Immutable AI Memory API | DevSwat</title>
-        <meta name="description" content="The world's first physics-informed, immutable, sovereign AI memory. 12-D hash-sphere retrieval with gravity ranking, emergent anchors, associative mesh, cross-encoder reranking, multi-hop fact graph and temporal reasoning. Cryptographically hashed, encrypted, isolated per user/agent/org. Available as an API + SDK." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/products/memory" />
-        <meta property="og:title" content="Resonant Memory — Physics-Informed AI Memory API" />
-        <meta property="og:description" content="12-D hash-sphere retrieval, immutable and tamper-evident, isolated per user/agent/org. API + SDK, pay-per-call credits." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/products/memory" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

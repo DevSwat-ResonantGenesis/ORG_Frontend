@@ -2,6 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Server, Database, Shield, Globe, ArrowRight, Layers } from 'lucide-react';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/docs/architecture'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -41,11 +44,11 @@ const ArchitecturePage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Architecture — Platform Infrastructure & Service Topology | DevSwat Docs</title>
-        <meta name="description" content="DevSwat platform architecture: full-stack AI agent infrastructure with smart routing, governance, 9-layer memory, and IDE. Technical deep dive into service topology." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/docs/architecture" />
-        <meta property="og:title" content="DevSwat Architecture — Platform Infrastructure" />
-        <meta property="og:description" content="Full-stack AI agent infrastructure. Governance, smart routing, memory, IDE." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/docs/architecture" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

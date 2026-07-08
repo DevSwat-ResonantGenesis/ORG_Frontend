@@ -2,6 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Brain, ArrowRight } from 'lucide-react';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/docs/neural-routing'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -27,11 +30,11 @@ const NeuralRoutingDocsPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Neural Routing Docs — MLP Classifier Architecture &amp; Training | DevSwat Docs</title>
-        <meta name="description" content="Neural skill classifier technical docs: MLP architecture (384→256→128→14), training pipeline, active learning, model persistence in PostgreSQL, skill continuity boost, seed data." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/docs/neural-routing" />
-        <meta property="og:title" content="Neural Routing Architecture — DevSwat Docs" />
-        <meta property="og:description" content="MLP classifier architecture, training pipeline, active learning, PostgreSQL persistence." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/docs/neural-routing" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

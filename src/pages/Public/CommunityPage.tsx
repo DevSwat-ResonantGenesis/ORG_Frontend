@@ -2,6 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { Users, Github, MessageSquare, ArrowRight, BookOpen } from 'lucide-react';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/community'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -29,11 +32,11 @@ const CommunityPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Community — Open Source &amp; Developers | DevSwat</title>
-        <meta name="description" content="Join the DevSwat community: open-source GitHub repos, Rabbit social features, developer forums, and contributor opportunities." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/community" />
-        <meta property="og:title" content="DevSwat Community" />
-        <meta property="og:description" content="Open source, developer forums, contributor opportunities." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/community" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

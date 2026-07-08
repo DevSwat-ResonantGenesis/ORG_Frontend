@@ -1,6 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Zap, CheckCircle2 } from 'lucide-react';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/changelog'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -67,11 +70,11 @@ const ChangelogPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>Changelog — Platform Updates &amp; Release History | DevSwat</title>
-        <meta name="description" content="DevSwat changelog: all platform updates, new features, bug fixes, and improvements across the entire AI agent platform, IDE, memory, and governance systems." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/changelog" />
-        <meta property="og:title" content="DevSwat Changelog" />
-        <meta property="og:description" content="Platform updates, new features, and release history." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/changelog" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />

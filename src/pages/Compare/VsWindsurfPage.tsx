@@ -2,6 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle2, XCircle, ArrowRight } from 'lucide-react';
+import { ROUTE_META } from '@/config/routeMeta.mjs';
+
+const meta = ROUTE_META['/compare/devswat-vs-windsurf'];
 
 const s: Record<string, React.CSSProperties> = {
   page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
@@ -47,11 +50,11 @@ const VsWindsurfPage: React.FC = () => {
   return (
     <div style={s.page}>
       <Helmet>
-        <title>DevSwat vs Windsurf — AI IDE &amp; Platform Comparison 2026</title>
-        <meta name="description" content="DevSwat vs Windsurf comparison. Windsurf has Cascade agentic mode. DevSwat has autonomous agents, AST/SAST, governance, smart routing, and unlimited LLM providers." />
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
         <link rel="canonical" href="https://dev-swat.com/compare/devswat-vs-windsurf" />
-        <meta property="og:title" content="DevSwat vs Windsurf — Full Comparison" />
-        <meta property="og:description" content="Both have agentic coding. DevSwat adds a full agent platform, SAST, and governance." />
+        <meta property="og:title" content={meta.title} />
+        <meta property="og:description" content={meta.description} />
         <meta property="og:url" content="https://dev-swat.com/compare/devswat-vs-windsurf" />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
