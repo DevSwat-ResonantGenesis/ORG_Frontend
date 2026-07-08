@@ -65,6 +65,7 @@ export interface ResonantChatRequest {
   use_rag?: boolean; // Use RAG system for memory retrieval
   agent_hash?: string; // Agent hash for shared memory (if using agent)
   teamId?: string; // Team ID for team-based chat
+  client_timezone?: string; // IANA zone; auto-filled by sendResonantMessage/streamResonantMessage if omitted
   // IDE Chat Integration
   execute_mode?: boolean; // When true: skip explanations, return structured code changes
   project_context?: {
@@ -130,6 +131,18 @@ export interface ResonantChatResponse {
   webSearchResults?: WebSearchResult[];
   toolResults?: ToolResult[];
 }
+
+/**
+ * Real browser IANA timezone, sent so the backend never has to guess/fabricate
+ * the user's location for "current time" answers.
+ */
+const getClientTimezone = (): string | undefined => {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } catch {
+    return undefined;
+  }
+};
 
 /**
  * Apply Social Cognition Layer to enhance request with adaptive mirroring
@@ -203,6 +216,7 @@ export const sendResonantMessage = async (
     ...enhancedRequest,
     chat_id: enhancedRequest.chatId,  // Backend expects snake_case
     chatId: undefined,  // Remove camelCase version
+    client_timezone: enhancedRequest.client_timezone || getClientTimezone(),
   };
   
   try {
@@ -450,6 +464,7 @@ export const streamResonantMessage = async (
     agent_hash: request.agent_hash || undefined,
     teamId: request.teamId || undefined,
     images: request.images || undefined,
+    client_timezone: request.client_timezone || getClientTimezone(),
   };
 
   const response = await fetch(`${apiUrl}/resonant-chat/message/stream`, {

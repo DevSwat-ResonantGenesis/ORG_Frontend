@@ -2493,6 +2493,7 @@ const ResonantChatPage: React.FC = () => {
               enabled_tool_ids: enabledSkillIds.length > 0 ? enabledSkillIds : undefined,
               preferred_provider: selectedProvider !== 'auto' ? selectedProvider : undefined,
               preferred_model: selectedModel || undefined,
+              client_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             }),
             signal: controller.signal,
           });
