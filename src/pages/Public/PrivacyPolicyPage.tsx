@@ -109,7 +109,7 @@ const PrivacyPolicyPage: React.FC = () => {
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>1. Introduction</h2>
           <p style={styles.text}>
-            DevSwat ("we," "our," or "us") operates the resonant.dev-swat.com and resonant.dev-swat.com platforms.
+            DevSwat ("we," "our," or "us") operates the dev-swat.com and dev-swat.com platforms.
             This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you
             use our platform, including our AI agent creation tools, code analysis services, and integrated
             third-party connections.
@@ -208,7 +208,7 @@ const PrivacyPolicyPage: React.FC = () => {
           <h2 style={styles.sectionTitle}>10. Contact Us</h2>
           <p style={styles.text}>
             If you have questions about this Privacy Policy, please contact us at:<br />
-            <strong style={{ color: '#a5b4fc' }}>info@resonant.dev-swat.com</strong>
+            <strong style={{ color: '#a5b4fc' }}>info@dev-swat.com</strong>
           </p>
         </div>
       </div>

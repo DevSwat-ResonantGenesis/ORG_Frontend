@@ -29,12 +29,12 @@ const CBORSpecPage: React.FC = () => {
       <Helmet>
         <title>CBOR Block Format — RFC 8949 Encoding for Blockchain | DevSwat Docs</title>
         <meta name="description" content="CBOR (RFC 8949) canonical encoding for DevSwat blockchain. 5-layer encoding: blocks, transactions, smart contracts, semantic vectors, DSID-P identities. Deterministic serialization." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/docs/cbor-spec" />
+        <link rel="canonical" href="https://dev-swat.com/docs/cbor-spec" />
         <meta property="og:title" content="CBOR Block Format — DevSwat Docs" />
         <meta property="og:description" content="RFC 8949 canonical encoding. 5-layer blockchain data serialization." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/docs/cbor-spec" />
+        <meta property="og:url" content="https://dev-swat.com/docs/cbor-spec" />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

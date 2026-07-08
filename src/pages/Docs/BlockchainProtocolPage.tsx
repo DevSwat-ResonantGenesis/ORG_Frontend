@@ -29,12 +29,12 @@ const BlockchainProtocolPage: React.FC = () => {
       <Helmet>
         <title>Blockchain Protocol — DSID-P, Merkle Trees, Block Format | DevSwat Docs</title>
         <meta name="description" content="DevSwat blockchain protocol documentation. DSID-P identity, block structure, merkle tree computation, CBOR encoding, audit chain, Base Sepolia anchoring. Two chains: internal + sovereign external." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/docs/blockchain-protocol" />
+        <link rel="canonical" href="https://dev-swat.com/docs/blockchain-protocol" />
         <meta property="og:title" content="Blockchain Protocol — DevSwat Docs" />
         <meta property="og:description" content="DSID-P, block format, merkle trees, CBOR encoding, audit chain." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/docs/blockchain-protocol" />
+        <meta property="og:url" content="https://dev-swat.com/docs/blockchain-protocol" />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

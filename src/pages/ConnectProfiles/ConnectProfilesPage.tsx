@@ -556,7 +556,7 @@ const ConnectProfilesPage: React.FC = () => {
 {`# Python — run in your agent process
 import requests, time, threading
 
-API = "https://resonant.dev-swat.com/api/v1/openclaw"
+API = "https://dev-swat.com/api/v1/openclaw"
 TOKEN = "<your-jwt-token>"
 AGENT_ID = "${openclawResult.agent_id}"
 
@@ -577,7 +577,7 @@ threading.Thread(target=heartbeat_loop, daemon=True).start()`}
 {`// JavaScript / Node.js
 const AGENT_ID = "${openclawResult.agent_id}";
 setInterval(async () => {
-  await fetch("https://resonant.dev-swat.com/api/v1/openclaw/agents/heartbeat", {
+  await fetch("https://dev-swat.com/api/v1/openclaw/agents/heartbeat", {
     method: "POST",
     headers: { "Content-Type": "application/json",
                "Authorization": "Bearer <your-jwt-token>" },

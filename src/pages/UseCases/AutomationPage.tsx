@@ -27,12 +27,12 @@ const AutomationPage: React.FC = () => {
       <Helmet>
         <title>DevSwat for Automation — Scheduled Agents, Webhooks &amp; Workflows</title>
         <meta name="description" content="Automate business processes with DevSwat: scheduled AI agents, webhook triggers, visual workflow designer, multi-agent pipelines, Gmail/Slack/Calendar integrations, and governed execution." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/use-cases/automation" />
+        <link rel="canonical" href="https://dev-swat.com/use-cases/automation" />
         <meta property="og:title" content="DevSwat for Automation" />
         <meta property="og:description" content="Scheduled agents, webhooks, visual workflows, Gmail/Slack integrations, governed execution." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/use-cases/automation" />
+        <meta property="og:url" content="https://dev-swat.com/use-cases/automation" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

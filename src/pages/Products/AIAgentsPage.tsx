@@ -32,17 +32,17 @@ const AIAgentsPage: React.FC = () => {
       <Helmet>
         <title>AI Agents — Build, Run &amp; Schedule Autonomous Agents | DevSwat</title>
         <meta name="description" content="Build, run, and schedule autonomous AI agents on server or local hardware. Multi-agent orchestration with voting, debate, and chain protocols. 30+ tools, Agent Architect, governed and unbounded modes." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/products/ai-agents" />
+        <link rel="canonical" href="https://dev-swat.com/products/ai-agents" />
         <meta property="og:title" content="AI Agents — Build, Run & Schedule Autonomous Agents" />
         <meta property="og:description" content="Autonomous AI agents with multi-agent orchestration, 30+ tools, scheduling, and governed execution modes." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/products/ai-agents" />
+        <meta property="og:url" content="https://dev-swat.com/products/ai-agents" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org", "@type": "SoftwareApplication",
           "name": "DevSwat Agents OS", "applicationCategory": "DeveloperApplication",
           "description": "Build, run, and schedule autonomous AI agents with multi-agent orchestration.",
-          "url": "https://resonant.dev-swat.com/products/ai-agents",
+          "url": "https://dev-swat.com/products/ai-agents",
           "operatingSystem": "Web, macOS, Linux, Windows",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
         })}</script>

@@ -35,12 +35,12 @@ const NeuralRoutingPage: React.FC = () => {
       <Helmet>
         <title>Neural Routing — ML Skill Classifier &amp; Multi-Agent Selection | DevSwat</title>
         <meta name="description" content="Neural skill classifier trained on sentence-transformer embeddings. 2-layer MLP routes messages to 14 specialized skills in ~5ms. Active learning, performance tracking, best-agent selection." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/products/neural-routing" />
+        <link rel="canonical" href="https://dev-swat.com/products/neural-routing" />
         <meta property="og:title" content="Neural Routing — ML Skill Classifier" />
         <meta property="og:description" content="Trained MLP classifier routes messages to specialized skills in ~5ms. Active learning." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/products/neural-routing" />
+        <meta property="og:url" content="https://dev-swat.com/products/neural-routing" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

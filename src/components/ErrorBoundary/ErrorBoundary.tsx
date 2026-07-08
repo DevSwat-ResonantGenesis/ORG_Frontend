@@ -168,7 +168,7 @@ Time: ${new Date().toISOString()}
 
             <div style={{ marginTop: '24px' }}>
               <a
-                href={`mailto:support@resonant.dev-swat.com?subject=Bug Report&body=${encodeURIComponent(
+                href={`mailto:support@dev-swat.com?subject=Bug Report&body=${encodeURIComponent(
                   `Error: ${error?.message}\nURL: ${window.location.href}\nTime: ${new Date().toISOString()}`
                 )}`}
                 style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: '#9ca3af', textDecoration: 'none' }}

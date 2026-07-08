@@ -10,11 +10,11 @@
 </p>
 
 <p align="center">
-  <a href="https://resonant.dev-swat.com">Live Platform</a> &bull;
-  <a href="https://resonant.dev-swat.com/pricing">Pricing</a> &bull;
-  <a href="https://resonant.dev-swat.com/api/docs">API Docs</a> &bull;
-  <a href="https://resonant.dev-swat.com/help">Help Center</a> &bull;
-  <a href="https://resonant.dev-swat.com/contact">Contact</a>
+  <a href="https://dev-swat.com">Live Platform</a> &bull;
+  <a href="https://dev-swat.com/pricing">Pricing</a> &bull;
+  <a href="https://dev-swat.com/api/docs">API Docs</a> &bull;
+  <a href="https://dev-swat.com/help">Help Center</a> &bull;
+  <a href="https://dev-swat.com/contact">Contact</a>
 </p>
 
 <p align="center">
@@ -22,7 +22,7 @@
   <a href="https://www.youtube.com/@DevSwat">YouTube</a> &bull;
   <a href="https://x.com/devswat">X (Twitter)</a> &bull;
   <a href="https://www.reddit.com/u/DevSwat/">Reddit</a> &bull;
-  <a href="mailto:contact@resonant.dev-swat.com">contact@resonant.dev-swat.com</a>
+  <a href="mailto:contact@dev-swat.com">contact@dev-swat.com</a>
 </p>
 
 ---
@@ -33,7 +33,7 @@
 
 Unlike wrapper products that put a UI on top of OpenAI or LangChain, DevSwat is **9 proprietary IP systems** built from the ground up. Every line of code is original. Every system is production-deployed.
 
-**Available for acquisition.** Replacement cost: **$2M–$5M+** (18–24 months for a standard team). [View the investor pitch deck →](https://resonant.dev-swat.com/investor-pitch-deck)
+**Available for acquisition.** Replacement cost: **$2M–$5M+** (18–24 months for a standard team). [View the investor pitch deck →](https://dev-swat.com/investor-pitch-deck)
 
 ---
 
@@ -289,7 +289,7 @@ Built the entire platform solo in under 4 months using DevSwat's own agentic wor
 - **YouTube**: [youtube.com/@DevSwat](https://www.youtube.com/@DevSwat)
 - **X (Twitter)**: [x.com/devswat](https://x.com/devswat)
 - **Reddit**: [reddit.com/u/DevSwat](https://www.reddit.com/u/DevSwat/)
-- **Email**: [contact@resonant.dev-swat.com](mailto:contact@resonant.dev-swat.com)
+- **Email**: [contact@dev-swat.com](mailto:contact@dev-swat.com)
 
 ---
 
@@ -323,18 +323,18 @@ DevSwat is **production-deployed and available for acquisition**.
 
 | Resource | URL |
 |----------|-----|
-| **Live Platform** | [resonant.dev-swat.com](https://resonant.dev-swat.com) |
-| **Investor Pitch Deck** | [resonant.dev-swat.com/investor-pitch-deck](https://resonant.dev-swat.com/investor-pitch-deck) |
-| **Pricing** | [resonant.dev-swat.com/pricing](https://resonant.dev-swat.com/pricing) |
-| **API Documentation** | [resonant.dev-swat.com/api/docs](https://resonant.dev-swat.com/api/docs) |
-| **Code Visualizer** | [resonant.dev-swat.com/code-visualizer](https://resonant.dev-swat.com/code-visualizer) |
-| **Hash Sphere Demo** | [resonant.dev-swat.com/state-physics](https://resonant.dev-swat.com/state-physics) |
-| **Memory Universe** | [resonant.dev-swat.com/resonant-memory](https://resonant.dev-swat.com/resonant-memory) |
-| **Help Center** | [resonant.dev-swat.com/help](https://resonant.dev-swat.com/help) |
-| **Enterprise** | [resonant.dev-swat.com/enterprise](https://resonant.dev-swat.com/enterprise) |
-| **Community** | [resonant.dev-swat.com/community](https://resonant.dev-swat.com/community) |
-| **Contact** | [resonant.dev-swat.com/contact](https://resonant.dev-swat.com/contact) |
-| **Mirror Domain** | [resonant.dev-swat.com](https://resonant.dev-swat.com) |
+| **Live Platform** | [dev-swat.com](https://dev-swat.com) |
+| **Investor Pitch Deck** | [dev-swat.com/investor-pitch-deck](https://dev-swat.com/investor-pitch-deck) |
+| **Pricing** | [dev-swat.com/pricing](https://dev-swat.com/pricing) |
+| **API Documentation** | [dev-swat.com/api/docs](https://dev-swat.com/api/docs) |
+| **Code Visualizer** | [dev-swat.com/code-visualizer](https://dev-swat.com/code-visualizer) |
+| **Hash Sphere Demo** | [dev-swat.com/state-physics](https://dev-swat.com/state-physics) |
+| **Memory Universe** | [dev-swat.com/resonant-memory](https://dev-swat.com/resonant-memory) |
+| **Help Center** | [dev-swat.com/help](https://dev-swat.com/help) |
+| **Enterprise** | [dev-swat.com/enterprise](https://dev-swat.com/enterprise) |
+| **Community** | [dev-swat.com/community](https://dev-swat.com/community) |
+| **Contact** | [dev-swat.com/contact](https://dev-swat.com/contact) |
+| **Mirror Domain** | [dev-swat.com](https://dev-swat.com) |
 
 ---
 
@@ -346,5 +346,5 @@ DevSwat is **production-deployed and available for acquisition**.
 
 <p align="center">
   <strong>Built with determination by <a href="https://www.linkedin.com/company/devswat/">Louie Nemesh</a></strong><br/>
-  <a href="https://resonant.dev-swat.com">resonant.dev-swat.com</a> &bull; <a href="https://resonant.dev-swat.com">resonant.dev-swat.com</a>
+  <a href="https://dev-swat.com">dev-swat.com</a> &bull; <a href="https://dev-swat.com">dev-swat.com</a>
 </p>

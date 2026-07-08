@@ -1865,7 +1865,7 @@ Once you've connected services at **/connect-profiles**, your agents can use tho
 ### Need help?
 - Ask Resonant Chat — it has full knowledge of all platform pages and setup workflows
 - Visit **/help** for more guides
-- Contact support at contact@resonant.dev-swat.com
+- Contact support at contact@dev-swat.com
 
 ## Related Articles
 
@@ -2800,7 +2800,7 @@ Switch to **Compare** mode to analyze up to **3 different versions** of your cod
 
 ### Method 4: API
 \`\`\`bash
-curl -X POST https://resonant.dev-swat.com/api/v1/scan/github \\
+curl -X POST https://dev-swat.com/api/v1/scan/github \\
   -H "Authorization: Bearer YOUR_TOKEN" \\
   -H "Content-Type: application/json" \\
   -d '{"repo_url": "https://github.com/user/repo"}'

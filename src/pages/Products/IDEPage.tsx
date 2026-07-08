@@ -32,18 +32,18 @@ const IDEPage: React.FC = () => {
       <Helmet>
         <title>DevSwat IDE — AI-Powered Code Editor with 66 Tools</title>
         <meta name="description" content="DevSwat IDE: AI-powered code editor with code execution intelligence, 66 tools, integrated terminal, live preview, and project management. Desktop app for macOS, Linux, Windows." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/products/ide" />
+        <link rel="canonical" href="https://dev-swat.com/products/ide" />
         <meta property="og:title" content="DevSwat IDE — AI-Powered Code Editor" />
         <meta property="og:description" content="AI code editor with 66 tools, code execution intelligence, terminal, live preview. macOS, Linux, Windows." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/products/ide" />
+        <meta property="og:url" content="https://dev-swat.com/products/ide" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org", "@type": "SoftwareApplication",
           "name": "DevSwat IDE", "applicationCategory": "DeveloperApplication",
           "operatingSystem": "macOS, Linux, Windows",
           "description": "AI-powered code editor with 66 tools, code execution intelligence, and integrated development environment.",
-          "url": "https://resonant.dev-swat.com/products/ide",
+          "url": "https://dev-swat.com/products/ide",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
         })}</script>
       </Helmet>

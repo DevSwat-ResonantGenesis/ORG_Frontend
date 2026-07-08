@@ -26,12 +26,12 @@ const SecurityPage: React.FC = () => {
       <Helmet>
         <title>Security — Encryption, Auth, Governance &amp; Compliance | DevSwat</title>
         <meta name="description" content="DevSwat security: JWT auth with MFA/TOTP, AES memory encryption, blockchain audit trails, RARA governance with kill switch, HSTS, CORS lockdown, fail-closed middleware, SOC2/EU AI Act compliance." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/security" />
+        <link rel="canonical" href="https://dev-swat.com/security" />
         <meta property="og:title" content="DevSwat Security" />
         <meta property="og:description" content="JWT/MFA auth, AES encryption, blockchain audit, RARA governance, compliance." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/security" />
+        <meta property="og:url" content="https://dev-swat.com/security" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>
@@ -78,7 +78,7 @@ const SecurityPage: React.FC = () => {
           </div>
           <div style={s.card}>
             <div style={s.cardTitle}><Lock size={16} color="#818cf8" /> CORS Lockdown</div>
-            <div style={s.cardText}>Strict CORS policy. Only resonant.dev-swat.com origin allowed. No wildcard origins. Credentials require explicit allowlisting.</div>
+            <div style={s.cardText}>Strict CORS policy. Only dev-swat.com origin allowed. No wildcard origins. Credentials require explicit allowlisting.</div>
           </div>
         </div>
       </section>
@@ -106,7 +106,7 @@ const SecurityPage: React.FC = () => {
       <section style={{ ...s.section, paddingTop: '2rem' }}>
         <h2 style={s.h2}>Responsible Disclosure</h2>
         <p style={s.p}>
-          Found a security issue? Email <strong>security@resonant.dev-swat.com</strong>. We take all reports
+          Found a security issue? Email <strong>security@dev-swat.com</strong>. We take all reports
           seriously and will respond within 48 hours.
         </p>
       </section>

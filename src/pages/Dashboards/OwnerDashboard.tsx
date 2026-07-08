@@ -1448,7 +1448,7 @@ const OwnerDashboard: React.FC = () => {
           <div className="rowList">
             <div className="row">
               <span className="rowLabel">Domain</span>
-              <span className={`${styles.mono} ${styles.font10}`}>resonant.dev-swat.com</span>
+              <span className={`${styles.mono} ${styles.font10}`}>dev-swat.com</span>
             </div>
             <div className="row">
               <span className="rowLabel">Gateway</span>

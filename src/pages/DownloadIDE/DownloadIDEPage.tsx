@@ -19,7 +19,7 @@ const SETUP_STEPS = [
 const QUICK_START = [
   { title: 'Clone & Install', desc: 'Grab the repo, install the right Node version, and run npm install.' },
   { title: 'Build the AI Extension', desc: 'Compile the resonant-ai extension, then compile the IDE itself.' },
-  { title: 'Launch & Sign In', desc: 'Run ./scripts/code.sh and log in with your free resonant.dev-swat.com account.' },
+  { title: 'Launch & Sign In', desc: 'Run ./scripts/code.sh and log in with your free dev-swat.com account.' },
 ];
 
 const FEATURE_ICONS = [
@@ -52,7 +52,7 @@ const FEATURES = [
   { title: '71 Local Tools · 13 Categories', desc: 'File I/O, multi-edit, grep, find, git (status/diff/commit/push/pull/branch), run_command, 8 interactive terminal tools, web search, browser preview, notebook edit, deploy, SSH, Docker, MCP, workflows, checkpoints, and inline SVG/Mermaid visualization — all executed locally via Electron IPC.' },
   { title: '11 AI Providers · Cloud + Local', desc: '6 cloud providers (OpenAI, Anthropic, Groq, Google, DeepSeek, BYOK) + 5 local (Ollama, LM Studio, llama.cpp, LocalAI, vLLM). Server-side fallback chain auto-rotates through keys and providers on failure. You choose the model in the IDE picker.' },
   { title: '14 Code Visualizer Tools', desc: 'AST-based static analysis engine with 14 dedicated tools: scan projects, trace dependency flows, run SAST security audits, detect dead code, score governance compliance (0–100), compare multi-repo drift, verify formal invariants, and compile reversible Graph Analysis Language patches.' },
-  { title: 'Hash Sphere Memory', desc: 'Persistent cross-session memory synced with resonant.dev-swat.com via save_memory, read_memory, and create_memory tools. The AI stores project context, coding preferences, and decisions — retrieves them semantically across machines.' },
+  { title: 'Hash Sphere Memory', desc: 'Persistent cross-session memory synced with dev-swat.com via save_memory, read_memory, and create_memory tools. The AI stores project context, coding preferences, and decisions — retrieves them semantically across machines.' },
   { title: 'Agentic Chat Loop', desc: 'LLM plans → calls tools → reads results → iterates. Configurable loop depth (1 to unlimited). Smart context compression summarizes large tool outputs to reduce token usage. Interactive terminals let the AI run REPLs, dev servers, and SSH sessions persistently.' },
   { title: 'Platform API Access', desc: 'platform_api_search indexes 450+ backend endpoints across agents, billing, memory, blockchain, marketplace, Invariants SIM, and more. platform_api_call lets the AI invoke any endpoint directly — turning the IDE into a full control plane for the DevSwat platform.' },
 ];
@@ -244,7 +244,7 @@ const IDE_FAQ_ITEMS = [
 <p><strong>Server provides only:</strong></p>
 <ul>
 <li><strong>LLM routing:</strong> Your prompts are sent to the selected model (OpenAI, Anthropic, Groq, Google, DeepSeek, Ollama, LM Studio, etc.) via the platform's LLM gateway. Server-side fallback chain auto-rotates through providers on failure.</li>
-<li><strong>Memory sync:</strong> Long-term memories are stored in the Hash Sphere memory system on resonant.dev-swat.com. The AI saves and retrieves project context, coding preferences, and decisions across sessions and machines.</li>
+<li><strong>Memory sync:</strong> Long-term memories are stored in the Hash Sphere memory system on dev-swat.com. The AI saves and retrieves project context, coding preferences, and decisions across sessions and machines.</li>
 </ul>
 <p><strong>What stays local:</strong> Your code, your files, your terminal sessions, your git repos. The IDE never sends file contents to the server unless the AI needs to use a cloud tool (like web search or image generation).</p>`,
   },
@@ -253,7 +253,7 @@ const IDE_FAQ_ITEMS = [
     labelClass: 'faqLabelAuth',
     question: 'How does authentication work? Is my code safe?',
     answer: `<p><strong>Same JWT auth flow as the Mining App and OpenClaw connector.</strong></p>
-<p><strong>Login:</strong> You provide your resonant.dev-swat.com credentials in the IDE settings. The extension authenticates with the platform auth service over HTTPS and receives a JWT token. The token is stored in VS Code's secure credential storage — never in plain text.</p>
+<p><strong>Login:</strong> You provide your dev-swat.com credentials in the IDE settings. The extension authenticates with the platform auth service over HTTPS and receives a JWT token. The token is stored in VS Code's secure credential storage — never in plain text.</p>
 <p><strong>What the token is used for:</strong></p>
 <ul>
 <li><strong>LLM requests:</strong> Your prompts are sent to the LLM gateway with your JWT. The server routes to the model you selected.</li>
@@ -268,7 +268,7 @@ const IDE_FAQ_ITEMS = [
 <li>Your local file system structure</li>
 </ul>
 <p><strong>Identity layers:</strong> On registration, you get 4 identity anchors: UUID (platform), crypto_hash (blockchain), user_hash (Hash Sphere), universe_id (deterministic anchor). All anchored on the DevSwat Blockchain.</p>
-<p><strong>Security hardening:</strong> HSTS, CORS lockdown to resonant.dev-swat.com, fail-closed auth (no JWT = 503), rate limiting. Same infrastructure protecting $RGT wallets.</p>`,
+<p><strong>Security hardening:</strong> HSTS, CORS lockdown to dev-swat.com, fail-closed auth (no JWT = 503), rate limiting. Same infrastructure protecting $RGT wallets.</p>`,
   },
   {
     label: 'Tools',
@@ -343,7 +343,7 @@ const REQUIREMENTS = [
   { label: 'npm 10.x+', detail: '' },
   { label: 'Python 3.10+', detail: 'for native modules & SAST analysis' },
   { label: 'Xcode CLI Tools', detail: 'macOS, or build-essential on Linux' },
-  { label: 'Free account', detail: 'at resonant.dev-swat.com — required for AI features' },
+  { label: 'Free account', detail: 'at dev-swat.com — required for AI features' },
 ];
 
 const CheckIcon = () => (

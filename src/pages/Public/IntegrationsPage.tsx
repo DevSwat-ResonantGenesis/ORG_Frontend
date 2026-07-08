@@ -53,12 +53,12 @@ const IntegrationsPage: React.FC = () => {
       <Helmet>
         <title>Integrations — Unlimited LLM Providers, Platform Connectors, OAuth | DevSwat</title>
         <meta name="description" content="DevSwat integrations: connect any LLM provider (OpenAI, Anthropic, Gemini, Groq, Mistral, Cohere, Ollama, and more). Platform connectors for Google Drive, Gmail, Slack, Calendar, Figma, Stripe, and any external service. Unlimited." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/integrations" />
+        <link rel="canonical" href="https://dev-swat.com/integrations" />
         <meta property="og:title" content="Integrations — DevSwat" />
         <meta property="og:description" content="Unlimited LLM providers, platform connectors, OAuth, Gmail, Slack, Drive, Figma, Stripe." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/integrations" />
+        <meta property="og:url" content="https://dev-swat.com/integrations" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

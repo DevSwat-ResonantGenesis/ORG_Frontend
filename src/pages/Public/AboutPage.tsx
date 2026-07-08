@@ -36,23 +36,23 @@ const AboutPage: React.FC = () => {
     <div style={s.page}>
       <Helmet>
         <title>About DevSwat — Agentic AI Infrastructure Built by One Engineer</title>
-        <meta name="description" content="DevSwat is a full-stack agentic AI SaaS platform built from scratch by Louie Nemesh. 9 proprietary IP systems, ~550K lines of code. AI agents, IDE, blockchain, mining, governance, smart routing. Production-deployed at resonant.dev-swat.com." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/about" />
+        <meta name="description" content="DevSwat is a full-stack agentic AI SaaS platform built from scratch by Louie Nemesh. 9 proprietary IP systems, ~550K lines of code. AI agents, IDE, blockchain, mining, governance, smart routing. Production-deployed at dev-swat.com." />
+        <link rel="canonical" href="https://dev-swat.com/about" />
         <meta property="og:title" content="About DevSwat — Agentic AI Infrastructure" />
         <meta property="og:description" content="Full-stack agentic AI platform built from scratch by one engineer in 4 months. 9 proprietary IP systems, ~550K lines of code." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/about" />
+        <meta property="og:url" content="https://dev-swat.com/about" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "AboutPage",
           "name": "About DevSwat",
           "description": "Full-stack agentic AI infrastructure platform built from scratch.",
-          "url": "https://resonant.dev-swat.com/about",
+          "url": "https://dev-swat.com/about",
           "mainEntity": {
             "@type": "Organization",
             "name": "DevSwat",
-            "url": "https://resonant.dev-swat.com",
+            "url": "https://dev-swat.com",
             "founder": { "@type": "Person", "name": "Louie Nemesh", "jobTitle": "Founder & Lead Engineer" },
             "description": "Agentic AI infrastructure for building, running, and scheduling server and local agents."
           }

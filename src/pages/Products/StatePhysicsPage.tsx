@@ -28,12 +28,12 @@ const StatePhysicsPage: React.FC = () => {
       <Helmet>
         <title>Hash Sphere — Physics-Based State Engine &amp; N-Body Simulation | DevSwat</title>
         <meta name="description" content="Completely novel physics-based state engine. N-body simulation with gravity, repulsion, electromagnetic, and resonance forces. Conservation invariants, entropy injection, Three.js 3D visualization." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/products/state-physics" />
+        <link rel="canonical" href="https://dev-swat.com/products/state-physics" />
         <meta property="og:title" content="Hash Sphere — Physics-Based State Engine" />
         <meta property="og:description" content="N-body simulation with gravity, repulsion, entropy forces. Conservation invariants. Three.js 3D visualization." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/products/state-physics" />
+        <meta property="og:url" content="https://dev-swat.com/products/state-physics" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

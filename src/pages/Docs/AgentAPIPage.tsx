@@ -40,12 +40,12 @@ const AgentAPIPage: React.FC = () => {
       <Helmet>
         <title>Agent API Reference — Create, Run &amp; Schedule Agents | DevSwat Docs</title>
         <meta name="description" content="DevSwat Agent API reference. REST endpoints for creating, running, scheduling, and managing autonomous AI agents. SSE streaming, multi-agent teams, Agent Architect. Full request/response examples." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/docs/agent-api" />
+        <link rel="canonical" href="https://dev-swat.com/docs/agent-api" />
         <meta property="og:title" content="Agent API Reference — DevSwat Docs" />
         <meta property="og:description" content="REST API for creating, running, and scheduling autonomous AI agents." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/docs/agent-api" />
+        <meta property="og:url" content="https://dev-swat.com/docs/agent-api" />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

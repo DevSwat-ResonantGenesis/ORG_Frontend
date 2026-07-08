@@ -49,12 +49,12 @@ const ArchitecturePage: React.FC = () => {
       <Helmet>
         <title>Architecture — Platform Infrastructure & Service Topology | DevSwat Docs</title>
         <meta name="description" content="DevSwat platform architecture: full-stack AI agent infrastructure with blockchain logging, smart routing, governance, 9-layer memory, IDE, mining network. Technical deep dive into service topology." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/docs/architecture" />
+        <link rel="canonical" href="https://dev-swat.com/docs/architecture" />
         <meta property="og:title" content="DevSwat Architecture — Platform Infrastructure" />
         <meta property="og:description" content="Full-stack AI agent infrastructure. Blockchain, governance, smart routing, mining, IDE." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/docs/architecture" />
+        <meta property="og:url" content="https://dev-swat.com/docs/architecture" />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

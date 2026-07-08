@@ -17,7 +17,7 @@ const SETUP_STEPS = [
 
 const QUICK_START = [
   { title: 'Clone & Install', desc: 'Clone the repo, create a virtual environment, and install dependencies from requirements.txt.' },
-  { title: 'Login', desc: 'Authenticate with your free resonant.dev-swat.com account — the same credentials used across the platform.' },
+  { title: 'Login', desc: 'Authenticate with your free dev-swat.com account — the same credentials used across the platform.' },
   { title: 'Start Mining', desc: 'Run python server.py, open the dashboard at localhost:3000, and start earning $RGT.' },
 ];
 
@@ -69,7 +69,7 @@ const REQUIREMENTS = [
   { label: 'GPU VRAM', detail: '4 GB for Seed 1B, 24+ GB for larger models' },
   { label: 'PyTorch 2.1+', detail: '2.4+ recommended' },
   { label: 'Network', detail: 'Broadband internet, 100+ Mbps for P2P weight transfer' },
-  { label: 'Free account', detail: 'at resonant.dev-swat.com (required for mining)' },
+  { label: 'Free account', detail: 'at dev-swat.com (required for mining)' },
 ];
 
 const NETWORK_FLOW = [
@@ -120,12 +120,12 @@ const FAQ_ITEMS = [
   {
     label: 'Platform',
     labelClass: 'faqLabelPlatform',
-    question: 'Why does it require a free account at resonant.dev-swat.com?',
+    question: 'Why does it require a free account at dev-swat.com?',
     answer: `<p><strong>Authentication prevents abuse, not lock-in.</strong> Here's why and how it works:</p>
 <p><strong>Why auth is required:</strong> Without identity verification, anyone could submit garbage gradients and claim rewards. The auth system ensures every gradient submission is tied to a verified account, making it possible to enforce quality control, slashing penalties for bad actors, and fair reward distribution.</p>
 <p><strong>How login works:</strong> The miner app sends your credentials to the platform auth service and receives a JWT token, stored locally on your machine. All subsequent API calls (mining tasks, gradient submission, reward claims) include this token. This is the exact same auth flow used by the DevSwat IDE — one account for the entire platform.</p>
 <p><strong>Identity layers:</strong> On registration, each user gets 4 identity anchors: a platform UUID, a SHA-256 blockchain identity (crypto_hash), a Hash Sphere semantic identity (user_hash), and a deterministic Anchor Universe ID (universe_id). Your blockchain identity is anchored on-chain via the <code>/identity/register</code> endpoint.</p>
-<p><strong>About the domain:</strong> <code>resonant.dev-swat.com</code> is the production domain for the DevSwat platform, operated by the DevSwat-ResonantGenesis organization (same org that owns all the GitHub repos). The name "DevSwat" is the parent organization. All services (auth, mining, blockchain, lighthouse) run behind HTTPS on this domain with HSTS, CORS lockdown, and fail-closed auth in production.</p>
+<p><strong>About the domain:</strong> <code>dev-swat.com</code> is the production domain for the DevSwat platform, operated by the DevSwat-ResonantGenesis organization (same org that owns all the GitHub repos). The name "DevSwat" is the parent organization. All services (auth, mining, blockchain, lighthouse) run behind HTTPS on this domain with HSTS, CORS lockdown, and fail-closed auth in production.</p>
 <p><strong>No vendor lock-in:</strong> The miner app is fully open-source. The <code>RG_PLATFORM_URL</code> is configurable — you can point it at any compatible backend. The code for all 3 backend services (Mining, Lighthouse, External Blockchain) is also open-source under AGPL-3.0.</p>`,
   },
   {
@@ -139,7 +139,7 @@ const FAQ_ITEMS = [
 <li><strong>7+ repos on GitHub</strong> under <a href="https://github.com/DevSwat-ResonantGenesis" target="_blank" rel="noopener noreferrer">DevSwat-ResonantGenesis</a> — miner app, mining service, blockchain, lighthouse, crypto service, memory service, frontend. All open-source under AGPL-3.0.</li>
 <li><strong>Real ML engineering:</strong> Raft consensus from scratch, 1F1B pipeline parallelism, GQA+RoPE+SwiGLU transformer architecture, Top-K gradient compression with SHA-256 verification, WebRTC P2P NAT traversal, slashing with Merkle proof verification.</li>
 <li><strong>Production infrastructure:</strong> Nginx TLS termination, JWT auth with fail-closed security, HSTS, CORS lockdown. Full-stack platform deployed in production. This isn't a weekend hackathon project.</li>
-<li><strong>Live platform:</strong> <a href="https://resonant.dev-swat.com" target="_blank" rel="noopener noreferrer">resonant.dev-swat.com</a> runs the DevSwat IDE, AI agents, LLM APIs, Hash Sphere memory, and Code Visualizer — the services that $RGT pays for.</li>
+<li><strong>Live platform:</strong> <a href="https://dev-swat.com" target="_blank" rel="noopener noreferrer">dev-swat.com</a> runs the DevSwat IDE, AI agents, LLM APIs, Hash Sphere memory, and Code Visualizer — the services that $RGT pays for.</li>
 </ul>
 <p><strong>What we haven't done yet:</strong></p>
 <ul>

@@ -35,17 +35,17 @@ const MiningPage: React.FC = () => {
       <Helmet>
         <title>Decentralized LLM Training — Mine AI Models &amp; Earn $RGT | DevSwat</title>
         <meta name="description" content="Train frontier LLMs on your GPU and earn $RGT tokens. Real PyTorch training with 1F1B pipeline parallelism, GQA+RoPE+SwiGLU transformer, WebRTC P2P weight transfer, 5-layer Proof-of-Training security." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/products/mining" />
+        <link rel="canonical" href="https://dev-swat.com/products/mining" />
         <meta property="og:title" content="Decentralized LLM Training — Mine & Earn $RGT" />
         <meta property="og:description" content="Real GPU training for frontier LLMs. Pipeline parallelism, P2P weight transfer, Proof-of-Training verification." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/products/mining" />
+        <meta property="og:url" content="https://dev-swat.com/products/mining" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org", "@type": "SoftwareApplication",
           "name": "DevSwat Mining Client", "applicationCategory": "UtilitiesApplication",
           "description": "Decentralized LLM training client. Train AI models on your GPU and earn $RGT tokens.",
-          "url": "https://resonant.dev-swat.com/products/mining",
+          "url": "https://dev-swat.com/products/mining",
           "operatingSystem": "macOS, Linux, Windows",
           "license": "https://www.gnu.org/licenses/agpl-3.0.html",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }

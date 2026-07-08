@@ -80,7 +80,7 @@ curl -I https://resonantgenesis.xyz
 
 **Check deployment on server:**
 ```bash
-ssh deploy@resonant.dev-swat.com
+ssh deploy@dev-swat.com
 
 # Check nginx status
 sudo -n systemctl status nginx --no-pager
@@ -142,7 +142,7 @@ sudo -n journalctl -u nginx -n 50 --no-pager
 
 ```bash
 # SSH to droplet
-ssh deploy@resonant.dev-swat.com
+ssh deploy@dev-swat.com
 
 # List available backups
 ls -lh /var/backups/frontend/
@@ -204,10 +204,10 @@ curl -I https://resonantgenesis.xyz
 **Diagnosis:**
 ```bash
 # Check if files actually updated
-ssh deploy@resonant.dev-swat.com "ls -lh /var/www/frontend/"
+ssh deploy@dev-swat.com "ls -lh /var/www/frontend/"
 
 # Check nginx version
-ssh deploy@resonant.dev-swat.com "nginx -V"
+ssh deploy@dev-swat.com "nginx -V"
 ```
 
 **Solution:**
@@ -215,7 +215,7 @@ ssh deploy@resonant.dev-swat.com "nginx -V"
 # Hard refresh browser (Cmd+Shift+R)
 
 # Or clear nginx cache
-ssh deploy@resonant.dev-swat.com
+ssh deploy@dev-swat.com
 sudo -n nginx -t
 sudo -n systemctl reload nginx
 
@@ -234,7 +234,7 @@ sudo -n systemctl restart nginx
 **Diagnosis:**
 ```bash
 # Check nginx SPA configuration
-ssh deploy@resonant.dev-swat.com "sudo -n grep -R 'try_files' /etc/nginx | head"
+ssh deploy@dev-swat.com "sudo -n grep -R 'try_files' /etc/nginx | head"
 ```
 
 **Solution:**
@@ -261,13 +261,13 @@ sudo -n systemctl reload nginx
 curl https://resonantgenesis.xyz/assets/
 
 # Check file permissions
-ssh deploy@resonant.dev-swat.com "ls -lh /var/www/frontend/assets/"
+ssh deploy@dev-swat.com "ls -lh /var/www/frontend/assets/"
 ```
 
 **Solution:**
 ```bash
 # Fix permissions if needed
-ssh deploy@resonant.dev-swat.com
+ssh deploy@dev-swat.com
 chmod -R 755 /var/www/frontend/
 sudo -n chown -R www-data:www-data /var/www/frontend/
 

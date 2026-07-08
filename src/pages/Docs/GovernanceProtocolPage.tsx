@@ -29,12 +29,12 @@ const GovernanceProtocolPage: React.FC = () => {
       <Helmet>
         <title>Governance Protocol — RARA Invariants, Capability Grammar | DevSwat Docs</title>
         <meta name="description" content="RARA governance protocol: invariant classes (structural, semantic, temporal), capability grammar, trust scoring with decay, mutation executor, compliance profiles (minimal/standard/strict)." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/docs/governance-protocol" />
+        <link rel="canonical" href="https://dev-swat.com/docs/governance-protocol" />
         <meta property="og:title" content="RARA Governance Protocol — DevSwat Docs" />
         <meta property="og:description" content="Invariant classes, capability grammar, trust scoring, mutation executor." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/docs/governance-protocol" />
+        <meta property="og:url" content="https://dev-swat.com/docs/governance-protocol" />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

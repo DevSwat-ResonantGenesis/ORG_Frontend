@@ -52,18 +52,18 @@ const MemoryPage: React.FC = () => {
       <Helmet>
         <title>Resonant Memory — Physics-Informed, Immutable AI Memory API | DevSwat</title>
         <meta name="description" content="The world's first physics-informed, immutable, sovereign AI memory. 12-D hash-sphere retrieval with gravity ranking, emergent anchors, associative mesh, cross-encoder reranking, multi-hop fact graph and temporal reasoning. On-chain, encrypted, isolated per user/agent/org. Available as an API + SDK." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/products/memory" />
+        <link rel="canonical" href="https://dev-swat.com/products/memory" />
         <meta property="og:title" content="Resonant Memory — Physics-Informed AI Memory API" />
         <meta property="og:description" content="12-D hash-sphere retrieval, immutable on-chain, isolated per user/agent/org. API + SDK, pay-per-call credits." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/products/memory" />
+        <meta property="og:url" content="https://dev-swat.com/products/memory" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org", "@type": "SoftwareApplication",
           "name": "Resonant Memory", "applicationCategory": "DeveloperApplication",
           "description": "Physics-informed, immutable, sovereign AI memory API with 12-D hash-sphere retrieval, multi-hop fact graph, and temporal reasoning.",
           "offers": { "@type": "Offer", "priceCurrency": "USD", "price": "5" },
-          "url": "https://resonant.dev-swat.com/products/memory"
+          "url": "https://dev-swat.com/products/memory"
         })}</script>
       </Helmet>
 

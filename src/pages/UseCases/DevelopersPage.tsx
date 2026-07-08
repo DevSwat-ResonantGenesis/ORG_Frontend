@@ -28,12 +28,12 @@ const DevelopersPage: React.FC = () => {
       <Helmet>
         <title>DevSwat for Developers — AI Pair Programming, Agents &amp; Code Analysis</title>
         <meta name="description" content="How developers use DevSwat: AI-powered IDE with DevSwat AI intelligence, autonomous code agents, AST/SAST scanning, 9-layer semantic memory, smart neural routing, and unlimited LLM providers. Build faster with AI that actually runs your code." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/use-cases/developers" />
+        <link rel="canonical" href="https://dev-swat.com/use-cases/developers" />
         <meta property="og:title" content="DevSwat for Developers" />
         <meta property="og:description" content="AI pair programming, autonomous agents, AST/SAST scanning, 9-layer memory, unlimited LLM providers." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/use-cases/developers" />
+        <meta property="og:url" content="https://dev-swat.com/use-cases/developers" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

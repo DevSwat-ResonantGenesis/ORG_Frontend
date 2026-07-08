@@ -167,7 +167,7 @@ export const StatePhysicsSection: React.FC = () => {
                 <li>Dedicated support</li>
               </ul>
               <button 
-                onClick={() => window.open('mailto:enterprise@resonant.dev-swat.com', '_blank')}
+                onClick={() => window.open('mailto:enterprise@dev-swat.com', '_blank')}
                 className="w-full py-2 rounded-lg bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 transition-colors"
               >
                 Contact Sales

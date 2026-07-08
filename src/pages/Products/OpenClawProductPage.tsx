@@ -53,17 +53,17 @@ const OpenClawProductPage: React.FC = () => {
       <Helmet>
         <title>OpenClaw — 137-Tool Local-First AI Agent Connector | DevSwat</title>
         <meta name="description" content="OpenClaw: local-first federated agent connector with 137 tools across 15 categories. Tools run on YOUR machine. Self-creating tools via LLM + AST safety scan. Data never leaves your hardware." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/products/openclaw" />
+        <link rel="canonical" href="https://dev-swat.com/products/openclaw" />
         <meta property="og:title" content="OpenClaw — 137-Tool Local-First Agent Connector" />
         <meta property="og:description" content="137 tools, 15 categories. Tools run locally. Self-creating tools. Data never leaves your machine." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/products/openclaw" />
+        <meta property="og:url" content="https://dev-swat.com/products/openclaw" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org", "@type": "SoftwareApplication",
           "name": "OpenClaw", "applicationCategory": "DeveloperApplication",
           "description": "Local-first federated agent connector with 137 tools. Privacy-first — tools run on your machine.",
-          "url": "https://resonant.dev-swat.com/products/openclaw",
+          "url": "https://dev-swat.com/products/openclaw",
           "operatingSystem": "macOS, Linux, Windows",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
         })}</script>

@@ -29,12 +29,12 @@ const MiningProtocolPage: React.FC = () => {
       <Helmet>
         <title>Mining Protocol — Pipeline Parallelism, Gradient Compression | DevSwat Docs</title>
         <meta name="description" content="DevSwat mining protocol: 1F1B pipeline parallelism, Top-K gradient compression (100x), FedAvg aggregation, 5-layer Proof-of-Training, reward tiers, slashing, halving schedule." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/docs/mining-protocol" />
+        <link rel="canonical" href="https://dev-swat.com/docs/mining-protocol" />
         <meta property="og:title" content="Mining Protocol — DevSwat Docs" />
         <meta property="og:description" content="1F1B pipeline parallelism, gradient compression, FedAvg, Proof-of-Training." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/docs/mining-protocol" />
+        <meta property="og:url" content="https://dev-swat.com/docs/mining-protocol" />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

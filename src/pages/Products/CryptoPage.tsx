@@ -28,12 +28,12 @@ const CryptoPage: React.FC = () => {
       <Helmet>
         <title>$RGT Token — Crypto Wallet &amp; Mining Credits | DevSwat</title>
         <meta name="description" content="$RGT token: closed utility economy for DevSwat. Earn by mining LLMs, spend on IDE, agents, LLM APIs. Wallet management, transaction explorer, 5-layer Proof-of-Training verification, halving schedule." />
-        <link rel="canonical" href="https://resonant.dev-swat.com/products/crypto" />
+        <link rel="canonical" href="https://dev-swat.com/products/crypto" />
         <meta property="og:title" content="$RGT Token — Crypto Wallet & Mining Credits" />
         <meta property="og:description" content="Earn $RGT by training LLMs. Spend on platform services. 5-layer security. Halving schedule." />
-        <meta property="og:url" content="https://resonant.dev-swat.com/products/crypto" />
+        <meta property="og:url" content="https://dev-swat.com/products/crypto" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://resonant.dev-swat.com/devswat/DevSwat.png" />
+        <meta property="og:image" content="https://dev-swat.com/devswat/DevSwat.png" />
       </Helmet>
 
       <section style={s.hero}>

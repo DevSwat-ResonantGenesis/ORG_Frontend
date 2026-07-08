@@ -12,16 +12,16 @@ const SETUP_STEPS = [
   { cmd: 'pip install -r requirements.txt', note: 'Install dependencies' },
   { cmd: 'cp .env.example .env', note: 'Config ready (defaults work out of the box)' },
   { cmd: 'uvicorn app.main:app --port 8000 --reload', note: 'Start the connector (open localhost:8000 to verify)' },
-  { cmd: 'curl -X POST http://localhost:8000/auth/login -H "Content-Type: application/json" -d \'{"email":"you@example.com","password":"your-pass"}\'', note: 'Authenticate with your resonant.dev-swat.com account' },
+  { cmd: 'curl -X POST http://localhost:8000/auth/login -H "Content-Type: application/json" -d \'{"email":"you@example.com","password":"your-pass"}\'', note: 'Authenticate with your dev-swat.com account' },
   { cmd: 'curl http://localhost:8000/auth/status', note: 'Verify — should show authenticated: true' },
   { cmd: 'curl -X POST http://localhost:8000/agents/register -H "Content-Type: application/json" -d \'{"name":"my-agent","tools":["web_search","memory_read","memory_write"]}\'', note: 'Register a federated agent on the platform' },
-  { cmd: '# Go to resonant.dev-swat.com/agents → find your agent → click Run', note: 'Run your agent from the platform UI!' },
+  { cmd: '# Go to dev-swat.com/agents → find your agent → click Run', note: 'Run your agent from the platform UI!' },
 ];
 
 const QUICK_START = [
   { title: 'Clone & Install', desc: 'Clone the repo, create a virtualenv, and pip install the requirements.' },
-  { title: 'Start & Authenticate', desc: 'Launch the connector with uvicorn, then authenticate with your free resonant.dev-swat.com account.' },
-  { title: 'Register & Run', desc: 'Register a federated agent and run it live from resonant.dev-swat.com/agents.' },
+  { title: 'Start & Authenticate', desc: 'Launch the connector with uvicorn, then authenticate with your free dev-swat.com account.' },
+  { title: 'Register & Run', desc: 'Register a federated agent and run it live from dev-swat.com/agents.' },
 ];
 
 const FEATURE_ICONS = [
@@ -63,7 +63,7 @@ const FEATURES = [
   { title: 'Local Memory (SQLite)', desc: 'All agent memory stored in ~/.openclaw/data/memory.db on YOUR disk. FTS5 full-text search. Memory content is NEVER sent to the server. Persists across sessions, restarts, and updates.' },
   { title: 'Privacy by Architecture', desc: 'Memory content, search results, fetched pages, and code output never leave your machine. The platform only receives: tool name + timing (step reports) and the final answer text. That\'s it.' },
   { title: 'Secure Polling Dispatch', desc: 'Click "Run" on your federated agent — the platform queues the task. Your connector polls every 5 seconds and picks it up. ALL traffic is outbound HTTPS. Zero inbound connections. Works behind any firewall.' },
-  { title: 'Live Step Streaming', desc: 'Each tool call reports step metadata to the platform UI in real-time — tool name, timing, and ran_locally flag. Watch your agent work live on resonant.dev-swat.com/agents without any data exposure.' },
+  { title: 'Live Step Streaming', desc: 'Each tool call reports step metadata to the platform UI in real-time — tool name, timing, and ran_locally flag. Watch your agent work live on dev-swat.com/agents without any data exposure.' },
   { title: 'Cloud Fallback for OAuth Tools', desc: 'Tools requiring OAuth (Google Calendar, Gmail, Slack) or GPU (image generation) automatically fall back to the platform server. Everything else runs locally on your machine.' },
   { title: '162 Platform Tools + 560+ APIs', desc: 'Access 162 tools across 16 categories. 8 run locally (web search, fetch, memory, code exec, deep research). The rest available via platform. Plus 560+ REST APIs across the full DevSwat platform.' },
   { title: 'Your Hardware, Your Data', desc: 'Your agent runs on YOUR machine. Memory stays on YOUR disk. Search results stay in YOUR RAM. Server only gets the final answer. No telemetry, no data collection. Disconnect any time — nothing is lost.' },
@@ -244,16 +244,16 @@ const TOOL_CATALOG = [
 const REQUIREMENTS = [
   { label: 'Python 3.9+', detail: '3.11+ recommended' },
   { label: 'pip', detail: 'Package manager' },
-  { label: 'Free account', detail: 'at resonant.dev-swat.com (same login as IDE & Miner)' },
+  { label: 'Free account', detail: 'at dev-swat.com (same login as IDE & Miner)' },
   { label: 'Terminal', detail: '5 minutes to full setup' },
 ];
 
 const NETWORK_FLOW = [
-  { step: '1', title: 'Create Account', desc: 'Sign up at resonant.dev-swat.com. You get a platform UUID, blockchain identity (crypto_hash), and Hash Sphere identity.' },
+  { step: '1', title: 'Create Account', desc: 'Sign up at dev-swat.com. You get a platform UUID, blockchain identity (crypto_hash), and Hash Sphere identity.' },
   { step: '2', title: 'Start Connector', desc: 'Clone RG_OpenClaw, pip install, uvicorn start. Local SQLite memory DB created automatically at ~/.openclaw/data/memory.db.' },
-  { step: '3', title: 'Authenticate', desc: 'POST /auth/login with your resonant.dev-swat.com credentials. JWT stored at ~/.openclaw/tokens.json. Auto-refreshes — no re-login needed.' },
-  { step: '4', title: 'Create Agent', desc: 'Option A: resonant.dev-swat.com/agents → + Create → ⚡ Federated. Option B: POST /agents/register from the connector. Both create agent_source=\'federated\' on the platform.' },
-  { step: '5', title: 'Run from Platform', desc: 'Click "Run" on your agent at resonant.dev-swat.com/agents. Task is queued → your connector picks it up within 5 seconds.' },
+  { step: '3', title: 'Authenticate', desc: 'POST /auth/login with your dev-swat.com credentials. JWT stored at ~/.openclaw/tokens.json. Auto-refreshes — no re-login needed.' },
+  { step: '4', title: 'Create Agent', desc: 'Option A: dev-swat.com/agents → + Create → ⚡ Federated. Option B: POST /agents/register from the connector. Both create agent_source=\'federated\' on the platform.' },
+  { step: '5', title: 'Run from Platform', desc: 'Click "Run" on your agent at dev-swat.com/agents. Task is queued → your connector picks it up within 5 seconds.' },
   { step: '6', title: 'Local Execution', desc: 'Tools run on YOUR machine: web_search → DuckDuckGo, memory → local SQLite, fetch_url → direct HTTP, code → subprocess. No data leaves your machine.' },
   { step: '7', title: 'Live Streaming', desc: 'Each tool call sends step metadata (tool name + timing) to the platform UI. Watch your agent work live. Memory content and search results are NOT sent.' },
   { step: '8', title: 'Final Answer Only', desc: 'Only the final answer text is submitted to the platform. Your memory stays on YOUR disk. Search results stay in YOUR RAM. Server only displays the result.' },
@@ -336,7 +336,7 @@ const FAQ_ITEMS = [
 <p><strong>What you can verify right now:</strong></p>
 <ul>
 <li><strong>Fully open source:</strong> The connector (<a href="https://github.com/DevSwat-ResonantGenesis/RG_OpenClaw" target="_blank" rel="noopener noreferrer">RG_OpenClaw</a>), the agent engine, the tool registry, the mining service, the blockchain — all available on GitHub under <a href="https://github.com/DevSwat-ResonantGenesis" target="_blank" rel="noopener noreferrer">DevSwat-ResonantGenesis</a>.</li>
-<li><strong>Real infrastructure:</strong> 42 microservices in Docker Compose, Nginx TLS, JWT auth with fail-closed security, HSTS, CORS lockdown. Not a demo — a production platform at <a href="https://resonant.dev-swat.com" target="_blank" rel="noopener noreferrer">resonant.dev-swat.com</a>.</li>
+<li><strong>Real infrastructure:</strong> 42 microservices in Docker Compose, Nginx TLS, JWT auth with fail-closed security, HSTS, CORS lockdown. Not a demo — a production platform at <a href="https://dev-swat.com" target="_blank" rel="noopener noreferrer">dev-swat.com</a>.</li>
 <li><strong>Same auth as everything else:</strong> The OpenClaw connector uses the exact same authentication flow as the DevSwat IDE and Mining App. One account, one JWT, consistent security across all entry points.</li>
 <li><strong>Your agent, your hardware:</strong> The connector is a bridge, not a cage. Your OpenClaw agent runs locally. You control what tools it calls. You can disconnect at any time. The source is open — audit every HTTP call it makes.</li>
 </ul>
@@ -486,7 +486,7 @@ const OpenClawPage: React.FC = () => {
             <div className={styles.tipCallout}>
               <strong>Tip:</strong> Defaults work out of the box — no .env editing needed.
               After starting the connector, run <code>POST /auth/login</code> with your{' '}
-              <a href="https://resonant.dev-swat.com" target="_blank" rel="noopener noreferrer">resonant.dev-swat.com</a> credentials.
+              <a href="https://dev-swat.com" target="_blank" rel="noopener noreferrer">dev-swat.com</a> credentials.
               JWT is stored securely and auto-refreshes.
             </div>
           </div>
@@ -520,7 +520,7 @@ const OpenClawPage: React.FC = () => {
           <h2 className={styles.sectionTitle}>How It Works</h2>
           <p className={styles.sectionDesc}>
             Local-first execution: tools run on YOUR machine, platform only dispatches tasks and displays the final answer.
-            Authenticate once, register as federated, and run your agent from resonant.dev-swat.com/agents.
+            Authenticate once, register as federated, and run your agent from dev-swat.com/agents.
             Memory stays local. Data never leaves your machine.
           </p>
         </div>

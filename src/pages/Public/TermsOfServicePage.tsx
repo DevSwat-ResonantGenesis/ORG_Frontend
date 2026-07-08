@@ -109,8 +109,8 @@ const TermsOfServicePage: React.FC = () => {
         <div style={styles.section}>
           <h2 style={styles.sectionTitle}>1. Acceptance of Terms</h2>
           <p style={styles.text}>
-            By accessing or using the DevSwat platform ("Service"), operated at resonant.dev-swat.com and
-            resonant.dev-swat.com, you agree to be bound by these Terms of Service ("Terms"). If you do not
+            By accessing or using the DevSwat platform ("Service"), operated at dev-swat.com and
+            dev-swat.com, you agree to be bound by these Terms of Service ("Terms"). If you do not
             agree to these Terms, do not use the Service.
           </p>
         </div>
@@ -239,7 +239,7 @@ const TermsOfServicePage: React.FC = () => {
           <h2 style={styles.sectionTitle}>13. Contact</h2>
           <p style={styles.text}>
             For questions about these Terms of Service, please contact us at:<br />
-            <strong style={{ color: '#a5b4fc' }}>info@resonant.dev-swat.com</strong>
+            <strong style={{ color: '#a5b4fc' }}>info@dev-swat.com</strong>
           </p>
         </div>
       </div>
