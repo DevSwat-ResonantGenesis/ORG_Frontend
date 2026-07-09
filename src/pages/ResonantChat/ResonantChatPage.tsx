@@ -69,6 +69,7 @@ import { enhanceToMarkdown } from '@/utils/markdownEnhancer';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 // @ts-ignore
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { extractAgentAudioUrls } from '@/utils/agentAudioUrl';
 import styles from './ResonantChatPage-2025.module.css';
 // Lazy load ThreeParticleSphere (Three.js heavy component)
 const ThreeParticleSphere = React.lazy(() =>
@@ -4806,6 +4807,21 @@ const ResonantChatPage: React.FC = () => {
                         {message.id === typingMessageId && (
                           <span className={styles.typingCaret} aria-hidden="true" />
                         )}
+                        {message.role === 'assistant' && extractAgentAudioUrls(renderedMessageContent).map((url) => (
+                          <div key={url} className={styles.agentAudioResult}>
+                            <audio controls src={url} className={styles.agentAudioPlayer}>
+                              Your browser does not support inline audio playback.
+                            </audio>
+                            <a href={url} download className={styles.agentAudioDownloadBtn}>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                              </svg>
+                              Download MP3
+                            </a>
+                          </div>
+                        ))}
                       </div>
                       {/* Agentic Step Visualization (tool/skill execution results) */}
                       {message.role === 'assistant' && message.toolResults && message.toolResults.length > 0 && (

@@ -847,6 +847,45 @@
   text-decoration: none;
 }
 
+.agentAudioResult {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 216, 0, 0.06);
+  border: 1px solid rgba(255, 216, 0, 0.18);
+}
+
+.agentAudioPlayer {
+  flex: 1;
+  min-width: 220px;
+  height: 34px;
+}
+
+.agentAudioDownloadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: rgba(255, 216, 0, 0.12);
+  border: 1px solid rgba(255, 216, 0, 0.3);
+  color: #FFD800;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.agentAudioDownloadBtn:hover {
+  background: rgba(255, 216, 0, 0.2);
+  border-color: rgba(255, 216, 0, 0.5);
+}
+
 /* Strong/Bold text */
 .messageContent strong {
   color: #f8fafc;

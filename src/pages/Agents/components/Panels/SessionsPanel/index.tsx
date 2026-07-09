@@ -6,25 +6,11 @@ import { useAgentStore, selectSelectedAgent } from '../../../../../stores';
 import { Icons } from '../../shared/Icons';
 import * as agentEngine from '../../../../../api/agentEngine';
 import type { AgentSession, AgentStep } from '../../../../../api/agentEngine';
-import { getApiUrl } from '../../../../../utils/apiUrl';
+import { extractAgentAudioUrls as extractAudioUrls } from '../../../../../utils/agentAudioUrl';
 import styles from './SessionsPanel.module.css';
 
 // ============== SESSIONS PANEL ==============
 // Manages agent sessions - start, view, stop sessions
-
-// Finds every `/agents/audio/{session_id}` reference a tool (e.g.
-// finalize_audio_podcast) left in the agent's final_output text and turns
-// it into an absolute, fetchable URL so we can render a real play/download
-// control instead of leaving it as inert backtick-quoted text.
-const AUDIO_PATH_REGEX = /\/agents\/audio\/([0-9a-fA-F-]{36})/g;
-
-const extractAudioUrls = (text: string): string[] => {
-  const matches = new Set<string>();
-  for (const match of text.matchAll(AUDIO_PATH_REGEX)) {
-    matches.add(`${getApiUrl()}${match[0]}`);
-  }
-  return Array.from(matches);
-};
 
 interface SessionsPanelProps {
   className?: string;
