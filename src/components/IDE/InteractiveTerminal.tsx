@@ -43,6 +43,18 @@ export const InteractiveTerminal: React.FC<InteractiveTerminalProps> = ({
     termRef.current = term;
     fitRef.current = fit;
 
+    // xterm.js captures keystrokes via a hidden textarea. Without disabling
+    // these, mobile keyboards (and some desktop browsers) run autocorrect/
+    // autocomplete over it and mangle typed input - e.g. inserting spaces
+    // after "recognized" words instead of sending raw keystrokes.
+    const helperTextarea = containerRef.current.querySelector('textarea.xterm-helper-textarea');
+    if (helperTextarea) {
+      helperTextarea.setAttribute('autocorrect', 'off');
+      helperTextarea.setAttribute('autocapitalize', 'off');
+      helperTextarea.setAttribute('autocomplete', 'off');
+      helperTextarea.setAttribute('spellcheck', 'false');
+    }
+
     const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const params = new URLSearchParams();
     if (projectId) params.set('project_id', projectId);
