@@ -280,6 +280,14 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     }
     return 'auto';
   });
+  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [selectedVoiceURI, setSelectedVoiceURI] = useState<string>(() => {
+    try {
+      return localStorage.getItem('rg-tts-voice') || '';
+    } catch {
+      return '';
+    }
+  });
 
   const getFileKey = useCallback((file: File) => `${file.name}-${file.size}-${file.lastModified}`, []);
 
@@ -646,6 +654,25 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     };
   }, []);
 
+  // Browser voices load async (and vary per-OS) — populate on mount and again
+  // whenever the browser fires voiceschanged (Chrome loads them late).
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    const loadVoices = () => setAvailableVoices(window.speechSynthesis.getVoices());
+    loadVoices();
+    window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
+    return () => window.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+  }, []);
+
+  const handleVoiceSelectChange = useCallback((voiceURI: string) => {
+    setSelectedVoiceURI(voiceURI);
+    try {
+      localStorage.setItem('rg-tts-voice', voiceURI);
+    } catch {
+      // ignore storage access errors
+    }
+  }, []);
+
   const detectSpeechLanguage = useCallback((text: string): string => {
     if (/[\u0600-\u06FF]/.test(text)) return 'ar-SA';
     if (/[іїєґІЇЄҐ]/.test(text)) return 'uk-UA';
@@ -762,8 +789,11 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     window.speechSynthesis.cancel();
     const text = ttsText.trim();
     const detectedLang = detectSpeechLanguage(text);
-    const availableVoices = window.speechSynthesis.getVoices();
-    const preferredVoice = selectPreferredVoice(availableVoices, detectedLang);
+    const voicesNow = window.speechSynthesis.getVoices();
+    const manualVoice = selectedVoiceURI
+      ? voicesNow.find((v) => v.voiceURI === selectedVoiceURI)
+      : undefined;
+    const preferredVoice = manualVoice || selectPreferredVoice(voicesNow, detectedLang);
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = preferredVoice?.lang || detectedLang;
@@ -777,7 +807,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     utterance.onerror = () => setIsSpeaking(false);
     setIsSpeaking(true);
     window.speechSynthesis.speak(utterance);
-  }, [detectSpeechLanguage, isSpeaking, selectPreferredVoice, ttsText]);
+  }, [detectSpeechLanguage, isSpeaking, selectPreferredVoice, selectedVoiceURI, ttsText]);
 
   useEffect(() => {
     if (!voiceInInput) {
@@ -1453,6 +1483,24 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
             >
               <SpeakerIcon />
             </button>
+
+            {/* Voice picker for the browser TTS above — free, no API key needed */}
+            {availableVoices.length > 0 && (
+              <select
+                className={styles.voiceSelect}
+                value={selectedVoiceURI}
+                onClick={(e) => e.stopPropagation()}
+                onChange={(e) => handleVoiceSelectChange(e.target.value)}
+                title="Text-to-speech voice"
+              >
+                <option value="">Auto voice</option>
+                {availableVoices.map((v) => (
+                  <option key={v.voiceURI} value={v.voiceURI}>
+                    {v.name} ({v.lang})
+                  </option>
+                ))}
+              </select>
+            )}
 
             {/* Mic icon - moved before LLM provider */}
             <VoiceInput

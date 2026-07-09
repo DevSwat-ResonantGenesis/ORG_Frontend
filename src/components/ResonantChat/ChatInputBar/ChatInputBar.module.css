@@ -576,6 +576,48 @@
   height: 18px;
 }
 
+.voiceSelect {
+  max-width: 120px;
+  height: 32px;
+  padding: 0 22px 0 8px;
+  background-color: transparent;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 11px;
+  opacity: 0.5;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  transition: opacity 0.15s ease;
+}
+
+.voiceSelect:hover,
+.voiceSelect:focus {
+  opacity: 1;
+  outline: none;
+}
+
+[data-theme='light'] .voiceSelect {
+  color: #000;
+}
+
+.voiceSelect option {
+  background: #0a0a0c;
+  color: #fff;
+}
+
+[data-theme='light'] .voiceSelect option {
+  background: #fff;
+  color: #111;
+}
+
 .toolLabel {
   font-size: 12px;
   font-weight: 500;
