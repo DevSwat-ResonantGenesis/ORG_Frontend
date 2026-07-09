@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './TerminalTabs.module.css';
+import { InteractiveTerminal } from './InteractiveTerminal';
 
 export interface TerminalTab {
   id: string;
@@ -10,25 +11,23 @@ export interface TerminalTab {
 
 interface TerminalTabsProps {
   tabs?: TerminalTab[];
+  projectId?: string;
   onTabAdd?: () => void;
   onTabClose?: (tabId: string) => void;
   onTabSelect?: (tabId: string) => void;
-  onCommand?: (command: string, tabId: string) => void;
 }
 
 export const TerminalTabs: React.FC<TerminalTabsProps> = ({
   tabs: initialTabs,
+  projectId,
   onTabAdd,
   onTabClose,
   onTabSelect,
-  onCommand,
 }) => {
   const [tabs, setTabs] = useState<TerminalTab[]>(
-    Array.isArray(initialTabs) ? initialTabs : [{ id: '1', name: 'Terminal 1', content: '> ', active: true }]
+    Array.isArray(initialTabs) ? initialTabs : [{ id: '1', name: 'Terminal 1', content: '', active: true }]
   );
   const [activeTabId, setActiveTabId] = useState<string>(tabs[0]?.id || '1');
-  const [commandInputs, setCommandInputs] = useState<Record<string, string>>({});
-  const inputRef = useRef<HTMLInputElement>(null);
 
   // Use parent tabs if provided, otherwise use internal state
   const safeInitialTabs = Array.isArray(initialTabs) ? initialTabs : undefined;
@@ -46,9 +45,6 @@ export const TerminalTabs: React.FC<TerminalTabsProps> = ({
     }
   }, [initialTabs]);
 
-  // Don't auto-focus terminal input - only focus when user explicitly clicks on terminal
-  // Removed auto-focus to prevent stealing focus from chat input
-
   const addTab = () => {
     if (onTabAdd) {
       onTabAdd();
@@ -59,12 +55,11 @@ export const TerminalTabs: React.FC<TerminalTabsProps> = ({
     const newTab: TerminalTab = {
       id: newId,
       name: `Terminal ${tabs.length + 1}`,
-      content: '> ',
+      content: '',
       active: false,
     };
     setTabs([...tabs.map(t => ({ ...t, active: false })), newTab]);
     setActiveTabId(newId);
-    setCommandInputs(prev => ({ ...prev, [newId]: '' }));
   };
 
   const closeTab = (tabId: string) => {
@@ -77,18 +72,13 @@ export const TerminalTabs: React.FC<TerminalTabsProps> = ({
 
     const newTabs = tabs.filter(t => t.id !== tabId);
     const wasActive = activeTabId === tabId;
-    
+
     if (wasActive && newTabs.length > 0) {
       setActiveTabId(newTabs[0].id);
       newTabs[0].active = true;
     }
-    
+
     setTabs(newTabs);
-    setCommandInputs(prev => {
-      const newInputs = { ...prev };
-      delete newInputs[tabId];
-      return newInputs;
-    });
   };
 
   const selectTab = (tabId: string) => {
@@ -100,28 +90,6 @@ export const TerminalTabs: React.FC<TerminalTabsProps> = ({
     setActiveTabId(tabId);
     setTabs(tabs.map(t => ({ ...t, active: t.id === tabId })));
   };
-
-  const handleCommand = (e: React.KeyboardEvent<HTMLInputElement>, tabId: string) => {
-    if (e.key === 'Enter') {
-      const command = commandInputs[tabId] || '';
-      if (command.trim()) {
-        if (onCommand) {
-          onCommand(command, tabId);
-        } else {
-          // Default behavior: append command to content
-          setTabs(tabs.map(t => 
-            t.id === tabId 
-              ? { ...t, content: `${t.content}${command}\n> ` }
-              : t
-          ));
-        }
-        setCommandInputs(prev => ({ ...prev, [tabId]: '' }));
-        // Don't auto-refocus - let user click to focus if needed
-      }
-    }
-  };
-
-  const activeTab = displayTabs.find(t => t.id === displayActiveTabId);
 
   return (
     <div className={styles.terminalContainer}>
@@ -166,37 +134,18 @@ export const TerminalTabs: React.FC<TerminalTabsProps> = ({
         </button>
       </div>
 
-      {/* Terminal Content */}
-      <div 
-        className={styles.terminalContent}
-        onClick={(e) => {
-          // Only focus input if clicking directly on the input area, not when clicking elsewhere
-          if (e.target === inputRef.current || (e.target as HTMLElement).closest(`.${styles.terminalInput}`)) {
-            inputRef.current?.focus();
-          }
-        }}
-      >
-        <div className={styles.terminalOutput}>
-          <pre className={styles.outputText}>{activeTab?.content || ''}</pre>
-        </div>
-        <div className={styles.terminalInput}>
-          <span className={styles.prompt}>{'> '}</span>
-          <input
-            ref={inputRef}
-            type="text"
-            className={styles.commandInput}
-            value={commandInputs[displayActiveTabId] || ''}
-            onChange={(e) => setCommandInputs(prev => ({ ...prev, [displayActiveTabId]: e.target.value }))}
-            onKeyDown={(e) => handleCommand(e, displayActiveTabId)}
-            onFocus={(e) => e.target.select()}
-            onClick={(e) => {
-              e.stopPropagation();
-              inputRef.current?.focus();
-            }}
-            placeholder="Type a command..."
-            tabIndex={0}
+      {/* Terminal Content - one real interactive shell per tab, in its own
+          sandboxed container. All tabs stay mounted (just hidden) so their
+          sessions and scrollback survive switching between them. */}
+      <div className={styles.terminalContent}>
+        {displayTabs.map((tab) => (
+          <InteractiveTerminal
+            key={tab.id}
+            terminalId={tab.id}
+            projectId={projectId}
+            visible={tab.id === displayActiveTabId}
           />
-        </div>
+        ))}
       </div>
     </div>
   );

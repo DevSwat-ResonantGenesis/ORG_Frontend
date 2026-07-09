@@ -11,7 +11,6 @@ interface CursorTerminalPanelProps {
 export const CursorTerminalPanel: React.FC<CursorTerminalPanelProps> = ({
   initialHeight = 200,
   projectId,
-  files = [],
 }) => {
   const [visible, setVisible] = useState(true);
   const [height, setHeight] = useState(initialHeight);
@@ -86,115 +85,6 @@ export const CursorTerminalPanel: React.FC<CursorTerminalPanelProps> = ({
     setTabs(tabs.map(t => ({ ...t, active: t.id === tabId })));
   };
 
-  const handleCommand = async (command: string, tabId: string) => {
-    const activeTab = tabs.find(t => t.id === tabId);
-    if (!activeTab) return;
-
-    // Append command to terminal output
-    const commandLine = `$ ${command}\n`;
-    const updatedContent = activeTab.content + commandLine;
-    
-    setTabs(tabs.map(t => 
-      t.id === tabId 
-        ? { ...t, content: updatedContent }
-        : t
-    ));
-
-    // Execute command via backend (if projectId is available)
-    if (projectId && command.trim()) {
-      try {
-        // TODO: Add terminal command execution API endpoint
-        // For now, simulate command execution
-        const response = await executeTerminalCommand(command, projectId);
-        const output = response.output || response.error || '';
-        
-        setTabs(tabs.map(t => 
-          t.id === tabId 
-            ? { ...t, content: updatedContent + output + '\n' }
-            : t
-        ));
-      } catch (error: any) {
-        const errorMsg = `Error: ${error.message || 'Command execution failed'}\n`;
-        setTabs(tabs.map(t => 
-          t.id === tabId 
-            ? { ...t, content: updatedContent + errorMsg }
-            : t
-        ));
-      }
-    } else {
-      // Simulate local command (for demo)
-      const simulatedOutput = simulateCommand(command);
-      setTabs(tabs.map(t => 
-        t.id === tabId 
-          ? { ...t, content: updatedContent + simulatedOutput + '\n' }
-          : t
-      ));
-    }
-  };
-
-  const simulateCommand = (command: string): string => {
-    const cmd = command.trim().toLowerCase();
-    if (cmd === 'ls' || cmd === 'dir') {
-      // Show actual project files instead of fake ones
-      if (files.length > 0) {
-        return files.map(f => f.type === 'folder' ? `${f.name}/` : f.name).join('\n');
-      }
-      return '(no files in project)';
-    } else if (cmd === 'pwd') {
-      return projectId ? `/projects/${projectId}` : '/workspace';
-    } else if (cmd.startsWith('echo ')) {
-      return command.substring(5);
-    } else if (cmd === 'help') {
-      return 'Available commands: ls, pwd, echo, cat, help\nNote: Terminal runs in simulation mode when no project is loaded.';
-    } else if (cmd.startsWith('cat ')) {
-      const fileName = command.substring(4).trim();
-      const file = files.find(f => f.name === fileName || f.path === fileName || f.path.endsWith('/' + fileName));
-      if (file) {
-        return `[Content of ${fileName} - open in editor to view]`;
-      }
-      return `cat: ${fileName}: No such file`;
-    } else if (cmd === 'clear') {
-      return '';
-    }
-    return `Command not found: ${command}\nType 'help' for available commands.`;
-  };
-
-  const executeTerminalCommand = async (command: string, projectId: string): Promise<{ output: string; error?: string }> => {
-    try {
-      // Use gateway API for terminal execution (proxied to ide_service)
-      const response = await fetch(`/api/v1/terminal/execute`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          command: command,
-          timeout: 30,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      const output = data.stdout || data.output || '';
-      const error = data.stderr || data.error || undefined;
-      return {
-        output: error ? `${output}${output ? '\n' : ''}${error}` : output,
-        error: data.success === false ? error : undefined,
-      };
-    } catch (error: any) {
-      // Fallback to simulated command if API fails
-      console.warn('Terminal execution failed, using simulation:', error.message);
-      const simulatedOutput = simulateCommand(command);
-      return {
-        output: simulatedOutput,
-        error: error.message || 'Command execution failed'
-      };
-    }
-  };
-
   if (!visible) {
     return (
       <div 
@@ -218,10 +108,10 @@ export const CursorTerminalPanel: React.FC<CursorTerminalPanelProps> = ({
       <div className={styles.resizeHandle} onMouseDown={handleResizeStart} />
       <TerminalTabs
         tabs={tabs}
+        projectId={projectId}
         onTabAdd={handleTabAdd}
         onTabClose={handleTabClose}
         onTabSelect={handleTabSelect}
-        onCommand={handleCommand}
       />
     </div>
   );
