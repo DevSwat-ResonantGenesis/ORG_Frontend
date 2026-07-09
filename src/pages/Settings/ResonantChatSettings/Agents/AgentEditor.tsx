@@ -544,7 +544,7 @@ export const AgentEditor: React.FC<AgentEditorProps> = ({ agentId, onBack, onSav
                   Text-to-speech voices
                 </div>
                 <p className={styles.helpText} style={{ marginTop: 0, marginBottom: '8px' }}>
-                  Pick which voices this agent may use for generate_audio (e.g. a distinct voice per story character). Leave none selected to default to a single voice ("alloy") every time. Requires your own OpenAI API key.
+                  Pick which voices this agent may use for generate_audio (e.g. a distinct voice per story character). Leave none selected to default to a single voice ("alloy") every time. Works for free without any API key (Google TTS); add your own OpenAI key in API Keys for higher-quality, more distinct voices.
                 </p>
                 <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px' }}>
                   {voiceOptions.map((voice) => {
