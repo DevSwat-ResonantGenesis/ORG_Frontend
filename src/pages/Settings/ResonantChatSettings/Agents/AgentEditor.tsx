@@ -61,6 +61,7 @@ export const AgentEditor: React.FC<AgentEditorProps> = ({ agentId, onBack, onSav
     isolate_anchors: true, // Default to isolated
     tool_mode: 'smart' as string,
     tools: [] as string[],
+    tool_config: {} as Record<string, any>,
   });
 
   const [availableTools, setAvailableTools] = useState<AvailableTool[]>([]);
@@ -90,6 +91,7 @@ export const AgentEditor: React.FC<AgentEditorProps> = ({ agentId, onBack, onSav
         isolate_anchors: agent.isolate_anchors !== undefined ? agent.isolate_anchors : true,
         tool_mode: agent.tool_mode || 'smart',
         tools: agent.tools || [],
+        tool_config: agent.tool_config || {},
       });
       // Load available tools if agent is in manual mode
       if (agent.tool_mode === 'manual') {
@@ -123,6 +125,7 @@ export const AgentEditor: React.FC<AgentEditorProps> = ({ agentId, onBack, onSav
           isolate_anchors: formData.isolate_anchors,
           tool_mode: formData.tool_mode,
           tools: formData.tool_mode === 'smart' ? [] : formData.tools,
+          tool_config: formData.tool_config,
         });
       } else {
         await settingsApi.createAgent(formData);
@@ -519,6 +522,58 @@ export const AgentEditor: React.FC<AgentEditorProps> = ({ agentId, onBack, onSav
               </p>
             </div>
           )}
+          {/* Voice picker for text-to-speech — shown whenever generate_audio could run:
+              always in "smart" mode (all tools available), or when explicitly selected in "manual" mode. */}
+          {(formData.tool_mode === 'smart' || formData.tools.includes('generate_audio')) && (() => {
+            const audioTool = availableTools.find(t => t.name === 'generate_audio');
+            const voiceOptions: string[] = audioTool?.parameters_schema?.properties?.voice?.enum
+              || ['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'];
+            const selectedVoices: string[] = formData.tool_config?.generate_audio?.voices || [];
+            const toggleVoice = (voice: string) => {
+              const next = selectedVoices.includes(voice)
+                ? selectedVoices.filter(v => v !== voice)
+                : [...selectedVoices, voice];
+              handleChange('tool_config', {
+                ...formData.tool_config,
+                generate_audio: { ...(formData.tool_config.generate_audio || {}), voices: next },
+              });
+            };
+            return (
+              <div style={{ marginTop: '12px', padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <div style={{ fontSize: '12px', fontWeight: 600, marginBottom: '4px', color: 'rgba(255,255,255,0.8)' }}>
+                  Text-to-speech voices
+                </div>
+                <p className={styles.helpText} style={{ marginTop: 0, marginBottom: '8px' }}>
+                  Pick which voices this agent may use for generate_audio (e.g. a distinct voice per story character). Leave none selected to default to a single voice ("alloy") every time. Requires your own OpenAI API key.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px' }}>
+                  {voiceOptions.map((voice) => {
+                    const checked = selectedVoices.includes(voice);
+                    return (
+                      <button
+                        key={voice}
+                        type="button"
+                        disabled={agentData?.is_imported}
+                        onClick={() => toggleVoice(voice)}
+                        style={{
+                          padding: '5px 10px',
+                          borderRadius: '14px',
+                          border: checked ? '1px solid #a855f7' : '1px solid rgba(255,255,255,0.15)',
+                          background: checked ? 'rgba(168, 85, 247, 0.15)' : 'rgba(255,255,255,0.04)',
+                          color: checked ? '#c084fc' : 'rgba(255,255,255,0.6)',
+                          cursor: agentData?.is_imported ? 'not-allowed' : 'pointer',
+                          fontSize: '11px',
+                          fontWeight: checked ? 600 : 400,
+                        }}
+                      >
+                        {voice}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
         {agentId && (

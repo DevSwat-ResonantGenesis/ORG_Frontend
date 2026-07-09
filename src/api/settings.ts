@@ -19,6 +19,7 @@ export interface Agent {
   isolate_anchors?: boolean; // If true, anchors are isolated to this agent. If false, anchors are shared across user's agents.
   tool_mode?: string; // smart = all tools auto, manual = only selected tools
   tools?: string[]; // List of enabled tool names (used when tool_mode='manual')
+  tool_config?: Record<string, any>; // Per-tool config, e.g. { generate_audio: { voices: ['alloy', 'nova'] } }
   status: string;
   created_at: string;
   is_template?: boolean;
@@ -172,6 +173,7 @@ export const settingsApi = {
       isolate_anchors?: boolean;
       tool_mode?: string;
       tools?: string[];
+      tool_config?: Record<string, any>;
       status?: string;
     }
   ): Promise<Agent> {
