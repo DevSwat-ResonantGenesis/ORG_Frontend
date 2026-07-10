@@ -123,7 +123,7 @@
   align-items: center;
   justify-content: center;
   overflow: auto;
-  background: var(--ide-bg-primary, #262321);
+  background: var(--ide-bg-primary, #111111);
   background-image: 
     linear-gradient(45deg, #222 25%, transparent 25%),
     linear-gradient(-45deg, #222 25%, transparent 25%),

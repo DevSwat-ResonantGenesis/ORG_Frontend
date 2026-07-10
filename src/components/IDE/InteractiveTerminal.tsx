@@ -43,7 +43,7 @@ export const InteractiveTerminal: React.FC<InteractiveTerminalProps> = ({
       // through to a non-fixed-width substitute when absent, which breaks
       // xterm's cell-width grid and renders text with random gaps/overlaps.
       fontFamily: "ui-monospace, 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace",
-      theme: { background: '#262321' },
+      theme: { background: '#111111' },
     });
     const fit = new FitAddon();
     term.loadAddon(fit);

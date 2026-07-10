@@ -1,10 +1,10 @@
 /* IDE Color Variables */
 .resizablePanel {
   /* IDE Color Variables - Map to Resonant Chat colors */
-  --ide-bg-primary: var(--bg-dark, #262321);
-  --ide-bg-secondary: var(--surface-dark, #262321);
+  --ide-bg-primary: var(--bg-dark, #111111);
+  --ide-bg-secondary: var(--surface-dark, #111111);
   --ide-bg-tertiary: rgba(255, 255, 255, 0.05);
-  --ide-surface: var(--surface-dark, #262321);
+  --ide-surface: var(--surface-dark, #111111);
   --ide-surface-hover: rgba(255, 255, 255, 0.08);
   --ide-border: rgba(255, 255, 255, 0.1);
   --ide-text-primary: #E8E8E8; /* Pearl white - softer than bright white */

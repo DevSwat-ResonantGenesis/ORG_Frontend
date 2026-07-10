@@ -5,7 +5,7 @@
   z-index: 9999;
   min-width: 320px;
   max-width: 500px;
-  background: var(--ide-bg-primary, #262321);
+  background: var(--ide-bg-primary, #111111);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);

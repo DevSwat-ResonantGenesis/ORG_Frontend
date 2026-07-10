@@ -246,21 +246,17 @@ export default function LoginPageNew() {
         return;
       }
       
-      // Platform owners go to owner dashboard, regular users to resonant-chat
-      if (data.role === 'platform_owner') {
-        navigate('/owner-dashboard');
-      } else {
-        try {
-          sessionStorage.setItem(
-            'rg-post-login-target',
-            JSON.stringify({ path: '/', ts: Date.now(), remaining: 5 })
-          );
-          document.cookie = `rg_post_login_target=${encodeURIComponent('/')}; Max-Age=60; Path=/`;
-        } catch {
-          // ignore
-        }
-        navigate('/');
+      // All logins land on chat, not a dashboard
+      try {
+        sessionStorage.setItem(
+          'rg-post-login-target',
+          JSON.stringify({ path: '/chat', ts: Date.now(), remaining: 5 })
+        );
+        document.cookie = `rg_post_login_target=${encodeURIComponent('/chat')}; Max-Age=60; Path=/`;
+      } catch {
+        // ignore
       }
+      navigate('/chat');
     } catch (err: any) {
       let message = 'Unable to sign in. Please check your credentials.';
       if (err?.response?.status === 401) {

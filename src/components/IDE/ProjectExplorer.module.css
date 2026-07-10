@@ -174,7 +174,7 @@
   position: fixed;
   z-index: 1000;
   min-width: 150px;
-  background: var(--ide-bg-primary, #262321);
+  background: var(--ide-bg-primary, #111111);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   padding: 4px;

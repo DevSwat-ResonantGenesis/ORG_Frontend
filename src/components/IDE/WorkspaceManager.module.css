@@ -265,7 +265,7 @@
 
 .modalContent {
   width: 450px;
-  background: var(--ide-bg-primary, #262321);
+  background: var(--ide-bg-primary, #111111);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 16px;
   overflow: hidden;

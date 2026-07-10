@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--editor-background, #262321);
+  background: var(--editor-background, #111111);
   color: var(--editor-foreground, #d4d4d4);
 }
 
@@ -37,7 +37,7 @@
   display: flex;
   padding: 12px 16px;
   gap: 24px;
-  background: var(--list-hover-background, #262321);
+  background: var(--list-hover-background, #111111);
   border-bottom: 1px solid var(--panel-border, #3c3c3c);
 }
 
@@ -136,7 +136,7 @@
 }
 
 .entryHeader:hover {
-  background: var(--list-hover-background, #262321);
+  background: var(--list-hover-background, #111111);
 }
 
 .entryIcon {
@@ -202,7 +202,7 @@
 
 .entryDetails {
   padding: 12px 16px 12px 52px;
-  background: var(--list-hover-background, #262321);
+  background: var(--list-hover-background, #111111);
   border-top: 1px solid var(--panel-border, #3c3c3c);
 }
 
@@ -229,7 +229,7 @@
 .codeBlock {
   margin: 6px 0 0;
   padding: 8px;
-  background: var(--editor-background, #262321);
+  background: var(--editor-background, #111111);
   border-radius: 4px;
   font-size: 11px;
   font-family: var(--font-mono, 'JetBrains Mono', monospace);

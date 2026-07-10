@@ -486,7 +486,7 @@
 /* Light Theme Overrides */
 [data-theme='light'] .settingsPanel {
   background: #FFFFFF;
-  color: #262321;
+  color: #111111;
 }
 
 [data-theme='light'] .header {
@@ -495,7 +495,7 @@
 }
 
 [data-theme='light'] .title {
-  color: #262321;
+  color: #111111;
 }
 
 [data-theme='light'] .closeButton {
@@ -504,7 +504,7 @@
 
 [data-theme='light'] .closeButton:hover {
   background: #F3F4F6;
-  color: #262321;
+  color: #111111;
 }
 
 [data-theme='light'] .tabs {
@@ -518,7 +518,7 @@
 
 [data-theme='light'] .tab:hover {
   background: #F3F4F6;
-  color: #262321;
+  color: #111111;
 }
 
 [data-theme='light'] .tab.activeTab {
@@ -532,7 +532,7 @@
 }
 
 [data-theme='light'] .sectionTitle {
-  color: #262321;
+  color: #111111;
   border-color: #E5E7EB;
 }
 
@@ -541,7 +541,7 @@
 }
 
 [data-theme='light'] .label {
-  color: #262321;
+  color: #111111;
 }
 
 [data-theme='light'] .settingValue {
@@ -560,7 +560,7 @@
 
 [data-theme='light'] .themeButton:hover {
   background: #F3F4F6;
-  color: #262321;
+  color: #111111;
 }
 
 [data-theme='light'] .themeButton.active {
@@ -589,7 +589,7 @@
 [data-theme='light'] .select {
   background: #F9FAFB;
   border-color: #E5E7EB;
-  color: #262321;
+  color: #111111;
 }
 
 [data-theme='light'] .select:hover {
@@ -612,7 +612,7 @@
 }
 
 [data-theme='light'] .toggleTitle {
-  color: #262321;
+  color: #111111;
 }
 
 [data-theme='light'] .toggleDescription {
@@ -636,7 +636,7 @@
 
 [data-theme='light'] .resetButton {
   background: #F9FAFB;
-  color: #262321;
+  color: #111111;
   border-color: #E5E7EB;
 }
 

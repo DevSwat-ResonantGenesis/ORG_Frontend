@@ -4,7 +4,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    background: var(--vscode-editor-background, #262321);
+    background: var(--vscode-editor-background, #111111);
     color: var(--vscode-editor-foreground, #d4d4d4);
     overflow: hidden;
 }
@@ -47,7 +47,7 @@
     justify-content: center;
     padding: 40px;
     text-align: center;
-    background: var(--vscode-editor-background, #262321);
+    background: var(--vscode-editor-background, #111111);
 }
 
 .emptyStateIcon {

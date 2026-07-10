@@ -261,9 +261,8 @@ const OwnerLoginPage: React.FC = () => {
         console.log('💾 Token stored in localStorage');
       }
 
-      console.log('🔄 Redirecting to /owner-dashboard...');
-      // Redirect to owner dashboard
-      navigate('/owner-dashboard');
+      console.log('🔄 Redirecting to /chat...');
+      navigate('/chat');
     } catch (err: any) {
       console.error('❌ Login error:', err);
       setError(err.message || 'Login failed. Please check your credentials.');

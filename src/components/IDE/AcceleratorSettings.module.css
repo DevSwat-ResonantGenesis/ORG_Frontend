@@ -1,5 +1,5 @@
 /* AcceleratorSettings - Compact settings panel */
-/* No borders, #262321 background */
+/* No borders, #111111 background */
 
 .overlay {
   position: fixed;
@@ -13,7 +13,7 @@
 }
 
 .panel {
-  background: var(--ide-bg-primary, #262321);
+  background: var(--ide-bg-primary, #111111);
   width: 320px;
   max-height: 80vh;
   display: flex;
