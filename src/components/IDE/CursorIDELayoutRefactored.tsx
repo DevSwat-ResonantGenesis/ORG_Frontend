@@ -749,7 +749,9 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
               onSave={handleSave}
               onEditorMount={handleEditorMount}
             />
-            {showTerminal && <CursorTerminalPanel projectId={projectId} files={files} />}
+            {showTerminal && (
+              <CursorTerminalPanel projectId={projectId} files={files} onProjectIdChange={onProjectIdChange} />
+            )}
           </div>
         </div>
 

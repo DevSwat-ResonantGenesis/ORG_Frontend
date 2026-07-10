@@ -1,17 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { TerminalTabs, type TerminalTab } from './TerminalTabs';
 import { storageKeyFor, loadInitialTabs } from './terminalSession';
+import { WorkspaceSwitcher } from './WorkspaceSwitcher';
 import styles from './CursorTerminalPanel.module.css';
 
 interface CursorTerminalPanelProps {
   initialHeight?: number;
   projectId?: string;
   files?: Array<{ name: string; path: string; type?: string }>;
+  onProjectIdChange?: (projectId: string) => void;
 }
 
 export const CursorTerminalPanel: React.FC<CursorTerminalPanelProps> = ({
   initialHeight = 200,
   projectId,
+  onProjectIdChange,
 }) => {
   const [visible, setVisible] = useState(true);
   const [height, setHeight] = useState(initialHeight);
@@ -29,6 +32,20 @@ export const CursorTerminalPanel: React.FC<CursorTerminalPanelProps> = ({
       // loses continuity across panel toggles this session.
     }
   }, [tabs, projectId]);
+
+  // Switching workspaces (WorkspaceSwitcher) changes `projectId` after
+  // mount - reload this project's own tab set (each workspace has its own
+  // terminal_id/tabs, per terminalSession.ts) instead of continuing to
+  // show the previous workspace's tabs.
+  const loadedProjectIdRef = useRef(projectId);
+  useEffect(() => {
+    if (loadedProjectIdRef.current === projectId) return;
+    loadedProjectIdRef.current = projectId;
+    const newTabs = loadInitialTabs(projectId);
+    setTabs(newTabs);
+    setActiveTabId(newTabs.find(t => t.active)?.id || newTabs[0].id);
+  }, [projectId]);
+
   const panelRef = useRef<HTMLDivElement>(null);
   const startYRef = useRef<number>(0);
   const startHeightRef = useRef<number>(0);
@@ -110,12 +127,17 @@ export const CursorTerminalPanel: React.FC<CursorTerminalPanelProps> = ({
   }
 
   return (
-    <div 
+    <div
       ref={panelRef}
       className={styles.terminalPanel}
       style={{ height: `${height}px` }}
     >
       <div className={styles.resizeHandle} onMouseDown={handleResizeStart} />
+      {onProjectIdChange && (
+        <div className={styles.workspaceSwitcherRow}>
+          <WorkspaceSwitcher activeProjectId={projectId} onSelect={onProjectIdChange} />
+        </div>
+      )}
       <TerminalTabs
         tabs={tabs}
         projectId={projectId}
