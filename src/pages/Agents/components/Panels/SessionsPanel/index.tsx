@@ -213,13 +213,14 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
     }
   };
 
-  const handleApproveStep = async (stepId: string, approved: boolean) => {
-    if (!selectedSession?.id) return;
+  const handleApproveStep = async (stepId: string, approved: boolean, sessionIdOverride?: string) => {
+    const sessionId = sessionIdOverride || selectedSession?.id;
+    if (!sessionId) return;
     try {
       // If no stepId, fetch fresh steps to find the pending one
       let resolvedStepId = stepId;
       if (!resolvedStepId) {
-        const freshSteps = await agentEngine.getSessionSteps(selectedSession.id);
+        const freshSteps = await agentEngine.getSessionSteps(sessionId);
         const pending = freshSteps.find((s: any) => s.approval_status === 'pending');
         if (pending) resolvedStepId = pending.id;
       }
@@ -227,9 +228,9 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
         setError('No pending step found to approve');
         return;
       }
-      await agentEngine.approveStep(selectedSession.id, resolvedStepId, approved);
+      await agentEngine.approveStep(sessionId, resolvedStepId, approved);
       // Refresh steps + sessions
-      loadSessionSteps(selectedSession.id);
+      loadSessionSteps(sessionId);
       if (selectedAgent?.id) loadSessions(selectedAgent.id);
     } catch (err: any) {
       setError(err.message || 'Failed to approve step');
@@ -361,7 +362,7 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedSession(session as any);
-                          handleApproveStep('', true);
+                          handleApproveStep('', true, session.id);
                         }}
                       >
                         Approve
@@ -371,7 +372,7 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedSession(session as any);
-                          handleApproveStep('', false);
+                          handleApproveStep('', false, session.id);
                         }}
                       >
                         Reject
