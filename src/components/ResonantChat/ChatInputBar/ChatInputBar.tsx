@@ -503,6 +503,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   // document.body), positioned purely from the input bar's own rect —
   // they are not nested inside .inputWrapper at all.
   const TOOLS_ROW_GAP = 0; // tools row sits flush against the input bar
+  const TOGGLE_WIDTH = 32; // matches .toolbarToggle width in the CSS module
 
   const computeToggleTagStyle = useCallback((): React.CSSProperties | null => {
     if (typeof window === 'undefined') return null;
@@ -511,9 +512,10 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     const rect = wrapper.getBoundingClientRect();
     return {
       position: 'fixed',
-      // Zero padding — pinned exactly to the input bar's top-left corner,
-      // identically on both desktop and mobile.
-      left: rect.left,
+      // Same row as the tools row (same bottom line), but shifted fully to
+      // its left so the arrow sits beside the toolbar instead of overlapping
+      // its top-left corner / first icon.
+      left: rect.left - TOGGLE_WIDTH,
       bottom: window.innerHeight - rect.top,
       zIndex: 10003,
     };
