@@ -33,6 +33,20 @@ export interface AgentTeam {
   metadata: Record<string, any>;
   member_count: number;
   agents?: string[];
+  is_public?: boolean;
+}
+
+export interface MarketplaceTeamListing {
+  team_id: string;
+  name: string;
+  description?: string | null;
+  owner_id: string;
+  is_nft: boolean;
+  listing_price?: number | null;
+  rent_price_per_day?: number | null;
+  rating?: number | null;
+  total_rentals: number;
+  member_count: number;
 }
 
 export interface TeamMember {
@@ -501,6 +515,37 @@ export const listTeamOnMarketplace = async (
   } catch (error) {
     logger.apiError(`/agent-teams/${team_id}/list-marketplace`, error);
     throw error;
+  }
+};
+
+/**
+ * Toggle whether a team is visible in the internal (free, non-NFT) team
+ * marketplace. Owner-only.
+ * POST /agent-teams/{team_id}/marketplace-publish
+ */
+export const toggleTeamMarketplacePublish = async (
+  team_id: string
+): Promise<{ team_id: string; is_public: boolean }> => {
+  try {
+    const response = await fastapiClient.post(`/agent-teams/${team_id}/marketplace-publish`);
+    return response.data;
+  } catch (error) {
+    logger.apiError(`/agent-teams/${team_id}/marketplace-publish`, error);
+    throw error;
+  }
+};
+
+/**
+ * List teams published to the internal team marketplace
+ * GET /agent-teams/marketplace
+ */
+export const listMarketplaceTeams = async (): Promise<MarketplaceTeamListing[]> => {
+  try {
+    const response = await fastapiClient.get('/agent-teams/marketplace');
+    return Array.isArray(response.data) ? response.data : [];
+  } catch (error) {
+    logger.apiError('/agent-teams/marketplace', error);
+    return [];
   }
 };
 

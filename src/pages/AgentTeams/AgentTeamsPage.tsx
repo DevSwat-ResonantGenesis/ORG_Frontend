@@ -14,6 +14,7 @@ import {
   archiveAgentTeam,
   unarchiveAgentTeam,
   cancelWorkflow,
+  toggleTeamMarketplacePublish,
   type AgentTeam,
   type TeamMember,
   type AgentWorkflow,
@@ -41,7 +42,8 @@ const AgentTeamsPage: React.FC = () => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [availableAgents, setAvailableAgents] = useState<AgentResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
-  
+  const [togglingPublishId, setTogglingPublishId] = useState<string | null>(null);
+
   // Filters
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -253,8 +255,22 @@ const AgentTeamsPage: React.FC = () => {
       } else if (err && typeof err === 'object' && 'message' in err) {
         errorMessage = (err as { message: string }).message;
       }
-      
+
       toast.error(errorMessage);
+    }
+  };
+
+  const handleTogglePublishTeam = async (teamId: string) => {
+    if (togglingPublishId) return;
+    setTogglingPublishId(teamId);
+    try {
+      const result = await toggleTeamMarketplacePublish(teamId);
+      toast.success(result.is_public ? 'Team published to Marketplace' : 'Team removed from Marketplace');
+      loadTeams();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.detail || 'Failed to update marketplace listing');
+    } finally {
+      setTogglingPublishId(null);
     }
   };
 
@@ -452,6 +468,8 @@ const AgentTeamsPage: React.FC = () => {
                       onArchive={handleArchiveTeam}
                       onUnarchive={handleUnarchiveTeam}
                       onClick={handleTeamClick}
+                      onTogglePublish={handleTogglePublishTeam}
+                      togglingPublish={togglingPublishId === team.id}
                     />
                   ))}
                 </div>

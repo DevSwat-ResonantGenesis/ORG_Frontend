@@ -12,6 +12,8 @@ interface TeamCardProps {
   onArchive: (teamId: string, teamName: string) => void;
   onUnarchive: (teamId: string, teamName: string) => void;
   onClick?: (teamId: string) => void;
+  onTogglePublish?: (teamId: string) => void;
+  togglingPublish?: boolean;
 }
 
 export const TeamCard: React.FC<TeamCardProps> = ({
@@ -23,6 +25,8 @@ export const TeamCard: React.FC<TeamCardProps> = ({
   onArchive,
   onUnarchive,
   onClick,
+  onTogglePublish,
+  togglingPublish = false,
 }) => {
   const statusColor = team.status === 'active' 
     ? 'var(--color-success-500)' 
@@ -105,7 +109,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({
           <Button
             onClick={(e) => {
               e.stopPropagation();
-              team.status === 'archived' 
+              team.status === 'archived'
                 ? onUnarchive(team.id, team.name)
                 : onArchive(team.id, team.name);
             }}
@@ -114,8 +118,27 @@ export const TeamCard: React.FC<TeamCardProps> = ({
           >
             {team.status === 'archived' ? 'Restore' : 'Archive'}
           </Button>
+          {onTogglePublish && (
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                onTogglePublish(team.id);
+              }}
+              variant={team.is_public ? 'secondary' : 'primary'}
+              size="sm"
+              disabled={togglingPublish}
+            >
+              {togglingPublish ? '...' : team.is_public ? 'Unpublish' : 'Publish to Marketplace'}
+            </Button>
+          )}
         </div>
       </div>
+
+      {team.is_public && (
+        <div className={styles.metaItem} style={{ marginTop: 4 }}>
+          🌐 Listed in marketplace
+        </div>
+      )}
 
       {team.description && (
         <p className={styles.description}>{team.description}</p>

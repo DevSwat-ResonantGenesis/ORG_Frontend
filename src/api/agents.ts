@@ -63,6 +63,39 @@ export const getAgent = async (agent_id: string): Promise<AgentResponse> => {
   }
 };
 
+export interface MarketplaceAgentListing {
+  id: string;
+  name: string;
+  description?: string | null;
+  model: string;
+  tools?: string[] | null;
+  is_active: boolean;
+  version: number;
+  manifest_hash?: string | null;
+  agent_public_hash?: string | null;
+  agent_version_hash?: string | null;
+  category: string;
+  created_at?: string | null;
+}
+
+/**
+ * List agents published to the internal marketplace (opted in via
+ * published_to_marketplace on the agent's own definition).
+ * GET /api/v1/agents/marketplace
+ */
+export const listMarketplaceAgents = async (params?: {
+  category?: string;
+  limit?: number;
+}): Promise<MarketplaceAgentListing[]> => {
+  try {
+    const response = await fastapiClient.get('/api/v1/agents/marketplace', { params });
+    return Array.isArray(response.data?.agents) ? response.data.agents : [];
+  } catch (error) {
+    logger.apiError('/api/v1/agents/marketplace', error);
+    return [];
+  }
+};
+
 export interface AgentVersionEntry {
   version_number: number;
   agent_public_hash?: string | null;

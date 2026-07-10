@@ -1,25 +1,35 @@
 /**
- * Agent Marketplace Page — Compact branded redesign
+ * Agent Marketplace Page
  * Split-view: card grid left, detail panel right
  * Brand: #FAA525 #01A6BC #FA547C #71C23E #FFFFFF #FFD800 #121214
+ *
+ * Rebuilt to use the real, working backend (GET /api/v1/agents/marketplace,
+ * GET /api/v1/agent-teams/marketplace, POST /api/v1/execution/agents/{id}/execute,
+ * POST /agent-teams/{id}/execute) instead of the decentralized DSID-node API
+ * (services/nodeApi.ts), which pointed at a mostly-empty separate network and
+ * never reflected agents/teams users actually publish from Agent OS. Cards
+ * are modeled on the real Agent OS card (AgentsPanel) and Team card
+ * (AgentTeams/TeamCard) so the look/sections match what already works there.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {
-  Search, Play, Clock,
-  CheckCircle, XCircle, Loader2,
-  X, Copy, Zap, Code, Wrench, Database,
-  Settings, Bot, BarChart3, Download, Star, Shield,
+  Search, Play, X, Copy, Zap, Code, Wrench, Database,
+  Settings, Bot, BarChart3, Download, Star, Shield, Users, Loader2, CheckCircle, XCircle,
 } from 'lucide-react';
 import { isAuthenticated } from '../../utils/auth-cookies';
+import { listMarketplaceAgents, type MarketplaceAgentListing } from '../../api/agents';
 import {
-  getNodeStatus, searchAgents, executeAgent,
-  type Agent, type NodeStatus, type ExecuteResponse
-} from '../../services/nodeApi';
+  listMarketplaceTeams, executeWorkflow, getWorkflowStatus,
+  type MarketplaceTeamListing, type WorkflowStatus,
+} from '../../api/agentTeams';
+import { executeAgentTask } from '../../api/executions';
 import { extractAgentAudioUrls } from '../../utils/agentAudioUrl';
+import agentCardStyles from '../Agents/components/Panels/AgentsPanel/AgentsPanel.module.css';
+import teamCardStyles from '../AgentTeams/TeamCard.module.css';
 import styles from './Marketplace.module.css';
 
 const CATEGORIES = [
@@ -46,27 +56,103 @@ function getCategoryIcon(cat: string, size = 18) {
   }
 }
 
-function renderStars(rating: number) {
-  return Array.from({ length: 5 }, (_, i) => (
-    <span key={i} className={i < Math.round(rating) ? styles.starFilled : styles.star}>&#9733;</span>
-  ));
+type SortOption = 'newest' | 'name';
+type MarketTab = 'agents' | 'teams';
+
+// Marketplace-specific agent card — visually modeled on the real Agent OS
+// card (AgentsPanel.module.css) but always expanded (no hover/tap-to-reveal),
+// since a browsing grid benefits from immediately-visible info, and with
+// browse-appropriate actions (Execute/About) instead of owner actions
+// (Run/Chat/Archive) that don't apply to someone else's published agent.
+function MarketplaceAgentCard({
+  agent, selected, onSelect,
+}: { agent: MarketplaceAgentListing; selected: boolean; onSelect: () => void }) {
+  return (
+    <div
+      className={`${agentCardStyles.agentCard} ${agentCardStyles.expanded} ${selected ? agentCardStyles.selected : ''}`}
+      onClick={onSelect}
+    >
+      <div className={agentCardStyles.cardCollapsedRow}>
+        <span className={`${agentCardStyles.statusDotMini} ${agent.is_active ? agentCardStyles.active : ''}`} />
+        <h3 className={agentCardStyles.cardName}>{agent.name}</h3>
+      </div>
+      <div className={agentCardStyles.cardDetails}>
+        <div className={agentCardStyles.badgeRow}>
+          <span className={`${agentCardStyles.statusPill} ${agent.is_active ? agentCardStyles.active : agentCardStyles.idle}`}>
+            {agent.is_active ? 'Active' : 'Idle'}
+          </span>
+          <span className={agentCardStyles.typeBadge}>{agent.category}</span>
+        </div>
+        {agent.description && (
+          <div className={agentCardStyles.agentSubtitle}>{agent.description}</div>
+        )}
+        <div className={agentCardStyles.cardStats}>
+          <div className={agentCardStyles.stat}>
+            <Wrench size={10} /><span>{agent.tools?.length || 0} tools</span>
+          </div>
+          <div className={agentCardStyles.stat}>
+            <Code size={10} /><span>{agent.model}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-type SortOption = 'newest' | 'popular' | 'rating' | 'name';
+// Marketplace-specific team card — same visual language as the real
+// AgentTeams/TeamCard, minus owner-only actions (Edit/Archive/Dashboard)
+// since a marketplace browser isn't the team's owner.
+function MarketplaceTeamCard({
+  team, selected, onSelect,
+}: { team: MarketplaceTeamListing; selected: boolean; onSelect: () => void }) {
+  return (
+    <div
+      className={teamCardStyles.teamCard}
+      style={selected ? { borderColor: '#01A6BC', boxShadow: '0 0 0 2px rgba(1,166,188,0.3)' } : undefined}
+      onClick={onSelect}
+    >
+      <div className={teamCardStyles.cardHeader}>
+        <div className={teamCardStyles.titleSection}>
+          <div className={teamCardStyles.teamTitle}>
+            <span className={teamCardStyles.teamIcon}>👥</span>
+            <h3>{team.name}</h3>
+          </div>
+          <div className={teamCardStyles.metadata}>
+            <span className={teamCardStyles.metaItem}>🤖 {team.member_count} agents</span>
+            {team.is_nft && <span className={teamCardStyles.metaItem}>💎 NFT</span>}
+            {team.rating != null && team.rating > 0 && (
+              <span className={teamCardStyles.metaItem}><Star size={10} /> {team.rating.toFixed(1)}</span>
+            )}
+          </div>
+        </div>
+      </div>
+      {team.description && <p className={teamCardStyles.description}>{team.description}</p>}
+      <div className={teamCardStyles.cardFooter}>
+        <span className={teamCardStyles.timestamp}>
+          {team.listing_price ? `$${team.listing_price}` : team.rent_price_per_day ? `$${team.rent_price_per_day.toFixed(2)}/day rent` : 'Free to run'}
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export default function AgentMarketplacePage() {
   const navigate = useNavigate();
-  const [status, setStatus] = useState<NodeStatus | null>(null);
-  const [agents, setAgents] = useState<Agent[]>([]);
+  const [tab, setTab] = useState<MarketTab>('agents');
+
+  const [agents, setAgents] = useState<MarketplaceAgentListing[]>([]);
+  const [teams, setTeams] = useState<MarketplaceTeamListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState<SortOption>('newest');
 
-  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [selectedAgent, setSelectedAgent] = useState<MarketplaceAgentListing | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<MarketplaceTeamListing | null>(null);
+
+  const [taskInput, setTaskInput] = useState('');
   const [executing, setExecuting] = useState(false);
-  const [executionInput, setExecutionInput] = useState('{"message": "hello"}');
-  const [executionResult, setExecutionResult] = useState<ExecuteResponse | null>(null);
+  const [executionOutput, setExecutionOutput] = useState<{ success: boolean; text: string } | null>(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -75,147 +161,192 @@ export default function AgentMarketplacePage() {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    loadStatus();
-    loadAgents();
-  }, []);
-
-  useEffect(() => { loadAgents(); }, [selectedCategory]);
-
-  async function loadStatus() {
-    try {
-      const nodeStatus = await getNodeStatus();
-      setStatus(nodeStatus);
-    } catch (error) {
-      console.error('Failed to load status:', error);
-    }
-  }
-
-  async function loadAgents() {
+  const loadAgents = useCallback(async () => {
     setLoading(true);
     try {
-      const { agents: fetchedAgents } = await searchAgents({
+      const list = await listMarketplaceAgents({
         category: selectedCategory !== 'all' ? selectedCategory : undefined,
       });
-      setAgents(fetchedAgents || []);
-    } catch (error) {
-      console.error('Failed to load agents:', error);
-      setAgents([]);
+      setAgents(list);
     } finally {
       setLoading(false);
     }
+  }, [selectedCategory]);
+
+  const loadTeams = useCallback(async () => {
+    setLoading(true);
+    try {
+      const list = await listMarketplaceTeams();
+      setTeams(list);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (tab === 'agents') loadAgents();
+    else loadTeams();
+  }, [tab, loadAgents, loadTeams]);
+
+  function closeDetail() {
+    setSelectedAgent(null);
+    setSelectedTeam(null);
+    setExecutionOutput(null);
+    setTaskInput('');
   }
 
-  async function handleExecute() {
+  function selectAgent(agent: MarketplaceAgentListing) {
+    setSelectedTeam(null);
+    setSelectedAgent(agent);
+    setExecutionOutput(null);
+    setTaskInput('');
+  }
+
+  function selectTeam(team: MarketplaceTeamListing) {
+    setSelectedAgent(null);
+    setSelectedTeam(team);
+    setExecutionOutput(null);
+    setTaskInput('');
+  }
+
+  async function handleExecuteAgent() {
     if (!selectedAgent) return;
     setExecuting(true);
-    setExecutionResult(null);
+    setExecutionOutput(null);
     try {
-      let inputData: Record<string, unknown>;
-      if (!executionInput.trim()) {
-        inputData = { text: "hello", message: "hello" };
-      } else {
-        try { inputData = JSON.parse(executionInput); }
-        catch { const t = executionInput.trim(); inputData = { text: t, content: t, message: t }; }
-      }
-      const result = await executeAgent({
-        manifest_hash: selectedAgent.manifest_hash,
-        input_data: inputData,
-        user_dsid: 'marketplace-user',
-        trust_tier: 1,
-      });
-      setExecutionResult(result);
-    } catch (error) {
-      setExecutionResult({
-        success: false, output: null, execution_hash: '',
-        tokens_used: 0, duration_ms: 0, governance_decision: 'error',
-        error: String(error),
-      });
+      const task = taskInput.trim() || 'Hello — introduce yourself and what you can do.';
+      const result = await executeAgentTask(selectedAgent.id, task);
+      const text = typeof result.output === 'string'
+        ? result.output
+        : result.output != null
+          ? JSON.stringify(result.output, null, 2)
+          : (result.error || 'No output.');
+      setExecutionOutput({ success: result.success, text });
+    } catch (error: any) {
+      setExecutionOutput({ success: false, text: error?.message || String(error) });
     } finally {
       setExecuting(false);
     }
   }
 
-  function copyHash(hash: string) {
-    navigator.clipboard.writeText(hash);
+  async function handleExecuteTeam() {
+    if (!selectedTeam) return;
+    setExecuting(true);
+    setExecutionOutput(null);
+    try {
+      const task = taskInput.trim() || 'Hello — introduce the team and what it can do.';
+      const workflow = await executeWorkflow(selectedTeam.team_id, { input_data: { message: task, text: task } });
+      const maxWait = 60_000;
+      const pollInterval = 2000;
+      const start = Date.now();
+      let status: WorkflowStatus | null = null;
+      while (Date.now() - start < maxWait) {
+        await new Promise((r) => setTimeout(r, pollInterval));
+        try {
+          status = await getWorkflowStatus(workflow.id);
+          if (status.status === 'completed' || status.status === 'failed') break;
+        } catch { /* keep polling */ }
+      }
+      if (status?.status === 'completed') {
+        const out = status.result;
+        setExecutionOutput({
+          success: true,
+          text: typeof out === 'string' ? out : JSON.stringify(out ?? { message: 'Workflow completed.' }, null, 2),
+        });
+      } else if (status?.status === 'failed') {
+        setExecutionOutput({ success: false, text: status.error || 'Workflow failed.' });
+      } else {
+        setExecutionOutput({ success: false, text: `Workflow is still ${status?.status || 'running'}. Check back in Agent Teams.` });
+      }
+    } catch (error: any) {
+      setExecutionOutput({ success: false, text: error?.message || String(error) });
+    } finally {
+      setExecuting(false);
+    }
+  }
+
+  function copyId(id: string) {
+    navigator.clipboard.writeText(id);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
 
-  function closeDetail() {
-    setSelectedAgent(null);
-    setExecutionResult(null);
-    setExecutionInput('{"message": "hello"}');
-  }
-
   const sortedAgents = [...agents].sort((a, b) => {
-    switch (sortBy) {
-      case 'newest': return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
-      case 'popular': return (b.execution_count || 0) - (a.execution_count || 0);
-      case 'rating': return (b.rating || 0) - (a.rating || 0);
-      case 'name': return (a.name || '').localeCompare(b.name || '');
-      default: return 0;
-    }
+    if (sortBy === 'name') return (a.name || '').localeCompare(b.name || '');
+    return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
   });
-
-  const filtered = sortedAgents.filter(agent => {
+  const filteredAgents = sortedAgents.filter((agent) => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
-    return (
-      agent.name?.toLowerCase().includes(q) ||
-      agent.description?.toLowerCase().includes(q) ||
-      agent.manifest_hash?.toLowerCase().includes(q) ||
-      agent.tags?.some(tag => tag.toLowerCase().includes(q))
-    );
+    return agent.name?.toLowerCase().includes(q) || agent.description?.toLowerCase().includes(q);
   });
+
+  const filteredTeams = [...teams]
+    .sort((a, b) => sortBy === 'name' ? (a.name || '').localeCompare(b.name || '') : 0)
+    .filter((team) => {
+      if (!searchQuery.trim()) return true;
+      const q = searchQuery.toLowerCase();
+      return team.name?.toLowerCase().includes(q) || team.description?.toLowerCase().includes(q);
+    });
+
+  const count = tab === 'agents' ? filteredAgents.length : filteredTeams.length;
 
   return (
     <div className={styles.page}>
-      {/* Row 1: Title + description + status */}
+      {/* Row 1: Title + description */}
       <div className={styles.topBar}>
-        <h1 className={styles.topTitle}>Agent Marketplace</h1>
-        <span className={styles.topDesc}>Discover and run agents published by the community</span>
+        <h1 className={styles.topTitle}>Marketplace</h1>
+        <span className={styles.topDesc}>Discover and run agents &amp; agent teams published by the community</span>
         <div className={styles.topRight}>
-          <div className={styles.statusChip}>
-            <span className={status?.running ? styles.dotOnline : styles.dotOffline} />
-            Marketplace {status?.running ? 'Online' : 'Offline'}
-          </div>
-          <span className={styles.countChip}>{filtered.length} agents</span>
+          <span className={styles.countChip}>{count} {tab}</span>
         </div>
       </div>
 
-      {/* Row 2: Search + pills + sort */}
+      {/* Row 2: Tab toggle + search + pills + sort */}
       <div className={styles.controlBar}>
+        <div className={styles.pills}>
+          <button className={`${styles.pill} ${tab === 'agents' ? styles.pillActive : ''}`} onClick={() => { setTab('agents'); closeDetail(); }}>
+            <Bot size={12} style={{ marginRight: 4, verticalAlign: -2 }} /> Agents
+          </button>
+          <button className={`${styles.pill} ${tab === 'teams' ? styles.pillActive : ''}`} onClick={() => { setTab('teams'); closeDetail(); }}>
+            <Users size={12} style={{ marginRight: 4, verticalAlign: -2 }} /> Agent Teams
+          </button>
+        </div>
+        <div className={styles.divider} />
         <div className={styles.searchWrap}>
           <div className={styles.searchIcon}><Search size={14} /></div>
           <input
             className={styles.searchInput}
             type="text"
-            placeholder="Search agents..."
+            placeholder={`Search ${tab}...`}
             value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <div className={styles.divider} />
-        <div className={styles.pills}>
-          {CATEGORIES.map(c => (
-            <button
-              key={c.id}
-              className={`${styles.pill} ${selectedCategory === c.id ? styles.pillActive : ''}`}
-              onClick={() => setSelectedCategory(c.id)}
-            >
-              {c.label}
-            </button>
-          ))}
-        </div>
+        {tab === 'agents' && (
+          <>
+            <div className={styles.divider} />
+            <div className={styles.pills}>
+              {CATEGORIES.map((c) => (
+                <button
+                  key={c.id}
+                  className={`${styles.pill} ${selectedCategory === c.id ? styles.pillActive : ''}`}
+                  onClick={() => setSelectedCategory(c.id)}
+                >
+                  {c.label}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
         <div className={styles.sortBtns}>
-          {(['newest', 'popular', 'rating', 'name'] as SortOption[]).map(s => (
+          {(['newest', 'name'] as SortOption[]).map((s) => (
             <button
               key={s}
               className={`${styles.sortBtn} ${sortBy === s ? styles.sortBtnActive : ''}`}
               onClick={() => setSortBy(s)}
             >
-              {s === 'name' ? 'A-Z' : s.charAt(0).toUpperCase() + s.slice(1)}
+              {s === 'name' ? 'A-Z' : 'Newest'}
             </button>
           ))}
         </div>
@@ -226,48 +357,47 @@ export default function AgentMarketplacePage() {
         <div className={styles.gridPane}>
           {loading ? (
             <div className={styles.loading}><div className={styles.spinner} />Loading...</div>
-          ) : filtered.length === 0 ? (
-            <div className={styles.emptyState}>
-              <Bot size={32} style={{ marginBottom: 8, opacity: 0.3 }} />
-              <p>{searchQuery ? `No results for "${searchQuery}"` : 'No agents found. Try a different category.'}</p>
-            </div>
+          ) : tab === 'agents' ? (
+            filteredAgents.length === 0 ? (
+              <div className={styles.emptyState}>
+                <Bot size={32} style={{ marginBottom: 8, opacity: 0.3 }} />
+                <p>{searchQuery ? `No results for "${searchQuery}"` : 'No agents published yet. Publish one from Agent OS to see it here.'}</p>
+              </div>
+            ) : (
+              <div className={agentCardStyles.agentsGrid}>
+                {filteredAgents.map((agent) => (
+                  <MarketplaceAgentCard
+                    key={agent.id}
+                    agent={agent}
+                    selected={selectedAgent?.id === agent.id}
+                    onSelect={() => selectAgent(agent)}
+                  />
+                ))}
+              </div>
+            )
           ) : (
-            <div className={styles.cardGrid}>
-              {filtered.map(agent => (
-                <div
-                  key={agent.manifest_hash}
-                  className={`${styles.card} ${selectedAgent?.manifest_hash === agent.manifest_hash ? styles.cardSelected : ''}`}
-                  onClick={() => setSelectedAgent(agent)}
-                >
-                  <div className={styles.cardIconWrap}>
-                    {getCategoryIcon(agent.category)}
-                  </div>
-                  <div className={styles.cardBody}>
-                    <div className={styles.cardName}>{agent.name}</div>
-                    <div className={styles.cardTagline}>
-                      {agent.description?.slice(0, 60) || `v${agent.version} · ${agent.category}`}
-                      {agent.description && agent.description.length > 60 ? '...' : ''}
-                    </div>
-                  </div>
-                  <div className={styles.cardRight}>
-                    <span className={`${styles.cardBadge} ${agent.price_per_execution ? styles.badgePaid : styles.badgeFree}`}>
-                      {agent.price_per_execution ? `$${agent.price_per_execution}` : 'Free'}
-                    </span>
-                    <div className={styles.cardStats}>
-                      {agent.rating != null && agent.rating > 0 && (
-                        <><Star size={10} className={styles.starIcon} /> {agent.rating.toFixed(1)}</>
-                      )}
-                      <><Download size={10} /> {agent.execution_count || 0}</>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            filteredTeams.length === 0 ? (
+              <div className={styles.emptyState}>
+                <Users size={32} style={{ marginBottom: 8, opacity: 0.3 }} />
+                <p>{searchQuery ? `No results for "${searchQuery}"` : 'No teams published yet. Publish one from Agent Teams to see it here.'}</p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: 16 }}>
+                {filteredTeams.map((team) => (
+                  <MarketplaceTeamCard
+                    key={team.team_id}
+                    team={team}
+                    selected={selectedTeam?.team_id === team.team_id}
+                    onSelect={() => selectTeam(team)}
+                  />
+                ))}
+              </div>
+            )
           )}
         </div>
 
-        {/* Detail split panel */}
-        {selectedAgent && (
+        {/* Detail split panel — shared between agents and teams */}
+        {(selectedAgent || selectedTeam) && (
           <div className={styles.detailPane}>
             <div className={styles.detailInner}>
               <button className={styles.detailClose} onClick={closeDetail}>
@@ -276,82 +406,54 @@ export default function AgentMarketplacePage() {
 
               <div className={styles.detailHero}>
                 <div className={styles.detailIconWrap}>
-                  {getCategoryIcon(selectedAgent.category, 26)}
+                  {selectedAgent ? getCategoryIcon(selectedAgent.category, 26) : <Users size={26} />}
                 </div>
                 <div>
-                  <h2 className={styles.detailTitle}>{selectedAgent.name}</h2>
+                  <h2 className={styles.detailTitle}>{selectedAgent?.name || selectedTeam?.name}</h2>
                   <div className={styles.detailMeta}>
-                    v{selectedAgent.version} &middot; {selectedAgent.category}
+                    {selectedAgent ? `v${selectedAgent.version} · ${selectedAgent.category}` : `${selectedTeam?.member_count} agents`}
                   </div>
                 </div>
               </div>
 
-              {/* Stars */}
-              <div className={styles.starsRow}>
-                {renderStars(selectedAgent.rating || 0)}
-                <span className={styles.ratingText}>
-                  {selectedAgent.rating ? selectedAgent.rating.toFixed(1) : 'No ratings'}
-                </span>
-              </div>
-
-              {/* Metrics */}
-              <div className={styles.metricsRow}>
-                <div className={styles.metric}>
-                  <Clock size={12} />
-                  <span className={styles.metricVal}>{selectedAgent.execution_count || 0}</span> runs
-                </div>
-                <div className={styles.metric}>
-                  {selectedAgent.status === 'Active' ? <CheckCircle size={12} color="#71C23E" /> : <XCircle size={12} color="#FA547C" />}
-                  <span className={styles.metricVal}>{selectedAgent.status}</span>
-                </div>
-              </div>
-
-              {/* Description */}
               <div className={styles.section}>
                 <h3 className={styles.sectionTitle}>About</h3>
-                <p className={styles.descText}>{selectedAgent.description}</p>
+                <p className={styles.descText}>{selectedAgent?.description || selectedTeam?.description || 'No description provided.'}</p>
               </div>
 
-              {/* Agent ID */}
               <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>Agent ID</h3>
+                <h3 className={styles.sectionTitle}>{selectedAgent ? 'Agent ID' : 'Team ID'}</h3>
                 <div className={styles.hashBlock}>
-                  <code>{selectedAgent.manifest_hash.slice(0, 20)}...{selectedAgent.manifest_hash.slice(-8)}</code>
-                  <button className={styles.copyBtn} onClick={() => copyHash(selectedAgent.manifest_hash)}>
+                  <code>{(selectedAgent?.id || selectedTeam?.team_id || '').slice(0, 8)}...</code>
+                  <button className={styles.copyBtn} onClick={() => copyId(selectedAgent?.id || selectedTeam?.team_id || '')}>
                     {copied ? <CheckCircle size={12} color="#71C23E" /> : <Copy size={12} />}
                   </button>
                 </div>
               </div>
 
-              {/* Capabilities */}
-              {selectedAgent.capabilities && selectedAgent.capabilities.length > 0 && (
+              {selectedAgent?.tools && selectedAgent.tools.length > 0 && (
                 <div className={styles.section}>
                   <h3 className={styles.sectionTitle}>Capabilities</h3>
                   <div className={styles.tagList}>
-                    {selectedAgent.capabilities.map((cap, i) => <span key={i} className={styles.tag}>{cap}</span>)}
-                  </div>
-                </div>
-              )}
-
-              {/* Tags */}
-              {selectedAgent.tags && selectedAgent.tags.length > 0 && (
-                <div className={styles.section}>
-                  <h3 className={styles.sectionTitle}>Tags</h3>
-                  <div className={styles.tagList}>
-                    {selectedAgent.tags.map((tag, i) => <span key={i} className={styles.tag}>{tag}</span>)}
+                    {selectedAgent.tools.map((tool, i) => <span key={i} className={styles.tag}>{tool}</span>)}
                   </div>
                 </div>
               )}
 
               {/* Execute */}
               <div className={styles.executeSection}>
-                <h3 className={styles.sectionTitle}>Execute Agent</h3>
+                <h3 className={styles.sectionTitle}>{selectedAgent ? 'Give this agent a task' : 'Run this team'}</h3>
                 <textarea
                   className={styles.executeTextarea}
-                  value={executionInput}
-                  onChange={e => setExecutionInput(e.target.value)}
+                  value={taskInput}
+                  onChange={(e) => setTaskInput(e.target.value)}
+                  placeholder={selectedAgent ? 'e.g. Summarize this week\'s top AI news' : 'e.g. Research and draft a report on...'}
                 />
-                <button className={styles.btnPrimary} onClick={handleExecute} disabled={executing}>
+                <button
+                  className={styles.btnPrimary}
+                  onClick={selectedAgent ? handleExecuteAgent : handleExecuteTeam}
+                  disabled={executing}
+                >
                   {executing ? (
                     <><Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> Running...</>
                   ) : (
@@ -359,25 +461,17 @@ export default function AgentMarketplacePage() {
                   )}
                 </button>
 
-                {executionResult && (() => {
-                  const raw = executionResult.output ?? executionResult.error;
-                  const asText = typeof raw === 'string' ? raw : JSON.stringify(raw, null, 2);
-                  const audioUrls = extractAgentAudioUrls(asText);
+                {executionOutput && (() => {
+                  const audioUrls = extractAgentAudioUrls(executionOutput.text);
                   return (
-                    <div className={`${styles.resultBox} ${executionResult.success ? styles.resultSuccess : styles.resultError}`}>
-                      <div style={{ fontWeight: 700, marginBottom: 4 }}>
-                        {executionResult.success ? 'Success' : 'Failed'}
-                        <span style={{ fontWeight: 400, opacity: 0.5, marginLeft: 6 }}>
-                          {executionResult.duration_ms}ms
-                        </span>
+                    <div className={`${styles.resultBox} ${executionOutput.success ? styles.resultSuccess : styles.resultError}`}>
+                      <div style={{ fontWeight: 700, marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        {executionOutput.success ? <CheckCircle size={14} color="#71C23E" /> : <XCircle size={14} color="#FA547C" />}
+                        {executionOutput.success ? 'Success' : 'Failed'}
                       </div>
-                      {typeof raw === 'string' ? (
-                        <div style={{ fontSize: 12 }}>
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{asText}</ReactMarkdown>
-                        </div>
-                      ) : (
-                        <pre style={{ margin: 0, whiteSpace: 'pre-wrap', fontSize: 11 }}>{asText}</pre>
-                      )}
+                      <div style={{ fontSize: 12 }}>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{executionOutput.text}</ReactMarkdown>
+                      </div>
                       {audioUrls.map((url) => (
                         <div key={url} style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginTop: 10 }}>
                           <audio controls src={url} style={{ flex: 1, minWidth: 220, height: 34 }}>
