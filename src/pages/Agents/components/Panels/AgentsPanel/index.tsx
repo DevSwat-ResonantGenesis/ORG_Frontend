@@ -20,7 +20,6 @@ const WorkflowPanel = lazy(() => import('../WorkflowPanel'));
 const MonitorPanel = lazy(() => import('../MonitorPanel'));
 const SettingsPanel = lazy(() => import('../SettingsPanel'));
 const ScheduleCalendarPanel = lazy(() => import('../ScheduleCalendarPanel'));
-const TeamsPanel = lazy(() => import('../TeamsPanel'));
 import styles from './AgentsPanel.module.css';
 
 // ============== AGENTS PANEL ==============
@@ -96,7 +95,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const [showFactory, setShowFactory] = useState(false);
 
   // Inline sub-panel state (all panels now open inline)
-  type InlinePanelType = 'execution' | 'memory' | 'goals' | 'workflow' | 'monitor' | 'settings' | 'sessions' | 'calendar' | 'teams';
+  type InlinePanelType = 'execution' | 'memory' | 'goals' | 'workflow' | 'monitor' | 'settings' | 'sessions' | 'calendar';
   const [inlinePanel, setInlinePanel] = useState<{ type: InlinePanelType; agentId?: string } | null>(null);
 
   // Publish pane state (inline, replaces sessions pane)
@@ -689,7 +688,10 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
               key={nav.type}
               className={`${styles.navIconBtn} ${inlinePanel?.type === nav.type ? styles.navIconActive : ''}`}
               type="button"
-              onClick={() => { setInlinePanel({ type: nav.type as any }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); }}
+              onClick={() => {
+                if (nav.type === 'teams') { navigate('/agent-teams'); return; }
+                setInlinePanel({ type: nav.type as any }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false);
+              }}
               title={nav.label}
             >
               {nav.icon}
@@ -1036,9 +1038,9 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
             <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
               {/* Inline panel header */}
               <div className={styles.publishHeader}>
-                {{ execution: <Icons.Execution />, memory: <Icons.Memory />, goals: <Icons.Goals />, workflow: <Icons.Fork />, monitor: <Icons.Health />, settings: <Icons.Settings />, sessions: <Icons.Agents />, calendar: <Icons.Calendar />, teams: <Icons.Users /> }[inlinePanel.type]}
+                {{ execution: <Icons.Execution />, memory: <Icons.Memory />, goals: <Icons.Goals />, workflow: <Icons.Fork />, monitor: <Icons.Health />, settings: <Icons.Settings />, sessions: <Icons.Agents />, calendar: <Icons.Calendar /> }[inlinePanel.type]}
                 <span className={styles.publishTitle}>
-                  {{ execution: 'Execution', memory: 'Memory', goals: 'Goals', workflow: 'Workflow', monitor: 'Monitor', settings: 'Settings', sessions: 'Sessions', calendar: 'Schedule Calendar', teams: 'Teams' }[inlinePanel.type]}
+                  {{ execution: 'Execution', memory: 'Memory', goals: 'Goals', workflow: 'Workflow', monitor: 'Monitor', settings: 'Settings', sessions: 'Sessions', calendar: 'Schedule Calendar' }[inlinePanel.type]}
                 </span>
                 <button onClick={() => setInlinePanel(null)} className={styles.publishCloseBtn} title="Close">×</button>
               </div>
@@ -1054,7 +1056,6 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   {inlinePanel.type === 'settings' && <SettingsPanel />}
                   {inlinePanel.type === 'sessions' && <SessionsPanel />}
                   {inlinePanel.type === 'calendar' && <ScheduleCalendarPanel />}
-                  {inlinePanel.type === 'teams' && <TeamsPanel />}
                 </Suspense>
               </div>
             </div>
