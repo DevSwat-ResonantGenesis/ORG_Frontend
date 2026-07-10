@@ -63,6 +63,39 @@ export const getAgent = async (agent_id: string): Promise<AgentResponse> => {
   }
 };
 
+export interface AgentVersionEntry {
+  version_number: number;
+  agent_public_hash?: string | null;
+  agent_version_hash?: string | null;
+  created_at?: string | null;
+  changelog?: string | null;
+  config_snapshot?: Record<string, any> | null;
+}
+
+/**
+ * List an agent's saved config versions (name/prompt/tools/etc history)
+ * GET /api/v1/agents/{id}/versions
+ */
+export const listAgentVersions = async (agent_id: string): Promise<AgentVersionEntry[]> => {
+  try {
+    const response = await fastapiClient.get(`/api/v1/agents/${agent_id}/versions`);
+    return response.data?.versions || [];
+  } catch (error) {
+    logger.apiError(`/api/v1/agents/${agent_id}/versions`, error);
+    return [];
+  }
+};
+
+/**
+ * Roll an agent's config back to a previously saved version (recorded as a
+ * new version itself, not a destructive overwrite).
+ * POST /api/v1/agents/{id}/versions/{version_number}/restore
+ */
+export const restoreAgentVersion = async (agent_id: string, version_number: number): Promise<any> => {
+  const response = await fastapiClient.post(`/api/v1/agents/${agent_id}/versions/${version_number}/restore`);
+  return response.data;
+};
+
 /**
  * Create Agent Request Type
  */

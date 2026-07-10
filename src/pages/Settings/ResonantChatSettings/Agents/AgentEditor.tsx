@@ -4,7 +4,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import { settingsApi, type Agent } from '@/api/settings';
-import { getAvailableTools, type AvailableTool } from '@/api/agents';
+import { getAvailableTools, type AvailableTool, listAgentVersions, restoreAgentVersion, type AgentVersionEntry } from '@/api/agents';
 import { LoadingState } from '@/components/shared/LoadingState';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { MemorySettings } from './MemorySettings';
@@ -68,6 +68,45 @@ export const AgentEditor: React.FC<AgentEditorProps> = ({ agentId, onBack, onSav
   const [toolsLoading, setToolsLoading] = useState(false);
 
   const [agentData, setAgentData] = useState<Agent | null>(null);
+
+  const [showVersionHistory, setShowVersionHistory] = useState(false);
+  const [versions, setVersions] = useState<AgentVersionEntry[]>([]);
+  const [versionsLoading, setVersionsLoading] = useState(false);
+  const [restoringVersion, setRestoringVersion] = useState<number | null>(null);
+
+  const loadVersions = async () => {
+    if (!agentId) return;
+    setVersionsLoading(true);
+    try {
+      const list = await listAgentVersions(agentId);
+      setVersions(list);
+    } finally {
+      setVersionsLoading(false);
+    }
+  };
+
+  const handleToggleVersionHistory = () => {
+    setShowVersionHistory(prev => {
+      const next = !prev;
+      if (next && versions.length === 0) loadVersions();
+      return next;
+    });
+  };
+
+  const handleRestoreVersion = async (versionNumber: number) => {
+    if (!agentId) return;
+    if (!window.confirm(`Restore this agent's config to version ${versionNumber}? This is saved as a new version, so you can undo it too.`)) return;
+    setRestoringVersion(versionNumber);
+    try {
+      await restoreAgentVersion(agentId, versionNumber);
+      await loadAgent();
+      await loadVersions();
+    } catch (err: any) {
+      setError(err?.message || 'Failed to restore version');
+    } finally {
+      setRestoringVersion(null);
+    }
+  };
 
   useEffect(() => {
     if (agentId) {
@@ -642,6 +681,72 @@ export const AgentEditor: React.FC<AgentEditorProps> = ({ agentId, onBack, onSav
           )}
         </div>
       </form>
+      )}
+
+      {activeTab === 'basic' && agentId && (
+        <div style={{ marginTop: 20, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 16 }}>
+          <button
+            type="button"
+            onClick={handleToggleVersionHistory}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 8, background: 'transparent',
+              border: 'none', color: 'rgba(255,255,255,0.7)', fontSize: 13, fontWeight: 600, cursor: 'pointer', padding: 0,
+            }}
+          >
+            <span style={{ transform: showVersionHistory ? 'rotate(90deg)' : 'none', transition: 'transform 0.15s', display: 'inline-block' }}>▶</span>
+            Version History
+          </button>
+          {showVersionHistory && (
+            <div style={{ marginTop: 10 }}>
+              {versionsLoading ? (
+                <div style={{ fontSize: 12, opacity: 0.6 }}>Loading versions...</div>
+              ) : versions.length === 0 ? (
+                <p className={styles.helpText}>
+                  No saved versions yet — versions are recorded whenever the name, prompt, model, tools, or mode change.
+                </p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {versions.map((v, idx) => (
+                    <div
+                      key={v.version_number}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px',
+                        borderRadius: 8, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)',
+                      }}
+                    >
+                      <span style={{ fontSize: 12, fontWeight: 700, color: '#60a5fa', minWidth: 34 }}>v{v.version_number}</span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)' }}>
+                          {v.changelog || (idx === versions.length - 1 ? 'Initial version' : 'Config updated')}
+                        </div>
+                        {v.created_at && (
+                          <div style={{ fontSize: 11, opacity: 0.5 }}>{new Date(v.created_at).toLocaleString()}</div>
+                        )}
+                      </div>
+                      {idx !== 0 && (
+                        <button
+                          type="button"
+                          disabled={restoringVersion !== null || agentData?.is_imported}
+                          onClick={() => handleRestoreVersion(v.version_number)}
+                          style={{
+                            padding: '5px 12px', borderRadius: 6, background: 'rgba(59,130,246,0.15)',
+                            border: '1px solid rgba(59,130,246,0.3)', color: '#60a5fa', fontSize: 11, fontWeight: 600,
+                            cursor: restoringVersion !== null ? 'wait' : 'pointer', whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {restoringVersion === v.version_number ? 'Restoring…' : 'Restore'}
+                        </button>
+                      )}
+                      {idx === 0 && (
+                        <span style={{ fontSize: 11, opacity: 0.5, padding: '5px 8px' }}>current</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       )}
 
       {activeTab === 'memory' && agentId && (
