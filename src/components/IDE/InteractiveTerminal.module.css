@@ -8,3 +8,21 @@
 .terminalHost :global(.xterm) {
   height: 100%;
 }
+
+/* The global reset (theme/modules/reset-2025.css) forces every span/div to
+   var(--font-sans) unless nested under a literal .ide-container class -
+   which no longer exists anywhere in the current component tree (dropped
+   in a refactor). That rule was winning over the Terminal constructor's
+   fontFamily option (which only sets it on the .xterm container, not each
+   per-character span xterm's DOM renderer creates), so every character was
+   measured/painted with a proportional UI font instead of a monospace one.
+   xterm's DOM renderer compensates for non-fixed-width glyphs with
+   per-character letter-spacing hacks, which fell apart worst on the space
+   character - collapsing it to near-zero width and gluing words together.
+   Force the real monospace stack back with enough specificity to win. */
+.terminalHost :global(.xterm),
+.terminalHost :global(.xterm-rows),
+.terminalHost :global(.xterm-rows div),
+.terminalHost :global(.xterm-rows span) {
+  font-family: ui-monospace, 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace !important;
+}
