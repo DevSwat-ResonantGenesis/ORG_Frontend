@@ -16,13 +16,17 @@
    fontFamily option (which only sets it on the .xterm container, not each
    per-character span xterm's DOM renderer creates), so every character was
    measured/painted with a proportional UI font instead of a monospace one.
-   xterm's DOM renderer compensates for non-fixed-width glyphs with
-   per-character letter-spacing hacks, which fell apart worst on the space
-   character - collapsing it to near-zero width and gluing words together.
-   Force the real monospace stack back with enough specificity to win. */
+   Critically, xterm also measures character width via TWO separate hidden
+   elements - .xterm-char-measure-element and
+   .xterm-width-cache-measure-container - that live directly under .xterm,
+   NOT under .xterm-rows. Missing those meant xterm still measured against
+   the wrong font and baked wrong per-character letter-spacing compensation
+   into every rendered span, even after the rendered spans' own CSS was
+   fixed (confirmed via computed-style debugging in a live test session -
+   the fix looked right in getComputedStyle but the screen still rendered
+   garbled, because those two measurement elements were still wrong).
+   Target every descendant of .xterm so nothing is missed. */
 .terminalHost :global(.xterm),
-.terminalHost :global(.xterm-rows),
-.terminalHost :global(.xterm-rows div),
-.terminalHost :global(.xterm-rows span) {
+.terminalHost :global(.xterm) :global(*) {
   font-family: ui-monospace, 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace !important;
 }
