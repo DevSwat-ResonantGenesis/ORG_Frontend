@@ -373,6 +373,10 @@ export const Header: React.FC<HeaderProps> = ({
                       <span className={styles.navDropdownItemTitle}>Builder</span>
                       <span className={styles.navDropdownItemDesc}>Server-side Monaco editor for quick edits &amp; scaffolding, no local install required</span>
                     </button>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-chat?splitTab=terminal'); setActiveDropdown(null); }}>
+                      <span className={styles.navDropdownItemTitle}>Terminal</span>
+                      <span className={styles.navDropdownItemDesc}>Real sandboxed shell with Claude Code CLI, opened in split view</span>
+                    </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/download-ide'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>IDE App</span>
                       <span className={styles.navDropdownItemDesc}>VS Code fork with a built-in AI extension — 71 local tools, agentic chat loop &amp; AST code analysis</span>

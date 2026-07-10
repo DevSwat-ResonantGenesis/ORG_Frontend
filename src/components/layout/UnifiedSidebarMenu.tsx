@@ -138,22 +138,23 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
 
         {/* Content */}
         <div className={styles.usmContent}>
-          {/* Coding Section */}
+          {/* Coding Section - mobile shows only Terminal + Builder (IDE Cloud,
+              IDE App download, and Code Visualizer stay desktop-only here) */}
           <div className={styles.usmSection}>
             <div className={styles.usmSectionTitle}>Coding</div>
 
             <button
-              className={`${styles.usmItem} ${location.pathname === '/ide' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/ide'); onClose(); }}
+              className={styles.usmItem}
+              onClick={() => { navigate('/resonant-chat?splitTab=terminal'); onClose(); }}
             >
               <span className={styles.usmIcon}>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <rect x="2" y="2" width="12" height="12" rx="1" />
-                  <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M5 6L7 8L5 10" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M8 10H11" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
-              <span className={styles.usmLabel}>IDE Cloud</span>
-              {location.pathname === '/ide' && <span className={styles.usmActiveIndicator} />}
+              <span className={styles.usmLabel}>Terminal</span>
             </button>
 
             <button
@@ -168,34 +169,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               </span>
               <span className={styles.usmLabel}>Builder</span>
               {location.pathname === '/build' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/download-ide' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/download-ide'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="2" width="12" height="12" rx="1" />
-                  <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>IDE App</span>
-              {location.pathname === '/download-ide' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname === '/code-visualizer' ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/code-visualizer'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="2" y="2" width="12" height="12" rx="1" />
-                  <path d="M5 5L8 8L5 11M9 11H12" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Code Visualizer</span>
-              {location.pathname === '/code-visualizer' && <span className={styles.usmActiveIndicator} />}
             </button>
           </div>
 
@@ -233,22 +206,6 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               </span>
               <span className={styles.usmLabel}>Marketplace</span>
               {location.pathname === '/marketplace' && <span className={styles.usmActiveIndicator} />}
-            </button>
-
-            <button
-              className={`${styles.usmItem} ${location.pathname.startsWith('/agent-teams') ? styles.usmActive : ''}`}
-              onClick={() => { navigate('/agent-teams'); onClose(); }}
-            >
-              <span className={styles.usmIcon}>
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="5" cy="5" r="2" />
-                  <circle cx="11" cy="5" r="2" />
-                  <path d="M2 14C2 11.5 3.5 9.5 5 9.5C6.5 9.5 8 11.5 8 14" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M8 14C8 11.5 9.5 9.5 11 9.5C12.5 9.5 14 11.5 14 14" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-              <span className={styles.usmLabel}>Teams</span>
-              {location.pathname.startsWith('/agent-teams') && <span className={styles.usmActiveIndicator} />}
             </button>
           </div>
 

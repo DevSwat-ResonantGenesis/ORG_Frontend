@@ -252,6 +252,20 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   // PERF: Local input state to avoid re-rendering the entire parent (6900+ lines, 132 useState)
   // on every keystroke. Only this component re-renders during typing.
   // Parent onChange is NEVER called during typing — value is passed directly to onSend.
+  // The terminal tab dispatches this (see InteractiveTerminal.tsx) while its
+  // own mobile keyboard is up - the floating chat input bar has nothing to
+  // do with terminal typing, and being a fixed-position element it doesn't
+  // reliably ride above the on-screen keyboard on mobile, so it just gets
+  // hidden entirely for the duration instead of fighting for the same space.
+  const [terminalKeyboardActive, setTerminalKeyboardActive] = useState(false);
+  useEffect(() => {
+    const handler = (e: Event) => {
+      setTerminalKeyboardActive(Boolean((e as CustomEvent<{ active: boolean }>).detail?.active));
+    };
+    window.addEventListener('rg:terminal-keyboard-active', handler as EventListener);
+    return () => window.removeEventListener('rg:terminal-keyboard-active', handler as EventListener);
+  }, []);
+
   const [localValue, setLocalValue] = useState(value);
   const [showMentionAutocomplete, setShowMentionAutocomplete] = useState(false);
   const [mentionQuery, setMentionQuery] = useState('');
@@ -866,6 +880,8 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     : selectedAgentName
     ? `Agent: ${selectedAgentName}`
     : 'Smart';
+
+  if (terminalKeyboardActive) return null;
 
   return (
     <div

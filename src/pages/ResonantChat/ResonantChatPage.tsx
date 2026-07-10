@@ -1100,6 +1100,19 @@ const ResonantChatPage: React.FC = () => {
     previewUrl?: string | null;
   } | null>(null);
 
+  // Entry point for the header/mobile-nav "Terminal" link (navigate('/resonant-chat?splitTab=terminal'))
+  // - opens split view straight to the terminal tab instead of only ever
+  // being reachable via an agentic tool-call result.
+  useEffect(() => {
+    const requestedTab = new URLSearchParams(location.search).get('splitTab');
+    if (requestedTab === 'terminal') {
+      setSplitViewEnabled(true);
+      setSplitViewPane('split');
+      setSplitAutoOpenRequest({ requestId: Date.now(), tab: 'terminal' });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Save split view settings to localStorage
   useEffect(() => {
     localStorage.setItem('resonant-chat-split-view', String(splitViewEnabled));

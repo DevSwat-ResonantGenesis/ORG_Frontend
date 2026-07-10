@@ -591,6 +591,14 @@
   .terminalTabContent {
     padding-bottom: calc(116px + env(safe-area-inset-bottom));
   }
+
+  /* While the terminal's own mobile keyboard is up, the chat input bar
+     hides itself entirely (ChatInputBar.tsx listens for the same event) -
+     the reserved space above was only ever for that bar, so drop it to
+     zero instead of leaving a dead gap under the terminal. */
+  .terminalTabContent.keyboardActive {
+    padding-bottom: 0;
+  }
 }
 
 /* ============================================================

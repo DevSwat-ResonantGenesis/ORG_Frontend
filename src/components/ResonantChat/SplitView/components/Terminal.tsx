@@ -26,6 +26,15 @@ export const Terminal: React.FC<TerminalProps> = ({
 }) => {
   const outputRef = useRef<HTMLDivElement>(null);
   const [tabs, setTabs] = useState<TerminalTabType[]>(() => loadInitialTabs(projectId));
+  const [keyboardActive, setKeyboardActive] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      setKeyboardActive(Boolean((e as CustomEvent<{ active: boolean }>).detail?.active));
+    };
+    window.addEventListener('rg:terminal-keyboard-active', handler as EventListener);
+    return () => window.removeEventListener('rg:terminal-keyboard-active', handler as EventListener);
+  }, []);
 
   useEffect(() => {
     try {
@@ -78,7 +87,7 @@ export const Terminal: React.FC<TerminalProps> = ({
   };
 
   return (
-    <div className={styles.terminalTabContent}>
+    <div className={`${styles.terminalTabContent} ${keyboardActive ? styles.keyboardActive : ''}`}>
       <div className={styles.terminalToolbar}>
         <span className={styles.terminalTitle}>Terminal</span>
         {onClear && (

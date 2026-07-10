@@ -75,6 +75,39 @@ export const InteractiveTerminal: React.FC<InteractiveTerminalProps> = ({
       helperTextarea.setAttribute('spellcheck', 'false');
     }
 
+    // Mobile keyboard handling: while THIS terminal is focused and the
+    // on-screen keyboard is actually up (visualViewport shrinks relative to
+    // the layout viewport - a fixed pixel threshold rather than any() shrink
+    // avoids false positives from address-bar hide/show), tell the rest of
+    // the page (the floating chat input bar in split-view, see
+    // ChatInputBar.tsx's listener) so it can get out of the way instead of
+    // overlapping/competing with the terminal for the same screen space.
+    let isFocused = false;
+    let keyboardOpen = false;
+    const emitKeyboardState = () => {
+      window.dispatchEvent(
+        new CustomEvent('rg:terminal-keyboard-active', { detail: { active: isFocused && keyboardOpen } })
+      );
+    };
+    const handleFocus = () => {
+      isFocused = true;
+      emitKeyboardState();
+    };
+    const handleBlur = () => {
+      isFocused = false;
+      emitKeyboardState();
+    };
+    helperTextarea?.addEventListener('focus', handleFocus);
+    helperTextarea?.addEventListener('blur', handleBlur);
+
+    const vv = window.visualViewport;
+    const handleViewportResize = () => {
+      if (!vv) return;
+      keyboardOpen = window.innerHeight - vv.height > 120;
+      emitKeyboardState();
+    };
+    vv?.addEventListener('resize', handleViewportResize);
+
     const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const params = new URLSearchParams();
     if (projectId) params.set('project_id', projectId);
@@ -129,6 +162,12 @@ export const InteractiveTerminal: React.FC<InteractiveTerminalProps> = ({
     return () => {
       dataDisposable.dispose();
       resizeObserver.disconnect();
+      helperTextarea?.removeEventListener('focus', handleFocus);
+      helperTextarea?.removeEventListener('blur', handleBlur);
+      vv?.removeEventListener('resize', handleViewportResize);
+      if (isFocused) {
+        window.dispatchEvent(new CustomEvent('rg:terminal-keyboard-active', { detail: { active: false } }));
+      }
       ws.close();
       term.dispose();
     };
