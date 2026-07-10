@@ -150,7 +150,7 @@ const IDEPage: React.FC = () => {
   };
 
   return (
-    <div className={styles.idePageContainer}>
+    <div className={`${styles.idePageContainer} ide-container`}>
       <IDEHeader projectName={initialProjectName || 'Untitled Project'} />
       <Suspense fallback={<LoadingState message="Loading IDE..." />}>
         <CursorIDELayout 
