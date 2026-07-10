@@ -18,6 +18,7 @@ import { getCreditPacks, type CreditPack } from '../../api/billing';
 import { logout as apiLogout } from '../../api/auth';
 import { getSession, clearSession } from '../../utils/auth';
 import { ApiKeyManager } from '../../components/features/ApiKeyManager';
+import { SshHostManager } from '../../components/features/SshHostManager';
 type UserLocStats = null;
 type LiveLocStats = null;
 import { logger } from '../../utils/logger';
@@ -605,6 +606,15 @@ const NewUserDashboard: React.FC = () => {
             <h3 className="dashSectionTitle" style={{ marginBottom: 'var(--space-2)' }}>Platform API Keys</h3>
             <p className={styles.profileEmail} style={{ marginBottom: 'var(--space-4)' }}>Access DevSwat APIs programmatically for custom integrations.</p>
             <button className="btn btnSecondary btnSm" onClick={() => navigate('/connect-profiles')}><Key size={14} /> View & Create API Keys</button>
+          </div>
+
+          <div className="panel dashSection">
+            <h3 className="dashSectionTitle" style={{ marginBottom: 'var(--space-2)' }}>Terminal SSH Access</h3>
+            <p className={styles.profileEmail} style={{ marginBottom: 'var(--space-4)' }}>
+              Let the sandboxed IDE terminal SSH into your own server or laptop. Opt-in and scoped to one host - we
+              never see your server's credentials, only the public half of a keypair generated inside your sandbox.
+            </p>
+            <SshHostManager />
           </div>
         </>
       )}
