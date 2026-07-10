@@ -513,6 +513,93 @@
   box-shadow: 0 0 0 2px rgba(250, 165, 37, 0.35);
 }
 
+/* ============== TEAM CARDS ==============
+   Same card shell as an agent card, orange-tinted and drawn as a small
+   stack (two offset layers behind the main card) so it visually reads as
+   "a group of cards", not a single agent. */
+.teamCard {
+  background: rgba(249, 115, 22, 0.07);
+  border-color: rgba(249, 115, 22, 0.3);
+  margin-top: 6px;
+  margin-left: 4px;
+}
+
+.teamCard:hover {
+  border-color: rgba(249, 115, 22, 0.55);
+  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.2), var(--shadow-md);
+}
+
+.teamCard.teamCardActive {
+  border-color: rgba(249, 115, 22, 0.8);
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.4);
+}
+
+.teamStackLayer1,
+.teamStackLayer2 {
+  position: absolute;
+  left: 6px;
+  right: -4px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(249, 115, 22, 0.22);
+  background: rgba(249, 115, 22, 0.05);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.teamStackLayer1 {
+  top: -5px;
+  height: 14px;
+}
+
+.teamStackLayer2 {
+  top: -9px;
+  left: 12px;
+  right: -8px;
+  height: 10px;
+  opacity: 0.7;
+}
+
+.teamIconDot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: #f97316;
+  flex-shrink: 0;
+}
+
+.teamIconDot svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Applied to an agent card when its team is the currently-selected team
+   (clicked a team card) — an orange glow so you can see at a glance which
+   agents belong to that team. */
+.agentCard.teamMemberGlow {
+  border-color: rgba(249, 115, 22, 0.6);
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.35), 0 0 16px rgba(249, 115, 22, 0.25);
+}
+
+/* Drag-and-drop affordances */
+.agentCard[draggable='true'] {
+  cursor: grab;
+}
+
+.dragOver_merge {
+  border-color: rgba(249, 115, 22, 0.9) !important;
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.5) !important;
+}
+
+.dragOver_before {
+  box-shadow: inset 3px 0 0 0 #01A6BC !important;
+}
+
+.dragOver_after {
+  box-shadow: inset -3px 0 0 0 #01A6BC !important;
+}
+
 /* Collapsed row — the only thing shown until expanded */
 .cardCollapsedRow {
   display: flex;
@@ -2868,4 +2955,187 @@
   font-size: 10px;
   width: 100%;
   margin-top: 4px;
+}
+
+/* ============== TEAM SETTINGS MODAL ============== */
+.teamModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.teamModalHeader h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 16px;
+  color: #f97316;
+}
+
+.modalCloseBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.teamModalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.teamModalLabel {
+  font-size: 11px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+
+.teamModalHint {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.teamModalInput,
+.teamModalTextarea {
+  width: 100%;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.teamModalTextarea {
+  resize: vertical;
+  min-height: 50px;
+}
+
+.teamModalInput:focus,
+.teamModalTextarea:focus {
+  outline: none;
+  border-color: #f97316;
+}
+
+.teamModalMembers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  min-height: 32px;
+}
+
+.teamModalMemberChip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px 5px 10px;
+  border-radius: 12px;
+  background: rgba(249, 115, 22, 0.12);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+  color: #fdba74;
+  font-size: 12px;
+}
+
+.teamModalMemberChip button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #fdba74;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.teamModalActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.teamModalSaveBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.teamModalSaveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.teamModalDeleteBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  color: #ef4444;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.teamModalRunSection {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.teamModalRunResult {
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.teamModalRunStatus {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(249, 115, 22, 0.15);
+  color: #f97316;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.teamModalRunError {
+  color: #ef4444;
+}
+
+.teamModalRunOutput {
+  white-space: pre-wrap;
+  color: #cbd5e1;
+  font-family: inherit;
+  margin: 0;
+  max-height: 240px;
+  overflow-y: auto;
 }

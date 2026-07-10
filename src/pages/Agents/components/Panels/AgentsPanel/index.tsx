@@ -11,6 +11,15 @@ import { executeAgentTask } from '../../../../../api/executions';
 import * as agentEngine from '../../../../../api/agentEngine';
 import { useToastContext } from '../../../../../context/ToastContext';
 import { DropdownMenu } from '../../../../../components/shared';
+import {
+  listAgentTeams,
+  getTeamMembers,
+  createAgentTeam,
+  updateAgentTeam,
+  deleteAgentTeam,
+  type AgentTeam,
+} from '../../../../../api/agentTeams';
+import TeamSettingsModal from './TeamSettingsModal';
 import { SessionsPanel } from '../SessionsPanel';
 import { FactoryPanel } from '../FactoryPanel';
 const ExecutionPanel = lazy(() => import('../ExecutionPanel'));
@@ -180,6 +189,252 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
     return list;
   }, [agents, filter, searchQuery, sortDir, sortKey, pinnedSet]);
+
+  // ============== AGENT TEAMS (cards in this same grid) ==============
+  const [teams, setTeams] = useState<AgentTeam[]>([]);
+  const [teamMembersMap, setTeamMembersMap] = useState<Record<string, string[]>>({});
+  const [highlightedTeamId, setHighlightedTeamId] = useState<string | null>(null);
+  const [teamSettingsId, setTeamSettingsId] = useState<string | null>(null);
+  const [teamActionBusy, setTeamActionBusy] = useState(false);
+
+  const teamIdSet = useMemo(() => new Set(teams.map((t) => t.id)), [teams]);
+
+  const fetchTeams = useCallback(async () => {
+    try {
+      const list = await listAgentTeams();
+      const active = list.filter((t) => t.status !== 'archived');
+      setTeams(active);
+      const memberResults = await Promise.allSettled(active.map((t) => getTeamMembers(t.id)));
+      const map: Record<string, string[]> = {};
+      active.forEach((t, i) => {
+        const r = memberResults[i];
+        map[t.id] = r.status === 'fulfilled' ? (r.value as any[]).map((m: any) => m.agent_id) : [];
+      });
+      setTeamMembersMap(map);
+    } catch {
+      /* teams are a bonus layer on top of the agent grid — fail silently */
+    }
+  }, []);
+
+  useEffect(() => { fetchTeams(); }, [fetchTeams]);
+
+  // Drag-and-drop: whole-grid reordering + drag-one-card-onto-another to
+  // create/extend a team. Order is purely a client-side display preference
+  // (there's no "position" concept on the backend), persisted per-browser.
+  const [cardOrder, setCardOrder] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem('agentos.cardOrder') || '[]'); } catch { return []; }
+  });
+  const persistCardOrder = useCallback((order: string[]) => {
+    setCardOrder(order);
+    try { localStorage.setItem('agentos.cardOrder', JSON.stringify(order)); } catch { /* ignore */ }
+  }, []);
+
+  const [draggedCardId, setDraggedCardId] = useState<string | null>(null);
+  const [dragOverInfo, setDragOverInfo] = useState<{ id: string; zone: 'merge' | 'before' | 'after' } | null>(null);
+
+  const handleCardDragStart = useCallback((id: string) => (e: React.DragEvent) => {
+    if (bulkMode) { e.preventDefault(); return; }
+    setDraggedCardId(id);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', id);
+  }, [bulkMode]);
+
+  const handleCardDragOver = useCallback((id: string) => (e: React.DragEvent) => {
+    if (!draggedCardId || draggedCardId === id) return;
+    e.preventDefault();
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const relX = rect.width > 0 ? (e.clientX - rect.left) / rect.width : 0.5;
+    const zone: 'merge' | 'before' | 'after' = relX < 0.25 ? 'before' : relX > 0.75 ? 'after' : 'merge';
+    setDragOverInfo((prev) => (prev?.id === id && prev.zone === zone ? prev : { id, zone }));
+  }, [draggedCardId]);
+
+  const handleCardDragLeave = useCallback((id: string) => () => {
+    setDragOverInfo((prev) => (prev?.id === id ? null : prev));
+  }, []);
+
+  const handleCardDragEnd = useCallback(() => {
+    setDraggedCardId(null);
+    setDragOverInfo(null);
+  }, []);
+
+  const handleMergeIntoTeam = useCallback(async (draggedId: string, targetId: string, targetIsTeam: boolean) => {
+    setTeamActionBusy(true);
+    try {
+      if (targetIsTeam) {
+        const team = teams.find((t) => t.id === targetId);
+        if (!team) return;
+        const existingMembers = teamMembersMap[targetId] || [];
+        if (existingMembers.includes(draggedId)) return;
+        await updateAgentTeam(targetId, {
+          name: team.name,
+          description: team.description || undefined,
+          agent_ids: [...existingMembers, draggedId],
+          workflow_config: team.workflow_config,
+        });
+        toast.success('Added to team');
+      } else {
+        const draggedAgent = agents.find((a: Agent) => a.id === draggedId);
+        const targetAgent = agents.find((a: Agent) => a.id === targetId);
+        await createAgentTeam({
+          name: `${draggedAgent?.name || 'Agent'} + ${targetAgent?.name || 'Agent'}`,
+          agent_ids: [draggedId, targetId],
+          workflow_config: { type: 'parallel' },
+        });
+        toast.success('Team created');
+      }
+      await fetchTeams();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.detail || 'Failed to update team');
+    } finally {
+      setTeamActionBusy(false);
+    }
+  }, [teams, teamMembersMap, agents, fetchTeams, toast]);
+
+  const handleCardDrop = useCallback((targetId: string) => async (e: React.DragEvent) => {
+    e.preventDefault();
+    const draggedId = draggedCardId || e.dataTransfer.getData('text/plain');
+    const zone = dragOverInfo?.id === targetId ? dragOverInfo.zone : 'merge';
+    setDraggedCardId(null);
+    setDragOverInfo(null);
+    if (!draggedId || draggedId === targetId) return;
+
+    if (zone === 'merge') {
+      if (teamIdSet.has(draggedId)) return; // dragging a team card onto something isn't supported yet
+      await handleMergeIntoTeam(draggedId, targetId, teamIdSet.has(targetId));
+      return;
+    }
+
+    // Reorder: splice the dragged id to just before/after the drop target
+    const allIds = [...teams.map((t) => t.id), ...filteredAgents.map((a: Agent) => a.id)];
+    let order = cardOrder.filter((id) => allIds.includes(id));
+    allIds.forEach((id) => { if (!order.includes(id)) order.push(id); });
+    order = order.filter((id) => id !== draggedId);
+    const targetIdx = order.indexOf(targetId);
+    const insertIdx = zone === 'after' ? targetIdx + 1 : targetIdx;
+    order.splice(insertIdx < 0 ? order.length : insertIdx, 0, draggedId);
+    persistCardOrder(order);
+  }, [draggedCardId, dragOverInfo, teamIdSet, handleMergeIntoTeam, teams, filteredAgents, cardOrder, persistCardOrder]);
+
+  const handleDeleteTeam = useCallback(async (teamId: string) => {
+    if (!confirm('Delete this team? Member agents are not affected.')) return;
+    setTeamActionBusy(true);
+    try {
+      await deleteAgentTeam(teamId);
+      if (highlightedTeamId === teamId) setHighlightedTeamId(null);
+      if (teamSettingsId === teamId) setTeamSettingsId(null);
+      await fetchTeams();
+      toast.success('Team deleted');
+    } catch (err: any) {
+      toast.error(err?.response?.data?.detail || 'Failed to delete team');
+    } finally {
+      setTeamActionBusy(false);
+    }
+  }, [highlightedTeamId, teamSettingsId, fetchTeams, toast]);
+
+  // Team settings modal — name/description/workflow type/team prompt/members
+  const teamSettingsTeam = teamSettingsId ? teams.find((t) => t.id === teamSettingsId) || null : null;
+  const [teamFormName, setTeamFormName] = useState('');
+  const [teamFormDescription, setTeamFormDescription] = useState('');
+  const [teamFormType, setTeamFormType] = useState<'parallel' | 'sequential'>('parallel');
+  const [teamFormPrompt, setTeamFormPrompt] = useState('');
+  const [teamFormSaving, setTeamFormSaving] = useState(false);
+  const [teamRunGoal, setTeamRunGoal] = useState('');
+  const [teamRunning, setTeamRunning] = useState(false);
+  const [teamRunStatus, setTeamRunStatus] = useState<any>(null);
+
+  useEffect(() => {
+    if (!teamSettingsTeam) return;
+    setTeamFormName(teamSettingsTeam.name);
+    setTeamFormDescription(teamSettingsTeam.description || '');
+    setTeamFormType((teamSettingsTeam.workflow_config as any)?.type === 'sequential' ? 'sequential' : 'parallel');
+    setTeamFormPrompt((teamSettingsTeam.workflow_config as any)?.team_prompt || '');
+    setTeamRunGoal('');
+    setTeamRunStatus(null);
+    setTeamRunning(false);
+  }, [teamSettingsTeam]);
+
+  const handleSaveTeamSettings = useCallback(async () => {
+    if (!teamSettingsId || !teamSettingsTeam) return;
+    setTeamFormSaving(true);
+    try {
+      await updateAgentTeam(teamSettingsId, {
+        name: teamFormName,
+        description: teamFormDescription || undefined,
+        agent_ids: teamMembersMap[teamSettingsId] || [],
+        workflow_config: { ...(teamSettingsTeam.workflow_config || {}), type: teamFormType, team_prompt: teamFormPrompt || undefined } as any,
+      });
+      await fetchTeams();
+      toast.success('Team settings saved');
+    } catch (err: any) {
+      toast.error(err?.response?.data?.detail || 'Failed to save team settings');
+    } finally {
+      setTeamFormSaving(false);
+    }
+  }, [teamSettingsId, teamSettingsTeam, teamFormName, teamFormDescription, teamFormType, teamFormPrompt, teamMembersMap, fetchTeams, toast]);
+
+  const handleRemoveMember = useCallback(async (agentId: string) => {
+    if (!teamSettingsId || !teamSettingsTeam) return;
+    const remaining = (teamMembersMap[teamSettingsId] || []).filter((id) => id !== agentId);
+    try {
+      await updateAgentTeam(teamSettingsId, {
+        name: teamSettingsTeam.name,
+        description: teamSettingsTeam.description || undefined,
+        agent_ids: remaining,
+        workflow_config: teamSettingsTeam.workflow_config,
+      });
+      await fetchTeams();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.detail || 'Failed to remove member');
+    }
+  }, [teamSettingsId, teamSettingsTeam, teamMembersMap, fetchTeams, toast]);
+
+  // Bypasses the typed executeWorkflow() client on purpose — its
+  // ExecuteWorkflowRequest wraps the payload as {input_data: {...}}, but the
+  // real backend (routers_teams.py::execute_team_workflow) takes the goal
+  // dict as the raw POST body, so that wrapper silently sends the wrong
+  // shape. Calling fastapiClient directly here matches what actually works.
+  const handleRunTeam = useCallback(async () => {
+    if (!teamSettingsId || !teamRunGoal.trim()) return;
+    setTeamRunning(true);
+    setTeamRunStatus(null);
+    try {
+      const res = await fastapiClient.post(`/agent-teams/${teamSettingsId}/execute`, { goal: teamRunGoal });
+      const workflowId = res.data?.id;
+      if (!workflowId) { setTeamRunning(false); return; }
+      let attempts = 0;
+      const poll = async () => {
+        attempts += 1;
+        try {
+          const statusRes = await fastapiClient.get(`/agent-teams/workflows/${workflowId}`);
+          setTeamRunStatus(statusRes.data);
+          if (['completed', 'failed', 'cancelled'].includes(statusRes.data.status) || attempts > 40) {
+            setTeamRunning(false);
+            return;
+          }
+          setTimeout(poll, 5000);
+        } catch {
+          setTeamRunning(false);
+        }
+      };
+      poll();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.detail || 'Failed to run team');
+      setTeamRunning(false);
+    }
+  }, [teamSettingsId, teamRunGoal, toast]);
+
+  // Combined, orderable list of cards rendered in the grid (teams + agents)
+  const combinedCards = useMemo(() => {
+    type Card = { kind: 'team'; id: string; team: AgentTeam } | { kind: 'agent'; id: string; agent: Agent };
+    const teamCards: Card[] = teams.map((t) => ({ kind: 'team', id: t.id, team: t }));
+    const agentCards: Card[] = filteredAgents.map((a: Agent) => ({ kind: 'agent', id: a.id, agent: a }));
+    const all = [...teamCards, ...agentCards];
+    const orderIndex = new Map(cardOrder.map((id, i) => [id, i]));
+    return all
+      .map((card, i) => ({ card, sortKey: orderIndex.has(card.id) ? (orderIndex.get(card.id) as number) : Number.MAX_SAFE_INTEGER + i }))
+      .sort((a, b) => a.sortKey - b.sortKey)
+      .map((x) => x.card);
+  }, [teams, filteredAgents, cardOrder]);
 
   const bulkSelectedCount = selectedIds.size;
 
@@ -801,13 +1056,81 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   <p>Loading agents…</p>
                 </div>
               )}
-              {filteredAgents.map((agent: Agent) => {
+              {combinedCards.map((card) => {
+                if (card.kind === 'team') {
+                  const team = card.team;
+                  const memberIds = teamMembersMap[team.id] || [];
+                  const isActive = highlightedTeamId === team.id;
+                  const isDragOver = dragOverInfo?.id === team.id;
+                  return (
+                    <div
+                      key={`team-${team.id}`}
+                      className={`${styles.agentCard} ${styles.teamCard} ${isActive ? styles.teamCardActive : ''} ${isDragOver ? styles[`dragOver_${dragOverInfo!.zone}`] || '' : ''}`}
+                      draggable={!bulkMode}
+                      onDragStart={handleCardDragStart(team.id)}
+                      onDragOver={handleCardDragOver(team.id)}
+                      onDragLeave={handleCardDragLeave(team.id)}
+                      onDrop={handleCardDrop(team.id)}
+                      onDragEnd={handleCardDragEnd}
+                      onClick={() => setHighlightedTeamId((prev) => (prev === team.id ? null : team.id))}
+                    >
+                      <div className={styles.teamStackLayer1} />
+                      <div className={styles.teamStackLayer2} />
+                      <div className={styles.cardCollapsedRow}>
+                        <span className={styles.teamIconDot}><Icons.Users /></span>
+                        <h3 className={styles.cardName}>{team.name}</h3>
+                        <button
+                          className={styles.pinBtn}
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setTeamSettingsId(team.id); }}
+                          title="Team settings"
+                        >
+                          <Icons.Settings />
+                        </button>
+                      </div>
+                      <div className={styles.cardDetails}>
+                        <div className={styles.badgeRow}>
+                          <span className={styles.typeBadge}>{team.workflow_config?.type || 'sequential'}</span>
+                          <span className={styles.typeBadge}>{memberIds.length} member{memberIds.length === 1 ? '' : 's'}</span>
+                        </div>
+                        {team.description && <div className={styles.agentSubtitle}>{team.description}</div>}
+                        <div className={styles.cardActions}>
+                          <button
+                            className={`${styles.actionBtn} ${styles.runBtn}`}
+                            onClick={(e) => { e.stopPropagation(); setTeamSettingsId(team.id); }}
+                          >
+                            <Icons.Play />
+                            <span className={styles.actionLabel}>Run</span>
+                          </button>
+                          <button
+                            className={`${styles.actionBtn}`}
+                            onClick={(e) => { e.stopPropagation(); handleDeleteTeam(team.id); }}
+                            disabled={teamActionBusy}
+                          >
+                            <Icons.Trash />
+                            <span className={styles.actionLabel}>Delete</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
+                const agent = card.agent;
                 const isOpenClaw = agent.agent_source === 'openclaw' || agent.agent_source === 'federated';
                 const isExpanded = expandedIds.has(agent.id);
+                const isTeamGlow = !!(highlightedTeamId && (teamMembersMap[highlightedTeamId] || []).includes(agent.id));
+                const isDragOverAgent = dragOverInfo?.id === agent.id;
                 return (
                 <div
                   key={agent.id}
-                  className={`${styles.agentCard} ${selectedAgent?.id === agent.id ? styles.selected : ''} ${isOpenClaw ? styles.openclawCard : ''} ${isExpanded ? styles.expanded : ''}`}
+                  className={`${styles.agentCard} ${selectedAgent?.id === agent.id ? styles.selected : ''} ${isOpenClaw ? styles.openclawCard : ''} ${isExpanded ? styles.expanded : ''} ${isTeamGlow ? styles.teamMemberGlow : ''} ${isDragOverAgent ? styles[`dragOver_${dragOverInfo!.zone}`] || '' : ''}`}
+                  draggable={!bulkMode}
+                  onDragStart={handleCardDragStart(agent.id)}
+                  onDragOver={handleCardDragOver(agent.id)}
+                  onDragLeave={handleCardDragLeave(agent.id)}
+                  onDrop={handleCardDrop(agent.id)}
+                  onDragEnd={handleCardDragEnd}
                   onClick={() => toggleExpanded(agent.id)}
                 >
                   {/* Collapsed row — the only thing shown until the user hovers or
@@ -1512,6 +1835,25 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
           </div>
         ) : null}
       </div>
+
+      <TeamSettingsModal
+        team={teamSettingsTeam}
+        memberIds={teamSettingsId ? (teamMembersMap[teamSettingsId] || []) : []}
+        agents={agents}
+        onClose={() => setTeamSettingsId(null)}
+        onSave={handleSaveTeamSettings}
+        onRemoveMember={handleRemoveMember}
+        onDelete={() => { if (teamSettingsId) { handleDeleteTeam(teamSettingsId); setTeamSettingsId(null); } }}
+        formName={teamFormName} setFormName={setTeamFormName}
+        formDescription={teamFormDescription} setFormDescription={setTeamFormDescription}
+        formType={teamFormType} setFormType={setTeamFormType}
+        formPrompt={teamFormPrompt} setFormPrompt={setTeamFormPrompt}
+        saving={teamFormSaving}
+        runGoal={teamRunGoal} setRunGoal={setTeamRunGoal}
+        onRun={handleRunTeam}
+        running={teamRunning}
+        runStatus={teamRunStatus}
+      />
     </div>
   );
 };
