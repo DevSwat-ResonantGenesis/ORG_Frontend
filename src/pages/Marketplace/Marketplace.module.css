@@ -19,9 +19,12 @@
 }
 
 .topTitle {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
-  color: #FAA525;
+  background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   white-space: nowrap;
   margin: 0;
 }

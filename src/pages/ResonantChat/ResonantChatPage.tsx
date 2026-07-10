@@ -86,9 +86,9 @@ const ProjectBuilder = React.lazy(() =>
       default: () => (
         <div style={{ padding: '40px', textAlign: 'center' }}>
           <h2>Project Builder Not Available</h2>
-          <p>JSZip package is not installed.</p>
-          <p>Please run: <code style={{ background: '#f0f0f0', padding: '4px 8px', borderRadius: '4px' }}>npm install</code></p>
-          <p>After installation, refresh the page.</p>
+          <p style={{ opacity: 0.7 }}>JSZip package is not installed.</p>
+          <p style={{ opacity: 0.7 }}>Please run: <code style={{ background: '#f0f0f0', padding: '4px 8px', borderRadius: '4px' }}>npm install</code></p>
+          <p style={{ opacity: 0.7 }}>After installation, refresh the page.</p>
         </div>
       )
     }))

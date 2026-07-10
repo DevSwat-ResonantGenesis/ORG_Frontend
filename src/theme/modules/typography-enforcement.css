@@ -21,19 +21,19 @@
 
 /* Headings - Enforce consistent sizes ONLY for elements without CSS module classes */
 /* CSS Modules use hashed class names like _heroTitle_1p09m_6, so we exclude them */
-h1:not([class*="_"]), 
-.h1:not([class*="_"]), 
-.page-title:not([class*="_"]), 
-.heroTitle:not([class*="_"]), 
-.validation-title:not([class*="_"]), 
-.scanner-title:not([class*="_"]), 
+h1:not([class*="_"]),
+.h1:not([class*="_"]),
+.page-title:not([class*="_"]),
+.heroTitle:not([class*="_"]),
+.validation-title:not([class*="_"]),
+.scanner-title:not([class*="_"]),
 .title:not([class*="_"]) {
   font-family: var(--font-display) !important;
   font-size: var(--font-4xl) !important;
   font-weight: var(--font-weight-bold) !important;
   letter-spacing: var(--tracking-tight) !important;
   line-height: var(--leading-tight) !important;
-  color: var(--text-primary) !important;
+  color: var(--text-primary);
   margin: 0 !important;
 }
 
@@ -44,59 +44,59 @@ h1:not([class*="_"]),
 [data-theme='dark'] .validation-title:not([class*="_"]),
 [data-theme='dark'] .scanner-title:not([class*="_"]),
 [data-theme='dark'] .title:not([class*="_"]) {
-  color: #f9fafb !important;
+  color: #f9fafb;
 }
 
-h2:not([class*="_"]), 
-.h2:not([class*="_"]), 
+h2:not([class*="_"]),
+.h2:not([class*="_"]),
 .section-title:not([class*="_"]) {
   font-family: var(--font-display) !important;
   font-size: var(--font-3xl) !important;
   font-weight: var(--font-weight-semibold) !important;
   letter-spacing: var(--tracking-tight) !important;
   line-height: var(--leading-tight) !important;
-  color: var(--text-primary) !important;
+  color: var(--text-primary);
   margin: 0 !important;
 }
 
 [data-theme='dark'] h2:not([class*="_"]),
 [data-theme='dark'] .h2:not([class*="_"]),
 [data-theme='dark'] .section-title:not([class*="_"]) {
-  color: #f9fafb !important;
+  color: #f9fafb;
 }
 
-h3:not([class*="_"]), 
-.h3:not([class*="_"]), 
+h3:not([class*="_"]),
+.h3:not([class*="_"]),
 .feature-title:not([class*="_"]) {
   font-family: var(--font-display) !important;
   font-size: var(--font-2xl) !important;
   font-weight: var(--font-weight-semibold) !important;
   letter-spacing: var(--tracking-tight) !important;
   line-height: var(--leading-snug) !important;
-  color: var(--text-primary) !important;
+  color: var(--text-primary);
   margin: 0 !important;
 }
 
 [data-theme='dark'] h3:not([class*="_"]),
 [data-theme='dark'] .h3:not([class*="_"]),
 [data-theme='dark'] .feature-title:not([class*="_"]) {
-  color: #f9fafb !important;
+  color: #f9fafb;
 }
 
-h4:not([class*="_"]), 
+h4:not([class*="_"]),
 .h4:not([class*="_"]) {
   font-family: var(--font-family) !important;
   font-size: var(--font-xl) !important;
   font-weight: var(--font-weight-medium) !important;
   letter-spacing: var(--tracking-normal) !important;
   line-height: var(--leading-normal) !important;
-  color: var(--text-primary) !important;
+  color: var(--text-primary);
   margin: 0 !important;
 }
 
 [data-theme='dark'] h4:not([class*="_"]),
 [data-theme='dark'] .h4:not([class*="_"]) {
-  color: #f9fafb !important;
+  color: #f9fafb;
 }
 
 /* Body text - Enforce consistent sizes (exclude CSS modules) */
@@ -119,25 +119,25 @@ p:not([class*="_"]),
 [data-theme='dark'] .body-text:not([class*="_"]),
 [data-theme='dark'] .description:not([class*="_"]),
 [data-theme='dark'] .subtitle:not([class*="_"]) {
-  color: #d1d5db !important;
+  color: #d1d5db;
 }
 
 /* Small text (exclude CSS modules) */
-small:not([class*="_"]), 
-.text-sm:not([class*="_"]), 
-.caption:not([class*="_"]), 
+small:not([class*="_"]),
+.text-sm:not([class*="_"]),
+.caption:not([class*="_"]),
 .label:not([class*="_"]) {
   font-family: var(--font-family) !important;
   font-size: var(--font-sm) !important;
   font-weight: var(--font-normal) !important;
-  color: var(--text-tertiary) !important;
+  color: var(--text-tertiary);
 }
 
 [data-theme='dark'] small:not([class*="_"]),
 [data-theme='dark'] .text-sm:not([class*="_"]),
 [data-theme='dark'] .caption:not([class*="_"]),
 [data-theme='dark'] .label:not([class*="_"]) {
-  color: #9ca3af !important;
+  color: #9ca3af;
 }
 
 /* Extra small text (exclude CSS modules) */
@@ -145,11 +145,11 @@ small:not([class*="_"]),
   font-family: var(--font-family) !important;
   font-size: var(--font-xs) !important;
   font-weight: var(--font-normal) !important;
-  color: var(--text-tertiary) !important;
+  color: var(--text-tertiary);
 }
 
 [data-theme='dark'] .text-xs:not([class*="_"]) {
-  color: #9ca3af !important;
+  color: #9ca3af;
 }
 
 /* Buttons - Enforce consistent typography (exclude CSS modules) */

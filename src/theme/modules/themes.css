@@ -54,20 +54,17 @@ html[data-theme="dark"] {
   /* Use new token system */
 }
 
-/* Dark theme text colors - EXCLUDE IDE and all its descendants */
-[data-theme="dark"] :not(.ide-container):not(.ide-container *) h1,
-[data-theme="dark"] :not(.ide-container):not(.ide-container *) h2,
-[data-theme="dark"] :not(.ide-container):not(.ide-container *) h3,
-[data-theme="dark"] :not(.ide-container):not(.ide-container *) h4,
-[data-theme="dark"] :not(.ide-container):not(.ide-container *) h5,
-[data-theme="dark"] :not(.ide-container):not(.ide-container *) h6,
-[data-theme="dark"] :not(.ide-container):not(.ide-container *) p,
-[data-theme="dark"] :not(.ide-container):not(.ide-container *) span,
-[data-theme="dark"] :not(.ide-container):not(.ide-container *) div,
-[data-theme="dark"] :not(.ide-container):not(.ide-container *) label {
-  color: var(--text-primary) !important;
-  /* Use new token system */
-}
+/* Removed: nuclear [data-theme="dark"] h1..h6,p,span,div,label { color: var(--text-primary) !important }
+   This is the dark-mode twin of the rule already identified and removed for light mode in
+   commit 2a5aaa4 ("ROOT CAUSE FIX") — it forced EVERY heading/paragraph/span/div/label
+   sitewide to the brightest text token, with !important beating any component's attempt
+   to dim subtitles/body/meta text for visual hierarchy. It was never cleaned up alongside
+   its light-mode counterpart, so every dimming/hierarchy fix since (chat message text,
+   dashboard/homepage brightness fixes, agent card subtitles, marketplace descriptions,
+   etc.) kept getting silently overridden back to full brightness in dark mode. Pages
+   handle their own text color via CSS modules or the tc.muted-style patterns already
+   established; the .text-700/.text-secondary and .text-500/.text-muted utility classes
+   below remain as an opt-in dimming mechanism. */
 
 [data-theme="dark"] .text-700,
 [data-theme="dark"] .text-secondary {
@@ -88,22 +85,12 @@ html[data-theme="dark"] {
   /* Use new token system */
 }
 
-[data-theme='dark'] h1,
-[data-theme='dark'] h2,
-[data-theme='dark'] h3,
-[data-theme='dark'] h4,
-[data-theme='dark'] h5,
-[data-theme='dark'] h6,
-[data-theme='dark'] .text-h1,
-[data-theme='dark'] .text-h2,
-[data-theme='dark'] .text-h3,
-[data-theme='dark'] .text-h4,
-[data-theme='dark'] .text-h5,
-[data-theme='dark'] .text-h6 {
-  color: #f9fafb !important;
-}
-
-
+/* Removed: nuclear [data-theme='dark'] h1..h6, .text-h1..text-h6 { color: #f9fafb !important }
+   Same class of bug as above — forced every heading LEVEL (h1 through h6) to the identical
+   brightness with no exclusions at all, which flattens any hierarchy a component tries to
+   express by heading level (e.g. an h3 subtitle rendering exactly as bright as the h1 page
+   title). Light mode never had this restored after its nuclear rules were removed above;
+   dark mode shouldn't either — components set their own heading colors via CSS modules. */
 
 [data-theme='dark'] body,
 [data-theme='dark'] html {
