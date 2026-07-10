@@ -20,6 +20,7 @@ import {
   type AgentTeam,
 } from '../../../../../api/agentTeams';
 import TeamSettingsModal from './TeamSettingsModal';
+import TeamSessionsPanel from './TeamSessionsPanel';
 import { SessionsPanel } from '../SessionsPanel';
 import { FactoryPanel } from '../FactoryPanel';
 const ExecutionPanel = lazy(() => import('../ExecutionPanel'));
@@ -196,6 +197,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const [highlightedTeamId, setHighlightedTeamId] = useState<string | null>(null);
   const [teamSettingsId, setTeamSettingsId] = useState<string | null>(null);
   const [teamActionBusy, setTeamActionBusy] = useState(false);
+  const [viewingTeamSessionsId, setViewingTeamSessionsId] = useState<string | null>(null);
 
   const teamIdSet = useMemo(() => new Set(teams.map((t) => t.id)), [teams]);
 
@@ -594,7 +596,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   }, []);
 
   // Auto-scroll to right panel on mobile when it opens
-  const hasRightPanel = !!(selectedAgent || showFactory || inlinePanel || chatAgentId || detailAgentId || publishAgentId);
+  const hasRightPanel = !!(selectedAgent || showFactory || inlinePanel || chatAgentId || detailAgentId || publishAgentId || viewingTeamSessionsId);
   const activePanelLabel = showFactory ? 'Factory' : publishAgentId ? 'Publish' : detailAgentId ? 'Details' : chatAgentId ? 'Chat' : inlinePanel ? inlinePanel.type.charAt(0).toUpperCase() + inlinePanel.type.slice(1) : selectedAgent ? 'Sessions' : null;
 
   useEffect(() => {
@@ -945,7 +947,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
               type="button"
               onClick={() => {
                 if (nav.type === 'teams') { navigate('/agent-teams'); return; }
-                setInlinePanel({ type: nav.type as any }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false);
+                setInlinePanel({ type: nav.type as any }); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); setViewingTeamSessionsId(null);
               }}
               title={nav.label}
             >
@@ -956,7 +958,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
 
         <div className={styles.headerMeta}>
           <span className={styles.countPill}>{filteredAgents.length}</span>
-          <button className={styles.toolbarBtn} type="button" onClick={() => { setShowFactory(true); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setInlinePanel(null); }} title="Create agent">
+          <button className={styles.toolbarBtn} type="button" onClick={() => { setShowFactory(true); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setInlinePanel(null); setViewingTeamSessionsId(null); }} title="Create agent">
             <Icons.Plus /> Create
           </button>
           <button
@@ -1101,6 +1103,18 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                           >
                             <Icons.Play />
                             <span className={styles.actionLabel}>Run</span>
+                          </button>
+                          <button
+                            className={`${styles.actionBtn} ${styles.detailBtn}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setViewingTeamSessionsId(team.id);
+                              setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null);
+                              selectAgent(null);
+                            }}
+                          >
+                            <Icons.Agents />
+                            <span className={styles.actionLabel}>Sessions</span>
                           </button>
                           <button
                             className={`${styles.actionBtn}`}
@@ -1257,7 +1271,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         <button
                           className={`${styles.actionBtn} ${styles.runBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); selectAgent(agent.id); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); }}
+                          onClick={(e) => { e.stopPropagation(); selectAgent(agent.id); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); setViewingTeamSessionsId(null); }}
                           title="Run Agent"
                         >
                           <Icons.Play />
@@ -1267,7 +1281,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         <button
                           className={`${styles.actionBtn} ${styles.messageBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); setChatAgentId(agent.id); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); setMessageInput(''); setError(null); }}
+                          onClick={(e) => { e.stopPropagation(); setChatAgentId(agent.id); setDetailAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); setMessageInput(''); setError(null); setViewingTeamSessionsId(null); }}
                           title="Message Agent"
                         >
                           <Icons.MessageSquare />
@@ -1277,7 +1291,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         <button
                           className={`${styles.actionBtn} ${styles.detailBtn}`}
                           disabled={bulkMode}
-                          onClick={(e) => { e.stopPropagation(); setDetailAgentId(agent.id); setChatAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); }}
+                          onClick={(e) => { e.stopPropagation(); setDetailAgentId(agent.id); setChatAgentId(null); setPublishAgentId(null); setShowFactory(false); setInlinePanel(null); setViewingTeamSessionsId(null); }}
                           title="View Details"
                         >
                           <Icons.Info />
@@ -1329,7 +1343,7 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   <button
                     className={styles.toolbarBtn}
                     style={{ marginTop: 12, padding: '10px 20px', fontSize: 13, fontWeight: 600 }}
-                    onClick={() => { setShowFactory(true); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setInlinePanel(null); }}
+                    onClick={() => { setShowFactory(true); setChatAgentId(null); setDetailAgentId(null); setPublishAgentId(null); setInlinePanel(null); setViewingTeamSessionsId(null); }}
                   >
                     <Icons.Plus /> Create Your First Agent
                   </button>
@@ -1828,6 +1842,15 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                 </button>
               </div>
             </div>
+          </div>
+        ) : viewingTeamSessionsId ? (
+          <div className={styles.sessionsPane}>
+            <TeamSessionsPanel
+              teamId={viewingTeamSessionsId}
+              team={teams.find((t) => t.id === viewingTeamSessionsId) || null}
+              agents={agents}
+              onClose={() => setViewingTeamSessionsId(null)}
+            />
           </div>
         ) : selectedAgent ? (
           <div className={styles.sessionsPane}>
