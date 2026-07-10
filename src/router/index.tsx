@@ -325,7 +325,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/marketplace',
-    element: <ProtectedRoute><AgentMarketplacePage /></ProtectedRoute>
+    element: withShell(<AgentMarketplacePage />)
   },
   {
     path: '/agent-teams',

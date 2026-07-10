@@ -19,6 +19,7 @@ import remarkGfm from 'remark-gfm';
 import {
   Search, Play, X, Copy, Zap, Code, Wrench, Database,
   Settings, Bot, BarChart3, Download, Star, Shield, Users, Loader2, CheckCircle, XCircle,
+  Brain, MessageSquare, Circle, AlertTriangle,
 } from 'lucide-react';
 import { isAuthenticated } from '../../utils/auth-cookies';
 import { listMarketplaceAgents, type MarketplaceAgentListing } from '../../api/agents';
@@ -26,10 +27,12 @@ import {
   listMarketplaceTeams, executeWorkflow, getWorkflowStatus,
   type MarketplaceTeamListing, type WorkflowStatus,
 } from '../../api/agentTeams';
-import { executeAgentTask } from '../../api/executions';
+import * as agentEngine from '../../api/agentEngine';
+import type { AgentSession, AgentStep } from '../../api/agentEngine';
 import { extractAgentAudioUrls } from '../../utils/agentAudioUrl';
 import agentCardStyles from '../Agents/components/Panels/AgentsPanel/AgentsPanel.module.css';
 import teamCardStyles from '../AgentTeams/TeamCard.module.css';
+import sessionStyles from '../Agents/components/Panels/SessionsPanel/SessionsPanel.module.css';
 import styles from './Marketplace.module.css';
 
 const CATEGORIES = [
@@ -155,6 +158,27 @@ export default function AgentMarketplacePage() {
   const [executionOutput, setExecutionOutput] = useState<{ success: boolean; text: string } | null>(null);
   const [copied, setCopied] = useState(false);
 
+  // Real session-based execution for agents — cloned from Agent OS's
+  // SessionsPanel flow (start a real AgentSession, poll it + its steps while
+  // running) instead of the old one-shot /execution/agents/{id}/execute call,
+  // so marketplace users see the same live step trace as the owner does.
+  const [agentSession, setAgentSession] = useState<AgentSession | null>(null);
+  const [agentSteps, setAgentSteps] = useState<AgentStep[]>([]);
+
+  useEffect(() => {
+    const isActive = agentSession && ['initializing', 'running', 'waiting_approval'].includes(agentSession.status);
+    if (!isActive || !agentSession) return;
+    const interval = setInterval(async () => {
+      try {
+        const fresh = await agentEngine.getSession(agentSession.id);
+        setAgentSession(fresh);
+        const steps = await agentEngine.getSessionSteps(agentSession.id);
+        setAgentSteps(steps);
+      } catch { /* ignore poll errors */ }
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [agentSession?.id, agentSession?.status]);
+
   useEffect(() => {
     if (!isAuthenticated()) {
       navigate('/signup', { replace: true });
@@ -193,6 +217,8 @@ export default function AgentMarketplacePage() {
     setSelectedTeam(null);
     setExecutionOutput(null);
     setTaskInput('');
+    setAgentSession(null);
+    setAgentSteps([]);
   }
 
   function selectAgent(agent: MarketplaceAgentListing) {
@@ -200,6 +226,8 @@ export default function AgentMarketplacePage() {
     setSelectedAgent(agent);
     setExecutionOutput(null);
     setTaskInput('');
+    setAgentSession(null);
+    setAgentSteps([]);
   }
 
   function selectTeam(team: MarketplaceTeamListing) {
@@ -212,20 +240,28 @@ export default function AgentMarketplacePage() {
   async function handleExecuteAgent() {
     if (!selectedAgent) return;
     setExecuting(true);
-    setExecutionOutput(null);
+    setAgentSteps([]);
     try {
-      const task = taskInput.trim() || 'Hello — introduce yourself and what you can do.';
-      const result = await executeAgentTask(selectedAgent.id, task);
-      const text = typeof result.output === 'string'
-        ? result.output
-        : result.output != null
-          ? JSON.stringify(result.output, null, 2)
-          : (result.error || 'No output.');
-      setExecutionOutput({ success: result.success, text });
+      const goal = taskInput.trim() || 'Hello — introduce yourself and what you can do.';
+      const session = await agentEngine.startSession(selectedAgent.id, goal);
+      setAgentSession(session);
     } catch (error: any) {
-      setExecutionOutput({ success: false, text: error?.message || String(error) });
+      setAgentSession({
+        id: 'error', agent_id: selectedAgent.id, status: 'failed',
+        loop_count: 0, total_tokens_used: 0,
+        error_message: error?.response?.data?.detail || error?.message || String(error),
+      });
     } finally {
       setExecuting(false);
+    }
+  }
+
+  function getStepIcon(stepType: string) {
+    switch (stepType) {
+      case 'think': return <Brain size={12} />;
+      case 'tool_call': return <Wrench size={12} />;
+      case 'respond': return <MessageSquare size={12} />;
+      default: return <Circle size={12} />;
     }
   }
 
@@ -461,7 +497,8 @@ export default function AgentMarketplacePage() {
                   )}
                 </button>
 
-                {executionOutput && (() => {
+                {/* Teams: simple one-shot workflow result */}
+                {selectedTeam && executionOutput && (() => {
                   const audioUrls = extractAgentAudioUrls(executionOutput.text);
                   return (
                     <div className={`${styles.resultBox} ${executionOutput.success ? styles.resultSuccess : styles.resultError}`}>
@@ -493,6 +530,96 @@ export default function AgentMarketplacePage() {
                     </div>
                   );
                 })()}
+
+                {/* Agents: real session flow cloned from Agent OS's SessionsPanel —
+                    Final Output window on top, Session Steps below it. */}
+                {selectedAgent && agentSession && (
+                  <div style={{ marginTop: 12 }}>
+                    <div className={sessionStyles.detailHeader}>
+                      <h3>Session</h3>
+                      <span
+                        className={sessionStyles.statusBadge}
+                        style={{
+                          background: agentSession.status === 'completed' ? 'var(--color-info)'
+                            : agentSession.status === 'failed' ? 'var(--color-error)'
+                            : agentSession.status === 'waiting_approval' ? 'var(--color-warning)'
+                            : 'var(--color-success)',
+                        }}
+                      >
+                        {agentSession.status}
+                      </span>
+                    </div>
+
+                    {/* Final Output — shown first/on top, per how this should read for a browsing user */}
+                    {agentSession.final_output && (
+                      <div className={sessionStyles.finalOutput}>
+                        <h4>Final Output</h4>
+                        <div className={sessionStyles.finalOutputBody}>
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{agentSession.final_output}</ReactMarkdown>
+                          {extractAgentAudioUrls(agentSession.final_output).map((url) => (
+                            <div key={url} className={sessionStyles.audioResult}>
+                              <audio controls src={url} className={sessionStyles.audioPlayer}>
+                                Your browser does not support inline audio playback.
+                              </audio>
+                              <a href={url} download className={sessionStyles.audioDownloadBtn}>
+                                <Download size={12} /> Download MP3
+                              </a>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {agentSession.error_message && (
+                      <div className={sessionStyles.errorOutput}>
+                        <h4>Error</h4>
+                        <p>{agentSession.error_message}</p>
+                      </div>
+                    )}
+
+                    {/* Session Steps — below the final output */}
+                    <div className={sessionStyles.stepsList}>
+                      {agentSteps.length === 0 && ['initializing', 'running'].includes(agentSession.status) && (
+                        <div className={sessionStyles.noSteps}><p>Starting…</p></div>
+                      )}
+                      {agentSteps.map((step) => (
+                        <div key={step.id} className={`${sessionStyles.stepCard} ${step.required_approval ? sessionStyles.needsApproval : ''}`}>
+                          <div className={sessionStyles.stepHeader}>
+                            <span className={sessionStyles.stepIcon}>{getStepIcon(step.step_type)}</span>
+                            <span className={sessionStyles.stepNumber}>Step {step.step_number}</span>
+                            <span className={sessionStyles.stepType}>{step.step_type}</span>
+                            {step.duration_ms && <span className={sessionStyles.stepDuration}>{step.duration_ms}ms</span>}
+                          </div>
+                          {step.reasoning && (
+                            <div className={sessionStyles.stepReasoning}><strong>Reasoning:</strong> {step.reasoning}</div>
+                          )}
+                          {step.tool_name && (
+                            <div className={sessionStyles.stepTool}>
+                              <strong>Tool:</strong> {step.tool_name}
+                              {step.tool_input && <pre>{JSON.stringify(step.tool_input, null, 2)}</pre>}
+                            </div>
+                          )}
+                          {step.step_type === 'respond' && (step.output_data as any)?.response && (
+                            <div className={sessionStyles.stepReasoning} style={{ marginTop: 8, borderLeft: '3px solid var(--color-success)', paddingLeft: 12 }}>
+                              <strong>Response:</strong>{' '}
+                              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                {typeof (step.output_data as any).response === 'object'
+                                  ? JSON.stringify((step.output_data as any).response, null, 2)
+                                  : String((step.output_data as any).response)}
+                              </ReactMarkdown>
+                            </div>
+                          )}
+                          {!step.safety_check_passed && step.safety_violations && (
+                            <div className={sessionStyles.safetyWarning}>
+                              <AlertTriangle size={12} />
+                              <span>Safety violations: {step.safety_violations.join(', ')}</span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
