@@ -37,7 +37,12 @@ export const InteractiveTerminal: React.FC<InteractiveTerminalProps> = ({
       // output collapse into unreadable, unseparated text.
       cursorBlink: true,
       fontSize: 13,
-      fontFamily: "'SF Mono', Monaco, 'Cascadia Code', monospace",
+      // ui-monospace first: a real CSS keyword every modern browser resolves
+      // to the OS's actual monospace font, unlike naming 'SF Mono'/'Cascadia
+      // Code' directly - those are platform-specific and silently fall
+      // through to a non-fixed-width substitute when absent, which breaks
+      // xterm's cell-width grid and renders text with random gaps/overlaps.
+      fontFamily: "ui-monospace, 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace",
       theme: { background: '#262321' },
     });
     const fit = new FitAddon();
@@ -46,6 +51,17 @@ export const InteractiveTerminal: React.FC<InteractiveTerminalProps> = ({
     fit.fit();
     termRef.current = term;
     fitRef.current = fit;
+
+    // xterm measures character cell width using whatever font is actually
+    // resolved at that instant. If the real font is still downloading, it
+    // measures against a fallback and never re-measures - every character
+    // after that point is placed using the wrong cell width, which is
+    // exactly what produces "letters randomly bunched together with gaps
+    // in the wrong places". Re-fit once fonts are confirmed loaded.
+    document.fonts?.ready?.then(() => {
+      fit.fit();
+      term.refresh(0, term.rows - 1);
+    });
 
     // xterm.js captures keystrokes via a hidden textarea. Without disabling
     // these, mobile keyboards (and some desktop browsers) run autocorrect/
