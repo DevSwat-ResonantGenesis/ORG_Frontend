@@ -9,24 +9,26 @@
   height: 100%;
 }
 
-/* The global reset (theme/modules/reset-2025.css) forces every span/div to
-   var(--font-sans) unless nested under a literal .ide-container class -
-   which no longer exists anywhere in the current component tree (dropped
-   in a refactor). That rule was winning over the Terminal constructor's
-   fontFamily option (which only sets it on the .xterm container, not each
-   per-character span xterm's DOM renderer creates), so every character was
-   measured/painted with a proportional UI font instead of a monospace one.
-   Critically, xterm also measures character width via TWO separate hidden
-   elements - .xterm-char-measure-element and
-   .xterm-width-cache-measure-container - that live directly under .xterm,
-   NOT under .xterm-rows. Missing those meant xterm still measured against
-   the wrong font and baked wrong per-character letter-spacing compensation
-   into every rendered span, even after the rendered spans' own CSS was
-   fixed (confirmed via computed-style debugging in a live test session -
-   the fix looked right in getComputedStyle but the screen still rendered
-   garbled, because those two measurement elements were still wrong).
-   Target every descendant of .xterm so nothing is missed. */
+/* The global reset (reset-2025.css) has a rule
+   ":not(.ide-container):not(.ide-container *) span/div/..." forcing
+   var(--font-sans) with !important. Its specificity for a `span` target is
+   (0,2,1) - two classes in the :not() ancestor clauses plus the `span` tag
+   itself. A selector ending in the universal selector (`*`) only reaches
+   (0,2,0), which LOSES to that rule despite coming later in the file -
+   with both sides !important, tied source order never even gets consulted
+   because specificity resolves it first. xterm.js's hidden character
+   measurement elements (.xterm-char-measure-element, and every
+   per-character span it renders) are literal <span>/<div> elements, so
+   they're exactly what that rule targets. Match its specificity by naming
+   the same tags explicitly, not just `*`. Also covers
+   .xterm-width-cache-measure-container, which lives directly under .xterm
+   (not .xterm-rows) and is what xterm actually measures against - missing
+   it meant xterm kept baking wrong per-character letter-spacing
+   compensation into every span even after the rendered spans' own font
+   looked correct in getComputedStyle. */
 .terminalHost :global(.xterm),
-.terminalHost :global(.xterm) :global(*) {
+.terminalHost :global(.xterm) :global(*),
+.terminalHost :global(.xterm) :global(span),
+.terminalHost :global(.xterm) :global(div) {
   font-family: ui-monospace, 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace !important;
 }
