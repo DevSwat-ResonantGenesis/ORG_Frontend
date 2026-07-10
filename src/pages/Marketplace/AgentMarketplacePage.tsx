@@ -6,6 +6,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import {
   Search, Play, Clock,
   CheckCircle, XCircle, Loader2,
@@ -17,6 +19,7 @@ import {
   getNodeStatus, searchAgents, executeAgent,
   type Agent, type NodeStatus, type ExecuteResponse
 } from '../../services/nodeApi';
+import { extractAgentAudioUrls } from '../../utils/agentAudioUrl';
 import styles from './Marketplace.module.css';
 
 const CATEGORIES = [
@@ -356,19 +359,46 @@ export default function AgentMarketplacePage() {
                   )}
                 </button>
 
-                {executionResult && (
-                  <div className={`${styles.resultBox} ${executionResult.success ? styles.resultSuccess : styles.resultError}`}>
-                    <div style={{ fontWeight: 700, marginBottom: 4 }}>
-                      {executionResult.success ? 'Success' : 'Failed'}
-                      <span style={{ fontWeight: 400, opacity: 0.5, marginLeft: 6 }}>
-                        {executionResult.duration_ms}ms
-                      </span>
+                {executionResult && (() => {
+                  const raw = executionResult.output ?? executionResult.error;
+                  const asText = typeof raw === 'string' ? raw : JSON.stringify(raw, null, 2);
+                  const audioUrls = extractAgentAudioUrls(asText);
+                  return (
+                    <div className={`${styles.resultBox} ${executionResult.success ? styles.resultSuccess : styles.resultError}`}>
+                      <div style={{ fontWeight: 700, marginBottom: 4 }}>
+                        {executionResult.success ? 'Success' : 'Failed'}
+                        <span style={{ fontWeight: 400, opacity: 0.5, marginLeft: 6 }}>
+                          {executionResult.duration_ms}ms
+                        </span>
+                      </div>
+                      {typeof raw === 'string' ? (
+                        <div style={{ fontSize: 12 }}>
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{asText}</ReactMarkdown>
+                        </div>
+                      ) : (
+                        <pre style={{ margin: 0, whiteSpace: 'pre-wrap', fontSize: 11 }}>{asText}</pre>
+                      )}
+                      {audioUrls.map((url) => (
+                        <div key={url} style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginTop: 10 }}>
+                          <audio controls src={url} style={{ flex: 1, minWidth: 220, height: 34 }}>
+                            Your browser does not support inline audio playback.
+                          </audio>
+                          <a
+                            href={url}
+                            download
+                            style={{
+                              display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 12px',
+                              borderRadius: 8, background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.3)',
+                              color: '#22c55e', fontSize: 12, fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap',
+                            }}
+                          >
+                            <Download size={12} /> Download MP3
+                          </a>
+                        </div>
+                      ))}
                     </div>
-                    <pre style={{ margin: 0, whiteSpace: 'pre-wrap', fontSize: 11 }}>
-                      {JSON.stringify(executionResult.output || executionResult.error, null, 2)}
-                    </pre>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
             </div>
           </div>
