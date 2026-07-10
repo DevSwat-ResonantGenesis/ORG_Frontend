@@ -39,40 +39,38 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
 
   // Follow-up: send a new message as a continuation session
   const handleSendFollowUp = useCallback(async () => {
-    if (!selectedAgent || !followUpInput.trim() || isSendingFollowUp) return;
+    // Follow-up continues the CURRENTLY VIEWED session (with full prior
+    // context/tool results) — it previously called startSession() with the
+    // follow-up text as a brand-new unrelated goal, which discarded
+    // everything the agent already did and made it start over from scratch.
+    if (!selectedSession?.id || !followUpInput.trim() || isSendingFollowUp) return;
     const content = followUpInput.trim();
     setFollowUpMessages(prev => [...prev, { role: 'user', content, timestamp: new Date() }]);
     setFollowUpInput('');
     setIsSendingFollowUp(true);
     try {
-      const session = await agentEngine.startSession(selectedAgent.id, content);
+      const newSession = await agentEngine.continueSession(selectedSession.id, content);
       const maxWait = 90_000;
       const pollInterval = 2000;
       const start = Date.now();
-      let finalSession = session;
+      let finalSession = newSession;
       while (Date.now() - start < maxWait) {
         await new Promise(r => setTimeout(r, pollInterval));
         try {
-          finalSession = await agentEngine.getSession(session.id);
+          finalSession = await agentEngine.getSession(newSession.id);
           if (finalSession.status === 'completed' || finalSession.status === 'failed') break;
         } catch { /* keep polling */ }
       }
-      let outputText = '';
-      if (finalSession.status === 'completed' && finalSession.final_output) {
-        outputText = finalSession.final_output;
-      } else if (finalSession.status === 'completed') {
-        try {
-          const steps = await agentEngine.getSessionSteps(session.id);
-          const fedStep = steps.find(s => s.output_data?.output);
-          outputText = (fedStep?.output_data?.output as string) || 'Task completed.';
-        } catch { outputText = 'Task completed.'; }
-      } else if (finalSession.status === 'failed') {
-        outputText = finalSession.error_message || 'Task failed.';
-      } else {
-        outputText = `Task is still ${finalSession.status}. Check your connector.`;
-      }
+      const outputText = finalSession.status === 'completed'
+        ? (finalSession.final_output || 'Task completed.')
+        : finalSession.status === 'failed'
+        ? (finalSession.error_message || 'Task failed.')
+        : `Task is still ${finalSession.status}.`;
       setFollowUpMessages(prev => [...prev, { role: 'agent', content: outputText, timestamp: new Date() }]);
-      // Refresh sessions list to show the new session
+      // The follow-up ran as a new (context-carrying) session — select it so
+      // its steps/audio render in the main panel too, not just this chat log.
+      setSelectedSession(finalSession);
+      loadSessionSteps(finalSession.id);
       if (selectedAgent) {
         const updated = await agentEngine.listSessions(selectedAgent.id);
         setSessions(updated);
@@ -82,7 +80,7 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
     } finally {
       setIsSendingFollowUp(false);
     }
-  }, [selectedAgent, followUpInput, isSendingFollowUp]);
+  }, [selectedSession, selectedAgent, followUpInput, isSendingFollowUp]);
 
   const handleExportSessions = () => {
     const exportData = { exported_at: new Date().toISOString(), sessions };

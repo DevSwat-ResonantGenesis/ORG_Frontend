@@ -161,9 +161,11 @@ export const cancelSession = async (sessionId: string): Promise<void> => {
 };
 
 // Continue a finished/limit-hit session as a new one that inherits its full
-// step history, instead of starting over from scratch.
-export const continueSession = async (sessionId: string): Promise<AgentSession> => {
-  const res = await client.post(`${AGENTS_BASE}/sessions/${sessionId}/continue`);
+// step history and is explicitly told what was already done — instead of
+// starting over from scratch. Pass `message` for a genuine follow-up
+// question/request that builds on the prior work rather than a plain resume.
+export const continueSession = async (sessionId: string, message?: string): Promise<AgentSession> => {
+  const res = await client.post(`${AGENTS_BASE}/sessions/${sessionId}/continue`, message ? { message } : {});
   return res.data;
 };
 
