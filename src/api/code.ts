@@ -607,7 +607,7 @@ export const transferProjectOwnership = async (
 
 /**
  * Create a new file or folder
- * POST /code/project/create
+ * POST /code/project/create-file
  */
 export const createProjectFile = async (
   filePath: string,
@@ -625,7 +625,7 @@ export const createProjectFile = async (
       language
     };
 
-    const response = await fastapiClient.post(`/api/v1/code/project/create${params}`, requestBody);
+    const response = await fastapiClient.post(`/api/v1/code/project/create-file${params}`, requestBody);
     return response.data;
   } catch (error) {
     logger.error('Create file error', error);
