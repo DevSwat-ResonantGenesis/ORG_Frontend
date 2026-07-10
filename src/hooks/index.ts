@@ -65,6 +65,3 @@ export { default as useBilling } from './useBilling';
 
 // Memory hook (default export)
 export { default as useMemory } from './useMemory';
-
-// Marketplace hook (default export)
-export { default as useMarketplace } from './useMarketplace';

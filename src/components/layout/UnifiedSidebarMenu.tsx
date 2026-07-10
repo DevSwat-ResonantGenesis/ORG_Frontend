@@ -218,6 +218,22 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
               <span className={styles.usmLabel}>Agent OS</span>
               {location.pathname === '/agents' && <span className={styles.usmActiveIndicator} />}
             </button>
+
+            <button
+              className={`${styles.usmItem} ${location.pathname === '/marketplace' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/marketplace'); onClose(); }}
+            >
+              <span className={styles.usmIcon}>
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M2 5L3 2h10l1 3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M2 5v8a1 1 0 001 1h10a1 1 0 001-1V5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M2 5h12" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M6 8v3M10 8v3" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className={styles.usmLabel}>Marketplace</span>
+              {location.pathname === '/marketplace' && <span className={styles.usmActiveIndicator} />}
+            </button>
           </div>
 
           <div className={styles.usmDivider} />

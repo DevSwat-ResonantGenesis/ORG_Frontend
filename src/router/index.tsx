@@ -48,6 +48,7 @@ const IDEPage = lazy(() => import('../pages/IDE/IDEPage'));
 const BuildPage = lazy(() => import('../pages/Build/BuildPage'));
 const OpenClawPage = lazy(() => import("../pages/OpenClaw/OpenClawPage"));
 const AgentsPage = lazy(() => import('../pages/Agents/AgentOSv2'));
+const AgentMarketplacePage = lazy(() => import('../pages/Marketplace/AgentMarketplacePage'));
 const CreateTeamPage = lazy(() => import('../pages/AgentTeams/CreateTeamPage'));
 const EditTeamPage = lazy(() => import('../pages/AgentTeams/EditTeamPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFound/NotFoundPage'));
@@ -321,6 +322,10 @@ const router = createBrowserRouter([
   {
     path: '/agents/:agentId',
     element: <ProtectedRoute><AgentsPage /></ProtectedRoute>
+  },
+  {
+    path: '/marketplace',
+    element: <ProtectedRoute><AgentMarketplacePage /></ProtectedRoute>
   },
   {
     path: '/agent-teams',
