@@ -30,7 +30,11 @@ export const InteractiveTerminal: React.FC<InteractiveTerminalProps> = ({
     if (!containerRef.current) return;
 
     const term = new Terminal({
-      convertEol: true,
+      // No convertEol: this is a real PTY (docker exec -it), so the shell
+      // and any TUI program (like Claude Code's interactive prompts) already
+      // emit correct \r\n and manage cursor position themselves via ANSI
+      // codes. Forcing every \n to also \r fights those redraws and makes
+      // output collapse into unreadable, unseparated text.
       cursorBlink: true,
       fontSize: 13,
       fontFamily: "'SF Mono', Monaco, 'Cascadia Code', monospace",
