@@ -16,6 +16,15 @@ import type { TerminalTab } from './TerminalTabs';
 // the same RG_Terminal_Sandbox container.
 export const storageKeyFor = (projectId?: string) => `ide-terminal-tabs-${projectId || 'default'}`;
 
+// When `projectId` is a real workspace id (see RG_Auth's Workspace model),
+// the default tab's terminal_id IS the workspace_id, full stop - no
+// randomness, no sessionStorage involved for identity. RG_Terminal_Sandbox's
+// container name is a pure function of terminal_id (container_name_for), so
+// this alone is what makes the terminal reconnect to the same container
+// across a page reload, a logout/login, or even a different device/browser:
+// whoever opens this workspace's terminal always resolves to the same
+// container name. sessionStorage-backed random ids are now only a fallback
+// for the rare case of no workspace context at all.
 export const loadInitialTabs = (projectId?: string): TerminalTab[] => {
   try {
     const raw = sessionStorage.getItem(storageKeyFor(projectId));
@@ -26,12 +35,14 @@ export const loadInitialTabs = (projectId?: string): TerminalTab[] => {
   } catch {
     // fall through to a fresh tab
   }
-  return [{ id: crypto.randomUUID(), name: 'Terminal 1', content: '', active: true }];
+  return [{ id: projectId || crypto.randomUUID(), name: 'Terminal 1', content: '', active: true }];
 };
 
 // Id of the default (first) terminal tab for a project, creating and
 // persisting one if none exists yet.
 export const getOrCreateDefaultTerminalId = (projectId?: string): string => {
+  if (projectId) return projectId;
+
   const tabs = loadInitialTabs(projectId);
   try {
     sessionStorage.setItem(storageKeyFor(projectId), JSON.stringify(tabs));

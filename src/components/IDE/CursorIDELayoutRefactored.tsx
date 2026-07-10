@@ -327,6 +327,21 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, dispatch]); // Remove loadProjectFiles from deps to prevent re-runs
 
+  // Poll for file changes made outside the browser tab - specifically,
+  // Claude Code CLI writing into this project's terminal /workspace
+  // (RG_Terminal_Sandbox's periodic sync pushes those into the same
+  // Hash Sphere project_id every ~10s, see workspace_sync.py). Not a
+  // websocket push, so "live" here means "within one poll interval",
+  // not instant - a reasonable middle ground without a new transport.
+  useEffect(() => {
+    if (!projectId) return;
+    const interval = setInterval(() => {
+      loadProjectFiles();
+    }, 8000);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId]);
+
   // Save files to localStorage whenever they change
   useEffect(() => {
     // Flatten tree structure for localStorage

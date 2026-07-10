@@ -19,6 +19,7 @@ import { logout as apiLogout } from '../../api/auth';
 import { getSession, clearSession } from '../../utils/auth';
 import { ApiKeyManager } from '../../components/features/ApiKeyManager';
 import { SshHostManager } from '../../components/features/SshHostManager';
+import { WorkspaceManager } from '../../components/features/WorkspaceManager';
 type UserLocStats = null;
 type LiveLocStats = null;
 import { logger } from '../../utils/logger';
@@ -615,6 +616,15 @@ const NewUserDashboard: React.FC = () => {
               never see your server's credentials, only the public half of a keypair generated inside your sandbox.
             </p>
             <SshHostManager />
+          </div>
+
+          <div className="panel dashSection">
+            <h3 className="dashSectionTitle" style={{ marginBottom: 'var(--space-2)' }}>Workspaces</h3>
+            <p className={styles.profileEmail} style={{ marginBottom: 'var(--space-4)' }}>
+              A workspace is a persistent project shared across the IDE, terminal, Builder, and Agent OS - open it
+              from any of them, log out, log back in, and reconnect to the same terminal session and files.
+            </p>
+            <WorkspaceManager />
           </div>
         </>
       )}
