@@ -199,6 +199,22 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
     }
   };
 
+  const [continuingSession, setContinuingSession] = useState(false);
+
+  const handleContinueSession = async (sessionId: string) => {
+    setContinuingSession(true);
+    try {
+      const newSession = await agentEngine.continueSession(sessionId);
+      if (selectedAgent?.id) await loadSessions(selectedAgent.id);
+      setSelectedSession(newSession);
+      loadSessionSteps(newSession.id);
+    } catch (err: any) {
+      setError(err.message || 'Failed to continue session');
+    } finally {
+      setContinuingSession(false);
+    }
+  };
+
   const handleApproveStep = async (stepId: string, approved: boolean) => {
     if (!selectedSession?.id) return;
     try {
@@ -590,6 +606,32 @@ const SessionsPanelComponent: React.FC<SessionsPanelProps> = ({ className }) => 
                   <div className={styles.errorOutput}>
                     <h4>Error</h4>
                     <p>{selectedSession.error_message}</p>
+                  </div>
+                )}
+
+                {/* Continue — resumes as a NEW session seeded with this one's full
+                    step history, instead of starting over from scratch. Shown for
+                    any finished session, whether it hit a loop/token/time limit,
+                    failed, or was cancelled. */}
+                {['completed', 'failed', 'cancelled'].includes(selectedSession.status) && (
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 10, marginTop: 12, padding: '10px 14px',
+                    background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.25)', borderRadius: 8,
+                  }}>
+                    <span style={{ flex: 1, fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>
+                      Ran out of loops or stopped early? Continue picks up with the full context of everything this session already did.
+                    </span>
+                    <button
+                      disabled={continuingSession}
+                      onClick={() => handleContinueSession(selectedSession.id)}
+                      style={{
+                        background: '#3b82f6', color: '#fff', border: 'none', borderRadius: 6,
+                        padding: '7px 16px', fontSize: 13, fontWeight: 700,
+                        cursor: continuingSession ? 'wait' : 'pointer', whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {continuingSession ? 'Continuing…' : '↻ Continue'}
+                    </button>
                   </div>
                 )}
 
