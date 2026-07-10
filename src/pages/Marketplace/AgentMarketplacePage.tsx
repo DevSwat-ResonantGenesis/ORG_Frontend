@@ -12,7 +12,7 @@
  * (AgentTeams/TeamCard) so the look/sections match what already works there.
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -157,6 +157,16 @@ export default function AgentMarketplacePage() {
   const [executing, setExecuting] = useState(false);
   const [executionOutput, setExecutionOutput] = useState<{ success: boolean; text: string } | null>(null);
   const [copied, setCopied] = useState(false);
+
+  // Multiple final-output audio players can exist at once (live session +
+  // every history row) — pause any others when one starts, scoped to this
+  // panel so it doesn't touch audio elsewhere on the page.
+  const detailPaneRef = useRef<HTMLDivElement>(null);
+  const pauseOtherAudio = useCallback((current: HTMLAudioElement) => {
+    detailPaneRef.current?.querySelectorAll('audio').forEach((el) => {
+      if (el !== current) el.pause();
+    });
+  }, []);
 
   // Real session-based execution for agents — cloned from Agent OS's
   // SessionsPanel flow (start a real AgentSession, poll it + its steps while
@@ -381,7 +391,7 @@ export default function AgentMarketplacePage() {
   const count = tab === 'agents' ? filteredAgents.length : filteredTeams.length;
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} data-product="marketplace">
       {/* Row 1: Title + description */}
       <div className={styles.topBar}>
         <h1 className={styles.topTitle}>Marketplace</h1>
@@ -487,7 +497,7 @@ export default function AgentMarketplacePage() {
 
         {/* Detail split panel — shared between agents and teams */}
         {(selectedAgent || selectedTeam) && (
-          <div className={styles.detailPane}>
+          <div className={styles.detailPane} ref={detailPaneRef}>
             <div className={styles.detailInner}>
               <button className={styles.detailClose} onClick={closeDetail}>
                 <X size={12} /> Close
@@ -564,7 +574,7 @@ export default function AgentMarketplacePage() {
                       </div>
                       {audioUrls.map((url) => (
                         <div key={url} style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginTop: 10 }}>
-                          <audio controls src={url} style={{ flex: 1, minWidth: 220, height: 34 }}>
+                          <audio controls src={url} onPlay={(e) => pauseOtherAudio(e.currentTarget)} style={{ flex: 1, minWidth: 220, height: 34 }}>
                             Your browser does not support inline audio playback.
                           </audio>
                           <a
@@ -611,7 +621,7 @@ export default function AgentMarketplacePage() {
                           <ReactMarkdown remarkPlugins={[remarkGfm]}>{agentSession.final_output}</ReactMarkdown>
                           {extractAgentAudioUrls(agentSession.final_output).map((url) => (
                             <div key={url} className={sessionStyles.audioResult}>
-                              <audio controls src={url} className={sessionStyles.audioPlayer}>
+                              <audio controls src={url} onPlay={(e) => pauseOtherAudio(e.currentTarget)} className={sessionStyles.audioPlayer}>
                                 Your browser does not support inline audio playback.
                               </audio>
                               <a href={url} download className={sessionStyles.audioDownloadBtn}>
@@ -696,9 +706,12 @@ export default function AgentMarketplacePage() {
                             <div
                               key={s.id}
                               className={`${agentCardStyles.agentCard} ${isExpanded ? agentCardStyles.expanded : ''}`}
-                              onClick={() => toggleSessionExpanded(s.id)}
                             >
-                              <div className={agentCardStyles.cardCollapsedRow}>
+                              <div
+                                className={agentCardStyles.cardCollapsedRow}
+                                onClick={() => toggleSessionExpanded(s.id)}
+                                style={{ cursor: 'pointer' }}
+                              >
                                 <span
                                   className={`${agentCardStyles.statusDotMini} ${
                                     s.status === 'completed' ? agentCardStyles.active
@@ -732,7 +745,7 @@ export default function AgentMarketplacePage() {
                                       <ReactMarkdown remarkPlugins={[remarkGfm]}>{s.final_output}</ReactMarkdown>
                                       {extractAgentAudioUrls(s.final_output).map((url) => (
                                         <div key={url} className={sessionStyles.audioResult}>
-                                          <audio controls src={url} className={sessionStyles.audioPlayer}>
+                                          <audio controls src={url} onPlay={(e) => pauseOtherAudio(e.currentTarget)} className={sessionStyles.audioPlayer}>
                                             Your browser does not support inline audio playback.
                                           </audio>
                                           <a href={url} download className={sessionStyles.audioDownloadBtn}>

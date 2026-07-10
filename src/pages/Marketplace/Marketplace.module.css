@@ -1,12 +1,21 @@
 /* ===== Agent Marketplace — Compact branded redesign ===== */
 /* Brand: #FAA525 #01A6BC #FA547C #71C23E #FFFFFF #FFD800 #121214 */
 
+/* height (not min-height) + the global [data-product] bypass in
+   MainLayout.css (which sets .main-content to overflow-y:visible and
+   padding-top:0 for pages carrying this attribute) are both required for
+   .gridPane/.detailPane's own overflow-y:auto below to actually scroll
+   independently — otherwise .main-content's own scroll container takes
+   over and the whole page scrolls as one, ignoring internal panes. */
 .page {
-  min-height: 100vh;
+  height: 100vh;
+  padding-top: var(--header-height, 60px);
+  box-sizing: border-box;
   background: #121214;
   color: #fff;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* ── Row 1: Title + description ── */
@@ -188,6 +197,7 @@
 .content {
   display: flex;
   flex: 1;
+  min-height: 0;
   overflow: hidden;
 }
 
