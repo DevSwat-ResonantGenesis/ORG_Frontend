@@ -1,20 +1,33 @@
 import type { TerminalTab } from './TerminalTabs';
+import { getSessionData } from '@/utils/auth-cookies';
 
 // Terminal ownership is keyed only by terminal_id, not user_id+terminal_id
 // (see RG_Terminal_Sandbox/app/docker_manager.py's container_name_for), so a
 // hardcoded literal like "1" would be a single globally-shared container
 // name across every user on the platform - the first user to ever open a
 // terminal "owns" it forever and everyone else gets rejected. Persist a
-// randomly generated id in sessionStorage (keyed per project) so toggling
-// the terminal panel closed/open within the same browser session reconnects
-// to the same container instead of generating a fresh id (and abandoning
-// the old one) on every remount.
+// randomly generated id in sessionStorage (keyed per project AND per user)
+// so toggling the terminal panel closed/open within the same browser
+// session reconnects to the same container instead of generating a fresh
+// id (and abandoning the old one) on every remount.
+//
+// The per-user part of the key matters specifically for the "no project
+// selected yet" fallback case: without it, two different real accounts
+// sharing one browser tab (logout -> different login, without closing the
+// tab) would silently reuse the SAME sessionStorage entry and the SAME
+// terminal_id - not a hypothetical, this caused real "Terminal owned by
+// another user" 403s in production (RG_Terminal_Sandbox correctly refusing
+// to let the second user attach to the first user's container).
 //
 // Shared by the IDE terminal panel (CursorTerminalPanel) and the chat
 // split-view terminal (ResonantChat/SplitView/components/Terminal) so that
 // opening a terminal for the same projectId from either surface resolves to
 // the same RG_Terminal_Sandbox container.
-export const storageKeyFor = (projectId?: string) => `ide-terminal-tabs-${projectId || 'default'}`;
+export const storageKeyFor = (projectId?: string) => {
+  if (projectId) return `ide-terminal-tabs-${projectId}`;
+  const userId = getSessionData()?.userId || 'anon';
+  return `ide-terminal-tabs-default-${userId}`;
+};
 
 // When `projectId` is a real workspace id (see RG_Auth's Workspace model),
 // the default tab's terminal_id IS the workspace_id, full stop - no
