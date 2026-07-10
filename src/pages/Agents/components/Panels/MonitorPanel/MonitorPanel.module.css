@@ -486,34 +486,26 @@
   padding: 8px;
 }
 
-/* Responsive */
-@media (max-width: 1200px) {
-  .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .chartsRow {
-    grid-template-columns: 1fr;
-  }
-  
-  .systemGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
+/* Responsive - cards/grids should only reflow on real mobile (768px), not
+   laptop-sized viewports - .chartsRow's collapse moved here from a stray
+   1200px block. */
 @media (max-width: 768px) {
   .statsGrid {
     grid-template-columns: 1fr;
   }
-  
+
+  .chartsRow {
+    grid-template-columns: 1fr;
+  }
+
   .systemGrid {
     grid-template-columns: 1fr;
   }
-  
+
   .logItem {
     flex-wrap: wrap;
   }
-  
+
   .logMessage {
     width: 100%;
     order: 10;

@@ -2441,13 +2441,9 @@
   }
 }
 
-/* Responsive */
-@media (max-width: 1200px) {
-  .detailGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
+/* Responsive - cards/grids should only reflow on real mobile (768px), not
+   laptop-sized viewports. .detailGrid's mobile collapse is already handled
+   below in the 768px block. */
 @media (max-width: 768px) {
   /* ===== MOBILE HEADER ===== */
   .panelHeader {

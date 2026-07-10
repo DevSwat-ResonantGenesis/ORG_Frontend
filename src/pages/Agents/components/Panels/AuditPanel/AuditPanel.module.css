@@ -552,35 +552,27 @@
   color: #888;
 }
 
-/* Responsive */
-@media (max-width: 1200px) {
-  .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .reportsGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .chartsRow {
-    grid-template-columns: 1fr;
-  }
-}
-
+/* Responsive - cards/grids should only reflow on real mobile (768px), not
+   laptop-sized viewports - .chartsRow's collapse moved here from a stray
+   1200px block. */
 @media (max-width: 768px) {
   .tabNav {
     width: 100%;
     overflow-x: auto;
   }
-  
+
   .statsGrid {
     grid-template-columns: 1fr;
   }
-  
+
   .reportsGrid {
     grid-template-columns: 1fr;
   }
-  
+
+  .chartsRow {
+    grid-template-columns: 1fr;
+  }
+
   .caseHeader {
     flex-direction: column;
     gap: 12px;

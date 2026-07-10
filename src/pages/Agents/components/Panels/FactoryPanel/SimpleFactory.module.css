@@ -514,16 +514,8 @@
 }
 
 /* ============== RESPONSIVE ============== */
-
-@media (max-width: 1200px) {
-  .customView {
-    grid-template-columns: 1fr;
-  }
-
-  .infoPanel {
-    flex-direction: row;
-  }
-}
+/* Cards/grids should only reflow on real mobile (768px), not laptop-sized
+   viewports - .customView's collapse moved here from a stray 1200px block. */
 
 @media (max-width: 768px) {
   .header {
@@ -538,6 +530,10 @@
   }
 
   .templatesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .customView {
     grid-template-columns: 1fr;
   }
 
