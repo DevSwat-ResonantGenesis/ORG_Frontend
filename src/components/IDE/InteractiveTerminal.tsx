@@ -142,11 +142,23 @@ export const InteractiveTerminal: React.FC<InteractiveTerminalProps> = ({
     }
   }, [visible]);
 
+  // Mobile browsers only pop the on-screen keyboard when focus() is called
+  // synchronously inside a real user-gesture event handler (tap/click) -
+  // the `visible` effect above already calls focus() on tab-switch, but
+  // that's a programmatic call outside a gesture, so it silently doesn't
+  // open the keyboard on touch devices. Without this, tapping the terminal
+  // on mobile does nothing.
+  const handleTap = () => {
+    termRef.current?.focus();
+  };
+
   return (
     <div
       className={styles.terminalHost}
       style={{ display: visible ? 'block' : 'none' }}
       ref={containerRef}
+      onClick={handleTap}
+      onTouchStart={handleTap}
     />
   );
 };
