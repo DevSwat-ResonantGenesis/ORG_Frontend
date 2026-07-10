@@ -19,7 +19,7 @@ import remarkGfm from 'remark-gfm';
 import {
   Search, Play, X, Copy, Zap, Code, Wrench, Database,
   Settings, Bot, BarChart3, Download, Star, Shield, Users, Loader2, CheckCircle, XCircle,
-  Brain, MessageSquare, Circle, AlertTriangle,
+  Brain, MessageSquare, Circle, AlertTriangle, ChevronDown, History,
 } from 'lucide-react';
 import { isAuthenticated } from '../../utils/auth-cookies';
 import { listMarketplaceAgents, type MarketplaceAgentListing } from '../../api/agents';
@@ -165,6 +165,44 @@ export default function AgentMarketplacePage() {
   const [agentSession, setAgentSession] = useState<AgentSession | null>(null);
   const [agentSteps, setAgentSteps] = useState<AgentStep[]>([]);
 
+  // Full session history for the selected agent — each row is a collapsed
+  // "mobile card"-style item (title/goal only, cloned from AgentsPanel's
+  // collapse-until-tap card pattern) that expands to reveal just that
+  // session's Final Output, reusing the same finalOutput block as the live
+  // session above.
+  const [agentSessions, setAgentSessions] = useState<AgentSession[]>([]);
+  const [sessionsLoading, setSessionsLoading] = useState(false);
+  const [expandedSessionIds, setExpandedSessionIds] = useState<Set<string>>(new Set());
+
+  const loadAgentSessions = useCallback(async (agentId: string) => {
+    setSessionsLoading(true);
+    try {
+      const list = await agentEngine.listSessions(agentId);
+      setAgentSessions(list);
+    } catch {
+      setAgentSessions([]);
+    } finally {
+      setSessionsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (selectedAgent?.id) {
+      loadAgentSessions(selectedAgent.id);
+      setExpandedSessionIds(new Set());
+    } else {
+      setAgentSessions([]);
+    }
+  }, [selectedAgent?.id, loadAgentSessions]);
+
+  const toggleSessionExpanded = useCallback((sessionId: string) => {
+    setExpandedSessionIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(sessionId)) next.delete(sessionId); else next.add(sessionId);
+      return next;
+    });
+  }, []);
+
   useEffect(() => {
     const isActive = agentSession && ['initializing', 'running', 'waiting_approval'].includes(agentSession.status);
     if (!isActive || !agentSession) return;
@@ -174,10 +212,13 @@ export default function AgentMarketplacePage() {
         setAgentSession(fresh);
         const steps = await agentEngine.getSessionSteps(agentSession.id);
         setAgentSteps(steps);
+        if (['completed', 'failed', 'cancelled'].includes(fresh.status) && selectedAgent) {
+          loadAgentSessions(selectedAgent.id);
+        }
       } catch { /* ignore poll errors */ }
     }, 2000);
     return () => clearInterval(interval);
-  }, [agentSession?.id, agentSession?.status]);
+  }, [agentSession?.id, agentSession?.status, selectedAgent, loadAgentSessions]);
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -245,6 +286,7 @@ export default function AgentMarketplacePage() {
       const goal = taskInput.trim() || 'Hello — introduce yourself and what you can do.';
       const session = await agentEngine.startSession(selectedAgent.id, goal);
       setAgentSession(session);
+      loadAgentSessions(selectedAgent.id);
     } catch (error: any) {
       setAgentSession({
         id: 'error', agent_id: selectedAgent.id, status: 'failed',
@@ -253,6 +295,17 @@ export default function AgentMarketplacePage() {
       });
     } finally {
       setExecuting(false);
+    }
+  }
+
+  function sessionStatusPillClass(status: string): string {
+    switch (status) {
+      case 'completed':
+      case 'running': return agentCardStyles.active;
+      case 'waiting_approval': return agentCardStyles.paused;
+      case 'failed': return agentCardStyles.failed;
+      case 'cancelled': return agentCardStyles.archived;
+      default: return agentCardStyles.idle;
     }
   }
 
@@ -618,6 +671,93 @@ export default function AgentMarketplacePage() {
                         </div>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {/* All Sessions — history list, collapsed "mobile card" style
+                    (title/goal only, cloned from AgentsPanel's collapse-until-
+                    tap card) that expands per-row to reveal just that
+                    session's Final Output (same finalOutput block as above). */}
+                {selectedAgent && (
+                  <div style={{ marginTop: 20 }}>
+                    <h3 className={styles.sectionTitle}>
+                      <History size={13} style={{ verticalAlign: -2, marginRight: 5 }} />
+                      All Sessions {agentSessions.length > 0 ? `(${agentSessions.length})` : ''}
+                    </h3>
+                    {sessionsLoading ? (
+                      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', padding: '8px 0' }}>Loading sessions...</div>
+                    ) : agentSessions.length === 0 ? (
+                      <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', padding: '8px 0' }}>No sessions yet.</div>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        {agentSessions.map((s) => {
+                          const isExpanded = expandedSessionIds.has(s.id);
+                          return (
+                            <div
+                              key={s.id}
+                              className={`${agentCardStyles.agentCard} ${isExpanded ? agentCardStyles.expanded : ''}`}
+                              onClick={() => toggleSessionExpanded(s.id)}
+                            >
+                              <div className={agentCardStyles.cardCollapsedRow}>
+                                <span
+                                  className={`${agentCardStyles.statusDotMini} ${
+                                    s.status === 'completed' ? agentCardStyles.active
+                                    : s.status === 'failed' ? agentCardStyles.failed
+                                    : s.status === 'running' ? agentCardStyles.active
+                                    : ''
+                                  }`}
+                                />
+                                <h3 className={agentCardStyles.cardName}>{s.current_goal || 'No goal set'}</h3>
+                                <span
+                                  className={agentCardStyles.expandChevron}
+                                  style={{ transform: isExpanded ? 'rotate(180deg)' : 'none' }}
+                                >
+                                  <ChevronDown size={12} />
+                                </span>
+                              </div>
+                              <div className={agentCardStyles.cardDetails}>
+                                <div className={agentCardStyles.badgeRow}>
+                                  <span className={`${agentCardStyles.statusPill} ${sessionStatusPillClass(s.status)}`}>{s.status}</span>
+                                  {s.created_at && (
+                                    <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>
+                                      {new Date(s.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {s.final_output ? (
+                                  <div className={sessionStyles.finalOutput} style={{ marginTop: 8 }}>
+                                    <h4>Final Output</h4>
+                                    <div className={sessionStyles.finalOutputBody}>
+                                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{s.final_output}</ReactMarkdown>
+                                      {extractAgentAudioUrls(s.final_output).map((url) => (
+                                        <div key={url} className={sessionStyles.audioResult}>
+                                          <audio controls src={url} className={sessionStyles.audioPlayer}>
+                                            Your browser does not support inline audio playback.
+                                          </audio>
+                                          <a href={url} download className={sessionStyles.audioDownloadBtn}>
+                                            <Download size={12} /> Download MP3
+                                          </a>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                ) : s.error_message ? (
+                                  <div className={sessionStyles.errorOutput} style={{ marginTop: 8 }}>
+                                    <h4>Error</h4>
+                                    <p>{s.error_message}</p>
+                                  </div>
+                                ) : (
+                                  <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: 8 }}>
+                                    {['running', 'initializing', 'waiting_approval'].includes(s.status) ? 'Still running…' : 'No output.'}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
