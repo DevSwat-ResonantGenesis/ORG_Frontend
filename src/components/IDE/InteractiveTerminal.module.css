@@ -42,6 +42,7 @@
    websocket test bypassing the browser entirely) always had them. Force
    pre so literal whitespace text nodes render at full width. */
 .terminalHost :global(.xterm-rows),
-.terminalHost :global(.xterm-rows) :global(div) {
+.terminalHost :global(.xterm-rows) :global(div),
+.terminalHost :global(.xterm-rows) :global(span) {
   white-space: pre !important;
 }
