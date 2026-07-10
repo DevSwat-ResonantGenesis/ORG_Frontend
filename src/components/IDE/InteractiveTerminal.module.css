@@ -32,3 +32,16 @@
 .terminalHost :global(.xterm) :global(div) {
   font-family: ui-monospace, 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace !important;
 }
+
+/* Font was the first bug, this is the second: .xterm-rows computed
+   white-space: normal instead of xterm.css's own "pre". Each character is
+   its own <span>, including ones whose entire content is a single literal
+   " " - under normal HTML whitespace rules a lone space with no other text
+   in its inline box collapses to nothing, so every space between words
+   vanished even though the underlying data (confirmed via a direct
+   websocket test bypassing the browser entirely) always had them. Force
+   pre so literal whitespace text nodes render at full width. */
+.terminalHost :global(.xterm-rows),
+.terminalHost :global(.xterm-rows) :global(div) {
+  white-space: pre !important;
+}
