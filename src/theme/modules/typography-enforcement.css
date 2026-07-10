@@ -4,8 +4,14 @@
    NOTE: Excludes CSS Modules (classes with underscores) to allow component-specific styling
    ============================================================ */
 
-/* Force consistent font family across ALL elements (except CSS modules and IDE) */
-:not(.ide-container) *:not([class*="_"]) {
+/* Force consistent font family across ALL elements (except CSS modules and IDE).
+   Bug: this previously used ":not(.ide-container) *:not(...)" - a descendant
+   combinator, which only requires SOME ancestor (e.g. <html>/<body>, which
+   never has this class) to fail the check, matching every element on the
+   page regardless of whether a closer ancestor actually has .ide-container.
+   Must be a compound :not():not() on the target itself, matching the
+   correctly-written heading rules below. */
+:not(.ide-container):not(.ide-container *) *:not([class*="_"]) {
   font-family: var(--font-family) !important;
 }
 
