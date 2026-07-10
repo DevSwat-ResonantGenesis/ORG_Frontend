@@ -631,9 +631,10 @@
   pointer-events: none;
 }
 
-/* Expanded detail panel — collapsed to nothing by default. Hover previews it
-   on devices with a real pointer; a tap toggles `.expanded` (via React state)
-   so it also works on touch, where :hover doesn't fire reliably. */
+/* Expanded detail panel — collapsed to nothing by default on mobile/touch;
+   a tap toggles `.expanded` (via React state) to reveal it, since :hover
+   doesn't fire reliably on touch. Desktop/laptop overrides this below to
+   always show the full card (see the min-width query). */
 .cardDetails {
   max-height: 0;
   opacity: 0;
@@ -642,18 +643,25 @@
   transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .agentCard:hover .cardDetails {
-    max-height: 600px;
-    opacity: 1;
-    padding: 0 12px 12px;
-  }
-}
-
 .agentCard.expanded .cardDetails {
   max-height: 600px;
   opacity: 1;
   padding: 0 12px 12px;
+  overflow: visible;
+}
+
+/* Desktop/laptop: cards are always fully shown, never collapsed — the
+   collapse-until-tap behavior above is mobile/touch-only. overflow must
+   switch to visible here too: the "More" dropdown menu pops out just
+   below the card's bottom edge, and with overflow:hidden still active it
+   renders completely clipped/invisible the instant it opens. */
+@media (min-width: 769px) {
+  .cardDetails {
+    max-height: none;
+    opacity: 1;
+    overflow: visible;
+    padding: 0 12px 12px;
+  }
 }
 
 /* Description — clamped to 2 lines so an unusually long one doesn't blow out
