@@ -5,13 +5,17 @@
    ============================================================ */
 
 /* Force consistent font family across ALL elements (except CSS modules and IDE).
-   Bug: this previously used ":not(.ide-container) *:not(...)" - a descendant
-   combinator, which only requires SOME ancestor (e.g. <html>/<body>, which
-   never has this class) to fail the check, matching every element on the
-   page regardless of whether a closer ancestor actually has .ide-container.
-   Must be a compound :not():not() on the target itself, matching the
-   correctly-written heading rules below. */
-:not(.ide-container):not(.ide-container *) *:not([class*="_"]) {
+   Bug: this previously used ":not(.ide-container) *:not(...)" - and even a
+   compound ":not(.ide-container):not(.ide-container *) *:not(...)" is STILL
+   wrong, because that compound only qualifies as an ANCESTOR selector joined
+   to the target via a descendant combinator (space). <html>/<body> always
+   satisfy "not .ide-container and not a descendant of .ide-container" (they
+   are ancestors of it, never descendants), so the descendant-combinator form
+   matches every element on the page via that ancestor regardless of whether
+   a CLOSER ancestor is actually inside .ide-container. The exclusion only
+   works as a single compound selector applied directly to the target
+   element itself - no descendant combinator at all. */
+*:not(.ide-container):not(.ide-container *):not([class*="_"]) {
   font-family: var(--font-family) !important;
 }
 
