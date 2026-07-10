@@ -140,6 +140,15 @@
   z-index: 2;
 }
 
+/* Split view's code/preview panel has real content (white iframe backgrounds,
+   terminal, etc.) that starts right at the top of this fixed-position page,
+   so it visibly collides with the app's fixed header. Reserve space for the
+   header only while split view is active — plain chat doesn't need it since
+   there's no content up there for the header to visibly overlap. */
+.chatPageSplitView {
+  padding-top: calc(var(--chat-header-height, 56px) + env(safe-area-inset-top));
+}
+
 .chatPage::before {
   content: '';
   position: fixed;

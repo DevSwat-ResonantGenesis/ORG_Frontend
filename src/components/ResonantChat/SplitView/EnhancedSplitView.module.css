@@ -582,6 +582,15 @@
     padding: 4px 8px;
     font-size: 12px;
   }
+
+  /* The mobile chat input bar floats fixed at the bottom of the screen
+     (ChatInputBar.module.css .chatInputRoot) and stays mounted even while
+     viewing the terminal tab, with its expandable tools row able to grow
+     further above it — reserve enough bottom space so terminal output/the
+     prompt line stays visible above both, worst case (tools row open). */
+  .terminalTabContent {
+    padding-bottom: calc(116px + env(safe-area-inset-bottom));
+  }
 }
 
 /* ============================================================

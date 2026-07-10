@@ -499,27 +499,12 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     };
   }, [agentMode, computeAgentPanelStyle]);
 
-  // Toggle tag + tools row live OUTSIDE the input bar's DOM (portaled to
-  // document.body), positioned purely from the input bar's own rect —
-  // they are not nested inside .inputWrapper at all.
+  // Tools row lives OUTSIDE the input bar's DOM (portaled to document.body),
+  // positioned purely from the input bar's own rect — it is not nested
+  // inside .inputWrapper. The toggle arrow, by contrast, is a normal in-flow
+  // child of .inputWrapper (rendered in .voiceStack) so it always appears
+  // inside the same box as the input bar's tools.
   const TOOLS_ROW_GAP = 0; // tools row sits flush against the input bar
-  const TOGGLE_WIDTH = 32; // matches .toolbarToggle width in the CSS module
-
-  const computeToggleTagStyle = useCallback((): React.CSSProperties | null => {
-    if (typeof window === 'undefined') return null;
-    const wrapper = inputWrapperRef.current;
-    if (!wrapper) return null;
-    const rect = wrapper.getBoundingClientRect();
-    return {
-      position: 'fixed',
-      // Same row as the tools row (same bottom line), but shifted fully to
-      // its left so the arrow sits beside the toolbar instead of overlapping
-      // its top-left corner / first icon.
-      left: rect.left - TOGGLE_WIDTH,
-      bottom: window.innerHeight - rect.top,
-      zIndex: 10003,
-    };
-  }, []);
 
   const computeToolsRowStyle = useCallback((): React.CSSProperties | null => {
     if (typeof window === 'undefined') return null;
@@ -537,31 +522,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     };
   }, []);
 
-  const [toggleTagStyle, setToggleTagStyle] = useState<React.CSSProperties | null>(null);
   const [toolsRowFloatingStyle, setToolsRowFloatingStyle] = useState<React.CSSProperties | null>(null);
-
-  useLayoutEffect(() => {
-    if (embedded) return;
-    const update = () => setToggleTagStyle(computeToggleTagStyle());
-    update();
-    window.addEventListener('resize', update);
-    window.addEventListener('scroll', update, true);
-    // The input bar's own height changes (attachments, multi-line text,
-    // mention/provider popups) don't fire a window resize/scroll event, so
-    // without observing it directly the tag drifts out of sync and appears
-    // to "shift" whenever the bar grows or shrinks.
-    const wrapper = inputWrapperRef.current;
-    let observer: ResizeObserver | undefined;
-    if (wrapper && typeof ResizeObserver !== 'undefined') {
-      observer = new ResizeObserver(update);
-      observer.observe(wrapper);
-    }
-    return () => {
-      window.removeEventListener('resize', update);
-      window.removeEventListener('scroll', update, true);
-      observer?.disconnect();
-    };
-  }, [embedded, computeToggleTagStyle, sidebarOpen, splitViewEnabled, splitViewWidth]);
 
   useLayoutEffect(() => {
     if (embedded || !toolbarOpen) return;
@@ -1387,46 +1348,33 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
           </div>
         )}
 
-        {/* Toolbar toggle - lives outside the input bar (portaled), standing on its own above it */}
-        {!embedded && typeof document !== 'undefined' && createPortal(
-          <button
-            ref={toolbarToggleRef}
-            type="button"
-            className={`${styles.toolbarToggle} ${toolbarOpen ? styles.open : ''}`}
-            style={toggleTagStyle || undefined}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setToolbarOpen(prev => !prev);
-            }}
-            title={toolbarOpen ? 'Hide tools' : 'Show tools'}
-            aria-expanded={toolbarOpen}
-          >
-            <ChevronDownIcon />
-          </button>,
-          document.body
-        )}
-
         {/* Input Area: Textarea + Send */}
         <div className={styles.inputArea}>
           <div className={`${styles.voiceStack} ${embedded ? styles.embeddedVoiceStack : ''}`}>
-            {embedded && (
-              <button
-                type="button"
-                className={`${styles.toolButton} ${styles.embeddedToolsToggle} ${showEmbeddedTools ? styles.active : ''}`}
-                onMouseEnter={() => setShowEmbeddedTools(true)}
-                onFocus={() => setShowEmbeddedTools(true)}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setShowEmbeddedTools(v => !v);
-                }}
-                title={showEmbeddedTools ? 'Hide tools' : 'Show tools'}
-                aria-expanded={showEmbeddedTools}
-              >
-                <ChevronDownIcon />
-              </button>
-            )}
+            {/* Toolbar toggle - a normal in-flow button inside the input bar's
+                own box, next to the rest of the input bar's tools, instead of
+                a globally fixed/portaled overlay. */}
+            <button
+              ref={toolbarToggleRef}
+              type="button"
+              className={
+                embedded
+                  ? `${styles.toolButton} ${styles.embeddedToolsToggle} ${showEmbeddedTools ? styles.active : ''}`
+                  : `${styles.toolButton} ${styles.toolbarToggle} ${toolbarOpen ? styles.open : ''}`
+              }
+              onMouseEnter={() => { if (embedded) setShowEmbeddedTools(true); }}
+              onFocus={() => { if (embedded) setShowEmbeddedTools(true); }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (embedded) setShowEmbeddedTools(v => !v);
+                else setToolbarOpen(prev => !prev);
+              }}
+              title={(embedded ? showEmbeddedTools : toolbarOpen) ? 'Hide tools' : 'Show tools'}
+              aria-expanded={embedded ? showEmbeddedTools : toolbarOpen}
+            >
+              <ChevronDownIcon />
+            </button>
           </div>
           {voiceInInput && voiceInterimTranscript && (
             <div className={styles.voiceInterimOverlay}>{voiceInterimTranscript}</div>

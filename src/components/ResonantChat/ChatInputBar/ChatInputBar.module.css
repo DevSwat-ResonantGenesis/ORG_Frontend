@@ -113,33 +113,19 @@
   display: none;
 }
 
-/* Toolbar toggle tag - a bare arrow icon (no button/box styling) that
-   lives OUTSIDE the input bar's DOM (portaled to document.body) and is
-   positioned purely from the input bar's own rect; position/left/bottom
-   below are fallbacks only, overridden by the inline style computed in
-   ChatInputBar.tsx. */
+/* Toolbar toggle - a normal in-flow button that sits inside the input bar's
+   own box (in .voiceStack, alongside the input bar's other tools) instead of
+   a globally positioned/portaled overlay. */
 .toolbarToggle {
-  position: fixed;
-  bottom: 90px;
-  left: 0;
-  width: 32px;
-  /* Matches the tools row's total height (8px padding + 32px toolButton +
-     8px padding) so both are bottom-anchored to the same line AND the
-     arrow icon lands at the same vertical level as the toolbar's icons,
-     instead of sinking to the bottom of that shared band. */
-  height: 48px;
+  min-width: 28px;
+  height: 28px;
   padding: 0;
-  border: none;
-  border-radius: 0;
+  border-radius: 8px;
   background: transparent;
   color: #71C23E;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 10003;
+  flex-shrink: 0;
   box-shadow: none;
-  opacity: 0.9;
+  opacity: 0.75;
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
@@ -160,9 +146,10 @@
 }
 
 /* Floating Tools Row - stands on its own OUTSIDE the input bar's DOM
-   (portaled to document.body), stacked 1px above the toggle tag; position
+   (portaled to document.body), stacked directly above the input bar; position
    below is a fallback only, overridden by the inline style computed in
-   ChatInputBar.tsx. */
+   ChatInputBar.tsx. Single row, horizontally scrollable — never wraps, so
+   adding tools doesn't shrink/collapse the row on narrow (mobile) widths. */
 .toolsRowFloating {
   position: fixed;
   bottom: 121px;
@@ -171,9 +158,20 @@
   background: transparent;
   border: none;
   padding: 8px;
-  flex-wrap: wrap;
-  max-height: 60vh;
-  overflow-y: auto;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.toolsRowFloating::-webkit-scrollbar {
+  display: none;
+}
+
+.toolsRowFloating .toolsLeft,
+.toolsRowFloating .toolsRight {
+  flex-shrink: 0;
 }
 
 [data-theme='light'] .inputWrapper {
@@ -545,6 +543,7 @@
   transition: all 0.15s ease;
   gap: 6px;
   opacity: 0.5;  /* 50% transparent */
+  flex-shrink: 0; /* never squish in a scrollable tools row — overflow scrolls instead */
 }
 
 .toolButton:hover {

@@ -4366,7 +4366,7 @@ const ResonantChatPage: React.FC = () => {
   return (
     <>
     
-    <div className={styles.chatPage}>
+    <div className={`${styles.chatPage} ${splitViewEnabled ? styles.chatPageSplitView : ''}`}>
       {/* Enhanced Sidebar with User Info and Settings */}
       <div className={`${styles.sidebarWrapper} ${sidebarOpen ? styles.sidebarOpen : styles.hidden}`}>
         <EnhancedSidebar
