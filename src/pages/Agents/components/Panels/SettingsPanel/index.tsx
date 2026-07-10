@@ -89,6 +89,16 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
   const [editMaxTokens, setEditMaxTokens] = useState(4096);
   const [editTools, setEditTools] = useState<string[]>([]);
 
+  // Safety envelope + tool config + autonomous — real per-agent fields that
+  // exist on AgentDefinition (safety_config, tool_config, autonomous) but
+  // were never surfaced in any UI. GET /api/v1/agents/:id doesn't return them
+  // via the list endpoint, so we fetch full detail separately below.
+  const [safetyConfigFull, setSafetyConfigFull] = useState<Record<string, any>>({});
+  const [editAutonomous, setEditAutonomous] = useState(false);
+  const [editToolConfig, setEditToolConfig] = useState<Record<string, any>>({});
+  const [toolConfigDraftErrors, setToolConfigDraftErrors] = useState<Record<string, string>>({});
+  const [applyingMode, setApplyingMode] = useState<string | null>(null);
+
   // Dynamic providers from backend catalog
   const [providersCatalog, setProvidersCatalog] = useState<AgentProvidersCatalogResponse | null>(null);
   // Dynamic tools from backend registry
@@ -150,6 +160,73 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
     }
   }, [selectedAgent?.id]);
 
+  // Fetch full agent detail for fields the list/store don't carry
+  // (safety_config, tool_config, autonomous) so edits merge onto the real
+  // current values instead of clobbering system-managed keys (manifest_hash,
+  // dsid, pricing_tier, etc. also live inside safety_config).
+  useEffect(() => {
+    if (!selectedAgent?.id) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const resp = await fastapiClient.get(`/api/v1/agents/${selectedAgent.id}`);
+        if (cancelled) return;
+        const data = resp.data || {};
+        setSafetyConfigFull(data.safety_config || {});
+        setEditAutonomous(!!data.autonomous);
+        setEditToolConfig(data.tool_config || {});
+        setToolConfigDraftErrors({});
+      } catch (err) {
+        console.error('Failed to load agent safety/tool config:', err);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [selectedAgent?.id]);
+
+  const setSafetyField = useCallback((key: string, raw: string) => {
+    setSafetyConfigFull(prev => {
+      const next = { ...prev };
+      if (raw.trim() === '') {
+        delete next[key];
+      } else {
+        const n = parseInt(raw, 10);
+        if (!Number.isNaN(n)) next[key] = n;
+      }
+      return next;
+    });
+  }, []);
+
+  const handleApplyMode = useCallback(async (mode: 'governed' | 'supervised' | 'unbounded') => {
+    if (!selectedAgent) return;
+    setApplyingMode(mode);
+    try {
+      const resp = await fastapiClient.patch(`/api/v1/agents/${selectedAgent.id}/mode`, { mode });
+      // Backend applies preset limits into safety_config server-side; re-fetch
+      // full detail so the numeric fields below reflect what actually landed.
+      const detail = await fastapiClient.get(`/api/v1/agents/${selectedAgent.id}`);
+      setSafetyConfigFull(detail.data?.safety_config || {});
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+      void resp;
+    } catch (err) {
+      console.error('Failed to apply mode preset:', err);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+    } finally {
+      setApplyingMode(null);
+    }
+  }, [selectedAgent]);
+
+  const handleToolConfigChange = useCallback((toolName: string, rawJson: string) => {
+    try {
+      const parsed = rawJson.trim() === '' ? {} : JSON.parse(rawJson);
+      setEditToolConfig(prev => ({ ...prev, [toolName]: parsed }));
+      setToolConfigDraftErrors(prev => { const next = { ...prev }; delete next[toolName]; return next; });
+    } catch {
+      setToolConfigDraftErrors(prev => ({ ...prev, [toolName]: 'Invalid JSON' }));
+    }
+  }, []);
+
   const canSwitchToUnbounded = roles.includes('admin') || roles.includes('superadmin');
 
   useEffect(() => {
@@ -195,6 +272,9 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
         temperature: editTemperature,
         max_tokens: editMaxTokens,
         tools: editTools,
+        safety_config: safetyConfigFull,
+        autonomous: editAutonomous,
+        tool_config: editToolConfig,
       });
       // Update local store
       updateAgentInStore(selectedAgent.id, {
@@ -220,7 +300,7 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
     } finally {
       setSaving(false);
     }
-  }, [selectedAgent, editName, editDescription, editSystemPrompt, editProvider, editModel, editTemperature, editMaxTokens, editTools, updateAgentInStore, updateAgentConfigInStore]);
+  }, [selectedAgent, editName, editDescription, editSystemPrompt, editProvider, editModel, editTemperature, editMaxTokens, editTools, safetyConfigFull, editAutonomous, editToolConfig, updateAgentInStore, updateAgentConfigInStore]);
 
   const toggleTool = useCallback((tool: string) => {
     setEditTools(prev => prev.includes(tool) ? prev.filter(t => t !== tool) : [...prev, tool]);
@@ -541,6 +621,31 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
                 <div style={{ marginTop: 16, fontSize: 11, color: '#64748b' }}>
                   {editTools.length} tool{editTools.length !== 1 ? 's' : ''} enabled
                 </div>
+
+                {editTools.length > 0 && (
+                  <div style={{ marginTop: 24 }}>
+                    <h4 style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>Per-tool configuration</h4>
+                    <p className={styles.sectionDesc} style={{ marginBottom: 12 }}>
+                      Optional JSON config passed to specific tools (e.g. <code>generate_audio</code>: {'{"voices": ["alloy", "nova"]}'}).
+                    </p>
+                    {editTools.map(tool => (
+                      <div key={tool} className={styles.settingItem} style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+                        <div className={styles.settingInfo}>
+                          <label>{tool.replace(/_/g, ' ')}</label>
+                        </div>
+                        <textarea
+                          value={JSON.stringify(editToolConfig[tool] ?? {}, null, 2)}
+                          onChange={e => handleToolConfigChange(tool, e.target.value)}
+                          rows={3}
+                          style={{ width: '100%', marginTop: 8, padding: '8px 10px', background: 'rgba(255,255,255,0.04)', border: `1px solid ${toolConfigDraftErrors[tool] ? '#ef4444' : 'rgba(255,255,255,0.1)'}`, borderRadius: 8, color: '#e2e8f0', fontSize: 11, fontFamily: 'monospace', resize: 'vertical' }}
+                        />
+                        {toolConfigDraftErrors[tool] && (
+                          <span style={{ fontSize: 10, color: '#ef4444', marginTop: 4 }}>{toolConfigDraftErrors[tool]}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
@@ -550,6 +655,10 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
                 <h3>Autonomy Mode</h3>
                 <p className={styles.sectionDesc}>
                   Control how agents operate in your organization. GOVERNED mode is recommended for production use.
+                </p>
+                <p className={styles.sectionDesc} style={{ color: '#f59e0b' }}>
+                  Note: the switcher and status below control the platform-wide autonomy daemon, not just this agent.
+                  Per-agent limits and the self-triggering "autonomous" flag for {selectedAgent.name} are below.
                 </p>
 
                 <ModeSwitcher
@@ -605,6 +714,86 @@ const SettingsPanelComponent: React.FC<SettingsPanelProps> = ({ className }) => 
                       <Icons.Pause /> Stop Autonomy
                     </button>
                   </div>
+                </div>
+
+                <div className={styles.userInfo} style={{ marginTop: 24 }}>
+                  <h4>Per-Agent Safety Envelope</h4>
+                  <p className={styles.sectionDesc}>
+                    Quick presets, or set exact numbers below. Presets overwrite the numbers below with the preset's
+                    defaults — set numbers after applying a preset if you need something different.
+                  </p>
+                  <div style={{ display: 'flex', gap: 8, marginTop: 8, marginBottom: 16 }}>
+                    {(['governed', 'supervised', 'unbounded'] as const).map(m => (
+                      <button
+                        key={m}
+                        className={styles.actionBtn}
+                        onClick={() => handleApplyMode(m)}
+                        disabled={applyingMode !== null}
+                      >
+                        {applyingMode === m ? 'Applying...' : `Apply ${m}`}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className={styles.settingItem}>
+                    <div className={styles.settingInfo}>
+                      <label>Max loops</label>
+                      <span>Overrides the global loop limit for this agent only. Blank = use global default.</span>
+                    </div>
+                    <input
+                      type="number"
+                      value={safetyConfigFull.max_loops ?? ''}
+                      onChange={e => setSafetyField('max_loops', e.target.value)}
+                      placeholder="global default"
+                      min={1}
+                      max={2000}
+                    />
+                  </div>
+
+                  <div className={styles.settingItem}>
+                    <div className={styles.settingInfo}>
+                      <label>Max tokens per run</label>
+                      <span>Overrides the global per-session token budget for this agent only.</span>
+                    </div>
+                    <input
+                      type="number"
+                      value={safetyConfigFull.max_tokens_per_run ?? ''}
+                      onChange={e => setSafetyField('max_tokens_per_run', e.target.value)}
+                      placeholder="global default"
+                      min={1}
+                    />
+                  </div>
+
+                  <div className={styles.settingItem}>
+                    <div className={styles.settingInfo}>
+                      <label>Max runs per day</label>
+                      <span>Caps how many sessions this agent can start per day. Blank = unlimited.</span>
+                    </div>
+                    <input
+                      type="number"
+                      value={safetyConfigFull.max_runs_per_day ?? ''}
+                      onChange={e => setSafetyField('max_runs_per_day', e.target.value)}
+                      placeholder="unlimited"
+                      min={1}
+                    />
+                  </div>
+
+                  <div className={styles.settingItem}>
+                    <div className={styles.settingInfo}>
+                      <label>Autonomous</label>
+                      <span>Let this specific agent be self-triggered by the autonomous daemon, without a user starting a session.</span>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={editAutonomous}
+                      onChange={e => setEditAutonomous(e.target.checked)}
+                      style={{ width: 20, height: 20 }}
+                    />
+                  </div>
+
+                  <p style={{ fontSize: 11, color: '#64748b', marginTop: 8 }}>
+                    Changes here save with the main "Save Changes" button below, same as the other tabs.
+                  </p>
                 </div>
               </div>
             )}
