@@ -144,7 +144,7 @@ export const completeCode = async (
   request: CodeCompletionRequest
 ): Promise<CodeCompletionResponse> => {
   try {
-    const response = await fastapiClient.post('/code/complete', request);
+    const response = await fastapiClient.post('/api/v1/code/complete', request);
     const data = response.data;
     if (data?.port) {
       data.preview_url = `/preview/proxy/${data.port}`;
@@ -164,7 +164,7 @@ export const generateCode = async (
   request: CodeGenerationRequest
 ): Promise<CodeGenerationResponse> => {
   try {
-    const response = await fastapiClient.post('/code/generate', request);
+    const response = await fastapiClient.post('/api/v1/code/generate', request);
     return response.data;
   } catch (error) {
     logger.error('Code generation error', error);
@@ -180,7 +180,7 @@ export const refactorCode = async (
   request: CodeRefactorRequest
 ): Promise<CodeRefactorResponse> => {
   try {
-    const response = await fastapiClient.post('/code/refactor', request);
+    const response = await fastapiClient.post('/api/v1/code/refactor', request);
     return response.data;
   } catch (error) {
     logger.error('Code refactoring error', error);
@@ -196,7 +196,7 @@ export const indexCodebase = async (
   request: CodeIndexRequest
 ): Promise<CodeIndexResponse> => {
   try {
-    const response = await fastapiClient.post('/code/index', request);
+    const response = await fastapiClient.post('/api/v1/code/index', request);
     return response.data;
   } catch (error) {
     logger.error('Code indexing error', error);
@@ -217,7 +217,7 @@ export const searchCodebase = async (
     const params = new URLSearchParams({ query, limit: limit.toString() });
     if (language) params.append('language', language);
 
-    const response = await fastapiClient.get(`/code/search?${params.toString()}`);
+    const response = await fastapiClient.get(`/api/v1/code/search?${params.toString()}`);
     return response.data;
   } catch (error) {
     logger.error('Code search error', error);
@@ -238,7 +238,7 @@ export const searchCodebaseML = async (
     const params = new URLSearchParams({ query, limit: limit.toString() });
     if (language) params.append('language', language);
 
-    const response = await fastapiClient.get(`/code/search/ml?${params.toString()}`);
+    const response = await fastapiClient.get(`/api/v1/code/search/ml?${params.toString()}`);
     return response.data;
   } catch (error) {
     logger.error('Code ML search error', error);
@@ -255,7 +255,7 @@ export const generateProject = async (
   request: ProjectGenerationRequest
 ): Promise<ProjectGenerationResponse> => {
   try {
-    const response = await fastapiClient.post('/code/project/generate', request);
+    const response = await fastapiClient.post('/api/v1/code/project/generate', request);
 
     // Debug: Log response structure
     logger.info('Project generation API response', {
@@ -366,7 +366,7 @@ export const listProjectFiles = async (
 ): Promise<FileListResponse> => {
   try {
     const params = projectId ? `?project_id=${projectId}` : '';
-    const response = await fastapiClient.get(`/code/project/files${params}`);
+    const response = await fastapiClient.get(`/api/v1/code/project/files${params}`);
     return response.data;
   } catch (error) {
     logger.error('List project files error', error);
@@ -384,7 +384,7 @@ export const readProjectFile = async (
 ): Promise<FileReadResponse> => {
   try {
     const params = projectId ? `?project_id=${projectId}` : '';
-    const response = await fastapiClient.post(`/code/project/read${params}`, {
+    const response = await fastapiClient.post(`/api/v1/code/project/read${params}`, {
       file_path: filePath
     });
     return response.data;
@@ -406,7 +406,7 @@ export const writeProjectFile = async (
 ): Promise<FileWriteResponse> => {
   try {
     const params = projectId ? `?project_id=${projectId}` : '';
-    const response = await fastapiClient.post(`/code/project/write${params}`, {
+    const response = await fastapiClient.post(`/api/v1/code/project/write${params}`, {
       file_path: filePath,
       content,
       language
@@ -430,7 +430,7 @@ export const deleteProjectFile = async (
   projectId?: string
 ): Promise<{ success: boolean; message: string; archived?: boolean; archived_count?: number }> => {
   try {
-    const response = await fastapiClient.post('/code/project/delete-file', {
+    const response = await fastapiClient.post('/api/v1/code/project/delete-file', {
       file_path: filePath,
       project_id: projectId
     });
@@ -531,7 +531,7 @@ export const archiveProject = async (
   projectHash?: string
 ): Promise<ProjectArchiveResponse> => {
   try {
-    const response = await fastapiClient.post('/code/project/archive', {
+    const response = await fastapiClient.post('/api/v1/code/project/archive', {
       project_id: projectId,
       folder_path: folderPath,
       project_hash: projectHash
@@ -553,7 +553,7 @@ export const restoreProject = async (
   newProjectId?: string
 ): Promise<ProjectRestoreResponse> => {
   try {
-    const response = await fastapiClient.post('/code/project/restore', {
+    const response = await fastapiClient.post('/api/v1/code/project/restore', {
       project_hash: projectHash,
       new_project_id: newProjectId
     });
@@ -573,7 +573,7 @@ export const restoreProjectByCryptoHash = async (
   mnemonic: string
 ): Promise<ProjectRestoreResponse> => {
   try {
-    const response = await fastapiClient.post('/code/project/restore-by-hash', null, {
+    const response = await fastapiClient.post('/api/v1/code/project/restore-by-hash', null, {
       params: {
         crypto_hash: cryptoHash,
         mnemonic: mnemonic
@@ -595,7 +595,7 @@ export const transferProjectOwnership = async (
   newOwnerEmail: string
 ): Promise<{ success: boolean; message: string }> => {
   try {
-    const response = await fastapiClient.post(`/code/project/${projectId}/transfer`, null, {
+    const response = await fastapiClient.post(`/api/v1/code/project/${projectId}/transfer`, null, {
       params: { new_owner_email: newOwnerEmail }
     });
     return response.data;
@@ -625,7 +625,7 @@ export const createProjectFile = async (
       language
     };
 
-    const response = await fastapiClient.post(`/code/project/create${params}`, requestBody);
+    const response = await fastapiClient.post(`/api/v1/code/project/create${params}`, requestBody);
     return response.data;
   } catch (error) {
     logger.error('Create file error', error);
@@ -642,7 +642,7 @@ export const renameProjectFile = async (
   newPath: string
 ): Promise<{ success: boolean; message: string; new_path: string }> => {
   try {
-    const response = await fastapiClient.post('/code/project/file/rename', {
+    const response = await fastapiClient.post('/api/v1/code/project/file/rename', {
       old_path: oldPath,
       new_path: newPath
     });
@@ -662,7 +662,7 @@ export const moveProjectFile = async (
   targetPath: string
 ): Promise<{ success: boolean; message: string; new_path: string }> => {
   try {
-    const response = await fastapiClient.post('/code/project/file/move', {
+    const response = await fastapiClient.post('/api/v1/code/project/file/move', {
       source_path: sourcePath,
       target_path: targetPath
     });
@@ -691,7 +691,7 @@ export const uploadProject = async (
       type: file.type
     });
 
-    const response = await fastapiClient.post('/code/project/upload', formData, {
+    const response = await fastapiClient.post('/api/v1/code/project/upload', formData, {
       // Don't set Content-Type - axios will set it automatically with boundary for FormData
       headers: {
         // Remove Content-Type to let axios handle it
@@ -739,7 +739,7 @@ export interface UserProject {
  */
 export const listUserProjects = async (): Promise<{ projects: UserProject[]; count: number }> => {
   try {
-    const response = await fastapiClient.get('/code/projects');
+    const response = await fastapiClient.get('/api/v1/code/projects');
     return response.data;
   } catch (error: any) {
     // Don't log error for 404 - endpoint may not be deployed yet
@@ -967,7 +967,7 @@ export const runProject = async (
   command?: string
 ): Promise<ProjectRunResponse> => {
   try {
-    const response = await fastapiClient.post<ProjectRunResponse>('/code/run', {
+    const response = await fastapiClient.post<ProjectRunResponse>('/api/v1/code/run', {
       project_id: projectId,
       command,
     });
@@ -1004,7 +1004,7 @@ export const patchFile = async (
   projectId?: string
 ): Promise<PatchResponse> => {
   try {
-    const response = await fastapiClient.post<PatchResponse>('/code/patch', {
+    const response = await fastapiClient.post<PatchResponse>('/api/v1/code/patch', {
       file_path: filePath,
       instructions,
       project_id: projectId,
@@ -1044,7 +1044,7 @@ export const explainCode = async (
   lineNumber?: number
 ): Promise<ExplainCodeResponse> => {
   try {
-    const response = await fastapiClient.post<ExplainCodeResponse>('/code/explain', {
+    const response = await fastapiClient.post<ExplainCodeResponse>('/api/v1/code/explain', {
       code,
       language,
       context,
@@ -1067,7 +1067,7 @@ export const explainCode = async (
  */
 export const downloadProject = async (projectId: string): Promise<Blob> => {
   try {
-    const response = await fastapiClient.get(`/code/project/download?project_id=${projectId}`, {
+    const response = await fastapiClient.get(`/api/v1/code/project/download?project_id=${projectId}`, {
       responseType: 'blob',
     });
     return response.data;
@@ -1110,7 +1110,7 @@ export const astRefactor = async (
   projectId?: string
 ): Promise<ASTRefactorResponse> => {
   try {
-    const response = await fastapiClient.post<ASTRefactorResponse>('/code/refactor/ast', {
+    const response = await fastapiClient.post<ASTRefactorResponse>('/api/v1/code/refactor/ast', {
       file_path: filePath,
       rule,
       parameters,
@@ -1219,7 +1219,7 @@ export const advancedRefactor = async (
   request: AdvancedRefactorRequest
 ): Promise<AdvancedRefactorResponse> => {
   try {
-    const response = await fastapiClient.post('/code/refactor/advanced', request);
+    const response = await fastapiClient.post('/api/v1/code/refactor/advanced', request);
     return response.data;
   } catch (error) {
     logger.error('Advanced refactoring error', error);
