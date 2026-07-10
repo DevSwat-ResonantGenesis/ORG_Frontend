@@ -1,47 +1,36 @@
-// Terminal Component - Interactive terminal for command execution
-
-import React, { useRef, useEffect } from 'react';
+// Terminal Component - the same real, sandboxed interactive shell used by
+// the IDE (InteractiveTerminal -> RG_Gateway -> RG_Terminal_Sandbox), reused
+// here so the chat split-view terminal is a genuine PTY instead of the old
+// log/input UI that posted to the disabled RG_Code_Execution /terminal/execute
+// endpoint. A slim status log above it still shows "Run Code"/"Start Preview"
+// messages, which are one-shot status lines, not shell input/output.
+import React, { useRef, useEffect, useMemo } from 'react';
+import { InteractiveTerminal } from '@/components/IDE/InteractiveTerminal';
+import { getOrCreateDefaultTerminalId } from '@/components/IDE/terminalSession';
 import type { TerminalOutput } from '../types';
 import styles from '../EnhancedSplitView.module.css';
 
 interface TerminalProps {
   output: TerminalOutput[];
-  input: string;
   isRunning: boolean;
-  onInputChange: (value: string) => void;
-  onSubmit: () => void;
   onClear?: () => void;
-  disabled?: boolean;
+  projectId?: string;
 }
 
 export const Terminal: React.FC<TerminalProps> = ({
   output,
-  input,
   isRunning,
-  onInputChange,
-  onSubmit,
   onClear,
-  disabled = false,
+  projectId,
 }) => {
   const outputRef = useRef<HTMLDivElement>(null);
+  const terminalId = useMemo(() => getOrCreateDefaultTerminalId(projectId), [projectId]);
 
-  // Auto-scroll to bottom when new output is added
   useEffect(() => {
     if (outputRef.current) {
       outputRef.current.scrollTop = outputRef.current.scrollHeight;
     }
   }, [output]);
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      onSubmit();
-    }
-    if (e.key === 'l' && e.ctrlKey) {
-      e.preventDefault();
-      onClear?.();
-    }
-  };
 
   const getOutputClassName = (type: TerminalOutput['type']) => {
     switch (type) {
@@ -64,20 +53,15 @@ export const Terminal: React.FC<TerminalProps> = ({
           <button
             className={styles.terminalClearButton}
             onClick={onClear}
-            title="Clear terminal (Ctrl+L)"
+            title="Clear status log"
           >
             Clear
           </button>
         )}
       </div>
-      <div className={styles.terminalOutput} ref={outputRef}>
-        {output.length === 0 ? (
-          <div className={styles.terminalWelcome}>
-            <p>Welcome to the terminal</p>
-            <p className={styles.terminalHint}>Type a command and press Enter</p>
-          </div>
-        ) : (
-          output.map((line) => (
+      {(output.length > 0 || isRunning) && (
+        <div className={styles.terminalOutput} ref={outputRef}>
+          {output.map((line) => (
             <div
               key={line.id}
               className={`${styles.terminalLine} ${getOutputClassName(line.type)}`}
@@ -85,26 +69,15 @@ export const Terminal: React.FC<TerminalProps> = ({
               {line.type === 'command' && <span className={styles.terminalPromptInline}>$ </span>}
               {line.content}
             </div>
-          ))
-        )}
-        {isRunning && (
-          <div className={styles.terminalLine}>
-            <span className={styles.terminalSpinner}>⏳</span> Running...
-          </div>
-        )}
-      </div>
-      <div className={styles.terminalInputArea}>
-        <span className={styles.terminalPrompt}>$</span>
-        <input
-          type="text"
-          className={styles.terminalInput}
-          value={input}
-          onChange={(e) => onInputChange(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Enter command..."
-          disabled={disabled || isRunning}
-        />
-      </div>
+          ))}
+          {isRunning && (
+            <div className={styles.terminalLine}>
+              <span className={styles.terminalSpinner}>⏳</span> Running...
+            </div>
+          )}
+        </div>
+      )}
+      <InteractiveTerminal terminalId={terminalId} projectId={projectId} visible />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { TerminalTabs, type TerminalTab } from './TerminalTabs';
+import { storageKeyFor, loadInitialTabs } from './terminalSession';
 import styles from './CursorTerminalPanel.module.css';
 
 interface CursorTerminalPanelProps {
@@ -7,30 +8,6 @@ interface CursorTerminalPanelProps {
   projectId?: string;
   files?: Array<{ name: string; path: string; type?: string }>;
 }
-
-// Terminal ownership is keyed only by terminal_id, not user_id+terminal_id
-// (see RG_Terminal_Sandbox/app/docker_manager.py's container_name_for), so a
-// hardcoded literal like "1" would be a single globally-shared container
-// name across every user on the platform - the first user to ever open a
-// terminal "owns" it forever and everyone else gets rejected. Persist a
-// randomly generated id in sessionStorage (keyed per project, per tab) so
-// toggling the terminal panel closed/open within the same browser session
-// reconnects to the same container instead of generating a fresh id (and
-// abandoning the old one) on every remount.
-const storageKeyFor = (projectId?: string) => `ide-terminal-tabs-${projectId || 'default'}`;
-
-const loadInitialTabs = (projectId?: string): TerminalTab[] => {
-  try {
-    const raw = sessionStorage.getItem(storageKeyFor(projectId));
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-    }
-  } catch {
-    // fall through to a fresh tab
-  }
-  return [{ id: crypto.randomUUID(), name: 'Terminal 1', content: '', active: true }];
-};
 
 export const CursorTerminalPanel: React.FC<CursorTerminalPanelProps> = ({
   initialHeight = 200,

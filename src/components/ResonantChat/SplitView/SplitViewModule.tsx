@@ -37,9 +37,8 @@ import {
 import { getDefaultContent, DEFAULT_SPLIT_WIDTH } from './constants';
 
 // API Client
-import { 
-  executeCode, 
-  executeTerminalCommand, 
+import {
+  executeCode,
   writeProjectFile,
   startProjectPreview
 } from '@/api/code';
@@ -240,33 +239,6 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
     }
   }, [projectFiles, state.selectedFile, actions]);
 
-  // Handle terminal command submission - Connected to IDE backend
-  const handleTerminalSubmit = useCallback(async () => {
-    if (!state.terminalInput.trim()) return;
-
-    const command = state.terminalInput.trim();
-    actions.addTerminalOutput({ content: command, type: 'command' });
-    actions.setTerminalInput('');
-    actions.setIsRunning(true);
-
-    try {
-      const result = await executeTerminalCommand(command);
-      if (result.stdout) {
-        actions.addTerminalOutput({ content: result.stdout, type: 'stdout' });
-      }
-      if (result.stderr) {
-        actions.addTerminalOutput({ content: result.stderr, type: 'stderr' });
-      }
-      if (result.exit_code !== 0) {
-        actions.addTerminalOutput({ content: `Exit code: ${result.exit_code}`, type: 'info' });
-      }
-    } catch (err: any) {
-      actions.addTerminalOutput({ content: err.message || 'Command failed', type: 'stderr' });
-    } finally {
-      actions.setIsRunning(false);
-    }
-  }, [state.terminalInput, actions]);
-
   // Handle run code - Connected to IDE backend
   const handleRunCode = useCallback(async () => {
     // Try to run selected file first, then fall back to code blocks
@@ -459,12 +431,9 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
               {state.activeTab === 'terminal' && (
                 <Terminal
                   output={state.terminalOutput}
-                  input={state.terminalInput}
                   isRunning={state.isRunning}
-                  onInputChange={actions.setTerminalInput}
-                  onSubmit={handleTerminalSubmit}
                   onClear={actions.clearTerminal}
-                  disabled={false}
+                  projectId={projectId}
                 />
               )}
 
@@ -653,12 +622,9 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
           {state.activeTab === 'terminal' && (
             <Terminal
               output={state.terminalOutput}
-              input={state.terminalInput}
               isRunning={state.isRunning}
-              onInputChange={actions.setTerminalInput}
-              onSubmit={handleTerminalSubmit}
               onClear={actions.clearTerminal}
-              disabled={false}
+              projectId={projectId}
             />
           )}
 
