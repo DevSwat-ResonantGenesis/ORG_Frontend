@@ -1102,7 +1102,11 @@ const ResonantChatPage: React.FC = () => {
 
   // Entry point for the header/mobile-nav "Terminal" link (navigate('/resonant-chat?splitTab=terminal'))
   // - opens split view straight to the terminal tab instead of only ever
-  // being reachable via an agentic tool-call result.
+  // being reachable via an agentic tool-call result. Depends on
+  // location.search (not []): the user is almost always already mounted on
+  // /resonant-chat, so navigate() to the same route with a new query string
+  // doesn't remount this component - a mount-only effect would just never
+  // fire again after the first page load.
   useEffect(() => {
     const requestedTab = new URLSearchParams(location.search).get('splitTab');
     if (requestedTab === 'terminal') {
@@ -1111,7 +1115,7 @@ const ResonantChatPage: React.FC = () => {
       setSplitAutoOpenRequest({ requestId: Date.now(), tab: 'terminal' });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [location.search]);
 
   // Save split view settings to localStorage
   useEffect(() => {

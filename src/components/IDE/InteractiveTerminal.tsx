@@ -92,21 +92,45 @@ export const InteractiveTerminal: React.FC<InteractiveTerminalProps> = ({
     const handleFocus = () => {
       isFocused = true;
       emitKeyboardState();
+      applyViewportHeight();
     };
     const handleBlur = () => {
       isFocused = false;
       emitKeyboardState();
+      applyViewportHeight();
     };
     helperTextarea?.addEventListener('focus', handleFocus);
     helperTextarea?.addEventListener('blur', handleBlur);
 
+    // Actively resize (not just avoid overlap via padding) so the terminal
+    // visibly tracks the keyboard as it animates open/closed, instead of
+    // passively waiting on ancestor flex/dvh reflow (which doesn't reliably
+    // apply here - this container's ancestors include position:fixed/
+    // percentage-based elements that don't all reflow the same way mobile
+    // Safari/Chrome resize the visual viewport).
     const vv = window.visualViewport;
+    const applyViewportHeight = () => {
+      const el = containerRef.current;
+      if (!el || !vv) return;
+      if (isFocused && keyboardOpen) {
+        const top = el.getBoundingClientRect().top;
+        el.style.height = `${Math.max(100, vv.height - top)}px`;
+      } else {
+        el.style.height = '';
+      }
+      fit.fit();
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'resize', cols: term.cols, rows: term.rows }));
+      }
+    };
     const handleViewportResize = () => {
       if (!vv) return;
       keyboardOpen = window.innerHeight - vv.height > 120;
       emitKeyboardState();
+      applyViewportHeight();
     };
     vv?.addEventListener('resize', handleViewportResize);
+    vv?.addEventListener('scroll', applyViewportHeight);
 
     const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const params = new URLSearchParams();
@@ -165,6 +189,7 @@ export const InteractiveTerminal: React.FC<InteractiveTerminalProps> = ({
       helperTextarea?.removeEventListener('focus', handleFocus);
       helperTextarea?.removeEventListener('blur', handleBlur);
       vv?.removeEventListener('resize', handleViewportResize);
+      vv?.removeEventListener('scroll', applyViewportHeight);
       if (isFocused) {
         window.dispatchEvent(new CustomEvent('rg:terminal-keyboard-active', { detail: { active: false } }));
       }

@@ -583,21 +583,13 @@
     font-size: 12px;
   }
 
-  /* The mobile chat input bar floats fixed at the bottom of the screen
-     (ChatInputBar.module.css .chatInputRoot) and stays mounted even while
-     viewing the terminal tab, with its expandable tools row able to grow
-     further above it — reserve enough bottom space so terminal output/the
-     prompt line stays visible above both, worst case (tools row open). */
+  /* The floating chat input bar (ChatInputBar.module.css .chatInputRoot)
+     now hides itself completely for as long as the terminal tab is the
+     active split-view pane (ChatInputBar.tsx listens for
+     rg:split-view-state) - there's no bar to reserve space for anymore,
+     so no bottom padding is needed here at all. */
   .terminalTabContent {
-    padding-bottom: calc(116px + env(safe-area-inset-bottom));
-  }
-
-  /* While the terminal's own mobile keyboard is up, the chat input bar
-     hides itself entirely (ChatInputBar.tsx listens for the same event) -
-     the reserved space above was only ever for that bar, so drop it to
-     zero instead of leaving a dead gap under the terminal. */
-  .terminalTabContent.keyboardActive {
-    padding-bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
 

@@ -253,10 +253,12 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   // on every keystroke. Only this component re-renders during typing.
   // Parent onChange is NEVER called during typing — value is passed directly to onSend.
   // The terminal tab dispatches this (see InteractiveTerminal.tsx) while its
-  // own mobile keyboard is up - the floating chat input bar has nothing to
-  // do with terminal typing, and being a fixed-position element it doesn't
-  // reliably ride above the on-screen keyboard on mobile, so it just gets
-  // hidden entirely for the duration instead of fighting for the same space.
+  // own mobile keyboard is up - kept as a belt-and-suspenders signal, but
+  // splitViewTerminalActive below is the primary condition now (the chat
+  // input bar has nothing to do with terminal typing at all, keyboard up
+  // or not, so it's fully removed for the whole time the terminal tab is
+  // the active split-view pane, not just while its keyboard happens to be
+  // open).
   const [terminalKeyboardActive, setTerminalKeyboardActive] = useState(false);
   useEffect(() => {
     const handler = (e: Event) => {
@@ -264,6 +266,18 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     };
     window.addEventListener('rg:terminal-keyboard-active', handler as EventListener);
     return () => window.removeEventListener('rg:terminal-keyboard-active', handler as EventListener);
+  }, []);
+
+  // SplitViewModule broadcasts {enabled, activeTab} on every change (already
+  // used elsewhere) - reuse it here rather than adding a second event type.
+  const [splitViewTerminalActive, setSplitViewTerminalActive] = useState(false);
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ enabled?: boolean; activeTab?: string }>).detail;
+      setSplitViewTerminalActive(Boolean(detail?.enabled && detail?.activeTab === 'terminal'));
+    };
+    window.addEventListener('rg:split-view-state', handler as EventListener);
+    return () => window.removeEventListener('rg:split-view-state', handler as EventListener);
   }, []);
 
   const [localValue, setLocalValue] = useState(value);
@@ -881,7 +895,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     ? `Agent: ${selectedAgentName}`
     : 'Smart';
 
-  if (terminalKeyboardActive) return null;
+  if (terminalKeyboardActive || splitViewTerminalActive) return null;
 
   return (
     <div
