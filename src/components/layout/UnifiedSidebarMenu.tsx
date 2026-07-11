@@ -34,19 +34,14 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
   // Check if on Resonant Chat page
   const isResonantChatPage = location.pathname === '/' || location.pathname === '/resonant-chat' || location.pathname.startsWith('/resonant-chat');
 
-  // Opens split view straight to a given tab (e.g. Terminal). If already on
-  // /resonant-chat, dispatch directly instead of navigate()-ing with a query
-  // string — navigating to the exact same URL (e.g. tapping Terminal again
-  // after manually switching to another split-view tab, which never changes
-  // the URL) is a no-op in react-router, so a query-param-driven effect would
-  // never re-fire and the tab would silently stay wherever it was.
+  // Opens split view straight to a given tab (e.g. Terminal), always via
+  // navigate()+query-param with a unique nonce appended so the URL always
+  // actually changes — navigating to an identical URL is a no-op in
+  // react-router, so tapping Terminal a second time (e.g. after switching to
+  // another split-view tab, which never touches the URL) previously did
+  // nothing at all.
   const openSplitViewTab = (tab: string) => {
-    if (isResonantChatPage) {
-      window.dispatchEvent(new CustomEvent('rg:split-view-command', { detail: { enabled: true, pane: 'split' } }));
-      window.dispatchEvent(new CustomEvent('rg:split-view-tab-change', { detail: { tab } }));
-    } else {
-      navigate(`/resonant-chat?splitTab=${tab}`);
-    }
+    navigate(`/resonant-chat?splitTab=${tab}&_t=${Date.now()}`);
   };
 
   // Get chat menu items from context

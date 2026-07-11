@@ -220,22 +220,18 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   // Opens split view straight to a given tab (e.g. "Terminal" in the Coding
-  // menu). If already on /resonant-chat, dispatch directly instead of
-  // navigate()-ing with a query string — navigating to the exact same URL
-  // (e.g. clicking Terminal again after manually switching to another tab
-  // via the split-view menu, which never changes the URL) is a no-op in
-  // react-router, so the query-param effect never re-fires and the tab
-  // silently stays wherever it was. Only pages other than resonant-chat need
-  // the navigate()+query-param route to get there in the first place.
+  // menu), always via navigate()+query-param — even when already on
+  // /resonant-chat. A unique nonce is appended so the URL always actually
+  // changes: navigating to an identical URL is a no-op in react-router (no
+  // location update, so the effect watching it never re-fires), which is
+  // exactly what happened before — clicking Terminal a second time (e.g.
+  // after switching to another split-view tab, which never touches the URL)
+  // silently did nothing. ResonantChatPage's own splitAutoOpenRequest effect
+  // (keyed by a requestId, not a one-shot event) reliably applies this even
+  // if SplitViewModule's lazy chunk hasn't finished loading yet, which a
+  // same-page CustomEvent dispatch could otherwise race and miss.
   const openSplitViewTab = (tab: string) => {
-    if (isResonantChatPage) {
-      setSplitViewEnabled(true);
-      setSplitViewPane('split');
-      dispatchSplitViewCommand({ enabled: true, pane: 'split' });
-      handleSplitViewTabClick(tab);
-    } else {
-      navigate(`/resonant-chat?splitTab=${tab}`);
-    }
+    navigate(`/resonant-chat?splitTab=${tab}&_t=${Date.now()}`);
   };
 
   const handleSplitViewToggleClick = () => {
