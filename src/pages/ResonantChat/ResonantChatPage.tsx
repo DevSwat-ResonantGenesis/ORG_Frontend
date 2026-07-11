@@ -2495,33 +2495,13 @@ const ResonantChatPage: React.FC = () => {
           const apiUrl = (await import('@/utils/apiUrl')).getApiUrl();
           const history = messages.slice(-10).map(m => ({ role: m.role, content: m.content }));
 
-          // Inject system context (time, timezone) into the message.
-          // Must actually convert `now` into `tz` before formatting — toISOString()
-          // always renders UTC (trailing "Z"), so pairing it with the IANA zone name
-          // produced a self-contradictory string (raw UTC instant labeled as local zone).
-          const now = new Date();
-          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-          const localTimeStr = now.toLocaleString('en-US', {
-            timeZone: tz,
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZoneName: 'short',
-          });
-          const systemContext = `[System context: ${localTimeStr} | ${tz}]`;
-          const enrichedMessage = `${systemContext}\n\n${queryWithContext}`;
-
           const streamEndpoint = `${apiUrl}/api/resonant-chat/message/stream`;
           const response = await fetch(streamEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify({
-              message: enrichedMessage,
+              message: queryWithContext,
               chat_id: agenticConvId || undefined,
               enabled_tool_ids: enabledSkillIds.length > 0 ? enabledSkillIds : undefined,
               preferred_provider: selectedProvider !== 'auto' ? selectedProvider : undefined,
@@ -5533,6 +5513,7 @@ const ResonantChatPage: React.FC = () => {
           onAttachFile={() => fileInputRef.current?.click()}
           splitViewEnabled={splitViewEnabled}
           splitViewWidth={splitViewWidth}
+          isMobile={isMobile}
           attachedFiles={attachedFiles}
           onRemoveFile={(index) => setAttachedFiles(prev => prev.filter((_, i) => i !== index))}
           onEnabledSkillsChange={setEnabledSkillIds}

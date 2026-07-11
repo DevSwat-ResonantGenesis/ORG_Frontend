@@ -122,7 +122,8 @@ interface ChatInputBarProps {
   onAttachFile?: () => void;
   splitViewEnabled?: boolean;
   splitViewWidth?: number;
-  
+  isMobile?: boolean;
+
   // Attached Files
   attachedFiles?: File[];
   onRemoveFile?: (index: number) => void;
@@ -208,6 +209,7 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
   onAttachFile,
   splitViewEnabled = false,
   splitViewWidth = 50,
+  isMobile = false,
   attachedFiles = [],
   onRemoveFile,
   memories = [],
@@ -895,7 +897,10 @@ const ChatInputBar: React.FC<ChatInputBarProps> = ({
     ? `Agent: ${selectedAgentName}`
     : 'Smart';
 
-  if (terminalKeyboardActive || splitViewTerminalActive) return null;
+  // Only hide for the terminal tab on mobile, where split view takes over the
+  // full screen and there's no chat surface visible alongside it. On desktop,
+  // chat and the split-view panel sit side by side, so the input must stay.
+  if (terminalKeyboardActive || (isMobile && splitViewTerminalActive)) return null;
 
   return (
     <div
