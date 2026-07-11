@@ -187,16 +187,18 @@ export const Header: React.FC<HeaderProps> = ({
     return () => window.removeEventListener('resize', update);
   }, []);
 
+  // The live 'rg:split-view-state' event below is the sole source of truth
+  // for splitViewEnabled — ResonantChatPage dispatches it on mount and on
+  // every change, so it's always current. This used to ALSO read a stale
+  // localStorage flag whenever isResonantChatPage flipped true, which could
+  // clobber the correct value with an outdated one from a previous visit
+  // (e.g. last time split view happened to be left open), showing the
+  // three-dot split-view menu even when the current page has it closed.
   useEffect(() => {
-    if (!isResonantChatPage) return;
-    try {
-      setSplitViewEnabled(localStorage.getItem('resonant-chat-split-view') === 'true');
-    } catch {
+    if (!isResonantChatPage) {
       setSplitViewEnabled(false);
+      return;
     }
-  }, [isResonantChatPage]);
-
-  useEffect(() => {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent<{ enabled: boolean; pane?: SplitViewPane; activeTab?: string }>).detail;
       if (!detail) return;
@@ -206,7 +208,7 @@ export const Header: React.FC<HeaderProps> = ({
     };
     window.addEventListener('rg:split-view-state', handler as EventListener);
     return () => window.removeEventListener('rg:split-view-state', handler as EventListener);
-  }, []);
+  }, [isResonantChatPage]);
 
   const dispatchSplitViewCommand = (detail: SplitViewCommandDetail) => {
     window.dispatchEvent(new CustomEvent('rg:split-view-command', { detail }));
