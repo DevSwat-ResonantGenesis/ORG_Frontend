@@ -4,6 +4,7 @@
 // switching workspace in the terminal always resolve to the same set.
 import React, { useEffect, useState } from 'react';
 import { fetchWorkspaces, createWorkspace, type Workspace } from '@/api/workspaces';
+import { useToastContext } from '@/context/ToastContext';
 import styles from './OpenProjectModal.module.css';
 
 interface OpenProjectModalProps {
@@ -15,12 +16,14 @@ export const OpenProjectModal: React.FC<OpenProjectModalProps> = ({ onClose, onS
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const { error: showError } = useToastContext();
 
   useEffect(() => {
     fetchWorkspaces()
       .then(setWorkspaces)
-      .catch(() => {})
+      .catch((err) => showError(err?.response?.data?.detail || 'Failed to load projects'))
       .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCreate = async () => {
@@ -31,8 +34,9 @@ export const OpenProjectModal: React.FC<OpenProjectModalProps> = ({ onClose, onS
       const workspace = await createWorkspace(title.trim());
       onSelect(workspace.id);
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to create project:', err);
+      showError(err?.response?.data?.detail || 'Failed to create project. Please try again.');
     } finally {
       setCreating(false);
     }

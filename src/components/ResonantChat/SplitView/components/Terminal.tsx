@@ -30,6 +30,19 @@ export const Terminal: React.FC<TerminalProps> = ({
   const outputRef = useRef<HTMLDivElement>(null);
   const [tabs, setTabs] = useState<TerminalTabType[]>(() => loadInitialTabs(projectId));
 
+  // Switching workspaces (WorkspaceSwitcher, below) changes `projectId`
+  // after mount - without this, `tabs` (and the terminal_id/container each
+  // tab's InteractiveTerminal actually connects to) would stay pinned to
+  // whatever projectId was set at first render, so picking a different
+  // workspace updated the dropdown label but the PTY session never
+  // reconnected - same bug CursorTerminalPanel already guards against.
+  const loadedProjectIdRef = useRef(projectId);
+  useEffect(() => {
+    if (loadedProjectIdRef.current === projectId) return;
+    loadedProjectIdRef.current = projectId;
+    setTabs(loadInitialTabs(projectId));
+  }, [projectId]);
+
   useEffect(() => {
     try {
       sessionStorage.setItem(storageKeyFor(projectId), JSON.stringify(tabs));

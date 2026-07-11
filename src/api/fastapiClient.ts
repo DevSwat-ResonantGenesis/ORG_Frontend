@@ -173,13 +173,21 @@ fastapiClient.interceptors.response.use(
       if (config.__auth401Handled) {
         return Promise.reject(error);
       }
-      
-      // Don't retry on auth endpoints - just reject
-      const isAuthEndpoint = config?.url?.includes('/auth/');
-      if (isAuthEndpoint) {
-        return Promise.reject(error);
-      }
-      
+
+      // NOTE: there used to be a blanket "skip refresh-retry for any URL
+      // containing /auth/" guard here, intended to avoid looping on the
+      // login/refresh/logout calls. Those actually go through a completely
+      // separate axios instance (api/client.ts), never this interceptor, so
+      // the guard protected nothing - it just silently killed the refresh
+      // retry for every real RG_Auth business endpoint mounted under
+      // /auth/user/* (workspaces, api-keys, ssh-hosts, etc: this file's own
+      // fastapiClient IS how those are called). Any request that expired
+      // mid-session (e.g. clicking "+ New workspace" after being idle) got
+      // silently rejected here with no visible error and no retry - looked
+      // like the button "did nothing". The __auth401Handled flag above
+      // already prevents infinite loops, so this second guard was dead
+      // weight, not a safety net.
+
       // For other 401 errors, try ONE refresh attempt
       // Also handle "Missing or invalid Authorization header" from gateway
       if (detail.includes('expired') || detail.includes('Invalid token') || detail.includes('Token expired') || detail.includes('Not authenticated') || detail === 'Missing refresh token' || detail === 'Expired refresh token' || detail.includes('Missing or invalid') || detail === '') {

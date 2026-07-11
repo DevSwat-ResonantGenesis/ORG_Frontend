@@ -5,6 +5,7 @@
 // of which session belongs to which project.
 import React, { useEffect, useRef, useState } from 'react';
 import { fetchWorkspaces, createWorkspace, type Workspace } from '@/api/workspaces';
+import { useToastContext } from '@/context/ToastContext';
 import styles from './WorkspaceSwitcher.module.css';
 
 interface WorkspaceSwitcherProps {
@@ -17,9 +18,13 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = ({ activeProj
   const [open, setOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { error: showError } = useToastContext();
 
   useEffect(() => {
-    fetchWorkspaces().then(setWorkspaces).catch(() => {});
+    fetchWorkspaces()
+      .then(setWorkspaces)
+      .catch((err) => showError(err?.response?.data?.detail || 'Failed to load workspaces'));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -43,8 +48,9 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = ({ activeProj
       setWorkspaces([workspace, ...workspaces]);
       onSelect(workspace.id);
       setOpen(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to create workspace:', err);
+      showError(err?.response?.data?.detail || 'Failed to create workspace. Please try again.');
     } finally {
       setCreating(false);
     }
