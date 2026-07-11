@@ -5484,7 +5484,11 @@ const ResonantChatPage: React.FC = () => {
         )}
 
 
-        {/* NEW Input Bar Component */}
+        {/* NEW Input Bar Component — hidden on mobile while the split pane
+            (terminal/agents/preview) is showing full-screen; there's no chat
+            surface to type into there. Desktop keeps it since chat + split
+            sit side-by-side rather than swapping. */}
+        {!(isMobile && splitViewEnabled && splitViewPane === 'split') && (
         <ChatInputBar
           value={input}
           onChange={(value) => {
@@ -5639,6 +5643,7 @@ const ResonantChatPage: React.FC = () => {
             }
           }}
         />
+        )}
       </div>
 
       {/* Hash Sphere 3D Visualization removed - company secret */}

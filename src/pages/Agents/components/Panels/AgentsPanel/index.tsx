@@ -130,8 +130,8 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const splitContainerRef = useRef<HTMLDivElement>(null);
   const [mobilePanel, setMobilePanel] = useState(0);
 
-  // Mobile toolbar collapse toggle
-  const [mobileToolbarOpen, setMobileToolbarOpen] = useState(true);
+  // Mobile toolbar collapse toggle — hidden by default (toggle via the chevron)
+  const [mobileToolbarOpen, setMobileToolbarOpen] = useState(false);
   
   // Desktop toolbar collapse - controlled by header, hidden by default
   const [desktopToolbarOpen, setDesktopToolbarOpen] = useState(false);
@@ -1064,17 +1064,18 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                   const memberIds = teamMembersMap[team.id] || [];
                   const isActive = highlightedTeamId === team.id;
                   const isDragOver = dragOverInfo?.id === team.id;
+                  const isExpanded = expandedIds.has(team.id);
                   return (
                     <div
                       key={`team-${team.id}`}
-                      className={`${styles.agentCard} ${styles.teamCard} ${isActive ? styles.teamCardActive : ''} ${isDragOver ? styles[`dragOver_${dragOverInfo!.zone}`] || '' : ''}`}
+                      className={`${styles.agentCard} ${styles.teamCard} ${isActive ? styles.teamCardActive : ''} ${isExpanded ? styles.expanded : ''} ${isDragOver ? styles[`dragOver_${dragOverInfo!.zone}`] || '' : ''}`}
                       draggable={!bulkMode}
                       onDragStart={handleCardDragStart(team.id)}
                       onDragOver={handleCardDragOver(team.id)}
                       onDragLeave={handleCardDragLeave(team.id)}
                       onDrop={handleCardDrop(team.id)}
                       onDragEnd={handleCardDragEnd}
-                      onClick={() => setHighlightedTeamId((prev) => (prev === team.id ? null : team.id))}
+                      onClick={() => { toggleExpanded(team.id); setHighlightedTeamId((prev) => (prev === team.id ? null : team.id)); }}
                     >
                       <div className={styles.teamStackLayer1} />
                       <div className={styles.teamStackLayer2} />
@@ -1089,6 +1090,9 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
                         >
                           <Icons.Settings />
                         </button>
+                        <span className={styles.expandChevron}>
+                          <Icons.ChevronDown />
+                        </span>
                       </div>
                       <div className={styles.cardDetails}>
                         <div className={styles.badgeRow}>
