@@ -1494,8 +1494,24 @@
   .providerButton {
     padding: 4px 8px;
     font-size: 11px;
+    gap: 4px;
   }
-  
+
+  /* Unlike the plain icon-only tool buttons above, the agent/LLM selector
+     buttons keep their text label on mobile (it's the whole point of the
+     control) — but their desktop max-widths (260px/180px) are wide enough
+     to crowd the rest of the row on a narrow phone screen and squeeze the
+     icon-to-text gap visually. Shrink them to fit. */
+  .agentSelectorButton {
+    max-width: 130px;
+    gap: 4px;
+  }
+
+  .agentSelectorLabel {
+    max-width: 90px;
+    font-size: 11px;
+  }
+
   .stickerPanel {
     max-height: 280px;
   }
