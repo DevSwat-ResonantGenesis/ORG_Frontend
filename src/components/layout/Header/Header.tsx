@@ -219,6 +219,25 @@ export const Header: React.FC<HeaderProps> = ({
     setSplitViewActiveTab(tab);
   };
 
+  // Opens split view straight to a given tab (e.g. "Terminal" in the Coding
+  // menu). If already on /resonant-chat, dispatch directly instead of
+  // navigate()-ing with a query string — navigating to the exact same URL
+  // (e.g. clicking Terminal again after manually switching to another tab
+  // via the split-view menu, which never changes the URL) is a no-op in
+  // react-router, so the query-param effect never re-fires and the tab
+  // silently stays wherever it was. Only pages other than resonant-chat need
+  // the navigate()+query-param route to get there in the first place.
+  const openSplitViewTab = (tab: string) => {
+    if (isResonantChatPage) {
+      setSplitViewEnabled(true);
+      setSplitViewPane('split');
+      dispatchSplitViewCommand({ enabled: true, pane: 'split' });
+      handleSplitViewTabClick(tab);
+    } else {
+      navigate(`/resonant-chat?splitTab=${tab}`);
+    }
+  };
+
   const handleSplitViewToggleClick = () => {
     if (!isResonantChatPage) return;
 
@@ -375,7 +394,7 @@ export const Header: React.FC<HeaderProps> = ({
                       <span className={styles.navDropdownItemTitle}>Builder</span>
                       <span className={styles.navDropdownItemDesc}>Server-side Monaco editor for quick edits &amp; scaffolding, no local install required</span>
                     </button>
-                    <button className={styles.navDropdownItem} onClick={() => { navigate('/resonant-chat?splitTab=terminal'); setActiveDropdown(null); }}>
+                    <button className={styles.navDropdownItem} onClick={() => { openSplitViewTab('terminal'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>Terminal</span>
                       <span className={styles.navDropdownItemDesc}>Real sandboxed shell with Claude Code CLI, opened in split view</span>
                     </button>
