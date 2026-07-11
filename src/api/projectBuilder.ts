@@ -110,7 +110,7 @@ export interface WorkspaceStats {
  */
 export const startBuild = async (request: BuildRequest): Promise<BuildResult> => {
   try {
-    const response = await fastapiClient.post('/code/project-builder/build', request);
+    const response = await fastapiClient.post('/api/v1/code/project-builder/build', request);
     logger.info('Build started', { project_id: response.data.project_id });
     return response.data;
   } catch (error: any) {
@@ -124,7 +124,7 @@ export const startBuild = async (request: BuildRequest): Promise<BuildResult> =>
  */
 export const getBuildProgress = async (projectId: string): Promise<BuildProgress> => {
   try {
-    const response = await fastapiClient.get(`/code/project-builder/progress/${projectId}`);
+    const response = await fastapiClient.get(`/api/v1/code/project-builder/progress/${projectId}`);
     return response.data;
   } catch (error: any) {
     logger.error('Failed to get build progress', error);
@@ -137,7 +137,7 @@ export const getBuildProgress = async (projectId: string): Promise<BuildProgress
  */
 export const cancelBuild = async (projectId: string): Promise<{ cancelled: boolean }> => {
   try {
-    const response = await fastapiClient.post(`/code/project-builder/cancel/${projectId}`);
+    const response = await fastapiClient.post(`/api/v1/code/project-builder/cancel/${projectId}`);
     logger.info('Build cancelled', { project_id: projectId });
     return response.data;
   } catch (error: any) {
@@ -151,7 +151,7 @@ export const cancelBuild = async (projectId: string): Promise<{ cancelled: boole
  */
 export const listTemplates = async (): Promise<{ templates: ProjectTemplate[] }> => {
   try {
-    const response = await fastapiClient.get('/code/project-builder/templates');
+    const response = await fastapiClient.get('/api/v1/code/project-builder/templates');
     return response.data;
   } catch (error: any) {
     logger.error('Failed to list templates', error);
@@ -164,7 +164,7 @@ export const listTemplates = async (): Promise<{ templates: ProjectTemplate[] }>
  */
 export const listProjects = async (): Promise<{ projects: UserProject[] }> => {
   try {
-    const response = await fastapiClient.get('/code/project-builder/projects');
+    const response = await fastapiClient.get('/api/v1/code/project-builder/projects');
     return response.data;
   } catch (error: any) {
     logger.error('Failed to list projects', error);
@@ -177,7 +177,7 @@ export const listProjects = async (): Promise<{ projects: UserProject[] }> => {
  */
 export const getProject = async (projectId: string): Promise<UserProject> => {
   try {
-    const response = await fastapiClient.get(`/code/project-builder/projects/${projectId}`);
+    const response = await fastapiClient.get(`/api/v1/code/project-builder/projects/${projectId}`);
     return response.data;
   } catch (error: any) {
     logger.error('Failed to get project', error);
@@ -190,7 +190,7 @@ export const getProject = async (projectId: string): Promise<UserProject> => {
  */
 export const deleteProject = async (projectId: string): Promise<{ deleted: boolean }> => {
   try {
-    const response = await fastapiClient.delete(`/code/project-builder/projects/${projectId}`);
+    const response = await fastapiClient.delete(`/api/v1/code/project-builder/projects/${projectId}`);
     logger.info('Project deleted', { project_id: projectId });
     return response.data;
   } catch (error: any) {
@@ -204,7 +204,7 @@ export const deleteProject = async (projectId: string): Promise<{ deleted: boole
  */
 export const archiveProject = async (projectId: string): Promise<{ archived: boolean }> => {
   try {
-    const response = await fastapiClient.post(`/code/project-builder/projects/${projectId}/archive`);
+    const response = await fastapiClient.post(`/api/v1/code/project-builder/projects/${projectId}/archive`);
     logger.info('Project archived', { project_id: projectId });
     return response.data;
   } catch (error: any) {
@@ -218,7 +218,7 @@ export const archiveProject = async (projectId: string): Promise<{ archived: boo
  */
 export const createDelivery = async (projectId: string): Promise<DeliveryPackage> => {
   try {
-    const response = await fastapiClient.post(`/code/project-builder/projects/${projectId}/deliver`);
+    const response = await fastapiClient.post(`/api/v1/code/project-builder/projects/${projectId}/deliver`);
     logger.info('Delivery created', { project_id: projectId });
     return response.data;
   } catch (error: any) {
@@ -233,7 +233,7 @@ export const createDelivery = async (projectId: string): Promise<DeliveryPackage
 export const listDeliveries = async (projectId?: string): Promise<{ deliveries: DeliveryPackage[] }> => {
   try {
     const params = projectId ? { project_id: projectId } : {};
-    const response = await fastapiClient.get('/code/project-builder/deliveries', { params });
+    const response = await fastapiClient.get('/api/v1/code/project-builder/deliveries', { params });
     return response.data;
   } catch (error: any) {
     logger.error('Failed to list deliveries', error);
@@ -246,7 +246,7 @@ export const listDeliveries = async (projectId?: string): Promise<{ deliveries: 
  */
 export const getWorkspaceStats = async (): Promise<WorkspaceStats> => {
   try {
-    const response = await fastapiClient.get('/code/project-builder/workspace/stats');
+    const response = await fastapiClient.get('/api/v1/code/project-builder/workspace/stats');
     return response.data;
   } catch (error: any) {
     logger.error('Failed to get workspace stats', error);
@@ -259,7 +259,7 @@ export const getWorkspaceStats = async (): Promise<WorkspaceStats> => {
  */
 export const checkHealth = async (): Promise<{ status: string; version: string }> => {
   try {
-    const response = await fastapiClient.get('/code/project-builder/health');
+    const response = await fastapiClient.get('/api/v1/code/project-builder/health');
     return response.data;
   } catch (error: any) {
     logger.error('Project Builder health check failed', error);
@@ -276,7 +276,7 @@ export const getProjectFiles = async (projectId: string): Promise<{
   total_files: number;
 }> => {
   try {
-    const response = await fastapiClient.get(`/code/project-builder/projects/${projectId}/files`);
+    const response = await fastapiClient.get(`/api/v1/code/project-builder/projects/${projectId}/files`);
     return response.data;
   } catch (error: any) {
     logger.error('Failed to get project files', error);
@@ -296,7 +296,7 @@ export const getProjectState = async (projectId: string): Promise<{
   transitions_count: number;
 }> => {
   try {
-    const response = await fastapiClient.get(`/code/project-builder/projects/${projectId}/state`);
+    const response = await fastapiClient.get(`/api/v1/code/project-builder/projects/${projectId}/state`);
     return response.data;
   } catch (error: any) {
     logger.error('Failed to get project state', error);
@@ -321,7 +321,7 @@ export const promoteProject = async (
   already_runtime?: boolean;
 }> => {
   try {
-    const response = await fastapiClient.post(`/code/project-builder/projects/${projectId}/promote`, {
+    const response = await fastapiClient.post(`/api/v1/code/project-builder/projects/${projectId}/promote`, {
       reason: reason || 'User requested promotion for modification',
     });
     logger.info('Project promoted', { project_id: projectId, snapshot: response.data.snapshot_id });
@@ -349,7 +349,7 @@ export const modifyProject = async (
   action_required?: string;
 }> => {
   try {
-    const response = await fastapiClient.post(`/code/project-builder/projects/${projectId}/modify`, {
+    const response = await fastapiClient.post(`/api/v1/code/project-builder/projects/${projectId}/modify`, {
       modification_request: modificationRequest,
       target_files: targetFiles,
     });
