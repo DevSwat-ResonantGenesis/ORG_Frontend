@@ -455,7 +455,13 @@ export const Header: React.FC<HeaderProps> = ({
 
 
             {/* Split View Menu - three-dot trigger only visible when split view is active */}
-            {isResonantChatPage && isLoggedIn && splitViewEnabled && (
+            {/* On mobile, splitViewEnabled can be true (persisted from a
+                previous visit) while the user is actually just looking at
+                the plain chat pane (splitViewPane === 'chat') — the menu
+                should only show when split content is actually on screen,
+                not merely "enabled" in the background. Desktop has no such
+                gap: it always shows the split pane whenever enabled. */}
+            {isResonantChatPage && isLoggedIn && splitViewEnabled && (!isMobileViewport || splitViewPane !== 'chat') && (
               <div ref={splitViewMenuRef} className={styles.splitViewMenuWrapper}>
                 <button
                   className={`${styles.splitViewMenuButton} ${splitViewMenuOpen ? styles.splitViewMenuButtonActive : ''}`}
