@@ -514,15 +514,17 @@ export const BuildPage: React.FC = () => {
     }
   };
 
-  // Handle opening an existing project
-  const handleOpenProject = async (project: UserProject) => {
+  // Load a project's files/state into the builder view - shared by "My
+  // Projects" (handleOpenProject, has full UserProject metadata) and the
+  // terminal panel's workspace switcher (only has a raw id), so switching
+  // workspace from either place opens the same data.
+  const loadProjectIntoBuilder = async (projectId: string, name?: string) => {
     setError(null);
-    setCurrentProjectId(project.project_id);
-    setProjectName(project.name);
-    
+    setCurrentProjectId(projectId);
+    if (name) setProjectName(name);
+
     try {
-      // Load project files
-      const filesResponse = await getProjectFiles(project.project_id);
+      const filesResponse = await getProjectFiles(projectId);
       if (filesResponse.files && Array.isArray(filesResponse.files) && filesResponse.files.length > 0) {
         const loadedFiles = filesResponse.files.map(f => ({
           path: f.path,
@@ -532,23 +534,28 @@ export const BuildPage: React.FC = () => {
         }));
         setGeneratedFiles(loadedFiles);
         setSelectedFile(loadedFiles[0]);
-        
-        // Load project state
-        try {
-          const stateResponse = await getProjectState(project.project_id);
-          setProjectState(stateResponse.project_state === 'runtime' ? 'runtime' : 'generated');
-        } catch {
-          setProjectState('generated');
-        }
-        
-        setViewMode('result');
       } else {
-        setError('No files found in project');
+        setGeneratedFiles([]);
+        setSelectedFile(null);
       }
+
+      try {
+        const stateResponse = await getProjectState(projectId);
+        setProjectState(stateResponse.project_state === 'runtime' ? 'runtime' : 'generated');
+      } catch {
+        setProjectState('generated');
+      }
+
+      setViewMode('result');
     } catch (err: any) {
       logger.error('Failed to open project', err);
       setError(err?.response?.data?.detail || err?.message || 'Failed to load project files');
     }
+  };
+
+  // Handle opening an existing project
+  const handleOpenProject = async (project: UserProject) => {
+    await loadProjectIntoBuilder(project.project_id, project.name);
   };
 
   const handleDownloadZip = async () => {
@@ -1502,7 +1509,7 @@ export const BuildPage: React.FC = () => {
                 terminal or start a fresh one without leaving Build */}
             <CursorTerminalPanel
               projectId={currentProjectId ?? undefined}
-              onProjectIdChange={setCurrentProjectId}
+              onProjectIdChange={loadProjectIntoBuilder}
             />
           </div>
         )}
