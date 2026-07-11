@@ -752,10 +752,19 @@ const ResonantChatPage: React.FC = () => {
                 }]);
                 setIsLoading(true);
                 setPipelineSteps([{ step: 'reconnect', message: 'Reconnected to architect session', timestamp: Date.now() }]);
-                // Open agents panel
-                setAgentsPanelUrl('/agents?embed=1');
-                setSplitAutoOpenRequest({ requestId: Date.now(), tab: 'agents' });
-                if (!splitViewEnabled) { setSplitViewEnabled(true); setSplitViewPane('split'); }
+                // Open agents panel — but don't steal the tab away from an
+                // explicit deep-link request (e.g. the header's Terminal
+                // link, ?splitTab=terminal) still in flight on this same
+                // mount. This resume check runs on every conversation load,
+                // so it was silently overriding the Terminal tab whenever
+                // the most-recent conversation happened to have a still-
+                // running architect session.
+                const requestedTab = new URLSearchParams(location.search).get('splitTab');
+                if (requestedTab !== 'terminal') {
+                  setAgentsPanelUrl('/agents?embed=1');
+                  setSplitAutoOpenRequest({ requestId: Date.now(), tab: 'agents' });
+                  if (!splitViewEnabled) { setSplitViewEnabled(true); setSplitViewPane('split'); }
+                }
 
                 reconnectArchitectStream(currentConversationId, (evt) => {
                   if (evt.event === 'chunk' && evt.content) {
