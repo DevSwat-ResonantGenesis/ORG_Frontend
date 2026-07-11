@@ -406,15 +406,6 @@ export const Header: React.FC<HeaderProps> = ({
               Marketplace
             </button>
 
-            {/* Memory Link */}
-            <button
-              className={styles.navButton}
-              onClick={() => navigate('/resonant-memory')}
-              title="Hash Sphere Memory"
-            >
-              Memory
-            </button>
-
             {/* Pricing Link */}
             <button
               className={styles.navButton}
