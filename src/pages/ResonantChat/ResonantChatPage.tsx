@@ -1088,6 +1088,10 @@ const ResonantChatPage: React.FC = () => {
   // Project Mode - managed by SplitViewModule internally
   const [projectMode, setProjectMode] = useState(false);
   const [projectFiles, setProjectFiles] = useState<ProjectFile[]>([]);
+  // Which workspace the split-view terminal is attached to - lets the
+  // user switch to an existing workspace or spin up a new one right from
+  // the terminal panel, same as the standalone IDE's terminal.
+  const [chatProjectId, setChatProjectId] = useState<string | undefined>(undefined);
 
   // Code Visualizer analysis ID - set when CV skill returns a scan result
   const [visualizerAnalysisId, setVisualizerAnalysisId] = useState<string | null>(null);
@@ -4507,6 +4511,8 @@ const ResonantChatPage: React.FC = () => {
                   embedded={false}
                   projectMode={projectMode}
                   projectFiles={projectFiles}
+                  projectId={chatProjectId}
+                  onProjectIdChange={setChatProjectId}
                   showBuildModule={showBuildModule}
                   onCloseBuildModule={() => setShowBuildModule(false)}
                   visualizerAnalysisId={visualizerAnalysisId}

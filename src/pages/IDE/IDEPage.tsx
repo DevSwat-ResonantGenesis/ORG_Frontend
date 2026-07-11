@@ -3,9 +3,11 @@ import { useSearchParams, useLocation } from 'react-router-dom';
 // Using refactored modular IDE layout for better performance
 import { CursorIDELayoutRefactored as CursorIDELayout } from '@/components/IDE/CursorIDELayoutRefactored';
 import { IDEHeader } from '@/components/IDE/IDEHeader';
+import { OpenProjectModal } from '@/components/IDE/OpenProjectModal';
 import { LoadingState } from '@/components/shared/LoadingState';
 import { getSessionData } from '@/utils/auth-cookies';
 import { listUserProjects } from '@/api/code';
+import { createWorkspace } from '@/api/workspaces';
 import styles from './IDEPage.module.css';
 
 interface ProjectFile {
@@ -60,6 +62,7 @@ const IDEPage: React.FC = () => {
     urlProjectId || localStorage.getItem(userProjectKey) || undefined
   );
   const [loadingProjects, setLoadingProjects] = useState(false);
+  const [showOpenProjectModal, setShowOpenProjectModal] = useState(false);
   
   // Update projectId when URL param changes
   useEffect(() => {
@@ -149,11 +152,32 @@ const IDEPage: React.FC = () => {
     }
   };
 
+  const handleNewProject = async () => {
+    const title = prompt('Name your new project:');
+    if (!title?.trim()) return;
+    try {
+      const workspace = await createWorkspace(title.trim());
+      handleProjectIdChange(workspace.id);
+    } catch (err) {
+      console.error('Failed to create project:', err);
+    }
+  };
+
   return (
     <div className={`${styles.idePageContainer} ide-container`}>
-      <IDEHeader projectName={initialProjectName || 'Untitled Project'} />
+      <IDEHeader
+        projectName={initialProjectName || 'Untitled Project'}
+        onNewProject={handleNewProject}
+        onOpenProject={() => setShowOpenProjectModal(true)}
+      />
+      {showOpenProjectModal && (
+        <OpenProjectModal
+          onClose={() => setShowOpenProjectModal(false)}
+          onSelect={handleProjectIdChange}
+        />
+      )}
       <Suspense fallback={<LoadingState message="Loading IDE..." />}>
-        <CursorIDELayout 
+        <CursorIDELayout
           projectId={projectId}
           onProjectIdChange={handleProjectIdChange}
           initialFiles={initialProjectFiles}

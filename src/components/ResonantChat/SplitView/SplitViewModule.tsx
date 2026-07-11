@@ -107,6 +107,7 @@ export interface SplitViewModuleProps {
   projectMode?: boolean;
   projectFiles?: ProjectFile[];
   projectId?: string;
+  onProjectIdChange?: (projectId: string) => void;
   // Build module props (controlled from parent)
   showBuildModule?: boolean;
   onCloseBuildModule?: () => void;
@@ -146,6 +147,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
   projectMode = false,
   projectFiles: initialProjectFiles = [],
   projectId,
+  onProjectIdChange,
   showBuildModule: showBuildModuleProp = false,
   onCloseBuildModule,
   visualizerAnalysisId = null,
@@ -434,6 +436,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
                   isRunning={state.isRunning}
                   onClear={actions.clearTerminal}
                   projectId={projectId}
+                  onProjectIdChange={onProjectIdChange}
                 />
               )}
 
@@ -625,6 +628,7 @@ export const SplitViewModule: React.FC<SplitViewModuleProps> = ({
               isRunning={state.isRunning}
               onClear={actions.clearTerminal}
               projectId={projectId}
+              onProjectIdChange={onProjectIdChange}
             />
           )}
 

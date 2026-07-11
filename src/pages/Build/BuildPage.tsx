@@ -206,6 +206,7 @@ import { getGitHubStatus, connectGitHub, listGitHubRepos, syncGitHub, type GitHu
 import { logger } from '@/utils/logger';
 import { isAuthenticated } from '@/api/auth';
 import { FileIcon } from '@/components/IDE/FileIcon';
+import { CursorTerminalPanel } from '@/components/IDE/CursorTerminalPanel';
 import { LLMErrorNotification, isLLMError, getLLMErrorMessage } from '@/components/shared/LLMErrorNotification';
 import styles from './BuildPage.module.css';
 
@@ -1495,6 +1496,14 @@ export const BuildPage: React.FC = () => {
                 )}
               </div>
             )}
+
+            {/* Terminal - same real per-workspace terminal as the standalone
+                IDE; the switcher lets you open an existing workspace's
+                terminal or start a fresh one without leaving Build */}
+            <CursorTerminalPanel
+              projectId={currentProjectId ?? undefined}
+              onProjectIdChange={setCurrentProjectId}
+            />
           </div>
         )}
 

@@ -8,6 +8,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { TerminalTabs, type TerminalTab as TerminalTabType } from '@/components/IDE/TerminalTabs';
 import { storageKeyFor, loadInitialTabs } from '@/components/IDE/terminalSession';
+import { WorkspaceSwitcher } from '@/components/IDE/WorkspaceSwitcher';
 import type { TerminalOutput } from '../types';
 import styles from '../EnhancedSplitView.module.css';
 
@@ -16,6 +17,7 @@ interface TerminalProps {
   isRunning: boolean;
   onClear?: () => void;
   projectId?: string;
+  onProjectIdChange?: (projectId: string) => void;
 }
 
 export const Terminal: React.FC<TerminalProps> = ({
@@ -23,6 +25,7 @@ export const Terminal: React.FC<TerminalProps> = ({
   isRunning,
   onClear,
   projectId,
+  onProjectIdChange,
 }) => {
   const outputRef = useRef<HTMLDivElement>(null);
   const [tabs, setTabs] = useState<TerminalTabType[]>(() => loadInitialTabs(projectId));
@@ -81,6 +84,9 @@ export const Terminal: React.FC<TerminalProps> = ({
     <div className={styles.terminalTabContent}>
       <div className={styles.terminalToolbar}>
         <span className={styles.terminalTitle}>Terminal</span>
+        {onProjectIdChange && (
+          <WorkspaceSwitcher activeProjectId={projectId} onSelect={onProjectIdChange} />
+        )}
         {onClear && (
           <button
             className={styles.terminalClearButton}
