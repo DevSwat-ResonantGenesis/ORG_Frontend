@@ -28,6 +28,7 @@ import {
   StorageIcon,
   TargetIcon
 } from '@/components/Icons/ResonantChatIcons';
+import { LLMErrorNotification, isLLMError } from '@/components/shared/LLMErrorNotification';
 import EnhancedSidebar from '@/components/ResonantChat/EnhancedSidebar';
 import { ChatInputBar } from '@/components/ResonantChat/ChatInputBar';
 import { ProviderSelector, type Provider } from '@/components/ui/ProviderSelector';
@@ -446,6 +447,8 @@ const ResonantChatPage: React.FC = () => {
   const [showThreadsSticker, setShowThreadsSticker] = useState(false);
   const [showSettingsSticker, setShowSettingsSticker] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
+  const [showLLMErrorModal, setShowLLMErrorModal] = useState(false);
+  const [llmError, setLlmError] = useState<string | null>(null);
   const [codeSelection, setCodeSelection] = useState<{ file: string; lines: number[]; code?: string } | null>(null);
   const [expandedSources, setExpandedSources] = useState<Set<string>>(new Set());
   const [showEvidenceGraph, setShowEvidenceGraph] = useState<string | null>(null); // Message ID for which to show graph
@@ -3112,6 +3115,16 @@ const ResonantChatPage: React.FC = () => {
         ? (error as { response?: { data?: { detail?: string } } }).response?.data?.detail
         : undefined;
       const errorMessage = errorDetail || (error instanceof Error ? error.message : 'Failed to send message');
+      
+      // Check if this is an LLM provider error and show modal
+      if (isLLMError(errorMessage)) {
+        setLlmError(errorMessage);
+        setShowLLMErrorModal(true);
+        // Remove the user message if sending failed
+        setMessages(prev => prev.filter(m => m.id !== userMsg.id));
+        return;
+      }
+      
       showError(errorMessage);
 
       // Remove the user message if sending failed
@@ -7440,6 +7453,19 @@ const ResonantChatPage: React.FC = () => {
           </div>,
           document.body
         )}
+
+      {/* LLM Error Modal */}
+      {showLLMErrorModal && (
+        <LLMErrorNotification
+          error={llmError || undefined}
+          service="chat"
+          showModal={true}
+          onDismiss={() => {
+            setShowLLMErrorModal(false);
+            setLlmError(null);
+          }}
+        />
+      )}
 
       {/* Voice conversation now opens in split view tab instead of modal */}
     </>

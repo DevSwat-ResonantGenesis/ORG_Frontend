@@ -1,12 +1,11 @@
 /**
  * LLM Error Notification Component
  * Shows user-friendly error when AI services are unavailable
- * Guides users to add their own API key
+ * Guides users to connect their provider API
  */
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { API_KEY_PROVIDERS } from '@/api/userApiKeys';
 
 interface LLMErrorNotificationProps {
   error?: string;
@@ -14,6 +13,7 @@ interface LLMErrorNotificationProps {
   requiredProvider?: string; // If service requires specific provider
   onDismiss?: () => void;
   inline?: boolean; // Show inline vs modal style
+  showModal?: boolean; // Force show as modal
 }
 
 const SERVICE_DESCRIPTIONS: Record<string, string> = {
@@ -24,63 +24,185 @@ const SERVICE_DESCRIPTIONS: Record<string, string> = {
   code: 'Code Generation',
 };
 
-const PROVIDER_RECOMMENDATIONS: Record<string, string[]> = {
-  chat: ['openai', 'anthropic', 'groq', 'google'],
-  builder: ['openai', 'anthropic'],
-  agent: ['openai', 'anthropic', 'google'],
-  workflow: ['openai', 'anthropic'],
-  code: ['openai', 'anthropic', 'deepseek'],
-};
-
 export const LLMErrorNotification: React.FC<LLMErrorNotificationProps> = ({
   error,
   service = 'chat',
   requiredProvider,
   onDismiss,
   inline = false,
+  showModal = false,
 }) => {
   const navigate = useNavigate();
   
   const serviceName = SERVICE_DESCRIPTIONS[service] || 'AI Service';
-  const recommendedProviders = PROVIDER_RECOMMENDATIONS[service] || ['openai', 'anthropic'];
-  
-  const getProviderInfo = (providerId: string) => {
-    return API_KEY_PROVIDERS.find(p => p.id === providerId);
+  const isModal = showModal || !inline;
+
+  const handleGoToIntegrations = () => {
+    navigate('/dashboard?tab=integrations');
+    if (onDismiss) onDismiss();
   };
 
-  const handleAddKey = () => {
-    navigate('/dashboard?tab=api-keys');
-  };
+  // Modal style with backdrop
+  if (isModal) {
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'rgba(0, 0, 0, 0.7)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
+        padding: '20px',
+      }}>
+        <div style={{
+          background: '#18181b',
+          border: '1px solid #3f3f46',
+          borderRadius: '16px',
+          padding: '32px',
+          maxWidth: '480px',
+          width: '100%',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {/* Icon */}
+            <div style={{ 
+              width: '56px', 
+              height: '56px', 
+              background: 'rgba(59, 130, 246, 0.15)', 
+              borderRadius: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              alignSelf: 'center',
+            }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
 
-  const containerStyle: React.CSSProperties = inline ? {
-    padding: '16px 20px',
-    background: 'rgba(239, 68, 68, 0.08)',
-    borderLeft: '3px solid #ef4444',
-    borderRadius: '0 8px 8px 0',
-    margin: '12px 0',
-  } : {
-    padding: '24px',
-    background: '#18181b',
-    border: '1px solid #27272a',
-    borderRadius: '12px',
-    maxWidth: '500px',
-    margin: '20px auto',
-  };
+            {/* Content */}
+            <div style={{ textAlign: 'center' }}>
+              <h3 style={{ 
+                margin: '0 0 12px 0', 
+                fontSize: '20px', 
+                fontWeight: 600, 
+                color: '#fafafa' 
+              }}>
+                AI Providers Unavailable
+              </h3>
+              
+              <p style={{ 
+                margin: '0 0 8px 0', 
+                fontSize: '15px', 
+                color: '#a1a1aa',
+                lineHeight: 1.6,
+              }}>
+                All system AI providers are currently unavailable. To continue using {serviceName}, please connect your own provider API keys.
+              </p>
 
+              <p style={{ 
+                margin: '0', 
+                fontSize: '13px', 
+                color: '#71717a',
+                lineHeight: 1.5,
+              }}>
+                This ensures uninterrupted service and gives you full control over your AI usage.
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <button
+                onClick={handleGoToIntegrations}
+                style={{
+                  padding: '12px 20px',
+                  background: '#3b82f6',
+                  border: 'none',
+                  borderRadius: '8px',
+                  color: '#fff',
+                  fontSize: '15px',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  transition: 'all 0.15s',
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = '#2563eb';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = '#3b82f6';
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                Connect Provider API
+              </button>
+              
+              {onDismiss && (
+                <button
+                  onClick={onDismiss}
+                  style={{
+                    padding: '12px 20px',
+                    background: 'transparent',
+                    border: '1px solid #3f3f46',
+                    borderRadius: '8px',
+                    color: '#a1a1aa',
+                    fontSize: '15px',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.borderColor = '#52525b';
+                    e.currentTarget.style.color = '#fafafa';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.borderColor = '#3f3f46';
+                    e.currentTarget.style.color = '#a1a1aa';
+                  }}
+                >
+                  Dismiss
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Inline style
   return (
-    <div style={containerStyle}>
+    <div style={{
+      padding: '16px 20px',
+      background: 'rgba(59, 130, 246, 0.08)',
+      borderLeft: '3px solid #3b82f6',
+      borderRadius: '0 8px 8px 0',
+      margin: '12px 0',
+    }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
         <div style={{ 
           width: '32px', 
           height: '32px', 
-          background: 'rgba(239, 68, 68, 0.15)', 
+          background: 'rgba(59, 130, 246, 0.15)', 
           borderRadius: '8px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
         }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
             <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
             <line x1="12" y1="9" x2="12" y2="13" />
             <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -94,7 +216,7 @@ export const LLMErrorNotification: React.FC<LLMErrorNotificationProps> = ({
             fontWeight: 600, 
             color: '#fafafa' 
           }}>
-            API Key Required for {serviceName}
+            AI Providers Unavailable
           </h4>
           
           <p style={{ 
@@ -103,87 +225,15 @@ export const LLMErrorNotification: React.FC<LLMErrorNotificationProps> = ({
             color: '#a1a1aa',
             lineHeight: 1.5,
           }}>
-            To use {serviceName}, please add your own API key. This ensures uninterrupted service and gives you full control over your AI usage.
+            All system AI providers are currently unavailable. Please connect your own provider API to continue using {serviceName}.
           </p>
-
-          {requiredProvider ? (
-            <div style={{ 
-              padding: '10px 12px', 
-              background: 'rgba(99, 102, 241, 0.1)', 
-              borderRadius: '6px',
-              marginBottom: '12px',
-            }}>
-              <p style={{ margin: 0, fontSize: '13px', color: '#a1a1aa' }}>
-                <strong style={{ color: '#818cf8' }}>Required:</strong>{' '}
-                {getProviderInfo(requiredProvider)?.name || requiredProvider} API key
-              </p>
-              {getProviderInfo(requiredProvider)?.helpUrl && (
-                <a 
-                  href={getProviderInfo(requiredProvider)?.helpUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ 
-                    fontSize: '12px', 
-                    color: '#6366f1',
-                    textDecoration: 'none',
-                  }}
-                >
-                  Get your key →
-                </a>
-              )}
-            </div>
-          ) : (
-            <div style={{ marginBottom: '12px' }}>
-              <p style={{ 
-                margin: '0 0 8px 0', 
-                fontSize: '12px', 
-                color: '#71717a',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-              }}>
-                Recommended providers:
-              </p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                {recommendedProviders.map(providerId => {
-                  const provider = getProviderInfo(providerId);
-                  return provider ? (
-                    <a
-                      key={providerId}
-                      href={provider.helpUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        padding: '4px 10px',
-                        background: '#27272a',
-                        borderRadius: '4px',
-                        fontSize: '12px',
-                        color: '#a1a1aa',
-                        textDecoration: 'none',
-                        transition: 'all 0.15s',
-                      }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.background = '#3f3f46';
-                        e.currentTarget.style.color = '#fafafa';
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.background = '#27272a';
-                        e.currentTarget.style.color = '#a1a1aa';
-                      }}
-                    >
-                      {provider.name}
-                    </a>
-                  ) : null;
-                })}
-              </div>
-            </div>
-          )}
 
           <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
             <button
-              onClick={handleAddKey}
+              onClick={handleGoToIntegrations}
               style={{
                 padding: '8px 16px',
-                background: '#6366f1',
+                background: '#3b82f6',
                 border: 'none',
                 borderRadius: '6px',
                 color: '#fff',
@@ -198,7 +248,7 @@ export const LLMErrorNotification: React.FC<LLMErrorNotificationProps> = ({
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 5v14M5 12h14" />
               </svg>
-              Add API Key
+              Connect Provider API
             </button>
             
             {onDismiss && (
@@ -207,7 +257,7 @@ export const LLMErrorNotification: React.FC<LLMErrorNotificationProps> = ({
                 style={{
                   padding: '8px 16px',
                   background: 'transparent',
-                  border: '1px solid #27272a',
+                  border: '1px solid #3f3f46',
                   borderRadius: '6px',
                   color: '#a1a1aa',
                   fontSize: '13px',
