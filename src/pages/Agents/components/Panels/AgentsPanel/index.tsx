@@ -679,6 +679,20 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
             : (result?.success ? 'Done.' : (result?.error || 'Failed to execute task.'));
       }
 
+      // Check if output contains provider failure message and show modal instead
+      if (outputText && (
+        outputText.includes('All providers failed') || 
+        outputText.includes('429 Too Many Requests') ||
+        outputText.includes('rate limit') ||
+        outputText.includes('quota exceeded') ||
+        outputText.includes('provider unavailable')
+      )) {
+        setLlmError(outputText);
+        setShowLLMErrorModal(true);
+        setIsSendingMessage(false);
+        return;
+      }
+
       const agentReply: AgentMessage = {
         id: `msg-${Date.now()}`,
         role: 'agent',
@@ -691,6 +705,15 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
       }));
     } catch (err: any) {
       const msg = err?.message || 'Failed to send message. Please try again.';
+      
+      // Check if error is LLM-related and show modal
+      if (isLLMError(msg)) {
+        setLlmError(msg);
+        setShowLLMErrorModal(true);
+        setIsSendingMessage(false);
+        return;
+      }
+      
       toast.error(msg);
       setError(msg);
       const errorReply: AgentMessage = {
