@@ -576,7 +576,7 @@
 }
 
 .voiceSelect {
-  max-width: 120px;
+  max-width: 80px;
   height: 32px;
   padding: 0 22px 0 8px;
   background-color: transparent;
@@ -887,7 +887,7 @@
 }
 
 .agentSelectorButton {
-  max-width: 260px;
+  max-width: 180px;
 }
 
 .agentSelectorIcon {

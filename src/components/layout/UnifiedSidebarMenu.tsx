@@ -154,8 +154,8 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
             <div className={styles.usmSectionTitle}>Coding</div>
 
             <button
-              className={styles.usmItem}
-              onClick={() => { openSplitViewTab('terminal'); onClose(); }}
+              className={`${styles.usmItem} ${location.pathname === '/build' ? styles.usmActive : ''}`}
+              onClick={() => { navigate('/build'); onClose(); }}
             >
               <span className={styles.usmIcon}>
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -165,6 +165,7 @@ export const UnifiedSidebarMenu: React.FC<UnifiedSidebarMenuProps> = ({
                 </svg>
               </span>
               <span className={styles.usmLabel}>Terminal</span>
+              {location.pathname === '/build' && <span className={styles.usmActiveIndicator} />}
             </button>
 
             <button
