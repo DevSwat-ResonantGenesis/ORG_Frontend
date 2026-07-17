@@ -390,9 +390,9 @@ export const Header: React.FC<HeaderProps> = ({
                       <span className={styles.navDropdownItemTitle}>Builder</span>
                       <span className={styles.navDropdownItemDesc}>Server-side Monaco editor for quick edits &amp; scaffolding, no local install required</span>
                     </button>
-                    <button className={styles.navDropdownItem} onClick={() => { openSplitViewTab('terminal'); setActiveDropdown(null); }}>
+                    <button className={styles.navDropdownItem} onClick={() => { navigate('/terminal'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>Terminal</span>
-                      <span className={styles.navDropdownItemDesc}>Real sandboxed shell with Claude Code CLI, opened in split view</span>
+                      <span className={styles.navDropdownItemDesc}>Real sandboxed shell with Claude Code CLI</span>
                     </button>
                     <button className={styles.navDropdownItem} onClick={() => { navigate('/download-ide'); setActiveDropdown(null); }}>
                       <span className={styles.navDropdownItemTitle}>IDE App</span>

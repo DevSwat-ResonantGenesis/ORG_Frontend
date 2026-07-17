@@ -99,6 +99,7 @@ const AgentsControlPage = lazy(() => import('../pages/Owner/AgentsControlPage'))
 // Developer Tools Pages
 const ResonantMemoryPage = lazy(() => import('../pages/ResonantMemory/ResonantMemoryPage'));
 const CodeVisualizerPage = lazy(() => import('../pages/CodeVisualizer/CodeVisualizerPage'));
+const TerminalPage = lazy(() => import('../pages/Terminal/TerminalPage'));
 
 const withShell = (node: React.ReactNode) => (
   <ProtectedRoute>
@@ -414,6 +415,10 @@ const router = createBrowserRouter([
   {
     path: '/code-visualizer',
     element: withPublicShell(<CodeVisualizerPage />)
+  },
+  {
+    path: '/terminal',
+    element: withShell(<TerminalPage />)
   },
   {
     path: '/download-ide',
