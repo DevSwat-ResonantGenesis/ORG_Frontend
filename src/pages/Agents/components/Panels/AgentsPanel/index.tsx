@@ -11,6 +11,7 @@ import { executeAgentTask } from '../../../../../api/executions';
 import * as agentEngine from '../../../../../api/agentEngine';
 import { useToastContext } from '../../../../../context/ToastContext';
 import { DropdownMenu } from '../../../../../components/shared';
+import { LLMErrorNotification, isLLMError } from '../../../../../components/shared/LLMErrorNotification';
 import {
   listAgentTeams,
   getTeamMembers,
@@ -74,6 +75,8 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [loadingAgentId, setLoadingAgentId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showLLMErrorModal, setShowLLMErrorModal] = useState(false);
+  const [llmError, setLlmError] = useState<string | null>(null);
 
   const [bulkMode, setBulkMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -420,7 +423,13 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
       };
       poll();
     } catch (err: any) {
-      toast.error(err?.response?.data?.detail || 'Failed to run team');
+      const errorMessage = err?.response?.data?.detail || 'Failed to run team';
+      if (isLLMError(errorMessage)) {
+        setLlmError(errorMessage);
+        setShowLLMErrorModal(true);
+      } else {
+        toast.error(errorMessage);
+      }
       setTeamRunning(false);
     }
   }, [teamSettingsId, teamRunGoal, toast]);
@@ -1881,6 +1890,19 @@ const AgentsPanelComponent: React.FC<AgentsPanelProps> = ({ className }) => {
         running={teamRunning}
         runStatus={teamRunStatus}
       />
+
+      {/* LLM Error Modal */}
+      {showLLMErrorModal && (
+        <LLMErrorNotification
+          error={llmError || undefined}
+          service="agent"
+          showModal={true}
+          onDismiss={() => {
+            setShowLLMErrorModal(false);
+            setLlmError(null);
+          }}
+        />
+      )}
     </div>
   );
 };

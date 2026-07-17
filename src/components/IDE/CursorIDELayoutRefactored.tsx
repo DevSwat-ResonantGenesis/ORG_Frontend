@@ -10,7 +10,7 @@
  * Refactored: ~400 lines with clean separation of concerns
  */
 
-import React, { useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useEffect, useRef, useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Context & Hooks
@@ -47,6 +47,7 @@ import { useToastContext } from '@/context/ToastContext';
 import { useThemeStore } from '@/store/themeStore';
 import { logger } from '@/utils/logger';
 import { getSessionData } from '@/utils/auth-cookies';
+import { LLMErrorNotification, isLLMError } from '@/components/shared/LLMErrorNotification';
 
 // Initialize DSID-P Accelerator on module load
 initializeDSIDP();
@@ -80,6 +81,8 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
   const { state, dispatch } = useIDE();
   const initialFilesLoadedRef = useRef(false);
   const hasLoadedAnyFilesRef = useRef(false);
+  const [showLLMErrorModal, setShowLLMErrorModal] = useState(false);
+  const [llmError, setLlmError] = useState<string | null>(null);
 
   const session = getSessionData();
   const userId = session?.userId || session?.email || 'guest';
@@ -514,6 +517,15 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
       return responseContent;
     } catch (error: any) {
       logger.error('Failed to send chat message', error);
+      const errorMessage = error?.response?.data?.detail || error?.message || 'Failed to send message';
+      
+      // Check if this is an LLM provider error
+      if (isLLMError(errorMessage)) {
+        setLlmError(errorMessage);
+        setShowLLMErrorModal(true);
+        return 'AI service unavailable. Please check the error modal for details.';
+      }
+      
       return 'Sorry, I encountered an error. Please try again.';
     }
   }, [selectedProvider]);
@@ -952,6 +964,19 @@ function IDELayoutInner({ projectId, onClose, onProjectIdChange, initialFiles, i
         }}
         onClick={(e) => ((e.target as HTMLInputElement).value = '')}
       />
+
+      {/* LLM Error Modal */}
+      {showLLMErrorModal && (
+        <LLMErrorNotification
+          error={llmError || undefined}
+          service="code"
+          showModal={true}
+          onDismiss={() => {
+            setShowLLMErrorModal(false);
+            setLlmError(null);
+          }}
+        />
+      )}
     </div>
   );
 }

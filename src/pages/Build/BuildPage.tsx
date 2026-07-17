@@ -1649,6 +1649,19 @@ export const BuildPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* LLM Error Modal */}
+      {showLLMError && (
+        <LLMErrorNotification
+          error={error || undefined}
+          service="builder"
+          showModal={true}
+          onDismiss={() => {
+            setShowLLMError(false);
+            setError(null);
+          }}
+        />
+      )}
     </div>
   );
 };
