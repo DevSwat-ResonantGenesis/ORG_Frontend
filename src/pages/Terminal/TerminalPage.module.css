@@ -37,11 +37,11 @@
   background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding: 16px 24px;
-  position: absolute;
-  top: 0;
+  position: relative;
   left: 0;
   right: 0;
-  height: 56px;
+  height: auto;
+  min-height: 56px;
   z-index: 100;
   display: flex;
   align-items: center;
@@ -81,11 +81,28 @@
   color: #0f172a;
 }
 
+.subtitleContainer {
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 24px;
+  position: relative;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+[data-theme='light'] .subtitleContainer {
+  background: rgba(0, 0, 0, 0.02);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
 .subtitle {
   font-size: 12px;
   color: #71717a;
   margin: 0;
   line-height: 1.2;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .headerRight {
@@ -117,7 +134,7 @@
 
   .header {
     padding: 0 16px;
-    height: 56px;
+    min-height: 56px;
   }
 
   .headerContent {
@@ -127,6 +144,10 @@
 
   .headerRight {
     display: none;
+  }
+
+  .subtitleContainer {
+    padding: 8px 16px;
   }
 
   .title {

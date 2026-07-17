@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { TerminalTabs, type TerminalTab as TerminalTabType } from '@/components/IDE/TerminalTabs';
 import { storageKeyFor, loadInitialTabs } from '@/components/IDE/terminalSession';
 import { WorkspaceSwitcher } from '@/components/IDE/WorkspaceSwitcher';
+import { Header } from '@/components/layout/Header/Header';
 import { isAuthenticated } from '@/api/auth';
 import styles from './TerminalPage.module.css';
 
@@ -67,18 +68,25 @@ export const TerminalPage: React.FC = () => {
 
   return (
     <div className={styles.terminalPage}>
-      {/* Header */}
+      {/* Global Header */}
+      <Header showLogout={true} />
+
+      {/* Terminal Page Header */}
       <header className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.headerLeft}>
             <h1 className={styles.title}>Terminal</h1>
-            <p className={styles.subtitle}>Real sandboxed shell with Claude Code CLI</p>
           </div>
           <div className={styles.headerRight}>
             <WorkspaceSwitcher activeProjectId={projectId} onSelect={setProjectId} />
           </div>
         </div>
       </header>
+
+      {/* Subtitle */}
+      <div className={styles.subtitleContainer}>
+        <p className={styles.subtitle}>Real sandboxed shell with Claude Code CLI</p>
+      </div>
 
       {/* Terminal Content */}
       <div className={styles.terminalContent}>
