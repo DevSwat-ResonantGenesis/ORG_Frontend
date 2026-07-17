@@ -3003,6 +3003,21 @@ const ResonantChatPage: React.FC = () => {
       }
 
       const isError = responseContent.startsWith('Error calling') || responseContent.startsWith('Error:');
+      
+      // Check if error content contains provider failure message and show modal instead
+      if (isError && (
+        responseContent.includes('All providers failed') || 
+        responseContent.includes('429 Too Many Requests') ||
+        responseContent.includes('rate limit') ||
+        responseContent.includes('quota exceeded'))) {
+        setLlmError(responseContent);
+        setShowLLMErrorModal(true);
+        // Remove the user message if sending failed
+        setMessages(prev => prev.filter(m => m.id !== userMsg.id));
+        setIsLoading(false);
+        return;
+      }
+      
       const messageObj = typeof resonantResponse.message === 'object' ? resonantResponse.message : null;
       const resonanceScore = isError ? undefined : (resonantResponse.resonanceScore ?? messageObj?.resonanceScore);
       const hash = isError ? undefined : (resonantResponse.hash ?? messageObj?.hash);
