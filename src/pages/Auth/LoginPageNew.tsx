@@ -4,8 +4,16 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
-import { clearSessionData, type UserRole } from '../../utils/auth-cookies';
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+} from 'lucide-react';
+import { saveSessionData, clearSessionData, type UserRole } from '../../utils/auth-cookies';
 import { clearSession } from '../../utils/auth';
+import fastapiClient from '../../api/fastapiClient';
 import { useThemeStore } from '../../store/themeStore';
 import { initiateSSO } from '../../api/sso';
 import { Helmet } from 'react-helmet-async';
@@ -54,6 +62,50 @@ const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties>
     flexDirection: 'column' as const,
     gap: '1rem',
   },
+  inputGroup: {
+    position: 'relative' as const,
+    display: 'flex',
+    alignItems: 'center',
+  },
+  inputIcon: {
+    position: 'absolute' as const,
+    left: '0.75rem',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    color: theme === 'dark' ? '#666' : '#999',
+  },
+  input: {
+    width: '100%',
+    padding: '0.75rem 2.5rem 0.75rem 2.5rem',
+    background: theme === 'dark' 
+      ? 'rgba(255,255,255,0.05)' 
+      : 'rgba(255,255,255,0.8)',
+    border: theme === 'dark' 
+      ? '1px solid rgba(255,255,255,0.1)' 
+      : '1px solid rgba(0,0,0,0.2)',
+    borderRadius: '8px',
+    color: theme === 'dark' ? '#fff' : '#1a1a1a',
+    fontSize: '0.85rem',
+    outline: 'none',
+    boxSizing: 'border-box' as const,
+  },
+  eyeBtn: {
+    position: 'absolute' as const,
+    right: '12px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    background: 'none',
+    border: 'none',
+    color: theme === 'dark' ? '#666' : '#999',
+    cursor: 'pointer',
+    padding: '4px',
+    zIndex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '24px',
+    width: '24px',
+  },
   link: {
     color: '#6366f1',
     textDecoration: 'none',
@@ -96,6 +148,10 @@ const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties>
     fontSize: '0.8rem',
     color: '#888',
   },
+  forgotPassword: {
+    textAlign: 'right' as const,
+    marginTop: '-0.5rem',
+  },
   error: {
     background: 'rgba(239, 68, 68, 0.1)',
     border: '1px solid rgba(239, 68, 68, 0.3)',
@@ -106,6 +162,19 @@ const getStyles = (theme: 'light' | 'dark'): Record<string, React.CSSProperties>
   },
 });
 
+
+type LoginResponse = {
+  access_token: string;
+  org_id: string;
+  role: UserRole;
+  user?: {
+    id: string;
+    email: string;
+    username?: string;
+    full_name?: string;
+    is_superuser?: boolean;
+  };
+};
 
 export default function LoginPageNew() {
   const navigate = useNavigate();
@@ -119,6 +188,11 @@ export default function LoginPageNew() {
     return r && r.startsWith('/auth/desktop-callback') ? r : null;
   }, [searchParams]);
   
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [oauthLoading, setOauthLoading] = useState<string | null>(null);
 
   useEffect(() => {
@@ -127,7 +201,59 @@ export default function LoginPageNew() {
   }, []);
 
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    
+    if (!email || !password) {
+      setError('Please fill in all fields');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data } = await fastapiClient.post<LoginResponse>('/auth/login', {
+        email: email.trim(),
+        password,
+      }, {
+        withCredentials: true,
+        timeout: 15000,
+      });
+      
+      saveSessionData(email.trim(), data.role, data.org_id, data.user?.id, data.user?.is_superuser || data.role === 'platform_owner');
+      
+      // Desktop IDE login: redirect back to /auth/desktop-callback?port=PORT
+      if (postLoginRedirect) {
+        window.location.href = postLoginRedirect;
+        return;
+      }
+      
+      // All logins land on chat, not a dashboard
+      try {
+        sessionStorage.setItem(
+          'rg-post-login-target',
+          JSON.stringify({ path: '/chat', ts: Date.now(), remaining: 5 })
+        );
+        document.cookie = `rg_post_login_target=${encodeURIComponent('/chat')}; Max-Age=60; Path=/`;
+      } catch {
+        // ignore
+      }
+      navigate('/chat');
+    } catch (err: any) {
+      let message = 'Unable to sign in. Please check your credentials.';
+      if (err?.response?.status === 401) {
+        message = 'Invalid email or password.';
+      } else if (err?.response?.status === 429) {
+        message = 'Too many attempts. Please wait and try again.';
+      }
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleOAuthLogin = async (provider: string) => {
+    setError('');
     setOauthLoading(provider);
     try {
       // Persist desktop-callback redirect through the OAuth round-trip
@@ -137,6 +263,7 @@ export default function LoginPageNew() {
       const authUrl = await initiateSSO(provider, postLoginRedirect || undefined);
       window.location.href = authUrl;
     } catch (err: any) {
+      setError(`${provider} login is not available. Please use email/password.`);
       setOauthLoading(null);
     }
   };
@@ -158,10 +285,58 @@ export default function LoginPageNew() {
       <div style={styles.card}>
         <h1 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1.5rem', textAlign: 'center' as const, paddingTop: '0.5rem' }}>Welcome back</h1>
 
-        <div style={{ ...styles.form, gap: '1.25rem' }}>
+        <form style={{ ...styles.form, gap: '1.25rem' }} onSubmit={handleSubmit}>
+          {error && <div style={styles.error}>{error}</div>}
+          
+          <div style={styles.inputGroup}>
+            <Mail size={16} style={styles.inputIcon} />
+            <input
+              type="email"
+              placeholder="Email address"
+              style={styles.input}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+            />
+          </div>
+          
+          <div style={styles.inputGroup}>
+            <Lock size={16} style={styles.inputIcon} />
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
+              style={styles.input}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+            />
+            <button
+              type="button"
+              style={styles.eyeBtn}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+
+          <div style={styles.forgotPassword}>
+            <Link to="/forgot-password" style={{ ...styles.link, fontSize: '0.75rem' }}>
+              Forgot password?
+            </Link>
+          </div>
+
+          <button
+            type="submit"
+            style={{ ...styles.btn, ...(loading ? styles.btnDisabled : {}) }}
+            disabled={loading}
+          >
+            {loading ? 'Signing in...' : 'Sign In'}
+            <ArrowRight size={16} />
+          </button>
+
           <div style={styles.divider}>
             <div style={styles.dividerLine} />
-            <span>Sign in with</span>
+            <span>or continue with</span>
             <div style={styles.dividerLine} />
           </div>
 
@@ -173,7 +348,7 @@ export default function LoginPageNew() {
           >
             {oauthLoading === 'google' ? 'Connecting...' : 'Google'}
           </button>
-        </div>
+        </form>
 
         <div style={styles.footer}>
           Don't have an account?{' '}
