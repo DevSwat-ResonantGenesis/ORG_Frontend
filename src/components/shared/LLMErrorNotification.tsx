@@ -225,7 +225,7 @@ export const LLMErrorNotification: React.FC<LLMErrorNotificationProps> = ({
             color: '#a1a1aa',
             lineHeight: 1.5,
           }}>
-            All system AI providers are currently unavailable. Please connect your own provider API to continue using {serviceName}.
+            LLM Provider currently unavailable. Please add your provider API key to continue.
           </p>
 
           <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
