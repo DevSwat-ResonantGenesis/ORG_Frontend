@@ -2718,6 +2718,19 @@ const ResonantChatPage: React.FC = () => {
                 if (!splitViewEnabled) { setSplitViewEnabled(true); setSplitViewPane('split'); }
               }
             } else if (evt.event === 'chunk' && evt.content) {
+              // Check if chunk contains provider failure message
+              if (evt.content.includes('All providers failed') || 
+                  evt.content.includes('429 Too Many Requests') ||
+                  evt.content.includes('rate limit') ||
+                  evt.content.includes('quota exceeded')) {
+                setLlmError(evt.content);
+                setShowLLMErrorModal(true);
+                // Remove the user message if sending failed
+                setMessages(prev => prev.filter(m => m.id !== userMsg.id));
+                setIsLoading(false);
+                return;
+              }
+              
               if (isTokenStreaming) {
                 // Token-by-token streaming — append each delta
                 lastContent += evt.content;
@@ -2846,8 +2859,21 @@ const ResonantChatPage: React.FC = () => {
                 setCurrentConversationId(evt.chat_id);
               }
             } else if (evt.event === 'error') {
+              // Check if error is LLM provider failure and show modal instead
+              const errorContent = `Error: ${evt.error}`;
+              if (errorContent.includes('All providers failed') || 
+                  errorContent.includes('429 Too Many Requests') ||
+                  errorContent.includes('rate limit') ||
+                  errorContent.includes('quota exceeded')) {
+                setLlmError(errorContent);
+                setShowLLMErrorModal(true);
+                // Remove the user message if sending failed
+                setMessages(prev => prev.filter(m => m.id !== userMsg.id));
+                setIsLoading(false);
+                return;
+              }
               setMessages(prev => prev.map(m =>
-                m.id === streamMsgId ? { ...m, content: `Error: ${evt.error}`, aiProvider: 'Error' } : m
+                m.id === streamMsgId ? { ...m, content: errorContent, aiProvider: 'Error' } : m
               ));
             }
           },
