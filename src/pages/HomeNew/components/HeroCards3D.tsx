@@ -154,7 +154,12 @@ function Wall({ x, facing }: { x: number; facing: 1 | -1 }) {
    launching cards clear off the top of the screen). This does a real 1D layout pass: clamp
    to the walls first, then sort left-to-right and push any still-overlapping neighbor along
    just enough to clear it — guaranteeing zero overlap between any two cards at spawn. */
-function layoutSpawnX(cards: Card3D[], wallMin: number, wallMax: number, camBaseX: number): number[] {
+function layoutSpawnX(cards: Card3D[], wallMin: number, wallMax: number, camBaseX: number, isMobile: boolean): number[] {
+    // On desktop, use raw px values to respect right-side positioning
+    if (!isMobile) {
+        return cards.map((card) => card.px + card.chaosX * 0.4);
+    }
+
     const inset = 0.14;
     const gap = 0.08;
     const availableMin = wallMin + inset;
@@ -202,7 +207,7 @@ function Scene({ cards, camBaseX, camBaseY, camBaseZ, floorY, spawnY, isMobile, 
     const halfWidth = Math.max(1, visibleWidth / 2 - margin);
     const wallMin = camBaseX - halfWidth;
     const wallMax = camBaseX + halfWidth;
-    const spawnXs = layoutSpawnX(cards, wallMin, wallMax, camBaseX);
+    const spawnXs = layoutSpawnX(cards, wallMin, wallMax, camBaseX, isMobile);
 
     return (
         <>
