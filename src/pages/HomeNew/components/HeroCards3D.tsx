@@ -276,7 +276,7 @@ function TriangleCollider({ camBaseX, camBaseY, camBaseZ, fov }: { camBaseX: num
 
     useEffect(() => {
         const measure = () => {
-            const el = document.querySelector('[data-hero-textblock]');
+            const el = document.querySelector('[data-hero-triangle]');
             if (!el) return;
             const r = el.getBoundingClientRect();
             if (r.width < 4 || r.height < 4) return;
@@ -284,14 +284,14 @@ function TriangleCollider({ camBaseX, camBaseY, camBaseZ, fov }: { camBaseX: num
             const visibleHeight = 2 * Math.tan(vFOV / 2) * camBaseZ;
             const visibleWidth = visibleHeight * (size.width / size.height);
             
-            // Position triangle above the title block
-            const worldTop = camBaseY + visibleHeight / 2 - (r.top / size.height) * visibleHeight;
+            // Position triangle based on the DOM element
             const worldLeft = camBaseX - visibleWidth / 2 + (r.left / size.width) * visibleWidth;
-            const triangleSize = Math.min(r.width, r.height) * 0.3;
+            const worldTop = camBaseY + visibleHeight / 2 - (r.top / size.height) * visibleHeight;
+            const triangleSize = Math.min(r.width, r.height) * 0.8;
             
             setTriangle({ 
                 x: worldLeft + triangleSize / 2, 
-                y: worldTop + triangleSize / 2, 
+                y: worldTop - triangleSize / 2, 
                 size: triangleSize 
             });
         };

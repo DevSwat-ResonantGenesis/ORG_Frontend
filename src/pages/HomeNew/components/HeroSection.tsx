@@ -87,6 +87,7 @@ export const HeroSection = () => {
                 #hero-cta-btn:hover * { color: #ffffff !important; }
                 #hero-cta-btn:hover svg { stroke: #ffffff !important; }
             `}} />
+            <div className={styles.heroTriangleBlock} data-hero-triangle></div>
             <div className={styles.heroTextBlock} data-hero-textblock>
                 <h1 id="hero-title">
                     Digitalize<br />Your Vision
