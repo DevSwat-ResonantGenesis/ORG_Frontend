@@ -3,21 +3,21 @@
    Dark and light theme definitions
    ============================================================ */
 
-/* Force Dark Mode as Default (only when no theme is set) - Use new token system */
-html:not([data-theme="light"]),
+/* Force Light Mode as Default (only when no theme is set) - Use new token system */
+html:not([data-theme="dark"]),
 html[data-theme=""] {
-  /* Use new token system - warm gray */
-  --color-bg-root: var(--bg-primary);
-  background: var(--color-bg-root);
-  color: var(--text-primary) !important;
-  color-scheme: dark;
+  /* Use new token system - light mode */
+  --color-bg-root: #FFFFFF;
+  background: #FFFFFF;
+  color: #111827 !important;
+  color-scheme: light;
 }
 
-body:not([data-theme="light"]),
+body:not([data-theme="dark"]),
 body[data-theme=""] {
-  /* Use new token system - warm gray */
-  background: var(--color-bg-root, var(--bg-primary));
-  color: var(--text-primary) !important;
+  /* Use new token system - light mode */
+  background: #FFFFFF;
+  color: #111827 !important;
 }
 
 /* Gradient side lines removed — clean edge-to-edge dark mode */
