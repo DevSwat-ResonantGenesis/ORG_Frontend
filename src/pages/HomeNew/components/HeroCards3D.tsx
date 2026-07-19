@@ -666,7 +666,7 @@ function useTiltGravity(magnitude: number): [number, number, number] {
 }
 
 /* ── Main 3D Canvas ── */
-export function HeroCards3DScene() {
+export function HeroCards3DScene({ isDark = false }: { isDark?: boolean }) {
     const tier = useViewportTier();
     const isMobile = tier === 'mobile';
     const isLaptop = tier === 'laptop';
@@ -696,8 +696,8 @@ export function HeroCards3DScene() {
             gl={{ alpha: true, antialias: true }}
             dpr={[1, isMobile ? 1.5 : 2]}
         >
-            <ambientLight intensity={0.6} />
-            <directionalLight position={[5, 8, 5]} intensity={0.8} castShadow shadow-mapSize={[1024, 1024]} shadow-camera-far={20} shadow-camera-left={-10} shadow-camera-right={10} shadow-camera-top={10} shadow-camera-bottom={-10} />
+            <ambientLight intensity={isDark ? 0.6 : 0.5} />
+            <directionalLight position={[5, 8, 5]} intensity={isDark ? 0.8 : 1.0} castShadow shadow-mapSize={[1024, 1024]} shadow-camera-far={20} shadow-camera-left={-10} shadow-camera-right={10} shadow-camera-top={10} shadow-camera-bottom={-10} />
             <directionalLight position={[-3, -2, 4]} intensity={0.3} color="#FFD800" />
             <pointLight position={[0, -3, 3]} intensity={0.4} color="#01A6BC" />
 
@@ -712,7 +712,7 @@ export function HeroCards3DScene() {
                 {!isMobile && <TriangleCollider camBaseX={camBaseX} camBaseY={camBaseY} camBaseZ={camBaseZ} fov={50} />}
             </Physics>
 
-            <ContactShadows position={[0, floorY + 0.02, 0]} opacity={0.6} scale={25} blur={2.5} far={6} frames={1} />
+            <ContactShadows position={[0, floorY + 0.02, 0]} opacity={isDark ? 0.5 : 0.7} scale={25} blur={2.5} far={6} frames={1} />
         </Canvas>
     );
 }

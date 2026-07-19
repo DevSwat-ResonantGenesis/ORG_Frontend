@@ -104,7 +104,7 @@ export const HeroSection = () => {
             </div>
 
             <Suspense fallback={null}>
-                <HeroCards3DScene />
+                <HeroCards3DScene isDark={isDark} />
             </Suspense>
 
             <div className={styles.heroBottomBar}>
