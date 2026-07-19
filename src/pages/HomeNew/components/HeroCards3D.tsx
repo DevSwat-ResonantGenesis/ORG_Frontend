@@ -676,7 +676,7 @@ export function HeroCards3DScene({ isDark = false }: { isDark?: boolean }) {
     const camBaseX = isMobile ? 0 : isLaptop ? 0.3 : 0.3;
     const camBaseY = isMobile ? -0.3 : 0.3;
     const camBaseZ = isMobile ? 10.8 : isLaptop ? 16.8 : 12;
-    const floorY = isMobile ? -3.8 : -4.5;
+    const floorY = isMobile ? -4.0 : -4.5;
     const spawnY = isMobile ? 6.5 : 7;
     const gravity = useTiltGravity(isMobile ? 9 : 11);
 
