@@ -63,6 +63,7 @@ const CARDS_MOBILE: Card3D[] = CARDS.map((c) => ({
     w: c.w * MOBILE_SCALE,
     h: c.h * MOBILE_SCALE,
     chaosX: c.chaosX * 0.35,
+    delay: c.delay * 0.5,
 }));
 
 const LAPTOP_SCALE = 0.72;
