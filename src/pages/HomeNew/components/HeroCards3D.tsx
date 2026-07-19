@@ -46,13 +46,13 @@ interface Card3D {
 
 const CARDS: Card3D[] = [
     /*           label          desc            color       textColor       route                        px     w    h     chaosX  delay */
-    { label: 'Code',       desc: 'AI dev',      color: '#121214', textColor: '#ffffff', route: '/products/ide',           px: 2.0,  w: 3.8, h: 2.2, chaosX: 0.5,  delay: 0.0 },
-    { label: 'Governance', desc: 'Compliance',  color: '#FFD800', textColor: '#121214', route: '/products/governance',    px: 3.5,  w: 2.5, h: 5.5, chaosX: 0.8,  delay: 0.65, vertical: true },
-    { label: "LLM's",      desc: '',            color: '#FAA525', textColor: '#121214', route: '/products/chat',          px: 2.5,  w: 2.0, h: 2.0, chaosX: 0.3,  delay: 0.5 },
-    { label: 'Agents',     desc: 'Workflows',   color: '#01A6BC', textColor: '#ffffff', route: '/products/ai-agents',     px: 3.0,  w: 2.6, h: 2.1, chaosX: 0.6,  delay: 0.12 },
-    { label: 'Tools',      desc: '',            color: '#FA547C', textColor: '#ffffff', route: '/products/neural-routing',px: 3.8,  w: 2.4, h: 2.6, chaosX: 0.4,  delay: 0.25 },
-    { label: "API's",      desc: '',            color: '#FFFFFF', textColor: '#121214', route: '/api/docs',              px: 4.2,  w: 1.5, h: 1.8, chaosX: 0.7,  delay: 0.85 },
-    { label: 'Memory',     desc: 'Knowledge',   color: '#71C23E', textColor: '#121214', route: '/products/memory',       px: 2.8,  w: 3.2, h: 2.0, chaosX: 0.2,  delay: 0.38 },
+    { label: 'Code',       desc: 'AI dev',      color: '#121214', textColor: '#ffffff', route: '/products/ide',           px: -0.2, w: 3.8, h: 2.2, chaosX: -1.8, delay: 0.0 },
+    { label: 'Governance', desc: 'Compliance',  color: '#FFD800', textColor: '#121214', route: '/products/governance',    px: 3.0,  w: 2.5, h: 5.5, chaosX: 2.0,  delay: 0.65, vertical: true },
+    { label: "LLM's",      desc: '',            color: '#FAA525', textColor: '#121214', route: '/products/chat',          px: -2.0, w: 2.0, h: 2.0, chaosX: -1.2, delay: 0.5 },
+    { label: 'Agents',     desc: 'Workflows',   color: '#01A6BC', textColor: '#ffffff', route: '/products/ai-agents',     px: 0.5,  w: 2.6, h: 2.1, chaosX: 1.4,  delay: 0.12 },
+    { label: 'Tools',      desc: '',            color: '#FA547C', textColor: '#ffffff', route: '/products/neural-routing',px: 2.1,  w: 2.4, h: 2.6, chaosX: -1.0, delay: 0.25 },
+    { label: "API's",      desc: '',            color: '#FFFFFF', textColor: '#121214', route: '/api/docs',              px: 2.9,  w: 1.5, h: 1.8, chaosX: 1.6,  delay: 0.85 },
+    { label: 'Memory',     desc: 'Knowledge',   color: '#71C23E', textColor: '#121214', route: '/products/memory',       px: -1.0, w: 3.2, h: 2.0, chaosX: -0.8, delay: 0.38 },
 ];
 
 const MOBILE_SCALE = 0.42;
@@ -200,7 +200,7 @@ function Scene({ cards, camBaseX, camBaseZ, floorY, spawnY, isMobile, sizeScale,
     const visibleWidth = visibleHeight * (size.width / size.height);
     const margin = 0.3;
     const halfWidth = Math.max(1, visibleWidth / 2 - margin);
-    const wallMin = camBaseX;
+    const wallMin = camBaseX - halfWidth;
     const wallMax = camBaseX + halfWidth;
     const spawnXs = layoutSpawnX(cards, wallMin, wallMax, camBaseX);
 
@@ -604,11 +604,11 @@ export function HeroCards3DScene() {
     const cards = tier === 'mobile' ? CARDS_MOBILE : tier === 'laptop' ? CARDS_LAPTOP : CARDS;
     const sizeScale = tier === 'mobile' ? MOBILE_SCALE : tier === 'laptop' ? LAPTOP_SCALE : 1;
 
-    const camBaseX = isMobile ? 0 : isLaptop ? -1.5 : -2;
+    const camBaseX = isMobile ? 0 : isLaptop ? 0.3 : 0.3;
     const camBaseY = isMobile ? -0.3 : 0;
     const camBaseZ = isMobile ? 9 : isLaptop ? 14 : 10;
     const floorY = isMobile ? -3.4 : -3.5;
-    const spawnY = isMobile ? 2 : 2;
+    const spawnY = isMobile ? 6.5 : 7;
     const gravity = useTiltGravity(isMobile ? 9 : 11);
 
     return (
