@@ -711,7 +711,7 @@ export function HeroCards3DScene() {
                 {!isMobile && <TriangleCollider camBaseX={camBaseX} camBaseY={camBaseY} camBaseZ={camBaseZ} fov={50} />}
             </Physics>
 
-            <ContactShadows position={[0, floorY + 0.02, 0]} opacity={0.6} scale={25} blur={2.5} far={10} frames={1} />
+            <ContactShadows position={[0, floorY + 0.02, 0]} opacity={0.8} scale={30} blur={1.5} far={10} frames={1} />
         </Canvas>
     );
 }
