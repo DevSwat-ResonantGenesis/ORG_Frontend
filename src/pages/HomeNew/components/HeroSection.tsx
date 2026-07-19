@@ -29,7 +29,7 @@ export const HeroSection = () => {
                     font-weight: 400 !important;
                     font-size: 56px !important;
                     line-height: 0.95 !important;
-                    color: ${isDark ? '#ffffff' : '#111827'} !important;
+                    color: #ffffff !important;
                     margin: 0 !important;
                     padding: 0 !important;
                     background: none !important;
@@ -48,7 +48,7 @@ export const HeroSection = () => {
                     font-weight: 700 !important;
                     font-size: 20px !important;
                     line-height: 1.2 !important;
-                    color: ${isDark ? '#ffffff' : '#111827'} !important;
+                    color: #ffffff !important;
                     margin: 14px 0 0 0 !important;
                     padding: 0 !important;
                     background: none !important;
