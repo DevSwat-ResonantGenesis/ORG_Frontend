@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import heroTitleStyles from '@/components/ui/HeroTitle.module.css';
 import styles from '../HomeNew.module.css';
+import buttonStyles from './HeroButton.module.css';
 import { isAuthenticated } from '@/utils/auth-cookies';
 import { useThemeStore } from '@/store/themeStore';
 import { ProductSlideshow } from './ProductSlideshow';
@@ -19,7 +21,87 @@ export const HeroSection = () => {
 
     return (
         <section className={styles.hero}>
+            {/* ===== STANDALONE STYLES — ID selectors = highest CSS specificity possible ===== */}
+            <style dangerouslySetInnerHTML={{__html: `
+                #hero-title {
+                    display: block !important;
+                    font-family: 'Abril Fatface', serif !important;
+                    font-weight: 400 !important;
+                    font-size: 56px !important;
+                    line-height: 0.95 !important;
+                    color: ${isDark ? '#ffffff' : '#111827'} !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    background: none !important;
+                    text-transform: none !important;
+                    letter-spacing: normal !important;
+                    animation: none !important;
+                    opacity: 1 !important;
+                    -webkit-text-size-adjust: none !important;
+                }
+                @media (min-width: 768px)  { #hero-title { font-size: 80px !important; } }
+                @media (min-width: 1280px) { #hero-title { font-size: 100px !important; } }
+
+                #hero-subtitle {
+                    display: block !important;
+                    font-family: 'Work Sans', sans-serif !important;
+                    font-weight: 700 !important;
+                    font-size: 20px !important;
+                    line-height: 1.2 !important;
+                    color: ${isDark ? '#ffffff' : '#111827'} !important;
+                    margin: 14px 0 0 0 !important;
+                    padding: 0 !important;
+                    background: none !important;
+                    animation: none !important;
+                    opacity: 1 !important;
+                }
+                @media (min-width: 768px)  { #hero-subtitle { font-size: 32px !important; } }
+                @media (min-width: 1280px) { #hero-subtitle { font-size: 38px !important; } }
+
+                #hero-cta-btn {
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    gap: 12px !important;
+                    margin-top: 32px !important;
+                    padding: 20px 28px !important;
+                    background: #FFD800 !important;
+                    color: #0a0a0c !important;
+                    font-family: 'Work Sans', sans-serif !important;
+                    font-size: 14px !important;
+                    font-weight: 700 !important;
+                    letter-spacing: 0.06em !important;
+                    text-transform: uppercase !important;
+                    border-radius: 14px !important;
+                    cursor: pointer !important;
+                    border: none !important;
+                    outline: none !important;
+                    opacity: 1 !important;
+                    animation: none !important;
+                    transition: background 0.2s ease !important;
+                    min-width: 320px !important;
+                    max-width: 450px !important;
+                }
+                #hero-cta-btn * { color: #0a0a0c !important; }
+                #hero-cta-btn svg { stroke: #0a0a0c !important; }
+                #hero-cta-btn:hover { background: #71C23E !important; color: #ffffff !important; }
+                #hero-cta-btn:hover * { color: #ffffff !important; }
+                #hero-cta-btn:hover svg { stroke: #ffffff !important; }
+            `}} />
             <div className={styles.heroTriangleBlock} data-hero-triangle></div>
+            <div className={styles.heroTextBlock} data-hero-textblock>
+                <h1 id="hero-title">
+                    Digitalize<br />Your Vision
+                </h1>
+                <p id="hero-subtitle">Simpler Than Ever</p>
+                <button id="hero-cta-btn" onClick={() => navigate('/consulting-workshop/intake')}>
+                    <div className={styles.ctaButtonContent}>
+                        <span className={styles.ctaButtonTitle}>Product & Architecture Discovery Consulting Workshop</span>
+                        <span className={styles.ctaButtonSubtitle}>1st Week: Technical Pre-Research & Analysis → 2nd Week: High-Intensity Sprint Workshop with Your Team → Next 30 Days: Dedicated Engineering Advisory Support.</span>
+                        <span className={styles.ctaButtonPrice}>Price: $24,500</span>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </button>
+            </div>
 
             <ProductSlideshow isDark={isDark} />
 

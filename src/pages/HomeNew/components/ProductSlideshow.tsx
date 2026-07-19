@@ -12,21 +12,9 @@ interface Slide {
     ctaRoute: string;
     image: string;
     isIntegrations?: boolean;
-    isHero?: boolean;
 }
 
 const SLIDES: Slide[] = [
-    {
-        id: 'hero',
-        title: 'Digitalize Your Vision',
-        description: 'Simpler Than Ever',
-        ctaTitle: 'Product & Architecture Discovery Consulting Workshop',
-        ctaSubtitle: '1st Week: Technical Pre-Research & Analysis → 2nd Week: High-Intensity Sprint Workshop with Your Team → Next 30 Days: Dedicated Engineering Advisory Support.',
-        ctaPrice: 'Price: $24,500',
-        ctaRoute: '/consulting-workshop/intake',
-        image: '/images/showcase/step5-homepage.png',
-        isHero: true,
-    },
     {
         id: 'resonant-chat',
         title: 'Resonant Chat',
@@ -155,54 +143,48 @@ export const ProductSlideshow = ({ isDark }: { isDark: boolean }) => {
             onMouseLeave={() => setIsPaused(false)}
         >
             <div className={styles.slideContainer}>
-                {!currentSlide.isHero && (
-                    <div className={styles.slideImage}>
-                        <img src={currentSlide.image} alt={currentSlide.title} />
-                        {currentSlide.isIntegrations && (
-                            <div className={styles.integrationsMarquee}>
-                                <div className={styles.marqueeContent}>
-                                    <img src="/images/connect-icons/github.png" alt="GitHub" />
-                                    <img src="/images/connect-icons/openai.png" alt="OpenAI" />
-                                    <img src="/images/connect-icons/anthropic.png" alt="Anthropic" />
-                                    <img src="/images/connect-icons/claude.png" alt="Claude" />
-                                    <img src="/images/connect-icons/copilot.jpeg" alt="Copilot" />
-                                    <img src="/images/connect-icons/figma.png" alt="Figma" />
-                                    <img src="/images/connect-icons/firebase.png" alt="Firebase" />
-                                    <img src="/images/connect-icons/gitlab.png" alt="GitLab" />
-                                    <img src="/images/connect-icons/notion.png" alt="Notion" />
-                                    <img src="/images/connect-icons/slack.png" alt="Slack" />
-                                    <img src="/images/connect-icons/stripe.png" alt="Stripe" />
-                                    <img src="/images/connect-icons/supabase.png" alt="Supabase" />
-                                    <img src="/images/connect-icons/vercel.svg" alt="Vercel" />
-                                    <img src="/images/connect-icons/zapier.png" alt="Zapier" />
-                                    <img src="/images/connect-icons/github.png" alt="GitHub" />
-                                    <img src="/images/connect-icons/openai.png" alt="OpenAI" />
-                                    <img src="/images/connect-icons/anthropic.png" alt="Anthropic" />
-                                    <img src="/images/connect-icons/claude.png" alt="Claude" />
-                                    <img src="/images/connect-icons/copilot.jpeg" alt="Copilot" />
-                                    <img src="/images/connect-icons/figma.png" alt="Figma" />
-                                    <img src="/images/connect-icons/firebase.png" alt="Firebase" />
-                                    <img src="/images/connect-icons/gitlab.png" alt="GitLab" />
-                                    <img src="/images/connect-icons/notion.png" alt="Notion" />
-                                    <img src="/images/connect-icons/slack.png" alt="Slack" />
-                                    <img src="/images/connect-icons/stripe.png" alt="Stripe" />
-                                    <img src="/images/connect-icons/supabase.png" alt="Supabase" />
-                                    <img src="/images/connect-icons/vercel.svg" alt="Vercel" />
-                                    <img src="/images/connect-icons/zapier.png" alt="Zapier" />
-                                </div>
+                <div className={styles.slideImage}>
+                    <img src={currentSlide.image} alt={currentSlide.title} />
+                    {currentSlide.isIntegrations && (
+                        <div className={styles.integrationsMarquee}>
+                            <div className={styles.marqueeContent}>
+                                <img src="/images/connect-icons/github.png" alt="GitHub" />
+                                <img src="/images/connect-icons/openai.png" alt="OpenAI" />
+                                <img src="/images/connect-icons/anthropic.png" alt="Anthropic" />
+                                <img src="/images/connect-icons/claude.png" alt="Claude" />
+                                <img src="/images/connect-icons/copilot.jpeg" alt="Copilot" />
+                                <img src="/images/connect-icons/figma.png" alt="Figma" />
+                                <img src="/images/connect-icons/firebase.png" alt="Firebase" />
+                                <img src="/images/connect-icons/gitlab.png" alt="GitLab" />
+                                <img src="/images/connect-icons/notion.png" alt="Notion" />
+                                <img src="/images/connect-icons/slack.png" alt="Slack" />
+                                <img src="/images/connect-icons/stripe.png" alt="Stripe" />
+                                <img src="/images/connect-icons/supabase.png" alt="Supabase" />
+                                <img src="/images/connect-icons/vercel.svg" alt="Vercel" />
+                                <img src="/images/connect-icons/zapier.png" alt="Zapier" />
+                                <img src="/images/connect-icons/github.png" alt="GitHub" />
+                                <img src="/images/connect-icons/openai.png" alt="OpenAI" />
+                                <img src="/images/connect-icons/anthropic.png" alt="Anthropic" />
+                                <img src="/images/connect-icons/claude.png" alt="Claude" />
+                                <img src="/images/connect-icons/copilot.jpeg" alt="Copilot" />
+                                <img src="/images/connect-icons/figma.png" alt="Figma" />
+                                <img src="/images/connect-icons/firebase.png" alt="Firebase" />
+                                <img src="/images/connect-icons/gitlab.png" alt="GitLab" />
+                                <img src="/images/connect-icons/notion.png" alt="Notion" />
+                                <img src="/images/connect-icons/slack.png" alt="Slack" />
+                                <img src="/images/connect-icons/stripe.png" alt="Stripe" />
+                                <img src="/images/connect-icons/supabase.png" alt="Supabase" />
+                                <img src="/images/connect-icons/vercel.svg" alt="Vercel" />
+                                <img src="/images/connect-icons/zapier.png" alt="Zapier" />
                             </div>
-                        )}
-                    </div>
-                )}
+                        </div>
+                    )}
+                </div>
                 <div className={styles.slideContent}>
-                    <h2 className={`${styles.slideTitle} ${currentSlide.isHero ? styles.heroTitle : ''}`}>
-                        {currentSlide.title}
-                    </h2>
-                    <p className={`${styles.slideDescription} ${currentSlide.isHero ? styles.heroSubtitle : ''}`}>
-                        {currentSlide.description}
-                    </p>
+                    <h2 className={styles.slideTitle}>{currentSlide.title}</h2>
+                    <p className={styles.slideDescription}>{currentSlide.description}</p>
                     <button 
-                        className={`${styles.ctaButton} ${currentSlide.isHero ? styles.heroCtaButton : ''}`}
+                        className={styles.ctaButton}
                         onClick={() => navigate(currentSlide.ctaRoute)}
                     >
                         <div className={styles.ctaContent}>
