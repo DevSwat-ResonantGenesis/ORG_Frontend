@@ -262,7 +262,7 @@
 .hero::before,
 .hero::after { display: none; }
 
-[data-theme='light'] .hero { background: #0a0a0c; }
+[data-theme='light'] .hero { background: #ffffff; }
 
 /* ---- Title — absolute left, vertically centred ---- */
 .heroTextBlock {
