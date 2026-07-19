@@ -2,7 +2,7 @@ import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Canvas, useFrame, useThree, ThreeEvent } from '@react-three/fiber';
 import { RoundedBox, Text, ContactShadows } from '@react-three/drei';
-import { Physics, useBox, usePlane } from '@react-three/cannon';
+import { Physics, useBox, usePlane, useConvexPolyhedron } from '@react-three/cannon';
 import * as THREE from 'three';
 
 /* Laptop-sized viewports (roughly 768-1439px) previously fell into the same
@@ -190,8 +190,8 @@ function layoutSpawnX(cards: Card3D[], wallMin: number, wallMax: number, camBase
     return result;
 }
 
-function Scene({ cards, camBaseX, camBaseZ, floorY, spawnY, isMobile, sizeScale, fov, gravity }: {
-    cards: Card3D[]; camBaseX: number; camBaseZ: number; floorY: number; spawnY: number; isMobile: boolean; sizeScale: number; fov: number;
+function Scene({ cards, camBaseX, camBaseY, camBaseZ, floorY, spawnY, isMobile, sizeScale, fov, gravity }: {
+    cards: Card3D[]; camBaseX: number; camBaseY: number; camBaseZ: number; floorY: number; spawnY: number; isMobile: boolean; sizeScale: number; fov: number;
     gravity: [number, number, number];
 }) {
     const { size } = useThree();
@@ -209,6 +209,8 @@ function Scene({ cards, camBaseX, camBaseZ, floorY, spawnY, isMobile, sizeScale,
             <Floor y={floorY} />
             <Wall x={wallMin} facing={1} />
             <Wall x={wallMax} facing={-1} />
+            <TitleCollider camBaseX={camBaseX} camBaseY={camBaseY} camBaseZ={camBaseZ} fov={fov} />
+            <TriangleCollider camBaseX={camBaseX} camBaseY={camBaseY} camBaseZ={camBaseZ} fov={fov} />
             {cards.map((card, i) => (
                 <FallingCard key={card.label + i} card={card} isMobile={isMobile} sizeScale={sizeScale} spawnX={spawnXs[i]} spawnY={spawnY} gravity={gravity} />
             ))}
@@ -265,6 +267,67 @@ function TitleBox({ x, y, w, h }: { x: number; y: number; w: number; h: number }
         material: { friction: 0.4, restitution: 0.08 },
     }));
     return <mesh ref={ref} visible={false} />;
+}
+
+/* Triangle collider above title to make cards slide right when falling */
+function TriangleCollider({ camBaseX, camBaseY, camBaseZ, fov }: { camBaseX: number; camBaseY: number; camBaseZ: number; fov: number }) {
+    const { size } = useThree();
+    const [triangle, setTriangle] = useState<{ x: number; y: number; size: number } | null>(null);
+
+    useEffect(() => {
+        const measure = () => {
+            const el = document.querySelector('[data-hero-textblock]');
+            if (!el) return;
+            const r = el.getBoundingClientRect();
+            if (r.width < 4 || r.height < 4) return;
+            const vFOV = (fov * Math.PI) / 180;
+            const visibleHeight = 2 * Math.tan(vFOV / 2) * camBaseZ;
+            const visibleWidth = visibleHeight * (size.width / size.height);
+            
+            // Position triangle above the title block
+            const worldTop = camBaseY + visibleHeight / 2 - (r.top / size.height) * visibleHeight;
+            const worldLeft = camBaseX - visibleWidth / 2 + (r.left / size.width) * visibleWidth;
+            const triangleSize = Math.min(r.width, r.height) * 0.3;
+            
+            setTriangle({ 
+                x: worldLeft + triangleSize / 2, 
+                y: worldTop + triangleSize / 2, 
+                size: triangleSize 
+            });
+        };
+        const t = window.setTimeout(measure, 350);
+        window.addEventListener('resize', measure, { passive: true });
+        return () => { window.clearTimeout(t); window.removeEventListener('resize', measure); };
+    }, [size, camBaseX, camBaseY, camBaseZ, fov]);
+
+    if (!triangle) return null;
+    return <TriangleShape {...triangle} />;
+}
+
+function TriangleShape({ x, y, size }: { x: number; y: number; size: number }) {
+    // Create a triangular prism shape using vertices
+    const vertices: [number, number, number][] = [
+        // Bottom triangle (z = -depth/2)
+        [0, -size/2, -DEPTH], [size/2, size/2, -DEPTH], [-size/2, size/2, -DEPTH],
+        // Top triangle (z = depth/2)
+        [0, -size/2, DEPTH], [size/2, size/2, DEPTH], [-size/2, size/2, DEPTH],
+    ];
+    
+    const faces: [number, number, number][] = [
+        [0, 1, 2], [3, 5, 4], // Bottom and top
+        [0, 3, 4], [0, 4, 1], // Side 1
+        [1, 4, 5], [1, 5, 2], // Side 2
+        [2, 5, 3], [2, 3, 0], // Side 3
+    ];
+
+    const [ref] = useConvexPolyhedron(() => ({
+        type: 'Static',
+        position: [x, y, 0],
+        args: [vertices, faces],
+        material: { friction: 0.3, restitution: 0.05 },
+    }));
+    
+    return <mesh ref={ref as any} visible={false} />;
 }
 
 /* Shared hover state so neighboring cards could react (kept minimal: just cosmetic lift) */
@@ -607,7 +670,7 @@ export function HeroCards3DScene() {
     const camBaseX = isMobile ? 0 : isLaptop ? 0.3 : 0.3;
     const camBaseY = isMobile ? -0.3 : 0;
     const camBaseZ = isMobile ? 10.8 : isLaptop ? 16.8 : 12;
-    const floorY = isMobile ? -4.5 : -4.8;
+    const floorY = isMobile ? -4.3 : -4.5;
     const spawnY = isMobile ? 6.5 : 7;
     const gravity = useTiltGravity(isMobile ? 9 : 11);
 
@@ -635,11 +698,12 @@ export function HeroCards3DScene() {
             <CameraRig baseX={camBaseX} baseY={camBaseY} baseZ={camBaseZ} />
 
             <Physics gravity={gravity} allowSleep iterations={14}>
-                <Scene cards={cards} camBaseX={camBaseX} camBaseZ={camBaseZ} floorY={floorY} spawnY={spawnY} isMobile={isMobile} sizeScale={sizeScale} fov={50} gravity={gravity} />
+                <Scene cards={cards} camBaseX={camBaseX} camBaseY={camBaseY} camBaseZ={camBaseZ} floorY={floorY} spawnY={spawnY} isMobile={isMobile} sizeScale={sizeScale} fov={50} gravity={gravity} />
                 {/* Desktop only — on mobile the headline becomes a full-width stacked banner
                     (not a left-side panel), so treating it as an obstacle would block the
                     entire fall zone with nowhere left to drop through. */}
                 {!isMobile && <TitleCollider camBaseX={camBaseX} camBaseY={camBaseY} camBaseZ={camBaseZ} fov={50} />}
+                {!isMobile && <TriangleCollider camBaseX={camBaseX} camBaseY={camBaseY} camBaseZ={camBaseZ} fov={50} />}
             </Physics>
 
             <ContactShadows position={[0, floorY + 0.02, 0]} opacity={0.45} scale={20} blur={2.4} far={5} frames={1} />
