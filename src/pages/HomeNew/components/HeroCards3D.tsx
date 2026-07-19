@@ -68,8 +68,9 @@ const CARDS_MOBILE: Card3D[] = CARDS.map((c) => ({
 const LAPTOP_SCALE = 0.72;
 const CARDS_LAPTOP: Card3D[] = CARDS.map((c) => ({
     ...c,
-    w: c.w * LAPTOP_SCALE,
-    h: c.h * LAPTOP_SCALE,
+    px: c.px * LAPTOP_SCALE,
+    w: c.w * 0.625,
+    h: c.h * 0.625,
 }));
 
 const DEPTH = 0.42;
@@ -599,19 +600,20 @@ function useTiltGravity(magnitude: number): [number, number, number] {
 export function HeroCards3DScene() {
     const tier = useViewportTier();
     const isMobile = tier === 'mobile';
+    const isLaptop = tier === 'laptop';
     const cards = tier === 'mobile' ? CARDS_MOBILE : tier === 'laptop' ? CARDS_LAPTOP : CARDS;
     const sizeScale = tier === 'mobile' ? MOBILE_SCALE : tier === 'laptop' ? LAPTOP_SCALE : 1;
 
-    const camBaseX = isMobile ? 0.4 : 1.2;
+    const camBaseX = isMobile ? 0.4 : isLaptop ? 1.2 : 1.2;
     const camBaseY = isMobile ? -0.3 : 0;
-    const camBaseZ = isMobile ? 9 : 10;
+    const camBaseZ = isMobile ? 9 : isLaptop ? 14 : 10;
     const floorY = isMobile ? -3.4 : -3.5;
     const spawnY = isMobile ? 6.5 : 7;
     const gravity = useTiltGravity(isMobile ? 9 : 11);
 
     return (
         <Canvas
-            camera={{ position: [camBaseX, camBaseY, camBaseZ], fov: 50 }}
+            camera={{ position: [camBaseX, camBaseY, camBaseZ], fov: isLaptop ? 45 : 50 }}
             style={{
                 position: 'absolute',
                 top: 0,
