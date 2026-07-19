@@ -167,24 +167,24 @@ const OAuthCallbackPage: React.FC = () => {
           return;
         }
 
+        // Clear any existing post-login redirect to force pricing page
         try {
-          sessionStorage.setItem(
-            'rg-post-login-target',
-            JSON.stringify({ path: '/new-user-pricing', ts: Date.now(), remaining: 5 })
-          );
-          document.cookie = `rg_post_login_target=${encodeURIComponent('/new-user-pricing')}; Max-Age=60; Path=/`;
+          sessionStorage.removeItem('rg-post-login-target');
+          document.cookie = `rg_post_login_target=; Max-Age=0; Path=/`;
         } catch {
         }
 
-        // Always redirect to pricing page after signup - subscription is required
-        navigate('/new-user-pricing');
+        // Force redirect to pricing page - subscription is required for all users
+        window.location.href = '/new-user-pricing';
+        return;
       } catch (error: any) {
         logger.error('OAuth callback error', error, { component: 'OAuthCallback' });
 
+        // Even on error, if user is authenticated, force to pricing page
         try {
           const user = await getCurrentUser();
           if (user) {
-            navigate('/');
+            window.location.href = '/new-user-pricing';
             return;
           }
         } catch {

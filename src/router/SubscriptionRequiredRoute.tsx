@@ -29,11 +29,12 @@ const SubscriptionRequiredRoute = ({ children }: Props) => {
           const isActiveSubscription = data.plan && data.plan !== 'free' && data.status === 'active';
           setHasSubscription(isActiveSubscription);
         } else {
-          // If we can't check subscription, assume no subscription
+          // If we can't check subscription (404 or other error), assume no subscription
           setHasSubscription(false);
         }
       } catch (error) {
         console.error('Failed to check subscription:', error);
+        // On any error, assume no subscription to be safe
         setHasSubscription(false);
       } finally {
         setLoading(false);
