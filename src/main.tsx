@@ -23,9 +23,12 @@ initSentry();
 // PRIORITIZE LIGHT MODE - Set light mode as default on page start
 // This runs BEFORE React renders to prevent flash of wrong mode
 if (typeof window !== 'undefined') {
-  // Set light theme as default
+  // Clear any saved dark theme preference to force light as default
   const savedTheme = localStorage.getItem('rg_theme');
-  const defaultTheme = savedTheme || 'light'; // Always default to light if no saved preference
+  if (savedTheme === 'dark') {
+    localStorage.removeItem('rg_theme');
+  }
+  const defaultTheme = 'light'; // Always default to light
 
   // Set theme attributes only - modular CSS handles all styling (not global.css)
   document.documentElement.setAttribute('data-theme', defaultTheme);
