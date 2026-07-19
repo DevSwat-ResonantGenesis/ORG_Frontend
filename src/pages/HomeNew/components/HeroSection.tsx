@@ -22,7 +22,7 @@ const SLIDES: Slide[] = [
     {
         id: 'resonant-chat',
         title: 'Resonant Chat',
-        description: 'A single-interface AI Chat ecosystem. Orchestrates multiple model providers, tools, and agents is the most advanced and trusted chat platform currently available, offering a ton of features and the ability to operate an entire platform through it.',
+        description: 'A single-interface AI Chat ecosystem',
         ctaTitle: 'Start Free',
         ctaSubtitle: 'Bring your API key provider to unlock all features',
         ctaRoute: '/resonant-memory',
@@ -225,127 +225,28 @@ export const HeroSection = () => {
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
             >
-                <img 
-                    src={currentSlide.image} 
-                    alt={currentSlide.title}
-                    style={{
-                        width: '100%',
-                        maxWidth: '100%',
-                        height: '280px',
-                        objectFit: 'cover',
-                        borderRadius: '16px',
-                        marginBottom: '1.5rem',
-                        background: 'rgba(0, 0, 0, 0.05)'
-                    }}
-                />
-                {currentSlide.isIntegrations && (
-                    <div style={{
-                        position: 'absolute',
-                        bottom: '0',
-                        left: '0',
-                        right: '0',
-                        height: '60px',
-                        background: 'rgba(0, 0, 0, 0.8)',
-                        overflow: 'hidden',
-                        display: 'flex',
-                        alignItems: 'center',
-                        borderRadius: '0 0 16px 16px'
-                    }}>
-                        <div style={{
-                            display: 'flex',
-                            gap: '2rem',
-                            animation: 'marquee 20s linear infinite'
-                        }}>
-                            <img src="/images/connect-icons/github.png" alt="GitHub" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/openai.png" alt="OpenAI" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/anthropic.png" alt="Anthropic" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/claude.png" alt="Claude" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/copilot.jpeg" alt="Copilot" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/figma.png" alt="Figma" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/firebase.png" alt="Firebase" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/gitlab.png" alt="GitLab" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/notion.png" alt="Notion" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/slack.png" alt="Slack" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/stripe.png" alt="Stripe" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/supabase.png" alt="Supabase" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/vercel.svg" alt="Vercel" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/zapier.png" alt="Zapier" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/github.png" alt="GitHub" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/openai.png" alt="OpenAI" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/anthropic.png" alt="Anthropic" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/claude.png" alt="Claude" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/copilot.jpeg" alt="Copilot" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/figma.png" alt="Figma" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/firebase.png" alt="Firebase" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/gitlab.png" alt="GitLab" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/notion.png" alt="Notion" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/slack.png" alt="Slack" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/stripe.png" alt="Stripe" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/supabase.png" alt="Supabase" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/vercel.svg" alt="Vercel" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                            <img src="/images/connect-icons/zapier.png" alt="Zapier" style={{width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px'}} />
-                        </div>
-                    </div>
-                )}
-                <h2 style={{
-                    fontFamily: "'Work Sans', sans-serif",
-                    fontSize: '24px',
-                    fontWeight: 700,
-                    marginBottom: '0.5rem',
-                    color: isDark ? '#ffffff' : '#111827'
-                }}>
+                <h1 id="hero-title">
                     {currentSlide.title}
-                </h2>
-                <p style={{
-                    fontFamily: "'Work Sans', sans-serif",
-                    fontSize: '14px',
-                    marginBottom: '1rem',
-                    color: isDark ? 'rgba(255, 255, 255, 0.7)' : '#6b7280'
-                }}>
-                    {currentSlide.description}
-                </p>
-                <button 
-                    onClick={() => navigate(currentSlide.ctaRoute)}
-                    style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '12px 16px',
-                        background: '#FFD800',
-                        color: '#0a0a0c',
-                        fontFamily: "'Work Sans', sans-serif",
-                        fontSize: '12px',
-                        fontWeight: 700,
-                        letterSpacing: '0.06em',
-                        textTransform: 'uppercase',
-                        borderRadius: '12px',
-                        cursor: 'pointer',
-                        border: 'none',
-                        outline: 'none',
-                        transition: 'background 0.2s ease',
-                        minWidth: '200px'
-                    }}
-                >
-                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px'}}>
-                        <span style={{fontWeight: 700}}>{currentSlide.ctaTitle}</span>
-                        <span style={{fontSize: '10px', fontWeight: 400, opacity: 0.9}}>{currentSlide.ctaSubtitle}</span>
-                        {currentSlide.ctaPrice && <span style={{fontSize: '12px', fontWeight: 600}}>{currentSlide.ctaPrice}</span>}
+                </h1>
+                <p id="hero-subtitle">{currentSlide.description}</p>
+                <button id="hero-cta-btn" onClick={() => navigate(currentSlide.ctaRoute)}>
+                    <div className={styles.ctaButtonContent}>
+                        <span className={styles.ctaButtonTitle}>{currentSlide.ctaTitle}</span>
+                        <span className={styles.ctaButtonSubtitle}>{currentSlide.ctaSubtitle}</span>
+                        {currentSlide.ctaPrice && <span className={styles.ctaButtonPrice}>{currentSlide.ctaPrice}</span>}
                     </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 12h14"/>
-                        <path d="m12 5 7 7-7 7"/>
-                    </svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </button>
                 
                 <button 
                     onClick={goToPrev}
                     style={{
                         position: 'absolute',
-                        left: '10px',
+                        left: '-60px',
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        width: '48px',
-                        height: '48px',
+                        width: '40px',
+                        height: '40px',
                         borderRadius: '50%',
                         background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                         border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)',
@@ -356,7 +257,7 @@ export const HeroSection = () => {
                         zIndex: 10
                     }}
                 >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#ffffff' : '#111827'} strokeWidth="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#ffffff' : '#111827'} strokeWidth="2">
                         <path d="M15 18l-6-6 6-6"/>
                     </svg>
                 </button>
@@ -365,11 +266,11 @@ export const HeroSection = () => {
                     onClick={goToNext}
                     style={{
                         position: 'absolute',
-                        right: '10px',
+                        right: '-60px',
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        width: '48px',
-                        height: '48px',
+                        width: '40px',
+                        height: '40px',
                         borderRadius: '50%',
                         background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
                         border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)',
@@ -380,16 +281,15 @@ export const HeroSection = () => {
                         zIndex: 10
                     }}
                 >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#ffffff' : '#111827'} strokeWidth="2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#ffffff' : '#111827'} strokeWidth="2">
                         <path d="M9 18l6-6-6-6"/>
                     </svg>
                 </button>
 
                 <div style={{
                     position: 'absolute',
-                    bottom: '20px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
+                    bottom: '-40px',
+                    left: '0',
                     display: 'flex',
                     gap: '8px'
                 }}>
@@ -398,8 +298,8 @@ export const HeroSection = () => {
                             key={index}
                             onClick={() => goToSlide(index)}
                             style={{
-                                width: '10px',
-                                height: '10px',
+                                width: '8px',
+                                height: '8px',
                                 borderRadius: '50%',
                                 background: index === currentIndex ? '#FFD800' : (isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'),
                                 border: 'none',
