@@ -35,7 +35,11 @@
     max-height: 100dvh;
     overflow: hidden;
     overscroll-behavior: none;
-    background: var(--color-bg-root, var(--bg-primary));
+    background: #ffffff;
+  }
+
+  [data-theme='dark'] .page {
+    background: #0a0a0c;
   }
 }
 
@@ -44,15 +48,7 @@
   color: #f1f5f9;
 }
 
-@media (max-width: 768px) {
-  [data-theme='dark'] .page,
-  [data-theme='light'] .page {
-    background: var(--color-bg-root, var(--bg-primary)) !important;
-  }
-}
-
-/* ============================================================
-   Floating Header
+/* ============================================================   Floating Header
    ============================================================ */
 .header {
   position: fixed;
