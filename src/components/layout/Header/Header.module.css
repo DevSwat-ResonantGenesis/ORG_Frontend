@@ -30,6 +30,24 @@
   isolation: isolate;
 }
 
+/* Add safe area background for mobile */
+@media (max-width: 768px) {
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top);
+    background: var(--color-bg-root, #0a0a0c);
+    z-index: -1;
+  }
+
+  [data-theme='light'] .header::before {
+    background: var(--color-bg-root, #ffffff);
+  }
+}
+
 :global(body.usmMenuOpen) .header {
   z-index: 9990 !important;
   opacity: 0 !important;

@@ -169,6 +169,16 @@
   z-index: 1001;
 }
 
+[data-theme='light'] .chatPage::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(255, 255, 255, 0.55) 55%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
 
 @supports (height: 100dvh) {
   .chatPage {
