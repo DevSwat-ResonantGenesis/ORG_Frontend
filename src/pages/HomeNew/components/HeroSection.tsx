@@ -5,6 +5,7 @@ import styles from '../HomeNew.module.css';
 import buttonStyles from './HeroButton.module.css';
 import { isAuthenticated } from '@/utils/auth-cookies';
 import { useThemeStore } from '@/store/themeStore';
+import { HeroCards3DScene } from './HeroCards3D';
 
 export const HeroSection = () => {
     const navigate = useNavigate();
@@ -101,6 +102,8 @@ export const HeroSection = () => {
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </button>
             </div>
+
+            <HeroCards3DScene isDark={isDark} />
 
             <div className={styles.heroBottomBar}>
                 <div className={styles.heroBottomSocial}>
