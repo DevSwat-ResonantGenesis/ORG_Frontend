@@ -11,6 +11,8 @@
 
 export const ROUTE_META = {
   '/pricing': { title: 'Pricing – DevSwat', description: 'Free tier to get started, Plus for power users, Enterprise for teams. Build, run, and schedule AI agents. DevSwat IDE, Code Visualizer, OpenClaw — all included.' },
+  '/consulting-workshop/intake': { title: 'Consulting Workshop Intake – DevSwat', description: 'Product & Architecture Discovery Consulting Workshop. Elite, high-touch architectural intervention to de-risk your foundation before full-scale development.' },
+  '/consulting-workshop/payment': { title: 'Consulting Workshop Payment – DevSwat', description: 'Complete your consulting workshop purchase. 6-week execution framework with pre-research diagnostics, live workshop sprints, and 30 days of dedicated advisory.' },
   '/contact': { title: 'Contact – DevSwat', description: 'Get in touch with the DevSwat team. Enterprise inquiries, partnership opportunities, or technical questions about the agentic AI infrastructure.' },
   '/signup': { title: 'Sign Up – DevSwat', description: 'Create your free DevSwat account. Build and run AI agents, use the DevSwat IDE, and scan code with Code Visualizer.' },
   '/login': { title: 'Log In – DevSwat', description: 'Log in to DevSwat. Access your agents, IDE projects, and Code Visualizer scans.' },

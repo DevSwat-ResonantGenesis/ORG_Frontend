@@ -39,6 +39,8 @@ const UserManagementPage = lazy(() => import('../pages/Admin/UserManagementPage'
 const ResonantChatPage = lazy(() => import('../pages/ResonantChat/ResonantChatPage'));
 const ResonantChatSettingsPage = lazy(() => import('../pages/Settings/ResonantChatSettings/ResonantChatSettingsPage'));
 const PricingPage = lazy(() => import('../pages/Public/PricingPageComplete'));
+const ConsultingWorkshopIntake = lazy(() => import('../pages/Public/ConsultingWorkshopIntake'));
+const ConsultingWorkshopPayment = lazy(() => import('../pages/Public/ConsultingWorkshopPayment'));
 const APIDocsPage = lazy(() => import('../pages/API/APIDocsPage'));
 const ReviewQueuePage = lazy(() => import('../pages/AIReview/ReviewQueuePage'));
 const AgentTeamsPage = lazy(() => import('../pages/AgentTeams/AgentTeamsPage'));
@@ -273,6 +275,16 @@ const router = createBrowserRouter([
   {
     path: '/pricing',
     element: withPublicShell(<PricingPage />)
+  },
+  // Consulting Workshop - Window 1: Intake
+  {
+    path: '/consulting-workshop/intake',
+    element: withPublicShell(<ConsultingWorkshopIntake />)
+  },
+  // Consulting Workshop - Window 2: Payment
+  {
+    path: '/consulting-workshop/payment',
+    element: withPublicShell(<ConsultingWorkshopPayment />)
   },
   {
     path: '/contact',
