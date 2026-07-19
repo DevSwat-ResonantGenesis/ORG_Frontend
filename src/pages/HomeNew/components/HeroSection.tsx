@@ -1,116 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import heroTitleStyles from '@/components/ui/HeroTitle.module.css';
 import styles from '../HomeNew.module.css';
 import buttonStyles from './HeroButton.module.css';
 import { isAuthenticated } from '@/utils/auth-cookies';
 import { useThemeStore } from '@/store/themeStore';
-
-interface Slide {
-    id: string;
-    title: string;
-    description: string;
-    ctaTitle: string;
-    ctaSubtitle: string;
-    ctaPrice?: string;
-    ctaRoute: string;
-    image: string;
-    isIntegrations?: boolean;
-}
-
-const SLIDES: Slide[] = [
-    {
-        id: 'resonant-chat',
-        title: 'Resonant Chat',
-        description: 'A single-interface AI Chat ecosystem. Orchestrates multiple model providers, tools, and agents is the most advanced and trusted chat platform currently available, offering a ton of features and the ability to operate an entire platform through it.',
-        ctaTitle: 'Start Free',
-        ctaSubtitle: 'Bring your API key provider to unlock all features',
-        ctaRoute: '/resonant-memory',
-        image: '/images/showcase/resonant-ide-inquiry.png',
-    },
-    {
-        id: 'devswat-ide',
-        title: 'DevSwat IDE',
-        description: 'AI-powered development environment with intelligent code completion, real-time collaboration, and seamless integration with your existing workflow.',
-        ctaTitle: 'Download IDE',
-        ctaSubtitle: 'The most advanced AI coding assistant',
-        ctaRoute: '/download-ide',
-        image: '/images/showcase/visualizer-1.png',
-    },
-    {
-        id: 'build',
-        title: 'Build Service',
-        description: 'Automated build and deployment pipeline with intelligent caching, parallel execution, and instant rollback capabilities.',
-        ctaTitle: 'Get Started',
-        ctaSubtitle: 'Streamline your CI/CD pipeline',
-        ctaRoute: '/products/ide',
-        image: '/images/showcase/step2-build.png',
-    },
-    {
-        id: 'ast',
-        title: 'AST',
-        description: 'Abstract Syntax Tree analysis for deep code understanding, refactoring suggestions, and security vulnerability detection.',
-        ctaTitle: 'Explore',
-        ctaSubtitle: 'Deep code understanding',
-        ctaRoute: '/products/code-analysis',
-        image: '/images/showcase/visualizer-2.png',
-    },
-    {
-        id: 'terminal',
-        title: 'Terminal Sandbox',
-        description: 'Secure code execution environment with container isolation, resource limits, and comprehensive logging.',
-        ctaTitle: 'Try Now',
-        ctaSubtitle: 'Run code safely in isolation',
-        ctaRoute: '/products/ide',
-        image: '/images/showcase/step3-build.png',
-    },
-    {
-        id: 'marketplace',
-        title: 'Marketplace',
-        description: 'Discover and share AI agents, tools, and integrations with the community. Find the perfect solution for your needs.',
-        ctaTitle: 'Browse',
-        ctaSubtitle: 'Find the perfect agent for your needs',
-        ctaRoute: '/products/ai-agents',
-        image: '/images/showcase/step4-ide.png',
-    },
-    {
-        id: 'ast-analyzer',
-        title: 'AST Analyzer',
-        description: 'Advanced code analysis tools for pattern detection, code smell identification, and automated refactoring recommendations.',
-        ctaTitle: 'Analyze',
-        ctaSubtitle: 'Get insights into your codebase',
-        ctaRoute: '/products/code-analysis',
-        image: '/images/showcase/visualizer-3.png',
-    },
-    {
-        id: 'agents',
-        title: 'AI Agents',
-        description: 'Autonomous AI assistants that can execute complex tasks, make decisions, and learn from interactions.',
-        ctaTitle: 'Create Agent',
-        ctaSubtitle: 'Build intelligent automation',
-        ctaRoute: '/products/ai-agents',
-        image: '/images/showcase/agent4.png',
-    },
-    {
-        id: 'agent-teams',
-        title: 'Agent Teams',
-        description: 'Collaborative AI workflows where multiple agents work together to solve complex problems efficiently.',
-        ctaTitle: 'Build Team',
-        ctaSubtitle: 'Coordinate multiple agents',
-        ctaRoute: '/products/ai-agents',
-        image: '/images/showcase/step5-homepage.png',
-    },
-    {
-        id: 'integrations',
-        title: 'Integrations',
-        description: 'Connect with your favorite tools and services. 200+ integrations available including GitHub, Slack, Notion, and more.',
-        ctaTitle: 'Explore',
-        ctaSubtitle: '200+ integrations available',
-        ctaRoute: '/integrations',
-        image: '/images/showcase/integration1.png',
-        isIntegrations: true,
-    },
-];
+import { ProductSlideshow } from './ProductSlideshow';
 
 export const HeroSection = () => {
     const navigate = useNavigate();
@@ -121,32 +16,6 @@ export const HeroSection = () => {
     const iconHover = isDark ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,1)';
     const textColor = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.4)';
     const textDim = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.25)';
-    
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [isPaused, setIsPaused] = useState(false);
-
-    useEffect(() => {
-        if (!isPaused) {
-            const interval = setInterval(() => {
-                setCurrentIndex((prev) => (prev + 1) % SLIDES.length);
-            }, 5000);
-            return () => clearInterval(interval);
-        }
-    }, [isPaused]);
-
-    const goToSlide = (index: number) => {
-        setCurrentIndex(index);
-    };
-
-    const goToPrev = () => {
-        setCurrentIndex((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
-    };
-
-    const goToNext = () => {
-        setCurrentIndex((prev) => (prev + 1) % SLIDES.length);
-    };
-
-    const currentSlide = SLIDES[currentIndex];
 
     if (isLoggedIn) return null;
 
@@ -219,98 +88,22 @@ export const HeroSection = () => {
                 #hero-cta-btn:hover svg { stroke: #ffffff !important; }
             `}} />
             <div className={styles.heroTriangleBlock} data-hero-triangle></div>
-            <div 
-                className={styles.heroTextBlock} 
-                data-hero-textblock
-                onMouseEnter={() => setIsPaused(true)}
-                onMouseLeave={() => setIsPaused(false)}
-            >
+            <div className={styles.heroTextBlock} data-hero-textblock>
                 <h1 id="hero-title">
-                    {currentSlide.title}
+                    Digitalize<br />Your Vision
                 </h1>
-                <p id="hero-subtitle">{currentSlide.description}</p>
-                <button id="hero-cta-btn" onClick={() => navigate(currentSlide.ctaRoute)}>
+                <p id="hero-subtitle">Simpler Than Ever</p>
+                <button id="hero-cta-btn" onClick={() => navigate('/consulting-workshop/intake')}>
                     <div className={styles.ctaButtonContent}>
-                        <span className={styles.ctaButtonTitle}>{currentSlide.ctaTitle}</span>
-                        <span className={styles.ctaButtonSubtitle}>{currentSlide.ctaSubtitle}</span>
-                        {currentSlide.ctaPrice && <span className={styles.ctaButtonPrice}>{currentSlide.ctaPrice}</span>}
+                        <span className={styles.ctaButtonTitle}>Product & Architecture Discovery Consulting Workshop</span>
+                        <span className={styles.ctaButtonSubtitle}>1st Week: Technical Pre-Research & Analysis → 2nd Week: High-Intensity Sprint Workshop with Your Team → Next 30 Days: Dedicated Engineering Advisory Support.</span>
+                        <span className={styles.ctaButtonPrice}>Price: $24,500</span>
                     </div>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </button>
-                
-                <button 
-                    onClick={goToPrev}
-                    style={{
-                        position: 'absolute',
-                        left: '-60px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: '50%',
-                        background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-                        border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        zIndex: 10
-                    }}
-                >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#ffffff' : '#111827'} strokeWidth="2">
-                        <path d="M15 18l-6-6 6-6"/>
-                    </svg>
-                </button>
-                
-                <button 
-                    onClick={goToNext}
-                    style={{
-                        position: 'absolute',
-                        right: '-60px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        width: '40px',
-                        height: '40px',
-                        borderRadius: '50%',
-                        background: isDark ? 'rgba(30, 30, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-                        border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.1)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        zIndex: 10
-                    }}
-                >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={isDark ? '#ffffff' : '#111827'} strokeWidth="2">
-                        <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                </button>
-
-                <div style={{
-                    position: 'absolute',
-                    bottom: '-40px',
-                    left: '0',
-                    display: 'flex',
-                    gap: '8px'
-                }}>
-                    {SLIDES.map((_, index) => (
-                        <button
-                            key={index}
-                            onClick={() => goToSlide(index)}
-                            style={{
-                                width: '8px',
-                                height: '8px',
-                                borderRadius: '50%',
-                                background: index === currentIndex ? '#FFD800' : (isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'),
-                                border: 'none',
-                                cursor: 'pointer',
-                                transform: index === currentIndex ? 'scale(1.2)' : 'scale(1)',
-                                transition: 'all 0.2s ease'
-                            }}
-                        />
-                    ))}
-                </div>
             </div>
+
+            <ProductSlideshow isDark={isDark} />
 
             <div className={styles.heroBottomBar}>
                 <div className={styles.heroBottomSocial}>
