@@ -87,8 +87,8 @@ if (typeof window !== 'undefined') {
            gravity's vertical component on any desktop/no-sensor browser. Bail out instead:
            no real reading means don't touch input at all, leave it at its neutral default. */
         if (e.gamma === null || e.beta === null) return;
-        input.x = Math.max(-1, Math.min(1, e.gamma / 30));
-        input.y = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
+        input.x = Math.max(-1, Math.min(1, e.gamma / 50));
+        input.y = Math.max(-1, Math.min(1, (e.beta - 45) / 50));
     };
     if ('DeviceOrientationEvent' in window) {
         const doe = DeviceOrientationEvent as any;
@@ -604,7 +604,7 @@ export function HeroCards3DScene() {
     const cards = tier === 'mobile' ? CARDS_MOBILE : tier === 'laptop' ? CARDS_LAPTOP : CARDS;
     const sizeScale = tier === 'mobile' ? MOBILE_SCALE : tier === 'laptop' ? LAPTOP_SCALE : 1;
 
-    const camBaseX = isMobile ? 0.4 : isLaptop ? 1.2 : 1.2;
+    const camBaseX = isMobile ? 0 : isLaptop ? 0.3 : 0.3;
     const camBaseY = isMobile ? -0.3 : 0;
     const camBaseZ = isMobile ? 9 : isLaptop ? 14 : 10;
     const floorY = isMobile ? -3.4 : -3.5;

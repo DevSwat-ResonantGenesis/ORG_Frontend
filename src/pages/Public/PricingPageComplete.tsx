@@ -36,6 +36,7 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const planIcons: Record<string, React.ReactNode> = {
   developer: <Zap size={16} />,
+  'consulting-workshop': <Brain size={16} />,
   plus: <Shield size={16} />,
   enterprise: <Building2 size={16} />,
 };
@@ -50,6 +51,13 @@ const PLAN_HIGHLIGHTS: Record<string, string[]> = {
     '100 compute hours / month',
     '5 GB storage, 100 RAG documents',
     'Community + email support',
+  ],
+  'consulting-workshop': [
+    '1st Week: Technical Pre-Research & Analysis',
+    '2nd Week: High-Intensity Sprint Workshop',
+    'Next 30 Days: Dedicated Engineering Advisory',
+    'Product & Architecture Discovery',
+    'One-time payment, no subscription',
   ],
   plus: [
     'Everything in Plus',
@@ -69,6 +77,7 @@ const PLAN_HIGHLIGHTS: Record<string, string[]> = {
 
 const PLAN_META: Record<string, { support: string; sla: string; deployment: string }> = {
   developer: { support: 'Community + email', sla: 'Standard', deployment: 'Cloud' },
+  'consulting-workshop': { support: 'Dedicated advisory', sla: 'N/A', deployment: 'N/A' },
   plus: { support: 'Priority email + Slack', sla: 'Standard', deployment: 'Cloud' },
   enterprise: { support: 'Dedicated engineers', sla: '99.9% guarantee', deployment: 'Cloud, hybrid, or on-prem' },
 };
@@ -168,6 +177,14 @@ const PricingPage: React.FC = () => {
           const isEnterprise = planId === 'enterprise';
           const isPlus = planId === 'plus';
 
+          // Override credits display for specific plans
+          let creditsDisplay = included === -1 ? 'Custom' : `${included.toLocaleString()} / month`;
+          if (planId === 'developer') {
+            creditsDisplay = '29,000 credits / month';
+          } else if (planId === 'plus') {
+            creditsDisplay = '499,000 credits / month';
+          }
+
           return {
             id: planId,
             name,
@@ -186,7 +203,7 @@ const PricingPage: React.FC = () => {
                 : 'For organizations running AI as critical infrastructure.',
             credits: {
               included,
-              display: included === -1 ? 'Custom' : `${included.toLocaleString()} / month`,
+              display: creditsDisplay,
               rollover: Boolean(cfg?.credits?.rollover ?? false),
               rolloverLimit: cfg?.credits?.rolloverLimit,
               topups: Boolean(cfg?.credits?.topups ?? false),
@@ -235,6 +252,58 @@ const PricingPage: React.FC = () => {
         // just not shown as a selectable card here).
         const nextPlans: Plan[] = [
           buildPlan('developer', 'Plus'),
+          {
+            id: 'consulting-workshop',
+            name: 'Consulting Workshop',
+            badge: 'One-time',
+            price: {
+              monthly: 24500,
+              yearly: 24500,
+              display: '$24,500',
+              period: '',
+            },
+            description: 'Product & Architecture Discovery Consulting Workshop',
+            credits: {
+              included: 0,
+              display: 'One-time payment',
+              rollover: false,
+              topups: false,
+              note: '',
+            },
+            recommended: false,
+            contactSales: false,
+            cta: {
+              text: 'Purchase Workshop',
+              style: 'primary',
+            },
+            limits: {
+              agents: { active: -1, autonomousMode: true, teams: true },
+              userTeams: { enabled: false },
+              chat: { conversations: -1, messagesPerDay: -1, evidenceGraph: true },
+              hashSphereMemory: {
+                standaloneService: true,
+                universeAccess: '1 Universe',
+                multiLayer: false,
+              },
+              ideCompute: {
+                computeHours: -1,
+                previewTime: 'Unlimited',
+                aiAssistance: 'Full',
+                customRuntimes: false,
+              },
+              governance: {
+                killSwitch: 'Automated',
+                invariants: 15,
+                snapshots: 10,
+              },
+              codeVisualizer: {
+                codebaseGraphs: true,
+                dependencyAnalysis: true,
+                ciIntegration: false,
+              },
+            },
+            features: [],
+          },
           buildPlan('plus', 'Business'),
         ];
         setPlans(nextPlans);
@@ -331,6 +400,46 @@ const PricingPage: React.FC = () => {
       alert('Checkout failed. Please try again.');
     } finally {
       setCreditPackLoading(null);
+    }
+  };
+
+  const handleConsultingWorkshopPurchase = async () => {
+    if (!isAuthenticated()) {
+      navigate('/signup', { state: { consultingWorkshop: true } });
+      return;
+    }
+
+    setCheckoutLoading('consulting-workshop');
+    try {
+      await ensureAuth();
+      const response = await fetch('/api/billing/checkout/consulting-workshop', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          amount_usd: 24500,
+          success_url: `${window.location.origin}/dashboard?workshop_purchased=true`,
+          cancel_url: `${window.location.origin}/pricing?canceled=true`,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.checkout_url || data.url) {
+          window.location.href = data.checkout_url || data.url;
+        } else {
+          alert('Checkout session created but no redirect URL received.');
+        }
+      } else {
+        const error = await response.json();
+        console.error('Consulting workshop checkout failed:', error);
+        alert('Checkout failed: ' + (error.detail || 'Please try again.'));
+      }
+    } catch (err) {
+      console.error('Consulting workshop checkout failed:', err);
+      alert('Checkout failed. Please try again.');
+    } finally {
+      setCheckoutLoading(null);
     }
   };
 
@@ -436,6 +545,7 @@ const PricingPage: React.FC = () => {
 
   const renderPlanCard = (plan: Plan) => {
     const isRecommended = plan.recommended;
+    const isConsultingWorkshop = plan.id === 'consulting-workshop';
 
     return (
       <div
@@ -462,7 +572,7 @@ const PricingPage: React.FC = () => {
         </ul>
         <button
           className={`${styles.planCta} ${isRecommended ? styles.planCtaPrimary : ''}`}
-          onClick={() => handlePlanSelect(plan)}
+          onClick={() => isConsultingWorkshop ? handleConsultingWorkshopPurchase() : handlePlanSelect(plan)}
           disabled={checkoutLoading === plan.id}
         >
           {checkoutLoading === plan.id ? 'Redirecting…' : plan.cta.text}

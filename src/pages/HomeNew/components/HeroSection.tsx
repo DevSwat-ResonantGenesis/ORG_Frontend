@@ -96,7 +96,7 @@ export const HeroSection = () => {
                     <div className={styles.ctaButtonContent}>
                         <span className={styles.ctaButtonTitle}>Product & Architecture Discovery Consulting Workshop</span>
                         <span className={styles.ctaButtonSubtitle}>1st Week: Technical Pre-Research & Analysis → 2nd Week: High-Intensity Sprint Workshop with Your Team → Next 30 Days: Dedicated Engineering Advisory Support.</span>
-                        <span className={styles.ctaButtonPrice}>$24,500</span>
+                        <span className={styles.ctaButtonPrice}>Price: $24,500</span>
                     </div>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </button>
