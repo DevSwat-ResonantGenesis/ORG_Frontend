@@ -608,7 +608,7 @@ export function HeroCards3DScene() {
     const camBaseY = isMobile ? -0.3 : 0;
     const camBaseZ = isMobile ? 9 : isLaptop ? 14 : 10;
     const floorY = isMobile ? -3.4 : -3.5;
-    const spawnY = isMobile ? 6.5 : 7;
+    const spawnY = isMobile ? 2 : 2;
     const gravity = useTiltGravity(isMobile ? 9 : 11);
 
     return (
