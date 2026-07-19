@@ -114,6 +114,7 @@ function CameraRig({ baseX, baseY, baseZ }: { baseX: number; baseY: number; base
         camera.position.x = baseX + lerped.current.x * 1.1;
         camera.position.y = baseY - lerped.current.y * 0.7;
         camera.position.z = baseZ;
+        camera.rotation.y = 3 * (Math.PI / 180); // Turn camera 3 degrees to the right
         /* straight-ahead dolly (no lookAt) — keeps the frustum symmetric around
            the camera so world-space bounds stay predictable as it drifts */
     });
