@@ -604,7 +604,7 @@ export function HeroCards3DScene() {
     const cards = tier === 'mobile' ? CARDS_MOBILE : tier === 'laptop' ? CARDS_LAPTOP : CARDS;
     const sizeScale = tier === 'mobile' ? MOBILE_SCALE : tier === 'laptop' ? LAPTOP_SCALE : 1;
 
-    const camBaseX = isMobile ? -5.2 : isLaptop ? -7.8 : -5.5;
+    const camBaseX = isMobile ? 5.2 : isLaptop ? 7.8 : 5.5;
     const camBaseY = isMobile ? -0.3 : 0;
     const camBaseZ = isMobile ? 7.4 : isLaptop ? 11.6 : 8.4;
     const floorY = isMobile ? -3.4 : -3.5;
