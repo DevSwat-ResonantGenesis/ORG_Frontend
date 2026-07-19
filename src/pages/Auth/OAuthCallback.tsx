@@ -170,13 +170,13 @@ const OAuthCallbackPage: React.FC = () => {
         try {
           sessionStorage.setItem(
             'rg-post-login-target',
-            JSON.stringify({ path: '/', ts: Date.now(), remaining: 5 })
+            JSON.stringify({ path: '/new-user-pricing', ts: Date.now(), remaining: 5 })
           );
-          document.cookie = `rg_post_login_target=${encodeURIComponent('/')}; Max-Age=60; Path=/`;
+          document.cookie = `rg_post_login_target=${encodeURIComponent('/new-user-pricing')}; Max-Age=60; Path=/`;
         } catch {
         }
 
-        navigate('/');
+        navigate('/new-user-pricing');
       } catch (error: any) {
         logger.error('OAuth callback error', error, { component: 'OAuthCallback' });
 

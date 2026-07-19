@@ -23,6 +23,7 @@ const OwnerLoginPage = lazy(() => import('../pages/Auth/OwnerLoginPage'));
 const ForgotPasswordPage = lazy(() => import('../pages/Auth/ForgotPasswordPage-2025'));
 const HomeNew = lazy(() => import('../pages/HomeNew/HomeNew'));
 const SignupPage = lazy(() => import('../pages/Auth/SignupPageNew'));
+const NewUserPricingPage = lazy(() => import('../pages/Auth/NewUserPricingPage'));
 const FeatureFlagsPage = lazy(() => import('../pages/Admin/FeatureFlagsPage'));
 // ProfilePage deleted - consolidated into NewUserDashboard
 const HelpCenterPage = lazy(() => import('../pages/Help/HelpCenterPage'));
@@ -153,6 +154,10 @@ const router = createBrowserRouter([
   {
     path: '/signup',
     element: withPublicShell(<SignupPage />)
+  },
+  {
+    path: '/new-user-pricing',
+    element: withPublicShell(<NewUserPricingPage />)
   },
   {
     path: '/public/signup',
