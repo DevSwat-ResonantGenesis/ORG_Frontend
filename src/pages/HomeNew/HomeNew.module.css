@@ -786,6 +786,96 @@
 /* Hero title styles removed - using HeroTitle.module.css from components/ui */
 
 /* ============================================================
+   CTA Button Content for Consulting Workshop
+   ============================================================ */
+.ctaButtonContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: left;
+}
+
+.ctaButtonTitle {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0a0a0c;
+  line-height: 1.2;
+}
+
+.ctaButtonSubtitle {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(10, 10, 12, 0.7);
+  line-height: 1.3;
+  max-width: 300px;
+}
+
+.ctaButtonPrice {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0a0a0c;
+}
+
+@media (max-width: 768px) {
+  .ctaButtonTitle {
+    font-size: 12px;
+  }
+
+  .ctaButtonSubtitle {
+    font-size: 10px;
+  }
+
+  .ctaButtonPrice {
+    font-size: 14px;
+  }
+}
+
+/* ============================================================
+   CTA Container for Consulting Workshop
+   ============================================================ */
+.ctaContainer {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ctaTitle {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.ctaSubtitle {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .ctaContainer {
+    margin-top: 24px;
+  }
+
+  .ctaTitle {
+    font-size: 14px;
+  }
+
+  .ctaSubtitle {
+    font-size: 12px;
+  }
+}
+
+/* ============================================================
    Hero Navigation Links - Icon Based
    ============================================================ */
 .heroNavLinks {

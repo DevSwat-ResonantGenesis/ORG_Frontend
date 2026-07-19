@@ -61,9 +61,9 @@ export const HeroSection = () => {
                 #hero-cta-btn {
                     display: inline-flex !important;
                     align-items: center !important;
-                    gap: 8px !important;
+                    gap: 12px !important;
                     margin-top: 32px !important;
-                    padding: 14px 36px !important;
+                    padding: 20px 28px !important;
                     background: #FFD800 !important;
                     color: #0a0a0c !important;
                     font-family: 'Work Sans', sans-serif !important;
@@ -78,6 +78,8 @@ export const HeroSection = () => {
                     opacity: 1 !important;
                     animation: none !important;
                     transition: background 0.2s ease !important;
+                    min-width: 320px !important;
+                    max-width: 450px !important;
                 }
                 #hero-cta-btn * { color: #0a0a0c !important; }
                 #hero-cta-btn svg { stroke: #0a0a0c !important; }
@@ -91,7 +93,11 @@ export const HeroSection = () => {
                 </h1>
                 <p id="hero-subtitle">Simpler Than Ever</p>
                 <button id="hero-cta-btn" onClick={() => navigate('/signup')}>
-                    <span>Get Started</span>
+                    <div className={styles.ctaButtonContent}>
+                        <span className={styles.ctaButtonTitle}>Product & Architecture Discovery Consulting Workshop</span>
+                        <span className={styles.ctaButtonSubtitle}>1st Week: Technical Pre-Research & Analysis → 2nd Week: High-Intensity Sprint Workshop with Your Team → Next 30 Days: Dedicated Engineering Advisory Support.</span>
+                        <span className={styles.ctaButtonPrice}>$24,500</span>
+                    </div>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </button>
             </div>
@@ -119,7 +125,7 @@ export const HeroSection = () => {
                     <Link to="/privacy-policy" style={{ color: textColor, textDecoration: 'none', fontSize: '12px', transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = iconHover)} onMouseLeave={e => (e.currentTarget.style.color = textColor)}>Privacy</Link>
                     <Link to="/terms-of-service" style={{ color: textColor, textDecoration: 'none', fontSize: '12px', transition: 'color 0.2s' }} onMouseEnter={e => (e.currentTarget.style.color = iconHover)} onMouseLeave={e => (e.currentTarget.style.color = textColor)}>Terms</Link>
                     <span style={{ color: textDim, fontSize: '12px' }}>·</span>
-                    <span style={{ color: textColor, fontSize: '12px' }}>© 2026 DevSwat Inc.</span>
+                    <span style={{ color: textColor, fontSize: '12px' }}>© 2026 DevSwat Inc. Silicon Valley, CA, USA</span>
                 </div>
             </div>
         </section>

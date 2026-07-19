@@ -363,7 +363,7 @@ export const Header: React.FC<HeaderProps> = ({
               alt="DevSwat"
               className={`${styles.logoIcon} ${isMobileViewport ? styles.logoIconHiddenMobile : ''}`}
             />
-            {!splitViewEnabled && 'Chat'}
+            {!splitViewEnabled && 'DevSwat'}
           </div>
 
           {/* Main Navigation - Desktop */}
