@@ -106,7 +106,7 @@ export const HeroSection = () => {
             <button id="hero-cta-btn" onClick={() => navigate('/consulting-workshop/intake')} style={{
                 position: 'absolute',
                 left: 'clamp(20px, 4vw, 72px)',
-                top: 'calc(50% + 160px)',
+                top: 'calc(50% + 200px)',
                 transform: 'translateY(-50%)',
                 zIndex: 10
             }}>
