@@ -124,51 +124,7 @@
     }
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-    .teamSelector {
-        background: var(--surface-secondary, #2a2a2a);
-    }
 
-    .labelText {
-        color: var(--text-secondary, #aaa);
-    }
-
-    .select {
-        background: var(--surface, #0a0a0c);
-        color: var(--text-primary, #e0e0e0);
-        border-color: var(--border, #444);
-    }
-
-    .select:hover:not(:disabled) {
-        border-color: var(--primary, #4d94ff);
-    }
-
-    .selectedIndicator {
-        background: var(--success-dark, #1a5928);
-        border-color: var(--success, #3dbd5d);
-    }
-
-    .teamName {
-        color: var(--success-light, #6dd687);
-    }
-
-    .teamDescription {
-        color: var(--success-light, #6dd687);
-    }
-
-    .refreshButton {
-        background: var(--surface, #0a0a0c);
-        border-color: var(--border, #444);
-        color: var(--text-secondary, #aaa);
-    }
-
-    .refreshButton:hover:not(:disabled) {
-        background: var(--surface-hover, #2a2a2a);
-        border-color: var(--primary, #4d94ff);
-        color: var(--primary, #4d94ff);
-    }
-}
 
 /* Mobile responsive */
 @media (max-width: 768px) {

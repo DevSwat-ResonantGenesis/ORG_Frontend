@@ -161,17 +161,5 @@
   color: var(--text-secondary, #6b7280);
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .container {
-    background: var(--card-background-dark, #1f2937);
-    border-color: var(--border-color-dark, #374151);
-  }
 
-  .stats,
-  .projectItem {
-    background: var(--background-secondary-dark, #111827);
-    border-color: var(--border-color-dark, #374151);
-  }
-}
 

@@ -98,42 +98,5 @@
   transform: translateY(-1px);
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .container {
-    background: var(--bg-dark, #0a0a0c);
-  }
 
-  .content {
-    background: var(--surface-dark, #0a0a0c);
-    border-color: var(--surface-border-dark, #111111);
-  }
-
-  .title {
-    color: var(--text-primary-dark, #ffffff);
-  }
-
-  .message {
-    color: var(--text-secondary-dark, #9ca3af);
-  }
-
-  .path {
-    background: var(--bg-subtle-dark, #0a0a0c);
-    border-color: var(--surface-border-dark, #111111);
-  }
-
-  .path code {
-    color: var(--text-primary-dark, #ffffff);
-  }
-
-  .buttonSecondary {
-    background: var(--surface-hover-dark, #111111);
-    color: var(--text-primary-dark, #ffffff);
-    border-color: var(--surface-border-dark, #111111);
-  }
-
-  .buttonSecondary:hover {
-    background: var(--surface-border-dark, #111111);
-  }
-}
 

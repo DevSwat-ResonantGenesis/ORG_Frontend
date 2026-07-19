@@ -170,21 +170,5 @@
   font-family: monospace;
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .container {
-    background: var(--card-background-dark, #1f2937);
-    border-color: var(--border-color-dark, #374151);
-  }
 
-  .answerText,
-  .sourceItem {
-    background: var(--background-secondary-dark, #111827);
-    border-color: var(--border-color-dark, #374151);
-  }
-
-  .sourceText {
-    color: var(--text-primary-dark, #f9fafb);
-  }
-}
 

@@ -68,35 +68,7 @@
     white-space: nowrap;
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-    .agentSelector {
-        background: var(--surface-secondary, #2a2a2a);
-    }
 
-    .labelText {
-        color: var(--text-secondary, #aaa);
-    }
-
-    .select {
-        background: var(--surface, #0a0a0c);
-        color: var(--text-primary, #e0e0e0);
-        border-color: var(--border, #444);
-    }
-
-    .select:hover {
-        border-color: var(--primary, #4d94ff);
-    }
-
-    .selectedIndicator {
-        background: var(--primary-dark, #003d7a);
-        border-color: var(--primary, #4d94ff);
-    }
-
-    .agentName {
-        color: var(--primary-light, #80b3ff);
-    }
-}
 
 /* Mobile responsive */
 @media (max-width: 768px) {

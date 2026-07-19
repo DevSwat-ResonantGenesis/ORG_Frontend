@@ -149,25 +149,5 @@
   color: var(--text-secondary, #6b7280);
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .statCard,
-  .quickActions {
-    background: var(--card-background-dark, #1f2937);
-    border-color: var(--border-color-dark, #374151);
-  }
 
-  .statValue {
-    color: var(--text-primary-dark, #f9fafb);
-  }
-
-  .statLabel,
-  .statCard h3 {
-    color: var(--text-secondary-dark, #d1d5db);
-  }
-
-  .statSub {
-    color: var(--text-tertiary-dark, #9ca3af);
-  }
-}
 

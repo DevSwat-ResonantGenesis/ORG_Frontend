@@ -139,40 +139,5 @@
   opacity: 0.7;
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .container {
-    background: var(--bg-primary-dark, #0a0a0c);
-    border-color: var(--border-color-dark, #333);
-  }
 
-  .header {
-    background: var(--bg-secondary-dark, #0a0a0c);
-    border-color: var(--border-color-dark, #333);
-  }
-
-  .title {
-    color: var(--text-primary-dark, #fff);
-  }
-
-  .stat {
-    background: var(--bg-tertiary-dark, #2a2a2a);
-    color: var(--text-secondary-dark, #aaa);
-  }
-
-  .legend {
-    background: var(--bg-secondary-dark, #0a0a0c);
-    border-color: var(--border-color-dark, #333);
-  }
-
-  .legendItem {
-    color: var(--text-secondary-dark, #aaa);
-  }
-
-  .toggleButton {
-    background: var(--bg-primary-dark, #0a0a0c);
-    border-color: var(--border-color-dark, #333);
-    color: var(--text-primary-dark, #fff);
-  }
-}
 
