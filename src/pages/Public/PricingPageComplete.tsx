@@ -252,6 +252,7 @@ const PricingPage: React.FC = () => {
         // just not shown as a selectable card here).
         const nextPlans: Plan[] = [
           buildPlan('developer', 'Plus'),
+          buildPlan('plus', 'Business'),
           {
             id: 'consulting-workshop',
             name: 'Consulting Workshop',
@@ -304,7 +305,6 @@ const PricingPage: React.FC = () => {
             },
             features: [],
           },
-          buildPlan('plus', 'Business'),
         ];
         setPlans(nextPlans);
         setExpandedPlanId((prev) => prev ?? nextPlans.find((p) => p.recommended)?.id ?? nextPlans[0]?.id ?? null);
@@ -515,7 +515,7 @@ const PricingPage: React.FC = () => {
     return (
       <div
         key={plan.id}
-        className={`${styles.planCard} ${isRecommended ? styles.planCardRecommended : ''}`}
+        className={`${styles.planCard} ${isRecommended ? styles.planCardRecommended : ''} ${isConsultingWorkshop ? styles.planCardConsultingWorkshop : ''}`}
       >
         {isRecommended && <span className={styles.recommendedBadge}>Recommended</span>}
         <div className={styles.planCardHeader}>
