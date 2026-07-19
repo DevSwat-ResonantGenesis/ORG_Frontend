@@ -404,43 +404,8 @@ const PricingPage: React.FC = () => {
   };
 
   const handleConsultingWorkshopPurchase = async () => {
-    if (!isAuthenticated()) {
-      navigate('/signup', { state: { consultingWorkshop: true } });
-      return;
-    }
-
-    setCheckoutLoading('consulting-workshop');
-    try {
-      await ensureAuth();
-      const response = await fetch('/api/billing/checkout/consulting-workshop', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          amount_usd: 24500,
-          success_url: `${window.location.origin}/dashboard?workshop_purchased=true`,
-          cancel_url: `${window.location.origin}/pricing?canceled=true`,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.checkout_url || data.url) {
-          window.location.href = data.checkout_url || data.url;
-        } else {
-          alert('Checkout session created but no redirect URL received.');
-        }
-      } else {
-        const error = await response.json();
-        console.error('Consulting workshop checkout failed:', error);
-        alert('Checkout failed: ' + (error.detail || 'Please try again.'));
-      }
-    } catch (err) {
-      console.error('Consulting workshop checkout failed:', err);
-      alert('Checkout failed. Please try again.');
-    } finally {
-      setCheckoutLoading(null);
-    }
+    // Route through intake flow instead of direct checkout
+    navigate('/consulting-workshop/intake');
   };
 
   const handlePlanSelect = async (plan: Plan) => {
