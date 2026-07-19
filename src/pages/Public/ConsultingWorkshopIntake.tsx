@@ -3,9 +3,8 @@
  * Multi-window onboarding workflow for consulting workshop signup
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useThemeStore } from '../../store/themeStore';
 import { Helmet } from 'react-helmet-async';
 import { ROUTE_META } from '@/config/routeMeta.mjs';
 import { Check, ArrowRight } from 'lucide-react';
@@ -15,12 +14,6 @@ const meta = ROUTE_META['/consulting-workshop/intake'];
 
 export default function ConsultingWorkshopIntake() {
   const navigate = useNavigate();
-  const { setTheme } = useThemeStore();
-
-  // Force light theme for this page
-  useEffect(() => {
-    setTheme('light');
-  }, [setTheme]);
 
   const [formData, setFormData] = useState({
     fullName: '',
