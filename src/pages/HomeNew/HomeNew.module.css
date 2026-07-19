@@ -65,6 +65,24 @@
   box-shadow: none;
 }
 
+/* Add safe area background for mobile */
+@media (max-width: 768px) {
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top);
+    background: #ffffff;
+    z-index: -1;
+  }
+
+  [data-theme='dark'] .header::before {
+    background: #0a0a0c;
+  }
+}
+
 .headerScrolled {
   background: var(--color-bg-root, #F8F6F0) !important;
   backdrop-filter: blur(0px);
