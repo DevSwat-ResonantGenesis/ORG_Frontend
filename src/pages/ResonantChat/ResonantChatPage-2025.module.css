@@ -535,6 +535,11 @@
   color: var(--text-secondary, #666);  /* Reduced brightness */
 }
 
+[data-theme='light'] .messageProvider {
+  color: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.04);
+}
+
 .messageQuality {
   display: inline-flex;
   align-items: center;
