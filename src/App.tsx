@@ -25,7 +25,7 @@ const App = () => {
     // Theme is already initialized by themeStore on creation
     // Just ensure DOM attributes are set (redundant but safe)
     const savedTheme = localStorage.getItem('rg_theme');
-    const defaultTheme = savedTheme || 'dark';
+    const defaultTheme = savedTheme || 'light';
     
     // Only update if different to avoid unnecessary re-renders
     const currentTheme = useThemeStore.getState().theme;
