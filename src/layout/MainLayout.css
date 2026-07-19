@@ -9,8 +9,8 @@
 
   html[data-theme='dark'],
   body[data-theme='dark'] {
-    background-color: var(--color-bg-root, var(--bg-primary));
-    background: var(--color-bg-root, var(--bg-primary));
+    background-color: var(--color-bg-root, #0a0a0c);
+    background: var(--color-bg-root, #0a0a0c);
   }
 
   html[data-theme='light'],
