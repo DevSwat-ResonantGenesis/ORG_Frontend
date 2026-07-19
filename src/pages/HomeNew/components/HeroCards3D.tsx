@@ -52,7 +52,7 @@ const CARDS: Card3D[] = [
     { label: 'Agents',     desc: 'Workflows',   color: '#01A6BC', textColor: '#ffffff', route: '/products/ai-agents',     px: 3.8,  w: 2.6, h: 2.1, chaosX: 1.4,  delay: 0.2 },
     { label: 'Tools',      desc: '',            color: '#FA547C', textColor: '#ffffff', route: '/products/neural-routing',px: 4.3,  w: 2.4, h: 2.6, chaosX: 1.0,  delay: 1.0 },
     { label: "API's",      desc: '',            color: '#FFFFFF', textColor: '#121214', route: '/api/docs',              px: 4.2,  w: 1.5, h: 1.8, chaosX: 1.6,  delay: 1.2 },
-    { label: 'Memory',     desc: 'Knowledge',   color: '#71C23E', textColor: '#121214', route: '/products/memory',       px: 3.7,  w: 3.2, h: 2.0, chaosX: 0.8,  delay: 0.8 },
+    { label: 'Memory',     desc: 'Knowledge',   color: '#71C23E', textColor: '#121214', route: '/products/memory',       px: 3.7,  w: 3.2, h: 2.0, chaosX: 0.8,  delay: 0.6 },
 ];
 
 const MOBILE_SCALE = 0.42;
