@@ -87,26 +87,16 @@ export const HeroSection = () => {
                 #hero-cta-btn:hover * { color: #ffffff !important; }
                 #hero-cta-btn:hover svg { stroke: #ffffff !important; }
             `}} />
-            <h1 id="hero-title" style={{
-                position: 'absolute',
-                left: 'clamp(20px, 4vw, 72px)',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                zIndex: 10
-            }}>
-                Digitalize<br />Your Vision
-            </h1>
-            <p id="hero-subtitle" style={{
-                position: 'absolute',
-                left: 'clamp(20px, 4vw, 72px)',
-                top: 'calc(50% + 100px)',
-                transform: 'translateY(-50%)',
-                zIndex: 10
-            }}>Simpler Than Ever</p>
+            <div className={styles.heroTextBlock} data-hero-textblock>
+                <h1 id="hero-title">
+                    Digitalize<br />Your Vision
+                </h1>
+                <p id="hero-subtitle">Simpler Than Ever</p>
+            </div>
             <button id="hero-cta-btn" onClick={() => navigate('/consulting-workshop/intake')} style={{
                 position: 'absolute',
                 left: 'clamp(20px, 4vw, 72px)',
-                top: 'calc(50% + 200px)',
+                top: 'calc(50% + 180px)',
                 transform: 'translateY(-50%)',
                 zIndex: 10
             }}>
