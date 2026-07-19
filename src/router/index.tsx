@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from '../layout/MainLayout';
 import ProtectedRoute from './ProtectedRoute';
+import SubscriptionRequiredRoute from './SubscriptionRequiredRoute';
 import RoleRoute from './RoleRoute';
 import OwnerProtectedRoute from './OwnerProtectedRoute';
 import PlanRestrictedRoute from './PlanRestrictedRoute';
@@ -110,12 +111,22 @@ const withShell = (node: React.ReactNode) => (
   </ProtectedRoute>
 );
 
+const withSubscription = (node: React.ReactNode) => (
+  <SubscriptionRequiredRoute>
+    <MainLayout>{node}</MainLayout>
+  </SubscriptionRequiredRoute>
+);
+
 const withPublicShell = (node: React.ReactNode) => (
   <MainLayout>{node}</MainLayout>
 );
 
 const HomeGate = () => {
-  return isAuthenticated() ? <ResonantChatPage /> : <HomeNew />;
+  if (!isAuthenticated()) {
+    return <HomeNew />;
+  }
+  // Authenticated users without subscription go to pricing, otherwise chat
+  return <SubscriptionRequiredRoute><ResonantChatPage /></SubscriptionRequiredRoute>;
 };
 
 const withRole = (node: React.ReactNode, roles: string[]) =>
@@ -149,7 +160,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/chat',
-    element: withShell(<ResonantChatPage />)
+    element: withSubscription(<ResonantChatPage />)
   },
   {
     path: '/signup',

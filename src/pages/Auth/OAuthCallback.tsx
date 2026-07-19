@@ -176,6 +176,7 @@ const OAuthCallbackPage: React.FC = () => {
         } catch {
         }
 
+        // Always redirect to pricing page after signup - subscription is required
         navigate('/new-user-pricing');
       } catch (error: any) {
         logger.error('OAuth callback error', error, { component: 'OAuthCallback' });

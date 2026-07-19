@@ -53,7 +53,7 @@ const NewUserPricingPage: React.FC = () => {
         body: JSON.stringify({
           plan_id: planId,
           billing_cycle: 'monthly',
-          trial: true, // Enable trial period
+          trial: true, // Enable trial period - $0 first month, then normal charge
           success_url: `${window.location.origin}/chat?trial_activated=true`,
           cancel_url: `${window.location.origin}/new-user-pricing?canceled=true`,
         }),
@@ -308,24 +308,6 @@ const NewUserPricingPage: React.FC = () => {
               {checkoutLoading === 'consulting' ? 'Redirecting...' : 'Purchase Workshop'}
             </button>
           </div>
-        </div>
-
-        <div style={{ textAlign: 'center' }}>
-          <button
-            onClick={handleSkip}
-            style={{
-              padding: '0.75rem 2rem',
-              borderRadius: '8px',
-              border: 'none',
-              background: 'transparent',
-              color: '#888',
-              fontSize: '0.95rem',
-              cursor: 'pointer',
-              textDecoration: 'underline',
-            }}
-          >
-            Skip for now, go to chat
-          </button>
         </div>
       </div>
     </div>
