@@ -39,12 +39,12 @@
     left: 0;
     right: 0;
     height: env(safe-area-inset-top);
-    background: var(--color-bg-root, #0a0a0c);
+    background: #0a0a0c;
     z-index: -1;
   }
 
   [data-theme='light'] .header::before {
-    background: var(--color-bg-root, #ffffff);
+    background: #ffffff;
   }
 }
 
