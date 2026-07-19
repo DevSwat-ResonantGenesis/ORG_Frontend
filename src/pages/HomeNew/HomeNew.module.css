@@ -510,14 +510,19 @@
     min-height: 100dvh;
     padding-bottom: 0;
     gap: 0;
+    background: #ffffff;
+  }
+
+  [data-theme='dark'] .hero {
     background: #0a0a0c;
   }
+
   .heroTextBlock {
     position: relative;
     left: auto;
     top: auto;
     transform: none;
-    padding: 90px 20px 16px;
+    padding: calc(90px + env(safe-area-inset-top)) 20px 16px;
     max-width: 100%;
     text-align: left;
     align-items: flex-start;
