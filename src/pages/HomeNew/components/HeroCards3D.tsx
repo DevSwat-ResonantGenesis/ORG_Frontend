@@ -47,7 +47,7 @@ interface Card3D {
 const CARDS: Card3D[] = [
     /*           label          desc            color       textColor       route                        px     w    h     chaosX  delay */
     { label: 'Code',       desc: 'AI dev',      color: '#121214', textColor: '#ffffff', route: '/products/ide',           px: 3.5,  w: 3.8, h: 2.2, chaosX: 1.8,  delay: 0.0 },
-    { label: 'Governance', desc: 'Compliance',  color: '#FFD800', textColor: '#121214', route: '/products/governance',    px: 4.0,  w: 2.5, h: 5.5, chaosX: 2.0,  delay: 0.9, vertical: true },
+    { label: 'Governance', desc: 'Compliance',  color: '#FFD800', textColor: '#121214', route: '/products/governance',    px: 4.0,  w: 2.5, h: 5.5, chaosX: 2.0,  delay: 2.0, vertical: true },
     { label: "LLM's",      desc: '',            color: '#FAA525', textColor: '#121214', route: '/products/chat',          px: 4.5,  w: 2.0, h: 2.0, chaosX: 1.2,  delay: 0.6 },
     { label: 'Agents',     desc: 'Workflows',   color: '#01A6BC', textColor: '#ffffff', route: '/products/ai-agents',     px: 3.8,  w: 2.6, h: 2.1, chaosX: 1.4,  delay: 0.3 },
     { label: 'Tools',      desc: '',            color: '#FA547C', textColor: '#ffffff', route: '/products/neural-routing',px: 4.3,  w: 2.4, h: 2.6, chaosX: 1.0,  delay: 1.2 },
@@ -711,7 +711,7 @@ export function HeroCards3DScene() {
                 {!isMobile && <TriangleCollider camBaseX={camBaseX} camBaseY={camBaseY} camBaseZ={camBaseZ} fov={50} />}
             </Physics>
 
-            <ContactShadows position={[0, floorY + 0.02, 0]} opacity={0.45} scale={20} blur={2.4} far={5} frames={1} />
+            <ContactShadows position={[0, floorY + 0.02, 0]} opacity={0.6} scale={25} blur={2.5} far={6} frames={1} />
         </Canvas>
     );
 }
