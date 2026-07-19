@@ -1,0 +1,263 @@
+/* ============================================================
+   Consulting Workshop Intake - Window 1
+   Design language: Platform style with yellow accent (#FFD800)
+   ============================================================ */
+
+.container {
+  min-height: 100vh;
+  background: transparent;
+  color: var(--text-primary, #0f172a);
+  padding: 40px 20px;
+}
+
+.grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+}
+
+/* ============================================================
+   Left Column: Value Proposition
+   ============================================================ */
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.header {
+  margin-bottom: 8px;
+}
+
+.title {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: var(--text-primary, #111827);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #FFD800;
+  margin: 0;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.description p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-secondary, #6b7280);
+  margin: 0;
+}
+
+.benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.benefit {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary, #374151);
+}
+
+.checkIcon {
+  color: #71C23E;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ============================================================
+   Right Column: Form Card
+   ============================================================ */
+.rightColumn {
+  position: sticky;
+  top: 40px;
+}
+
+.formCard {
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
+  border-radius: 20px;
+  padding: 32px 28px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+.formTitle {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--text-primary, #111827);
+}
+
+.formSubtitle {
+  font-size: 14px;
+  color: var(--text-secondary, #6b7280);
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroup label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.12));
+  border-radius: 10px;
+  font-size: 14px;
+  background: var(--surface, #ffffff);
+  color: var(--text-primary, #111827);
+  transition: all 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #FFD800;
+  box-shadow: 0 0 0 3px rgba(255, 216, 0, 0.1);
+}
+
+.formGroup input::placeholder,
+.formGroup textarea::placeholder {
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.inputError {
+  border-color: #ef4444 !important;
+}
+
+.errorText {
+  font-size: 12px;
+  color: #ef4444;
+  margin-top: -4px;
+}
+
+.calendarPlaceholder {
+  padding: 16px;
+  background: var(--surface-hover, rgba(0, 0, 0, 0.03));
+  border: 1px dashed var(--border, rgba(0, 0, 0, 0.12));
+  border-radius: 10px;
+}
+
+.calendarText {
+  font-size: 13px;
+  color: var(--text-tertiary, #9ca3af);
+  margin: 0;
+  text-align: center;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 14px 20px;
+  background: #FFD800;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #14140f;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #e6c200;
+  transform: translateY(-1px);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   Force light mode for this page
+   ============================================================ */
+[data-theme='dark'] .container {
+  color: var(--text-primary, #0f172a);
+}
+
+[data-theme='dark'] .formCard {
+  background: var(--surface, #ffffff);
+  border-color: var(--border, rgba(0, 0, 0, 0.08));
+}
+
+[data-theme='dark'] .title,
+[data-theme='dark'] .formTitle,
+[data-theme='dark'] .formGroup label {
+  color: var(--text-primary, #111827);
+}
+
+[data-theme='dark'] .description p,
+[data-theme='dark'] .benefit,
+[data-theme='dark'] .formSubtitle {
+  color: var(--text-secondary, #6b7280);
+}
+
+[data-theme='dark'] .formGroup input,
+[data-theme='dark'] .formGroup textarea {
+  background: var(--surface, #ffffff);
+  border-color: var(--border, rgba(0, 0, 0, 0.12));
+  color: var(--text-primary, #111827);
+}
+
+[data-theme='dark'] .formGroup input:focus,
+[data-theme='dark'] .formGroup textarea:focus {
+  border-color: #FFD800;
+}
+
+[data-theme='dark'] .calendarPlaceholder {
+  background: var(--surface-hover, rgba(0, 0, 0, 0.03));
+  border-color: var(--border, rgba(0, 0, 0, 0.12));
+}
