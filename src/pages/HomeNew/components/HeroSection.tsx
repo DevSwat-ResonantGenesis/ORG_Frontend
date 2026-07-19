@@ -1,11 +1,11 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import heroTitleStyles from '@/components/ui/HeroTitle.module.css';
 import styles from '../HomeNew.module.css';
 import buttonStyles from './HeroButton.module.css';
 import { isAuthenticated } from '@/utils/auth-cookies';
 import { useThemeStore } from '@/store/themeStore';
-import { HeroCards3DScene } from './HeroCards3D';
+import { ProductSlideshow } from './ProductSlideshow';
 
 export const HeroSection = () => {
     const navigate = useNavigate();
@@ -103,9 +103,7 @@ export const HeroSection = () => {
                 </button>
             </div>
 
-            <Suspense fallback={null}>
-                <HeroCards3DScene isDark={isDark} />
-            </Suspense>
+            <ProductSlideshow isDark={isDark} />
 
             <div className={styles.heroBottomBar}>
                 <div className={styles.heroBottomSocial}>
