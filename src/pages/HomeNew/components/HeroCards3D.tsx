@@ -129,7 +129,7 @@ function Floor({ y }: { y: number }) {
         type: 'Static',
         material: { friction: 0.5, restitution: 0.15 },
     }));
-    return <mesh ref={ref} visible={false}><planeGeometry args={[60, 60]} /></mesh>;
+    return <mesh ref={ref} visible={false} receiveShadow><planeGeometry args={[60, 60]} /></mesh>;
 }
 
 function Wall({ x, facing }: { x: number; facing: 1 | -1 }) {
@@ -555,7 +555,7 @@ function FallingCard({ card, isMobile, sizeScale, spawnX, spawnY, gravity }: {
             onPointerUp={onPointerUp}
             onContextMenu={(e) => e.nativeEvent.preventDefault()}
         >
-            <RoundedBox args={[card.w, card.h, DEPTH]} radius={RADIUS} smoothness={4}>
+            <RoundedBox args={[card.w, card.h, DEPTH]} radius={RADIUS} smoothness={4} castShadow>
                 <meshPhysicalMaterial
                     color={color}
                     transparent
@@ -697,7 +697,7 @@ export function HeroCards3DScene() {
             dpr={[1, isMobile ? 1.5 : 2]}
         >
             <ambientLight intensity={0.6} />
-            <directionalLight position={[5, 8, 5]} intensity={0.8} />
+            <directionalLight position={[5, 8, 5]} intensity={0.8} castShadow shadow-mapSize={[1024, 1024]} shadow-camera-far={20} shadow-camera-left={-10} shadow-camera-right={10} shadow-camera-top={10} shadow-camera-bottom={-10} />
             <directionalLight position={[-3, -2, 4]} intensity={0.3} color="#FFD800" />
             <pointLight position={[0, -3, 3]} intensity={0.4} color="#01A6BC" />
 
