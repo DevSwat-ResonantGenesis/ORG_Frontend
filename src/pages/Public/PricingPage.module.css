@@ -117,17 +117,6 @@
   border-color: #FFD800;
 }
 
-.planCardConsultingWorkshop .planName,
-.planCardConsultingWorkshop .planPrice,
-.planCardConsultingWorkshop .planCredits,
-.planCardConsultingWorkshop .planFeatureItem {
-  color: #14140f;
-}
-
-.planCardConsultingWorkshop .planCardHeader {
-  color: #14140f;
-}
-
 .planCardHeader {
   display: flex;
   align-items: center;
