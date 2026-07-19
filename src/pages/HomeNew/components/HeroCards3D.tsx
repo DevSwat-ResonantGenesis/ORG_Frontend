@@ -200,7 +200,7 @@ function Scene({ cards, camBaseX, camBaseZ, floorY, spawnY, isMobile, sizeScale,
     const visibleWidth = visibleHeight * (size.width / size.height);
     const margin = 0.3;
     const halfWidth = Math.max(1, visibleWidth / 2 - margin);
-    const wallMin = camBaseX - halfWidth;
+    const wallMin = camBaseX;
     const wallMax = camBaseX + halfWidth;
     const spawnXs = layoutSpawnX(cards, wallMin, wallMax, camBaseX);
 
@@ -604,7 +604,7 @@ export function HeroCards3DScene() {
     const cards = tier === 'mobile' ? CARDS_MOBILE : tier === 'laptop' ? CARDS_LAPTOP : CARDS;
     const sizeScale = tier === 'mobile' ? MOBILE_SCALE : tier === 'laptop' ? LAPTOP_SCALE : 1;
 
-    const camBaseX = isMobile ? 0 : isLaptop ? 0.3 : 0.3;
+    const camBaseX = isMobile ? 0 : isLaptop ? -1.5 : -2;
     const camBaseY = isMobile ? -0.3 : 0;
     const camBaseZ = isMobile ? 9 : isLaptop ? 14 : 10;
     const floorY = isMobile ? -3.4 : -3.5;
