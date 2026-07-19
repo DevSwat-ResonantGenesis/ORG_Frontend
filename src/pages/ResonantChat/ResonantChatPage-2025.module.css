@@ -428,6 +428,10 @@
   color: #E0E0E0;
 }
 
+[data-theme='light'] .message.assistant .messageContent {
+  color: rgba(15, 23, 42, 0.9);
+}
+
 /* Assistant (output) messages: remove all hover/selected/transition effects */
 .message.assistant {
   transition: none;
