@@ -533,7 +533,7 @@ function FallingCard({ card, isMobile, sizeScale, spawnX, spawnY, gravity }: {
            correction can get absorbed by contact friction — this can't, since it
            runs every frame). */
         const elapsed = (performance.now() - releasedAt.current) / 1000;
-        if (elapsed > 1.4) {
+        if (elapsed > 2.0) {
             const angle = ((rotRef.current[2] + Math.PI) % (2 * Math.PI)) - Math.PI;
             const spring = -angle * 3.2;
             const nextAngVel = angVelRef.current[2] * 0.85 + spring * delta;
