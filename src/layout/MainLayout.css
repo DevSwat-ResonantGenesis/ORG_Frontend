@@ -9,14 +9,30 @@
 
   html[data-theme='dark'],
   body[data-theme='dark'] {
-    background-color: var(--color-bg-root, #0a0a0c);
-    background: var(--color-bg-root, #0a0a0c);
+    background-color: #0a0a0c;
+    background: #0a0a0c;
   }
 
   html[data-theme='light'],
   body[data-theme='light'] {
     background-color: #ffffff;
     background: #ffffff;
+  }
+
+  /* Add safe area background for mobile */
+  html::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top);
+    background: #ffffff;
+    z-index: 99999;
+  }
+
+  [data-theme='dark'] html::before {
+    background: #0a0a0c;
   }
 
   html.landingPageNoScroll,

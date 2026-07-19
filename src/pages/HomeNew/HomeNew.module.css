@@ -41,22 +41,6 @@
   [data-theme='dark'] .page {
     background: #0a0a0c;
   }
-
-  /* Add safe area background for hero page */
-  .page::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: env(safe-area-inset-top);
-    background: #ffffff;
-    z-index: 99999;
-  }
-
-  [data-theme='dark'] .page::before {
-    background: #0a0a0c;
-  }
 }
 
 [data-theme='dark'] .page {
