@@ -12,6 +12,15 @@ interface ThemeState {
 
 // Default theme: light always — dark mode toggle removed
 const getInitialTheme = (): Theme => {
+  if (typeof window !== 'undefined') {
+    try {
+      // Clear any saved dark theme preference to force light as default
+      const saved = localStorage.getItem('rg_theme');
+      if (saved === 'dark') {
+        localStorage.removeItem('rg_theme');
+      }
+    } catch { /* ignore in iframes */ }
+  }
   return 'light';
 };
 
