@@ -26,8 +26,7 @@ const SubscriptionRequiredRoute = ({ children }: Props) => {
         if (response.ok) {
           const data = await response.json();
           // Check if user has an active subscription (not free plan)
-          // Accept both 'active' and 'trialing' as valid subscription statuses
-          const isActiveSubscription = data.plan && data.plan !== 'free' && (data.status === 'active' || data.status === 'trialing');
+          const isActiveSubscription = data.plan && data.plan !== 'free' && data.status === 'active';
           setHasSubscription(isActiveSubscription);
         } else {
           // If we can't check subscription (404 or other error), assume no subscription
