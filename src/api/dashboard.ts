@@ -211,7 +211,7 @@ export const fetchDashboardData = async (): Promise<DashboardData> => {
   else if (plan === 'enterprise') tier = 'enterprise';
 
   // Get REAL credits data
-  const balance = dashboard?.current_balance ?? credits?.balance ?? null;
+  const balance = dashboard?.current_balance ?? credits?.balance ?? subscription?.credit_balance ?? null;
   let creditLimit = dashboard?.tier_credits ?? null;
 
   const usedThisMonthFromBackend = dashboard?.usage_this_period ?? null;
