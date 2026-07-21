@@ -19,14 +19,19 @@ const SubscriptionRequiredRoute = ({ children }: Props) => {
       }
 
       try {
+        const token = localStorage.getItem('access_token') || localStorage.getItem('owner_token');
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
         const response = await fetch('/api/billing/subscription', {
           credentials: 'include',
+          headers,
         });
 
         if (response.ok) {
           const data = await response.json();
-          // Check if user has an active subscription (not free plan)
-          const isActiveSubscription = data.plan && data.plan !== 'free' && data.status === 'active';
+          // Check if user has an active subscription
+          const isActiveSubscription = data.plan && data.status === 'active';
           setHasSubscription(isActiveSubscription);
         } else {
           // If we can't check subscription (404 or other error), assume no subscription
