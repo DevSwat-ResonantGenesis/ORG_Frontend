@@ -167,17 +167,17 @@ const OAuthCallbackPage: React.FC = () => {
           return;
         }
 
-        // Always redirect to dashboard after login (pricing page only for sign-up)
-        window.location.href = '/dashboard';
+        // Always redirect to resonant chat after login (pricing page only for sign-up)
+        window.location.href = '/chat';
         return;
       } catch (error: any) {
         logger.error('OAuth callback error', error, { component: 'OAuthCallback' });
 
-        // Even on error, if user is authenticated, redirect to dashboard
+        // Even on error, if user is authenticated, redirect to resonant chat
         try {
           const user = await getCurrentUser();
           if (user) {
-            window.location.href = '/dashboard';
+            window.location.href = '/chat';
             return;
           }
         } catch {
