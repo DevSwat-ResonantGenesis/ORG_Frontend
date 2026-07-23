@@ -2,7 +2,6 @@ import React from 'react';
 import styles from '../HomeNew.module.css';
 import { HeroSection } from './HeroSection';
 import { HeroCards3DScene } from './HeroCards3D';
-import { VideoSection } from './VideoSection';
 import { isAuthenticated } from '@/utils/auth-cookies';
 import { useThemeStore } from '@/store/themeStore';
 
@@ -34,24 +33,8 @@ export const ScrollLanding = () => {
                 <HeroSection />
             </section>
 
-            {/* Section 1: Hero duplicate with background */}
-            <section 
-                className={styles.heroScrollSection}
-                style={{ 
-                    backgroundImage: `url(${backgroundImages[0]})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat'
-                }}
-            >
-                {/* Empty section - just background image */}
-            </section>
-
-            {/* NEW: Video Section between section 1 and 2 */}
-            <VideoSection />
-
-            {/* Sections 2-4: Hero duplicates WITHOUT title, CTA, and 3D cards */}
-            {[2, 3, 4].map((index) => (
+            {/* Sections 1-4: Hero duplicates WITHOUT title, CTA, and 3D cards */}
+            {[1, 2, 3, 4].map((index) => (
                 <section 
                     key={index}
                     className={styles.heroScrollSection}
