@@ -115,7 +115,7 @@ function CameraRig({ baseX, baseY, baseZ }: { baseX: number; baseY: number; base
         camera.position.x = baseX + lerped.current.x * 1.1;
         camera.position.y = baseY - lerped.current.y * 0.7;
         camera.position.z = baseZ;
-        camera.rotation.y = 3 * (Math.PI / 180); // Turn camera 3 degrees to the right
+        camera.rotation.y = 0; // Straight ahead
         /* straight-ahead dolly (no lookAt) — keeps the frustum symmetric around
            the camera so world-space bounds stay predictable as it drifts */
     });
@@ -216,125 +216,11 @@ function Scene({ cards, camBaseX, camBaseY, camBaseZ, floorY, spawnY, isMobile, 
             <Floor y={floorY} />
             <Wall x={wallMin} facing={1} />
             <Wall x={wallMax} facing={-1} />
-            <TitleCollider camBaseX={camBaseX} camBaseY={camBaseY} camBaseZ={camBaseZ} fov={fov} />
-            <TriangleCollider camBaseX={camBaseX} camBaseY={camBaseY} camBaseZ={camBaseZ} fov={fov} />
             {cards.map((card, i) => (
                 <FallingCard key={card.label + i} card={card} isMobile={isMobile} sizeScale={sizeScale} spawnX={spawnXs[i]} spawnY={spawnY} gravity={gravity} />
             ))}
         </>
     );
-}
-
-/* An invisible static box matching the headline/CTA text block's actual screen position —
-   so falling blocks physically collide with it and can't slide behind/through it, treating
-   it as a real obstacle the same way the floor and side walls are. Measured from the DOM
-   (via the `data-hero-textblock` marker in HeroSection.tsx) and converted into world
-   coordinates using the same screen<->world mapping the walls use, then created once as a
-   static physics body — matching how the rest of the scene's static geometry behaves. */
-function TitleCollider({ camBaseX, camBaseY, camBaseZ, fov }: { camBaseX: number; camBaseY: number; camBaseZ: number; fov: number }) {
-    const { size } = useThree();
-    const [box, setBox] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
-
-    useEffect(() => {
-        const measure = () => {
-            const el = document.querySelector('[data-hero-textblock]');
-            if (!el) return;
-            const r = el.getBoundingClientRect();
-            if (r.width < 4 || r.height < 4) return;
-            const vFOV = (fov * Math.PI) / 180;
-            const visibleHeight = 2 * Math.tan(vFOV / 2) * camBaseZ;
-            const visibleWidth = visibleHeight * (size.width / size.height);
-            const pad = 0.18;
-            const worldLeft = camBaseX - visibleWidth / 2 + (r.left / size.width) * visibleWidth - pad;
-            const worldRight = camBaseX - visibleWidth / 2 + (r.right / size.width) * visibleWidth + pad;
-            const worldTop = camBaseY + visibleHeight / 2 - (r.top / size.height) * visibleHeight + pad;
-            const worldBottom = camBaseY + visibleHeight / 2 - (r.bottom / size.height) * visibleHeight - pad;
-            const w = Math.max(0.3, worldRight - worldLeft);
-            const h = Math.max(0.3, worldTop - worldBottom);
-            /* Safety net: never let this become big enough to block the whole fall zone —
-               if the measured element covers most of the screen (unexpected layout state),
-               skip creating an obstacle rather than risk trapping every block above it. */
-            if (w > visibleWidth * 0.75 || h > visibleHeight * 0.6) return;
-            setBox({ x: (worldLeft + worldRight) / 2, y: (worldTop + worldBottom) / 2, w, h });
-        };
-        const t = window.setTimeout(measure, 350);
-        window.addEventListener('resize', measure, { passive: true });
-        return () => { window.clearTimeout(t); window.removeEventListener('resize', measure); };
-    }, [size, camBaseX, camBaseY, camBaseZ, fov]);
-
-    if (!box) return null;
-    return <TitleBox {...box} />;
-}
-
-function TitleBox({ x, y, w, h }: { x: number; y: number; w: number; h: number }) {
-    const [ref] = useBox<THREE.Mesh>(() => ({
-        type: 'Static',
-        position: [x, y, 0],
-        args: [w, h, DEPTH * 2],
-        material: { friction: 0.4, restitution: 0.08 },
-    }));
-    return <mesh ref={ref} visible={false} />;
-}
-
-/* Triangle collider above title to make cards slide right when falling */
-function TriangleCollider({ camBaseX, camBaseY, camBaseZ, fov }: { camBaseX: number; camBaseY: number; camBaseZ: number; fov: number }) {
-    const { size } = useThree();
-    const [triangle, setTriangle] = useState<{ x: number; y: number; size: number } | null>(null);
-
-    useEffect(() => {
-        const measure = () => {
-            const el = document.querySelector('[data-hero-triangle]');
-            if (!el) return;
-            const r = el.getBoundingClientRect();
-            if (r.width < 4 || r.height < 4) return;
-            const vFOV = (fov * Math.PI) / 180;
-            const visibleHeight = 2 * Math.tan(vFOV / 2) * camBaseZ;
-            const visibleWidth = visibleHeight * (size.width / size.height);
-            
-            // Position triangle based on the DOM element
-            const worldLeft = camBaseX - visibleWidth / 2 + (r.left / size.width) * visibleWidth;
-            const worldTop = camBaseY + visibleHeight / 2 - (r.top / size.height) * visibleHeight;
-            const triangleSize = Math.min(r.width, r.height) * 0.8;
-            
-            setTriangle({ 
-                x: worldLeft + triangleSize / 2, 
-                y: worldTop - triangleSize / 2, 
-                size: triangleSize 
-            });
-        };
-        const t = window.setTimeout(measure, 350);
-        window.addEventListener('resize', measure, { passive: true });
-        return () => { window.clearTimeout(t); window.removeEventListener('resize', measure); };
-    }, [size, camBaseX, camBaseY, camBaseZ, fov]);
-
-    if (!triangle) return null;
-    return <TriangleShape {...triangle} />;
-}
-
-function TriangleShape({ x, y, size }: { x: number; y: number; size: number }) {
-    // Create a triangular prism shape using vertices
-    const vertices: [number, number, number][] = [
-        // Bottom triangle (z = -depth/2)
-        [0, -size/2, -DEPTH], [size/2, size/2, -DEPTH], [-size/2, size/2, -DEPTH],
-        // Top triangle (z = depth/2)
-        [0, -size/2, DEPTH], [size/2, size/2, DEPTH], [-size/2, size/2, DEPTH],
-    ];
-    
-    const faces: [number, number, number][] = [
-        [0, 1, 2], [3, 5, 4], // Bottom and top
-        [0, 3, 4], [0, 4, 1], // Side 1
-        [1, 4, 5], [1, 5, 2], // Side 2
-        [2, 5, 3], [2, 3, 0], // Side 3
-    ];
-
-    const [ref] = useConvexPolyhedron(() => ({
-        type: 'Static',
-        position: [x, y, 0],
-        args: [vertices, faces],
-        material: { friction: 0.3, restitution: 0.05 },
-    }));
-    
-    return <mesh ref={ref as any} visible={false} />;
 }
 
 /* Shared hover state so neighboring cards could react (kept minimal: just cosmetic lift) */
@@ -706,11 +592,6 @@ export function HeroCards3DScene({ isDark = false }: { isDark?: boolean }) {
 
             <Physics gravity={gravity} allowSleep iterations={14}>
                 <Scene cards={cards} camBaseX={camBaseX} camBaseY={camBaseY} camBaseZ={camBaseZ} floorY={floorY} spawnY={spawnY} isMobile={isMobile} sizeScale={sizeScale} fov={50} gravity={gravity} />
-                {/* Desktop only — on mobile the headline becomes a full-width stacked banner
-                    (not a left-side panel), so treating it as an obstacle would block the
-                    entire fall zone with nowhere left to drop through. */}
-                {!isMobile && <TitleCollider camBaseX={camBaseX} camBaseY={camBaseY} camBaseZ={camBaseZ} fov={50} />}
-                {!isMobile && <TriangleCollider camBaseX={camBaseX} camBaseY={camBaseY} camBaseZ={camBaseZ} fov={50} />}
             </Physics>
 
             <ContactShadows position={[0, floorY + 0.02, 0]} opacity={isDark ? 0.5 : 0.7} scale={25} blur={2.5} far={6} frames={1} />

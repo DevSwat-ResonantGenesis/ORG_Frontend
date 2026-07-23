@@ -276,6 +276,7 @@
   flex-direction: column;
   align-items: flex-start;
   max-width: 70vw;
+  background: transparent;
 }
 
 /* ---- Triangle block above title for 3D card collision ---- */
@@ -1304,7 +1305,67 @@
   font-size: 14px;
   line-height: 1.55;
   white-space: pre-wrap;
-  word-break: break-word;
+}
+
+/* ============================================================
+   Scroll Landing Page - Section-based scrolling
+   ============================================================ */
+.scrollLandingContainer {
+  height: 100vh;
+  width: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.scrollLandingContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.heroScrollSection {
+  height: 100vh;
+  width: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Mobile background images - Section 0 has no background, sections 1-5 use SVG */
+@media (max-width: 768px) {
+  .heroScrollSection:nth-child(2) {
+    background-image: url('/1mobile.svg') !important;
+  }
+  .heroScrollSection:nth-child(3) {
+    background-image: url('/2mobile.svg') !important;
+  }
+  .heroScrollSection:nth-child(4) {
+    background-image: url('/3mobile.svg') !important;
+  }
+  .heroScrollSection:nth-child(5) {
+    background-image: url('/4mobile.svg') !important;
+  }
+  .heroScrollSection:nth-child(6) {
+    background-image: url('/5mobile.svg') !important;
+  }
+}
+
+/* Desktop scroll snapping - ensure it works on laptop/desktop */
+@media (min-width: 769px) {
+  .scrollLandingContainer {
+    scroll-snap-type: y mandatory !important;
+    scroll-behavior: smooth !important;
+  }
+  .heroScrollSection {
+    scroll-snap-align: start !important;
+    scroll-snap-stop: always !important;
+  }
 }
 
 .chatOverlayMsgUser .chatOverlayMsgContent {

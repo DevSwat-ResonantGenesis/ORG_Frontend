@@ -174,7 +174,28 @@ const OAuthCallbackPage: React.FC = () => {
         } catch {
         }
 
-        // Force redirect to pricing page - subscription is required for all users
+        // Check subscription status to determine redirect
+        try {
+          const subResponse = await fetch('/api/billing/subscription', {
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          if (subResponse.ok) {
+            const subData = await subResponse.json();
+            // If user has active subscription, redirect to dashboard
+            if (subData.plan && subData.status === 'active') {
+              window.location.href = '/dashboard';
+              return;
+            }
+          }
+        } catch (e) {
+          // If subscription check fails, default to pricing page
+          logger.warn('Failed to check subscription status', e);
+        }
+
+        // No active subscription - redirect to pricing page
         window.location.href = '/new-user-pricing';
         return;
       } catch (error: any) {

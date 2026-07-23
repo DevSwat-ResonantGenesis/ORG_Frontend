@@ -4,6 +4,7 @@ import styles from './HomeNew.module.css';
 
 // Import sub-components
 import { HeroSection } from './components/HeroSection';
+import { ScrollLanding } from './components/ScrollLanding';
 
 
 const HomeNew = () => {
@@ -60,7 +61,7 @@ const HomeNew = () => {
 
       {/* Main Content - Streamlined for conversion */}
       <main className={styles.main}>
-        <HeroSection />
+        <ScrollLanding />
       </main>
     </div>
   );
