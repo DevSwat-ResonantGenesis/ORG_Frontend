@@ -34,7 +34,7 @@ export const VideoSection = () => {
     return (
         <section 
             ref={sectionRef}
-            className={styles.videoSection}
+            className={`${styles.heroScrollSection} ${styles.videoSection}`}
             style={{
                 height: '100vh',
                 width: '100%',
