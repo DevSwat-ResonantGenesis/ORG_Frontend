@@ -167,45 +167,17 @@ const OAuthCallbackPage: React.FC = () => {
           return;
         }
 
-        // Clear any existing post-login redirect to force pricing page
-        try {
-          sessionStorage.removeItem('rg-post-login-target');
-          document.cookie = `rg_post_login_target=; Max-Age=0; Path=/`;
-        } catch {
-        }
-
-        // Check subscription status to determine redirect
-        try {
-          const subResponse = await fetch('/api/billing/subscription', {
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          if (subResponse.ok) {
-            const subData = await subResponse.json();
-            // If user has active subscription, redirect to dashboard
-            if (subData.plan && subData.status === 'active') {
-              window.location.href = '/dashboard';
-              return;
-            }
-          }
-        } catch (e) {
-          // If subscription check fails, default to pricing page
-          logger.warn('Failed to check subscription status', e);
-        }
-
-        // No active subscription - redirect to pricing page
-        window.location.href = '/new-user-pricing';
+        // Always redirect to dashboard after login (pricing page only for sign-up)
+        window.location.href = '/dashboard';
         return;
       } catch (error: any) {
         logger.error('OAuth callback error', error, { component: 'OAuthCallback' });
 
-        // Even on error, if user is authenticated, force to pricing page
+        // Even on error, if user is authenticated, redirect to dashboard
         try {
           const user = await getCurrentUser();
           if (user) {
-            window.location.href = '/new-user-pricing';
+            window.location.href = '/dashboard';
             return;
           }
         } catch {
