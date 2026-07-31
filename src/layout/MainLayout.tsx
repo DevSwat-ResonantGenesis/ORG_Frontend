@@ -38,8 +38,8 @@ const MainLayout = ({ children }: Props) => {
     document.querySelectorAll('meta[name="theme-color"]').forEach(el => {
       (el as HTMLMetaElement).content = color;
     });
-    // Also set body bg to match for safe-area bleed
-    document.body.style.backgroundColor = color;
+    // Remove inline body background style to let CSS variables control it
+    document.body.style.backgroundColor = '';
   }, [theme, location.pathname, isResonantChatPage, isLandingPage]);
 
   // Enable global keyboard shortcuts
