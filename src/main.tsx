@@ -20,15 +20,12 @@ if (import.meta.env.DEV) {
 // Initialize Sentry error tracking
 initSentry();
 
-// PRIORITIZE LIGHT MODE - Set light mode as default on page start
+// Respect the theme from HTML (data-theme="dark" in index.html)
 // This runs BEFORE React renders to prevent flash of wrong mode
 if (typeof window !== 'undefined') {
-  // Clear any saved dark theme preference to force light as default
+  // Get theme from localStorage or use HTML's default (dark)
   const savedTheme = localStorage.getItem('rg_theme');
-  if (savedTheme === 'dark') {
-    localStorage.removeItem('rg_theme');
-  }
-  const defaultTheme = 'light'; // Always default to light
+  const defaultTheme = savedTheme || 'dark'; // Default to dark to match HTML
 
   // Set theme attributes only - modular CSS handles all styling (not global.css)
   document.documentElement.setAttribute('data-theme', defaultTheme);

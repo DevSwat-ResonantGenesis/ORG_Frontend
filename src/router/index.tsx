@@ -68,6 +68,7 @@ const SecurityPage = lazy(() => import('../pages/Public/SecurityPage'));
 const PrivacyPage = lazy(() => import('../pages/Public/PrivacyPage'));
 const TermsPage = lazy(() => import('../pages/Public/TermsPage'));
 const CommunityPage = lazy(() => import('../pages/Public/CommunityPage'));
+const HashSphere = lazy(() => import('../components/HashSphere/HashSphere'));
 
 // Product Pages
 const AIAgentsProductPage = lazy(() => import('../pages/Products/AIAgentsPage'));
@@ -511,6 +512,10 @@ const router = createBrowserRouter([
   {
     path: '/community',
     element: withPublicShell(<CommunityPage />)
+  },
+  {
+    path: '/aivara',
+    element: withPublicShell(<HashSphere />)
   },
   // Product Pages
   {
