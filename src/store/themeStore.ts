@@ -10,25 +10,25 @@ interface ThemeState {
   toggleTheme: () => void;
 }
 
-// Default theme: light always — dark mode toggle removed
+// Default theme: dark mode
 const getInitialTheme = (): Theme => {
   if (typeof window !== 'undefined') {
     try {
-      // Clear any saved dark theme preference to force light as default
+      // Check for saved theme preference
       const saved = localStorage.getItem('rg_theme');
-      if (saved === 'dark') {
-        localStorage.removeItem('rg_theme');
+      if (saved === 'light' || saved === 'dark') {
+        return saved;
       }
     } catch { /* ignore in iframes */ }
   }
-  return 'light';
+  return 'dark';
 };
 
 export const useThemeStore = create<ThemeState>((set) => {
-  // Start with light mode as default
+  // Start with dark mode as default
   const initialTheme = getInitialTheme();
   
-  // Initialize on store creation - Set light mode as default
+  // Initialize on store creation - Set dark mode as default
   if (typeof window !== 'undefined') {
     // Set theme on HTML and body
     document.documentElement.setAttribute('data-theme', initialTheme);

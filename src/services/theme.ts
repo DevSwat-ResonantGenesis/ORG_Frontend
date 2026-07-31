@@ -354,7 +354,7 @@ class ThemeService {
   constructor() {
     this.registerTheme(DARK_THEME);
     this.registerTheme(LIGHT_THEME);
-    this.activeTheme = DARK_THEME;
+    this.activeTheme = DARK_THEME; // Default to dark mode
     this.loadSavedTheme();
     this.applyTheme();
   }
