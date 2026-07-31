@@ -20,18 +20,16 @@ if (import.meta.env.DEV) {
 // Initialize Sentry error tracking
 initSentry();
 
-// Respect the theme from HTML (data-theme="dark" in index.html)
+// Respect the theme from HTML (data-theme="light" in index.html)
 // This runs BEFORE React renders to prevent flash of wrong mode
 if (typeof window !== 'undefined') {
-  // Get theme from localStorage or use HTML's default (dark)
+  // Get theme from localStorage or use HTML's default (light)
   const savedTheme = localStorage.getItem('rg_theme');
-  const defaultTheme = savedTheme || 'dark'; // Default to dark to match HTML
+  const defaultTheme = savedTheme || 'light'; // Default to light to match HTML
 
-  // Set theme attributes only - modular CSS handles all styling (not global.css)
+  // Set only data-theme attribute - let CSS handle color-scheme and other styling
   document.documentElement.setAttribute('data-theme', defaultTheme);
-  document.documentElement.setAttribute('theme', defaultTheme);
   document.body.setAttribute('data-theme', defaultTheme);
-  document.documentElement.style.colorScheme = defaultTheme;
 
   // Set initial header height CSS variable (will be updated by Header component)
   // Default to 60px, but Header will update with actual height
