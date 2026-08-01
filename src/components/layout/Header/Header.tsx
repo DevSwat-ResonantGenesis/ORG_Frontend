@@ -439,6 +439,14 @@ export const Header: React.FC<HeaderProps> = ({
               Pricing
             </button>
 
+            {/* About Link */}
+            <button
+              className={styles.navButton}
+              onClick={() => navigate('/about')}
+            >
+              About
+            </button>
+
           </nav>
 
           {/* AgentOS-specific elements when on /agents page */}
