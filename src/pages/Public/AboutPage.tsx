@@ -2,33 +2,8 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { ROUTE_META } from '@/config/routeMeta.mjs';
-import {
-  User, Code2, Layers, Shield, Cpu, ArrowRight,
-  Github, Linkedin, Youtube, Twitter
-} from 'lucide-react';
-
-const s: Record<string, React.CSSProperties> = {
-  page: { minHeight: '100vh', background: 'linear-gradient(180deg, #050508 0%, #0a0a12 100%)', color: '#fff' },
-  hero: { textAlign: 'center', padding: '5rem 2rem 3rem', maxWidth: 900, margin: '0 auto' },
-  badge: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 14px', background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.3)', borderRadius: 100, fontSize: '0.8rem', color: '#a5b4fc', marginBottom: '1.5rem' },
-  h1: { fontSize: '2.8rem', fontWeight: 700, lineHeight: 1.2, marginBottom: '1rem' },
-  lead: { fontSize: '1.15rem', color: 'rgba(255,255,255,0.65)', lineHeight: 1.7, maxWidth: 700, margin: '0 auto 2.5rem' },
-  section: { maxWidth: 900, margin: '0 auto', padding: '0 2rem 4rem' },
-  h2: { fontSize: '1.8rem', fontWeight: 700, marginBottom: '1rem' },
-  p: { fontSize: '1rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.75, marginBottom: '1.25rem' },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' },
-  card: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '1.5rem' },
-  cardTitle: { fontSize: '1.1rem', fontWeight: 600, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: 8 },
-  cardText: { fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 },
-  stat: { textAlign: 'center', padding: '1.5rem' },
-  statNum: { fontSize: '2.2rem', fontWeight: 700, color: '#818cf8' },
-  statLabel: { fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)', marginTop: 4 },
-  cta: { textAlign: 'center', padding: '3rem 2rem 5rem' },
-  btn: { display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 28px', background: '#6366f1', color: '#fff', borderRadius: 8, border: 'none', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', textDecoration: 'none' },
-  links: { display: 'flex', justifyContent: 'center', gap: '1.5rem', marginTop: '1.5rem' },
-  link: { color: 'rgba(255,255,255,0.5)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.9rem' },
-  divider: { height: 1, background: 'rgba(255,255,255,0.06)', margin: '0 auto', maxWidth: 900 },
-};
+import { ArrowRight, Twitter, Linkedin, Github, Youtube } from 'lucide-react';
+import styles from './AboutPage.module.css';
 
 const meta = ROUTE_META['/about'];
 
@@ -36,7 +11,7 @@ const AboutPage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div style={s.page}>
+    <div className={styles.page}>
       <Helmet>
         <title>{meta.title}</title>
         <meta name="description" content={meta.description} />
@@ -50,107 +25,173 @@ const AboutPage: React.FC = () => {
           "@context": "https://schema.org",
           "@type": "AboutPage",
           "name": "About DevSwat",
-          "description": "Full-stack agentic AI infrastructure platform built from scratch.",
+          "description": "AI-native infrastructure platform for building autonomous software agents.",
           "url": "https://dev-swat.com/about",
           "mainEntity": {
             "@type": "Organization",
             "name": "DevSwat",
             "url": "https://dev-swat.com",
-            "founder": { "@type": "Person", "name": "Louie Nemesh", "jobTitle": "Founder & Lead Engineer" },
+            "founder": { "@type": "Person", "name": "Louie Nemesh", "jobTitle": "Founder & AI System Architect" },
             "description": "Agentic AI infrastructure for building, running, and scheduling server and local agents."
           }
         })}</script>
       </Helmet>
 
-      <section style={s.hero}>
-        <div style={s.badge}><User size={14} /> About DevSwat</div>
-        <h1 style={s.h1}>Built From Scratch.<br />By One Engineer.</h1>
-        <p style={s.lead}>
-          DevSwat is a full-stack, production-deployed agentic AI SaaS platform.
-          7 proprietary IP systems, ~550,000 lines of code — built in under 4 months by Louie Nemesh.
-          Every line of code is original. Every system is production-deployed.
+      {/* Section 0 - Full Screen YouTube Video */}
+      <section className={styles.videoSection}>
+        <div className={styles.videoContainer}>
+          <iframe
+            src="https://www.youtube.com/embed/0cyzNC5fzJU?autoplay=0&mute=0&controls=1&loop=0&playlist=0cyzNC5fzJU"
+            title="DevSwat Introduction"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+        <div className={styles.videoOverlay} />
+      </section>
+
+      {/* Section 1 - Hero */}
+      <section className={styles.heroSection}>
+        <div className={styles.heroBadge}>About DevSwat</div>
+        <h1 className={styles.heroTitle}>
+          While others believe in a bright future, we're developing it now.
+        </h1>
+        <h2 className={styles.heroSubtitle}>Problem It Solves</h2>
+        <p className={styles.heroDescription}>
+          Modern teams and founders often have strong ideas but spend too much time dealing with fragmented tools, 
+          context switching, manual coordination, and complex technical setup. DevSwat solves this by giving users 
+          a unified environment where they can turn ideas into working systems faster, with less engineering overhead 
+          and more control over how agents and workflows behave.
         </p>
       </section>
 
-      <div style={s.divider} />
+      {/* Section 2 - AI Infrastructure */}
+      <section className={styles.aiSection}>
+        <h2>AI is no longer just about powerful LLMs—it's about the infrastructure they are connected to.</h2>
+      </section>
 
-      <section style={s.section}>
-        <div style={{ ...s.grid, marginTop: '3rem' }}>
-          {[
-            { n: '~550K', l: 'Lines of Code' },
-            { n: '7', l: 'Proprietary IP Systems' },
-            { n: '4,384', l: 'API Endpoints' },
-            { n: '662', l: 'React Components' },
-            { n: '∞', l: 'LLM Providers' },
-            { n: '137', l: 'OpenClaw Tools' },
-          ].map((item) => (
-            <div key={item.l} style={{ ...s.card, ...s.stat }}>
-              <div style={s.statNum}>{item.n}</div>
-              <div style={s.statLabel}>{item.l}</div>
+      {/* Section 3 - Main Focus */}
+      <section className={styles.focusSection}>
+        <h2>Main Focus</h2>
+        <div className={styles.focusGrid}>
+          <div className={styles.focusCard}>
+            <h3>Support Services</h3>
+            <p>Comprehensive support infrastructure for deploying and managing AI agents at scale.</p>
+          </div>
+          <div className={styles.focusCard}>
+            <h3>Governmental Services</h3>
+            <p>Compliance-ready solutions for public sector organizations with strict governance requirements.</p>
+          </div>
+          <div className={styles.focusCard}>
+            <h3>Healthcare Services</h3>
+            <p>Secure, HIPAA-compliant AI workflows for medical applications and patient data processing.</p>
+          </div>
+          <div className={styles.focusCard}>
+            <h3>Education Services</h3>
+            <p>AI-powered tools for educational institutions, from personalized learning to administrative automation.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 4 - Summary */}
+      <section className={styles.summarySection}>
+        <h2>Summary Of What We Do</h2>
+        <p className={styles.summaryIntro}>
+          DevSwat is an AI-native infrastructure platform for building, orchestrating, and deploying autonomous 
+          software agents and digital products. Our system combines multi-agent orchestration, governed execution, 
+          memory-aware workflows, and developer tooling so users can move from idea to working product faster.
+        </p>
+        
+        <h2>Key Digital Solutions We Provide As Agentic AI Infrastructure</h2>
+        <div className={styles.summaryGrid}>
+          <div className={styles.summaryCard}>
+            <h3>Resonant Chat</h3>
+            <p>Is the command center for interacting with the platform, coordinating agents, triggering workflows, and accessing tools from one interface.</p>
+          </div>
+          <div className={styles.summaryCard}>
+            <h3>AI Agents Factory</h3>
+            <p>Lets users create, configure, govern, and deploy AI agents or agent teams for specific tasks and workflows.</p>
+          </div>
+          <div className={styles.summaryCard}>
+            <h3>IDE And Code Tools</h3>
+            <p>Support manual development, assisted coding, code analysis, and visualization for teams that want more control.</p>
+          </div>
+          <div className={styles.summaryCard}>
+            <h3>Memory And Governance</h3>
+            <p>Layers help preserve context, reduce drift, and keep agent actions traceable and policy-aware.</p>
+          </div>
+          <div className={styles.summaryCard}>
+            <h3>Product Strategy Analysis</h3>
+            <p>Analyzing product efficiency on the market, user behavior model, and existing product strategy, and providing a strict list of solutions for growth or/and repositioning.</p>
+          </div>
+          <div className={styles.summaryCard}>
+            <h3>Digital Aid Kit</h3>
+            <p>The Digital First Aid Kit technology aims to provide preliminary support for people facing the most common types of digital threats or misleading visual information.</p>
+          </div>
+        </div>
+
+        <div style={{ marginTop: '64px', textAlign: 'center' }}>
+          <div className={styles.statHighlight}>35%</div>
+          <div className={styles.statLabel}>less vision stress daily</div>
+        </div>
+      </section>
+
+      {/* Section 5 - Competitive Advantages */}
+      <section className={styles.advantagesSection}>
+        <h2>Competitive Advantages</h2>
+        
+        <div className={styles.founderCard}>
+          <div className={styles.founderImage}>
+            <img src="/image.svg" alt="Louie Nemesh" />
+          </div>
+          <div className={styles.founderInfo}>
+            <h3>Louie Nemesh</h3>
+            <div className={styles.founderRole}>X/@Louie.Nemesh — Founder / AI System Architect</div>
+            <p className={styles.founderBio}>
+              DevSwat is led by Louie Nemesh, founder and technical operator, with a background in product and 
+              engineering focused on AI-driven software systems, platform architecture, and startup tooling. Before 
+              founding DevSwat in the United States, Louie spent eight years helping digitalize local companies in 
+              Qatar, UAE and delivering solutions for top-tier enterprise clients across the MENA region.
+            </p>
+            <div className={styles.socialLinks}>
+              <a href="https://x.com/Louie.Nemesh" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
+                <Twitter size={16} /> X
+              </a>
+              <a href="https://www.linkedin.com/company/devswat/" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
+                <Linkedin size={16} /> LinkedIn
+              </a>
+              <a href="https://www.youtube.com/@DevSwat" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
+                <Youtube size={16} /> YouTube
+              </a>
+              <a href="https://github.com/DevSwat-ResonantGenesis" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
+                <Github size={16} /> GitHub
+              </a>
             </div>
-          ))}
+          </div>
+        </div>
+
+        <div className={styles.platformCard}>
+          <div className={styles.badge}>Development Stage</div>
+          <h3>Platform Architecture</h3>
+          <p>
+            DevSwat is currently in active development and iteration, with the platform evolving from core infrastructure 
+            into productized tools and user-facing workflows. The system is best described as an MVP or early 
+            production-stage platform, depending on what is already live on the website.
+          </p>
+          <p>
+            At a high level, DevSwat is built on a multi-service architecture with a central protocol layer that governs 
+            how agents, users, memory, and workflows interact. The platform includes autonomous agent runtime, 
+            orchestration, identity and trust controls, memory-aware execution, and a control plane that lets users 
+            manage actions from one interface.
+          </p>
         </div>
       </section>
 
-      <div style={s.divider} />
-
-      <section style={{ ...s.section, paddingTop: '3rem' }}>
-        <h2 style={s.h2}>Why DevSwat Exists</h2>
-        <p style={s.p}>
-          The AI agent landscape in 2025–2026 is fragmented. Companies like OpenAI, Anthropic, Google DeepMind,
-          and Meta provide foundation models — but building production agent systems requires stitching together
-          dozens of tools, frameworks, and services. LangChain, CrewAI, AutoGen, and others each solve a slice,
-          but none provide a complete, production-ready, multi-tenant SaaS platform.
-        </p>
-        <p style={s.p}>
-          DevSwat fills this gap. It is the full vertical stack — from LLM provider abstraction to agent
-          orchestration to governed semantic memory to billing to deployment. Unlike wrapper products that
-          put a UI on top of OpenAI or LangChain, DevSwat is 7 proprietary IP systems built from the ground up.
-        </p>
-      </section>
-
-      <div style={s.divider} />
-
-      <section style={{ ...s.section, paddingTop: '3rem' }}>
-        <h2 style={s.h2}>9 Proprietary IP Systems</h2>
-        <div style={s.grid}>
-          {[
-            { icon: <Cpu size={18} color="#818cf8" />, title: 'ResonantChat', text: '68-module AI pipeline with hallucination detection, evidence graphs, and neural skill classification. ~5ms inference.' },
-            { icon: <Layers size={18} color="#818cf8" />, title: 'Semantic Memory', text: '9-layer cognitive architecture. Per-user encrypted memory with embedding retrieval and resonance clustering.' },
-            { icon: <Shield size={18} color="#818cf8" />, title: 'RARA Governance', text: 'Invariant enforcement, capability decay, kill switch, atomic mutations with rollback, compliance (EU AI Act, SOC2).' },
-            { icon: <Code2 size={18} color="#818cf8" />, title: 'Code Visualizer', text: 'AST/SAST scanning for Python, JS, TS. Dependency graphs, dead code detection, governance reports.' },
-            { icon: <Layers size={18} color="#818cf8" />, title: 'Multi-Agent Orchestration', text: 'Voting protocol, debate protocol, chain protocol. Team management with configurable quorum.' },
-            { icon: <Shield size={18} color="#818cf8" />, title: 'Enterprise Control Plane', text: 'Semantic explorer, trust dashboard, governance center, compliance hub, security monitor.' },
-            { icon: <Cpu size={18} color="#818cf8" />, title: 'SaaS Billing Engine', text: 'Stripe integration, 5 revenue streams, 4 plan tiers, credit system with real-time usage tracking.' },
-          ].map((c) => (
-            <div key={c.title} style={s.card}>
-              <div style={s.cardTitle}>{c.icon} {c.title}</div>
-              <div style={s.cardText}>{c.text}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <div style={s.divider} />
-
-      <section style={{ ...s.section, paddingTop: '3rem' }}>
-        <h2 style={s.h2}>The Founder</h2>
-        <p style={s.p}>
-          <strong>Louie Nemesh</strong> — Founder & Lead Engineer at DevSwat.
-          Built the entire platform solo in under 4 months using DevSwat's own agentic workflows —
-          the ultimate proof-of-concept. Every line of code, every system design, every deployment decision.
-        </p>
-        <div style={s.links}>
-          <a href="https://www.linkedin.com/company/devswat/" target="_blank" rel="noopener noreferrer" style={s.link}><Linkedin size={16} /> LinkedIn</a>
-          <a href="https://www.youtube.com/@DevSwat" target="_blank" rel="noopener noreferrer" style={s.link}><Youtube size={16} /> YouTube</a>
-          <a href="https://x.com/devswat" target="_blank" rel="noopener noreferrer" style={s.link}><Twitter size={16} /> X</a>
-          <a href="https://github.com/DevSwat-ResonantGenesis" target="_blank" rel="noopener noreferrer" style={s.link}><Github size={16} /> GitHub</a>
-        </div>
-      </section>
-
-      <section style={s.cta}>
-        <button style={s.btn} onClick={() => navigate('/signup')}>
-          Get Started Free <ArrowRight size={16} />
+      {/* Section 6 - CTA */}
+      <section className={styles.ctaSection}>
+        <h2>Start Building Better Future With Us</h2>
+        <button className={styles.ctaButton} onClick={() => navigate('/signup')}>
+          Get Started Free <ArrowRight size={20} />
         </button>
       </section>
     </div>

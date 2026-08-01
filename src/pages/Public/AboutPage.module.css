@@ -1,0 +1,580 @@
+/* ============================================================
+   About Page - Modern Design Based on HomeNew
+   ============================================================ */
+
+.page {
+  min-height: 100vh;
+  width: 100%;
+  background: var(--color-bg-root, #F8F6F0);
+  color: #0f172a;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+[data-theme='dark'] .page {
+  background: var(--color-bg-root, #0a0a0c);
+  color: #f1f5f9;
+}
+
+/* Full Screen Video Section */
+.videoSection {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.videoContainer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.videoContainer iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.videoOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%);
+  pointer-events: none;
+}
+
+/* Section Container */
+.section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 24px;
+}
+
+/* Section 1 - Hero */
+.heroSection {
+  text-align: center;
+  padding: 120px 24px 80px;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(251, 191, 36, 0.9);
+  margin-bottom: 24px;
+}
+
+[data-theme='light'] .heroBadge {
+  background: rgba(180, 83, 9, 0.1);
+  border-color: rgba(180, 83, 9, 0.3);
+  color: rgba(180, 83, 9, 0.9);
+}
+
+.heroTitle {
+  font-family: 'Abril Fatface', serif;
+  font-size: clamp(48px, 6vw, 80px);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  color: #111827;
+}
+
+[data-theme='dark'] .heroTitle {
+  color: #f9fafb;
+}
+
+.heroSubtitle {
+  font-family: 'Work Sans', sans-serif;
+  font-size: clamp(20px, 2.5vw, 32px);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 32px;
+  color: #111827;
+}
+
+[data-theme='dark'] .heroSubtitle {
+  color: #f9fafb;
+}
+
+.heroDescription {
+  font-size: 18px;
+  line-height: 1.7;
+  color: rgba(0, 0, 0, 0.7);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+[data-theme='dark'] .heroDescription {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Section 2 - AI Infrastructure */
+.aiSection {
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.aiSection h2 {
+  font-family: 'Abril Fatface', serif;
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 24px;
+  color: #111827;
+}
+
+[data-theme='dark'] .aiSection h2 {
+  color: #f9fafb;
+}
+
+.aiSection p {
+  font-size: 18px;
+  line-height: 1.7;
+  color: rgba(0, 0, 0, 0.7);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+[data-theme='dark'] .aiSection p {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Section 3 - Main Focus */
+.focusSection {
+  padding: 80px 24px;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme='dark'] .focusSection {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.focusSection h2 {
+  font-family: 'Abril Fatface', serif;
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 48px;
+  text-align: center;
+  color: #111827;
+}
+
+[data-theme='dark'] .focusSection h2 {
+  color: #f9fafb;
+}
+
+.focusGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.focusCard {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 32px;
+  transition: all 0.3s ease;
+}
+
+[data-theme='dark'] .focusCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.focusCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .focusCard:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.focusCard h3 {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #111827;
+}
+
+[data-theme='dark'] .focusCard h3 {
+  color: #f9fafb;
+}
+
+.focusCard p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme='dark'] .focusCard p {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Section 4 - Summary */
+.summarySection {
+  padding: 100px 24px;
+}
+
+.summarySection h2 {
+  font-family: 'Abril Fatface', serif;
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 48px;
+  text-align: center;
+  color: #111827;
+}
+
+[data-theme='dark'] .summarySection h2 {
+  color: #f9fafb;
+}
+
+.summaryIntro {
+  font-size: 18px;
+  line-height: 1.7;
+  color: rgba(0, 0, 0, 0.7);
+  max-width: 800px;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+
+[data-theme='dark'] .summaryIntro {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.summaryCard {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 32px;
+  transition: all 0.3s ease;
+}
+
+[data-theme='dark'] .summaryCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.summaryCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .summaryCard:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.summaryCard h3 {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #111827;
+}
+
+[data-theme='dark'] .summaryCard h3 {
+  color: #f9fafb;
+}
+
+.summaryCard p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme='dark'] .summaryCard p {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.statHighlight {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: rgba(251, 191, 36, 0.9);
+  margin-bottom: 8px;
+}
+
+[data-theme='light'] .statHighlight {
+  color: rgba(180, 83, 9, 0.9);
+}
+
+.statLabel {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+[data-theme='dark'] .statLabel {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Section 5 - Competitive Advantages */
+.advantagesSection {
+  padding: 100px 24px;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme='dark'] .advantagesSection {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.advantagesSection h2 {
+  font-family: 'Abril Fatface', serif;
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 48px;
+  text-align: center;
+  color: #111827;
+}
+
+[data-theme='dark'] .advantagesSection h2 {
+  color: #f9fafb;
+}
+
+.founderCard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  max-width: 1000px;
+  margin: 0 auto 64px;
+  align-items: center;
+}
+
+.founderImage {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.founderImage img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.founderInfo h3 {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+[data-theme='dark'] .founderInfo h3 {
+  color: #f9fafb;
+}
+
+.founderRole {
+  font-size: 16px;
+  color: rgba(251, 191, 36, 0.9);
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+
+[data-theme='light'] .founderRole {
+  color: rgba(180, 83, 9, 0.9);
+}
+
+.founderBio {
+  font-size: 16px;
+  line-height: 1.7;
+  color: rgba(0, 0, 0, 0.7);
+  margin-bottom: 24px;
+}
+
+[data-theme='dark'] .founderBio {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.socialLinks {
+  display: flex;
+  gap: 16px;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  color: #0f172a;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+[data-theme='dark'] .socialLink {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f1f5f9;
+}
+
+.socialLink:hover {
+  background: rgba(251, 191, 36, 0.2);
+  color: rgba(251, 191, 36, 0.9);
+}
+
+[data-theme='light'] .socialLink:hover {
+  background: rgba(180, 83, 9, 0.2);
+  color: rgba(180, 83, 9, 0.9);
+}
+
+.platformCard {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 48px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+[data-theme='dark'] .platformCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.platformCard h3 {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #111827;
+}
+
+[data-theme='dark'] .platformCard h3 {
+  color: #f9fafb;
+}
+
+.platformCard p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: rgba(0, 0, 0, 0.7);
+  margin-bottom: 16px;
+}
+
+[data-theme='dark'] .platformCard p {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: rgba(251, 191, 36, 0.15);
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(251, 191, 36, 0.9);
+  margin-bottom: 16px;
+}
+
+[data-theme='light'] .badge {
+  background: rgba(180, 83, 9, 0.15);
+  color: rgba(180, 83, 9, 0.9);
+}
+
+/* Section 6 - CTA */
+.ctaSection {
+  padding: 120px 24px;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(1, 166, 188, 0.1) 100%);
+}
+
+[data-theme='light'] .ctaSection {
+  background: linear-gradient(135deg, rgba(180, 83, 9, 0.1) 0%, rgba(0, 166, 188, 0.1) 100%);
+}
+
+.ctaSection h2 {
+  font-family: 'Abril Fatface', serif;
+  font-size: clamp(48px, 6vw, 72px);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 32px;
+  color: #111827;
+}
+
+[data-theme='dark'] .ctaSection h2 {
+  color: #f9fafb;
+}
+
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 40px;
+  background: #FFD800;
+  color: #0a0a0c;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.ctaButton:hover {
+  background: #ffe640;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 216, 0, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .section {
+    padding: 60px 20px;
+  }
+
+  .heroSection {
+    padding: 80px 20px 60px;
+  }
+
+  .videoSection {
+    min-height: 400px;
+  }
+
+  .founderCard {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .founderImage {
+    max-width: 100%;
+  }
+
+  .focusGrid,
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ctaSection {
+    padding: 80px 20px;
+  }
+}
