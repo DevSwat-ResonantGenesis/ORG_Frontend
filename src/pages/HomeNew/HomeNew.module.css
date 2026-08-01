@@ -1310,10 +1310,11 @@
    Scroll Landing Page - Section-based scrolling
    ============================================================ */
 .scrollLandingContainer {
-  height: 100vh;
+  height: auto;
+  min-height: 100vh;
   width: 100%;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
+  overflow-y: auto;
+  scroll-snap-type: none;
   scroll-behavior: smooth;
   scrollbar-width: none;
 }
@@ -1323,9 +1324,10 @@
 }
 
 .heroScrollSection {
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   width: 100%;
-  scroll-snap-align: start;
+  scroll-snap-align: none;
   scroll-snap-stop: always;
   display: flex;
   align-items: center;
