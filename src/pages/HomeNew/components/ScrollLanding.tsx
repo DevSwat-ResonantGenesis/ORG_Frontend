@@ -17,6 +17,7 @@ export const ScrollLanding = () => {
             {/* Hero Section */}
             <section className={styles.heroScrollSection}>
                 <HeroSection />
+                <div style={{ height: '100px' }}></div>
             </section>
 
             {/* Section 1 - AI Infrastructure */}
