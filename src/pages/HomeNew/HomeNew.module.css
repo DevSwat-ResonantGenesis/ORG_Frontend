@@ -31,10 +31,9 @@
 
 @media (max-width: 768px) {
   .page {
-    height: 100dvh;
-    max-height: 100dvh;
-    overflow: hidden;
-    overscroll-behavior: none;
+    height: auto;
+    min-height: 100dvh;
+    overflow-y: auto;
     background: #ffffff;
   }
 
