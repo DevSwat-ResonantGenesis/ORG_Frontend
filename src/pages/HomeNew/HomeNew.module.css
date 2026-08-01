@@ -250,7 +250,7 @@
   height: auto;
   width: 100vw;
   display: block;
-  padding: 0;
+  padding: 0 0 100px 0;
   margin: 0;
   position: relative;
   z-index: 1;
@@ -1330,9 +1330,7 @@
   width: 100%;
   scroll-snap-align: none;
   scroll-snap-stop: always;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   position: relative;
   background-size: cover;
   background-position: center;
