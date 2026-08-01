@@ -65,9 +65,10 @@
 
 @media (max-width: 768px) {
   .main-layout-wrapper:has(.landing-page-content) {
-    height: 100dvh;
-    max-height: 100dvh;
-    overflow: hidden;
+    height: auto;
+    min-height: 100dvh;
+    max-height: none;
+    overflow-y: auto;
     overscroll-behavior: none;
   }
 }
@@ -185,10 +186,10 @@
 
 @media (max-width: 768px) {
   .main-content-area.landing-page {
-    height: 100dvh;
+    height: auto;
     min-height: 100dvh;
-    max-height: 100dvh;
-    overflow: hidden;
+    max-height: none;
+    overflow-y: auto;
     background: var(--color-bg-root, var(--bg-primary));
   }
 }
@@ -245,10 +246,10 @@
 
 @media (max-width: 768px) {
   .main-content.landing-page-content {
-    height: 100dvh !important;
+    height: auto !important;
     min-height: 100dvh !important;
-    max-height: 100dvh !important;
-    overflow: hidden !important;
+    max-height: none !important;
+    overflow-y: auto !important;
     overscroll-behavior: none;
     background: #0a0a0c;
   }

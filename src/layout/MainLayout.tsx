@@ -78,6 +78,7 @@ const MainLayout = ({ children }: Props) => {
     const el = document.documentElement;
     const body = document.body;
 
+    // Disable scroll lock for landing page to allow scrolling
     if (!isLandingPage || !isLandingScrollLockViewport) {
       const previousScrollY = body.style.top ? Math.abs(parseInt(body.style.top, 10)) : 0;
       el.classList.remove(className);
@@ -87,18 +88,8 @@ const MainLayout = ({ children }: Props) => {
       return;
     }
 
-    const scrollY = window.scrollY || 0;
-    el.classList.add(className);
-    body.classList.add(className);
-    body.style.top = `-${scrollY}px`;
-
-    return () => {
-      const restoreScrollY = Math.abs(parseInt(document.body.style.top || '0', 10)) || 0;
-      el.classList.remove(className);
-      body.classList.remove(className);
-      document.body.style.top = '';
-      if (restoreScrollY) window.scrollTo(0, restoreScrollY);
-    };
+    // Don't apply scroll lock - always allow scrolling on landing page
+    return;
   }, [isLandingPage, isLandingScrollLockViewport]);
 
   return (
