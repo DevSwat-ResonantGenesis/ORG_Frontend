@@ -50,7 +50,6 @@ const AboutPage: React.FC = () => {
             frameBorder="0"
           />
         </div>
-        <div className={styles.videoOverlay} />
       </section>
 
       {/* Section 1 - Hero */}
