@@ -41,10 +41,13 @@ const AboutPage: React.FC = () => {
       <section className={styles.videoSection}>
         <div className={styles.videoContainer}>
           <iframe
-            src="https://www.youtube.com/embed/0cyzNC5fzJU?autoplay=0&mute=0&controls=1&loop=0&playlist=0cyzNC5fzJU"
+            width="100%"
+            height="100%"
+            src="https://www.youtube.com/embed/0cyzNC5fzJU?autoplay=0&mute=0&controls=1&rel=0&modestbranding=1"
             title="DevSwat Introduction"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
+            frameBorder="0"
           />
         </div>
         <div className={styles.videoOverlay} />
