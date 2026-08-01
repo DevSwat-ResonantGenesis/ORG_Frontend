@@ -14,7 +14,7 @@
 /* Page Container - Modern 2025 UI/UX */
 .page {
   min-height: 100dvh;
-  height: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -24,7 +24,7 @@
   overflow-x: hidden;
   overflow-x: clip;
   /* Use clip instead of hidden to not break fixed header */
-  overflow-y: visible;
+  overflow-y: auto;
   padding: 0;
   margin: 0;
 }
