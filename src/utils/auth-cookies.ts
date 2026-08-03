@@ -1,17 +1,18 @@
 /**
- * Cookie-based Authentication Utilities
+ * Authentication Utilities
  * 
  * PRODUCTION SECURITY:
- * - Tokens are stored in HttpOnly secure cookies (set by backend)
- * - Session data is stored in secure cookies (not localStorage)
- * - All cookies use SameSite=Strict and Secure flags
- * - No sensitive data in localStorage (XSS protection)
+ * - Tokens are stored in HttpOnly secure cookies (set by backend) for API calls
+ * - Session data is stored in localStorage for frontend validation
+ * - Backend still validates HttpOnly cookies for all API requests
+ * - Frontend validates localStorage tokens for route-level protection
  */
 
 export type UserRole = 'user' | 'org_admin' | 'platform_dev' | 'platform_owner' | 'finance' | 'compliance' | 'ml_engineer' | 'viewer' | 'admin' | 'security' | 'analyst';
 
 /**
- * Session data stored in secure cookie (not HttpOnly so JS can read user info)
+ * Session data stored in localStorage for frontend validation
+ * Backend uses HttpOnly cookies for API security
  */
 export interface SessionData {
   email: string;
@@ -83,8 +84,8 @@ const deleteCookie = (name: string) => {
 };
 
 /**
- * Save session data in secure cookie (user info only, not tokens)
- * Tokens are stored in HttpOnly cookies by the backend
+ * Save session data in localStorage for frontend validation
+ * Backend still uses HttpOnly cookies for API security
  */
 export const saveSessionData = (email: string, role: UserRole, orgId: string, userId?: string, is_superuser?: boolean) => {
   const sessionData: SessionData = {
@@ -94,38 +95,38 @@ export const saveSessionData = (email: string, role: UserRole, orgId: string, us
     userId: userId || email,
     is_superuser: is_superuser || false,
   };
-  // Store in secure cookie instead of localStorage
-  setSecureCookie(SESSION_COOKIE_NAME, JSON.stringify(sessionData));
+  // Store in localStorage for frontend validation
+  localStorage.setItem('rg_session_data', JSON.stringify(sessionData));
   
-  // MIGRATION: Clear any legacy localStorage data
-  localStorage.removeItem('rg_session_data');
+  // Also store in cookie for migration/compatibility
+  setSecureCookie(SESSION_COOKIE_NAME, JSON.stringify(sessionData));
 };
 
 /**
- * Get session data from secure cookie
+ * Get session data from localStorage for frontend validation
  */
 export const getSessionData = (): SessionData | null => {
-  // Try cookie first (new secure method)
-  const cookieData = getCookie(SESSION_COOKIE_NAME);
-  if (cookieData) {
+  // Try localStorage first (primary method for frontend validation)
+  const localData = localStorage.getItem('rg_session_data');
+  if (localData) {
     try {
-      return JSON.parse(cookieData) as SessionData;
+      return JSON.parse(localData) as SessionData;
     } catch {
+      localStorage.removeItem('rg_session_data');
       return null;
     }
   }
   
-  // MIGRATION: Check localStorage for legacy data and migrate
-  const legacyData = localStorage.getItem('rg_session_data');
-  if (legacyData) {
+  // Fallback: check cookie for migration
+  const cookieData = getCookie(SESSION_COOKIE_NAME);
+  if (cookieData) {
     try {
-      const parsed = JSON.parse(legacyData) as SessionData;
-      // Migrate to cookie
-      setSecureCookie(SESSION_COOKIE_NAME, legacyData);
-      localStorage.removeItem('rg_session_data');
+      const parsed = JSON.parse(cookieData) as SessionData;
+      // Migrate to localStorage
+      localStorage.setItem('rg_session_data', cookieData);
       return parsed;
     } catch {
-      localStorage.removeItem('rg_session_data');
+      return null;
     }
   }
   
@@ -183,11 +184,15 @@ export const clearAllSessionData = () => {
 
 /**
  * Check if user is authenticated
- * Since we can't read HttpOnly cookies, we check if session data exists
- * The backend will return 401 if cookies are invalid/missing
+ * Validates localStorage session data for route-level protection
+ * Backend will still validate HttpOnly cookies for API requests
  */
 export const isAuthenticated = (): boolean => {
-  return getSessionData() !== null;
+  const session = getSessionData();
+  if (!session) return false;
+  
+  // Validate that session has required fields
+  return !!(session.email && session.role && session.org);
 };
 
 /**
