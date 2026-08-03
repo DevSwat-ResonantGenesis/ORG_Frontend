@@ -230,11 +230,6 @@ export default function AgentMarketplacePage() {
     return () => clearInterval(interval);
   }, [agentSession?.id, agentSession?.status, selectedAgent, loadAgentSessions]);
 
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      navigate('/signup', { replace: true });
-    }
-  }, [navigate]);
 
   const loadAgents = useCallback(async () => {
     setLoading(true);
@@ -290,6 +285,10 @@ export default function AgentMarketplacePage() {
 
   async function handleExecuteAgent() {
     if (!selectedAgent) return;
+    if (!isAuthenticated()) {
+      navigate('/signup', { replace: true });
+      return;
+    }
     setExecuting(true);
     setAgentSteps([]);
     try {
@@ -330,6 +329,10 @@ export default function AgentMarketplacePage() {
 
   async function handleExecuteTeam() {
     if (!selectedTeam) return;
+    if (!isAuthenticated()) {
+      navigate('/signup', { replace: true });
+      return;
+    }
     setExecuting(true);
     setExecutionOutput(null);
     try {

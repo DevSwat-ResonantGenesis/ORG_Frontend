@@ -355,7 +355,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/marketplace',
-    element: withShell(<AgentMarketplacePage />)
+    element: <MainLayout><AgentMarketplacePage /></MainLayout>
   },
   {
     path: '/agent-teams',
