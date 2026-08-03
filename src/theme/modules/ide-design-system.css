@@ -429,7 +429,7 @@
 
 /* Override hardcoded dark backgrounds */
 [data-theme='light'] *:not(pre):not(code):not(.monaco-editor *) {
-  background-color: transparent;
+  background-color: inherit;
 }
 
 /* Force white background on major sections */
