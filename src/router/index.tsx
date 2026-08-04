@@ -2,10 +2,8 @@ import React, { lazy } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from '../layout/MainLayout';
 import ProtectedRoute from './ProtectedRoute';
-import SubscriptionRequiredRoute from './SubscriptionRequiredRoute';
 import RoleRoute from './RoleRoute';
 import OwnerProtectedRoute from './OwnerProtectedRoute';
-import PlanRestrictedRoute from './PlanRestrictedRoute';
 import { isAuthenticated } from '@/utils/auth-cookies';
 
 // Dashboards
@@ -112,12 +110,6 @@ const withShell = (node: React.ReactNode) => (
   </ProtectedRoute>
 );
 
-const withSubscription = (node: React.ReactNode) => (
-  <SubscriptionRequiredRoute>
-    <MainLayout>{node}</MainLayout>
-  </SubscriptionRequiredRoute>
-);
-
 const withPublicShell = (node: React.ReactNode) => (
   <MainLayout>{node}</MainLayout>
 );
@@ -126,27 +118,14 @@ const HomeGate = () => {
   if (!isAuthenticated()) {
     return <HomeNew />;
   }
-  // Authenticated users without subscription go to pricing, otherwise chat
-  return <SubscriptionRequiredRoute><ResonantChatPage /></SubscriptionRequiredRoute>;
+  // Authenticated users go to chat directly (no subscription check)
+  return <ProtectedRoute><ResonantChatPage /></ProtectedRoute>;
 };
 
 const withRole = (node: React.ReactNode, roles: string[]) =>
   withShell(<RoleRoute allowed={roles}>{node}</RoleRoute>);
 
-// Plan-restricted routes - requires specific subscription plan
-const withPlanRestriction = (node: React.ReactNode, requiredPlan: 'free' | 'developer' | 'plus' | 'pro' | 'enterprise') => {
-  const normalizedRequiredPlan = (requiredPlan === 'pro'
-      ? 'plus'
-      : requiredPlan) as 'free' | 'developer' | 'plus' | 'enterprise';
-
-  return (
-  <ProtectedRoute>
-    <MainLayout>
-      <PlanRestrictedRoute requiredPlan={normalizedRequiredPlan}>{node}</PlanRestrictedRoute>
-    </MainLayout>
-  </ProtectedRoute>
-  );
-};
+// Plan-restricted routes - REMOVED - let gateway handle plan via x-user-plan header
 
 // Owner-protected routes - uses separate owner token authentication
 // Note: No MainLayout wrapper - owner dashboard has its own header
@@ -161,7 +140,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/chat',
-    element: withSubscription(<ResonantChatPage />)
+    element: withShell(<ResonantChatPage />)
   },
   {
     path: '/signup',
