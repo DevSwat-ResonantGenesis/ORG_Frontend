@@ -174,10 +174,10 @@ const router = createBrowserRouter([
     path: '/plus-dashboard',
     element: withShell(<PlusDashboard />)
   },
-  // Owner Dashboard - For superusers only (regular auth, superuser check in component)
+  // Owner Dashboard - For superusers only
   {
     path: '/owner-dashboard',
-    element: withShell(<OwnerDashboard />)
+    element: withOwnerAuth(<OwnerDashboard />)
   },
   // Legacy owner route redirect
   {
@@ -187,11 +187,11 @@ const router = createBrowserRouter([
   // Owner-only dedicated pages
   {
     path: '/owner/chat-skills-control',
-    element: withShell(<ChatSkillsControlPage />)
+    element: withOwnerAuth(<ChatSkillsControlPage />)
   },
   {
     path: '/owner/agents-control',
-    element: withShell(<AgentsControlPage />)
+    element: withOwnerAuth(<AgentsControlPage />)
   },
   {
     path: '/anchors',
