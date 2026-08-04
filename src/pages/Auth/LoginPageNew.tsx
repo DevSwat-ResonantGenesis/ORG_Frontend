@@ -220,7 +220,11 @@ export default function LoginPageNew() {
         timeout: 15000,
       });
       
-      saveSessionData(email.trim(), data.role, data.org_id, data.user?.id, data.user?.is_superuser || data.role === 'platform_owner');
+      const isSuperuser = data.user?.is_superuser || data.role === 'platform_owner';
+      console.log('[Login] is_superuser from response:', data.user?.is_superuser);
+      console.log('[Login] role from response:', data.role);
+      console.log('[Login] final is_superuser:', isSuperuser);
+      saveSessionData(email.trim(), data.role, data.org_id, data.user?.id, isSuperuser);
       
       // Desktop IDE login: redirect back to /auth/desktop-callback?port=PORT
       if (postLoginRedirect) {
