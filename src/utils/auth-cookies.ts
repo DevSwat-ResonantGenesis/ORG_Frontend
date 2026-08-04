@@ -93,8 +93,9 @@ export const saveSessionData = (email: string, role: UserRole, orgId: string, us
     role,
     org: orgId,
     userId: userId || email,
-    is_superuser: is_superuser || false,
+    is_superuser: is_superuser === true, // Explicitly check for true, not truthy
   };
+  console.log('[saveSessionData] Saving session data:', sessionData);
   // Store in localStorage for frontend validation
   localStorage.setItem('rg_session_data', JSON.stringify(sessionData));
   
@@ -110,7 +111,9 @@ export const getSessionData = (): SessionData | null => {
   const localData = localStorage.getItem('rg_session_data');
   if (localData) {
     try {
-      return JSON.parse(localData) as SessionData;
+      const parsed = JSON.parse(localData) as SessionData;
+      console.log('[getSessionData] Session data from localStorage:', parsed);
+      return parsed;
     } catch {
       localStorage.removeItem('rg_session_data');
       return null;
@@ -122,6 +125,7 @@ export const getSessionData = (): SessionData | null => {
   if (cookieData) {
     try {
       const parsed = JSON.parse(cookieData) as SessionData;
+      console.log('[getSessionData] Session data from cookie:', parsed);
       // Migrate to localStorage
       localStorage.setItem('rg_session_data', cookieData);
       return parsed;
@@ -130,6 +134,7 @@ export const getSessionData = (): SessionData | null => {
     }
   }
   
+  console.log('[getSessionData] No session data found');
   return null;
 };
 

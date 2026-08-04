@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import fastapiClient from '../api/fastapiClient';
 import { isAuthenticated, getSessionData } from '@/utils/auth-cookies';
 
 interface OwnerProtectedRouteProps {
@@ -9,66 +8,25 @@ interface OwnerProtectedRouteProps {
 
 /**
  * Protected route that requires Owner/Superuser authentication.
- * Checks session data first, then validates via API if needed.
+ * Trusts session data from localStorage (set by login).
+ * No API calls - immediate validation.
  */
 const OwnerProtectedRoute: React.FC<OwnerProtectedRouteProps> = ({ children }) => {
-  const [isValidating, setIsValidating] = useState(true);
-  const [isAuthorized, setIsAuthorized] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    const validateAccess = async () => {
-      // First check: Session data (fast path)
-      const sessionData = getSessionData();
-      if (isAuthenticated() && sessionData?.is_superuser) {
-        console.log('[OwnerProtectedRoute] Superuser access granted via session');
-        setIsAuthorized(true);
-        setIsValidating(false);
-        return;
-      }
+  const sessionData = getSessionData();
+  const isSuperuser = sessionData?.is_superuser === true;
 
-      // Second check: API validation (fallback)
-      try {
-        const response = await fastapiClient.get('/auth/me', {
-          withCredentials: true,
-        });
-        
-        if (response.data?.is_superuser) {
-          console.log('[OwnerProtectedRoute] Superuser access granted via API');
-          setIsAuthorized(true);
-        } else {
-          console.log('[OwnerProtectedRoute] Not a superuser');
-          setIsAuthorized(false);
-        }
-      } catch (error) {
-        console.error('[OwnerProtectedRoute] API validation failed:', error);
-        setIsAuthorized(false);
-      } finally {
-        setIsValidating(false);
-      }
-    };
+  console.log('[OwnerProtectedRoute] Session data:', sessionData);
+  console.log('[OwnerProtectedRoute] is_superuser:', isSuperuser);
+  console.log('[OwnerProtectedRoute] isAuthenticated:', isAuthenticated());
 
-    validateAccess();
-  }, []);
-
-  if (isValidating) {
-    return (
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '400px',
-        color: 'var(--text-secondary)',
-      }}>
-        Validating owner access...
-      </div>
-    );
-  }
-
-  if (!isAuthorized) {
+  if (!isAuthenticated() || !isSuperuser) {
+    console.log('[OwnerProtectedRoute] Access denied - redirecting to login');
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  console.log('[OwnerProtectedRoute] Access granted');
   return <>{children}</>;
 };
 
