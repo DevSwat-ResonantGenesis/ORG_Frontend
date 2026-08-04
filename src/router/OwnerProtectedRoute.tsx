@@ -16,12 +16,16 @@ const OwnerProtectedRoute: React.FC<OwnerProtectedRouteProps> = ({ children }) =
 
   const sessionData = getSessionData();
   const isSuperuser = sessionData?.is_superuser === true;
+  const isPlatformOwner = sessionData?.role === 'platform_owner';
 
   console.log('[OwnerProtectedRoute] Session data:', sessionData);
   console.log('[OwnerProtectedRoute] is_superuser:', isSuperuser);
+  console.log('[OwnerProtectedRoute] role:', sessionData?.role);
+  console.log('[OwnerProtectedRoute] isPlatformOwner:', isPlatformOwner);
   console.log('[OwnerProtectedRoute] isAuthenticated:', isAuthenticated());
 
-  if (!isAuthenticated() || !isSuperuser) {
+  // Allow access if superuser OR platform_owner role
+  if (!isAuthenticated() || (!isSuperuser && !isPlatformOwner)) {
     console.log('[OwnerProtectedRoute] Access denied - redirecting to login');
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
