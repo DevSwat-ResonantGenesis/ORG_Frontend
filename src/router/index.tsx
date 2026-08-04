@@ -253,7 +253,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/owner-login',
-    element: withPublicShell(<OwnerLoginPage />)
+    element: <Navigate to="/login" replace />
   },
   {
     path: '/auth/oauth/callback',
