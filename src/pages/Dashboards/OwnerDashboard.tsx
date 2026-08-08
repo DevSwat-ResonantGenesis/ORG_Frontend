@@ -615,10 +615,16 @@ const OwnerDashboard: React.FC = () => {
       return;
     }
 
+    const sessionData = getSessionData();
+    const ownerToken = localStorage.getItem('owner_token');
+    const sessionToken = localStorage.getItem('access_token');
+    const authToken = ownerToken || sessionToken;
+
     try {
       const response = await fetch(`${API_BASE}/owner/auth/admin/delete-user/${userId}`, {
         method: 'DELETE',
         credentials: 'include',
+        headers: { 'Authorization': `Bearer ${authToken}` }
       });
 
       if (response.ok) {
